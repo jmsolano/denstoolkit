@@ -8,7 +8,7 @@ Once you have recived an invitation you are able to see this page. Now you can i
 
 ```
 $cd /local/path/for/dtk
-git clone https://username@bitbucket.org/jmsolano/denstoolkitdevbb.git
+$git clone https://username@bitbucket.org/jmsolano/denstoolkitdevbb.git
 ```
 
 Your bitbucket password will be requested to clone the repository. This is because this repository is not public.
