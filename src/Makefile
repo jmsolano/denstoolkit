@@ -1,5 +1,5 @@
 
-INSTALL_PATH = /Users/jmsolano/binsol
+INSTALL_PATH = /usr/local/bin
 
 USERPOVCMD = povray
 
@@ -88,7 +88,7 @@ else
 endif
 
 # Target rules
-all: $(DTKALLDIRS) $(DTKALLFILES) build
+all: $(DTKALLDIRS) $(DTKALLFILES) bindir outdir objdir build
 
 build: $(LCL_BINDIR)/dtkpoint $(LCL_BINDIR)/dtkline $(LCL_BINDIR)/dtkplane \
        $(LCL_BINDIR)/dtkcube $(LCL_BINDIR)/dtkfindcp $(LCL_BINDIR)/dtkmomd \
@@ -196,4 +196,14 @@ develdocs:
 cleandeveldocs:
 	@rm -rf $(LCL_DVDCDIR)/html/*
 	@rm -f $(LCL_DVDCDIR)/DeveloperDocumentation.html
+
+bindir:
+	@mkdir -p $(LCL_BINDIR)
+
+outdir:
+	@mkdir -p $(LCL_OUTDIR)
+
+objdir:
+	@mkdir -p $(LCL_OBJDIR)
+
 
