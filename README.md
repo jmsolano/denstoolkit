@@ -1,4 +1,4 @@
-# Welcome
+# DensToolKit
 
 This is a first development distribution to the suite DensToolKit. For the time being, only private access will be granted.
 
