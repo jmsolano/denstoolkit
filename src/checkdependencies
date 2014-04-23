@@ -1,0 +1,71 @@
+#!/bin/bash
+#
+#*****************************************************************************************
+#*****************************************************************************************
+#The following part checks the existence of several programs needed for the proper running
+# of the suite denstoolkit.
+#*****************************************************************************************
+# 
+if command -v gnuplot >/dev/null 2>&1 || command -v wgnuplot >/dev/null 2>&1; then
+        echo -e "We have gnuplot!\033[33m"
+        #echo -e "\033[33m"
+        echo "However, please ensure that the x11 terminal is available."
+        echo -e "\033[m"
+   else
+        echo -e "\033[31m"
+        echo -e "\nError: gnuplot must be installed in your system!\n"
+        echo -e "\033[m"
+        exit 1
+fi
+#
+if command -v epstool >/dev/null 2>&1; then
+	echo "We have epstool!"
+   else
+        echo -e "\033[31m"
+	echo -e "\nError: epstool must be installed in your system!\n"
+        echo -e "\033[m"
+        exit 1
+fi
+#
+if command -v epstopdf >/dev/null 2>&1; then
+	echo "We have epstopdf!"
+   else
+        echo -e "\033[31m"
+	echo -e "\nError: epstopdf must be installed in your system!\n"
+        echo -e "\033[m"
+        exit 1
+fi
+#
+if command -v povray >/dev/null 2>&1 || command -v pvengine64.exe >/dev/null 2>&1 \
+    || command -v pvengine.exe >/dev/null 2>&1; then
+	echo "We have povray!"
+   else
+        echo -e "\033[31m"
+	echo -e "\nError: povray must be installed in your system!\n"
+        echo -e "\033[m"
+        exit 1
+fi
+#
+if command -v gm >/dev/null 2>&1; then
+	echo "We have gm!"
+   else
+        echo -e "\033[31m"
+	echo -e "\nError: gm must be installed in your system!\n"
+        echo -e "\033[m"
+        exit 1
+fi
+#
+if command -v gzip >/dev/null 2>&1; then
+	echo "We have gzip!"
+   else
+        echo -e "\033[31m"
+	echo -e "\nError: gzip must be installed in your system!\n"
+        echo -e "\033[m"
+        exit 1
+fi
+echo -e "\033[32m"
+echo -e "\nAll required packages are installed, you can proceed to"
+echo -e "build and install denstoolkit!\n"
+echo -e "\033[m"
+#*****************************************************************************************
+#*****************************************************************************************

@@ -1,0 +1,14 @@
+--> Parallelize DM1, and Momentum density for programs dtkdemat1, dtkmomd
+--> Parallelize Hessians for Rho and LOL for program dtkfindcp
+--> Standardise the option -o. So far the best choice is to ask for the name without extension.
+
+--> Implement Ellipticity function. QC174.12 .Q39 2007 (p. 12)
+--> Save screen displays into a log file.
+
+--> Improve functionality for Windows.
+      povray -> pvengine64.exe
+      gnuplot -> wgnuplot (plane, momd, qdmol, demat1)
+        set term windows enhanced 
+        remove all |epstopdf --filter ..., change by
+          name.eps, then epstopdf name.eps --outfile=name.pdf
+      gzip: Add __CYGWIN__ to the gzip parts... -->and optflags

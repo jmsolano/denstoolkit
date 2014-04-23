@@ -1,0 +1,131 @@
+
+\chapter{Introduction}
+
+\section{About \DTK}
+
+DensToolKit (DTK) is a suite of programs to analize scalar and vector fields related to the electron density of a molecule. The purpose of breaking down the tasks into small programs is to have a small suite that can be used in scripts, much in the same sense as gnuplot.
+
+While a decent plot for scientific publishing requires a reasonable amount of effort, spending time on doing plots to view intermmediate results can result in a waste of time.
+
+After using gnuplot for a couple of years, I realized that it is far more efficient to work in this way. One simply needs to write a script, run it, and then occupy one's time and effort in doing something other than introducing over and over again the parameters for viewing volatile information.
+
+On another hand, there is a considerable variety of programs written in fortran (especially in fortran 77) in the computational chemistry field. However, in order to maintain the compatibility with fortran compilers, the programmers are not taking the advantage of one of the greatest features of the object-oriented programming: the reusability of the software. 
+
+One of the features of \DTK{} is that it can be compiled in at least three of the major operative systems, namely Linux/Unix, Darwin(Mac OSX) and Windows (cygwin), using the gnu-gcc compiler.
+
+\section{Installation guide}
+
+Here we describe how to install \DTK{} on a range of UNIX-like operating systems.
+
+\DTK{} have been tested on Linux, MacOSX, and Microsoft Windows 7, and we believe it should work under almost any POSIX system. The compilation on MS Windows 7 was performed under cygwin; regretably, full support for this operative system is not within our immediate plans.
+
+\subsection{Prerequisites}
+
+Every program of the suite \DTK{} is divided into two main parts. The most fundamental (and the core of \DTK) is the calculation of scalar and vector fields related to the electron density. Generally, the data obtained from the programs are saved into *.log, *.dat, *.tsv, or *.cub files. 
+
+Additionally, \DTK{} can perform calls to third party programs to generate some plots. Most of the programs use gnuplot, but some times povray is also called. As a general rule, the programs create a small script that can be passed directly to gnuplot/povray. The idea is to facilitate the detailed creation of a high-quality plot using those programs, but having a tool to easyly and fastly create plots of what has been calculated, skipping the time-wasting steps of using graphical interfaces.
+
+That being said, before you compile \DTK{}, please ensure the following packages are installed in your system:
+\begin{itemize}
+   \item \textbf{gnuplot 4.6 or later}. Under Linux, you can simply type
+   \begin{verbatim}
+      #apt-get install gnuplot
+      #yum install gnuplot
+   \end{verbatim}
+   (apt-get for Debian/Linux and its variants, yum for systems using RPMs), and under MacOSX
+   \begin{verbatim}
+      #port install gnuplot
+   \end{verbatim}
+   where it has been assumed that macports is already installed in your system, and the character \texttt{\#} means that you should run this commands as root/superuser.
+   
+   Unless stated otherwise, all of the third-party programs can be installed using this same method under Linux or MacOSX.
+   
+   For MS Windows, you can get almost all the required programs by running the cygwin installer, and choosing the packages from the list. Gnuplot and povray also have independent installers on their websites.
+   
+   More information about gnuplot can be found in: \url{http://www.gnuplot.info}
+   
+   Below there is a list of the additional programs required to fully exploit the capabilities of \DTK.
+   
+   \item \textbf{povray 3.6 or later}: \url{http://www.povray.org}
+   \item \textbf{ghostscript 9 or later}: \url{http://www.ghostscript.com}
+   \item \textbf{epstool 3.08 or later}: \url{http://pages.cs.wisc.edu/~ghost/gsview/epstool.htm}
+   \item \textbf{epstopdf 2.19 or later}: \url{http://www.ctan.org/pkg/epstopdf}
+   \item \textbf{graphics magick 1.3.18 or later} \url{http://www.graphicsmagick.org}
+   \item \textbf{gzip 1.6 or later} \url{http://www.gzip.org}
+\end{itemize}
+
+None of the listed programs are required to perform the calculations nor for generating *.log, *.dat, *.tsv, nor *.cub files. If you do not wish to install them (although we strongly recommend it), you can still run the programs and all the data files will be generated anyway (perhaps with several error messages). Later you can generate plots with your preferred software.
+
+\section{Installation from source archive}
+
+This section assumes you have basic knowledge of how to install simple programs in Linux through the command line (same applies for MacOSX and MS Windows ---cygwin---).
+
+\begin{itemize}
+\item After you have received a copy of the source file, unpack the distributed .tar.gz:
+\begin{verbatim}
+   $tar zxvf denstoolkit-YYYYMMDD-HHMM.tar.gz
+   $cd denstoolkit-YYYYMMDD-HHMM/src
+\end{verbatim}
+\item Just to verify that you have all the required packages installed, run
+\begin{verbatim}
+   $./checkdependencies
+\end{verbatim}
+ If some package is missing, you will receive a message. You can skip this step, however, if this simple script works, then the remaining of the installation should be easy.
+ 
+ Especial attention must be paid to the povray program if you are using cygwin: After installing the povray binaries, look at the direct access created by the installer and (after right-clicking) check properties. In the properties window, you can see the full path of the program. You must add the path to your local \texttt{.bashrc} by adding at the end of this file the line
+\begin{verbatim}
+   PATH=$PATH:/directory/where/povray/is
+\end{verbatim}
+After this is done, type from the command line
+\begin{verbatim}
+   $pvengine.exe
+\end{verbatim}
+(if you use the new pvengine64.exe, then that is what you should type.) If povray opens, then you have configured right.
+
+When all the required programs are installed, the script \texttt{checkdependencies} will display the message: \texttt{All required packages are installed, you can proceed to build and install denstoolkit!}
+\item Set the \texttt{INSTALL\_PATH}. By default, the final binaries of \DTK{} will be installed in \texttt{/usr/local/bin}. You can change this by editing the Makefile file; in the first non empty line of Makefile, change \texttt{/usr/local/bin} by the directory of your choice.
+\item Set the correct command for povray (MS Windows only): Please, make yourself sure that you can call povray from the command line (if you have succesfully run the script \texttt{checkdependencies}, see above, then the next step is straightforward). Modify the Makefile by changing the line
+\begin{verbatim}
+   USERPOVCMD = povray
+\end{verbatim}
+by
+\begin{verbatim}
+   USERPOVCMD = pvengine.exe
+\end{verbatim}
+(or ``\texttt{USERPOVCMD = pvengine64.exe}'').
+\item Build the \DTK{} binaries:
+\begin{verbatim}
+   $make
+\end{verbatim}
+\item Install the binaries into the \texttt{INSTALL\_PATH} directory
+\begin{verbatim}
+   $sudo make install
+\end{verbatim}
+\item Run some tests (optional).
+\begin{verbatim}
+   $make runtest
+\end{verbatim}
+ You can review the sample output files in the directory 
+ 
+ \texttt{denstoolkit-YYYYMMDD-HHMM/outputs}
+\end{itemize}
+
+\section{Installation from git repository}
+
+This section 
+
+\section{Uninstalling \DTK}
+
+In the source directory \texttt{denstoolkit-YYYYMMDD-HHMM/src} type:
+\begin{verbatim}
+   $sudo make distclean
+\end{verbatim}
+This will remove all the intermediate files used during compilation, all the binaries, and all the outputs produced (if you ran \texttt{\$make runtest}). After this, you can safely remove the entire directory \texttt{denstoolkit-YYYYMMDD-HHMM}.
+
+
+
+
+
+
+
+

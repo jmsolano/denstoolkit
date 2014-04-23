@@ -1,0 +1,78 @@
+
+=====================================================================
+*** Version 1.0.6 ***
+=====================================================================
+
+--> Added the molecular electrostatic potential to the properties
+      evaluated.
+
+=====================================================================
+*** Version 1.0.5 ***
+=====================================================================
+
+Some changes to the help menu and support for long command line
+options (e.g. --help, and --version).
+
+
+=====================================================================
+*** Version 1.0.4 ***
+=====================================================================
+
+ --> Minor spelling corrections
+ --> The class wavefunction now correctly reads files with a number
+      of primitives equal to a multiple of 20
+--> The class bondnetwork foresees the cases where 
+      maxBondDist have not been determined due to non of the
+      atoms are linked (according to the Van Der Walls sum criteria,
+      i.e., the algorithm for drawing CPK/ball&stick molecules)
+
+
+Known Bugs
+    --> The program crashes for the following configuration:
+          densline lif.wfn -p L -P -a 1 6
+          There is no atom 6, it causes a segmentation fault 11
+ 
+
+=====================================================================
+*** Version 1.0.3 ***
+=====================================================================
+
+ Added the field Magnitude of the Gradient of LOL
+
+Known Bugs
+    --> The program crashes for the following configuration:
+          densline lif.wfn -p L -P -a 1 6
+          There is no atom 6, it causes a segmentation fault 11
+
+=====================================================================
+*** Version 1.0.2 ***
+=====================================================================
+ 
+ Minor details added.
+  --> The script for gnuplot does not use xterm anymore. Instead
+        a direct call is made to plot the image in the pdf file
+        (through epstopdf)
+  --> In the help menu is stated that epstopdf must be installed
+        in the system.
+
+-----------------------------------------------------
+
+=====================================================================
+*** Version 1.0.1 ***
+=====================================================================
+
+ Minor details added.
+  --> Adds the atom labels in the plot.
+  --> Improvings on the help menu.
+  --> Activates logscale if the plot property is rho, MagGradRho,
+         or KinetEnerG (option -p x, x=={d,g,G})
+  --> Improvings of on-screen information
+
+=====================================================================
+*** Version 1.0.0 ***
+=====================================================================
+
+First release of the program.
+
+Known bugs:
+  --> 

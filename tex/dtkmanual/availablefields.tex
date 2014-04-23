@@ -1,0 +1,429 @@
+%**********************************************************************************************
+%**********************************************************************************************
+\chapter{Available density fields}\label{sec:availablefields}
+%**********************************************************************************************
+%**********************************************************************************************
+
+As is well known from Quantum Mechanics theory, all the information of a quantum system is contained in the wave function. For a molecular system,  the wave function, $\psi(\boldsymbol{r})$, can be spanned by $M$ molecular orbitals $\chi_m(\boldsymbol{r})$ ($m=1,\dots,M$, and these molecular orbitals can be obtained by any of the self consisten field methods available)
+%
+\begin{equation}
+   \psi(\boldsymbol{r})=\sum_{m=1}^{M}\sqrt{C_m}\chi_m(\boldsymbol{r}).
+\end{equation}
+%
+In turn, each molecular orbital can be spanned by a linear combination of Gaussian basis functions:
+\begin{equation}
+   \chi_m(\boldsymbol{r})=\sum_{\dA=\done}^{\dN}D_{m\dA}\phi_{\dA}(\boldsymbol{r}-\boldsymbol{R}_{\dA}).
+\end{equation}
+%
+We have used here a slightly different notation in order to clearly separate the different index types that one encounters while handling molecular wave functions. We use upper case dotted indices for identifying Gaussian basis functions. Under our notation, each individual basis function is uniquely identified with a dotted index, and each basis function has associated three integers ($a^1_{\dA}$, $a^2_{\dA}$, and $a^3_{\dA}$), and a point which denotes the center of the primitive $\boldsymbol{R}_{\dA}$ (with this notation a primitive center $\boldsymbol{R}_{\dA}$ can be the same than another primitive center $\boldsymbol{R}_{\dB}$, \textit{i.e.} the index associates the Cartesian coordinates of a nucleus to a particular basis function, rather than associating a basis function with a nucleus; similar behavior is observed for the integers $a^i_{\dA}$). This index naming is actually more natural for reading and understanding the \texttt{wfn} and \texttt{wfx} files. 
+
+Each Gaussian basis function is given by
+%
+\begin{equation}
+   \phi_{\dA}(\boldsymbol{r})=(x-R^1_{\dA})^{a^1_{\dA}}(x-R^2_{\dA})^{a^2_{\dA}}(x-R^3_{\dA})^{a^3_{\dA}}
+   \exp\left(-\alpha_{\dA}(\boldsymbol{r}-\boldsymbol{R}_{\dA})^2\right),
+\end{equation}
+%
+and the normalization constants are already included in the coefficients $D_{m\dA}$.
+
+Finally, unless otherwise especified, we will assume that Im$(\phi_{\dA})=0$. While this is not true in general, it does hold for the gausian basis sets we will be interested in (\textit{i.e.,} those obtained as \texttt{wfn} or \texttt{wfx} files from Gaussian, Gamess, MolPro, NWChem, etc.)
+
+%----------------------------------------------------------------------------------------------
+\section{Electron density ($\rho$)}
+%----------------------------------------------------------------------------------------------
+
+The electron density is therefore given by
+%
+\begin{equation}
+   \rho(\boldsymbol{r})=\sum_{m=1}^{M}C_m\sum_{\dA=\done}^{\dP}\sum_{\dB=\done}^{\dP}D_{m\dA}D_{m\dB}
+                        \phi_{\dA}(\boldsymbol{r})\phi_{\dB}(\boldsymbol{r}),
+\end{equation}
+%
+where $\dP$ is the number of primitives used in the expansion of the wave function.
+
+Defining the density matrix, $c_{\dA\dB}$, as
+%
+\begin{equation}
+   c_{\dA\dB}\equiv\sum_{m=1}^{M}C_mD_{m\dA}D_{m\dB},
+\end{equation}
+%
+the electron density can be written as follows:
+%
+\begin{equation}\label{eq:rhodeflong}
+   \rho(\boldsymbol{r})=\sum_{\dA=\done}^{\dP}\sum_{\dB=\done}^{\dP}
+      c_{\dA\dB}\phi_{\dA}(\boldsymbol{r})\phi_{\dB}(\boldsymbol{r}).
+\end{equation}
+%
+
+Computationally, we can reduce the number of computations by using the following algorithm
+%
+\begin{equation}
+   \rho(\boldsymbol{r})=\sum_{\dA}\left\{\phi_{\dA}\left[c_{\dA\dA}\phi_{\dA}+\frac{1}{2}\sum_{\dB>\dA}c_{\dA\dB}\phi_{\dB}\right]\right\}.
+\end{equation}
+%
+This is the algorithm implemented in \DTK{} whenever the function allows it, and is twice as efficient as the direct computation posed by Eq. (\ref{eq:rhodeflong}).
+
+In what follows, unless stated otherwise, we will follow the Einstein summation convention, this is, a summation will be implied every time an index appears repeated in a single term, and the trivial vector arguments (such as the spatial dependence) will be dropped. Hence, the electron density is simply written as
+%
+\begin{equation}
+   \rho=c_{\dA\dB}\phi_{\dA}\phi_{\dB}.
+\end{equation}
+%
+
+While this notation is not customary in chemistry fields, it allows oneself to perform all the tensor gymnastics developed in other fields of physics, as we will see below.
+
+Also, we will use latin indices to denote the Cartesian components of a vector. Therefore the $i$-th componen of a vector $\boldsymbol{A}$ is
+%
+\begin{equation}
+   [\boldsymbol{A}]^{i}\equiv A^i,
+\end{equation}
+%
+and the $i$-th partial derivative of a function $\varphi$ is
+%
+\begin{equation}
+   \frac{\partial\varphi}{\partial x^i}\equiv\partial_i\varphi.
+\end{equation}
+%
+
+The Einstein summation convention is also implied every time a latin index appears twice in the same term. The limits of the summation should be obvious depending on the index type. For instance upper case, dotted indices will run from $\dot{1}$ to the number of primitives in the expansion ($\dot{P}$); while latin, lower case indices will run from 1 to 3 (since they are used for cartesian components). This is one of the advantages of introducing such index naming system.
+
+
+%----------------------------------------------------------------------------------------------
+\section{Gradient of the electron density ($\nabla\rho$)}\label{sec:gradrho}
+%----------------------------------------------------------------------------------------------
+
+With the notation proposed in the previous section, the gradient of the electron density can be evaluated easily:
+%
+\begin{equation}
+   \partial_i\rho=c_{\dA\dB}\partial_i(\phi_{\dA}\phi_{\dB})=2c_{\dA\dB}\phi_{\dA}\partial_i\phi_{\dB},
+\end{equation}
+%
+where we have used the symmetry properties of $c_{\dA\dB}$ in the last equality, and
+%
+\begin{eqnarray}
+   \partial_i\phi_{\dB}&=&\left(-2\alpha_{\dB}(x^i-R^i_{\dB})^{a^i_{\dB}+1}+a^i_{\dB}(x^i-R^i_{\dB})^{a^i-1}\right)\prod_{j\neq i}(x^j-R^j_{\dB})^{a^j_{\dB}}\nonumber\\
+                       & &\times\exp\left(-\alpha_{\dB}(\boldsymbol{r}-\boldsymbol{R}_{\dB})^2\right)
+                       \label{eq:diphidbexplicit}
+\end{eqnarray}
+%
+(no summation in Eq. (\ref{eq:diphidbexplicit})).
+
+%----------------------------------------------------------------------------------------------
+\subsection{Higher derivatives the electron density}
+%----------------------------------------------------------------------------------------------
+
+By defining the objects
+%
+\begin{equation}
+   \phi^i_{\dA}(x^i)\equiv(x^i-R^i_{\dA})^{a^i_{\dA}}\exp\left(-\alpha_{\dA}(x^i-R^i_{\dA})^2\right),
+   \qquad\qquad\textrm{(no summation)}
+\end{equation}
+%
+%
+\begin{eqnarray}
+   D_i^0&\equiv&\phi^i_{\dA},\nonumber\\
+   D_i^n&\equiv&\partial_i^n\phi^i_{\dA},\qquad\qquad\textrm{(no summation)}
+\end{eqnarray}
+%
+and recalling that
+%
+\begin{equation}
+   \partial_i\phi^j_{\dA}=0,\qquad\qquad\textrm{for }i\neq j,
+\end{equation}
+%
+we can obtain any derivative of the primitives in any combination:
+%
+\begin{equation}
+   \partial_1^l\partial_2^m\partial_3^n\phi_{\dA}=D_1^lD_2^mD_3^n.
+\end{equation}
+%
+
+The object $D_i^n$ has the properties:
+%
+\begin{equation}
+   D^a_iD^a_i=D^{a+b}_i,\qquad\qquad\textrm{(no sum)}
+\end{equation}
+% 
+
+Therefore, higher derivatives of the electron density, such as the Hessian, can be obtained from expression as
+%
+\begin{equation}
+   \partial_i\partial_k\phi_{\dA}=D_i^1D_j^1\prod_{k\neq i,j}D^0_k.
+\end{equation}
+%
+While this notation may seem cumbersome, it simplifies the implementation of higher derivatives of the electron density by the use of arrays. For example, the Hessian of the electron density is given by
+%
+\begin{equation}
+   \partial_i\partial_j\rho=2c_{\dA\dB}\left(\phi_{\dA}\partial_i\partial_j\phi_{\dB}+\partial_i\phi_{\dA}\partial_j\phi_{\dB}\right).
+\end{equation}
+%
+
+In \DTK{} we evaluate up to fourth derivatives (when seeking critical points of LOL, see \S\ref{sec:topolanalysis}).
+
+%----------------------------------------------------------------------------------------------
+\section{Magnitude of $\nabla\rho$}
+%----------------------------------------------------------------------------------------------
+This function follows directly from the gradient of the electron density, and is given by
+%
+\begin{equation}
+   |\nabla\rho|=\sqrt{\nabla\rho\cdot\nabla\rho}=\sqrt{\partial_k\rho\partial_k\rho},
+\end{equation}
+%
+and $\partial_i\rho$ is evaluated as explained in \S\ref{sec:gradrho}.
+%----------------------------------------------------------------------------------------------
+\section{Laplacian of $\rho$ ($\nabla^2\rho$)}
+%----------------------------------------------------------------------------------------------
+
+The Laplacian of the electron density is evaluated by means of
+%
+\begin{equation}
+   \nabla^2\rho=\partial_k\partial_k\rho=2c_{\dA\dB}\left(\partial_k\phi_{\dA}\partial_k\phi_{\dB}+\phi_{\dA}\partial_k\partial_k\phi_{\dB}\right)
+\end{equation}
+%
+
+%----------------------------------------------------------------------------------------------
+\section{Kinetic Energy $G$}
+%----------------------------------------------------------------------------------------------
+
+The definition of the Kinetic energy density $G$ we implemented in \DTK{} is (in terms of the density matrix $c_{\dA\dB}$)
+%
+\begin{equation}
+   G=\frac{1}{2}c_{\dA\dB}\nabla\phi_{\dA}^*\cdot\nabla\phi_{\dB}=\frac{1}{2}\partial_k\phi_{\dA}\left(c_{\dA\dB}\partial_k\phi_{\dB}\right).
+\end{equation}
+%
+
+Let us recall that some improvements on the speed of \DTK{} rely on the fact that we are assuming that the primitives are pure-real. The parenthesis in the last equation denotes that in \DTK{} we first save the sum of the three terms $c_{\dA\dB}\partial_i\phi_{\dB}$ within the inner loop, and after this loop is completed, we multiply and add each one of these sums by $\partial_i\phi_{\dA}$ on the outer loop. While this procedure may seem a bit obscure, it improves the speed of the computations.
+
+
+%----------------------------------------------------------------------------------------------
+\section{Kinetic Energy $K$}
+%----------------------------------------------------------------------------------------------
+
+The Kinetic energy density $K$ definition we implemented in \DTK{} is
+%
+\begin{equation}
+   K(\boldsymbol{r})=\frac{1}{4}c_{\dA\dB}\left(\phi_{\dA}^*\nabla^2\phi_{\dB}+\phi_{\dB}^*\nabla^2\phi_{\dA}\right)=\frac{1}{2}\phi_{\dA}\left(c_{\dA\dB}\partial_k\partial_k\phi_{\dB}\right).
+\end{equation}
+%
+
+%----------------------------------------------------------------------------------------------
+\section{Electron Localization Function (ELF)}
+%----------------------------------------------------------------------------------------------
+
+We follow the standard definition of ELF, which we denote as $\eta(\boldsymbol{r})$:
+%
+\begin{equation}
+   \eta(\boldsymbol{r})=\frac{1}{1+[D(\boldsymbol{r})/D_h(\boldsymbol{r})]^2}.
+\end{equation}
+%
+Here $D(\boldsymbol{r})$ gives the probability density of finding a same-spin electron \cite{bib:becke1990}, and has the value
+%
+\begin{equation}
+   D=G-\frac{1}{8}\frac{|\nabla\rho|^2}{\rho},
+\end{equation}
+%
+with $G$ (the Kinetic energy density $G$), $\nabla\rho$, and $\rho$ evaluated as in previous sections, while $D_h$ is given by
+%
+\begin{equation}
+   D_h=\frac{3}{10}(3\pi^2)^{2/3}\rho^{5/3}.
+\end{equation}
+%
+
+%----------------------------------------------------------------------------------------------
+\section{Localized Orbital Locator (LOL)}
+%----------------------------------------------------------------------------------------------
+
+\DTK{} evaluates the localized orbital locator (denoted by the letter $\gamma$) as
+%
+\begin{equation}
+   \gamma=\frac{1}{1+\tau},
+\end{equation}
+%
+where
+%
+\begin{equation}
+   \tau=\frac{G}{D_h},
+\end{equation}
+%
+and $G$ and $D_h$ as defined in previous sections.
+
+%----------------------------------------------------------------------------------------------
+\section{Momentum density}
+%----------------------------------------------------------------------------------------------
+For the implementation of this field, we closely follow the procedure given in Ref. \cite{bib:kaijser1977}. In terms of the density matrix, the momentum density is given by
+%
+\begin{equation}\label{eq:momdensdef}
+   \pi(\boldsymbol{p})=\hat{\phi}_{\dA}^*(\boldsymbol{p})c_{\dA\dB}\hat{\phi}_{\dB}(\boldsymbol{p}),
+\end{equation}
+%
+where $\hat{\phi}_{\dA}(\boldsymbol{p})$ is the Fourier transform of the primitive $\phi_{\dA}(\boldsymbol{r})$, defined as follows:
+%
+\begin{equation}
+   \hat{\phi}_{\dA}(\boldsymbol{p})=\frac{1}{(2\pi)^{2/3}}\int\exp\left(-i\boldsymbol{p}\cdot\boldsymbol{r}\right)\phi_{\dA}(\boldsymbol{r})d\boldsymbol{r}.
+\end{equation}
+%
+
+A table of the Fourier transforms of the cartesian primitives is listed in Ref. \cite{bib:kaijser1977}. We reproduce here the first five terms, which are the ones we used in this version of \DTK{} (since the normalization constants of the primitives are already taken into account in the density matrix, the expressions in Table \ref{tab:momdensang} do not include the normalization constants).
+
+\begin{table}[ht!]
+\begin{center}
+\begin{tabular}{||c|c|c||}
+\hline
+\hline
+   $n$ & $\phi^k(x_k)$ & $\hat{\phi}^k(p_k)$\\
+\hline
+   0 & $\exp(-\alpha x_k^2)$  & $\frac{1}{(2\alpha)^{1/2}}\exp(-ip_kR_k)\exp(-p_k^2/(4\alpha))$ \\
+\hline
+   1 & $x_k\exp(-\alpha x_k^2)$ & $-i\frac{p_k}{(2\alpha)^{3/2}}\exp(-ip_kR_k)\exp(-p_k^2/(4\alpha))$\\
+\hline
+   2 & $x_k^2\exp(-\alpha x_k^2)$ & $\frac{2\alpha-p_k^2}{(2\alpha)^{5/2}}\exp(-ip_kR_k)\exp(-p_k^2/(4\alpha))$ \\
+\hline
+   3 & $x_k^3\exp(-\alpha x_k^2)$ & $i\frac{p_k(p_k^2-6\alpha)}{(2\alpha)^{7/2}}\exp(-ip_kR_k)\exp(-p_k^2/(4\alpha))$ \\
+\hline
+   4 & $x_k^4\exp(-\alpha x_k^2)$ & $\frac{p_k^4-12\alpha p_k^2+12\alpha^2}{(2\alpha)^{9/2}}\exp(-ip_kR_k)\exp(-p_k^2/(4\alpha))$ \\
+\hline
+\hline
+\end{tabular}
+\caption{Fourier transforms of Cartesian GTOs with orbital exponent $\alpha$, center $R_k$, and angular power $n$ (single coordinate). No summation is implied here.}\label{tab:momdensang}
+\end{center}
+\end{table}
+
+For the evaluation of this field, we must account for the imaginary terms of the Fourier terms. \DTK{} exploit the library \texttt{<complex>} distributed as standard library of c++. 
+
+%----------------------------------------------------------------------------------------------
+\section{Shannon entropy density}
+%----------------------------------------------------------------------------------------------
+
+This field cannot be further optimized beyond the optimization achieved in the electron density. In fact, the Shannon entropy density field is given by
+%
+\begin{equation}
+   S_{\rho}(\boldsymbol{r})=-\rho(\boldsymbol{r})\ln\big(\rho(\boldsymbol{r})\big),
+\end{equation}
+%
+which uses the implemented algorithm for evaluating $\rho(\boldsymbol{r})$.
+
+Let us not forget this is a density field, not the integrated Shannon entropy. Whether or not this field is useful as a density will not be discussed here.
+
+The Shannon entropy in momentum space is given by (also a density field):
+%
+\begin{equation}
+   S_{\pi}(\boldsymbol{p})=-\pi(\boldsymbol{p})\ln\big(\pi(\boldsymbol{p})\big),
+\end{equation}
+%
+and it also uses a simple call to evaluate $\pi(\boldsymbol{p})$, as given by \ref{eq:momdensdef}.
+
+
+%----------------------------------------------------------------------------------------------
+\section{Density matrix of order 1}
+%----------------------------------------------------------------------------------------------
+
+In terms of the density matrix, the Density Matrix of order 1 (DM1, and denoted by the symbol $\Gamma(\boldsymbol{r},\boldsymbol{r}')$) is given by
+%
+\begin{equation}
+   \Gamma(\boldsymbol{r},\boldsymbol{r}')=\phi_{\dA}(\boldsymbol{r})\big\{c_{\dA\dB}\phi_{\dB}(\boldsymbol{r}')\big\}.
+\end{equation}
+%
+
+%----------------------------------------------------------------------------------------------
+\section{Electrostatic potential}
+%----------------------------------------------------------------------------------------------
+
+The electrostatic potential is given by
+%
+\begin{equation}
+   V(\boldsymbol{r})=\sum_{a=1}^{N_{nuc}}\frac{Z_a}{|\boldsymbol{r}-\boldsymbol{R}_a|}-\int\frac{\rho(\boldsymbol{x})}{|\boldsymbol{r}-\boldsymbol{x}|}d\boldsymbol{x},
+\end{equation}
+%
+where $\boldsymbol{R}_A$ is the vector indicating the spatial position of nuclei $A$, whose charge is $Z_A$, and $\rho(\boldsymbol{x})$ is the electron density at the dummy point $\boldsymbol{x}$. In terms of the density matrix, the electrostatic potential is given by
+%
+\begin{equation}
+   V(\boldsymbol{r})=\sum_{a=1}^{N_{nuc}}\frac{Z_a}{|\boldsymbol{r}-\boldsymbol{R}_a|}-c_{\dA\dB}\int\frac{\phi_{\dA}(\boldsymbol{x})\phi_{\dB}(\boldsymbol{x})}{|\boldsymbol{r}-\boldsymbol{x}|}d\boldsymbol{x}.
+\end{equation}
+%
+Hence, the evaluation of the electrostatic potential is reduced to evaluate the integral
+%
+\begin{equation}
+   \mathfrak{I}_{\dA\dB}=\mathfrak{I}_{\dA\dB}(\boldsymbol{r})=\int\frac{\phi_{\dA}(\boldsymbol{x})\phi_{\dB}(\boldsymbol{x})}{|\boldsymbol{r}-\boldsymbol{x}|}d\boldsymbol{x}.
+\end{equation}
+%
+For the remainder of this section, we will not use the Einstein summation convention. The last integral is written as
+%
+\begin{equation}
+\mathfrak{I}_{\dA\dB}=\int\frac{d\boldsymbol{x}}{|\boldsymbol{r}-\boldsymbol{x}|}
+                   \exp\left(-\alpha_{\dA}|\boldsymbol{x}-\boldsymbol{R}_{\dA}|^2
+                             -\alpha_{\dB}|\boldsymbol{x}-\boldsymbol{R}_{\dB}|^2\right)
+                   \prod_i(x^i-R_{\dA}^i)^{a_{\dA}^i}(x^i-R_{\dB}^i)^{a_{\dB}^i}.
+\end{equation}
+%
+Let us define the following constants
+%
+\begin{eqnarray}
+   \alpha_{\dA\dB}&\equiv&\alpha_{\dA}+\alpha_{\dB},\\
+   \boldsymbol{R}_{\dA\dB}&\equiv&\frac{\alpha_{\dA}\boldsymbol{R}_{\dA}+\alpha_{\dB}\boldsymbol{R}_{\dB}}{\alpha_{\dA\dB}}, \textrm{\ and}\\
+   E_{\dA\dB}&\equiv&\exp\left(-\frac{\alpha_{\dA}\alpha_{\dB}}{\alpha_{\dA\dB}}(\boldsymbol{R}_{\dA}-\boldsymbol{R}_{\dB})^2\right),
+\end{eqnarray}
+%
+which have the following symmetry properties
+\begin{equation}
+   \alpha_{\dA\dB}=\alpha_{\dB\dA},\qquad\boldsymbol{R}_{\dA\dB}=\boldsymbol{R}_{\dB\dA},\qquad\textrm{ and }
+   \qquad E_{\dA\dB}=E_{\dB\dA}.
+\end{equation}
+With this notation, the use of the same letter for the exponents and vector positions does not introduce confusion since the new quantities carry two indices, as opposed to the single index carried by the original single centered Gaussian. Thus, the integral now can be expressed as
+%
+\begin{equation}\label{eq:iabred}
+   \mathfrak{I}_{\dA\dB}=E_{\dA\dB}\int\frac{d\boldsymbol{x}}{|\boldsymbol{x}-\boldsymbol{r}|}
+      \exp\left(-\alpha_{\dA\dB}|\boldsymbol{x}-\boldsymbol{R}_{\dA\dB}|^2\right)
+      \prod_i(x^i-R_{\dA}^i)^{a_{\dA}^i}(x^i-R_{\dB}^i)^{a_{\dB}^i},
+\end{equation}
+%
+which is also a symmteric function in the indices $\dA$ and $\dB$:
+\begin{equation}
+   \mathfrak{I}_{\dA\dB}=\mathfrak{I}_{\dB\dA}.
+\end{equation}
+
+Applying the Laplace transform given by Eq. (\ref{eq:laptransfdef}),
+%
+\begin{equation}\label{eq:laptransfdef}
+   \frac{1}{|\boldsymbol{x}-\boldsymbol{r}|}=\frac{2}{\sqrt{\pi}}\int_0^{\infty}\exp\left(-u^2(\boldsymbol{x}-\boldsymbol{r})^2\right),
+\end{equation}
+%
+into Eq. (\ref{eq:iabred}) yields
+%
+\begin{equation}
+   \mathfrak{I}_{\dA\dB}=\frac{2E_{\dA\dB}}{\sqrt{\pi}}\int_0^{\infty}\!\!\!\!\!\!du\int d\boldsymbol{x}
+   \exp\left(-\alpha_{\dA\dB}(\boldsymbol{x}-\boldsymbol{R}_{\dA\dB})^2-u^2(\boldsymbol{x}-\boldsymbol{r})^2\prod_i(x^i-R^i_{\dA})^{a^i_{\dA}}(x^i-R^i_{\dB})^{a^i_{\dB}}\right).
+\end{equation}
+%
+It is convenient to use the variable
+%
+\begin{equation}
+   t^2=\frac{u^2}{\alpha_{\dA\dB}+u^2},
+\end{equation}
+%
+hence
+%
+\begin{eqnarray}
+   \mathfrak{I}_{\dA\dB}&=&2E_{\dA\dB}\sqrt{\frac{\alpha_{\dA\dB}}{\pi}}
+               \int_0^1\frac{1}{(1-t^2)^{3/2}}\Bigg\{\Bigg.\nonumber\\
+   & &\qquad\times\int\Bigg[\Big.\exp\left(-\alpha_{\dA\dB}(\boldsymbol{x}-\boldsymbol{R}_{\dA\dB})^2
+           -\frac{\alpha_{\dA\dB}t^2}{1-t^2}(\boldsymbol{x}-\boldsymbol{r})^2\right)\nonumber\\
+   & & \qquad\qquad\times\prod_i(x^i-R_{\dA}^i)^{a_{\dA}^i}(x^i-R_{\dB}^i)^{a_{\dB}^i}d\boldsymbol{x}\Bigg.\Bigg]\Bigg.\Bigg\}dt\\
+    &=&\frac{2E_{\dA\dB}\pi}{\alpha_{\dA\dB}}
+        \int_0^1dt\Bigg\{\Bigg.\nonumber\\
+    & &\prod_i\Bigg[\Bigg.\sqrt{\frac{\alpha_{\dA\dB}}{\pi(1-t^2)}}
+        \int dx^i(x^i-R_{\dA}^i)^{a_{\dA}^i}(x^i-R_{\dB}^i)^{a_{\dB}^i}\nonumber\\
+    & &\qquad\qquad\times\exp\left(-\alpha_{\dA\dB}(x^i-R^i_{\dA\dB})^2-\frac{\alpha_{\dA\dB}t^2}{1-t^2}(x^i-r^i)^2\right)\Bigg.\Bigg]\Bigg.\Bigg\}.
+\end{eqnarray}
+%
+The terms $(x^i-R_{\dA}^i)^{a_{\dA}^i}(x^i-R_{\dB}^i)^{a_{\dB}^i}$ can be expanded in a series of Hermite polynomials of ($x^i-R^i_{\dA}$) and ($R^i_{\dA}-R^i_{\dB}$), and the resultant expansion can then be analytically integrated. In \DTK{} we coded an implementation that closely follows the method proposed by McMurchie \textit{et. al.} \cite{bib:mcmurchie1978}. However, we use our own implementation of the Boys function (denoted as $F_n(x)$), which offers relative accuracy of $F_n(x)$ to at least O$(10^{-12})$ for the range $0\leq x\leq1000$, and $0\leq n\leq6$. \DTK{} is coded in an \textit{as-needed} basis, thus we are not concerned with higher order terms of $n$ since 6 is the maximum value needed for the computations supported by \DTK.
+
+For this field, we also exploit the symmetry of the product $c_{\dA\dB}\phi_{\dA}\phi_{\dB}$, hence
+%
+\begin{eqnarray}
+   V(\boldsymbol{r})&=&\sum_a\frac{Z_a}{|\boldsymbol{r}-\boldsymbol{R}_a|}-
+   \sum_{\dA}\left(c_{\dA\dA}\int\frac{\phi_{\dA}^2(\boldsymbol{x})}{|\boldsymbol{r}-\boldsymbol{x}|}d\boldsymbol{x}+2\sum_{\dB>\dA}c_{\dA\dB}\int\frac{\phi_{\dA}(\boldsymbol{x})\phi_{\dB}(\boldsymbol{x})}{|\boldsymbol{r}-\boldsymbol{x}|}d\boldsymbol{x}\right)\nonumber\\
+   &=&\sum_a\frac{Z_a}{|\boldsymbol{r}-\boldsymbol{R}_a|}-
+   \sum_{\dA}\left(c_{\dA\dA}\mathfrak{I}_{\dA\dA}+2\sum_{\dB>\dA}c_{\dA\dB}\mathfrak{I}_{\dA\dB}\right).
+\end{eqnarray}
+%
+

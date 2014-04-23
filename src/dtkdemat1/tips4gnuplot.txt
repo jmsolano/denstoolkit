@@ -1,0 +1,15 @@
+#namedatfile='benzeneBP-Rho-C4-C5.tsv'
+#namedatfile='testosterona_sto3gBP-Rho-H33-H45.tsv'
+#namedatfile='ch4BP-Rho-C1-H2.tsv'
+namedatfile='epiBPMD1-C1-C2.tsv'
+set title 'Press any key on this window to quit'
+minvaltoplot=0.25 #0.18 for benzene, 0.005 for testost, 0.2 for ch4,0.25 for epi
+maxvaltoplot=0.35 #0.34 for benzene, 0.02 for testost, 0.4 for ch4, 0.8 for epi
+set zrange [minvaltoplot:maxvaltoplot]
+set cbrange [minvaltoplot:maxvaltoplot]
+set pm3d depthorder hidden3d 1
+set palette rgbformulae 33,13,10
+set style line 1 linecolor rgb "#444444"
+exptit='ExpTitle'
+splot namedatfile every 2:2 using 1:2:($3>maxvaltoplot? maxvaltoplot:($3<minvaltoplot ? minvaltoplot : $3)) with pm3d title namedatfile
+pause mouse keypress,button2,button3 ''

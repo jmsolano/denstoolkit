@@ -1,0 +1,169 @@
+\documentclass[12pt]{book}
+\usepackage{geometry}        
+\geometry{letterpaper}    
+\usepackage[parfill]{parskip}  
+\usepackage{graphicx}
+\usepackage{amsmath,amsfonts}
+\usepackage{epstopdf}
+\usepackage[12pt]{moresize}
+\usepackage{lmodern}
+\usepackage{verbatim}
+\usepackage{subfigure}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\usepackage[colorlinks=true, pdfstartview=FitV, linkcolor=blue, 
+            citecolor=blue, urlcolor=blue]{hyperref}
+            
+\usepackage[bitstream-charter]{mathdesign}  %fuente alternativa usada en la tesis
+                                                   %si no se usa, activar amsfonts
+           
+%
+%\begin{comment}
+%
+%****************************************************************************************
+%                   Esta parte es para producir los Headings estilo
+%                                  manual de LaTeX
+%****************************************************************************************
+%
+\flushbottom
+\setlength{\hoffset}{17pt}
+\setlength{\voffset}{0pt}
+\setlength{\oddsidemargin}{0pt}
+\setlength{\evensidemargin}{0pt}
+\setlength{\topmargin}{0pt}%22pt
+\setlength{\headheight}{6pt}
+\setlength{\headsep}{12pt}
+\setlength{\textheight}{602pt}
+\setlength{\textwidth}{155mm}
+\setlength{\marginparsep}{0pt}
+\setlength{\marginparwidth}{0pt}
+\setlength{\footskip}{23pt}
+\setlength{\marginparpush}{5pt}
+\usepackage{fancyhdr}  % Activando el paquete
+\pagestyle{fancy}      % Declarando el estilo de pagina
+%\begin{comment}
+%
+%========================================================================================
+%  Para mayor informacion, consultar lshort seccion 4.4
+%========================================================================================
+%
+\renewcommand{\chaptermark}[1]{\markboth{\thechapter.\ #1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0pt}
+%\fancyfoot{}%
+%\addtolength{\headheight}{1pt}%for 10pt font
+%\addtolength{\headheight}{2.4pt}%for 11pt font
+\addtolength{\headheight}{4pt}%for 12pt font
+\fancyhf{}%
+\fancyhead[LE,RO]{\thepage}      
+\fancyhead[LO]{\slshape\rightmark} %para utilizar negritas: \bfseries
+\fancyhead[RE]{\slshape\leftmark}
+\fancypagestyle{plain}{%
+   \fancyhead{}
+   \renewcommand{\headrulewidth}{0pt}%
+   %\addtolength{\headheight}{2pt}%10pt font
+   \addtolength{\headheight}{2pt}%11pt font
+}
+%\addtolength{\hoffset}{-7pt}%11pt font
+%
+%
+%\end{comment}
+%
+%========================================================================================
+%
+
+%\includeonly{Chapter1}
+
+\newcommand{\DTK}{Dens\-Tool\-Kit}
+\newcommand{\dtkversion}{1.0.0}
+
+
+\newcommand{\dA}{\dot{A}}
+\newcommand{\dB}{\dot{B}}
+\newcommand{\dN}{\dot{N}}
+\newcommand{\dP}{\dot{P}}
+\newcommand{\done}{\dot{1}}
+
+
+% ------------------- Title and Author -----------------------------
+\title{\textbf{Dens\-Tool\-Kit~\dtkversion}}
+\author{J. M. Solano-Altamirano \& J. M. Hern\'andez-P\'erez}
+\begin{document}
+
+
+\frontmatter
+\maketitle
+
+\newpage
+\thispagestyle{empty}
+\phantom{asf}
+\newpage
+\thispagestyle{empty}
+\phantom{asf}
+\vspace{5cm}
+\begin{center}
+%\textbf{\Huge DensToolKit}
+
+{\HUGE\bf Dens\-Tool\-Kit}
+
+\vspace{1cm}
+
+{\Huge Version \dtkversion}
+
+\vspace{1cm}
+
+{\Huge User manual}
+
+\end{center}
+
+\vspace{8cm}
+\copyright{} 2013-2014: J. M. Solano-Altamirano, J. M. Hern\'andez-P\'erez
+
+\newpage\thispagestyle{empty}
+\phantom{asd}
+
+\vspace{50mm}
+
+\section*{Disclaimer}
+
+This manual is not complete and for the time being it will continue to be so. This is a project that we have been developing essentially during our spare time, therefore it does not have priority over our current research work. However, we will try to update this manual as often as we can, specially when some major feature is implemented or an important bug is fixed.
+
+\begin{flushright} J.M.S.A. \\ J.M.H.P.\end{flushright}
+
+\newpage\thispagestyle{empty}
+\phantom{asd}
+
+\vspace{50mm}
+
+\section*{Acknowledgements}
+
+We are grateful to the University of Guelph for providing us access to its library, \DTK{} had not been possible without it. JMSA is also thankful to the International Centre for Theoretical Physics. Many computational aspects of the \DTK's code, as well as its performance, are result of JMSA's attendance to the \textit{Advanced School on High Performance and Grid Computing}, 2011.
+
+\newpage\thispagestyle{empty}
+\phantom{asdf}
+
+\tableofcontents
+
+\mainmatter
+
+\include{introduction}
+
+%\include{densfieldsandqtaim}
+
+%\include{defsandunits}
+
+\include{availablefields}
+
+\include{topology}
+
+\include{programsscripts}
+
+
+\bibliography{dtkbibliography}
+\bibliographystyle{ieeetr}
+
+
+\end{document}
+\end
+

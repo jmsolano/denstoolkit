@@ -1,0 +1,86 @@
+
+=====================================================================
+*** Version 1.0.8 ***
+=====================================================================
+
+--> The log file now includes the number of primitives of the 
+      wave function
+
+
+
+=====================================================================
+*** Version 1.0.7 ***
+=====================================================================
+
+--> Added the molecular electrostatic potential to the properties
+      evaluated.
+
+
+=====================================================================
+*** Version 1.0.6 ***
+=====================================================================
+
+--> Added output information in a logfile. dtkcube now (upon request),
+    writes extra-information in the log file.
+
+=====================================================================
+*** Version 1.0.5 ***
+=====================================================================
+
+Some changes to the help menu and support for long command line
+options (e.g. --help, and --version).
+
+=====================================================================
+*** Version 1.0.4 ***
+=====================================================================
+
+Minor spelling corrections...
+
+--> The class wavefunction now correctly reads files with a number
+      of primitives equal to a multiple of 20
+--> The class bondnetwork foresees the cases where 
+      maxBondDist have not been determined due to non of the
+      atoms are linked (according to the Van Der Walls sum criteria,
+      i.e., the algorithm for drawing CPK/ball&stick molecules)
+
+
+
+=====================================================================
+*** Version 1.0.3 ***
+=====================================================================
+
+Added the property: Magnitude of the Gradient of LOL
+
+=====================================================================
+*** Version 1.0.2 ***
+=====================================================================
+
+Fixed Bugs: 
+
+  --> The output name is now set correctly. (A set of characters
+        are added to the end of the input name for setting the
+        output file name.)
+  --> The current version flag is also displayed in the help menu.
+
+=====================================================================
+*** Version 1.0.1 ***
+=====================================================================
+
+Fixed Bugs: 
+
+  --> A wfn file containing a single atom is now handled correctly
+  --> Now the compression have to be explicitly requested from the command line
+        (using -z option). 
+  --> Several functions were added to the wavefunctionclass.* files,
+        these changes do not affect the program denscube per se.
+
+
+=====================================================================
+*** Version 1.0.0 ***
+=====================================================================
+
+First release of the program.
+
+Known bugs:
+  --> The program does not handle single atom wave function files.
+  --> The compression is performed by default

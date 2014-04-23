@@ -1,0 +1,69 @@
+#!/bin/bash
+
+usage()
+{
+echo -e "\n    usage: \033[1mdtkpov2png\033[0m [\033[0;4moption(s)\033[0m \
+[\033[4margument(s)\033[0m]] [\033[4minputname.pov\033[0m]"
+cat << END_USAGE_TEXT
+
+This script takes the file inputname.pov, calls povray to create a png, then it
+calls gm convert to trim the png file. The options can be:
+
+   -o outname.png   Set the final name for the png to be "outname.png"
+   -w width         Set the width of the image to be "width"
+                      (Default value: 1200. Since the image will be trimmed, 
+                       the actual width will be smaller than "width".)
+   -h               Display the help menu.
+
+END_USAGE_TEXT
+echo "Notice that povray and graphics magic must be installed in your system."
+echo "Please, visit"
+echo ""
+echo -e "\033[4mhttp://www.povray.org"
+echo -e "http://www.graphicsmagick.org\033[0m"
+echo -e ""
+echo "for more information about this fabulous programs."
+
+}
+
+if [ $# -lt 1 ]
+then
+   echo "Error: input filename missing (Try -h for more information.)."
+   exit 2
+fi
+
+INNAMEPOV=$BASH_ARGV
+OUTNAMEPNG=${INNAMEPOV%.pov}.png
+IMAGEWIDTH=1200
+
+while getopts ":ho:w:" opt; do
+  case $opt in
+    o)
+      #echo "-o was triggered!"
+      OUTNAMEPNG=$OPTARG
+      ;;
+    w)
+      IMAGEWIDTH=$OPTARG
+      ;;
+    h)
+      usage
+      exit 0
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      ;;
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      exit 1
+      ;;
+  esac
+done
+
+shift $(($OPTIND - 1))
+
+IMAGEHEIGTH=$(( 3 * $IMAGEWIDTH / 4 ))
+
+#TMPNAMEPOV=tmp${RANDOM}${RANDOM}.pov
+povray -D +UA +W$IMAGEWIDTH +H$IMAGEHEIGTH $INNAMEPOV
+gm convert -trim $OUTNAMEPNG $OUTNAMEPNG
+#rm -f $TMPNAMEPOV

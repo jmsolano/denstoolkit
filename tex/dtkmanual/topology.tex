@@ -1,0 +1,121 @@
+
+%**********************************************************************************************
+%**********************************************************************************************
+\chapter{Topological analysis}\label{sec:topolanalysis}
+%**********************************************************************************************
+%**********************************************************************************************
+
+In addition to evaluate density fields on different grids, one of the purposes of \DTK{} is to seek the critical points of the electron density of a molecule, as proposed in Quantum Theory of Atoms in Molecules (QTAIM). By critical point, we mean any point $\boldsymbol{r}_*$ that accomplishes
+%
+\begin{equation}
+   \nabla F(\boldsymbol{r}_*)=\boldsymbol{0},
+\end{equation}
+%
+where $F$ is any density field. The critical points can be classified according to the sign of the Hessian eigen-values at $\boldsymbol{r}_*$, as we explain below. 
+
+In version \dtkversion, we have implemented the seek of all electron density critical points, including bond paths, and some of the critical points of LOL.
+
+The development of this part of \DTK{} will be active during the upcoming years, and it is expected to grow as the needs of our research group.
+
+%==============================================================================================
+\section{Classification of critical points}
+%==============================================================================================
+
+A critical point can be classified by means of the Hessian eigen-values at the critical point. Since we will be interested only in three dimensional spaces, and on non-degenerated Hessians, the Hessian will always have three eigenvalues. Therefore, we can find four combinations of the eigenvalues' signs (we will follow the QTAIM notation, wherein a critical point is denoted as a couple $(3,s)$; here ``3'' stands for the three eigenvalues of the Hessian, and $s=n_+-n_-$, where $n_+$ ($n_-$) is the number of positive(negative) eigenvalues; $s$ is known as the signature of the critical point):
+
+\begin{itemize}
+   \item (3,-3): The three Hessian eigenvalues are all negative. A critical point of this nature represents a maximum. A critical point (3,-3) of the electron density is called \textit{Attractor Critical Point} (ACP).
+   \item (3,-1): Two negative and one positive Hessian eigenvalues. This is a saddle point, maximum in two directions and minimum in the other. When the critical point is of the electron density, it is called \textit{Bond Critical Point} (BCP).
+   \item (3,+1): One negative and two positive Hessian eigenvalues. This is also a saddle point, but this time is a maximum in one direction and mininum in the rest. The electron density critical point is called \textit{Ring Critical Point} (RCP).
+   \item (3,+3): All the three Hessian eigenvalues are positive. This critical point corresponds to a minimum of the field. Critical points of the electron density with this properties are called \textit{Cage Critical Points} (CCP).
+\end{itemize}
+
+As a convention, we will use the names ACP, BCP, RCP and CCP for the critical points regardless the density field they are.
+
+Below we present the implemented critical points for different density fields in form of a Table.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{||c|c|c||}
+\hline
+\hline
+\textbf{Type} & \multicolumn{2}{|c||}{\textbf{Density Field}} \\
+\hline
+\hline
+ & $\rho$ & LOL ($\gamma$) \\
+\hline
+ACP & $\checkmark$ & $\checkmark$ \\\hline
+BCP & $\checkmark$ & $\checkmark$ \\\hline
+RCP & $\checkmark$ & $\boldsymbol{\times}$ \\\hline
+CCP & $\checkmark$ & $\boldsymbol{\times}$ \\\hline
+\hline
+\end{tabular}
+\caption{Implemented functions for seeking critical points of different density fields in \DTK{} \dtkversion.}\label{tab:implemseeks}
+\end{center}
+\end{table}
+
+For the search of critical points, we follow the general strategy proposed by Banerjee \textit{et. al.} \cite{bib:banerjee1985} and Popelier \cite{bib:popelier1994}.
+
+%..............................................................................................
+\subsection{Electron density critical points}
+%..............................................................................................
+
+Below we enlist some details regarding the searching algorithms for the critical points (CP) of the electron density.
+
+\begin{itemize}
+\item[ACP] We do not perform actual searches of ACPs.  Instead, we assume that these CPs are located at every nucleus of the molecule.
+\item[BCP] We start the search of BCPs for every couple of atoms that are ``bonded'' according to the criterion used by the bond-drawing algorithms (two atoms are considered bonded, in terms of drawing a line between them) if the distance between those two atoms is less than the sum of the atomic Van der Walls radius. The seed (initial point to start the search of a CP) is set to be the middle point between the two bonded nuclei. After all these points have been used as seeds, we look for the largest distance of separation between the ``bonded'' atoms, and then we perform the search for every couple of atoms that are separated by up to two times the maximum bond distance with the seed located at the middle point of every one of the atoms under this criterion. In this manner, we allow for the Hydrogen bonds to be accounted for.
+\item[RCP] For each pair of BCPs whose distance of separation is less than the maximum bond distance (as was found for the BCPs search) we set the seed for the search of a RCP to be the middle point of those BCPs.
+\item[CCP] For each pair of RCPs in the molecule, if the distance of separation among them is less than two times the maximum bond distance (as found in the search of BCPs), then we set the seed to be the middle point between the two RCPs.
+\end{itemize}
+
+%..............................................................................................
+\subsection{LOL critical points}
+%..............................................................................................
+
+The search for LOL critical points is not finished in version \dtkversion. However, we will keep developing the implementation of these critical points in the near future, and perhaps also for other fields.
+
+\begin{itemize}
+\item[ACP] We look for LOL ACPs around every molecule's nucleus. In \DTK{} \dtkversion, we set twelve seeds around every nucleus. The seeds are set by drawing an imaginary icosahedron centered at the nucleus position, and each seed is one of the icosahedron vertices.
+\item[BCP] We set the seed for looking LOL BCPs as the middle point between every pair of ACPs found in the molecule.
+\end{itemize}
+
+%..............................................................................................
+\subsection{Gradient Paths}
+%..............................................................................................
+
+A gradient path is defined as a curve that follows the direction of the gradient of the field, and the points that form the gradient paths can be defined through
+%
+\begin{equation}
+   \boldsymbol{r}(s)=\boldsymbol{r}_0(s_1)+\int_{s_1}^{s_2}\nabla F(\boldsymbol{r}(t))dt.
+\end{equation}
+%
+Here $F$ is any wee-defined field, and $\boldsymbol{r}(s)$ is the set of points that belong to the gradient path that passes through $\boldsymbol{r}_0$, and $s$ and $t$ are parametric variables (see Ref. \cite{bib:bader1990book}).
+
+In QTAIM, a gradient path that passes through a BCP is called a bond gradient path or simply a bond path. In \DTK{} \dtkversion, we have implemented the search of bond gradient paths for the electron density. Other fields will be implemented in the future.
+
+The bond paths are integrated using a fifth order Runge-Kutta method with a step size of 0.1 a.u.
+
+
+%==============================================================================================
+\section{Properties along bond paths}
+%==============================================================================================
+
+\DTK{} can evaluate any of the implemented scalar fields listed in section \S\ref{sec:availablefields} on the bond paths. The basic algorithm consists of, provided two atoms in a molecule, first finding the BCP, and then integrating the gradient path taking as $\boldsymbol{r}_0$ the BCP. The set of points computed are stored in an array, and then the requested field is evaluated at each of the points belonging to the bond path.
+
+%..............................................................................................
+%\subsection{Density Matrix of Order One}
+%..............................................................................................
+
+%..............................................................................................
+%\subsection{Other fields}
+%..............................................................................................
+
+
+
+
+
+
+
+
+

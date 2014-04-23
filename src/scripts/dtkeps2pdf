@@ -1,0 +1,59 @@
+#!/bin/bash
+
+usage()
+{
+echo -e "\n    usage: \033[1mdtkeps2pdf\033[0m [\033[0;4moption(s)\033[0m \
+[\033[4margument(s)\033[0m]] [\033[4minputname.eps\033[0m]"
+cat << END_USAGE_TEXT
+
+This script takes the file inputname.eps, calls epstool to correct the bounding
+box of the eps, and finally calls epstopdf. The options can be:
+
+   -o outname.pdf   Set the final name for the pdf to be "outname.pdf"
+   -h               Display the help menu.
+
+END_USAGE_TEXT
+echo "Notice that epstool and epstopdf must be installed in your system. Please, visit"
+echo ""
+echo -e "\033[4mhttp://pages.cs.wisc.edu/~ghost/gsview/epstool.htm"
+echo -e "http://www.ctan.org/pkg/epstopdf\033[0m"
+echo -e ""
+echo "for more information about this excelent tools."
+
+}
+
+if [ $# -lt 1 ]
+then
+   echo "Error: input filename missing (Try -h for more information.)."
+   exit 2
+fi
+
+INNAMEEPS=$BASH_ARGV
+OUTNAMEPDF=${INNAMEEPS%.eps}.pdf
+
+while getopts ":ho:" opt; do
+  case $opt in
+    o)
+      #echo "-o was triggered!"
+      OUTNAMEPDF=$OPTARG
+      ;;
+    h)
+      usage
+      exit 0
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      ;;
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      exit 1
+      ;;
+  esac
+done
+
+shift $(($OPTIND - 1))
+
+TMPNAMEEPS=tmp${RANDOM}${RANDOM}.eps
+epstool --copy -b $INNAMEEPS $TMPNAMEEPS
+epstopdf --outfile=$OUTNAMEPDF $TMPNAMEEPS
+rm -f $TMPNAMEEPS

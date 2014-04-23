@@ -1,0 +1,33 @@
+
+=====================================================================
+*** Version 1.0.3 ***
+=====================================================================
+
+--> Added the molecular electrostatic potential to the properties
+      evaluated.
+--> Added the total molecular charge (the sum of the nuclear 
+      charges) and the integrated number of electrons.
+
+=====================================================================
+*** Version 1.0.2 ***
+=====================================================================
+
+--> Small changes to the help menu. Fixed false description of the
+      program.
+
+=====================================================================
+*** Version 1.0.1 ***
+=====================================================================
+
+Some changes to the help menu and support for long command line
+options (e.g. --help, and --version).
+
+
+=====================================================================
+*** Version 1.0.0 ***
+=====================================================================
+
+First release of the program.
+
+Known bugs:
+  --> 

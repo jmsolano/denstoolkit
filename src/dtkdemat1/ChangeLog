@@ -1,0 +1,39 @@
+
+
+=====================================================================
+*** Version 1.0.3 ***
+=====================================================================
+
+--> Added two arrows in 1-D plots for pointing out the positions of
+      the atoms at the corners.
+
+To Do: Add conditional for the arrows (if the labels are not drawn,
+     the arrows still are)
+       Remove the labels in the secondary diagonal plot.
+
+
+
+=====================================================================
+*** Version 1.0.2 ***
+=====================================================================
+
+--> dtkdemat1 now produces 2 extra plots, which have the information
+      of the main diagonal of MD1, and the secondary diagonal of MD1
+--> The information is also stored in two new dat files.
+
+=====================================================================
+*** Version 1.0.1 ***
+=====================================================================
+
+--> Some additional support for cygwin is included
+
+--> Both nuclei are included now in the Gradient Bond Path array
+
+--> The atom labels are correctly displayed
+
+
+=====================================================================
+*** Version 1.0.0 ***
+=====================================================================
+
+First release of the program.

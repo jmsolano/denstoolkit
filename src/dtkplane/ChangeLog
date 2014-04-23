@@ -1,0 +1,79 @@
+
+=====================================================================
+*** Version 1.0.5 ***
+=====================================================================
+
+--> Added the molecular electrostatic potential to the properties
+      evaluated.
+
+
+=====================================================================
+*** Version 1.0.4 ***
+=====================================================================
+
+Some changes to the help menu and support for long command line
+options (e.g. --help, and --version).
+
+
+=====================================================================
+*** Version 1.0.3 ***
+=====================================================================
+
+ --> Added an option to put the atom labels in the plot. The new option
+       is activated using "-l" or "-L".
+ --> An improvement for the visualization of the gradient of LOL as a 
+       vector field is made. 
+       In this version, the size "V" of the vector "v" 
+       is given by V=min(|v|,VMXS), where VMXS is calculated from the 
+       physical dimensions of the molecule.
+ --> In this version the *.gnp is not deleted by default. 
+
+
+To do:
+
+ --> program better values for the isolines depending on the 
+       plotted field.
+ --> further improve the visualization of the vector field (if needed)
+
+
+
+=====================================================================
+*** Version 1.0.2 ***
+=====================================================================
+
+ --> Small changes in the help menu to indicate the program handles
+       automatically the cases where there is(are) only one(two)
+       atom(s) in the wave function file.
+
+
+To do:
+
+ --> program better values for the isolines depending on the 
+       plotted field.
+ --> improve the visualization of the vector field
+
+
+
+=====================================================================
+*** Version 1.0.1 ***
+=====================================================================
+
+ --> Added the vector field: Gradient of LOL.
+
+
+To do:
+
+ --> program better values for the isolines depending on the 
+       plotted field.
+ --> improve the visualization of the vector field
+
+=====================================================================
+*** Version 1.0.0 ***
+=====================================================================
+
+First release of the program.
+
+To do:
+
+ --> program better values for the isolines depending on the 
+       plotted field.
