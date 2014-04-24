@@ -186,7 +186,7 @@ runtest: build
           $(LCL_BINDIR)/dtkbpdens cyclopropane.wfx -P -p M -n 145 -l -L; \
           rm -f cyclopropane.wfx
 
-develdocs:
+develdocs: devdochtmldir
 	@cd $(LCL_DVDCDIR); doxygen Doxyfile
 	@if test -L $(LCL_DVDCDIR)/DeveloperDocumentation.html; \
         then : ; \
@@ -205,5 +205,8 @@ outdir:
 
 objdir:
 	@mkdir -p $(LCL_OBJDIR)
+
+devdochtmldir:
+	@mkdir -p $(LCL_DVDCDIR)/html
 
 
