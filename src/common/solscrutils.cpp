@@ -186,6 +186,20 @@ void displayWarningMessage(const char* word)
    return;
 }
 //**************************************************************************************************
+void displayGreenMessage(const std::string &s)
+{
+   setScrGreenBoldFont();
+   std::cout << s << std::endl;
+   setScrNormalFont();
+   return;
+}
+//**************************************************************************************************
+void displayGreenMessage(const char *word)
+{
+   displayGreenMessage(std::string(word));
+   return;
+}
+//**************************************************************************************************
 void printBetweenStarLines(const std::string &s)
 {
    printScrStarLine();

@@ -2508,7 +2508,7 @@ void gaussWaveFunc::evalDiDjDkChi(int &pty,solreal &alp,solreal x,solreal y,solr
       }
    }
 }
-#if PARALLELISEDTK
+#if (PARALLELISEDTK && DEBUG)
 //*************************************************************************************************
 void gaussWaveFunc::evalHessLOL(solreal x, solreal y, solreal z, solreal &dens, solreal &keG, solreal &lol,
                                 solreal &ddx, solreal &ddy, solreal &ddz,
