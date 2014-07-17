@@ -56,7 +56,7 @@ class optFlags
 {
 public: 
    optFlags();//default constructor, initialize all the flags to convenient (default) values.
-   unsigned short int infname,outfname,setn1,evdim;
+   unsigned short int infname,outfname,setn1,evdim,setfld;
    unsigned short int zipdat,mkplt,kpgnp,quiet;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);

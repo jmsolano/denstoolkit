@@ -280,7 +280,45 @@ void printM3x3Comp(const char* word,const solreal (&m)[3][3])
    return;
 }
 //**************************************************************************************************
+void printFancyMemoryUsage(size_t memus_,std::string msg)
+{
+   std::string memunit=" B";
+   if ( memus_<=1024 ) {std::cout << msg << memus_  << memunit << std::endl; return;}
+   solreal memus=solreal(memus_)/1024.0e0;
+   if ( memus<=(1024.0e0) ) {
+      memunit=" KB";
+      std::cout << msg << memus << memunit << std::endl;
+      return;
+   }
+   memus/=1024.0e0;
+   if ( memus<=(1024.0e0) ) {
+      memunit=" MB";
+      std::cout << msg << memus << memunit << std::endl;
+      return;
+   }
+   memus/=1024.0e0;
+   if ( memus<=(1024.0e0) ) {
+      memunit=" GB";
+      std::cout << msg << memus << memunit << std::endl;
+      return;
+   }
+   memus/=1024.0e0;
+   if ( memus<=(1024.0e0) ) {
+      memunit=" TB";
+      std::cout << msg << memus << memunit << std::endl;
+      return;
+   }
+   std::cout << "More than 1 PetaByte!" << std::endl;
+#if DEBUG
+   DISPLAYDEBUGINFOFILELINE;
+#endif /* ( DEBUG ) */
+}
 //**************************************************************************************************
+void printFancyMemoryUsage(int memus_,std::string msg)
+{
+   if ( memus_<0 ) {displayErrorMessage("Memory usage cannot be negative!"); return;}
+   else {printFancyMemoryUsage(size_t(memus_),msg);}
+}
 //**************************************************************************************************
 //**************************************************************************************************
 //**************************************************************************************************

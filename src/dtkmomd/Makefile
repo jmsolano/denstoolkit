@@ -105,6 +105,14 @@ distclean: clean
 	rm -f $(OBJDIR)/*.o
 
 runben: build
-	./dtkmomd  benzene.wfn -n 100
+	./dtkmomd  benzene.wfn -n 100 -1 x
 
+runbenke: build
+	./dtkmomd benzene.wfn -n 200 -2 xy -P -p K
+
+runbencub: build
+	./dtkmomd benzene.wfn -n 40 -3 -p d
+
+runbencubke: build
+	./dtkmomd benzene.wfn -n 40 -3 -p K
 

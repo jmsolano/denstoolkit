@@ -85,10 +85,22 @@ void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn, string &o_fn,str
       default:
          break;
    }
+   char field='d';
+   if ( opts.setfld ) {field=argv[opts.setfld][0];}
+   cout << "field: " << field << endl;
    pos=o_fn.find_last_of('.');
    if (pos!=string::npos) {
       string plbl;
-      plbl=string("MomDens")+addlbl;
+      switch ( field ) {
+         case 'd' :
+            plbl=string("MomDens")+addlbl;
+            break;
+         case 'K' :
+            plbl=string("KinetEnerMomSp")+addlbl;
+            break;
+         default :
+            break;
+      }
       o_fn.insert(pos,plbl);
       g_fn.insert(pos,plbl);
    }

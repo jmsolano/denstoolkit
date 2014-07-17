@@ -55,8 +55,15 @@ using std::setprecision;
 #include "optflags.h"
 #include "crtflnms.h"
 
-void makeLineGnuplotFile(optFlags &opts, string &gnpn,string &outn);
-void makePlaneGnuplotFile(optFlags &opts, string &gnpn,string &outn,solreal dimparam);
+void makeLineGnuplotFile(optFlags &opts, string &gnpn,string &outn,char thefield);
+void makePlaneGnuplotFile(optFlags &opts, string &gnpn,string &outn,solreal dimparam,\
+      char thefield);
+void makeLineDatFile(optFlags &opts,string &datnam,gaussWaveFunc &wf,int theaxis,\
+      int npts,char thefield);
+void makePlaneTsvFile(optFlags &opts,string &tsvnan,gaussWaveFunc &wf,int theplane,\
+      int npts,char thefield);
+void makeCubeFile(optFlags &opts,string &cubnam,gaussWaveFunc &wf,int npts,\
+      char thefield,string &strfield);
 
 int main (int argc, char ** argv)
 {
@@ -70,6 +77,7 @@ int main (int argc, char ** argv)
    
    getOptions(argc,argv,options); //This processes the options from the command line.
    int dim=0,axis=0,plane=0,npts=DEFAULTPOINTSPERDIRECTION;
+   char field='d';
    solreal px,py,pz;
    px=py=pz=0.0e0;
    string extralbl="";
@@ -129,6 +137,7 @@ int main (int argc, char ** argv)
             break;
       }
    }
+   if ( options.setfld ) {field=argv[options.setfld][0];}
    if (options.setn1) {sscanf (argv[options.setn1],"%d",&npts);}
    mkFileNames(argv,options,infilnam,outfilnam,gnpnam,dim,extralbl); //This creates the names used.
    printHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS); //Just to let the user know that the initial configuration is OK
@@ -144,12 +153,26 @@ int main (int argc, char ** argv)
    }
    cout << "Done." << endl;
    
+   string strfield;
+   switch ( field ) {
+      case 'd' :
+         strfield="Momentum Density";
+         break;
+      case 'K' :
+         strfield="Kinetic Energy Density (in Momentum Space)";
+         break;
+      default :
+         break;
+   }
+
    /* This evaluates the momentum density at a single point */
    
    if (dim==0) {
       cout << scientific << setprecision(12);
       cout << "\nMomentum density at\nP=(" << px << "," << py << "," << pz << "): " << endl;
       cout << endl << gwf.evalFTDensity(px,py,pz) << endl;
+      cout << "\nK. E. in Momentum space at \nP=(" << px << "," << py << "," << pz << "): " << endl;
+      cout << endl << gwf.evalFTKineticEnergy(px,py,pz) << endl;
    }
    
    /* This evaluates the momentum density on a line */
@@ -157,182 +180,32 @@ int main (int argc, char ** argv)
    if (dim==1) {
       cout << "The size of the grid will be " << npts << endl;
       cout << "The total number of points that will be computed is " << npts << endl;
-      cout << "Evaluating and writing the momentum density on a line..." << endl;
-#if USEPROGRESSBAR
-      printProgressBar(0);
-#endif
-      ofile.open(outfilnam.c_str(),ios::out);
-      solreal dx,dy,dz;
-      dx=dy=dz=0.0e0;
-      switch (axis) {
-         case 1:
-            dx=2.0e0*DEFAULTMAXVALUEOFP/solreal(npts-1);
-            px=-1.0e0*DEFAULTMAXVALUEOFP;
-            for (int i=0; i<npts; i++) {
-               ofile << px << " " << gwf.evalFTDensity(px,py,pz) << endl;
-               px+=dx;
-#if USEPROGRESSBAR
-               printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
-#endif
-            }
-            break;
-         case 2:
-            dy=2.0e0*DEFAULTMAXVALUEOFP/solreal(npts-1);
-            py=-1.0e0*DEFAULTMAXVALUEOFP;
-            for (int i=0; i<npts; i++) {
-               ofile << py << " " << gwf.evalFTDensity(px,py,pz) << endl;
-               py+=dy;
-#if USEPROGRESSBAR
-               printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
-#endif
-            }
-            break;
-         case 3:
-            dz=2.0e0*DEFAULTMAXVALUEOFP/solreal(npts-1);
-            pz=-1.0e0*DEFAULTMAXVALUEOFP;
-            for (int i=0; i<npts; i++) {
-               ofile << pz << " " << gwf.evalFTDensity(px,py,pz) << endl;
-               pz+=dz;
-#if USEPROGRESSBAR
-               printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
-#endif
-            }
-            break;
-         default:
-            break;
-      }
-      cout << endl;
-      ofile.close();
-      if (options.mkplt) {makeLineGnuplotFile(options,gnpnam,outfilnam);}
+      cout << "Evaluating and writing " << strfield << " on a line..." << endl;
+      makeLineDatFile(options,outfilnam,gwf,axis,npts,field);
+      if (options.mkplt) {makeLineGnuplotFile(options,gnpnam,outfilnam,field);}
    }
    
    /* This evaluates the momentum density on a plane */
    
    if (dim==2) {
-      ofile.open(outfilnam.c_str(),ios::out);
-      solreal dx,dy,dz;
-      dx=dy=dz=0.0e0;
       cout << "The size of the grid will be " << npts << " x " << npts << endl;
       cout << "The total number of points that will be computed is " << npts*npts << endl;
-      cout << "Evaluating and writing the momentum density on a plane..." << endl;
-#if USEPROGRESSBAR
-      printProgressBar(0);
-#endif
-      switch (plane) {
-         case 1:
-            dx=2.0e0*DEFAULTMAXVALUEOFP/solreal(npts-1);
-            dy=2.0e0*DEFAULTMAXVALUEOFP/solreal(npts-1);
-            px=-1.0e0*DEFAULTMAXVALUEOFP;
-            for (int i=0; i<npts; i++) {
-               py=-1.0e0*DEFAULTMAXVALUEOFP;
-               for (int j=0; j<npts; j++) {
-                  ofile << px << "\t" << py << "\t" << gwf.evalFTDensity(px,py,pz) << endl;
-                  py+=dy;
-               }
-               ofile << endl;
-               px+=dx;
-#if USEPROGRESSBAR
-               printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
-#endif
-            }
-            break;
-         case 2:
-            dx=2.0e0*DEFAULTMAXVALUEOFP/solreal(npts-1);
-            dz=2.0e0*DEFAULTMAXVALUEOFP/solreal(npts-1);
-            px=-1.0e0*DEFAULTMAXVALUEOFP;
-            for (int i=0; i<npts; i++) {
-               pz=-1.0e0*DEFAULTMAXVALUEOFP;
-               for (int j=0; j<npts; j++) {
-                  ofile << px << "\t" << pz << "\t" << gwf.evalFTDensity(px,py,pz) << endl;
-                  pz+=dz;
-               }
-               ofile << endl;
-               px+=dx;
-#if USEPROGRESSBAR
-               printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
-#endif
-            }
-            break;
-         case 3:
-            dy=2.0e0*DEFAULTMAXVALUEOFP/solreal(npts-1);
-            dz=2.0e0*DEFAULTMAXVALUEOFP/solreal(npts-1);
-            py=-1.0e0*DEFAULTMAXVALUEOFP;
-            for (int i=0; i<npts; i++) {
-               pz=-1.0e0*DEFAULTMAXVALUEOFP;
-               for (int j=0; j<npts; j++) {
-                  ofile << py << "\t" << pz << "\t" << gwf.evalFTDensity(px,py,pz) << endl;
-                  pz+=dz;
-               }
-               ofile << endl;
-               py+=dy;
-#if USEPROGRESSBAR
-               printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
-#endif
-            }
-            break;
-         default:
-            break;
-      }
-      cout << endl;
-      ofile.close();
+      cout << "Evaluating and writing " << strfield << " on a plane..." << endl;
+      makePlaneTsvFile(options,outfilnam,gwf,plane,npts,field);
       solreal maxdim=DEFAULTMAXVALUEOFP;
-      makePlaneGnuplotFile(options,gnpnam,outfilnam,maxdim);
+      makePlaneGnuplotFile(options,gnpnam,outfilnam,maxdim,field);
    }
    
    /* This evaluates the momentum density on a cube */
    
    if (dim==3) {
-      string comments="#Property: Momentum Density.";
-      int boxnpts[3];
-      for (int i=0; i<3; i++) {boxnpts[i]=npts;}
-      solreal xin[3],delta[3][3];
-      for (int i=0; i<3; i++) {
-         for (int j=0; j<3; j++) {
-            delta[i][j]=0.0e0;
-         }
-         delta[i][i]=2.0e0*DEFAULTMAXVALUEOFP/solreal(boxnpts[i]-1);
-         xin[i]=-DEFAULTMAXVALUEOFP;
-      }
-      ofile.open(outfilnam.c_str(),ios::out);
-      writeCubeHeader(ofile,gwf.title[0],comments,boxnpts,xin,delta,gwf.nNuc,gwf.atCharge,gwf.R);
-      solreal *prop1d;
-      alloc1DRealArray("prop1d",boxnpts[2],prop1d);
-      cout << "The size of the grid will be " << boxnpts[0] << " x "
-           << boxnpts[1] << " x " << boxnpts[2] << endl;
-      cout << "The total number of points that will be computed is "
-           << boxnpts[0]*boxnpts[1]*boxnpts[2] << endl;
-      cout << "Evaluating and writing the momentum density on a cube..." << endl;
-#if USEPROGRESSBAR
-      printProgressBar(0);
-#endif
-      px=xin[0];
-      for (int i=0; i<boxnpts[0]; i++) {
-         py=xin[1];
-         for (int j=0; j<boxnpts[1]; j++) {
-            pz=xin[2];
-            for (int k=0; k<boxnpts[2]; k++) {
-               prop1d[k]=gwf.evalFTDensity(px,py,pz);
-               //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
-               pz+=delta[2][2];
-            }
-            writeCubeProp(ofile,boxnpts[2],prop1d);
-            py+=delta[1][1];
-         }
-         px+=delta[0][0];
-#if USEPROGRESSBAR
-         printProgressBar(int(100.0e0*solreal(i)/solreal((boxnpts[0]-1))));
-#endif
-      }
-      cout << endl;
-      //writeCubeProp(ofstream &ofil,int dim,solreal* (&prop));
-      ofile.close();
-      dealloc1DRealArray(prop1d);
+      makeCubeFile(options,outfilnam,gwf,npts,field,strfield);
       if (options.mkplt) {
          displayWarningMessage("Plotting can only be performed with options -1 or -2.");
       }
    }
    
-   cout << "outfilename: " << outfilnam << endl;
+   cout << "Data saved in file: " << outfilnam << endl;
    
    /* At this point the computation has ended. Usually this means no errors ocurred. */
    
@@ -353,14 +226,24 @@ int main (int argc, char ** argv)
 
 //**************************************************************************************************
 
-void makeLineGnuplotFile(optFlags &opts, string &gnpn,string &outn)
+void makeLineGnuplotFile(optFlags &opts, string &gnpn,string &outn,char thefield)
 {
    ofstream gfil;
    gfil.open(gnpn.c_str());
    
    /* Choosing the label (legend) for the plot */
    
-   string plbl="{/Symbol r}(p)";
+   string plbl;
+   switch ( thefield ) {
+      case 'd' :
+         plbl="{/Symbol r}(p)";
+         break;
+      case 'K' :
+         plbl="{/Bold K}(p)";
+         break;
+      default :
+         break;
+   }
    
    /* In this part the name is scanned for possible occurrings of the character '_'.
     For a proper display in the eps file, it has to be changed to "\_" */
@@ -416,14 +299,24 @@ void makeLineGnuplotFile(optFlags &opts, string &gnpn,string &outn)
 
 //**************************************************************************************************
 
-void makePlaneGnuplotFile(optFlags &opts, string &gnpn,string &outn,solreal dimparam)
+void makePlaneGnuplotFile(optFlags &opts, string &gnpn,string &outn,solreal dimparam,char thefield)
 {
    ofstream gfil;
    gfil.open(gnpn.c_str());
    
    /* Choosing the label (legend) for the plot */
    
-   string plbl="{/Symbol r}(p)";
+   string plbl="";
+   switch ( thefield ) {
+      case 'd':
+         plbl="{/Symbol r}(p)";
+         break;
+      case 'K':
+         plbl="{/Bold K}(p)";
+         break;
+      default :
+         break;
+   }
    
    gfil << "reset" << endl;
    
@@ -544,4 +437,325 @@ void makePlaneGnuplotFile(optFlags &opts, string &gnpn,string &outn,solreal dimp
    return;
 }
 
-//**************************************************************************************************
+/* ************************************************************************************ */
+void makeLineDatFile(optFlags &opts,string &datnam,gaussWaveFunc &wf,int theaxis,\
+      int npts,char thefield)
+{
+#if USEPROGRESSBAR
+   printProgressBar(0);
+#endif
+   ofstream ofile;
+   ofile.open(datnam.c_str(),ios::out);
+   solreal dx,dy,dz,px,py,pz;
+   dx=dy=dz=0.0e0;
+   px=py=pz=0.0e0;
+   switch (theaxis) {
+      case 1:
+         dx=2.0e0*DEFAULTMAXVALUEOFP/solreal(npts-1);
+         px=-1.0e0*DEFAULTMAXVALUEOFP;
+         switch ( thefield ) {
+            case 'd' :
+               for (int i=0; i<npts; i++) {
+                  ofile << px << " " << wf.evalFTDensity(px,py,pz) << endl;
+                  px+=dx;
+#if USEPROGRESSBAR
+                  printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+#endif
+               }
+               break;
+            case 'K' :
+               for (int i=0; i<npts; i++) {
+                  ofile << px << " " << wf.evalFTKineticEnergy(px,py,pz) << endl;
+                  px+=dx;
+#if USEPROGRESSBAR
+                  printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+#endif
+               }
+               break;
+            default :
+               break;
+         }
+         
+         break;
+      case 2:
+         dy=2.0e0*DEFAULTMAXVALUEOFP/solreal(npts-1);
+         py=-1.0e0*DEFAULTMAXVALUEOFP;
+         switch ( thefield ) {
+            case 'd' :
+               for (int i=0; i<npts; i++) {
+                  ofile << py << " " << wf.evalFTDensity(px,py,pz) << endl;
+                  py+=dy;
+#if USEPROGRESSBAR
+                  printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+#endif
+               }
+               break;
+            case 'K' :
+              for (int i=0; i<npts; i++) {
+                  ofile << py << " " << wf.evalFTKineticEnergy(px,py,pz) << endl;
+                  py+=dy;
+#if USEPROGRESSBAR
+                  printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+#endif
+               }
+               break;
+            default :
+               break;
+         }
+         break;
+      case 3:
+         dz=2.0e0*DEFAULTMAXVALUEOFP/solreal(npts-1);
+         pz=-1.0e0*DEFAULTMAXVALUEOFP;
+         switch ( thefield ) {
+            case 'd' :
+               for (int i=0; i<npts; i++) {
+                  ofile << pz << " " << wf.evalFTDensity(px,py,pz) << endl;
+                  pz+=dz;
+#if USEPROGRESSBAR
+                  printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+#endif
+               }
+               break;
+            case 'K' :
+              for (int i=0; i<npts; i++) {
+                  ofile << pz << " " << wf.evalFTKineticEnergy(px,py,pz) << endl;
+                  pz+=dz;
+#if USEPROGRESSBAR
+                  printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+#endif
+               }
+              break;
+            default :
+               break;
+         }
+         
+         break;
+      default:
+         break;
+   }
+   cout << endl;
+   ofile.close();
+
+}
+/* ************************************************************************************ */
+void makePlaneTsvFile(optFlags &opts,string &tsvnam,gaussWaveFunc &wf,int theplane,\
+      int npts,char thefield)
+{
+   ofstream ofile;
+   ofile.open(tsvnam.c_str(),ios::out);
+   solreal dx,dy,dz,px,py,pz;
+   dx=dy=dz=0.0e0;
+   px=py=pz=0.0e0;
+#if USEPROGRESSBAR
+   printProgressBar(0);
+#endif
+   switch (theplane) {
+      case 1:
+         dx=2.0e0*DEFAULTMAXVALUEOFP/solreal(npts-1);
+         dy=2.0e0*DEFAULTMAXVALUEOFP/solreal(npts-1);
+         px=-1.0e0*DEFAULTMAXVALUEOFP;
+         switch ( thefield ) {
+            case 'd' :
+               for (int i=0; i<npts; i++) {
+                  py=-1.0e0*DEFAULTMAXVALUEOFP;
+                  for (int j=0; j<npts; j++) {
+                     ofile << px << "\t" << py << "\t" << wf.evalFTDensity(px,py,pz) << endl;
+                     py+=dy;
+                  }
+                  ofile << endl;
+                  px+=dx;
+#if USEPROGRESSBAR
+                  printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+#endif
+               }
+               break;
+            case 'K' :
+               for (int i=0; i<npts; i++) {
+                  py=-1.0e0*DEFAULTMAXVALUEOFP;
+                  for (int j=0; j<npts; j++) {
+                     ofile << px << "\t" << py << "\t" << wf.evalFTKineticEnergy(px,py,pz) << endl;
+                     py+=dy;
+                  }
+                  ofile << endl;
+                  px+=dx;
+#if USEPROGRESSBAR
+                  printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+#endif
+               }
+               break;
+            default :
+               break;
+         }
+         break;
+      case 2:
+         dx=2.0e0*DEFAULTMAXVALUEOFP/solreal(npts-1);
+         dz=2.0e0*DEFAULTMAXVALUEOFP/solreal(npts-1);
+         px=-1.0e0*DEFAULTMAXVALUEOFP;
+         switch ( thefield ) {
+            case 'd' :
+               for (int i=0; i<npts; i++) {
+                  pz=-1.0e0*DEFAULTMAXVALUEOFP;
+                  for (int j=0; j<npts; j++) {
+                     ofile << px << "\t" << pz << "\t" << wf.evalFTDensity(px,py,pz) << endl;
+                     pz+=dz;
+                  }
+                  ofile << endl;
+                  px+=dx;
+#if USEPROGRESSBAR
+                  printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+#endif
+               }
+               break;
+            case 'K' :
+               for (int i=0; i<npts; i++) {
+                  pz=-1.0e0*DEFAULTMAXVALUEOFP;
+                  for (int j=0; j<npts; j++) {
+                     ofile << px << "\t" << pz << "\t" << wf.evalFTKineticEnergy(px,py,pz) << endl;
+                     pz+=dz;
+                  }
+                  ofile << endl;
+                  px+=dx;
+#if USEPROGRESSBAR
+                  printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+#endif
+               }
+               break;
+            default :
+               break;
+         }
+         break;
+      case 3:
+         dy=2.0e0*DEFAULTMAXVALUEOFP/solreal(npts-1);
+         dz=2.0e0*DEFAULTMAXVALUEOFP/solreal(npts-1);
+         py=-1.0e0*DEFAULTMAXVALUEOFP;
+         switch ( thefield ) {
+            case 'd' :
+               for (int i=0; i<npts; i++) {
+                  pz=-1.0e0*DEFAULTMAXVALUEOFP;
+                  for (int j=0; j<npts; j++) {
+                     ofile << py << "\t" << pz << "\t" << wf.evalFTDensity(px,py,pz) << endl;
+                     pz+=dz;
+                  }
+                  ofile << endl;
+                  py+=dy;
+#if USEPROGRESSBAR
+                  printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+#endif
+               }
+               break;
+            case 'K' :
+               for (int i=0; i<npts; i++) {
+                  pz=-1.0e0*DEFAULTMAXVALUEOFP;
+                  for (int j=0; j<npts; j++) {
+                     ofile << py << "\t" << pz << "\t" << wf.evalFTKineticEnergy(px,py,pz) << endl;
+                     pz+=dz;
+                  }
+                  ofile << endl;
+                  py+=dy;
+#if USEPROGRESSBAR
+                  printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+#endif
+               }
+               break;
+            default :
+               break;
+         }
+         break;
+         default:
+            break;
+      }
+      cout << endl;
+      ofile.close();
+}
+/* ************************************************************************************ */
+void makeCubeFile(optFlags &opts,string &cubnam,gaussWaveFunc &wf,int npts,\
+      char thefield,string &strfield)
+{
+   string comments="#Property: ";
+   switch ( thefield ) {
+      case 'd' :
+         comments+="Momentum Density.";
+         break;
+      case 'K' :
+         comments+="Kinetic Energy Density (in Momentum Space).";
+         break;
+      default :
+         break;
+   }
+   solreal px,py,pz;
+   px=py=pz=0.0e0;
+   int boxnpts[3];
+   for (int i=0; i<3; i++) {boxnpts[i]=npts;}
+   solreal xin[3],delta[3][3];
+   for (int i=0; i<3; i++) {
+      for (int j=0; j<3; j++) {
+         delta[i][j]=0.0e0;
+      }
+      delta[i][i]=2.0e0*DEFAULTMAXVALUEOFP/solreal(boxnpts[i]-1);
+      xin[i]=-DEFAULTMAXVALUEOFP;
+   }
+   ofstream ofile;
+   ofile.open(cubnam.c_str(),ios::out);
+   writeCubeHeader(ofile,wf.title[0],comments,boxnpts,xin,delta,wf.nNuc,wf.atCharge,wf.R);
+   solreal *prop1d;
+   alloc1DRealArray("prop1d",boxnpts[2],prop1d);
+   cout << "The size of the grid will be " << boxnpts[0] << " x "
+      << boxnpts[1] << " x " << boxnpts[2] << endl;
+   cout << "The total number of points that will be computed is "
+      << boxnpts[0]*boxnpts[1]*boxnpts[2] << endl;
+   cout << "Evaluating and writing " << strfield << " on a cube..." << endl;
+#if USEPROGRESSBAR
+   printProgressBar(0);
+#endif
+   switch ( thefield ) {
+      case 'd' :
+         px=xin[0];
+         for (int i=0; i<boxnpts[0]; i++) {
+            py=xin[1];
+            for (int j=0; j<boxnpts[1]; j++) {
+               pz=xin[2];
+               for (int k=0; k<boxnpts[2]; k++) {
+                  prop1d[k]=wf.evalFTDensity(px,py,pz);
+                  //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
+                  pz+=delta[2][2];
+               }
+               writeCubeProp(ofile,boxnpts[2],prop1d);
+               py+=delta[1][1];
+            }
+            px+=delta[0][0];
+#if USEPROGRESSBAR
+            printProgressBar(int(100.0e0*solreal(i)/solreal((boxnpts[0]-1))));
+#endif
+         }
+         cout << endl;
+         break;
+      case 'K' :
+         px=xin[0];
+         for (int i=0; i<boxnpts[0]; i++) {
+            py=xin[1];
+            for (int j=0; j<boxnpts[1]; j++) {
+               pz=xin[2];
+               for (int k=0; k<boxnpts[2]; k++) {
+                  prop1d[k]=wf.evalFTKineticEnergy(px,py,pz);
+                  //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
+                  pz+=delta[2][2];
+               }
+               writeCubeProp(ofile,boxnpts[2],prop1d);
+               py+=delta[1][1];
+            }
+            px+=delta[0][0];
+#if USEPROGRESSBAR
+            printProgressBar(int(100.0e0*solreal(i)/solreal((boxnpts[0]-1))));
+#endif
+         }
+         cout << endl;
+         break;
+      default :
+         break;
+   }
+   //writeCubeProp(ofstream &ofil,int dim,solreal* (&prop));
+   ofile.close();
+   dealloc1DRealArray(prop1d);
+}
+/* ************************************************************************************ */
+
