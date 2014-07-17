@@ -132,10 +132,10 @@ using std::setprecision;
 class gaussWaveFunc
 {
 public:
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    gaussWaveFunc(); //Default constructor
    ~gaussWaveFunc(); //Destructor
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    string *title,orbDesc; /* title */
    int nTit,nNuc,nMOr,nPri;
    string *atLbl;
@@ -144,23 +144,23 @@ public:
    solreal *cab,*chi,*gx,*gy,*gz,*hxx,*hyy,*hzz,*hxy,*hxz,*hyz;
    solreal totener,virial;
    bool imldd;
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    solreal getR(const int nucnum,const int cart);
    /*
       This function returns the value of the cart-th Cartesian coordinate of the nucnum-th nucleus.
       (0 for x, 1 for y and 1 for z coordinates.)
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    int getAng(int primn,int cartn); //This function returns the angular exponent of the 
                                        //cartn-th cartesian coordinate of the primn-th primivite.
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    solreal getCoef(const int orbn,const int primn);
    /*
       This function returns the value of the primitive coefficient of the orbn-th orbital
       and primn-th primitive. As any function in c, the indices run from 0 to some number.
       You should be careful about this.
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    solreal evalDensityArray(solreal x,solreal y, solreal z);
    /* 
       This function returns the value of the density ($\rho$) at the point $\vec{r}=(x,y,z)$ using
@@ -168,41 +168,41 @@ public:
       subsequent optimization of the function evalDensity. Unless you change evalDensity, use the 
       latter to obtain the density (it is the faster function).
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    void displayAllFieldProperties(solreal x,solreal y,solreal z);
    /* This function calculates and prints to screen all the programmed field properties.
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    void writeAllFieldProperties(solreal x,solreal y,solreal z,ofstream &ofil);
    /* This function calculates and writes to ofil all the programmed field properties.
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    solreal evalDensity(solreal x,solreal y,solreal z);
    /*
       This function returns the value of the density ($\rho$) at the point $\vec{r}=(x,y,z)$ using
       the most optimized algorithm.
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    bool sameMolOrbOccNums(void);
    /*
       This function returns true if all the Molecular Orbital Occupation Numers have the same
       value. It only takes one occupation number to be different in order to this function returning false.
     */
-   //*************************************************************************************************
+   /* ************************************************************************************** */
    void evalRhoGradRho(solreal &x, solreal &y, solreal &z,solreal &rho, solreal &dx, solreal &dy, solreal &dz);
    /*
       This function returns the value of the density ($\rho$) and the gradient of it 
       ($\nabla\rho=dx\hat{\mathi}+dy\hat{\mathj}+dz\hat{k}$) at the point 
       $\vec{r}=(x,y,z)$ using the most optimized algorithm.
     */
-   //*************************************************************************************************
+   /* ************************************************************************************** */
    void evalRhoGradRho(solreal &x, solreal &y, solreal &z,solreal &rho, solreal (&grd)[3]);
    /*
       This function is the same as evalRhoGraRho, but using an array for the gradient instead of
       individual components of the gradient. i.e.
       evalRhoGradRho(x,y,z,rho,g[3])=evalRhoGradRho(x,y,z,rho,g[0],g[1],g[2])
     */
-   //*************************************************************************************************
+   /* ************************************************************************************** */
    bool readFromFileWFN(string inname);
    /*
       This function will load all the values of the wave function (title, orbDesc, etc.) from a 
@@ -210,51 +210,51 @@ public:
       will automatically allocate the corresponding arrays. And since a destructor is given, you
       one does not need to deallocate the arrays of the wave function.
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    bool readFromFileWFX(string inname);
    /*
       This function is essentially the same as readFromFileWFN, but using a *wfx file. In the future, it is
       expected that both functions differ from each other, since the files wfx are/will be capable of
       containing a larger amount of information.
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    bool readFromFile(string inname);
    /*
       This function just look for the extension of the inname, if it is wfn(wfx), then calls
       readFromFileWFN(readFromFileWFX)
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    bool allocAuxArrays(void);
    /*
       This function allocates memory space for the auxiliar arrays the gaussWaveFunction object
       uses for calculating numerical properties (rho, grad(rho), hess(rho), etc.).
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    void countPrimsPerCenter(void);
    /*
       This function counts the number of primitives associated with each one
       of the nuclear centers.
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    void calcCab(void);
    /*
       This function calculates the values of the matrix coefficients array $C_{\dot{A}\dot{B}}$
       (see notes ******* for notation details.)
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    bool writeToFileWFX(string outname);
    /*
       This function will write the wave function into a wfx file which name is outname. 
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    bool testSupport(void);
    /*
       This function returns true if the *.wfn or *.wfx is supported. At the current version,
       only gaussian wave functions are handled.
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    solreal evalPrimCases(int &pty,solreal &alp, solreal x, solreal y, solreal z);
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    solreal evalAngACases(int &pty, solreal x, solreal y, solreal z);
    /*
       This funtion returns the value of the angular part of the primitive, i.e., it returns the
@@ -262,13 +262,13 @@ public:
       The values of a_i are coded in the value of pty (the type of primitive). For correct results,
       x must be the difference between the field point and the primitive center.
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    void evalDkPrimCases(int pty,solreal alp,solreal x, solreal y, solreal z, solreal &grx, solreal &gry, solreal &grz);
    /*
       This function evaluates the gradient of $phi_{\dot{A}}(x,y,z)$. $\nabla\phi=(grx,gry,grz)$.
     For correct results, x must be the difference between the field point and the primitive center. 
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    void evalDkAngCases(int &pty,solreal alp,solreal x, solreal y, solreal z, solreal &anx, solreal &any, solreal &anz);
    /*
       Let the field point be $\vec{\xi}$, and a primitive $\phi_{\dot{A}}$, with center 
@@ -277,7 +277,7 @@ public:
       ($\nabla\phi_{\dot{A}}(x,y,z))/exp(-2\alp r^2)$, where x=\xi_x-R^x_{\dot{A}}..., and
       $r^2=x^2+y^2+z^2$. The individual components are anx, any, anz, respectively
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    void evalDkDlAngCases(int &pty,solreal alp,solreal x,solreal y,solreal z,
                          solreal &axx,solreal &ayy,solreal &azz,solreal &axy,solreal &axz,solreal &ayz);
    /*
@@ -287,7 +287,7 @@ public:
     ($\partial_k\partial_l\phi_{\dot{A}}(x,y,z))/exp(-2\alp r^2)$, where x=\xi_x-R^x_{\dot{A}}..., and
     $r^2=x^2+y^2+z^2$. The individual components are axx,ayy,azz,axy,axz,ayz, respectively.
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    solreal evalLapAngCases(int &pty,solreal alp,solreal x,solreal y,solreal z,solreal rr);
    /*
     Let the field point be $\vec{\xi}$, and a primitive $\phi_{\dot{A}}$, with center 
@@ -296,32 +296,32 @@ public:
     ($\nabla^2\phi_{\dot{A}}(x,y,z))/exp(-2\alp rr)$, where x=\xi_x-R^x_{\dot{A}}..., and
     $rr=x^2+y^2+z^2$.
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    void evalHessian(solreal x, solreal y, solreal z,solreal &dxx, solreal &dyy, solreal &dzz,
                     solreal &dxy, solreal &dxz, solreal &dyz);
    /*
       This function evaluates the six independent components of the Hessian of $\rho$ 
       (dxx,dyy,dzz,dxy,dxz,dyz) at the point $(x,y,z)$
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    void evalHessian(solreal x, solreal y, solreal z,solreal (&h)[3][3]);
    /*
       This function evaluates the Hessian of $\rho$ at the point $(x,y,z)$ and store them in the
       array h.
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    void evalHessian(solreal x, solreal y, solreal z,solreal &dens,solreal (&g)[3],solreal (&h)[3][3]);
    /*
     This function evaluates the gradient and Hessian of $\rho$ at the point 
     $(x,y,z)$ and store them in the arrays g and h.
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    solreal evalLapRho(solreal x, solreal y, solreal z);
    /*
       This function returns the value of the Laplacian of the density
       ($\nabla^2\rho$) at the point $(x,y,z)$
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    solreal evalELF(solreal x,solreal y,solreal z);
    /*
       This function returns the value of the Electron Localization Function, EFL 
@@ -330,7 +330,7 @@ public:
       and $D_h(x,y,z)=(3/10)(3\phi^2)^{2/3}\rho(x,y,z)^{5/3}$) at the
       point (x,y,z).
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    solreal evalShannonEntropy(solreal x,solreal y,solreal z);
    /*
       This function returns the value of the Shannon entropy density ($-\rho\ln\rho$) at the
@@ -341,13 +341,13 @@ public:
     This function returns the value of the Shannon entropy density in the momentum space 
     ($-\pi\ln\pi$) at the point (px,py,pz).
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    solreal evalMagGradRho(solreal x,solreal y,solreal z);
    /*
     This function returns the value of the Magnitude of the Density Gradient ($|\nabla\rho|$) at the
     point (x,y,z).
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    solreal evalLOL(solreal x,solreal y,solreal z);
 //#if PARALLELISEDTK
 //   solreal evalLOLNew(solreal x, solreal y,solreal z);
@@ -357,21 +357,21 @@ public:
     ($\gamma(x,y,z)=\frac{\tau(x,y,z)}{1+\tau(x,y,z)}$, where
      \tau=2D_h(x,y,z)/(\sum_i|\nabla\chi_i|^2)) at the field point (x,y,z)
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    solreal evalKineticEnergyG(solreal x,solreal y,solreal z);
    /*
     This function returns the value of the Kinetic Energy Density G, defined through
     $G(\vec{x})=\frac{1}{2}\sum_{\dot{A}\sum_{\dot{B}}}C_{\dot{A}\dot{B}}\nabla\phi_{\dot{A}}
      \cdot\nabla\phi_{\dot{B}}$
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    solreal evalKineticEnergyK(solreal x,solreal y,solreal z);
    /*
     This function returns the value of the Kinetic Energy Density K, defined through
     $K(\vec{x})=-\frac{1}{4}\sum_{\dot{A}\sum_{\dot{B}}}C_{\dot{A}\dot{B}}
     (\phi_{\dot{A}}\nabla^2\phi_{\dot{B}}+\phi_{\dot{B}}\nabla^2\phi_{\dot{A}})$
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    void seekBondCP(int ii,int jj,solreal &rx,solreal &ry,solreal &rz,solreal &gx,solreal &gy,solreal &gz);
    /*
       This function seeks for a Bond Critical Point. The integers ii and jj are used to set
@@ -381,7 +381,7 @@ public:
       was not found, then rx,ry,rz are the last values obtained from the search (and
       the gradient at such a point).
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    void getBondCPStep(solreal (&x)[3],solreal (&hh)[3],solreal (&gg)[3]);
    /*
       This function uses the vector $\vec{x}$ as the original position, then it calculates 
@@ -392,7 +392,7 @@ public:
       More details (and ) can be found in references [9-11] of the above article.
       This particular function aims to locate Bond Critical Points.
    */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    void seekRingCP(solreal &r1,solreal &r2,solreal &r3,solreal &gx,solreal &gy,solreal &gz);
    /*
     This function seeks for a Ring Critical Point. The vector $\vec{x}_0=(r1,r2,r3)$ is used as
@@ -402,7 +402,7 @@ public:
     was not found, then rx,ry,rz are the last values obtained from the search (and
     the gradient at such a point).
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    void getRingCPStep(solreal (&x)[3],solreal (&hh)[3],solreal (&g)[3]);
    /*
     This function uses the vector $\vec{x}$ as the original position, then it calculates 
@@ -413,7 +413,7 @@ public:
     More details (and ) can be found in references [9-11] of the above article.
     This particular function aims to locate Ring Critical Points.
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    void seekCageCP(solreal &r1,solreal &r2,solreal &r3,solreal &gx,solreal &gy,solreal &gz);
    /*
     This function seeks for a Cage Critical Point. The vector $\vec{x}_0=(r1,r2,r3)$ is used as
@@ -423,7 +423,7 @@ public:
     was not found, then rx,ry,rz are the last values obtained from the search (and
     the gradient at such a point).
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    void getCageCPStep(solreal (&x)[3],solreal (&hh)[3],solreal (&g)[3]);
    /*
     This function uses the vector $\vec{x}$ as the original position, then it calculates 
@@ -434,34 +434,34 @@ public:
     More details (and ) can be found in references [9-11] of the above article.
     This particular function aims to locate Cage Critical Points.
     */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    void evald3SingCartA(int &ang,solreal &t,solreal &f,solreal &x,solreal &x2,
                       solreal &d0,solreal &d1,solreal &d2,solreal &d3);
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    void evald3Ang(int (&a)[3],solreal &alp,solreal (&x)[3],solreal (&x2)[3],
                   solreal (&d0)[3],solreal (&d1)[3],solreal (&d2)[3],solreal (&d3)[3]);
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    void evald4SingCartA(int &ang,solreal &t,solreal &f,solreal &x,solreal &x2,
                         solreal &d0,solreal &d1,solreal &d2,solreal &d3,solreal &d4);
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    void evald4Ang(int (&a)[3],solreal &alp,solreal (&x)[3],solreal (&x2)[3],
                   solreal (&d0)[3],solreal (&d1)[3],solreal (&d2)[3],solreal (&d3)[3],
                   solreal (&d4)[3]);
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    solreal evalLapRhoUsingd2(solreal x,solreal y,solreal z);
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    void evalDiDjDkChi(int &pty,solreal &alp,solreal x,solreal y,solreal z,
                       solreal (&dlm)[3][3],solreal (&dijk)[3][3][3]);
    /* void evalDkDlAngCases(int &pty,solreal alp,solreal x,solreal y,solreal z,
     solreal &axx,solreal &ayy,solreal &azz,solreal &axy,solreal &axz,solreal &ayz); */
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    void evalHessLOL(solreal x, solreal y, solreal z, solreal &dens,solreal &keG, solreal &lol,
                                    solreal &ddx, solreal &ddy, solreal &ddz,
                                    solreal &dxx, solreal &dyy, solreal &dzz,
                                    solreal &dxy, solreal &dxz, solreal &dyz);
-   //**********************************************************************************************
+   /* *********************************************************************************** */
    void evalHessLOL(solreal (&x)[3],solreal &lol,solreal (&glol)[3],solreal (&hlol)[3][3]);
-   //***********************************************************************************************
+   /* ************************************************************************************ */
    void evalFTASingCartA(int &ang,solreal &a,solreal &ooa,solreal &osra,
                          solreal &px,solreal &px2,solreal &Rx,
                          solreal &RePhi,solreal &ImPhi);
@@ -471,54 +471,56 @@ public:
        Rx is the component of the primitive center, px is the component of the momentum, and
        px2=px*px.
     */
-   //***********************************************************************************************
+   /* ************************************************************************************ */
    void evalFTAng(int (&a)[3],solreal &alp,solreal &ooalp,solreal (&p)[3],solreal (&p2)[3],
                   solreal (&Rx)[3],complex<solreal> &pang);
-   //***********************************************************************************************
+   /* ************************************************************************************ */
    void evalFTChi(int &pty,solreal &alp,solreal (&Rx)[3],solreal px,solreal py,solreal pz,
                       complex<solreal> &phi);
-   //***********************************************************************************************
+   /* ************************************************************************************ */
    solreal evalFTDensity(solreal px,solreal py,solreal pz);
-   //***********************************************************************************************
+   /* ************************************************************************************ */
+   solreal evalFTKineticEnergy(solreal px,solreal py,solreal pz);
+   /* ************************************************************************************ */
    solreal evalDensityMatrix1(solreal x,solreal y,solreal z,solreal xp,solreal yp,solreal zp);
-   //***********************************************************************************************
+   /* ************************************************************************************ */
    solreal evalMagGradLOL(solreal x,solreal y,solreal z);
-   //***********************************************************************************************
+   /* ************************************************************************************ */
    solreal evalMolElecPot(solreal x,solreal y,solreal z);
-   //***********************************************************************************************
+   /* ************************************************************************************ */
    void evalHermiteCoefs(int (&aia)[3],int (&aib)[3],solreal &alpab,
                          solreal (&ra)[3],solreal (&rb)[3],
                          solreal (&rp)[3],
                          int (&maxl)[3],solreal (&Eijl)[3][7]);//tested on Dec 28th, 2013
-   //***********************************************************************************************
+   /* ************************************************************************************ */
    void evalRlmnIntegs(const int (&lmn)[3],const solreal &alpp,const solreal (&cp)[3],
                        solreal (&Rlmn)[7][7][7]);
-   //***********************************************************************************************
+   /* ************************************************************************************ */
    solreal evalVAB(solreal (&xx)[3],int (&aa)[3],int (&ab)[3],solreal &alpa,solreal &alpb,
                           solreal (&ra)[3],solreal (&rb)[3]);
-   //***********************************************************************************************
+   /* ************************************************************************************ */
    solreal evalOverlapIntegralAB(int (&aa)[3],int (&ab)[3],solreal &alpa,solreal &alpb,
                          solreal (&ra)[3],solreal (&rb)[3]);
-   //***********************************************************************************************
+   /* ************************************************************************************ */
    solreal integralRho(void);
-   //***********************************************************************************************
+   /* ************************************************************************************ */
    solreal totalNuclearCharge(void);
-   //***********************************************************************************************
-   //***********************************************************************************************
+   /* ************************************************************************************ */
+   /* ************************************************************************************ */
 private:
    static int prTy[MAXPRIMTYPEDEFINED*3];
-   //***********************************************************************************************
-   //***********************************************************************************************
-   //***********************************************************************************************
-   //***********************************************************************************************
-   //***********************************************************************************************
-   //***********************************************************************************************
-   //***********************************************************************************************
-   //***********************************************************************************************
-   //***********************************************************************************************
-   //***********************************************************************************************
+   /* ************************************************************************************ */
+   /* ************************************************************************************ */
+   /* ************************************************************************************ */
+   /* ************************************************************************************ */
+   /* ************************************************************************************ */
+   /* ************************************************************************************ */
+   /* ************************************************************************************ */
+   /* ************************************************************************************ */
+   /* ************************************************************************************ */
+   /* ************************************************************************************ */
 };
-//**********************************************************************************************
-//**********************************************************************************************
+/* *********************************************************************************** */
+/* *********************************************************************************** */
 #endif//_SOLWAVEFUNCTIONCLASS_H_
 

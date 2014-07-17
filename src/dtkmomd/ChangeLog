@@ -1,4 +1,13 @@
 =====================================================================
+*** Version 1.0.2 ***
+=====================================================================
+
+The program now is able to evaluate the Kinetic Energy Density
+in Momentum Space.
+The implementation required some changes in the main program and
+in the help menu.
+
+=====================================================================
 *** Version 1.0.1 ***
 =====================================================================
 

@@ -283,7 +283,59 @@ bool dealloc3DRealArray(solreal*** &tp,const int idx1,const int idx2)
    }
 }
 //**************************************************************************************************
+bool alloc3DIntArray(string ptrname,const int idx1,const int idx2,const int idx3,\
+      int*** &thptr,const int val)
+{
+   if (!(thptr=new int**[idx1])) {
+      std::cout << "Warning: cannot allocate "<< ptrname <<", in alloc3DIntArray(...) function.\n";
+      std::cout << __FILE__ << "" << __LINE__ << std::endl;
+      return false;
+   } else {
+      for (int i=0; i<idx1; i++) {
+         if (!(thptr[i]=new int*[idx2])) {
+            std::cout << "Warning: cannot allocate "<< ptrname
+            <<", in alloc3DIntArray(...) function.\n";
+            std::cout << __FILE__ << "" << __LINE__ << std::endl;
+         }
+         else {
+            for (int j=0; j<idx2; j++) {
+               if (!(thptr[i][j]=new int[idx3])) {
+                  std::cout << "Warning: cannot allocate "<< ptrname
+                  <<", in alloc3DIntArray(...) function.\n";
+                  std::cout << __FILE__ << "" << __LINE__ << std::endl;
+               }
+            }
+         }
+      }
+      for (int i=0; i<idx1; i++) {
+         for (int j=0; j<idx2; j++) {
+            for (int k=0; k<idx3; k++) {
+               thptr[i][j][k]=val;
+            }
+         }
+      }
+      return true;
+   }
+}
 //**************************************************************************************************
+bool dealloc3DIntArray(int*** &tp,const int idx1,const int idx2)
+{
+   if (tp!=NULL) {
+      for (int i=0; i<idx1; i++) {
+         for (int j=0; j<idx2; j++) {
+            delete[] tp[i][j];
+            tp[i][j]=NULL;
+         }
+         delete[] tp[i];
+         tp[i]=NULL;
+      }
+      delete[] tp;
+      tp=NULL;
+      return true;
+   } else {
+      return false;
+   }
+}
 //**************************************************************************************************
 //**************************************************************************************************
 #endif//_SOLMEMHANDLE_CPP_

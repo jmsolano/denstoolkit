@@ -76,6 +76,7 @@ optFlags::optFlags()
    mkplt=0;
    kpgnp=0;
    quiet=1;
+   setfld=0;
 }
 
 
@@ -132,6 +133,10 @@ void getOptions(int &argc, char** &argv, optFlags &flags)
             case 'o':
                flags.outfname=(++i);
                if (i>=argc) {printErrorMsg(argv,'o');}
+               break;
+            case 'p' :
+               flags.setfld=(++i);
+               if ( i>=argc ) {printErrorMsg(argv,'p');}
                break;
             case 'P':
                flags.mkplt=i;
@@ -209,6 +214,10 @@ void printHelpMenu(int &argc, char** &argv)
         << "            \t  (If not given the program will create one out of" << endl
         << "            \t  the input name; if given, the dat/tsv/cub/gnp/pdf files will" << endl
         << "            \t  use this name as well --but different extension--)." << endl;
+   cout << "  -p prop   \tChoose the property to be computed. prop is a character," << endl
+        << "            \t  which can be (d is the default value):" << endl
+        << "            \t     d Density (momentum density)" << endl
+        << "            \t     K Kinetic Energy Density (in momentum space)" << endl;;
 #if _HAVE_GNUPLOT_
    cout << "  -P     \tCreate a plot using gnuplot. (Only works with options -1 or -2)" << endl
         << "  -k     \tKeeps the *.gnp file to be used later by gnuplot." << endl;
@@ -258,6 +267,9 @@ void printErrorMsg(char** &argv,char lab)
          break;
       case 'o':
          cout << "should be followed by a name." << endl;
+         break;
+      case 'p' :
+         cout << "should be followed by a character." << endl;
          break;
       default:
          cout << "is triggering an unknown error." << endl;
