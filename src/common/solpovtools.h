@@ -69,6 +69,7 @@ public:
    //**********************************************************************************************
    void writeLightSource(ofstream &ofil,int is,solreal intens,const char* opts);
    //**********************************************************************************************
+   void scaleLightSources(solreal scfactor);
    //**********************************************************************************************
    //**********************************************************************************************
    //**********************************************************************************************
@@ -113,6 +114,9 @@ bool writePOVSphere(ofstream &ofil,int nt,
                     solreal xx, solreal yy, solreal zz, const char* strrad,
                     const char *strcol);
 //**********************************************************************************************
+bool writePOVSphere(ofstream &ofil,int nt,
+                    solreal xx,solreal yy,solreal zz,solreal rr);
+//**********************************************************************************************
 bool writePOVTransparentSphere(ofstream &ofil,int nt,
                     solreal xx, solreal yy, solreal zz, solreal rr,
                     solreal cr, solreal cg, solreal cb,solreal trc);
@@ -128,6 +132,10 @@ bool writePOVCylinder(ofstream &ofil,int nt,
                       solreal xa, solreal ya, solreal za,
                       solreal xb, solreal yb, solreal zb, solreal rr,
                       const char * str);
+//**********************************************************************************************
+bool writePOVCylinder(ofstream &ofil,int nt,
+                      solreal xa, solreal ya, solreal za,
+                      solreal xb, solreal yb, solreal zb, solreal rr);
 //**********************************************************************************************
 bool writePOVArrow(ofstream &ofil,int nt);
 //**********************************************************************************************

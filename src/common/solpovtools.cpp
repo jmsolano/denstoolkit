@@ -170,6 +170,12 @@ void povRayConfProp::writeLightSource(ofstream &ofil,int is,solreal intens,const
 }
 // */
 //**************************************************************************************************
+void povRayConfProp::scaleLightSources(solreal scfactor)
+{
+   for ( int i=0 ; i<nLightSources ; i++ ) {
+      for ( int k=0 ; k<3 ; k++ ) {lightSource[i][k]*=scfactor;}
+   }
+}
 //**************************************************************************************************
 //**************************************************************************************************
 //**************************************************************************************************
@@ -268,6 +274,23 @@ bool writePOVSphere(ofstream &ofil,int nt,
    return true;
 }
 //**********************************************************************************************
+bool writePOVSphere(ofstream &ofil,int nt,
+                    solreal xx,solreal yy,solreal zz, solreal rr)
+{
+   int indlev=nt;
+   string thetabs=indTabsStr(indlev);
+   ofil << thetabs << "sphere { " << endl;
+   indlev++; thetabs=indTabsStr(indlev);
+   ofil << thetabs;
+   ofil << scientific << setprecision(8);
+   writePoVVector(ofil,xx,yy,zz);
+   ofil << ", " << rr << endl;
+   indlev--; thetabs=indTabsStr(indlev);
+   ofil << thetabs << "}" << endl;
+   ofil.unsetf(ios::scientific);
+   return true;
+}
+//**********************************************************************************************
 bool writePOVTransparentSphere(ofstream &ofil,int nt,
                     solreal xx,solreal yy,solreal zz, solreal rr,
                     solreal cr,solreal cg, solreal cb,solreal trc)
@@ -338,6 +361,26 @@ bool writePOVCylinder(ofstream &ofil,int nt,
    writePoVVector(ofil,xb,yb,zb);
    ofil << ", " << rr << endl;
    ofil << thetabs << "pigment { " << str << " }" << endl;
+   indlev--; thetabs=indTabsStr(indlev);
+   ofil << thetabs << "}" << endl;
+   ofil.unsetf(ios::scientific);
+   return true;
+}
+//**********************************************************************************************
+bool writePOVCylinder(ofstream &ofil,int nt, 
+                      solreal xa, solreal ya, solreal za, 
+                      solreal xb, solreal yb, solreal zb, solreal rr)
+{
+   int indlev=nt;
+   string thetabs=indTabsStr(indlev);
+   ofil << thetabs << "cylinder { " << endl;
+   indlev++; thetabs=indTabsStr(indlev);
+   ofil << thetabs;
+   ofil << scientific << setprecision(8);
+   writePoVVector(ofil,xa,ya,za);
+   ofil << "," << endl << thetabs;
+   writePoVVector(ofil,xb,yb,zb);
+   ofil << ", " << rr << endl;
    indlev--; thetabs=indTabsStr(indlev);
    ofil << thetabs << "}" << endl;
    ofil.unsetf(ios::scientific);

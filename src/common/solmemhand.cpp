@@ -11,9 +11,9 @@
 #define _SOLMEMHANDLE_CPP_
 
 #include "solmemhand.h"
-//**************************************************************************************************
-//**************************************************************************************************
-//**************************************************************************************************
+/* ************************************************************************************** */
+/* ************************************************************************************** */
+/* ************************************************************************************** */
 bool alloc1DRealArray(string ptrname,const int n,solreal* &thptr)
 {
    if (!(thptr=new solreal[n])) {
@@ -26,7 +26,7 @@ bool alloc1DRealArray(string ptrname,const int n,solreal* &thptr)
    }
 }
 
-//**************************************************************************************************
+/* ************************************************************************************** */
 bool alloc1DRealArray(string ptrname,const int n,solreal* &thptr,const solreal inval)
 {
    if (!(thptr=new solreal[n])) {
@@ -38,7 +38,7 @@ bool alloc1DRealArray(string ptrname,const int n,solreal* &thptr,const solreal i
       return true;
    }
 }
-//**************************************************************************************************
+/* ************************************************************************************** */
 bool alloc1DIntArray(string ptrname,const int n,int* &thptr)
 {
    if (!(thptr=new int[n])) {
@@ -50,7 +50,7 @@ bool alloc1DIntArray(string ptrname,const int n,int* &thptr)
       return true;
    }
 }
-//**************************************************************************************************
+/* ************************************************************************************** */
 bool alloc1DIntArray(string ptrname,const int n,int* &thptr,const int inval)
 {
    if (!(thptr=new int[n])) {
@@ -62,7 +62,7 @@ bool alloc1DIntArray(string ptrname,const int n,int* &thptr,const int inval)
       return true;
    }
 }
-//**************************************************************************************************
+/* ************************************************************************************** */
 bool alloc1DBoolArray(string ptrname,const int n,bool* &thptr,const bool inval)
 {
    if (!(thptr=new bool[n])) {
@@ -74,12 +74,12 @@ bool alloc1DBoolArray(string ptrname,const int n,bool* &thptr,const bool inval)
       return true;
    }
 }
-//**************************************************************************************************
+/* ************************************************************************************** */
 bool alloc1DBoolArray(string ptrname,const int n,bool* &thptr)
 {
    return alloc1DBoolArray(ptrname,n,thptr,false);
 }
-//**************************************************************************************************
+/* ************************************************************************************** */
 bool dealloc1DBoolArray(bool* &tp)
 {
    if (tp!=NULL) {
@@ -88,7 +88,7 @@ bool dealloc1DBoolArray(bool* &tp)
    }
    return true;
 }
-//**************************************************************************************************
+/* ************************************************************************************** */
 bool dealloc1DRealArray(solreal* &tp)
 {
    if (tp!=NULL) {
@@ -97,7 +97,7 @@ bool dealloc1DRealArray(solreal* &tp)
    }
    return true;
 }
-//**************************************************************************************************
+/* ************************************************************************************** */
 bool dealloc1DIntArray(int* &tp)
 {
    if (tp!=NULL) {
@@ -106,7 +106,7 @@ bool dealloc1DIntArray(int* &tp)
    }
    return true;
 }
-//**************************************************************************************************
+/* ************************************************************************************** */
 bool alloc1DStringArray(string ptrname,const int n, string* &thptr)
 {
    if (!(thptr=new string[n])) {
@@ -118,7 +118,7 @@ bool alloc1DStringArray(string ptrname,const int n, string* &thptr)
       return true;
    }
 }
-//**************************************************************************************************
+/* ************************************************************************************** */
 bool dealloc1DStringArray(string* &tp)
 {
    if (tp!=NULL) {
@@ -130,7 +130,7 @@ bool dealloc1DStringArray(string* &tp)
    }
 
 }
-//**************************************************************************************************
+/* ************************************************************************************** */
 bool alloc2DRealArray(string ptrname,const int rows,const int cols,solreal** &thptr)
 {
    if (!(thptr=new solreal*[rows])) {
@@ -152,7 +152,7 @@ bool alloc2DRealArray(string ptrname,const int rows,const int cols,solreal** &th
       return true;
    }
 }
-//**************************************************************************************************
+/* ************************************************************************************** */
 bool alloc2DRealArray(string ptrname,const int rows,const int cols,solreal** &thptr,const solreal inval)
 {
    if (!(thptr=new solreal*[rows])) {
@@ -174,7 +174,7 @@ bool alloc2DRealArray(string ptrname,const int rows,const int cols,solreal** &th
       return true;
    }
 }
-//**************************************************************************************************
+/* ************************************************************************************** */
 bool dealloc2DRealArray(solreal** & tp,const int nc)
 {
    if (tp!=NULL) {
@@ -189,12 +189,12 @@ bool dealloc2DRealArray(solreal** & tp,const int nc)
       return false;
    }
 }
-//**************************************************************************************************
+/* ************************************************************************************** */
 bool alloc2DIntArray(string ptrname,const int rows,const int cols,int** &thptr)
 {
    return alloc2DIntArray(ptrname,rows,cols,thptr,0);
 }
-//**************************************************************************************************
+/* ************************************************************************************** */
 bool alloc2DIntArray(string ptrname,const int rows,const int cols,int** &thptr,const int val)
 {
    if (!(thptr=new int*[rows])) {
@@ -216,7 +216,7 @@ bool alloc2DIntArray(string ptrname,const int rows,const int cols,int** &thptr,c
       return true;
    }
 }
-//**************************************************************************************************
+/* ************************************************************************************** */
 bool dealloc2DIntArray(int** & tp,const int nc)
 {
    if (tp!=NULL) {
@@ -229,7 +229,7 @@ bool dealloc2DIntArray(int** & tp,const int nc)
    }
    return true;
 }
-//**************************************************************************************************
+/* ************************************************************************************** */
 bool alloc3DRealArray(string ptrname,const int idx1,const int idx2,const int idx3,solreal*** &thptr)
 {
    if (!(thptr=new solreal**[idx1])) {
@@ -263,7 +263,7 @@ bool alloc3DRealArray(string ptrname,const int idx1,const int idx2,const int idx
       return true;
    }
 }
-//**************************************************************************************************
+/* ************************************************************************************** */
 bool dealloc3DRealArray(solreal*** &tp,const int idx1,const int idx2)
 {
    if (tp!=NULL) {
@@ -282,7 +282,7 @@ bool dealloc3DRealArray(solreal*** &tp,const int idx1,const int idx2)
       return false;
    }
 }
-//**************************************************************************************************
+/* ************************************************************************************** */
 bool alloc3DIntArray(string ptrname,const int idx1,const int idx2,const int idx3,\
       int*** &thptr,const int val)
 {
@@ -317,7 +317,7 @@ bool alloc3DIntArray(string ptrname,const int idx1,const int idx2,const int idx3
       return true;
    }
 }
-//**************************************************************************************************
+/* ************************************************************************************** */
 bool dealloc3DIntArray(int*** &tp,const int idx1,const int idx2)
 {
    if (tp!=NULL) {
@@ -336,7 +336,23 @@ bool dealloc3DIntArray(int*** &tp,const int idx1,const int idx2)
       return false;
    }
 }
-//**************************************************************************************************
-//**************************************************************************************************
+/* ************************************************************************************** */
+bool appendTo1DRealArray(string ptrname,const int n,solreal* &thptr,solreal thenewval)
+{
+   solreal *tmpptr;
+   bool res=alloc1DRealArray("tmpptr",(n+1),tmpptr);
+   if ( res ) {
+      //for ( int i=0 ; i<n ; i++ ) {tmpptr[i]=thptr[i];}
+      memcpy( tmpptr, thptr, n * sizeof(solreal) );
+      tmpptr[n]=thenewval;
+      dealloc1DRealArray(thptr);
+      thptr=tmpptr;
+   } else {
+      std::cout << "Error: something went wrong while trying to append a new"
+         << std::endl << "value in array " << ptrname << std::endl;
+   }
+   return res;
+}
+/* ************************************************************************************** */
 #endif//_SOLMEMHANDLE_CPP_
 

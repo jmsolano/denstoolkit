@@ -65,6 +65,9 @@ bool alloc3DIntArray(string ptrname,const int idx1,const int idx2, const int idx
 /* ************************************************************************************ */
 bool dealloc3DIntArray(int*** & tp,const int idx1,const int idx2);
 /* ************************************************************************************ */
+/** This function extends the array to which thptr points to, and assign
+ *  theptr[n]=thenewval. @b Caution: this function @b do @b not modify n.  */
+bool appendTo1DRealArray(string ptrname,const int n,solreal* &thptr,solreal thenewval);
 /* ************************************************************************************ */
 /* ************************************************************************************ */
 /* ************************************************************************************ */
