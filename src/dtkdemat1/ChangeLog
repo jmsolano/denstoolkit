@@ -4,6 +4,16 @@
 *** Version 1.0.3 ***
 =====================================================================
 
+--> Improved the view of plots.
+--> The range for the option -L was extended to be twice as long
+      as the line joining the atoms.
+--> Some labels, arrows, and new lines were modified/added.
+--> The 3D plot now uses the option 'set xyplane 0'
+
+=====================================================================
+*** Version 1.0.3 ***
+=====================================================================
+
 --> Added two arrows in 1-D plots for pointing out the positions of
       the atoms at the corners.
 
