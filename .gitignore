@@ -2,6 +2,7 @@
 *.o
 *.log
 *.pdf
+*.eps
 *.png
 *.gnp
 *.pov

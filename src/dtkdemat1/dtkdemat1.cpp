@@ -188,10 +188,11 @@ int main (int argc, char ** argv)
          lenline+=((bnw.R[at1][i]-bnw.R[at2][i])*(bnw.R[at1][i]-bnw.R[at2][i]));
       }
       lenline=sqrt(lenline);
+      lenline*=2.0e0;
       dl=lenline/solreal(dimarr-1);
       for (int i=0; i<3; i++) {
-         dx[i]=(bnw.R[at2][i]-bnw.R[at1][i])/solreal(dimarr-1);
-         rbgp[0][i]=bnw.R[at1][i];
+         dx[i]=2.0e0*(bnw.R[at2][i]-bnw.R[at1][i])/solreal(dimarr-1);
+         rbgp[0][i]=0.5e0*(3.0e0*bnw.R[at1][i]-bnw.R[at2][i]);
          robcp[i]=0.0e0;
       }
       for (int i=1; i<dimarr; i++) {for (int j=0; j<3; j++) {rbgp[i][j]=rbgp[i-1][j]+dx[j];}}
@@ -525,6 +526,7 @@ int main (int argc, char ** argv)
    gfil << "set zrange [minval2plot:maxval2plot]" << endl;
    gfil << "set cbrange [minval2plot:maxval2plot]" << endl;
    gfil << "unset contour" << endl;
+   //gfil << "set pm3d interpolate 2,2" << endl;
    gfil << "set pm3d depthorder hidden3d 1" << endl;
    gfil << "set palette rgbformulae 33,13,10" << endl;
    gfil << "set style line 1 linecolor rgb \"#444444\"" << endl;
@@ -534,6 +536,7 @@ int main (int argc, char ** argv)
    eps3dnam.append("-3D.eps");
    pdf3dnam.append("-3D.pdf");
    gfil << "unset title" << endl;
+   gfil << "set xyplane 0" << endl;
    gfil << "set terminal postscript eps enhanced color fontscale 1.75 lw 2 dashlength 4" << endl;
 #if (defined(__APPLE__)||defined(__linux__))
    gfil << "set output '|epstopdf --filter --outfile=" << pdf3dnam << "'" << endl;
@@ -554,6 +557,7 @@ int main (int argc, char ** argv)
    gfil << "set contour base" << endl;
    int noconts=9;
    solreal dcont=(maxval-minval)/solreal(noconts),contval=md1lmin+0.25e0*dcont;
+   //gfil << "set cntrparam cubicspline" << endl;
    gfil << "set cntrparam levels discrete " << contval;
    gfil << ", " << (md1dmax-0.5*dcont);
    contval=minval+dcont;
@@ -575,14 +579,22 @@ int main (int argc, char ** argv)
    pdf1s1nam.append("pdf");
    if (!options.showatlbls) {gfil << "#";}
    gfil << "set label 1 '" << getEnhancedEpsAtLbl(bnw.atLbl[at1]) << "' at "
-   << 0.05e0*(lenline) << "," << 1.15*(minval) << " front offset character 0,0.75" << endl;
+   << 0.15e0*(lenline) << "," << (minval+range*0.15e0) << " front offset character -2,0.00" << endl;
    if (!options.showatlbls) {gfil << "#";}
    gfil << "set label 2 '" << getEnhancedEpsAtLbl(bnw.atLbl[at2]) << "' at "
-   << 0.95e0*(lenline) << "," << 1.15*(minval) << " front offset character -2,0.75" << endl;
-   gfil << "set arrow 1 from " << 0.05e0*(lenline) << "," << 1.15*(minval)
-   << " to " << 0.0e0 << "," << minval << endl;
-   gfil << "set arrow 2 from " << 0.95e0*(lenline) << "," << 1.15*(minval)
-        << " to " << lenline << "," << minval << endl;
+   << 0.85e0*(lenline) << "," << (minval+range*0.15e0) << " front offset character 0.3,0.00" << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set arrow 1 from " << 0.15e0*(lenline) << "," << (minval+0.15*range)
+   << " to " << 0.25e0*lenline << "," << (minval+0.10*range) << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set arrow 2 from " << 0.85e0*(lenline) << "," << (minval+0.15*range)
+        << " to " << 0.75e0*lenline << "," << (minval+0.10*range) << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set arrow 3 nohead lt 2 lc rgb 'black' lw 1 from " << (0.25*lenline) << ",minval2plot "
+        << "to " << (0.25*lenline) << ",maxval2plot" << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set arrow 4 nohead lt 2 lc rgb 'black' lw 1 from " << (0.75*lenline) << ",minval2plot "
+        << "to " << (0.75*lenline) << ",maxval2plot" << endl;
    //gfil << "set xtics add ('" << getEnhancedEpsAtLbl(bnw.atLbl[at1]) << "' 0)" << endl;
    //gfil << "set label 1 '" << getEnhancedEpsAtLbl(bnw.atLbl[at1]) << "' at "
    //<< 0.04e0*(lenline) << "," << 0.05*(lenline) << endl;
@@ -607,11 +619,27 @@ int main (int argc, char ** argv)
       at2=tmpaaa;
    }
    if (!options.showatlbls) {gfil << "#";}
+   gfil << "set style fill solid 1.0 border -1" << endl;
+   gfil << "set object 1 circle at 0.25*dimparam,0.25*dimparam front size dimparam*0.005 fc rgb 'black'" << endl;
+   gfil << "set object 2 circle at 0.75*dimparam,0.75*dimparam front size dimparam*0.005 fc rgb 'black'" << endl;
+   if (!options.showatlbls) {gfil << "#";}
    gfil << "set label 1 '" << getEnhancedEpsAtLbl(bnw.atLbl[at1]) << "' at "
-        << 0.04e0*(lenline) << "," << 0.05*(lenline) << " front offset 0,0" << endl;
+        << 0.25e0*(lenline) << "," << 0.25*(lenline) << " front offset character -2.2,-1" << endl;
    if (!options.showatlbls) {gfil << "#";}
    gfil << "set label 2 '" << getEnhancedEpsAtLbl(bnw.atLbl[at2]) << "' at "
-   << 0.9e0*(lenline) << "," << 0.95*(lenline) << " front offset 0,0" << endl;
+   << 0.75e0*(lenline) << "," << 0.75*(lenline) << " front offset character 0.5,0.8" << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set arrow 1 nohead lt 2 lc rgb 'black' lw 1 from " << (0.25*lenline) << 
+           ",0 to " << (0.25*lenline) << ",dimparam front" << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set arrow 2 nohead lt 2 lc rgb 'black' lw 1 from " << (0.75*lenline) << 
+           ",0 to " << (0.75*lenline) << ",dimparam front" << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set arrow 3 nohead lt 2 lc rgb 'black' lw 1 from 0," << (0.25*lenline) << 
+           " to dimparam," << (0.25*lenline) << " front" << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set arrow 4 nohead lt 2 lc rgb 'black' lw 1 from 0," << (0.75*lenline) << 
+           " to dimparam," << (0.75*lenline) << " front" << endl;
    gfil << "set output '" << extepsnam << "'" << endl;
    gfil << "plot namedatfile with image notitle";
    if (!options.showcont) {gfil << "#";}
