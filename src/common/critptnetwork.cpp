@@ -23,11 +23,11 @@
 //#include "atomcolschcust.h" //Choose this for the palette defined by JMHP
 #include "atomcolschjmol.h" //Choose this for the palette used in JMol
 
-//**********************************************************************************************
-//**********************************************************************************************
-//**********************************************************************************************
+/* ********************************************************************************* */
+/* ********************************************************************************* */
+/* ********************************************************************************* */
 
-//**************************************************************************************************
+/* ************************************************************************************* */
 critPtNetWork::critPtNetWork()
 {
    //publics:
@@ -67,7 +67,7 @@ critPtNetWork::~critPtNetWork()
    dealloc2DRealArray(RCCP,dCCP);
    dealloc1DStringArray(lblCCP);
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 solreal critPtNetWork::V0=0.0e0;
 solreal critPtNetWork::V5=2.0e0/(sqrt(4.0e0+(1.0e0+sqrt(5.0e0))*(1.0e0+sqrt(5.0e0))));
 solreal critPtNetWork::V8=(1.0e0+sqrt(5.0e0))/(sqrt(4.0e0+(1.0e0+sqrt(5.0e0))*(1.0e0+sqrt(5.0e0))));
@@ -91,7 +91,7 @@ solreal critPtNetWork::IHV[nIHV][3]={
 //Added for looking at the atomic center and for easy the
 //addition of the labels and coordinates in
 //functions add*?CP
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::setCriticalPoints(bondNetWork &bn,gaussWaveFunc &wf,ScalarFieldType ft)
                             //ft\in{NONE,DENS,MGRD,LAPD,LOLD,ELFD,SENT,KEDK,KEDG}
 {
@@ -212,7 +212,7 @@ void critPtNetWork::setCriticalPoints(bondNetWork &bn,gaussWaveFunc &wf,ScalarFi
    }
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::seekRhoACP(solreal (&x)[3],gaussWaveFunc &wf)
 {
    static solreal rho,gr[3],hr[3][3],dx[3];
@@ -241,7 +241,7 @@ void critPtNetWork::seekRhoACP(solreal (&x)[3],gaussWaveFunc &wf)
    }
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::seekRhoBCP(solreal (&x)[3],gaussWaveFunc &wf)
 {
    static solreal rho,gr[3],hr[3][3],dx[3];
@@ -272,7 +272,7 @@ void critPtNetWork::seekRhoBCP(solreal (&x)[3],gaussWaveFunc &wf)
    //cout << "IterBCP: " << count << endl;
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::seekRhoRCP(solreal (&x)[3],gaussWaveFunc &wf)
 {
    static solreal rho,gr[3],hr[3][3],dx[3];
@@ -306,7 +306,7 @@ void critPtNetWork::seekRhoRCP(solreal (&x)[3],gaussWaveFunc &wf)
    //cout << "IterRCP: " << count << endl;
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::seekRhoCCP(solreal (&x)[3],gaussWaveFunc &wf)
 {
    static solreal rho,gr[3],hr[3][3],dx[3];
@@ -338,7 +338,7 @@ void critPtNetWork::seekRhoCCP(solreal (&x)[3],gaussWaveFunc &wf)
    //displayWarningMessage("seekRhoCCP(...) under construction.");
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::seekLOLACP(solreal (&x)[3],solreal &ll,solreal (&g)[3],gaussWaveFunc &wf)
 {
    static solreal lol,gl[3],hl[3][3],dx[3];
@@ -380,7 +380,7 @@ void critPtNetWork::seekLOLACP(solreal (&x)[3],solreal &ll,solreal (&g)[3],gauss
    //displayWarningMessage("seekLOLACP(...) under construction.");
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::seekLOLBCP(solreal (&x)[3],solreal &ll,solreal (&g)[3],gaussWaveFunc &wf)
 {
    static solreal lol,gl[3],hl[3][3],dx[3];
@@ -416,34 +416,34 @@ void critPtNetWork::seekLOLBCP(solreal (&x)[3],solreal &ll,solreal (&g)[3],gauss
    //displayWarningMessage("seekLOLBCP(...) under construction.");
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::seekLOLRCP(solreal (&x)[3],solreal &ll,solreal (&g)[3],gaussWaveFunc &wf)
 {
    displayWarningMessage("seekLOLRCP(...) under construction.");
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::seekLOLCCP(solreal (&x)[3],solreal &ll,solreal (&g)[3],gaussWaveFunc &wf)
 {
    displayWarningMessage("seekLOLCCP(...) under construction.");
    return;
 }
-//**************************************************************************************************
-//**************************************************************************************************
-//**************************************************************************************************
-//**************************************************************************************************
-//**************************************************************************************************
-//**************************************************************************************************
-//**************************************************************************************************
-//**************************************************************************************************
-//**************************************************************************************************
-//**************************************************************************************************
-//**************************************************************************************************
-//**************************************************************************************************
-//**************************************************************************************************
-//**************************************************************************************************
-//**************************************************************************************************
-//**************************************************************************************************
+/* ************************************************************************************* */
+/* ************************************************************************************* */
+/* ************************************************************************************* */
+/* ************************************************************************************* */
+/* ************************************************************************************* */
+/* ************************************************************************************* */
+/* ************************************************************************************* */
+/* ************************************************************************************* */
+/* ************************************************************************************* */
+/* ************************************************************************************* */
+/* ************************************************************************************* */
+/* ************************************************************************************* */
+/* ************************************************************************************* */
+/* ************************************************************************************* */
+/* ************************************************************************************* */
+/* ************************************************************************************* */
 void critPtNetWork::getACPStep(solreal (&g)[3],solreal (&hess)[3][3],solreal (&hh)[3],int &sig)
 {
    static solreal eive[3][3],b[3],F[3];
@@ -489,7 +489,7 @@ void critPtNetWork::getACPStep(solreal (&g)[3],solreal (&hess)[3][3],solreal (&h
    }
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::getBCPStep(solreal (&g)[3],solreal (&hess)[3][3],solreal (&hh)[3],int &sig)
 {
    static solreal eive[3][3],b[3];
@@ -534,7 +534,7 @@ void critPtNetWork::getBCPStep(solreal (&g)[3],solreal (&hess)[3][3],solreal (&h
    }
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::getRCPStep(solreal (&g)[3],solreal (&hess)[3][3],solreal (&hh)[3],int &sig)
 {
    static solreal eive[3][3],b[3];
@@ -580,7 +580,7 @@ void critPtNetWork::getRCPStep(solreal (&g)[3],solreal (&hess)[3][3],solreal (&h
    }
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::getCCPStep(solreal (&g)[3],solreal (&hess)[3][3],solreal (&hh)[3],int &sig)
 {
    static solreal eive[3][3],b[3];
@@ -627,7 +627,7 @@ void critPtNetWork::getCCPStep(solreal (&g)[3],solreal (&hess)[3][3],solreal (&h
    }
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 bool critPtNetWork::setRhoACPs(bondNetWork &bn,gaussWaveFunc &wf)
 {
    nACP=bn.nNuc;
@@ -638,7 +638,7 @@ bool critPtNetWork::setRhoACPs(bondNetWork &bn,gaussWaveFunc &wf)
    cout << "For this type, it is assumed that every ACP is a nucleus." <<endl;
    return true;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 bool critPtNetWork::setRhoBCPs(bondNetWork &bn,gaussWaveFunc &wf)
 {
 #if USEPROGRESSBAR
@@ -738,13 +738,21 @@ bool critPtNetWork::setRhoBCPs(bondNetWork &bn,gaussWaveFunc &wf)
    if (normalbcp==nBCP) {
       cout << "No more BCPs found." << endl;
    } else {
+      solreal tbcp[3];
+      for ( int i=normalbcp ; i<nBCP ; i++ ) {
+         for ( int k=0 ; k<3 ; k++ ) {tbcp[k]=RBCP[i][k];}
+         findTwoClosestAtoms(tbcp,wf,ata,atb);
+         atBCP[i][0]=ata;
+         atBCP[i][1]=atb;
+         lblBCP[i]="*"+wf.atLbl[ata]+"-"+wf.atLbl[atb];
+      }
       cout << (nBCP-normalbcp) << " new BCP";
       if ((nBCP-normalbcp)>1) {cout << "s";}
       cout << " found! Total number of BCPs: " << nBCP << endl;
    }
    return true;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 bool critPtNetWork::setRhoRCPs(bondNetWork &bn,gaussWaveFunc &wf)
 {
    solreal x[3],magg,rho,g[3];
@@ -787,7 +795,7 @@ bool critPtNetWork::setRhoRCPs(bondNetWork &bn,gaussWaveFunc &wf)
    //displayWarningMessage("setRhoRCPs(...) under construction.");
    return true;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 bool critPtNetWork::setRhoCCPs(bondNetWork &bn,gaussWaveFunc &wf)
 {
    solreal x[3],magg,rho,g[3];
@@ -830,7 +838,7 @@ bool critPtNetWork::setRhoCCPs(bondNetWork &bn,gaussWaveFunc &wf)
    //displayWarningMessage("setRhoCCPs(...) under construction.");
    return true;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 bool critPtNetWork::setLOLACPs(bondNetWork &bn,gaussWaveFunc &wf)
 {
    //string cl="a";
@@ -959,7 +967,7 @@ bool critPtNetWork::setLOLACPs(bondNetWork &bn,gaussWaveFunc &wf)
    //displayWarningMessage("setLOLACPs(...) under construction.");
    return true;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 bool critPtNetWork::setLOLBCPs(bondNetWork &bn,gaussWaveFunc &wf)
 {
    solreal x[3],magg,lol,g[3];
@@ -1033,28 +1041,28 @@ bool critPtNetWork::setLOLBCPs(bondNetWork &bn,gaussWaveFunc &wf)
    //displayWarningMessage("setLOLBCPs(...) under construction.");
    return true;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 bool critPtNetWork::setLOLRCPs(bondNetWork &bn,gaussWaveFunc &wf)
 {
    displayWarningMessage("No LOL RCP will be look for...");
    displayWarningMessage("(critPtNetWork::setLOLRCPs(...) under construction.)");
    return false;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 bool critPtNetWork::setLOLCCPs(bondNetWork &bn,gaussWaveFunc &wf)
 {
    displayWarningMessage("No LOL CCP will be look for...");
    displayWarningMessage("(critPtNetWork::setLOLCCPs(...) under construction.)");
    return false;
 }
-//**************************************************************************************************
-//**************************************************************************************************
-//**************************************************************************************************
-//**************************************************************************************************
-//**************************************************************************************************
-//**************************************************************************************************
-//**************************************************************************************************
-//**************************************************************************************************
+/* ************************************************************************************* */
+/* ************************************************************************************* */
+/* ************************************************************************************* */
+/* ************************************************************************************* */
+/* ************************************************************************************* */
+/* ************************************************************************************* */
+/* ************************************************************************************* */
+/* ************************************************************************************* */
 void critPtNetWork::displayACPCoords(void)
 {
    if (!iknowacps) {
@@ -1074,7 +1082,7 @@ void critPtNetWork::displayACPCoords(void)
    cout.unsetf(ios::scientific);
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::displayBCPCoords(void)
 {
    if (!iknowbcps) {
@@ -1094,7 +1102,7 @@ void critPtNetWork::displayBCPCoords(void)
    cout.unsetf(ios::scientific);
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::displayRCPCoords(void)
 {
    if (!iknowrcps) {
@@ -1114,7 +1122,7 @@ void critPtNetWork::displayRCPCoords(void)
    cout.unsetf(ios::scientific);
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::displayCCPCoords(void)
 {
    if (!iknowccps) {
@@ -1134,7 +1142,7 @@ void critPtNetWork::displayCCPCoords(void)
    cout.unsetf(ios::scientific);
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::removeRedundInLabel(string &lbl)
 {
    /*
@@ -1189,7 +1197,7 @@ void critPtNetWork::removeRedundInLabel(string &lbl)
    lbl=fl;
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 string critPtNetWork::getFirstChunkOfLabel(string &lbl)
 {
    if (lbl.length()==0) {
@@ -1198,7 +1206,7 @@ string critPtNetWork::getFirstChunkOfLabel(string &lbl)
    size_t pos=lbl.find_first_of("-");
    return lbl.substr(0,pos);
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 int critPtNetWork::addRhoBCP(solreal (&x)[3],string &lbl,bondNetWork &bn)
 {
    if (nBCP==0) {
@@ -1220,7 +1228,7 @@ int critPtNetWork::addRhoBCP(solreal (&x)[3],string &lbl,bondNetWork &bn)
    }
    return int(pos);
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::addRhoRCP(solreal (&x)[3],string &lbl,bondNetWork &bn)
 {
    if (nRCP==0) {
@@ -1248,7 +1256,7 @@ void critPtNetWork::addRhoRCP(solreal (&x)[3],string &lbl,bondNetWork &bn)
    }
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::addRhoCCP(solreal (&x)[3],string &lbl,bondNetWork &bn)
 {
    if (nCCP==0) {
@@ -1276,7 +1284,7 @@ void critPtNetWork::addRhoCCP(solreal (&x)[3],string &lbl,bondNetWork &bn)
    }
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::addLOLACP(solreal (&x)[3],string &lbl,bondNetWork &bn)
 {
    if (nACP==0) {
@@ -1298,7 +1306,7 @@ void critPtNetWork::addLOLACP(solreal (&x)[3],string &lbl,bondNetWork &bn)
    }
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::addLOLBCP(solreal (&x)[3],string &lbl,bondNetWork &bn)
 {
    if (nBCP==0) {
@@ -1318,7 +1326,7 @@ void critPtNetWork::addLOLBCP(solreal (&x)[3],string &lbl,bondNetWork &bn)
    }
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 bool critPtNetWork::imNew(solreal (&x)[3],int dim,solreal ** (&arr),size_t &pos)
 {
    solreal ee;
@@ -1347,7 +1355,7 @@ bool critPtNetWork::imNew(solreal (&x)[3],int dim,solreal ** (&arr),size_t &pos)
    pos=firstzeropos;
    return true;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::displayIHVCoords(void)
 {
    cout << scientific << setprecision(8);
@@ -1363,7 +1371,7 @@ void critPtNetWork::displayIHVCoords(void)
    cout.unsetf(ios::scientific);
    return;
 }
-//**********************************************************************************************
+/* ********************************************************************************* */
 void critPtNetWork::printAllFieldProperties(solreal &x,solreal &y,solreal &z,gaussWaveFunc &wf)
 {
    static solreal rho,lol,xx[3],g[3],hess[3][3];
@@ -1399,7 +1407,7 @@ void critPtNetWork::printAllFieldProperties(solreal &x,solreal &y,solreal &z,gau
    cout << "  Shann. Ent.: " << wf.evalShannonEntropy(x,y,z) << endl;
    return;
 }
-//**********************************************************************************************
+/* ********************************************************************************* */
 void critPtNetWork::writeAllFieldProperties(ofstream &ofil,solreal &x,solreal &y,solreal &z,gaussWaveFunc &wf)
 {
    static solreal rho,lol,xx[3],g[3],hess[3][3];
@@ -1486,7 +1494,7 @@ void critPtNetWork::writeAllFieldProperties(ofstream &ofil,solreal &x,solreal &y
    ofil << "  Shann. Ent.: "; ofil.width(20); ofil << wf.evalShannonEntropy(x,y,z) << endl;
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::printCPProps(gaussWaveFunc &wf)
 {
    solreal x,y,z;//,gx,gy,gz,rho,hxx,hyy,hzz,hxy,hxz,hyz;
@@ -1597,7 +1605,7 @@ void critPtNetWork::printCPProps(gaussWaveFunc &wf)
    cout << endl;
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 bool critPtNetWork::makePOVFile(string pnam,bondNetWork &bn,povRayConfProp &pvp,
                                 int campos)
 {
@@ -1840,7 +1848,7 @@ and the coordinates on the bondnetwork object as well.");
    pof.close();
    return true;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::putBonds(ofstream &pof,bondNetWork &bn)
 {
    pof << "union{" << endl;
@@ -1879,7 +1887,7 @@ void critPtNetWork::putBonds(ofstream &pof,bondNetWork &bn)
    pof << "}" << endl;
    return;
 }
-//**********************************************************************************************
+/* ********************************************************************************* */
 void critPtNetWork::putNuclei(ofstream & pof,bondNetWork &bn)
 {
    int atomn;
@@ -1893,7 +1901,7 @@ void critPtNetWork::putNuclei(ofstream & pof,bondNetWork &bn)
    }
    return;
 }
-//**********************************************************************************************
+/* ********************************************************************************* */
 void critPtNetWork::centerMolecule(bondNetWork &bn)
 {
    solreal trn[3];
@@ -1941,7 +1949,7 @@ void critPtNetWork::centerMolecule(bondNetWork &bn)
    for (int i=0; i<3; i++) {centMolecVec[i]=trn[i];}
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::writeCPProps(string &ofnam,string &wfnnam,gaussWaveFunc &wf)
 {
    ofstream ofil;
@@ -2080,31 +2088,31 @@ void critPtNetWork::writeCPProps(string &ofnam,string &wfnnam,gaussWaveFunc &wf)
    ofil.close();
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::drawNuclei(bool dn)
 {
    drawNuc=dn;
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::drawBonds(bool db)
 {
    drawBnd=db;
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::drawBondGradPaths(bool dbg)
 {
    drawBGPs=dbg;
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::tubeStyleBGP(bool stl)
 {
    tubeBGPStyle=stl;
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::getNextPointInGradientPathSimple(solreal (&xn)[3],solreal &stepsize,solreal &mgg,gaussWaveFunc &wf)
 {
    static solreal rho,g[3],magg;
@@ -2117,7 +2125,7 @@ void critPtNetWork::getNextPointInGradientPathSimple(solreal (&xn)[3],solreal &s
    //cout << "mgg: " << mgg << endl;
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 int critPtNetWork::findGradientPathSimple(int iacp1,int iacp2,int ibcp,gaussWaveFunc &wf)
 {
    static solreal ro[3],rn[3],rho,g[3],h[3][3],eive[3][3],eival[3],hstep,dist,maggrad;
@@ -2184,7 +2192,7 @@ int critPtNetWork::findGradientPathSimple(int iacp1,int iacp2,int ibcp,gaussWave
    return count-1;
    //wf.displayAllFieldProperties(rn[0],rn[1],rn[2]);
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 int critPtNetWork::findGradientPathRK5(int iacp1,int iacp2,int ibcp,gaussWaveFunc &wf)
 {
    static solreal ro[3],rn[3],rho,g[3],h[3][3],eive[3][3],eival[3],hstep,dist,maggrad;
@@ -2251,7 +2259,7 @@ int critPtNetWork::findGradientPathRK5(int iacp1,int iacp2,int ibcp,gaussWaveFun
    return count-1;
    //wf.displayAllFieldProperties(rn[0],rn[1],rn[2]);
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::addGradientPathToPOVFile(int npts,ofstream &ofil)
 {
    //int indgp;
@@ -2261,7 +2269,7 @@ void critPtNetWork::addGradientPathToPOVFile(int npts,ofstream &ofil)
       writePOVSphere(ofil,0,RGP[i][0],RGP[i][1],RGP[i][2],gprad,0.0e0,1.0e0,0.0e0);
    }
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::setBondPaths(gaussWaveFunc &wf)
 {
    if (!iknowbcps) {
@@ -2283,6 +2291,8 @@ void critPtNetWork::setBondPaths(gaussWaveFunc &wf)
       for (int k=0; k<3; k++) {rseed[k]=RBCP[i][k];}
       at1=atBCP[i][0];
       at2=atBCP[i][1];
+      //cout << "BCP[" << (i+1) << "]: " << "at1: " << at1 << "(" << wf.atLbl[at1] << "), at2: "\
+           << at2 << "(" << wf.atLbl[at2] << ")" << endl;
       //npts=findGradientPathRK5(atBCP[i][0],atBCP[i][1],i,wf);
       npts=findSingleRhoGradientPathRK5(at1,at2,hstep,arrsize,RBGP[i],rseed,wf);
       atBCP[i][2]=npts;
@@ -2301,7 +2311,7 @@ void critPtNetWork::setBondPaths(gaussWaveFunc &wf)
    if (nBGP!=nBCP) {displayWarningMessage("For some unknown reason nBGP!=nBCP...");}
    iknowbgps=true;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::getNextPointInGradientPathRK5(solreal (&xn)[3],
                                                   solreal &stepsize,solreal &mgg,gaussWaveFunc &wf)
 {
@@ -2335,7 +2345,7 @@ void critPtNetWork::getNextPointInGradientPathRK5(solreal (&xn)[3],
    mgg=sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]);
    return;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::invertOrderBGPPoints(int dim)
 {
    int numop=((dim+1)>>1);
@@ -2349,7 +2359,7 @@ void critPtNetWork::invertOrderBGPPoints(int dim)
       }
    }
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::invertOrderBGPPoints(int dim,solreal** (&arr))
 {
 #if DEBUG
@@ -2369,7 +2379,7 @@ void critPtNetWork::invertOrderBGPPoints(int dim,solreal** (&arr))
       }
    }
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 bool critPtNetWork::seekSingleRhoBCP(int ata,int atb,gaussWaveFunc &wf,solreal (&x)[3])
 {
    
@@ -2385,13 +2395,14 @@ bool critPtNetWork::seekSingleRhoBCP(int ata,int atb,gaussWaveFunc &wf,solreal (
    for (int n=0; n<3; n++) {magg+=(g[n]*g[n]);}
    magg=sqrt(magg);
    if (!((rho>MINRHOSIGNIFICATIVEVAL)&&(magg<EPSGRADMAG))) {
-      displayErrorMessage("The chosen atoms do not lead to a BCP!");
+      displayErrorMessage(string("The chosen atoms ("+wf.atLbl[ata]\
+               +","+wf.atLbl[atb]+") do not lead to a BCP!"));
       //wf.displayAllFieldProperties(x[0],x[1],x[2]);
       return false;
    }
    return true;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 int critPtNetWork::findSingleRhoGradientPathRK5(int at1,int at2,solreal hstep,
                                                 int dima,solreal** (&arbgp),solreal (&ro)[3],
                                                 gaussWaveFunc &wf)
@@ -2522,37 +2533,65 @@ int critPtNetWork::findSingleRhoGradientPathRK5(int at1,int at2,solreal hstep,
    return count;
    //wf.displayAllFieldProperties(rn[0],rn[1],rn[2]);
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
+void critPtNetWork::findTwoClosestAtoms(solreal (&xo)[3],gaussWaveFunc &wf,int &idx1st,\
+      int &idx2nd)
+{
+   if ( wf.nNuc<2 ) {idx1st=0; idx2nd=0; return;}
+   solreal xmagt=0.0e0,xmag1=0.0e0,xmag2=0.0e0;
+   int ii1,ii2,iit;
+   for ( int k=0 ; k<3 ; k++ ) {xmag1+=((xo[k]-wf.getR(0,k))*(xo[k]-wf.getR(0,k)));}
+   ii1=0;
+   for ( int k=0 ; k<3 ; k++ ) {xmag2+=((xo[k]-wf.getR(1,k))*(xo[k]-wf.getR(1,k)));}
+   ii2=1;
+   if ( xmag1>xmag2 ) {
+      xmagt=xmag1; xmag1=xmag2; xmag2=xmagt;
+      ii1=1;
+      ii2=0;
+   }
+   for ( int i=0 ; i<wf.nNuc ; i++ ) {
+      xmagt=0.0e0;
+      for ( int k=0 ; k<3 ; k++ ) {xmagt+=((xo[k]-wf.getR(i,k))*(xo[k]-wf.getR(i,k)));}
+      if ( xmagt<xmag2 ) {xmag2=xmagt; ii2=i;}
+      if ( xmag1>xmag2 ) {
+         xmagt=xmag1; xmag1=xmag2; xmag2=xmagt;
+         iit=ii1;     ii1=ii2;     ii2=iit;
+      }
+   }
+   idx1st=ii1;
+   idx2nd=ii2;
+}
+/* ************************************************************************************* */
 bool critPtNetWork::iKnowACPs(void)
 {
    return iknowacps;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 bool critPtNetWork::iKnowBCPs(void)
 {
    return iknowbcps;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 bool critPtNetWork::iKnowRCPs(void)
 {
    return iknowrcps;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 bool critPtNetWork::iKnowCCPs(void)
 {
    return iknowccps;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 ScalarFieldType critPtNetWork::myCPType()
 {
    return mycptype;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 bool critPtNetWork::iKnowBGPs(void)
 {
    return iknowbgps;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 bool critPtNetWork::readFromFile(string inname)
 {
    string tmps;
@@ -2654,7 +2693,7 @@ bool critPtNetWork::readFromFile(string inname)
    displayStatus(true);
    return true;
 }
-//**************************************************************************************************
+/* ************************************************************************************* */
 void critPtNetWork::displayStatus(bool lngdesc)
 {
    printScrCharLine('+');
@@ -2691,14 +2730,14 @@ void critPtNetWork::displayStatus(bool lngdesc)
    printScrCharLine('+');
    return;
 }
-//**************************************************************************************************
-//**************************************************************************************************
-//**************************************************************************************************
-//**************************************************************************************************
-//**************************************************************************************************
-//**************************************************************************************************
-//**************************************************************************************************
-//**************************************************************************************************
-//**************************************************************************************************
+/* ************************************************************************************* */
+/* ************************************************************************************* */
+/* ************************************************************************************* */
+/* ************************************************************************************* */
+/* ************************************************************************************* */
+/* ************************************************************************************* */
+/* ************************************************************************************* */
+/* ************************************************************************************* */
+/* ************************************************************************************* */
 #endif//_CRITPTNETWORK_CPP_
 

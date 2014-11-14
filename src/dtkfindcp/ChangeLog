@@ -1,5 +1,17 @@
 
 =====================================================================
+*** Version 0.1.4 ***
+=====================================================================
+
+   Bug fixed: After the extended BCP seeking procedure, the
+	           program looks for the closest atoms to each
+				  new BCP found. This corrects the output and labels
+				  for the molecule ffcomplex_diaminopropane.wfx.
+				  This bug was reported by Luis Alfredo Nu\~nez 
+				  Meneses.
+   New function: findTwoClosestAtoms in critPtNetWork class.
+
+=====================================================================
 *** Version 0.1.3 ***
 =====================================================================
 
@@ -149,3 +161,4 @@ Known bugs:
         epi.wfn. This bug was found after the last changes in
         the algorithm for adding CPs and (related to the signature
         test and the initialization variable 1.0e50)
+
