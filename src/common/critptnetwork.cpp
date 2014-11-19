@@ -1805,7 +1805,7 @@ and the coordinates on the bondnetwork object as well.");
       pof << "#end\n//end if DrawCageCriticalPoints" << endl;
       writeScrCharLine(pof,'/');
    }
-   if (iknowbgps&&drawBGPs) {
+   if (iknowbgps) {
       solreal gprad=0.05;
       int npts;
       pof << "#if(DrawGradientPathSpheres)" << endl;
@@ -1822,7 +1822,7 @@ and the coordinates on the bondnetwork object as well.");
       pof << "}" << endl;
       pof << "#end\n//end if DrawGradientPathSpheres" << endl;
    }
-   if (iknowbgps&&drawBGPs) {
+   if (iknowbgps) {
       solreal gprad=0.05;
       int npts;
       pof << "#if(DrawGradientPathTubes)" << endl;
@@ -1834,12 +1834,12 @@ and the coordinates on the bondnetwork object as well.");
          for (int j=1; j<npts; j++) {
             writePOVSphere(pof,1,RBGP[i][j][0],RBGP[i][j][1],RBGP[i][j][2], \
                            gprad,"ColorABGradPath");
-            if (tubeBGPStyle) {
+            //if (tubeBGPStyle) {
                writePOVCylinder(pof,1,
                                 RBGP[i][j][0],RBGP[i][j][1],RBGP[i][j][2], \
                                 RBGP[i][j-1][0],RBGP[i][j-1][1],RBGP[i][j-1][2], \
                                 gprad,"ColorABGradPath");
-            }
+            //}
          }
       }
       pof << "}" << endl;
