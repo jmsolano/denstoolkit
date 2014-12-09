@@ -3124,6 +3124,71 @@ solreal gaussWaveFunc::evalDensityMatrix1(solreal x,solreal y,solreal z,
    return gamm;
 }
 /* *************************************************************************************** */
+void gaussWaveFunc::evalGradDensityMatrix1(solreal x,solreal y,solreal z,\
+      solreal xp,solreal yp,solreal zp,\
+      solreal &gamm,solreal (&gg)[3],solreal (&gp)[3])
+{
+   solreal xmr,xpmr,ymr,ypmr,zmr,zpmr,rrp;
+   solreal cc,ccp;
+   int indp,indr,ppt;
+   indp=0;
+   indr=0;
+   for (int i=0; i<nNuc; i++) {
+      xmr=x-R[indr];
+      xpmr=xp-R[indr++];
+      ymr=y-R[indr];
+      ypmr=yp-R[indr++];
+      zmr=z-R[indr];
+      zpmr=zp-R[indr++];
+      rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+      rrp=-((xpmr*xpmr)+(ypmr*ypmr)+(zpmr*zpmr));
+      for (int j=0; j<myPN[i]; j++) {
+         ppt=primType[indp];
+         alp=primExp[indp];
+         cc=exp(alp*rr);
+         chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[indp]*=cc;
+         evalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
+         gx[indp]*=cc;
+         gy[indp]*=cc;
+         gz[indp]*=cc;
+         ccp=exp(alp*rrp);
+         hyz[indp]=evalAngACases(ppt,xpmr,ypmr,zpmr);
+         hyz[indp]*=ccp;
+         evalDkAngCases(ppt,alp,xpmr,ypmr,zpmr,hxx[indp],hyy[indp],hzz[indp]);
+         hxx[indp]*=ccp;
+         hyy[indp]*=ccp;
+         hzz[indp]*=ccp;
+         indp++;
+      }
+   }
+   solreal nabx,naby,nabz,nabxp,nabyp,nabzp;
+   nabx=naby=nabz=0.000000000000000e0;
+   nabxp=nabyp=nabzp=0.000000000000000e0;
+   indp=0;
+   solreal trho=0.0000000e0,chib,chibp;
+   for (int i=0; i<nPri; i++) {
+      //indr=i*(nPri);
+      //cc=cab[indr];
+      chib=chibp=0.0000000e0;
+      for (int j=0; j<nPri; j++) {
+         //cc=cab[indp++];
+         chibp+=(hyz[j]*cab[indp]);
+         chib+=(chi[j]*cab[indp++]);
+      }
+      trho+=(chib*chi[i]);
+      nabx+=(chib*gx[i]);
+      naby+=(chib*gy[i]);
+      nabz+=(chib*gz[i]);
+   }
+   dx=2.00000e0*nabx;
+   dy=2.00000e0*naby;
+   dz=2.00000e0*nabz;
+   rho=trho;
+   return;
+
+}
+/* ************************************************************************************ */
 void gaussWaveFunc::evalHermiteCoefs(int (&aia)[3],int (&aib)[3],solreal &alpab,
                                      solreal (&ra)[3],solreal (&rb)[3],
                                      solreal (&rp)[3],
