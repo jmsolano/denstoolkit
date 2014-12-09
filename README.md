@@ -34,7 +34,6 @@ $make runtest
 If you only need to get the latest version of DensToolKi, and you are not using personal modifications to the source, in the local main directory (using the above example should be ```\local\path\for\dtk\denstoolkit```):
 
 ```
-$git reset --hard HEAD
 $git pull
 $make distclean
 $make
