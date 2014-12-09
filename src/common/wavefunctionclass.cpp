@@ -356,6 +356,12 @@ void gaussWaveFunc::displayAllFieldProperties(solreal x,solreal y,solreal z)
                              << setw(20) << hess[2][2] << endl;
    cout << "  EigVal Hess: " << setw(20) << eival[0] << setw(20) << eival[1]
                              << setw(20) << eival[2] << endl;
+   cout << "  EigVec Hess: " << setw(20) << eivec[0][0] << setw(20) << eivec[1][0]
+                             << setw(20) << eivec[2][0] << endl;
+   cout << "               " << setw(20) << eivec[0][1] << setw(20) << eivec[1][1]
+                             << setw(20) << eivec[2][1] << endl;
+   cout << "               " << setw(20) << eivec[0][2] << setw(20) << eivec[1][2]
+                             << setw(20) << eivec[2][2] << endl;
    cout << "  LapRho:      " << setw(20) << (hess[0][0]+hess[1][1]+hess[2][2]) << endl;
    evalHessLOL(xx,lol,g,hess);//(x,lol,gl,hl)
    eigen_decomposition3(hess, eivec, eival);
@@ -399,6 +405,12 @@ void gaussWaveFunc::writeAllFieldProperties(solreal x,solreal y,solreal z,ofstre
                              << setw(20) << hess[2][2] << endl;
    ofil << "  EigVal Hess: " << setw(20) << eival[0] << setw(20) << eival[1]
                              << setw(20) << eival[2] << endl;
+   ofil << "  EigVec Hess: " << setw(20) << eivec[0][0] << setw(20) << eivec[1][0]
+                             << setw(20) << eivec[2][0] << endl;
+   ofil << "               " << setw(20) << eivec[0][1] << setw(20) << eivec[1][1]
+                             << setw(20) << eivec[2][1] << endl;
+   ofil << "               " << setw(20) << eivec[0][2] << setw(20) << eivec[1][2]
+                             << setw(20) << eivec[2][2] << endl;
    ofil << "  LapRho:      " << setw(20) << (hess[0][0]+hess[1][1]+hess[2][2]) << endl;
    evalHessLOL(xx,lol,g,hess);//(x,lol,gl,hl)
    eigen_decomposition3(hess, eivec, eival);

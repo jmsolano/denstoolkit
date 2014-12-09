@@ -139,3 +139,10 @@ runete: build
 
 runc60: build
 	./dtkfindcp c60-321g.wfx -P -g -T -k
+
+runh2ocomp: build
+	./dtkfindcp 4h2o-anion.wfn -P -g -k -a
+
+runli2: build
+	./dtkfindcp li2.ccsd.augccpvtz.wfn -P -g -k -a -c 100
+

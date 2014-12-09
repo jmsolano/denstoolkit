@@ -1,4 +1,5 @@
 #Extensions
+*.aim
 *.o
 *.log
 *.pdf
@@ -9,6 +10,7 @@
 *.dat
 *.cpx
 *.cub
+*.cube
 *.tsv
 cachegrind.*
 *.gz

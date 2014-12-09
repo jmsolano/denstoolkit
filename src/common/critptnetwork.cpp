@@ -17,6 +17,7 @@
 #include "eig2-4.h"
 #include "iofuncts-cpx.h"
 #include "atomradiicust.h"
+#include "solstringtools.h"
 // The first 94 atomic radii are given,
 //  the rest are set to be 0.80e0
 //
@@ -213,7 +214,8 @@ void critPtNetWork::setCriticalPoints(bondNetWork &bn,gaussWaveFunc &wf,ScalarFi
    return;
 }
 /* ************************************************************************************* */
-void critPtNetWork::seekRhoACP(solreal (&x)[3],gaussWaveFunc &wf)
+void critPtNetWork::seekRhoACP(solreal (&x)[3],solreal &rho2ret,solreal (&g)[3],\
+      gaussWaveFunc &wf,int maxit)
 {
    static solreal rho,gr[3],hr[3][3],dx[3];
    static int sig;
@@ -222,10 +224,10 @@ void critPtNetWork::seekRhoACP(solreal (&x)[3],gaussWaveFunc &wf)
    solreal magh=magd;
    if (magd<=EPSGRADMAG) {
       magd=0.1e0;
-      x[0]+=0.05e0;
+      x[0]+=0.01e0;
    }
    int count=0;
-   while (((magd>EPSGRADMAG)&&(magh>EPSGRADMAG))&&(count<MAXITERATIONACPSEARCH)) {
+   while (((magd>EPSGRADMAG)&&(magh>EPSGRADMAG))&&(count<maxit)) {
       getACPStep(gr,hr,dx,sig);
       //if (sig!=-3) {
       //   x[0]+=0.1e0;
@@ -239,6 +241,8 @@ void critPtNetWork::seekRhoACP(solreal (&x)[3],gaussWaveFunc &wf)
       magh=sqrt(dx[0]*dx[0]+dx[1]*dx[1]+dx[2]*dx[2]);
       count++;
    }
+   for ( int k=0 ; k<3 ; k++ ) {g[k]=gr[k];}
+   rho2ret=rho;
    return;
 }
 /* ************************************************************************************* */
@@ -468,6 +472,15 @@ void critPtNetWork::getACPStep(solreal (&g)[3],solreal (&hess)[3][3],solreal (&h
    h4[2][3]=h4[3][2]=F[2];
    eigen_decomposition4(h4, m4, v4);
    solreal lp=v4[3];
+   if ( fabs(lp)<EPSEIGENVALUECPSEARCH ) {lp=EPSEIGENVALUECPSEARCH;}
+#if DEBUG
+   if (lp<=0.0e0) {
+      displayWarningMessage(string("lp<=0!: "+getStringFromReal(lp)));
+      for ( int i=0 ; i<4 ; i++ ) {cout << v4[i] << " ";}
+      cout << endl;
+      printM3x3Comp("hess:\n",hess);
+   }
+#endif
    hh[2]=hh[1]=hh[0]=0.00000e0;
    for (int j=0; j<3; j++) {
       hh[0]-=eive[0][j]*F[j]/(b[j]-lp+EPSGRADMAG);
@@ -630,12 +643,107 @@ void critPtNetWork::getCCPStep(solreal (&g)[3],solreal (&hess)[3][3],solreal (&h
 /* ************************************************************************************* */
 bool critPtNetWork::setRhoACPs(bondNetWork &bn,gaussWaveFunc &wf)
 {
-   nACP=bn.nNuc;
-   for (int i=0; i<nACP; i++) {
-      for (int j=0; j<3; j++) {RACP[i][j]=bn.R[i][j];}
-      lblACP[i]=bn.atLbl[i];
+   solreal rad,x[3],rho,g[3],magg;
+   string lbl;
+   nACP=0;
+   //nACP=bn.nNuc;
+   for (int i=0; i<bn.nNuc; i++) {
+      //for (int j=0; j<3; j++) {RACP[i][j]=bn.R[i][j];}
+      for ( int j=0 ; j<3 ; j++ ) {x[j]=bn.R[i][j];}
+      seekRhoACP(x,rho,g,wf);
+      magg=0.0e0;
+      for ( int k=0 ; k<3 ; k++ ) {magg+=(g[k]*g[k]);}
+      magg=sqrt(magg);
+      //cout << "magg: " << magg << " (" << bn.atLbl[i] << ")" << endl;
+      if ( (rho>MINRHOSIGNIFICATIVEVAL)&&(magg<EPSRHOACPGRADMAG) ) {
+         lbl=bn.atLbl[i];
+         addRhoACP(x,lbl,bn);
+      }
+      //lblACP[i]=bn.atLbl[i];
    }
-   cout << "For this type, it is assumed that every ACP is a nucleus." <<endl;
+   solreal regnACP=nACP;
+   cout << "Found " << regnACP << " regular ACPs" << endl;
+   int nhyd,noth;
+   nhyd=bn.countAtomsOfAtomicNumber(1);
+   noth=bn.nNuc-nhyd;
+   solreal perchyd,percoth;
+   perchyd=100.0e0*solreal(nhyd)/solreal(noth);
+   percoth=100.0e0-perchyd;
+   cout << "Looking around atoms..." << endl;
+#if USEPROGRESSBAR
+   printProgressBar(0);
+#endif
+   int itmp;
+   for (int i=0; i<bn.nNuc; i++) {
+      //if (bn.atNum[i]!=0) {continue;}
+      rad=0.2e0;//atomicRadius[bn.atNum[i]]*0.1e0;
+      lbl=(bn.atLbl[i]+string("nn"));
+      itmp=0;
+      for (int j=0; j<6; j++) {
+         for (int k=0; k<3; k++) {x[k]=bn.R[i][k]+IHV[j][k]*rad;}
+         seekRhoACP(x,rho,g,wf);
+         magg=0.0e0;
+         for (int n=0; n<3; n++) {magg+=(g[n]*g[n]);}
+         magg=sqrt(magg);
+         if ((rho>MINRHOSIGNIFICATIVEVAL)&&(magg<EPSRHOACPGRADMAG)) {
+            lbl+=getStringFromInt(itmp);
+            addRhoACP(x,lbl,bn);
+            ++itmp;
+            //cout << x[0] << " " << x[1] << " " << x[2] << endl;
+         }
+      }
+#if USEPROGRESSBAR
+      printProgressBar(int(100.0e0*solreal(i)/solreal((bn.nNuc-1))));
+#endif
+   }
+#if USEPROGRESSBAR
+   printProgressBar(100);
+   cout << endl;
+#endif
+   cout << "Looking for possible extra ACPs..." << endl;
+#if USEPROGRESSBAR
+   printProgressBar(0);
+#endif
+   solreal extbd,maxbd,dd;
+   maxbd=bn.maxBondDist;
+   extbd=maxbd*1.1e0;
+   //cout << "extd: " << extbd << endl;
+   for (int i=0; i<bn.nNuc; i++) {
+      for (int j=i+1; j<bn.nNuc; j++) {
+         dd=0.0e0;
+         for (int k=0; k<3; k++) {
+            dd+=((bn.R[i][k]-bn.R[j][k])*(bn.R[i][k]-bn.R[j][k]));
+         }
+         dd=sqrt(dd);
+         if (dd<=extbd) {
+            //cout << "Possible extended ACP Seed found!" << endl;
+            for (int k=0; k<3; k++) {x[k]=0.5e0*(bn.R[i][k]+bn.R[j][k]);}
+            wf.evalRhoGradRho(x[0],x[1],x[2],rho,g);
+            magg=0.0e0;
+            for (int n=0; n<3; n++) {magg+=(g[n]*g[n]);}
+            magg=sqrt(magg);
+            if ((rho>MINRHOSIGNIFICATIVEVAL)&&(magg<EPSGRADMAG)) {
+               addRhoACP(x,lbl,bn);
+            }
+            seekRhoACP(x,rho,g,wf,(MAXITERATIONACPSEARCH));
+            wf.evalRhoGradRho(x[0],x[1],x[2],rho,g);
+            magg=0.0e0;
+            for (int n=0; n<3; n++) {magg+=(g[n]*g[n]);}
+            magg=sqrt(magg);
+            lbl="nnn";
+            if ((rho>MINRHOSIGNIFICATIVEVAL)&&(magg<EPSGRADMAG)) {
+               addRhoACP(x,lbl,bn);
+            }
+}
+      }
+#if USEPROGRESSBAR
+      printProgressBar(int(100.0e0*solreal(i)/solreal((nACP-1))));
+#endif
+   }
+#if USEPROGRESSBAR
+   printProgressBar(100);
+   cout << endl;
+#endif
    return true;
 }
 /* ************************************************************************************* */
@@ -681,12 +789,61 @@ bool critPtNetWork::setRhoBCPs(bondNetWork &bn,gaussWaveFunc &wf)
 #endif
    //------------------------------------------------------
    cout << nBCP << " BCPs found.\n";
-   cout << "Looking for possible extra BCPs..." << endl;
+   solreal extbd,dd,magg;
+   string ll;
+   cout << "Including non-nuclear attractors..." << endl;
 #if USEPROGRESSBAR
    printProgressBar(0);
 #endif
-   solreal extbd,dd,magg;
-   string ll;
+   for ( int i=0 ; i<nACP ; i++ ) {
+      for ( int j=bn.nNuc ; j<nACP ; j++ ) {
+         dd=0.0e0;
+         for (int k=0; k<3; k++) {
+            dd+=((RACP[i][k]-RACP[j][k])*(RACP[i][k]-RACP[j][k]));
+         }
+         dd=sqrt(dd);
+         if (dd<=bn.maxBondDist) {
+            //cout << "Possible extended BCP Seed found!" << endl;
+            //cout << bn.atLbl[i] << "-" << bn.atLbl[j] << endl;
+            //cx=0.5e0*(bn.R[i][0]+bn.R[j][0]);
+            //cy=0.5e0*(bn.R[i][1]+bn.R[j][1]);
+            //cz=0.5e0*(bn.R[i][2]+bn.R[j][2]);
+            for (int k=0; k<3; k++) {x[k]=0.5e0*(RACP[i][k]+RACP[j][k]);}
+            if ((wf.evalDensity(x[0],x[1],x[2])>MINRHOSIGNIFICATIVEVAL)) {
+               seekRhoBCP(x,wf);
+               if (i<j) {
+                  lbl=string("*")+lblACP[i]+string("-")+lblACP[j];
+               } else {
+                  lbl=string("*")+lblACP[j]+string("-")+lblACP[i];
+               }
+               wf.evalRhoGradRho(x[0],x[1],x[2],rho,g);
+               magg=0.0e0;
+               for (int n=0; n<3; n++) {magg+=(g[n]*g[n]);}
+               magg=sqrt(magg);
+               if ((rho>MINRHOSIGNIFICATIVEVAL)&&(magg<EPSGRADMAG)) {
+                  mypos=addRhoBCP(x,lbl,bn);
+                  if ((mypos>=0)&&(mypos<dBCP)) {
+                     atBCP[mypos][0]=ata;
+                     atBCP[mypos][1]=atb;
+                  }
+                  //cout << x[0] << " " << x[1] << " " << x[2] << endl;
+                  //wf.evalRhoGradRho(x[0],x[1],x[2],rho,g);
+                  //cout << "     " << g[0] << " " << g[1] << " " << g[2] << endl;
+               }
+            }
+         }
+      }
+#if USEPROGRESSBAR
+      printProgressBar(int(100.0e0*solreal(i)/solreal((nACP-1))));
+#endif
+   }
+#if USEPROGRESSBAR
+   printProgressBar(100);
+#endif
+   cout << endl << "Looking for possible extra BCPs..." << endl;
+#if USEPROGRESSBAR
+   printProgressBar(0);
+#endif
    extbd=bn.maxBondDist*EXTENDEDBONDDISTFACTOR;
    //cout << "extd: " << extbd << endl;
    for (int i=0; i<bn.nNuc; i++) {
@@ -823,7 +980,7 @@ bool critPtNetWork::setRhoCCPs(bondNetWork &bn,gaussWaveFunc &wf)
          }
       }
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((nRCP-1))));
+      printProgressBar(int(100.0e0*solreal(i)/solreal((nRCP))));
 #endif
    }
 #if USEPROGRESSBAR
@@ -1207,6 +1364,28 @@ string critPtNetWork::getFirstChunkOfLabel(string &lbl)
    return lbl.substr(0,pos);
 }
 /* ************************************************************************************* */
+void critPtNetWork::addRhoACP(solreal (&x)[3],string &lbl,bondNetWork &bn)
+{
+   if (nACP==0) {
+      for (int i=0; i<3; i++) {RACP[0][i]=x[i];}
+      lblACP[0]=lbl;
+      (lbl[lbl.length()-1])++;
+      nACP++;
+      return;
+   }
+   if ((x[0]<bn.bbmin[0])||(x[0]>bn.bbmax[0])) {cout << "Out of box (x)...\n"; return;}
+   if ((x[1]<bn.bbmin[1])||(x[1]>bn.bbmax[1])) {cout << "Out of box (y)...\n"; return;}
+   if ((x[2]<bn.bbmin[2])||(x[2]>bn.bbmax[2])) {cout << "Out of box (z)...\n"; return;}
+   size_t pos;
+   if (imNew(x,dACP,RACP,pos)) {
+      for (int i=0; i<3; i++) {RACP[pos][i]=x[i];}
+      lblACP[pos]=lbl;
+      (lbl[lbl.length()-1])++;
+      nACP++;
+   }
+   return;
+}
+/* ************************************************************************************* */
 int critPtNetWork::addRhoBCP(solreal (&x)[3],string &lbl,bondNetWork &bn)
 {
    if (nBCP==0) {
@@ -1348,6 +1527,10 @@ bool critPtNetWork::imNew(solreal (&x)[3],int dim,solreal ** (&arr),size_t &pos)
           (fabs(x[1]-arr[k][1])<EPSFABSDIFFCOORD)&&
           (fabs(x[2]-arr[k][2])<EPSFABSDIFFCOORD)) {
          pos=k;
+#if DEBUG
+         //cout << "Already exists!" << endl;
+         //DISPLAYDEBUGINFOFILELINE;
+#endif /* ( DEBUG ) */
          return false;
       }
       k++;
@@ -1654,11 +1837,14 @@ bool critPtNetWork::makePOVFile(string pnam,bondNetWork &bn,povRayConfProp &pvp,
    pof << "#declare RadiusAllCriticalPoints=" << allcprad << ";" << endl;
    pof << "#declare ColorACP=rgb <0.0,0.0,0.0>;" << endl;
    pof << "#declare RadiusACP=RadiusAllCriticalPoints;" << endl;
-   pof << "#declare ColorBCP=rgb <0.3,0.3,0.3>;" << endl;
+   //pof << "#declare ColorBCP=rgb <0.3,0.3,0.3>;" << endl;
+   pof << "#declare ColorBCP=rgb <0.0,0.6,1.0>;" << endl;
    pof << "#declare RadiusBCP=RadiusAllCriticalPoints;" << endl;
-   pof << "#declare ColorRCP=rgb <0.6,0.6,0.6>;" << endl;
+   //pof << "#declare ColorRCP=rgb <0.6,0.6,0.6>;" << endl;
+   pof << "#declare ColorRCP=rgb <1.0,1.0,0.0>;" << endl;
    pof << "#declare RadiusRCP=RadiusAllCriticalPoints;" << endl;
-   pof << "#declare ColorCCP=rgb <0.9,0.9,0.9>;" << endl;
+   //pof << "#declare ColorCCP=rgb <0.9,0.9,0.9>;" << endl;
+   pof << "#declare ColorCCP=rgb <1.0,0.0,0.0>;" << endl;
    pof << "#declare RadiusCCP=RadiusAllCriticalPoints;" << endl;
    pof << "#declare ColorABGradPath=rgb <0.0,1.0,0.0>;" << endl;
    pof << "#default { finish { specular 0.3 roughness 0.03 phong .1 } }" << endl;
@@ -2549,7 +2735,7 @@ void critPtNetWork::findTwoClosestAtoms(solreal (&xo)[3],gaussWaveFunc &wf,int &
       ii1=1;
       ii2=0;
    }
-   for ( int i=0 ; i<wf.nNuc ; i++ ) {
+   for ( int i=2 ; i<wf.nNuc ; i++ ) {
       xmagt=0.0e0;
       for ( int k=0 ; k<3 ; k++ ) {xmagt+=((xo[k]-wf.getR(i,k))*(xo[k]-wf.getR(i,k)));}
       if ( xmagt<xmag2 ) {xmag2=xmagt; ii2=i;}
@@ -2560,6 +2746,12 @@ void critPtNetWork::findTwoClosestAtoms(solreal (&xo)[3],gaussWaveFunc &wf,int &
    }
    idx1st=ii1;
    idx2nd=ii2;
+#if DEBUG
+      if ( idx1st==idx2nd ) {
+         displayWarningMessage("Identical atoms!");
+         DISPLAYDEBUGINFOFILELINE;
+      }
+#endif /* ( DEBUG ) */
 }
 /* ************************************************************************************* */
 bool critPtNetWork::iKnowACPs(void)

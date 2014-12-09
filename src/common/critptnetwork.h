@@ -36,8 +36,12 @@ typedef double solreal;
 #define MAXRHOACPSPERATOM (2)
 #endif
 
+#ifndef EPSRHOACPGRADMAG
+#define EPSRHOACPGRADMAG 5.00000e-10
+#endif
+
 #ifndef EPSGRADMAG
-#define EPSGRADMAG 1.00000e-14
+#define EPSGRADMAG 1.00000e-12
 #endif
 
 #ifndef MAXGRADMAG
@@ -104,6 +108,10 @@ typedef double solreal;
 #define ARRAYSIZEGRADPATH 100
 #endif
 
+#ifndef EPSEIGENVALUECPSEARCH
+#define EPSEIGENVALUECPSEARCH 1.0e-08
+#endif
+
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -166,6 +174,8 @@ public:
    void removeRedundInLabel(string &lbl);
    /* ********************************************************************************** */
    string getFirstChunkOfLabel(string &lbl);
+   /* ********************************************************************************** */
+   void addRhoACP(solreal (&x)[3],string &lbl,bondNetWork &bn);
    /* ********************************************************************************** */
    int addRhoBCP(solreal (&x)[3],string &lbl,bondNetWork &bn);
    /* ********************************************************************************** */
@@ -270,7 +280,8 @@ private:
    /* ********************************************************************************** */
    void getCCPStep(solreal (&g)[3],solreal (&hess)[3][3],solreal (&hh)[3],int &sig);
    /* ********************************************************************************** */
-   void seekRhoACP(solreal (&x)[3],gaussWaveFunc &wf);
+   void seekRhoACP(solreal (&x)[3],solreal &rho2ret,solreal (&g)[3],gaussWaveFunc &wfi,\
+         int maxit=MAXITERATIONACPSEARCH);
    /* ********************************************************************************** */
    bool setRhoACPs(bondNetWork &bn,gaussWaveFunc &wf);
    /* ********************************************************************************** */
