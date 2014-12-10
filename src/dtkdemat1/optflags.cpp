@@ -75,6 +75,7 @@ optFlags::optFlags()
    setstep=0;
    uponbp=1;
    uponsl=0;
+   prop2plot=0;
    zipdat=0;
    mkplt=0;
    kpgnp=1;
@@ -132,6 +133,10 @@ void getOptions(int &argc, char** &argv, optFlags &flags)
             case 'n':
                flags.setn1=(++i);
                if (i>=argc) {printErrorMsg(argv,'n');}
+               break;
+            case 'p' :
+               flags.prop2plot=(++i);
+               if ( i>=argc ) {printErrorMsg(argv,'p');}
                break;
             case 's':
                flags.setstep=(++i);
@@ -216,6 +221,10 @@ void printHelpMenu(int &argc, char** &argv)
         << "            \t  combination of n and the number \"step\" given in option -s," << endl
         << "            \t  since the number of points in the bond path will be mainly " << endl
         << "            \t  governed by step." << endl;
+   cout << "  -p prop   \tChoose the property to be computed. prop is a character," << endl
+        << "            \t  which can be (D is the default value):" << endl
+        << "            \t      D (Density Matrix of order 1)" << endl
+        << "            \t      G (Gradient of the density Matrix of order 1)" << endl;
    cout << "  -o outname\tSet the output file name." << endl
         << "            \t  (If not given the program will create one out of" << endl
         << "            \t  the input name; if given, the tsv, gnp and pdf files will" << endl
@@ -269,6 +278,9 @@ void printErrorMsg(char** &argv,char lab)
          break;
       case 'n':
          cout << "should be followed by an integer." << endl;
+         break;
+      case 'p' :
+         cout << "should be followed by a character." << endl;
          break;
       case 's':
          cout << "should be followed by a real number." << endl;

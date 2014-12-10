@@ -80,10 +80,18 @@ void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn, string &o_fn,str
    o_fn.append("tsv");
    
    pos=o_fn.find_last_of('.');
+   char prop='D';
    if (pos!=string::npos) {
       string plbl;
-      if (opts.uponbp) {plbl="BPDM1";}
-      if (opts.uponsl) {plbl="SLDM1";}
+      if (opts.uponbp) {plbl="BP";}
+      if (opts.uponsl) {plbl="SL";}
+      if ( opts.prop2plot ) {
+         prop=argv[opts.prop2plot][0];
+      } else {
+         prop='D';
+      }
+      if ( prop=='G' ) {plbl+="Grad";}
+      plbl+="DM1";
       o_fn.insert(pos,plbl);
       d_fn.insert(pos,plbl);
       s_fn.insert(pos,plbl);

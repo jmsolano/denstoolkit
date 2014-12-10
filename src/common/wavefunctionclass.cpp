@@ -3128,8 +3128,8 @@ void gaussWaveFunc::evalGradDensityMatrix1(solreal x,solreal y,solreal z,\
       solreal xp,solreal yp,solreal zp,\
       solreal &gamm,solreal (&gg)[3],solreal (&gp)[3])
 {
-   solreal xmr,xpmr,ymr,ypmr,zmr,zpmr,rrp;
-   solreal cc,ccp;
+   solreal xmr,xpmr,ymr,ypmr,zmr,zpmr,rr,rrp;
+   solreal cc,ccp,alp;
    int indp,indr,ppt;
    indp=0;
    indr=0;
@@ -3176,15 +3176,21 @@ void gaussWaveFunc::evalGradDensityMatrix1(solreal x,solreal y,solreal z,\
          chibp+=(hyz[j]*cab[indp]);
          chib+=(chi[j]*cab[indp++]);
       }
-      trho+=(chib*chi[i]);
-      nabx+=(chib*gx[i]);
-      naby+=(chib*gy[i]);
-      nabz+=(chib*gz[i]);
+      trho+=(chibp*chi[i]);
+      nabx+=(chibp*gx[i]);
+      naby+=(chibp*gy[i]);
+      nabz+=(chibp*gz[i]);
+      nabxp+=(chib*hxx[i]);
+      nabyp+=(chib*hyy[i]);
+      nabzp+=(chib*hzz[i]);
    }
-   dx=2.00000e0*nabx;
-   dy=2.00000e0*naby;
-   dz=2.00000e0*nabz;
-   rho=trho;
+   gg[0]=nabx;
+   gg[1]=naby;
+   gg[2]=nabz;
+   gp[0]=nabxp;
+   gp[1]=nabyp;
+   gp[2]=nabzp;
+   gamm=trho;
    return;
 
 }

@@ -105,6 +105,9 @@ int main (int argc, char ** argv)
       gwf.~gaussWaveFunc();
       exit(1);
    }
+
+   char prop='D';
+   if ( options.prop2plot ) {prop=argv[options.prop2plot][0];}
    
    /* Setting the bond network of the molecule */
    
@@ -219,13 +222,14 @@ int main (int argc, char ** argv)
       coordinates of such min/max
    */
    
-   cout << "Evaluating the MD1 ";
+   cout << (string("Evaluating ")+string(prop=='G' ? "Grad" : "the ")+string("MD1 "));
    if (options.uponbp) {cout << "upon the bond path... " << endl;}
    if (options.uponsl) {cout << "upon the straight line that joins the selected atoms..." << endl;}
    cout << "Progress: " << endl;
    
    p1=0.0e0;
    p2=0.0e0;
+   solreal gamma,gg[3],gp[3];
    
 #if USEPROGRESSBAR
    printProgressBar(0);
@@ -237,7 +241,11 @@ int main (int argc, char ** argv)
          if ((rbgp[i][0]==robcp[0])&&(rbgp[i][1]==robcp[1])&&(rbgp[i][2]==robcp[2])) {pbcp=p1;}
          for (int k=0; k<3; k++) {x2[k]=rbgp[0][k];}
          p2=0.0e0;
-         md1tmp=gwf.evalDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2]);
+         if ( prop=='G' ) {
+            gwf.evalGradDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2],md1tmp,gg,gp);
+         } else {
+            md1tmp=gwf.evalDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2]);
+         }
          if (md1tmp>md1max) {
             md1max=md1tmp;
             for (int k=0; k<3; k++) {
@@ -256,8 +264,20 @@ int main (int argc, char ** argv)
             p1min=p1;
             p2min=p2;
          }
-         ofile << p1 << "\t" << p2 << "\t" << md1tmp << endl;
-         if (i==0) {o1dfile << p1 << " " << md1tmp << endl;}
+         ofile << p1 << "\t" << p2 << "\t" << md1tmp;
+         if ( prop=='G' ) {
+            ofile << endl;
+         } else {
+            ofile << endl;
+         }
+         if (i==0) {
+            o1dfile << p1 << " " << md1tmp;
+            if ( prop=='G' ) {
+               o1dfile << endl;
+            } else {
+               o1dfile << endl;
+            }
+         }
          for (int j=1; j<nbgppts; j++) {
             dist=0.0e0;
             for (int k=0; k<3; k++) {
@@ -266,13 +286,22 @@ int main (int argc, char ** argv)
                dist+=((x2[k]-xt[k])*(x2[k]-xt[k]));
             }
             p2+=sqrt(dist);
-            md1tmp=gwf.evalDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2]);
+            if ( prop=='G' ) {
+               gwf.evalGradDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2],md1tmp,gg,gp);
+            } else {
+               md1tmp=gwf.evalDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2]);
+            }
             if (i==j) {
                if (rhomin>md1tmp) {
                   rhomin=md1tmp;
                   for (int k=0; k<3; k++) {xrmin[k]=x1[k];}
                }
-               o1dfile << p1 << " " << md1tmp << endl;
+               o1dfile << p1 << " " << md1tmp;
+               if ( prop == 'G' ) {
+                  o1dfile << endl;
+               } else {
+                  o1dfile << endl;
+               }
             }
             if (i==(nbgppts-j)) {
                if (diagmax<md1tmp) {
@@ -285,8 +314,20 @@ int main (int argc, char ** argv)
                   p2dmax=p2;
                }
             }
-            ofile << p1 << "\t" << p2 << "\t" << md1tmp << endl;
-            if (j==(nbgppts-1-i)) {o1sfile << p1 << " " << md1tmp << endl;}
+            ofile << p1 << "\t" << p2 << "\t" << md1tmp;
+            if ( prop=='G' ) {
+               ofile << endl;
+            } else {
+               ofile << endl;
+            }
+            if (j==(nbgppts-1-i)) {
+               o1sfile << p1 << " " << md1tmp;
+               if ( prop=='G' ) {
+                  o1sfile << endl;
+               } else {
+                  o1sfile << endl;
+               }
+            }
             if (md1tmp>md1max) {
                md1max=md1tmp;
                for (int k=0; k<3; k++) {
@@ -326,7 +367,11 @@ int main (int argc, char ** argv)
          for (int k=0; k<3; k++) {x1[k]=rbgp[i][k];}
          for (int k=0; k<3; k++) {x2[k]=rbgp[0][k];}
          p2=0.0e0;
-         md1tmp=gwf.evalDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2]);
+         if ( prop=='G' ) {
+            gwf.evalGradDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2],md1tmp,gg,gp);
+         } else {
+            md1tmp=gwf.evalDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2]);
+         }
          if (md1tmp>md1max) {
             md1max=md1tmp;
             for (int k=0; k<3; k++) {
@@ -345,18 +390,39 @@ int main (int argc, char ** argv)
             p1min=p1;
             p2min=p2;
          }
-         ofile << p1 << "\t" << p2 << "\t" << md1tmp << endl;
-         if (i==0) {o1dfile << p1 << " " << md1tmp << endl;}
+         ofile << p1 << "\t" << p2 << "\t" << md1tmp;
+         if ( prop=='G' ) {
+            ofile << endl;
+         } else {
+            ofile << endl;
+         }
+         if (i==0) {
+            o1dfile << p1 << " " << md1tmp;
+            if ( prop=='G' ) {
+               o1dfile << endl;
+            } else {
+               o1dfile << endl;
+            }
+         }
          for (int j=1; j<nbgppts; j++) {
             for (int k=0; k<3; k++) {x2[k]=rbgp[j][k];}
             p2+=dl;
-            md1tmp=gwf.evalDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2]);
+            if ( prop=='G' ) {
+               gwf.evalGradDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2],md1tmp,gg,gp);
+            } else {
+               md1tmp=gwf.evalDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2]);
+            }
             if (i==j) {
                if (rhomin>md1tmp) {
                   rhomin=md1tmp;
                   for (int k=0; k<3; k++) {xrmin[k]=x1[k];}
                }
-               o1dfile << p1 << " " << md1tmp << endl;
+               o1dfile << p1 << " " << md1tmp;
+               if ( prop == 'G' ) {
+                  o1dfile << endl;
+               } else {
+                  o1dfile << endl;
+               }
             }
             if (i==(nbgppts-j)) {
                if (diagmax<md1tmp) {
@@ -369,8 +435,20 @@ int main (int argc, char ** argv)
                   p2dmax=p2;
                }
             }
-            if (j==(nbgppts-1-i)) {o1sfile << p1 << " " << md1tmp << endl;}
-            ofile << p1 << "\t" << p2 << "\t" << md1tmp << endl;
+            if (j==(nbgppts-1-i)) {
+               o1sfile << p1 << " " << md1tmp;
+               if ( prop=='G' ) {
+                  o1sfile << endl;
+               } else {
+                  o1sfile << endl;
+               }
+            }
+            ofile << p1 << "\t" << p2 << "\t" << md1tmp;
+            if ( prop == 'G' ) {
+               ofile << endl;
+            } else {
+               ofile << endl;
+            }
             if (md1tmp>md1max) {
                md1max=md1tmp;
                for (int k=0; k<3; k++) {
@@ -523,6 +601,7 @@ int main (int argc, char ** argv)
    gfil << "maxval2plot=" << maxval << endl;
    gfil << "dimparam=" << lenline << endl;
    gfil << "set isosample 300, 300" << endl;
+   gfil << "set cntrparam cubicspline" << endl;
    gfil << "set zrange [minval2plot:maxval2plot]" << endl;
    gfil << "set cbrange [minval2plot:maxval2plot]" << endl;
    gfil << "unset contour" << endl;
