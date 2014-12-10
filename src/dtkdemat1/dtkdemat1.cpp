@@ -55,6 +55,12 @@ using std::setprecision;
 #include "crtflnms.h"
 
 
+/* Function for evaluating the projection of $\nabla\gamma(x,x')$, $\nabla'\gamma(x,x')$
+ * upon the coordinates (u,v)  */
+void computeUVProjection(solreal (&x1)[3],solreal (&x2)[3],\
+      solreal (&g)[3],solreal (&gp)[3],solreal (&uv)[2]);
+
+
 int main (int argc, char ** argv)
 {
    const clock_t begin_time = clock();
@@ -159,6 +165,7 @@ int main (int argc, char ** argv)
    solreal dl=DEFAULTBONDPATHSTEPMD1;
    solreal robcp[3];
    solreal x1[3],x2[3],dx[3];
+   solreal xbeg[3],xend[3];
    solreal lenline=0.0e0;
    solreal dist=0.0e0;
    
@@ -201,6 +208,12 @@ int main (int argc, char ** argv)
       for (int i=1; i<dimarr; i++) {for (int j=0; j<3; j++) {rbgp[i][j]=rbgp[i-1][j]+dx[j];}}
       cout << "The line that joins the atoms consists of " << nbgppts << " points." << endl;
    }
+
+   for ( int i=0 ; i<3 ; i++ ) {
+      xbeg[i]=rbgp[0][i];
+      xend[i]=rbgp[nbgppts-1][i];
+   }
+   
    
    /* Open the tsv and dat files */
    
@@ -229,7 +242,7 @@ int main (int argc, char ** argv)
    
    p1=0.0e0;
    p2=0.0e0;
-   solreal gamma,gg[3],gp[3];
+   solreal gamma,gg[3],gp[3],proj[2];
    
 #if USEPROGRESSBAR
    printProgressBar(0);
@@ -266,6 +279,8 @@ int main (int argc, char ** argv)
          }
          ofile << p1 << "\t" << p2 << "\t" << md1tmp;
          if ( prop=='G' ) {
+            computeUVProjection(xbeg,xend,gg,gp,proj);
+            for ( int ss=0 ; ss<2 ; ss++ ) {ofile << "\t" << proj[ss];}
             ofile << endl;
          } else {
             ofile << endl;
@@ -316,6 +331,8 @@ int main (int argc, char ** argv)
             }
             ofile << p1 << "\t" << p2 << "\t" << md1tmp;
             if ( prop=='G' ) {
+               computeUVProjection(xbeg,xend,gg,gp,proj);
+               for ( int ss=0 ; ss<2 ; ss++ ) {ofile << "\t" << proj[ss];}
                ofile << endl;
             } else {
                ofile << endl;
@@ -392,6 +409,8 @@ int main (int argc, char ** argv)
          }
          ofile << p1 << "\t" << p2 << "\t" << md1tmp;
          if ( prop=='G' ) {
+            computeUVProjection(xbeg,xend,gg,gp,proj);
+            for ( int ss=0 ; ss<2 ; ss++ ) {ofile << "\t" << proj[ss];}
             ofile << endl;
          } else {
             ofile << endl;
@@ -445,6 +464,8 @@ int main (int argc, char ** argv)
             }
             ofile << p1 << "\t" << p2 << "\t" << md1tmp;
             if ( prop == 'G' ) {
+               computeUVProjection(xbeg,xend,gg,gp,proj);
+               for ( int ss=0 ; ss<2 ; ss++ ) {ofile << "\t" << proj[ss];}
                ofile << endl;
             } else {
                ofile << endl;
@@ -585,6 +606,11 @@ int main (int argc, char ** argv)
    string line,tmpnam;
    solreal minval,maxval;
    solreal range=fabs(md1dmax-md1lmin);
+#if DEBUG
+   if ( md1lmin<0.0e0 ) {
+      displayWarningMessage(string("md1lmin: "+getStringFromReal(md1lmin)));
+   }
+#endif
    minval=round(90*md1lmin)/100.0e0;
    maxval=round(110*(md1lmin+range))/100.0e0;
    if ((fabs(md1lmin-md1min)>range)&&(range<1.0e-02)) {
@@ -592,7 +618,7 @@ int main (int argc, char ** argv)
       minval=round(90*md1min)/100.0e0;
       maxval=round(110*(md1min+range))/100.0e0;
    }
-   if (minval<0.0e0) {minval=0.0e0;}
+   if (minval<0.0e0) {minval=0.0e0; displayWarningMessage(string("minval: "+getStringFromReal(minval)));}
    ofstream gfil;
    gfil.open(gnpnam.c_str(),ios::out);
    gfil << "namedatfile='" << outfilnam << "'" << endl;
@@ -723,6 +749,20 @@ int main (int argc, char ** argv)
    gfil << "plot namedatfile with image notitle";
    if (!options.showcont) {gfil << "#";}
    gfil << ",'contourtemp.dat' w l lt -1 lw 1 notitle #Activate this line to show contours" << endl;
+   string gradeps=gnpnam.substr(0,gnpnam.length()-4);
+   string gradepsext=gradeps;
+   string gradpdf=gradeps;
+   gradeps.append("-2DV.eps");
+   gradepsext.append("-2DVext.eps");
+   gradpdf.append("-2DV.pdf");
+   if ( prop=='G' ) {
+      gfil << "VMXS=dimparam/40.0 #Maximum lenght of the vectors" << endl;
+      gfil << "set output '" << gradepsext << "'" << endl;
+      gfil << "plot namedatfile u 1:2:(sqrt($4*$4+$5*$5)>VMXS? VMXS*$4/sqrt($4*$4+$5*$5) : $4):(sqrt($4*$4+$5*$5)>VMXS ? VMXS*$5/sqrt($4*$4+$5*$5) : $5):(sqrt($4*$4+$5*$5)) "
+           << "with vectors head size 0.1,20,60 filled lc palette";
+      if (!options.showcont) {gfil << "#";}
+      gfil << ",'contourtemp.dat' w l lt -1 lw 1 notitle #Activate this line to show contours" << endl;
+   }
    string epsnam=gnpnam.substr(0,(gnpnam.length()-4));
    epsnam.append("-2D.eps");
    string pdfnam=gnpnam.substr(0,(gnpnam.length()-4));
@@ -751,11 +791,22 @@ int main (int argc, char ** argv)
       line="epstool --copy -b "+extepsnam+" "+epsnam;
       if (options.quiet) {line+=" > /dev/null 2>&1";}
       system(line.c_str());
+      line="epstool --copy -b "+gradepsext+" "+gradeps;
+      if (options.quiet) {line+=" > /dev/null 2>&1";}
+      system(line.c_str());
 #if _HAVE_EPSTOPDF_
       line="epstopdf --outfile="+pdfnam+" "+epsnam;
       if (options.quiet) {line+=" > /dev/null 2>&1";}
       system(line.c_str());
       line="rm -f "+epsnam;
+      system(line.c_str());
+      line="epstopdf --outfile="+gradpdf+" "+gradeps;
+      if (options.quiet) {line+=" > /dev/null 2>&1";}
+      system(line.c_str());
+      line="rm -f "+gradeps;
+      system(line.c_str());
+      line="rm -f "+gradepsext;
+      system(line.c_str());
       line="epstopdf --outfile="+pdf1d1nam+" "+eps1d1nam;
       system(line.c_str());
       line="rm -f "+eps1d1nam;
@@ -825,4 +876,15 @@ int main (int argc, char ** argv)
 }
 
 
+void computeUVProjection(solreal (&x1)[3],solreal (&x2)[3],\
+      solreal (&g)[3],solreal (&gp)[3],solreal (&uv)[2])
+{
+   solreal tmp1=0.0e0,tmp2=0.0e0;
+   for ( int i=0 ; i<3 ; i++ ) {
+      tmp1+=((x2[i]-x1[i])*g[i]);
+      tmp2+=((x2[i]-x1[i])*gp[i]);
+   }
+   uv[0]=tmp1;
+   uv[1]=tmp2;
+}
 

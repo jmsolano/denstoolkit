@@ -124,9 +124,11 @@ distclean: clean
 	rm -f $(OBJDIR)/*.o
 
 runben: build
-	./dtkdemat1  benzene.wfn -P -l -c -L -n 100 -p G
+	./dtkdemat1  benzene.wfn -P -l -c -L -n 50 -p G
 
 rtestost: build
 	./dtkdemat1 testosterona_sto3g.wfx -a 33 45 -P -l -c
 
+runli2: build
+	./dtkdemat1  li2.ccsd.augccpvtz.wfn -P -l -c -L -n 100 -p G
 
