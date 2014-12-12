@@ -488,6 +488,10 @@ public:
          solreal xp,solreal yp,solreal zp,\
          solreal &gamm,solreal (&gg)[3],solreal (&gp)[3]);
    /* ************************************************************************************ */
+   void evalHessDensityMatrix1(solreal (&xx)[3],solreal (&xxp)[3],\
+         solreal &gamm,solreal (&gg)[3],solreal (&gp)[3],\
+         solreal (&hh)[3][3],solreal (&hph)[3][3],solreal (&hp)[3][3]);
+   /* ************************************************************************************ */
    solreal evalMagGradLOL(solreal x,solreal y,solreal z);
    /* ************************************************************************************ */
    solreal evalMolElecPot(solreal x,solreal y,solreal z);

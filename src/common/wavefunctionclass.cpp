@@ -3168,8 +3168,6 @@ void gaussWaveFunc::evalGradDensityMatrix1(solreal x,solreal y,solreal z,\
    indp=0;
    solreal trho=0.0000000e0,chib,chibp;
    for (int i=0; i<nPri; i++) {
-      //indr=i*(nPri);
-      //cc=cab[indr];
       chib=chibp=0.0000000e0;
       for (int j=0; j<nPri; j++) {
          //cc=cab[indp++];
@@ -3195,10 +3193,178 @@ void gaussWaveFunc::evalGradDensityMatrix1(solreal x,solreal y,solreal z,\
 
 }
 /* ************************************************************************************ */
+void gaussWaveFunc::evalHessDensityMatrix1(solreal (&xx)[3],solreal (&xxp)[3],\
+      solreal &gamm,solreal (&gg)[3],solreal (&gp)[3],\
+      solreal (&hh)[3][3],solreal (&hph)[3][3],solreal (&hp)[3][3])
+{
+   solreal x=xx[0],y=xx[1],z=xx[2];
+   solreal xp=xxp[0],yp=xxp[1],zp=xxp[2];
+   solreal xmr,xpmr,ymr,ypmr,zmr,zpmr,rr,rrp;
+   solreal cc,ccp,alp;
+   int indp,indr,ppt;
+   indp=0;
+   indr=0;
+   for (int i=0; i<nNuc; i++) {
+      xmr=x-R[indr];
+      xpmr=xp-R[indr++];
+      ymr=y-R[indr];
+      ypmr=yp-R[indr++];
+      zmr=z-R[indr];
+      zpmr=zp-R[indr++];
+      rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+      rrp=-((xpmr*xpmr)+(ypmr*ypmr)+(zpmr*zpmr));
+      for (int j=0; j<myPN[i]; j++) {
+         ppt=primType[indp];
+         alp=primExp[indp];
+         cc=exp(alp*rr);
+         chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[indp]*=cc;
+         evalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
+         gx[indp]*=cc;
+         gy[indp]*=cc;
+         gz[indp]*=cc;
+         ccp=exp(alp*rrp);
+         hyz[indp]=evalAngACases(ppt,xpmr,ypmr,zpmr);
+         hyz[indp]*=ccp;
+         evalDkAngCases(ppt,alp,xpmr,ypmr,zpmr,hxx[indp],hyy[indp],hzz[indp]);
+         hxx[indp]*=ccp;
+         hyy[indp]*=ccp;
+         hzz[indp]*=ccp;
+         indp++;
+      }
+   }
+   solreal nabx,naby,nabz,nabxp,nabyp,nabzp;
+   nabx=naby=nabz=0.000000000000000e0;
+   nabxp=nabyp=nabzp=0.000000000000000e0;
+   indp=0;
+   solreal trho=0.0000000e0,chib,chibp;
+   solreal sumdiphiax,sumdiphiay,sumdiphiaz;
+   solreal sumhxx,sumhyy,sumhzz,sumhxy,sumhxz,sumhyz;
+   sumhxx=sumhyy=sumhzz=sumhxy=sumhxz=sumhyz=0.00000e0;
+   for (int i=0; i<nPri; i++) {
+      chib=chibp=0.0000000e0;
+      sumdiphiax=sumdiphiay=sumdiphiaz=0.0000000e0;
+      for (int j=0; j<nPri; j++) {
+         cc=cab[indp++];
+         chibp+=(hyz[j]*cc);
+         chib+=(chi[j]*cc);
+         sumdiphiax+=(gx[j]*cc);
+         sumdiphiay+=(gy[j]*cc);
+         sumdiphiaz+=(gz[j]*cc);
+      }
+      trho+=(chibp*chi[i]);
+      nabx+=(chibp*gx[i]);
+      naby+=(chibp*gy[i]);
+      nabz+=(chibp*gz[i]);
+      nabxp+=(chib*hxx[i]);
+      nabyp+=(chib*hyy[i]);
+      nabzp+=(chib*hzz[i]);
+      sumhxx+=(sumdiphiax*hxx[i]);
+      sumhyy+=(sumdiphiay*hyy[i]);
+      sumhzz+=(sumdiphiaz*hzz[i]);
+      sumhxy+=(sumdiphiax*hyy[i]);
+      sumhxz+=(sumdiphiax*hzz[i]);
+      sumhyz+=(sumdiphiay*hzz[i]);
+   }
+   gg[0]=nabx;
+   gg[1]=naby;
+   gg[2]=nabz;
+   gp[0]=nabxp;
+   gp[1]=nabyp;
+   gp[2]=nabzp;
+   gamm=trho;
+   hph[0][0]=sumhxx; hph[0][1]=sumhxy; hph[0][2]=sumhxz;
+   hph[1][0]=sumhxy; hph[1][1]=sumhyy; hph[1][2]=sumhyz;
+   hph[2][0]=sumhxz; hph[2][1]=sumhyz; hph[2][2]=sumhzz;
+   for ( int i=0 ; i<nPri ; i++ ) {gx[i]=hyz[i];} //gx is now chi(xp)
+   indp=0;
+   indr=0;
+   for (int i=0; i<nNuc; i++) {
+      xmr=x-R[indr++];
+      ymr=y-R[indr++];
+      zmr=z-R[indr++];
+      rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+      for (int j=0; j<myPN[i]; j++) {
+         ppt=primType[indp];
+         alp=primExp[indp];
+         cc=exp(alp*rr);
+         evalDkDlAngCases(ppt,alp,xmr,ymr,zmr,
+               hxx[indp],hyy[indp],hzz[indp],
+               hxy[indp],hxz[indp],hyz[indp]);
+         hxx[indp]*=cc;
+         hyy[indp]*=cc;
+         hzz[indp]*=cc;
+         hxy[indp]*=cc;
+         hxz[indp]*=cc;
+         hyz[indp]*=cc;
+         indp++;
+      }
+   }
+   indp=0;
+   sumhxx=sumhyy=sumhzz=sumhxy=sumhxz=sumhyz=0.00000e0;
+   for (int i=0; i<nPri; i++) {
+      //indr=i*(nPri);
+      chibp=0.0000000e0;
+      for (int j=0; j<nPri; j++) {
+         chibp+=(gx[j]*cab[indp++]);
+      }
+      sumhxx+=(chibp*hxx[i]);
+      sumhyy+=(chibp*hyy[i]);
+      sumhzz+=(chibp*hzz[i]);
+      sumhxy+=(chibp*hxy[i]);
+      sumhxz+=(chibp*hxz[i]);
+      sumhyz+=(chibp*hyz[i]);
+   }
+   hh[0][0]=sumhxx; hh[0][1]=sumhxy; hh[0][2]=sumhxz;
+   hh[1][0]=sumhxy; hh[1][1]=sumhyy; hh[1][2]=sumhyz;
+   hh[2][0]=sumhxz; hh[2][1]=sumhyz; hh[2][2]=sumhzz;
+   indp=0;
+   indr=0;
+   for (int i=0; i<nNuc; i++) {
+      xmr=xp-R[indr++];
+      ymr=yp-R[indr++];
+      zmr=zp-R[indr++];
+      rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+      for (int j=0; j<myPN[i]; j++) {
+         ppt=primType[indp];
+         alp=primExp[indp];
+         cc=exp(alp*rr);
+         evalDkDlAngCases(ppt,alp,xmr,ymr,zmr,
+               hxx[indp],hyy[indp],hzz[indp],
+               hxy[indp],hxz[indp],hyz[indp]);
+         hxx[indp]*=cc;
+         hyy[indp]*=cc;
+         hzz[indp]*=cc;
+         hxy[indp]*=cc;
+         hxz[indp]*=cc;
+         hyz[indp]*=cc;
+         indp++;
+      }
+   }
+   indp=0;
+   sumhxx=sumhyy=sumhzz=sumhxy=sumhxz=sumhyz=0.00000e0;
+   for (int i=0; i<nPri; i++) {
+      chib=0.0000000e0;
+      for (int j=0; j<nPri; j++) {
+         chib+=(chi[j]*cab[indp++]);
+      }
+      sumhxx+=(chib*hxx[i]);
+      sumhyy+=(chib*hyy[i]);
+      sumhzz+=(chib*hzz[i]);
+      sumhxy+=(chib*hxy[i]);
+      sumhxz+=(chib*hxz[i]);
+      sumhyz+=(chib*hyz[i]);
+   }
+   hp[0][0]=sumhxx; hp[0][1]=sumhxy; hp[0][2]=sumhxz;
+   hp[1][0]=sumhxy; hp[1][1]=sumhyy; hp[1][2]=sumhyz;
+   hp[2][0]=sumhxz; hp[2][1]=sumhyz; hp[2][2]=sumhzz;
+   return;
+}
+/* ************************************************************************************ */
 void gaussWaveFunc::evalHermiteCoefs(int (&aia)[3],int (&aib)[3],solreal &alpab,
-                                     solreal (&ra)[3],solreal (&rb)[3],
-                                     solreal (&rp)[3],
-                                     int (&maxl)[3],solreal (&Eijl)[3][7])
+      solreal (&ra)[3],solreal (&rb)[3],
+      solreal (&rp)[3],
+      int (&maxl)[3],solreal (&Eijl)[3][7])
 {
    //for (int i=0; i<3; i++) {for (int j=0; j<=6; j++) {Eijl[i][j]=0.0e0;}}
    int ij[3];
