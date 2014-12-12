@@ -82,6 +82,7 @@ optFlags::optFlags()
    quiet=1;
    showcont=0;
    showatlbls=0;
+   setinccont=0;
 }
 
 
@@ -119,6 +120,11 @@ void getOptions(int &argc, char** &argv, optFlags &flags)
                break;
             case 'c':
                flags.showcont=i;
+               break;
+            case 'C' :
+               if ((i+3)>=argc) {printErrorMsg(argv,'C');}
+               flags.setinccont=(++i);
+               i+=2;
                break;
             case 'k':
                flags.kpgnp=i;
@@ -233,8 +239,12 @@ void printHelpMenu(int &argc, char** &argv)
         << "            \t  Default value: " << DEFAULTBONDPATHSTEPMD1 << endl;
 #if _HAVE_GNUPLOT_
    cout << endl;
-   cout << "  -P     \tCreate a plot using gnuplot." << endl
-        << "  -c     \tShow contour lines in the plot." << endl;
+   cout << "  -P        \tCreate a plot using gnuplot." << endl
+        << "  -c        \tShow contour lines in the plot." << endl;
+   cout << "  -C s i e  \tSet the contour values (incremental style)." << endl
+        << "            \t  s, i, and e are real numbers. s is the first" << endl
+        << "            \t  contour value, i is the increment, and " << endl
+        << "            \t  e is the last contour value." << endl;
    //cout << "  -k     \tKeeps the *.gnp file to be used later by gnuplot." << endl;
    cout << "  -l     \tShow labels of atoms (those set in option -a) in the plot." << endl;
 #endif
@@ -275,6 +285,9 @@ void printErrorMsg(char** &argv,char lab)
    switch (lab) {
       case 'a':
          cout << "should be followed by two integers." << endl;
+         break;
+      case 'C':
+         cout << "should be followed by three real numbers." << endl;
          break;
       case 'n':
          cout << "should be followed by an integer." << endl;

@@ -130,5 +130,5 @@ rtestost: build
 	./dtkdemat1 testosterona_sto3g.wfx -a 33 45 -P -l -c
 
 runli2: build
-	./dtkdemat1  li2.ccsd.augccpvtz.wfn -P -l -c -L -n 100 -p G
+	./dtkdemat1  li2.ccsd.augccpvtz.wfn -P -l -c -L -n 50 -p G #-C -0.04 0.004 0.06
 

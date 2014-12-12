@@ -24,6 +24,8 @@ typedef double solreal;
 #define DEFAULTPOINTSPERDIRECTION (300)
 #define DEFAULTBONDPATHSTEPMD1 (0.03e0)
 
+#define DEFAULTNUMBEROFCONTOURLINES 20
+
 #define DISPLAYDEBUGINFOFILELINE (std::cout << __FILE__ << ", line: " << __LINE__ << std::endl)
 
 #if DEBUG

@@ -229,10 +229,12 @@ int main (int argc, char ** argv)
    solreal md1tmp,md1max=-1.0e+50,md1min=1.0e+50,rhomin=1.0e+50,diagmax=-1.0e+50;
    solreal x1max[3],x1min[3],x2max[3],x2min[3],p1max,p1min,p2max,p2min,p1dmax,p2dmax;
    solreal xrmin[3],xd1max[3],xd2max[3];
+   solreal gmd1max=-1.0e+50,gmd1min=1.0e+50;
+   solreal ggradmagmax=-1.0e+50,ggradmagmin=1.0e+50;
    
    /* Evaluating and writing the density matrix of order 1 into the tsv file
       On the fly, determining min/max of MD1 and the respective
-      coordinates of such min/max
+      coordinates of such min/max. The same for the global min/max.
    */
    
    cout << (string("Evaluating ")+string(prop=='G' ? "Grad" : "the ")+string("MD1 "));
@@ -242,7 +244,7 @@ int main (int argc, char ** argv)
    
    p1=0.0e0;
    p2=0.0e0;
-   solreal gamma,gg[3],gp[3],proj[2];
+   solreal gamma,gg[3],gp[3],proj[2],magproj;
    
 #if USEPROGRESSBAR
    printProgressBar(0);
@@ -277,9 +279,14 @@ int main (int argc, char ** argv)
             p1min=p1;
             p2min=p2;
          }
+         if ( md1tmp>gmd1max ) {gmd1max=md1tmp;}
+         if ( md1tmp<gmd1min ) {gmd1min=md1tmp;}
          ofile << p1 << "\t" << p2 << "\t" << md1tmp;
          if ( prop=='G' ) {
             computeUVProjection(xbeg,xend,gg,gp,proj);
+            magproj=(proj[0]*proj[0]+proj[1]*proj[1]);
+            if ( magproj>ggradmagmax ) {ggradmagmax=magproj;}
+            if ( magproj<ggradmagmin ) {ggradmagmin=magproj;}
             for ( int ss=0 ; ss<2 ; ss++ ) {ofile << "\t" << proj[ss];}
             ofile << endl;
          } else {
@@ -329,9 +336,14 @@ int main (int argc, char ** argv)
                   p2dmax=p2;
                }
             }
+            if ( md1tmp>gmd1max ) {gmd1max=md1tmp;}
+            if ( md1tmp<gmd1min ) {gmd1min=md1tmp;}
             ofile << p1 << "\t" << p2 << "\t" << md1tmp;
             if ( prop=='G' ) {
                computeUVProjection(xbeg,xend,gg,gp,proj);
+               magproj=(proj[0]*proj[0]+proj[1]*proj[1]);
+               if ( magproj>ggradmagmax ) {ggradmagmax=magproj;}
+               if ( magproj<ggradmagmin ) {ggradmagmin=magproj;}
                for ( int ss=0 ; ss<2 ; ss++ ) {ofile << "\t" << proj[ss];}
                ofile << endl;
             } else {
@@ -407,9 +419,14 @@ int main (int argc, char ** argv)
             p1min=p1;
             p2min=p2;
          }
+         if ( md1tmp>gmd1max ) {gmd1max=md1tmp;}
+         if ( md1tmp<gmd1min ) {gmd1min=md1tmp;}
          ofile << p1 << "\t" << p2 << "\t" << md1tmp;
          if ( prop=='G' ) {
             computeUVProjection(xbeg,xend,gg,gp,proj);
+            magproj=(proj[0]*proj[0]+proj[1]*proj[1]);
+            if ( magproj>ggradmagmax ) {ggradmagmax=magproj;}
+            if ( magproj<ggradmagmin ) {ggradmagmin=magproj;}
             for ( int ss=0 ; ss<2 ; ss++ ) {ofile << "\t" << proj[ss];}
             ofile << endl;
          } else {
@@ -462,9 +479,14 @@ int main (int argc, char ** argv)
                   o1sfile << endl;
                }
             }
+            if ( md1tmp>gmd1max ) {gmd1max=md1tmp;}
+            if ( md1tmp<gmd1min ) {gmd1min=md1tmp;}
             ofile << p1 << "\t" << p2 << "\t" << md1tmp;
             if ( prop == 'G' ) {
                computeUVProjection(xbeg,xend,gg,gp,proj);
+               magproj=(proj[0]*proj[0]+proj[1]*proj[1]);
+               if ( magproj>ggradmagmax ) {ggradmagmax=magproj;}
+               if ( magproj<ggradmagmin ) {ggradmagmin=magproj;}
                for ( int ss=0 ; ss<2 ; ss++ ) {ofile << "\t" << proj[ss];}
                ofile << endl;
             } else {
@@ -610,15 +632,17 @@ int main (int argc, char ** argv)
    if ( md1lmin<0.0e0 ) {
       displayWarningMessage(string("md1lmin: "+getStringFromReal(md1lmin)));
    }
+   cout << "gmin: " << gmd1min << ", gmax: " << gmd1max << endl;
+   cout << "minval: " << (round(110*md1min)/100.0e0) << endl;
 #endif
-   minval=round(90*md1lmin)/100.0e0;
+   minval=round(110*gmd1min)/100.0e0;
    maxval=round(110*(md1lmin+range))/100.0e0;
    if ((fabs(md1lmin-md1min)>range)&&(range<1.0e-02)) {
       range=2.0e0*fabs(md1lmin-md1min);
-      minval=round(90*md1min)/100.0e0;
+      //minval=round(90*md1min)/100.0e0;
+      minval=round(110*gmd1min)/100.0e0;
       maxval=round(110*(md1min+range))/100.0e0;
    }
-   if (minval<0.0e0) {minval=0.0e0; displayWarningMessage(string("minval: "+getStringFromReal(minval)));}
    ofstream gfil;
    gfil.open(gnpnam.c_str(),ios::out);
    gfil << "namedatfile='" << outfilnam << "'" << endl;
@@ -660,14 +684,20 @@ int main (int argc, char ** argv)
    extepsnam.append("-2Dext.eps");
    gfil << "unset key" << endl;
    gfil << "set contour base" << endl;
-   int noconts=9;
+   int noconts=DEFAULTNUMBEROFCONTOURLINES;
    solreal dcont=(maxval-minval)/solreal(noconts),contval=md1lmin+0.25e0*dcont;
-   //gfil << "set cntrparam cubicspline" << endl;
-   gfil << "set cntrparam levels discrete " << contval;
-   gfil << ", " << (md1dmax-0.5*dcont);
-   contval=minval+dcont;
-   for (int i=1; i<noconts; i++) {gfil << ", " << contval; contval+=dcont;}
-   gfil << endl;
+   gfil << "set cntrparam cubicspline" << endl;
+   gfil << "set cntrparam levels ";
+   if ( !(options.setinccont) ) {
+      gfil << "discrete " << contval;
+      gfil << ", " << (md1dmax-0.5*dcont);
+      contval=minval+dcont;
+      for (int i=1; i<noconts; i++) {gfil << ", " << contval; contval+=dcont;}
+      gfil << endl;
+   } else {
+      gfil << "incremental " << argv[options.setinccont] << ","
+           << argv[options.setinccont+1] << "," << argv[options.setinccont+2] << endl;
+   }
    gfil << "unset surface" << endl;
    gfil << "set table 'contourtemp.dat'" << endl;
    gfil << "splot namedatfile" << endl;
@@ -756,6 +786,19 @@ int main (int argc, char ** argv)
    gradepsext.append("-2DVext.eps");
    gradpdf.append("-2DV.pdf");
    if ( prop=='G' ) {
+#if DEBUG
+      cout << "ggradmagmin: " << ggradmagmin << ", ggradmagmax: " << ggradmagmax << endl;
+#endif
+      minval=round(90*sqrt(ggradmagmin))/100.0e0;
+      if ( (10.0e0*maxval)<(sqrt(ggradmagmax)) ) {
+         maxval*=10.0e0;
+      } else {
+         maxval=round(100*sqrt(ggradmagmax))/100.0e0;
+      }
+      gfil << "minval2plot=" << minval << endl;
+      gfil << "maxval2plot=" << maxval << endl;
+      gfil << "set zrange [minval2plot:maxval2plot]" << endl;
+      gfil << "set cbrange [minval2plot:maxval2plot]" << endl;
       gfil << "VMXS=dimparam/40.0 #Maximum lenght of the vectors" << endl;
       gfil << "set output '" << gradepsext << "'" << endl;
       gfil << "plot namedatfile u 1:2:(sqrt($4*$4+$5*$5)>VMXS? VMXS*$4/sqrt($4*$4+$5*$5) : $4):(sqrt($4*$4+$5*$5)>VMXS ? VMXS*$5/sqrt($4*$4+$5*$5) : $5):(sqrt($4*$4+$5*$5)) "
