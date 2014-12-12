@@ -1,6 +1,17 @@
 
 
 =====================================================================
+*** Version 1.0.4 ***
+=====================================================================
+
+--> A new plot is added in this version. dtkdemat1 is now able
+      to evaluate the gradient of the density matrix of order
+		1. This gradient is plotted in a new file, whose name
+		ends in 2DV.pdf.
+--> The number of contours can now be altered from the
+      command line through the option -C s i e.
+
+=====================================================================
 *** Version 1.0.3 ***
 =====================================================================
 
