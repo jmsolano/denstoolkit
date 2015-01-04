@@ -92,6 +92,9 @@ $(OBJDIR)/bondnetwork.o: ../common/bondnetwork.cpp soldefines.h #$(OBJDIR)/solpo
 $(OBJDIR)/critptnetwork.o: ../common/critptnetwork.cpp soldefines.h 
 	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
 
+$(OBJDIR)/demat1critptnetwork.o: ../common/demat1critptnetwork.cpp soldefines.h 
+	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
+
 $(OBJDIR)/wfgrid2d.o: ../common/wfgrid2d.cpp soldefines.h
 	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
 
@@ -115,7 +118,8 @@ dtkdemat1: dtkdemat1.o optflags.o crtflnms.o $(OBJDIR)/solfileutils.o \
   $(OBJDIR)/wavefunctionclass.o $(OBJDIR)/solscrutils.o $(OBJDIR)/solmemhand.o \
   $(OBJDIR)/bondnetwork.o $(OBJDIR)/wfgrid2d.o $(OBJDIR)/solpovtools.o \
   $(OBJDIR)/solmath.o $(OBJDIR)/eig2-4.o $(OBJDIR)/critptnetwork.o \
-  $(OBJDIR)/solstringtools.o $(OBJDIR)/atomradiicust.o $(OBJDIR)/atomcolschjmol.o
+  $(OBJDIR)/solstringtools.o $(OBJDIR)/atomradiicust.o $(OBJDIR)/atomcolschjmol.o \
+  $(OBJDIR)/demat1critptnetwork.o
 	$(GCC) $(CCFLAGS) $(OPTIM_CCFLAGS) $(INCSOLDEFS) -o $@ $+
 clean:
 	rm -f *.o dtkdemat1
@@ -130,5 +134,17 @@ rtestost: build
 	./dtkdemat1 testosterona_sto3g.wfx -a 33 45 -P -l -c
 
 runli2: build
-	./dtkdemat1  li2.ccsd.augccpvtz.wfn -P -l -c -L -n 50 -p G #-C -0.04 0.004 0.06
+	./dtkdemat1  li2.ccsd.augccpvtz.wfn -P -l -c -L -n 50 -p G -T #-C -0.04 0.004 0.06
+
+runlih: build
+	./dtkdemat1  LiH-6311Gdp.wfx -P -l -c -L -n 50 -p G -T #-C -0.04 0.004 0.06
+
+runhf: build
+	./dtkdemat1  hf.wfn -P -l -c -L -n 50 -p G -T #-C -0.04 0.004 0.06
+
+runch4a: build
+	./dtkdemat1  ch4.wfx -P -l -c -L -n 40 -p G #-C -0.04 0.004 0.06
+
+runch4: build
+	./dtkdemat1  ch4.wfx -P -l -c -L -n 40 -p G -T #-C -0.04 0.004 0.06
 

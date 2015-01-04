@@ -83,6 +83,7 @@ optFlags::optFlags()
    showcont=0;
    showatlbls=0;
    setinccont=0;
+   findcps=0;
 }
 
 
@@ -154,6 +155,9 @@ void getOptions(int &argc, char** &argv, optFlags &flags)
                break;
             case 'P':
                flags.mkplt=i;
+               break;
+            case 'T' :
+               flags.findcps=i;
                break;
             case 'z':
                flags.zipdat=i;
@@ -237,6 +241,7 @@ void printHelpMenu(int &argc, char** &argv)
         << "            \t  use this name as well --but different extension--)." << endl;
    cout << "  -s step   \tSet the stepsize for the bond path to be 'step'." << endl
         << "            \t  Default value: " << DEFAULTBONDPATHSTEPMD1 << endl;
+   cout << "  -T        \tPerform the Topological analysis (find critical points)." << endl;
 #if _HAVE_GNUPLOT_
    cout << endl;
    cout << "  -P        \tCreate a plot using gnuplot." << endl

@@ -50,6 +50,7 @@ using std::setprecision;
 #include "../common/wavefunctionclass.h"
 #include "../common/bondnetwork.h"
 #include "../common/critptnetwork.h"
+#include "../common/demat1critptnetwork.h"
 #include "../common/solstringtools.h"
 #include "optflags.h"
 #include "crtflnms.h"
@@ -622,6 +623,16 @@ int main (int argc, char ** argv)
    logfil << "#MD1(diag,max):\n" << md1dmax << endl;
    writeCommentedScrCharLine(logfil,'-');
    logfil.close();
+
+   /* Finding critical points (if requested)  */
+
+   DeMat1CriticalPointNetwork cp(&gwf,at1,at2);
+   if ( options.findcps ) {
+      printBetweenStarLines("Searching Critical Points");
+      cp.setGammaCriticalPoints();
+      cp.displayCPsInfo();
+      printScrStarLine();
+   }
    
    /* Writing the gnuplot script */
    
@@ -713,12 +724,6 @@ int main (int argc, char ** argv)
    eps1s1nam.append("eps");
    pdf1s1nam.append("pdf");
    if (!options.showatlbls) {gfil << "#";}
-   gfil << "set label 1 '" << getEnhancedEpsAtLbl(bnw.atLbl[at1]) << "' at "
-   << 0.15e0*(lenline) << "," << (minval+range*0.15e0) << " front offset character -2,0.00" << endl;
-   if (!options.showatlbls) {gfil << "#";}
-   gfil << "set label 2 '" << getEnhancedEpsAtLbl(bnw.atLbl[at2]) << "' at "
-   << 0.85e0*(lenline) << "," << (minval+range*0.15e0) << " front offset character 0.3,0.00" << endl;
-   if (!options.showatlbls) {gfil << "#";}
    gfil << "set arrow 1 from " << 0.15e0*(lenline) << "," << (minval+0.15*range)
    << " to " << 0.25e0*lenline << "," << (minval+0.10*range) << endl;
    if (!options.showatlbls) {gfil << "#";}
@@ -730,7 +735,13 @@ int main (int argc, char ** argv)
    if (!options.showatlbls) {gfil << "#";}
    gfil << "set arrow 4 nohead lt 2 lc rgb 'black' lw 1 from " << (0.75*lenline) << ",minval2plot "
         << "to " << (0.75*lenline) << ",maxval2plot" << endl;
-   //gfil << "set xtics add ('" << getEnhancedEpsAtLbl(bnw.atLbl[at1]) << "' 0)" << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set label 1 '" << getEnhancedEpsAtLbl(bnw.atLbl[(options.uponsl? at2 : at1)]) << "' at "
+   << 0.15e0*(lenline) << "," << (minval+range*0.15e0) << " front offset character -2,0.00" << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set label 2 '" << getEnhancedEpsAtLbl(bnw.atLbl[(options.uponsl? at1 : at2)]) << "' at "
+   << 0.85e0*(lenline) << "," << (minval+range*0.15e0) << " front offset character 0.3,0.00" << endl;
+//gfil << "set xtics add ('" << getEnhancedEpsAtLbl(bnw.atLbl[at1]) << "' 0)" << endl;
    //gfil << "set label 1 '" << getEnhancedEpsAtLbl(bnw.atLbl[at1]) << "' at "
    //<< 0.04e0*(lenline) << "," << 0.05*(lenline) << endl;
    //if (!options.showatlbls) {gfil << "#";}
@@ -754,15 +765,47 @@ int main (int argc, char ** argv)
       at2=tmpaaa;
    }
    if (!options.showatlbls) {gfil << "#";}
-   gfil << "set style fill solid 1.0 border -1" << endl;
-   gfil << "set object 1 circle at 0.25*dimparam,0.25*dimparam front size dimparam*0.005 fc rgb 'black'" << endl;
-   gfil << "set object 2 circle at 0.75*dimparam,0.75*dimparam front size dimparam*0.005 fc rgb 'black'" << endl;
-   if (!options.showatlbls) {gfil << "#";}
-   gfil << "set label 1 '" << getEnhancedEpsAtLbl(bnw.atLbl[at1]) << "' at "
-        << 0.25e0*(lenline) << "," << 0.25*(lenline) << " front offset character -2.2,-1" << endl;
-   if (!options.showatlbls) {gfil << "#";}
-   gfil << "set label 2 '" << getEnhancedEpsAtLbl(bnw.atLbl[at2]) << "' at "
-   << 0.75e0*(lenline) << "," << 0.75*(lenline) << " front offset character 0.5,0.8" << endl;
+   gfil << "set style fill solid 1.0 border lt -1" << endl;
+   gfil << "set object 1 circle at 0.25*dimparam,0.25*dimparam front size dimparam*0.012 fc rgb 'black'" << endl;
+   gfil << "set object 2 circle at 0.75*dimparam,0.75*dimparam front size dimparam*0.012 fc rgb 'black'" << endl;
+   if ( options.findcps ) {
+      gfil << "set style fill solid 1.0 border lt -1" << endl;
+      int nobjs=3;
+      for ( int i=0 ; i<cp.nACP ; i++ ) {
+         gfil << "set object " << getStringFromInt(i+nobjs) 
+            << " circle at (" << (0.25e0+0.5e0*cp.RACP[i][0]) << "*dimparam),("
+            << (0.25e0+0.5e0*cp.RACP[i][1]) << "*dimparam) front size dimparam*0.008 "
+            << "fc rgb 'white'" << endl;
+         gfil << "set label " << getStringFromInt(i+nobjs) << " '"
+                 << cp.lblACP[i] << "' at (" << (0.25e0+0.5e0*cp.RACP[i][0]) << "*dimparam),("
+                << (0.25e0+0.5e0*cp.RACP[i][1]) << "*dimparam) front center";
+         gfil << " offset character " << (i==0? "-2" : "-1");
+         gfil << ",0 font \",8\""<< endl;
+      }
+      nobjs+=cp.nACP;
+      for ( int i=0 ; i<cp.nSCP ; i++ ) {
+         gfil << "set object " << getStringFromInt(i+nobjs) 
+            << " circle at (" << (0.25e0+0.5e0*cp.RSCP[i][0]) << "*dimparam),("
+            << (0.25e0+0.5e0*cp.RSCP[i][1]) << "*dimparam) front size dimparam*0.008 "
+            << "fc rgb 'blue'" << endl;
+         gfil << "set label " << getStringFromInt(i+nobjs) << " '"
+                 << cp.lblSCP[i] << "' at (" << (0.25e0+0.5e0*cp.RSCP[i][0]) << "*dimparam),("
+                << (0.25e0+0.5e0*cp.RSCP[i][1]) << "*dimparam) front center";
+         gfil << " offset character -1,0 font \",8\""<< endl;
+      }
+      nobjs+=cp.nSCP;
+      for ( int i=0 ; i<cp.nRCP ; i++ ) {
+         gfil << "set object " << getStringFromInt(i+nobjs) 
+            << " circle at (" << (0.25e0+0.5e0*cp.RRCP[i][0]) << "*dimparam),("
+            << (0.25e0+0.5e0*cp.RRCP[i][1]) << "*dimparam) front size (dimparam*0.008) "
+            << "fc rgb 'green'" << endl;
+         gfil << "set label " << getStringFromInt(i+nobjs) << " '"
+                 << cp.lblRCP[i] << "' at (" << (0.25e0+0.5e0*cp.RRCP[i][0]) << "*dimparam),("
+                << (0.25e0+0.5e0*cp.RRCP[i][1]) << "*dimparam) front center";
+         gfil << " offset character -1,0 font \",8\""<< endl;
+      }
+   }
+
    if (!options.showatlbls) {gfil << "#";}
    gfil << "set arrow 1 nohead lt 2 lc rgb 'black' lw 1 from " << (0.25*lenline) << 
            ",0 to " << (0.25*lenline) << ",dimparam front" << endl;
@@ -775,7 +818,13 @@ int main (int argc, char ** argv)
    if (!options.showatlbls) {gfil << "#";}
    gfil << "set arrow 4 nohead lt 2 lc rgb 'black' lw 1 from 0," << (0.75*lenline) << 
            " to dimparam," << (0.75*lenline) << " front" << endl;
-   gfil << "set output '" << extepsnam << "'" << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set label 1 '" << getEnhancedEpsAtLbl(bnw.atLbl[(options.uponsl? at2 : at1)]) << "' at "
+      << 0.25e0*(lenline) << "," << 0.25*(lenline) << " front offset character -2.2,-1" << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set label 2 '" << getEnhancedEpsAtLbl(bnw.atLbl[(options.uponsl? at1 : at2)]) << "' at "
+   << 0.75e0*(lenline) << "," << 0.75*(lenline) << " front offset character 0.5,0.8" << endl;
+gfil << "set output '" << extepsnam << "'" << endl;
    gfil << "plot namedatfile with image notitle";
    if (!options.showcont) {gfil << "#";}
    gfil << ",'contourtemp.dat' w l lt -1 lw 1 notitle #Activate this line to show contours" << endl;
@@ -800,9 +849,33 @@ int main (int argc, char ** argv)
       gfil << "set zrange [minval2plot:maxval2plot]" << endl;
       gfil << "set cbrange [minval2plot:maxval2plot]" << endl;
       gfil << "VMXS=dimparam/40.0 #Maximum lenght of the vectors" << endl;
+      if ( options.findcps ) {
+         int nobjs=3;
+         for ( int i=0 ; i<cp.nACP ; i++ ) {
+            gfil << "set object " << getStringFromInt(i+nobjs) 
+                 << " circle at (" << (0.25e0+0.5e0*cp.RACP[i][0]) << ")*dimparam,("
+                 << (0.25e0+0.5e0*cp.RACP[i][1]) << ")*dimparam front size dimparam*0.008 "
+                 << "fc rgb 'white'" << endl;
+         }
+         nobjs+=cp.nACP;
+         for ( int i=0 ; i<cp.nSCP ; i++ ) {
+            gfil << "set object " << getStringFromInt(i+nobjs) 
+               << " circle at (" << (0.25e0+0.5e0*cp.RSCP[i][0]) << ")*dimparam,("
+               << (0.25e0+0.5e0*cp.RSCP[i][1]) << ")*dimparam front size dimparam*0.008 "
+               << "fc rgb 'blue'" << endl;
+         }
+         nobjs+=cp.nSCP;
+         for ( int i=0 ; i<cp.nRCP ; i++ ) {
+            gfil << "set object " << getStringFromInt(i+nobjs) 
+               << " circle at (" << (0.25e0+0.5e0*cp.RRCP[i][0]) << ")*dimparam,("
+               << (0.25e0+0.5e0*cp.RRCP[i][1]) << ")*dimparam front size dimparam*0.008 "
+               << "fc rgb 'green'" << endl;
+            ++nobjs;
+         }
+      }
       gfil << "set output '" << gradepsext << "'" << endl;
       gfil << "plot namedatfile u 1:2:(sqrt($4*$4+$5*$5)>VMXS? VMXS*$4/sqrt($4*$4+$5*$5) : $4):(sqrt($4*$4+$5*$5)>VMXS ? VMXS*$5/sqrt($4*$4+$5*$5) : $5):(sqrt($4*$4+$5*$5)) "
-           << "with vectors head size 0.1,20,60 filled lc palette";
+         << "with vectors head size 0.1,20,60 filled lc palette";
       if (!options.showcont) {gfil << "#";}
       gfil << ",'contourtemp.dat' w l lt -1 lw 1 notitle #Activate this line to show contours" << endl;
    }
@@ -816,7 +889,7 @@ int main (int argc, char ** argv)
    gfil << "#                 END OF GNUPLOT COMMANDS" << endl;
    writeScrCharLine(gfil,'#');
    gfil << "#If you want to reconstruct the plots using this file, type:" << endl
-   << "#gnuplot " << gnpnam << endl
+      << "#gnuplot " << gnpnam << endl
    << "#epstool --copy -b " << extepsnam << " " << epsnam << endl
    << "#epstopdf --outfile=" << pdfnam << " " << epsnam << endl;
    gfil.close();

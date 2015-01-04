@@ -59,7 +59,7 @@ public:
    unsigned short int infname,outfname,setn1,setats,setstep;
    unsigned short int uponbp,uponsl,prop2plot;
    unsigned short int zipdat,mkplt,kpgnp,quiet,showcont,showatlbls;
-   unsigned short int setinccont;
+   unsigned short int setinccont,findcps;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);
 void printHelpMenu(int &argc, char** &argv);//self-described

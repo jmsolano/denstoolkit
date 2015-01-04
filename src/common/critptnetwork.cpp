@@ -1369,7 +1369,7 @@ void critPtNetWork::addRhoACP(solreal (&x)[3],string &lbl,bondNetWork &bn)
    if (nACP==0) {
       for (int i=0; i<3; i++) {RACP[0][i]=x[i];}
       lblACP[0]=lbl;
-      (lbl[lbl.length()-1])++;
+      (lbl[lbl.length()-1])++; //Check what is this for...
       nACP++;
       return;
    }
