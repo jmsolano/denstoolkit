@@ -165,6 +165,9 @@ void printHelpMenu(int &argc, char** &argv)
    size_t pos=progname.find("./");
    if (pos!=string::npos) {progname.erase(pos,2);}
    printScrStarLine();
+#if _SOL_USE_FIGLET_NAME_
+      printFigletName();
+#endif
    cout << endl;
    centerString((string(":-) ")+progname+string(" (-:")));
    cout << endl;

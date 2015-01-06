@@ -16,6 +16,10 @@
 #define _SOL_SCR_UTILS_CPP_
 #include "solscrutils.h"
 
+#ifdef _SOL_USE_FIGLET_NAME_
+#include "figname.h"
+#endif
+
 /* ************************************************************************************** */
 /* ************************************************************************************** */
 void centerString(const std::string &s)
@@ -135,6 +139,11 @@ void printHappyStart(char ** (&argv),const char *vers,const char *contrib)
    if (pos!=std::string::npos) {progname.erase(pos,2);}
    setScrGreenBoldFont();
    printScrStarLine();
+#ifdef _SOL_USE_FIGLET_NAME_
+#if _SOL_USE_FIGLET_NAME_
+   printFigletName();
+#endif
+#endif
    std::cout << std::endl;
    centerString(progname);
    std::cout << std::endl;

@@ -18,7 +18,7 @@ typedef double solreal;
 #endif
 
 #define USEPROGRESSBAR 1
-#define CURRENTVERSION "1.0.5a"
+#define CURRENTVERSION "1.0.5b"
 #define PROGRAMCONTRIBUTORS "JMSA/JMHP"
 #define EPSFORELFVALUE (2.871e-05)
 #define DEFAULTPOINTSPERDIRECTION (300)
@@ -39,6 +39,8 @@ typedef double solreal;
 #define _HAVE_EPSTOOL_ 1
 
 #define _HAVE_EPSTOPDF_ 1
+
+#define _SOL_USE_FIGLET_NAME_ 1
 
 #define _MAX_MEM_ALLOWANCE_ (1024*1024*1024)
 
