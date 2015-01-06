@@ -9,6 +9,14 @@
 #ifndef _IOFUNCTS_CPX_CPP_
 #define _IOFUNCTS_CPX_CPP_
 
+#include <iostream>
+using std::endl;
+using std::ios;
+#include <iomanip>
+using std::setprecision;
+using std::scientific;
+using std::setw;
+
 #include "iofuncts-cpx.h"
 #include "solscrutils.h"
 #include "solstringtools.h"

@@ -131,26 +131,27 @@ int main (int argc, char ** argv)
                                //was read, there souldn't be problems here.
    bnw.setUpBNW();             //To setup the bond network.
    
-   critPtNetWork cpn;
+   critPtNetWork cpn(gwf,bnw);
    
    switch (critpttype) {
       case DENS:
-         cpn.setCriticalPoints(bnw,gwf,DENS);
-         if (options.calcbgps) {cpn.setBondPaths(gwf);}
+         cpn.setCriticalPoints(DENS);
+         if (options.calcbgps) {cpn.setBondPaths();}
          break;
       case LOLD:
-         cpn.setCriticalPoints(bnw,gwf,LOLD);
+         cpn.setCriticalPoints(LOLD);
          break;
       default:
          break;
    }
+   if ( options.mkextsearch ) {cpn.extendedSearchCPs();}
    
    //cpn.displayIHVCoords();
    //cpn.displayACPCoords();
    //cpn.displayBCPCoords();
    //cpn.printCPProps(gwf);
    
-   cpn.writeCPProps(outfilnam,infilnam,gwf);
+   cpn.writeCPProps(outfilnam,infilnam);
    ofstream lfil;
    lfil.open(outfilnam.c_str(),std::ofstream::app);
    lfil << setprecision(3) << "CPU Time: " << endl
@@ -178,7 +179,7 @@ int main (int argc, char ** argv)
          cpn.drawBonds(false);
          if (options.bgptubes) {cpn.tubeStyleBGP(true);}
       }
-      cpn.makePOVFile(povfilnam,bnw,povconf,cameravdir);
+      cpn.makePOVFile(povfilnam,povconf,cameravdir);
    }
    if (options.kppov) {
       cout << "           PovRay file: " << povfilnam << endl;

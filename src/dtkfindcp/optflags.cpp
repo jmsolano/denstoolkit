@@ -81,6 +81,7 @@ optFlags::optFlags()
    drawbgps=bgptubes=0;
    camvdir=0;
    mkdatmat=0;
+   mkextsearch=0;
 }
 
 
@@ -117,6 +118,9 @@ void getOptions(int &argc, char** &argv, optFlags &flags)
             case 'c':
                flags.camvdir=(++i);
                if (i>=argc) {printErrorMsg(argv,'c');}
+               break;
+            case 'e' :
+               flags.mkextsearch=i;
                break;
             case 'g':
                flags.drawbgps=i;
@@ -233,6 +237,9 @@ void printHelpMenu(int &argc, char** &argv)
         << "         \t  one of the following fields (Density is the default):" << endl
         << "         \t\td (Density)" << endl
         << "         \t\tL (Localized Orbital Locator -LOL-)" << endl;
+   cout << "  -e     \tPerform an extended search of critical points. This" << endl
+        << "         \t  will take some more time, but it could find more CPs" << endl
+        << "         \t  than the simple search." << endl;
    cout << "  -v     \tVerbose mode (displays additional information (for example the " << endl
         << "         \t  output of povray, etc." <<endl;
 //#if (defined(__APPLE__)||defined(__linux__))

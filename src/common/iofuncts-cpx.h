@@ -9,8 +9,6 @@
 #ifndef _IOFUNCTS_CPX_H_
 #define _IOFUNCTS_CPX_H_
 
-#include <iostream>
-using std::endl;
 #include <string>
 using std::string;
 #include <fstream>

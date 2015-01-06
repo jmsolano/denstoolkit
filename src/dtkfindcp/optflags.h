@@ -61,7 +61,7 @@ public:
    unsigned short int camvdir;
    unsigned short int drawnuc;
    unsigned short int calcbgps,drawbgps,bgptubes;
-   unsigned short int mkdatmat;
+   unsigned short int mkdatmat,mkextsearch;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);
 void printHelpMenu(int &argc, char** &argv);//self-described
