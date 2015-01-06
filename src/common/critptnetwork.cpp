@@ -39,7 +39,7 @@ using std::endl;
 /* ************************************************************************************ */
 #define CPNW_EPSFABSDIFFCOORD (1.0e-06)
 #define CPNW_MINRHOSIGNIFICATIVEVAL (5.0e-05)
-#define CPNW_MINLOLSIGNIFICATIVEVAL (1.0e-04)
+#define CPNW_MINLOLSIGNIFICATIVEVAL (5.0e-04)
 #define CPNW_EXTENDEDBONDDISTFACTOR (3.5e0)
 #define CPNW_BONDISTEXTCCPSEARCHFACTOR (2.0e0)
 #define CPNW_ATOMCRITICALPOINTSIZEFACTOR (0.2e0)
@@ -85,7 +85,7 @@ using std::endl;
 #endif
 
 #ifndef CPNW_MAXITERATIONCCPSEARCH
-#define CPNW_MAXITERATIONCCPSEARCH 100
+#define CPNW_MAXITERATIONCCPSEARCH 120
 #endif
 
 //#ifndef CPNW_CPNW_EPSRHOACPGRADMAG
@@ -436,7 +436,7 @@ bool critPtNetWork::setRhoBCPs(void)
          } else {
             lbl=bn->atLbl[atb]+string("-")+bn->atLbl[ata];
          }
-         if (addRhoBCP(x,sig,lbl,mypos)&&mypos>=0) {
+         if (rho>CPNW_MINRHOSIGNIFICATIVEVAL&&addRhoBCP(x,sig,lbl,mypos)&&mypos>=0) {
             atBCP[mypos][0]=ata;
             atBCP[mypos][1]=atb;
          }
@@ -529,10 +529,10 @@ bool critPtNetWork::setRhoRCPs(void)
    for (int i=0; i<nBCP; i++) {
       for (int j=(i+1); j<nBCP; j++) {
          for (int k=0; k<3; k++) {x[k]=(RBCP[i][k]-RBCP[j][k]);}
-         if (computeMagnitudeV3(x)>(bn->maxBondDist*2.0e0)) {continue;}
+         if (computeMagnitudeV3(x)>(bn->maxBondDist*3.0e0)) {continue;}
          seekRhoRCP(x,rho,g,sig);
          lbl=(lblBCP[i]+string("-")+lblBCP[j]);
-         wf->evalRhoGradRho(x[0],x[1],x[2],rho,g);
+         //wf->evalRhoGradRho(x[0],x[1],x[2],rho,g);
          if ((rho>CPNW_MINRHOSIGNIFICATIVEVAL)&&(computeMagnitudeV3(g)<CPNW_EPSRHOACPGRADMAG)) {
             addRhoRCP(x,sig,lbl,mypos);
          }
@@ -584,7 +584,7 @@ bool critPtNetWork::setRhoCCPs(void)
 #endif
    for (int i=0; i<nCCP; i++) {
       removeRedundInLabel(lblCCP[i]);
-      cout << lblCCP[i] << endl;
+      //cout << lblCCP[i] << endl;
    }
    cout << nCCP << " CCPs found.\n";
    //displayWarningMessage("setRhoCCPs(...) under construction.");
@@ -601,7 +601,7 @@ bool critPtNetWork::setLOLACPs()
       for ( int j=0 ; j<3 ; j++ ) {x[j]=bn->R[i][j];}
       seekLOLACP(x,rho,g,sig);
       magg=computeMagnitudeV3(g);
-      if ( /*(rho>CPNW_MINRHOSIGNIFICATIVEVAL)&&*/(magg<CPNW_EPSLOLACPGRADMAG) ) {
+      if ( (rho>CPNW_MINRHOSIGNIFICATIVEVAL)&&(magg<CPNW_EPSLOLACPGRADMAG) ) {
          lbl=bn->atLbl[i];
          addRhoACP(x,sig,lbl);
       } else {
@@ -946,7 +946,7 @@ void critPtNetWork::seekRhoBCPsAroundAPoint(solreal const (&oo)[3],solreal const
       for ( int k=0 ; k<3 ; k++ ) {xx[k]=oo[k]+IHV[i][k]*ddxx;}
       seekRhoBCP(xx,rho,gg,sig);
       magg=computeMagnitudeV3(gg);
-      if ( /*(rho>CPNW_MINRHOSIGNIFICATIVEVAL)&&*/(magg<CPNW_EPSRHOACPGRADMAG) ) {
+      if ( (rho>CPNW_MINRHOSIGNIFICATIVEVAL)&&(magg<CPNW_EPSRHOACPGRADMAG) ) {
          if (addRhoBCP(xx,sig,lbl,pos)) {++lbl[(lbl.length()-1)];}
       }
    }
