@@ -529,7 +529,8 @@ bool critPtNetWork::setRhoRCPs(void)
    for (int i=0; i<nBCP; i++) {
       for (int j=(i+1); j<nBCP; j++) {
          for (int k=0; k<3; k++) {x[k]=(RBCP[i][k]-RBCP[j][k]);}
-         if (computeMagnitudeV3(x)>(bn->maxBondDist*3.0e0)) {continue;}
+         if (computeMagnitudeV3(x)>(bn->maxBondDist*2.0e0)) {continue;}
+         for ( int k=0 ; k<3 ; k++ ) {x[k]=0.5e0*(RBCP[i][k]+RBCP[j][k]);}
          seekRhoRCP(x,rho,g,sig);
          lbl=(lblBCP[i]+string("-")+lblBCP[j]);
          //wf->evalRhoGradRho(x[0],x[1],x[2],rho,g);
@@ -1434,7 +1435,7 @@ void critPtNetWork::seekRhoRCP(solreal (&x)[3],solreal &rho2ret,solreal (&g)[3],
    wf->evalHessian(x[0],x[1],x[2],rho,gr,hr);
    sig=computeSignature(hr);
    solreal magd=computeMagnitudeV3(gr);
-   if ( magd<CPNW_EPSRHOACPGRADMAG && sig==1 ) {
+   if ( magd<=CPNW_EPSRHOACPGRADMAG && sig==1 ) {
       rho2ret=rho;
       for ( int i=0 ; i<3 ; i++ ) {g[i]=gr[i];}
       return;
