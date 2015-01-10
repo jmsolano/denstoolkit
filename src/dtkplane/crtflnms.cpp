@@ -79,45 +79,46 @@ void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn, string &o_fn,str
    }
    pos=o_fn.find_last_of('.');
    if (pos!=string::npos) {
-      string plbl;
+      string plbl="";
       switch (prop) {
          case 'd':
-            plbl="Rho";
+            plbl+="Rho";
             break;
          case 'g':
-            plbl="MagGradRho";
+            plbl+="MagGradRho";
             break;
          case 'l':
-            plbl="LapRho";
+            plbl+="LapRho";
             break;
          case 'E':
-            plbl="ELF";
+            plbl+="ELF";
             break;
          case 'L':
-            plbl="LOL";
+            plbl+="LOL";
             break;
          case 'M':
-            plbl="MagGradLOL";
+            plbl+="MagGradLOL";
             break;
          case 'N':
-            plbl="2DGradLOL";
+            plbl+="GradLOL";
             break;
          case 'S':
-            plbl="ShannEnt";
+            plbl+="ShannEnt";
             break;
          case 'G':
-            plbl="KinEnerDensG";
+            plbl+="KinEnerDensG";
             break;
          case 'K':
-            plbl="KinEnerDensK";
+            plbl+="KinEnerDensK";
             break;
          case 'V':
-            plbl="MEP";
+            plbl+="MEP";
             break;
          default:
             plbl="";
             break;
       }
+      plbl+="2D";
       o_fn.insert(pos,plbl);
       g_fn.insert(pos,plbl);
    }

@@ -355,6 +355,8 @@ void makeGnuplotFile(optFlags &opts, string &gnpn,string &outn,char p2p,
    gfil << "set zrange [" << minzrange << ":" << maxzrange << "]" << endl;
    
    gfil << "set contour base" << endl;
+
+   gfil << "set cntrparam cubicspline" << endl;
    
    gfil << "set cntrparam levels discrete 0.001, 0.005, 0.02, 0.05, 0.1, 0.2, 0.3" <<endl;
    
