@@ -97,7 +97,7 @@ using std::endl;
 #endif
 
 #ifndef CPNW_EPSLOLACPGRADMAG
-#define CPNW_EPSLOLACPGRADMAG (1.0e-07)
+#define CPNW_EPSLOLACPGRADMAG (5.0e-04)
 #endif
 
 #ifndef CPNW_MAXRHOACPSPERATOM
@@ -105,7 +105,7 @@ using std::endl;
 #endif
 
 #ifndef CPNW_MAXLOLACPSPERATOM
-#define CPNW_MAXLOLACPSPERATOM (8)
+#define CPNW_MAXLOLACPSPERATOM (40)
 #endif
 
 #ifndef CPNW_MINARRAYSIZE
@@ -1071,6 +1071,58 @@ void critPtNetWork::seekLOLACPsAroundAPoint(solreal const (&oo)[3],solreal const
          if (addRhoACP(xx,sig,lbl)) {++lbl[(lbl.length()-1)];}
       }
    }
+}
+/* ************************************************************************************ */
+void critPtNetWork::seekLOLACPsOnASphere(int atIdx,int nDivR,int nDivT,int nDivP,\
+      solreal radmin,solreal radmax)
+{
+   static const solreal ppii=4.0e0*atan(1.0e0);
+   if ( atIdx<0 || atIdx>=bn->nNuc ) {displayErrorMessage("Requesting a non existent atom!");}
+   if ( nDivR<=0 || nDivT<=0 || nDivP<=0 ) {
+      displayErrorMessage("number of points must be greater than zero!");
+   }
+   cout << "Looking for LOL ACPs around atom " << (atIdx+1) << "(" 
+        << wf->atLbl[atIdx] << ")" << endl;
+   solreal xx[3],lol,gl[3];
+   int sig,nseeds,count;
+   string blbl="LOLACPSp"+getStringFromInt(atIdx+1)+"*",lbl;
+   solreal cc[3],dr,dt,dp,currr,currt,currp;
+   dr=(radmax-radmin)/solreal(nDivR-1);
+   dt=ppii/solreal(nDivT-1);
+   dp=2.0e0*ppii/solreal(nDivP);
+   nseeds=nDivR*nDivT*nDivP;
+   count=0;
+   int origacp=nACP,idxLbl=1;
+   lbl=blbl+getStringFromInt(idxLbl);
+   for ( int i=0 ; i<3 ; i++ ) {cc[i]=bn->R[atIdx][i];}
+#if USEPROGRESSBAR
+   printProgressBar(0);
+#endif
+   for ( int ir=0 ; ir<nDivR ; ir++ ) {
+      currr=radmin+solreal(ir)*dr;
+      for ( int it=0 ; it<nDivT ; it++ ) {
+         currt=(dt*solreal(it));
+         for ( int ip=0 ; ip<nDivP ; ip++ ) {
+            currp=dp*solreal(ip);
+            xx[0]=cc[0]+currr*sin(currt)*cos(currp);
+            xx[1]=cc[1]+currr*sin(currt)*sin(currp);
+            xx[2]=cc[2]+currr*cos(currt);
+            seekLOLACP(xx,lol,gl,sig);
+            if ( computeMagnitudeV3(gl)<CPNW_EPSLOLACPGRADMAG ) {
+               if (addRhoACP(xx,sig,lbl)){lbl=blbl+getStringFromInt(++idxLbl);}
+            }
+            ++count;
+         }
+      }
+#if USEPROGRESSBAR
+      printProgressBar(int(100.0e0*solreal(count)/solreal(nseeds-1)));
+#endif
+   }
+#if USEPROGRESSBAR
+   printProgressBar(100);
+   cout << endl;
+#endif
+   if ( origacp<nACP ) {cout << "Found " << (nACP-origacp) << " new ACPs!..." << endl;}
 }
 /* ************************************************************************************ */
 void critPtNetWork::extendedSearchCPs(void)

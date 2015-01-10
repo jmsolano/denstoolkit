@@ -86,6 +86,9 @@ public:
    void seekLOLACPsAroundAPoint(solreal const (&oo)[3],solreal const ddxx,\
          string const &blbl,int nvrt=-1);
 /* ************************************************************************************ */
+   void seekLOLACPsOnASphere(int atIdx,int nDivR,int nDivT,int nDivP,solreal radmin,\
+         solreal radmax);
+/* ************************************************************************************ */
    void seekLOLBCPWithExtraACP(int acppos,solreal maxrad);
 /* ************************************************************************************ */
    void extendedSearchCPs();
