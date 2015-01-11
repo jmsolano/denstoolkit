@@ -1144,6 +1144,7 @@ void critPtNetWork::extendedSearchCPs(void)
       seekRhoRCPsAroundAPoint(xs,dx,lbl,nIHV);
       lbl="extCCPb";
       seekRhoCCPsAroundAPoint(xs,dx,lbl,nIHV);
+      ++count;
 #if USEPROGRESSBAR
       printProgressBar(int(100.0e0*solreal(count)/solreal(nBCP-normalbcp-1)));
 #endif
@@ -1165,6 +1166,7 @@ void critPtNetWork::extendedSearchCPs(void)
       seekRhoBCPsAroundAPoint(xs,dx,lbl,nIHV);
       lbl="extCCPr";
       seekRhoCCPsAroundAPoint(xs,dx,lbl,nIHV);
+      ++count;
 #if USEPROGRESSBAR
       printProgressBar(int(100.0e0*solreal(count)/solreal(nBCP-normalbcp-1)));
 #endif
@@ -1186,6 +1188,7 @@ void critPtNetWork::extendedSearchCPs(void)
       seekRhoBCPsAroundAPoint(xs,dx,lbl,nIHV);
       lbl="extRCPc";
       seekRhoRCPsAroundAPoint(xs,dx,lbl,nIHV);
+      ++count;
 #if USEPROGRESSBAR
       printProgressBar(int(100.0e0*solreal(count)/solreal(nBCP-normalbcp-1)));
 #endif
