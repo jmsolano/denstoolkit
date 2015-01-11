@@ -18,7 +18,7 @@ typedef double solreal;
 #endif
 
 #define USEPROGRESSBAR 1
-#define CURRENTVERSION "0.1.5b"
+#define CURRENTVERSION "0.1.6"
 #define PROGRAMCONTRIBUTORS "JMSA/JMHP"
 #define EPSFORELFVALUE (2.871e-05)
 #define DEFAULTPOINTSPERDIRECTION (80)

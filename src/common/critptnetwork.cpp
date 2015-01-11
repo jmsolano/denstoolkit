@@ -1130,8 +1130,13 @@ void critPtNetWork::extendedSearchCPs(void)
    solreal xs[3],dx;
    dx=bn->maxBondDist*0.1e0;
    string lbl="";
+   int count=0;
+   int initacp=nACP,initbcp=nBCP,initrcp=nRCP,initccp=nCCP;
    cout << "Looking around extraBCPs..." << endl;
    for ( int i=normalbcp ; i<nBCP ; i++ ) {
+#if USEPROGRESSBAR
+   printProgressBar(0);
+#endif
       for ( int k=0 ; k<3 ; k++ ) {xs[k]=RBCP[i][k];}
       lbl="extACPb";
       seekRhoACPsAroundAPoint(xs,dx,lbl,nIHV);
@@ -1139,8 +1144,19 @@ void critPtNetWork::extendedSearchCPs(void)
       seekRhoRCPsAroundAPoint(xs,dx,lbl,nIHV);
       lbl="extCCPb";
       seekRhoCCPsAroundAPoint(xs,dx,lbl,nIHV);
+#if USEPROGRESSBAR
+      printProgressBar(int(100.0e0*solreal(count)/solreal(nBCP-normalbcp-1)));
+#endif
    }
+#if USEPROGRESSBAR
+   printProgressBar(100);
+   cout << endl;
+#endif
+   count=0;
    cout << "Looking around RCPs..." << endl;
+#if USEPROGRESSBAR
+   printProgressBar(0);
+#endif
    for ( int i=0 ; i<nRCP ; i++ ) {
       for ( int k=0 ; k<3 ; k++ ) {xs[k]=RRCP[i][k];}
       lbl="extACPr";
@@ -1149,8 +1165,19 @@ void critPtNetWork::extendedSearchCPs(void)
       seekRhoBCPsAroundAPoint(xs,dx,lbl,nIHV);
       lbl="extCCPr";
       seekRhoCCPsAroundAPoint(xs,dx,lbl,nIHV);
+#if USEPROGRESSBAR
+      printProgressBar(int(100.0e0*solreal(count)/solreal(nBCP-normalbcp-1)));
+#endif
    }
+#if USEPROGRESSBAR
+   printProgressBar(100);
+   cout << endl;
+#endif
+   count=0;
    cout << "Looking around CCPs..." << endl;
+#if USEPROGRESSBAR
+   printProgressBar(0);
+#endif
    for ( int i=0 ; i<nCCP ; i++ ) {
       for ( int k=0 ; k<3 ; k++ ) {xs[k]=RCCP[i][k];}
       lbl="extACPc";
@@ -1159,9 +1186,37 @@ void critPtNetWork::extendedSearchCPs(void)
       seekRhoBCPsAroundAPoint(xs,dx,lbl,nIHV);
       lbl="extRCPc";
       seekRhoRCPsAroundAPoint(xs,dx,lbl,nIHV);
+#if USEPROGRESSBAR
+      printProgressBar(int(100.0e0*solreal(count)/solreal(nBCP-normalbcp-1)));
+#endif
    }
+#if USEPROGRESSBAR
+   printProgressBar(100);
+   cout << endl;
+#endif
    for (int i=0; i<nRCP; i++) {removeRedundInLabel(lblRCP[i]);}
    for (int i=0; i<nCCP; i++) {removeRedundInLabel(lblCCP[i]);}
+   bool foundnewcps=false;
+   if ( initacp<nACP ) {
+      cout << "Found " << (nACP-initacp) << " new ACPs." << endl;
+      foundnewcps=true;
+   }
+   if ( initbcp<nBCP ) {
+      cout << "Found " << (nBCP-initbcp) << " new BCPs." << endl;
+      foundnewcps=true;
+   }
+   if ( initrcp<nRCP ) {
+      cout << "Found " << (nRCP-initrcp) << " new RCPs." << endl;
+      foundnewcps=true;
+   }
+   if ( initccp<nCCP ) {
+      cout << "Found " << (nCCP-initccp) << " new CCPs." << endl;
+      foundnewcps=true;
+   }
+   if ( foundnewcps ) {
+      printBetweenStarLines(string("nACP-nBCP+nRCP-nCCP = "+\
+               getStringFromInt(nACP-nBCP+nRCP-nCCP)));
+   }
 }
 /* ************************************************************************************ */
 /* ************************************************************************************ */
