@@ -223,6 +223,10 @@ void printHelpMenu(int &argc, char** &argv)
         << "         \t\tL (Localized Orbital Locator -LOL-)" << endl
         << "         \t\tM (Magnitude of the Gradient of LOL)" << endl
         << "         \t\tN (Gradient of LOL)" << endl
+        << "         \t\tp (Localized Electrons Detector -LED-)" << endl
+        << "         \t\tP (Magnitued of Localized Electrons Detector)" << endl
+        << "         \t\tr (Region of Slow Electrons -RoSE-)" << endl
+        << "         \t\ts (Reduced Density Gradient -s-)" << endl
         << "         \t\tS (Shannon Entropy Density)" << endl;
    cout << "         \t\tV (Molecular Electrostatic Potential)" << endl;
 #if _HAVE_GNUPLOT_

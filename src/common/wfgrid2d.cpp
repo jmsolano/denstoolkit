@@ -21,7 +21,7 @@
 #include "solmemhand.h"
 #include "solmath.h"
 
-//*************************************************************************************************
+/* ********************************************************************************* */
 waveFunctionGrid2D::waveFunctionGrid2D()
 {
    for (int i=0; i<3; i++) {
@@ -42,31 +42,31 @@ waveFunctionGrid2D::waveFunctionGrid2D()
    prop2plot=NONE;
    imsetup=false;
 }
-//*************************************************************************************************
+/* ********************************************************************************* */
 waveFunctionGrid2D::~waveFunctionGrid2D()
 {
    dealloc1DRealArray(prop1d);
    dealloc2DRealArray(prop2d,npts[1]);
 }
-//*************************************************************************************************
+/* ********************************************************************************* */
 void waveFunctionGrid2D::setNPts(int nx,int ny)
 {
    npts[0]=nx;
    npts[1]=ny;
    return;
 }
-//*************************************************************************************************
+/* ********************************************************************************* */
 void waveFunctionGrid2D::setNPts(int nn)
 {
    for (int i=0; i<2; i++) {npts[i]=nn;}
    return;
 }
-//*************************************************************************************************
+/* ********************************************************************************* */
 int waveFunctionGrid2D::getNPts(int ii)
 {
    return npts[ii];   
 }
-//*************************************************************************************************
+/* ********************************************************************************* */
 void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,int na,int nb,int nc)
 {
    if (!(bn.imstp())) {
@@ -98,7 +98,7 @@ void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,int na,int nb,int nc)
    imsetup=true;
    return;
 }
-//*************************************************************************************************
+/* ********************************************************************************* */
 void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,int na,int nb)
 {
    if (!(bn.imstp())) {
@@ -129,7 +129,7 @@ void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,int na,int nb)
    imsetup=true;
    return;
 }
-//*************************************************************************************************
+/* ********************************************************************************* */
 void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,int na)
 {
    if (!(bn.imstp())) {
@@ -159,8 +159,8 @@ void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,int na)
    imsetup=true;
    return;
 }
-//*************************************************************************************************
-//*************************************************************************************************
+/* ********************************************************************************* */
+/* ********************************************************************************* */
 void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,
                                           solreal (&ta)[3],solreal (&tb)[3],solreal (&tc)[3])
 {
@@ -217,7 +217,7 @@ void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,
    }
    return;
 }
-//*************************************************************************************************
+/* ********************************************************************************* */
 void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,solreal (&ta)[3],solreal (&tb)[3])
 {
    solreal n[3],eta[3],xi[3];//,orig[3];
@@ -280,7 +280,7 @@ void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,solreal (&ta)[3],solre
    // */
    return;
 }
-//*************************************************************************************************
+/* ********************************************************************************* */
 void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,solreal (&ta)[3])
 {
    solreal eta[3],xi[3];
@@ -312,7 +312,7 @@ void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,solreal (&ta)[3])
    }
    return;
 }
-//*************************************************************************************************
+/* ********************************************************************************* */
 bool waveFunctionGrid2D::writePlaneTsvRho(ofstream &ofil,gaussWaveFunc &wf)
 {
    ofil << scientific << setprecision (10);
@@ -344,51 +344,16 @@ bool waveFunctionGrid2D::writePlaneTsvRho(ofstream &ofil,gaussWaveFunc &wf)
    }
    return true;
 }
-//**************************************************************************************************
+/* ********************************************************************************** */
 void waveFunctionGrid2D::makeTsv(string &onam,gaussWaveFunc &wf,ScalarFieldType ft)
 {
    if (!wf.imldd) {
       cout << "Error: trying to use a non loaded wave function object!\nNothing done!\n";
       return;
    }
-   switch (ft) {
-      case DENS:
-         comments+=string("Property: Density");
-         break;
-      case LAPD:
-         comments+=string("Property: Laplacian of Density");
-         break;
-      case ELFD:
-         comments+=string("Property: Electron Localization Function -ELF-");
-         break;
-      case SENT:
-         comments+=string("Property: Shannon Entropy Density");
-         break;
-      case MGRD:
-         comments+=string("Property: Magnitude of the Gradient of the Density");
-         break;
-      case LOLD:
-         comments+=string("Property: Localized Orbital Locator -LOL-");
-         break;
-      case MGLD:
-         comments+=string("Property: Magnitude of the Gradient of LOL");
-         break;
-      case GLOL:
-         comments+=string("Property: Gradient of LOL (2D-projection)");
-         break;
-      case KEDG:
-         comments+=string("Property: Kinetic Energy Density G");
-         break;
-      case KEDK:
-         comments+=string("Property: Kinetic Energy Density K");
-         break;
-      case MEPD:
-         comments+=string("Property: Molecular Electrostatic Potential");
-         break;
-      default:
-         cout << "Error: Field type not known!\n dat file incomplete!" << endl;
-         break;
-   }
+   char cft=convertScalarFieldType2Char(ft);
+   comments+=string("Property: ");
+   comments+=getFieldTypeKeyLong(cft);
    ofstream ofil;
    ofil.open(onam.c_str());
    if (!imsetup) {
@@ -443,6 +408,18 @@ void waveFunctionGrid2D::makeTsv(string &onam,gaussWaveFunc &wf,ScalarFieldType 
       case MEPD:
          writePlaneTsvMolElecPot(ofil,wf);
          break;
+      case LEDV :
+         writePlaneTsvLED(ofil,wf);
+         break;
+      case MLED :
+         writePlaneTsvMagLED(ofil,wf);
+         break;
+      case ROSE :
+         writePlaneTsvRoSE(ofil,wf);
+         break;
+      case REDG :
+         writePlaneTsvRedDensMag(ofil,wf);
+         break;
       default:
          cout << "Error: Field type not known!\n dat file incomplete!" << endl;
          break;
@@ -454,7 +431,7 @@ void waveFunctionGrid2D::makeTsv(string &onam,gaussWaveFunc &wf,ScalarFieldType 
    ofil.close();
    return;
 }
-//*************************************************************************************************
+/* ********************************************************************************* */
 bool waveFunctionGrid2D::writePlaneTsvLapRho(ofstream &ofil,gaussWaveFunc &wf)
 {
    ofil << scientific << setprecision (10);
@@ -486,7 +463,7 @@ bool waveFunctionGrid2D::writePlaneTsvLapRho(ofstream &ofil,gaussWaveFunc &wf)
    }
    return false;
 }
-//*************************************************************************************************
+/* ********************************************************************************* */
 bool waveFunctionGrid2D::writePlaneTsvELF(ofstream &ofil,gaussWaveFunc &wf)
 {
    ofil << scientific << setprecision (10);
@@ -518,7 +495,7 @@ bool waveFunctionGrid2D::writePlaneTsvELF(ofstream &ofil,gaussWaveFunc &wf)
    }
    return false;
 }
-//*************************************************************************************************
+/* ********************************************************************************* */
 bool waveFunctionGrid2D::writePlaneTsvShannonEntropy(ofstream &ofil,gaussWaveFunc &wf)
 {
    ofil << scientific << setprecision (10);
@@ -550,7 +527,7 @@ bool waveFunctionGrid2D::writePlaneTsvShannonEntropy(ofstream &ofil,gaussWaveFun
    }
    return false;
 }
-//*************************************************************************************************
+/* ********************************************************************************* */
 bool waveFunctionGrid2D::writePlaneTsvMagGradRho(ofstream &ofil,gaussWaveFunc &wf)
 {
    ofil << scientific << setprecision (10);
@@ -582,7 +559,7 @@ bool waveFunctionGrid2D::writePlaneTsvMagGradRho(ofstream &ofil,gaussWaveFunc &w
    }
    return false;
 }
-//*************************************************************************************************
+/* ********************************************************************************* */
 bool waveFunctionGrid2D::writePlaneTsvLOL(ofstream &ofil,gaussWaveFunc &wf)
 {
    ofil << scientific << setprecision (10);
@@ -614,7 +591,7 @@ bool waveFunctionGrid2D::writePlaneTsvLOL(ofstream &ofil,gaussWaveFunc &wf)
    }
    return false;
 }
-//*************************************************************************************************
+/* ********************************************************************************* */
 bool waveFunctionGrid2D::writePlaneTsvMagGradLOL(ofstream &ofil,gaussWaveFunc &wf)
 {
    ofil << scientific << setprecision (10);
@@ -647,7 +624,7 @@ bool waveFunctionGrid2D::writePlaneTsvMagGradLOL(ofstream &ofil,gaussWaveFunc &w
    }
    return false;
 }
-//*************************************************************************************************
+/* ********************************************************************************* */
 bool waveFunctionGrid2D::writePlaneTsvKinetEnerDensG(ofstream &ofil,gaussWaveFunc &wf)
 {
    ofil << scientific << setprecision (10);
@@ -679,7 +656,7 @@ bool waveFunctionGrid2D::writePlaneTsvKinetEnerDensG(ofstream &ofil,gaussWaveFun
    }
    return false;
 }
-//*************************************************************************************************
+/* ********************************************************************************* */
 bool waveFunctionGrid2D::writePlaneTsvKinetEnerDensK(ofstream &ofil,gaussWaveFunc &wf)
 {
    ofil << scientific << setprecision (10);
@@ -711,7 +688,7 @@ bool waveFunctionGrid2D::writePlaneTsvKinetEnerDensK(ofstream &ofil,gaussWaveFun
    }
    return false;
 }
-//*************************************************************************************************
+/* ********************************************************************************* */
 bool waveFunctionGrid2D::writePlaneTsvGradLOL(ofstream &ofil,gaussWaveFunc &wf)
 {
    ofil << scientific << setprecision (10);
@@ -749,7 +726,7 @@ bool waveFunctionGrid2D::writePlaneTsvGradLOL(ofstream &ofil,gaussWaveFunc &wf)
    }
    return false;
 }
-//*************************************************************************************************
+/* ********************************************************************************* */
 bool waveFunctionGrid2D::writePlaneTsvMolElecPot(ofstream &ofil,gaussWaveFunc &wf)
 {
    ofil << scientific << setprecision (10);
@@ -781,6 +758,140 @@ bool waveFunctionGrid2D::writePlaneTsvMolElecPot(ofstream &ofil,gaussWaveFunc &w
    }
    return false;
 }
-//*************************************************************************************************
+/* ************************************************************************************ */
+bool waveFunctionGrid2D::writePlaneTsvLED(ofstream &ofil,gaussWaveFunc &wf)
+{
+   ofil << scientific << setprecision (10);
+   solreal e1,e2,xx[3],led[3];
+   e1=-1.0e0;
+   for (int i=0; i<npts[0]; i++) {
+      e2=-1.0e0;
+      for (int j=0; j<npts[1]; j++) {
+         for (int k=0; k<3; k++) {
+            xx[k]=Ca[k]*(1.0e0-e1)*(1.0e0-e2);
+            xx[k]+=Cb[k]*(1.0e0+e1)*(1.0e0-e2);
+            xx[k]+=Cc[k]*(1.0e0+e1)*(1.0e0+e2);
+            xx[k]+=Cd[k]*(1.0e0-e1)*(1.0e0+e2);
+            xx[k]*=0.25e0;
+         }
+         wf.evalLED(xx,led);
+         //prop1d[j]=sqrt(gl[0]*gl[0]+gl[1]*gl[1]+gl[2]*gl[2]);
+         prop2d[j][0]=prop2d[j][1]=0.0e0;
+         for (int p=0; p<3; p++) {
+            prop2d[j][0]+=(dircos1[p]*led[p]);
+            prop2d[j][1]+=(dircos2[p]*led[p]);
+         }
+         e2+=dx[1];
+      }
+      e2=-1.0e0*maxdim;
+      for (int j=0; j<npts[1]; j++) {
+         ofil << e1*maxdim << "\t" << e2 << "\t" << prop2d[j][0] << "\t" << prop2d[j][1] << endl;
+         e2+=dx[1]*maxdim;
+      }
+      e1+=dx[0];
+      ofil << endl;
+#if USEPROGRESSBAR
+      printProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+#endif
+   }
+   return false;
+}
+/* ********************************************************************************* */
+bool waveFunctionGrid2D::writePlaneTsvMagLED(ofstream &ofil,gaussWaveFunc &wf)
+{
+   ofil << scientific << setprecision (10);
+   solreal e1,e2,xx[3];
+   e1=-1.0e0;
+   for (int i=0; i<npts[0]; i++) {
+      e2=-1.0e0;
+      for (int j=0; j<npts[1]; j++) {
+         for (int k=0; k<3; k++) {
+            xx[k]=Ca[k]*(1.0e0-e1)*(1.0e0-e2);
+            xx[k]+=Cb[k]*(1.0e0+e1)*(1.0e0-e2);
+            xx[k]+=Cc[k]*(1.0e0+e1)*(1.0e0+e2);
+            xx[k]+=Cd[k]*(1.0e0-e1)*(1.0e0+e2);
+            xx[k]*=0.25e0;
+         }
+         prop1d[j]=wf.evalMagLED(xx[0],xx[1],xx[2]);
+         e2+=dx[1];
+      }
+      e2=-1.0e0*maxdim;
+      for (int j=0; j<npts[1]; j++) {
+         ofil << e1*maxdim << "\t" << e2 << "\t" << prop1d[j] << endl;
+         e2+=dx[1]*maxdim;
+      }
+      e1+=dx[0];
+      ofil << endl;
+#if USEPROGRESSBAR
+      printProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+#endif
+   }
+   return false;
+}
+/* ************************************************************************************ */
+bool waveFunctionGrid2D::writePlaneTsvRedDensMag(ofstream &ofil,gaussWaveFunc &wf)
+{
+   ofil << scientific << setprecision (10);
+   solreal e1,e2,xx[3];
+   e1=-1.0e0;
+   for (int i=0; i<npts[0]; i++) {
+      e2=-1.0e0;
+      for (int j=0; j<npts[1]; j++) {
+         for (int k=0; k<3; k++) {
+            xx[k]=Ca[k]*(1.0e0-e1)*(1.0e0-e2);
+            xx[k]+=Cb[k]*(1.0e0+e1)*(1.0e0-e2);
+            xx[k]+=Cc[k]*(1.0e0+e1)*(1.0e0+e2);
+            xx[k]+=Cd[k]*(1.0e0-e1)*(1.0e0+e2);
+            xx[k]*=0.25e0;
+         }
+         prop1d[j]=wf.evalReducedDensityGradient(xx[0],xx[1],xx[2]);
+         e2+=dx[1];
+      }
+      e2=-1.0e0*maxdim;
+      for (int j=0; j<npts[1]; j++) {
+         ofil << e1*maxdim << "\t" << e2 << "\t" << prop1d[j] << endl;
+         e2+=dx[1]*maxdim;
+      }
+      e1+=dx[0];
+      ofil << endl;
+#if USEPROGRESSBAR
+      printProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+#endif
+   }
+   return false;
+}
+/* ************************************************************************************ */
+bool waveFunctionGrid2D::writePlaneTsvRoSE(ofstream &ofil,gaussWaveFunc &wf)
+{
+   ofil << scientific << setprecision (10);
+   solreal e1,e2,xx[3];
+   e1=-1.0e0;
+   for (int i=0; i<npts[0]; i++) {
+      e2=-1.0e0;
+      for (int j=0; j<npts[1]; j++) {
+         for (int k=0; k<3; k++) {
+            xx[k]=Ca[k]*(1.0e0-e1)*(1.0e0-e2);
+            xx[k]+=Cb[k]*(1.0e0+e1)*(1.0e0-e2);
+            xx[k]+=Cc[k]*(1.0e0+e1)*(1.0e0+e2);
+            xx[k]+=Cd[k]*(1.0e0-e1)*(1.0e0+e2);
+            xx[k]*=0.25e0;
+         }
+         prop1d[j]=wf.evalRoSE(xx[0],xx[1],xx[2]);
+         e2+=dx[1];
+      }
+      e2=-1.0e0*maxdim;
+      for (int j=0; j<npts[1]; j++) {
+         ofil << e1*maxdim << "\t" << e2 << "\t" << prop1d[j] << endl;
+         e2+=dx[1]*maxdim;
+      }
+      e1+=dx[0];
+      ofil << endl;
+#if USEPROGRESSBAR
+      printProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+#endif
+   }
+   return false;
+}
+/* ************************************************************************************ */
 
 #endif//_WFGRID2D_CPP_

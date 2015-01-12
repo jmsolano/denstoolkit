@@ -155,52 +155,53 @@ int main (int argc, char ** argv)
    /* Main calculation loop, chooses between different available fields. */
    
    cout << "Evaluating and writing property..." << endl;
-   cout << "(Scalar Field to plot: ";
+   cout << "(Scalar Field to plot: " << getFieldTypeKeyLong(prop) << ")." << endl << endl;
    switch (prop) {
       case 'd':
-         cout << "Density.)" << endl << endl;
          grid.makeTsv(outfilnam,gwf,DENS);
          cout << endl;
          break;
       case 'g':
-         cout << "Magnitude of the Gradient of the Density.)" << endl << endl;
          grid.makeTsv(outfilnam,gwf,MGRD);
          break;
       case 'l':
-         cout << "Laplacian of the density.)" << endl << endl;
          grid.makeTsv(outfilnam,gwf,LAPD);
          cout << endl;
          break;
+      case 'G':
+         grid.makeTsv(outfilnam,gwf,KEDG);
+         break;
       case 'E':
-         cout << "Electron Localization Function.)" << endl << endl;
          grid.makeTsv(outfilnam,gwf,ELFD);
          break;
+      case 'K':
+         grid.makeTsv(outfilnam,gwf,KEDK);
+         break;
       case 'S':
-         cout << "Shannon-Entropy Density.)" << endl << endl;
          grid.makeTsv(outfilnam,gwf,SENT);
          break;
       case 'L':
-         cout << "Localized Orbital Locator.)" << endl << endl;
          grid.makeTsv(outfilnam,gwf,LOLD);
          break;
       case 'M':
-         cout << "Magnitude of the Gradrient of LOL.)" << endl << endl;
          grid.makeTsv(outfilnam,gwf,MGLD);
          break;
       case 'N':
-         cout << "Gradient of LOL (projection onto the plane)" << endl << endl;
          grid.makeTsv(outfilnam,gwf,GLOL);
          break;
-      case 'G':
-         cout << "Kinetic Energy Density G.)" << endl << endl;
-         grid.makeTsv(outfilnam,gwf,KEDG);
+      case 'p' :
+         grid.makeTsv(outfilnam,gwf,LEDV);
          break;
-      case 'K':
-         cout << "Kinetic Energy Density K.)" << endl << endl;
-         grid.makeTsv(outfilnam,gwf,KEDK);
+      case 'P' :
+         grid.makeTsv(outfilnam,gwf,MLED);
+         break;
+      case 'r' :
+         grid.makeTsv(outfilnam,gwf,ROSE);
+         break;
+      case 's' :
+         grid.makeTsv(outfilnam,gwf,REDG);
          break;
       case 'V':
-         cout << "Molecular Electrostatic Potential.)" << endl << endl;
          grid.makeTsv(outfilnam,gwf,MEPD);
          break;
       default:
@@ -271,60 +272,65 @@ void makeGnuplotFile(optFlags &opts, string &gnpn,string &outn,char p2p,
    
    /* Choosing the label (legend) for the plot  and the zrange for the plot */
    solreal minzrange,maxzrange;
-   string plbl="";
+   string plbl=getFieldTypeKeyShort(p2p);;
    switch (p2p) {
       case 'd':
-         plbl=string("{/Symbol r}");
          minzrange=0.0e0;
          maxzrange=0.6e0;
          break;
       case 'g':
-         plbl=string("|{/Symbol \321 f}|");
          minzrange=0.0e0;
          maxzrange=2.0e0;
          break;
       case 'l':
-         plbl=string("{/Symbol \321}^2{/Symbol r}");
          minzrange=-2.0e0;
          maxzrange=2.0e0;
          break;
       case 'E':
-         plbl=string("ELF");
          minzrange=0.0e0;
          maxzrange=1.0e0;
          break;
       case 'S':
-         plbl=string("S_{/Symbol r}");
          minzrange=-10.0e0;
          maxzrange=10.0e0;
          break;
       case 'L':
-         plbl=string("LOL");
          minzrange=0.0e0;
          maxzrange=1.0e0;
          break;
       case 'M':
-         plbl=string("|{/Symbol \321}LOL|");
          minzrange=0.0e0;
          maxzrange=2.0e0;
          break;
       case 'N':
-         plbl=string("{/Symbol \321}LOL-2D");
          minzrange=0.0e0;
          maxzrange=2.0e0;
          break;
       case 'G':
-         plbl=string("{/Bold G}");
          minzrange=0.0e0;
          maxzrange=10.0e0;
          break;
       case 'K':
-         plbl=string("{/Bold K}");
          minzrange=0.0e0;
          maxzrange=10.0e0;
          break;
+      case 'p' :
+         minzrange=0.0e0;
+         maxzrange=2.0e0;
+         break;
+      case 'P' :
+         minzrange=0.0e0;
+         maxzrange=2.0e0;
+         break;
+      case 'r' :
+         minzrange=-1.0e0;
+         maxzrange=1.0e0;
+         break;
+      case 's' :
+         minzrange=0.0e0;
+         maxzrange=1.0e0;
+         break;
       case 'V':
-         plbl=string("MEP");
          minzrange=-0.6e0;
          maxzrange=0.6e0;
          break;
@@ -356,16 +362,19 @@ void makeGnuplotFile(optFlags &opts, string &gnpn,string &outn,char p2p,
    
    gfil << "set contour base" << endl;
 
-   gfil << "set cntrparam cubicspline" << endl;
+   gfil << "set cntrparam bspline" << endl;
    
-   gfil << "set cntrparam levels discrete 0.001, 0.005, 0.02, 0.05, 0.1, 0.2, 0.3" <<endl;
+   //gfil << "set cntrparam levels discrete 0.001, 0.005, 0.02, 0.05, 0.1, 0.2, 0.3" <<endl;
+
+   gfil << "set cntrparam levels incremental " << minzrange << ", " 
+        << (0.10*(maxzrange-minzrange)) << ", " << maxzrange << endl;
    
    gfil << "unset surface" << endl;
    
    gfil << "set table 'contourtemp.dat'" << endl;
    
    gfil << "splot '" << outn << "'";
-   if (p2p=='N') {gfil << " using 1:2:(sqrt($3*$3+$4*$4))";}
+   if (p2p=='N' || p2p=='p') {gfil << " using 1:2:(sqrt($3*$3+$4*$4))";}
    gfil << endl;
    
    gfil << "unset table" << endl;
@@ -381,7 +390,7 @@ void makeGnuplotFile(optFlags &opts, string &gnpn,string &outn,char p2p,
    gfil << "dimparam=" << dimparam
         << " #Decrease this number to zoom in the plot" << endl;
    
-   if (p2p=='N') {
+   if (p2p=='N'||p2p=='p') {
       gfil << "VMXS=dimparam/40.0 #Maximum lenght of the vectors" << endl;
    }
    
@@ -397,7 +406,7 @@ void makeGnuplotFile(optFlags &opts, string &gnpn,string &outn,char p2p,
    
    gfil << "set palette rgbformulae 33,13,10" << endl;
    
-   if (p2p=='N') {
+   if (p2p=='N'||p2p=='p') {
       //gfil << "plot '" << outn << "' using 1:2:3:4:(sqrt($3*$3+$4*$4)) "
       //<< "with vectors head size 0.1,20,60 filled lc palette";
       gfil << "plot '" << outn << "' every 1:1 using 1:2:(sqrt($3*$3+$4*$4)>VMXS? VMXS*$3/sqrt($3*$3+$4*$4) : $3):(sqrt($3*$3+$4*$4)>VMXS ? VMXS*$4/sqrt($3*$3+$4*$4) : $4):(sqrt($3*$3+$4*$4)) "

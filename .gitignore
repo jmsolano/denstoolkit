@@ -58,6 +58,7 @@ tex/dtkmanual/plots/*
 tex/dtkmanual/tmp/*
 tex/ejemplos/*
 wavefiles/*
+arts/*
 
 #specific files
 namefiglet.txt

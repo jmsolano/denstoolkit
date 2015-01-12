@@ -116,7 +116,7 @@ distclean: clean
 	rm -f $(OBJDIR)/*.o
 
 runben: build
-	./dtkplane  benceno_sto3g.wfx -n 300 -a 1 4 6 -P
+	./dtkplane  benceno_sto3g.wfx -n 60 -a 1 4 6 -c -P -p p
 
 runbenwl: build
 	./dtkplane  benceno_sto3g.wfx -n 300 -a 1 4 6 -P -l

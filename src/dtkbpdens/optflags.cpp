@@ -234,6 +234,9 @@ void printHelpMenu(int &argc, char** &argv)
         << "            \t\tE (Electron Localization Function -ELF-)" << endl
         << "            \t\tL (Localized Orbital Locator -LOL-)" << endl
         << "            \t\tM (Magnitude of the Gradient of LOL)" << endl
+        << "            \t\tP (Magnitude of Localized Electrons Detector -LED-)" << endl
+        << "            \t\tr (Region of Slow Electrons -RoSE-)" << endl
+        << "            \t\ts (Reduced Density Gradient -s-)" << endl
         << "            \t\tS (Shannon Entropy Density)" << endl;
    cout << "            \t\tV (Molecular Electrostatic Potential)" << endl;
    cout << "  -s step   \tSet the stepsize for the bond path to be 'step'." << endl
