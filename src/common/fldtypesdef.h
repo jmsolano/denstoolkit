@@ -84,7 +84,6 @@ inline char convertScalarFieldType2Char(ScalarFieldType fftt)
       case NONE :
       default :
          res='0';
-         std::cerr << "Invalid Field Type!" << endl;
          break;
    }
    return res;
