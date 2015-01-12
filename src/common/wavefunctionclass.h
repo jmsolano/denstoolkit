@@ -189,14 +189,14 @@ public:
       value. It only takes one occupation number to be different in order to this function returning false.
     */
    /* ************************************************************************************** */
-   void evalRhoGradRho(solreal &x, solreal &y, solreal &z,solreal &rho, solreal &dx, solreal &dy, solreal &dz);
+   void evalRhoGradRho(solreal x, solreal y, solreal z,solreal &rho, solreal &dx, solreal &dy, solreal &dz);
    /*
       This function returns the value of the density ($\rho$) and the gradient of it 
       ($\nabla\rho=dx\hat{\mathi}+dy\hat{\mathj}+dz\hat{k}$) at the point 
       $\vec{r}=(x,y,z)$ using the most optimized algorithm.
     */
    /* ************************************************************************************** */
-   void evalRhoGradRho(solreal &x, solreal &y, solreal &z,solreal &rho, solreal (&grd)[3]);
+   void evalRhoGradRho(solreal x, solreal y, solreal z,solreal &rho, solreal (&grd)[3]);
    /*
       This function is the same as evalRhoGraRho, but using an array for the gradient instead of
       individual components of the gradient. i.e.
@@ -365,6 +365,16 @@ public:
      \cdot\nabla\phi_{\dot{B}}$
     */
    /* *********************************************************************************** */
+   void evalNabPhi2(solreal const x,solreal const y,solreal const z,\
+         solreal &rho2ret,solreal &twoG);
+   /*
+    This function returns the value of
+    $\sum_{\dot{A}\sum_{\dot{B}}}C_{\dot{A}\dot{B}}\nabla\phi_{\dot{A}}
+     \cdot\nabla\phi_{\dot{B}}$, and rho. It severs for evaluation of
+     indices such as the 'reduced density gradient' or 'region of
+     slow electrons'.
+    */
+   /* *********************************************************************************** */
    solreal evalKineticEnergyK(solreal x,solreal y,solreal z);
    /*
     This function returns the value of the Kinetic Energy Density K, defined through
@@ -514,6 +524,13 @@ public:
    /* ************************************************************************************ */
    solreal totalNuclearCharge(void);
    /* ************************************************************************************ */
+   void evalLED(solreal const (&x)[3],solreal (&led)[3]);
+   /* ************************************************************************************ */
+   solreal evalMagLED(solreal x,solreal y,solreal z);
+   /* ************************************************************************************ */
+   solreal evalReducedDensityGradient(solreal x,solreal y,solreal z);
+   /* ************************************************************************************ */
+   solreal evalRoSE(solreal x,solreal y,solreal z);
    /* ************************************************************************************ */
 private:
    static int prTy[MAXPRIMTYPEDEFINED*3];

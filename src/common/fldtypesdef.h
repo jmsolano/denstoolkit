@@ -14,7 +14,7 @@
 using std::string;
 //**********************************************************************************************
 enum ScalarFieldType {
-   NONE,DENS,MGRD,LAPD,LOLD,ELFD,SENT,KEDK,KEDG,MGLD,GLOL,MEPD
+   NONE,DENS,MGRD,LAPD,LOLD,ELFD,SENT,KEDK,KEDG,MGLD,GLOL,MEPD,LEDV,MLED,REDG,ROSE
 };
 //**********************************************************************************************
 inline string getFieldTypeKeyShort(const char prop)
@@ -41,6 +41,18 @@ inline string getFieldTypeKeyShort(const char prop)
          break;
       case 'N':
          plbl="GradLOL";
+         break;
+      case 'p' :
+         plbl="LED";
+         break;
+      case 'P' :
+         plbl="MagLED";
+         break;
+      case 'r' :
+         plbl="RoSE";
+         break;
+      case 's' :
+         plbl="RedDensGrad";
          break;
       case 'S':
          plbl="ShannEnt";
@@ -86,6 +98,18 @@ inline string getFieldTypeKeyLong(const char prop)
       case 'N':
          plbl="Gradient of LOL";
          break;
+      case 'p' :
+         plbl="Localized Electrons Detector --LED--";
+         break;
+      case 'P' :
+         plbl="Magnitude of Localized Electrons Detector";
+         break;
+      case 'r' :
+         plbl="Region of Slow Electrons --RoSE--";
+         break;
+      case 's' :
+         plbl="Reduced Density Gradient --s--";
+         break;
       case 'S':
          plbl="Shannon-Entropy Density";
          break;
@@ -120,6 +144,18 @@ inline string gnuplotFieldTitle(const char p2p)
          break;
       case 'E':
          plbl=string("ELF");
+         break;
+      case 'p' :
+         plbl=string("/Bold ~P{1.0\\176}");
+         break;
+      case 'P' :
+         plbl=string("/Bold |~P{1.0\\176}|");
+         break;
+      case 'r' :
+         plbl=string("RoSE");
+         break;
+      case 's' :
+         plbl=string("s");
          break;
       case 'S':
          plbl=string("S_{/Symbol r}");

@@ -345,10 +345,11 @@ void gaussWaveFunc::displayAllFieldProperties(solreal x,solreal y,solreal z)
    evalHessian(xx[0],xx[1],xx[2],hess);
    eigen_decomposition3(hess, eivec, eival);
    cout << scientific << setprecision(12);
-   cout << "  R:           " << setw(20) << x << setw(20) << y << setw(20) << z << endl;
-   cout << "  Rho:         " << setw(20) << rho << endl;
-   cout << "  GradRho:     " << setw(20) << g[0] << setw(20) << g[1] << setw(20) << g[2] << endl;
-   cout << "  HessRho:     " << setw(20) << hess[0][0] << setw(20) << hess[0][1]
+   cout << "            R: " << setw(20) << x << setw(20) << y << setw(20) << z << endl;
+   cout << "          Rho: " << setw(20) << rho << endl;
+   cout << "      GradRho: " << setw(20) << g[0] << setw(20) << g[1] << setw(20) << g[2] << endl;
+   cout << "    |GradRho|: " << setw(20) << sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]) << endl;
+   cout << "      HessRho: " << setw(20) << hess[0][0] << setw(20) << hess[0][1]
                              << setw(20) << hess[0][2] << endl;
    cout << "               " << setw(20) << hess[1][0] << setw(20) << hess[1][1]
                              << setw(20) << hess[1][2] << endl;
@@ -362,12 +363,13 @@ void gaussWaveFunc::displayAllFieldProperties(solreal x,solreal y,solreal z)
                              << setw(20) << eivec[2][1] << endl;
    cout << "               " << setw(20) << eivec[0][2] << setw(20) << eivec[1][2]
                              << setw(20) << eivec[2][2] << endl;
-   cout << "  LapRho:      " << setw(20) << (hess[0][0]+hess[1][1]+hess[2][2]) << endl;
+   cout << "       LapRho: " << setw(20) << (hess[0][0]+hess[1][1]+hess[2][2]) << endl;
    evalHessLOL(xx,lol,g,hess);//(x,lol,gl,hl)
    eigen_decomposition3(hess, eivec, eival);
-   cout << "  LOL:         " << setw(20) << lol << endl;
-   cout << "  gradLOL:     " << setw(20) << g[0] << setw(20) << g[1] << setw(20) << g[2] << endl;
-   cout << "  HessLOL:     " << setw(20) << hess[0][0] << setw(20) << hess[0][1]
+   cout << "          LOL: " << setw(20) << lol << endl;
+   cout << "      gradLOL: " << setw(20) << g[0] << setw(20) << g[1] << setw(20) << g[2] << endl;
+   cout << "    |gradLOL|: " << setw(20) << sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]) << endl;
+   cout << "      HessLOL: " << setw(20) << hess[0][0] << setw(20) << hess[0][1]
                              << setw(20) << hess[0][2] << endl;
    cout << "               " << setw(20) << hess[1][0] << setw(20) << hess[1][1]
                              << setw(20) << hess[1][2] << endl;
@@ -375,11 +377,22 @@ void gaussWaveFunc::displayAllFieldProperties(solreal x,solreal y,solreal z)
                              << setw(20) << hess[2][2] << endl;
    cout << "  EigVal HLOL: " << setw(20) << eival[0] << setw(20) << eival[1]
                              << setw(20) << eival[2] << endl;
-   cout << "  ELF:         " << setw(20) << evalELF(x,y,z) << endl;
-   cout << "  K.E. G.:     " << setw(20) << evalKineticEnergyG(x,y,z) << endl;
-   cout << "  K.E. K.:     " << setw(20) << evalKineticEnergyK(x,y,z) << endl;
+   cout << "  EigVec HLOL: " << setw(20) << eivec[0][0] << setw(20) << eivec[1][0]
+                             << setw(20) << eivec[2][0] << endl;
+   cout << "               " << setw(20) << eivec[0][1] << setw(20) << eivec[1][1]
+                             << setw(20) << eivec[2][1] << endl;
+   cout << "               " << setw(20) << eivec[0][2] << setw(20) << eivec[1][2]
+                             << setw(20) << eivec[2][2] << endl;
+   cout << "          ELF: " << setw(20) << evalELF(x,y,z) << endl;
+   cout << "      K.E. G.: " << setw(20) << evalKineticEnergyG(x,y,z) << endl;
+   cout << "      K.E. K.: " << setw(20) << evalKineticEnergyK(x,y,z) << endl;
    cout << "  Shann. Ent.: " << setw(20) << evalShannonEntropy(x,y,z) << endl;
    cout << "  Elect. Pot.: " << setw(20) << evalMolElecPot(x,y,z) << endl;
+   evalLED(xx,g);
+   cout << "          LED: " << setw(20) << g[0] << setw(20) << g[1] << setw(20) << g[2] << endl;
+   cout << "        |LED|: " << setw(20) << sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]) << endl;
+   cout << "  RedDensGrad: " << setw(20) << evalReducedDensityGradient(xx[0],xx[1],xx[2]) << endl;
+   cout << "         RoSE: " << setw(20) << evalRoSE(xx[0],xx[1],xx[2]) << endl;
    return;
 }
 /* ************************************************************************************** */
@@ -397,6 +410,7 @@ void gaussWaveFunc::writeAllFieldProperties(solreal x,solreal y,solreal z,ofstre
    ofil << "  R:           " << setw(20) << x << setw(20) << y << setw(20) << z << endl;
    ofil << "  Rho:         " << setw(20) << rho << endl;
    ofil << "  GradRho:     " << setw(20) << g[0] << setw(20) << g[1] << setw(20) << g[2] << endl;
+   ofil << "  |GradRho|:   " << setw(20) << sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]) << endl;
    ofil << "  HessRho:     " << setw(20) << hess[0][0] << setw(20) << hess[0][1]
                              << setw(20) << hess[0][2] << endl;
    ofil << "               " << setw(20) << hess[1][0] << setw(20) << hess[1][1]
@@ -416,6 +430,7 @@ void gaussWaveFunc::writeAllFieldProperties(solreal x,solreal y,solreal z,ofstre
    eigen_decomposition3(hess, eivec, eival);
    ofil << "  LOL:         " << setw(20) << lol << endl;
    ofil << "  gradLOL:     " << setw(20) << g[0] << setw(20) << g[1] << setw(20) << g[2] << endl;
+   ofil << "  |gradLOL|:   " << setw(20) << sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]) << endl;
    ofil << "  HessLOL:     " << setw(20) << hess[0][0] << setw(20) << hess[0][1]
                              << setw(20) << hess[0][2] << endl;
    ofil << "               " << setw(20) << hess[1][0] << setw(20) << hess[1][1]
@@ -424,11 +439,22 @@ void gaussWaveFunc::writeAllFieldProperties(solreal x,solreal y,solreal z,ofstre
                              << setw(20) << hess[2][2] << endl;
    ofil << "  EigVal HLOL: " << setw(20) << eival[0] << setw(20) << eival[1]
                              << setw(20) << eival[2] << endl;
+   ofil << "  EigVec HLOL: " << setw(20) << eivec[0][0] << setw(20) << eivec[1][0]
+                             << setw(20) << eivec[2][0] << endl;
+   ofil << "               " << setw(20) << eivec[0][1] << setw(20) << eivec[1][1]
+                             << setw(20) << eivec[2][1] << endl;
+   ofil << "               " << setw(20) << eivec[0][2] << setw(20) << eivec[1][2]
+                             << setw(20) << eivec[2][2] << endl;
    ofil << "  ELF:         " << setw(20) << evalELF(x,y,z) << endl;
    ofil << "  K.E. G.:     " << setw(20) << evalKineticEnergyG(x,y,z) << endl;
    ofil << "  K.E. K.:     " << setw(20) << evalKineticEnergyK(x,y,z) << endl;
    ofil << "  Shann. Ent.: " << setw(20) << evalShannonEntropy(x,y,z) << endl;
    ofil << "  Elect. Pot.: " << setw(20) << evalMolElecPot(x,y,z) << endl;
+   evalLED(xx,g);
+   ofil << "  LED:         " << setw(20) << g[0] << setw(20) << g[1] << setw(20) << g[2] << endl;
+   ofil << "  |LED|:       " << setw(20) << sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]) << endl;
+   ofil << "  RedDensGrad: " << setw(20) << evalReducedDensityGradient(x,y,z) << endl;
+   ofil << "  RoSE:        " << setw(20) << evalRoSE(x,y,z) << endl;
    return;
 }
 /* ************************************************************************************** */
@@ -706,7 +732,7 @@ solreal gaussWaveFunc::evalDensity(solreal x,solreal y,solreal z)
 #endif
 /* ************************************************************************************** */
 #if PARALLELISEDTK
-void gaussWaveFunc::evalRhoGradRho(solreal &x, solreal &y, solreal &z,solreal &rho, solreal &dx, solreal &dy, solreal &dz)
+void gaussWaveFunc::evalRhoGradRho(solreal x, solreal y, solreal z,solreal &rho, solreal &dx, solreal &dy, solreal &dz)
 {
    solreal nabx,naby,nabz,xmr,ymr,zmr,trho,cc,rr,alp,chib;
    int indp,indr,ppt;
@@ -756,7 +782,7 @@ firstprivate(j) lastprivate(i) reduction(+: trho,nabx,naby,nabz)
 }
 #else
 /* ************************************************************************************** */
-void gaussWaveFunc::evalRhoGradRho(solreal &x, solreal &y, solreal &z,solreal &rho, solreal &dx, solreal &dy, solreal &dz)
+void gaussWaveFunc::evalRhoGradRho(solreal x, solreal y, solreal z,solreal &rho, solreal &dx, solreal &dy, solreal &dz)
 {
    solreal nabx,naby,nabz,xmr,ymr,zmr,trho,cc,rr,alp,chib;
    int indp,indr,ppt;
@@ -1628,7 +1654,7 @@ void gaussWaveFunc::evalHessian(solreal x, solreal y, solreal z,solreal &dens,so
    return;
 }
 /* ************************************************************************************** */
-void gaussWaveFunc::evalRhoGradRho(solreal &x, solreal &y, solreal &z,solreal &rho, solreal (&grd)[3])
+void gaussWaveFunc::evalRhoGradRho(solreal x, solreal y, solreal z,solreal &rho, solreal (&grd)[3])
 {
    evalRhoGradRho(x,y,z,rho,grd[0],grd[1],grd[2]);
    return;
@@ -2194,6 +2220,123 @@ solreal gaussWaveFunc::evalKineticEnergyG(solreal x, solreal y, solreal z)
    gxj+=nabz;
    gxj*=0.50e0;
    return gxj;
+}
+#endif
+/* ************************************************************************************** */
+#if PARALLELISEDTK
+void gaussWaveFunc::evalNabPhi2(solreal const x,solreal const y,solreal const z,\
+      solreal &rho2ret,solreal &twoG)
+{
+#if DEBUG
+   bool prntonce=true;
+   if ( prntonce ) {
+      cout << "Using parallel version (OpenMP)." << endl;
+      prntonce=false;
+   }
+#endif
+   solreal nabx,naby,nabz,xmr,ymr,zmr,cc,rr,alp;
+   int indp,indr,ppt;
+   indp=0;
+   indr=0;
+   for (int i=0; i<nNuc; i++) {
+      xmr=x-R[indr++];
+      ymr=y-R[indr++];
+      zmr=z-R[indr++];
+      rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+      for (int j=0; j<myPN[i]; j++) {
+         ppt=primType[indp];
+         alp=primExp[indp];
+         cc=exp(alp*rr);
+         chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[indp]*=cc;
+         evalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
+         gx[indp]*=cc;
+         gy[indp]*=cc;
+         gz[indp]*=cc;
+         ++indp;
+      }
+   }
+   solreal gxj,gyj,gzj,rho,chib;
+   nabx=naby=nabz=rho=0.000000000000000e0;
+   indp=0;
+   int i,j;
+#pragma omp parallel for private(indp,cc,gxj,gyj,gzj,chib) \
+firstprivate(j) lastprivate(i) reduction(+: nabx,naby,nabz,rho)
+   for (i=0; i<nPri; i++) {
+      indp=i*(nPri);
+      cc=cab[indp+i];
+      nabx+=(cc*gx[i]*gx[i]);
+      naby+=(cc*gy[i]*gy[i]);
+      nabz+=(cc*gz[i]*gz[i]);
+      rho+=(cc*chi[i]*chi[i]);
+      gxj=gyj=gzj=chib=0.0000000e0;
+      for (j=(i+1); j<nPri; j++) {
+         cc=cab[indp+j];
+         chib+=cc*chi[j];
+         gxj+=(cc*gx[j]);
+         gyj+=(cc*gy[j]);
+         gzj+=(cc*gz[j]);
+      }
+      rho+=(2.0e0*chi[i]*chib);
+      nabx+=(2.0e0*gx[i]*gxj);
+      naby+=(2.0e0*gy[i]*gyj);
+      nabz+=(2.0e0*gz[i]*gzj);
+   }
+   twoG=nabx+naby+nabz;
+   rho2ret=rho;
+}
+#else
+/* ************************************************************************************** */
+void gaussWaveFunc::evalNabPhi2(solreal const x,solreal const y,solreal const z,\
+      solreal &rho2ret,solreal &twoG)
+{
+   solreal nabx,naby,nabz,xmr,ymr,zmr,cc,rr,alp;
+   int indp,indr,ppt;
+   indp=0;
+   indr=0;
+   for (int i=0; i<nNuc; i++) {
+      xmr=x-R[indr++];
+      ymr=y-R[indr++];
+      zmr=z-R[indr++];
+      rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+      for (int j=0; j<myPN[i]; j++) {
+         ppt=primType[indp];
+         alp=primExp[indp];
+         cc=exp(alp*rr);
+         chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[indp]*=cc;
+         evalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
+         gx[indp]*=cc;
+         gy[indp]*=cc;
+         gz[indp]*=cc;
+         ++indp;
+      }
+   }
+   solreal gxj,gyj,gzj,chib,rho;
+   nabx=naby=nabz=rho=0.000000000000000e0;
+   indp=0;
+   for (int i=0; i<nPri; i++) {
+      indp=i*(nPri+1);
+      cc=cab[indp++];
+      nabx+=(cc*gx[i]*gx[i]);
+      naby+=(cc*gy[i]*gy[i]);
+      nabz+=(cc*gz[i]*gz[i]);
+      rho+=(cc*chi[i]*chi[i]);
+      gxj=gyj=gzj=chib=0.0000000e0;
+      for (int j=i+1; j<nPri; j++) {
+         cc=cab[indp++];
+         chib+=(cc*chi[j]);
+         gxj+=(cc*gx[j]);
+         gyj+=(cc*gy[j]);
+         gzj+=(cc*gz[j]);
+      }
+      nabx+=(2.0e0*gx[i]*gxj);
+      naby+=(2.0e0*gy[i]*gyj);
+      nabz+=(2.0e0*gz[i]*gzj);
+      rho+=(2.0e0*chi[i]*chib);
+   }
+   rho2ret=rho;
+   twoG=nabx+naby+nabz;
 }
 #endif
 /* ************************************************************************************** */
@@ -3755,6 +3898,53 @@ solreal gaussWaveFunc::totalNuclearCharge(void)
    for (int i=0; i<nNuc; i++) {nc+=atCharge[i];}
    return nc;
 }
+/* *************************************************************************************** */
+void gaussWaveFunc::evalLED(solreal const (&x)[3],solreal (&led)[3])
+{
+   solreal rho,g[3];
+   evalRhoGradRho(x[0],x[1],x[2],rho,g);
+   if ( rho<1.0e-12 ) {rho=1.0e-12;}
+   for ( int i=0 ; i<3 ; i++ ) {led[i]=(-0.5e0*g[i]/rho);}
+}
+/* *************************************************************************************** */
+solreal gaussWaveFunc::evalMagLED(solreal x,solreal y,solreal z)
+{
+   solreal rho,g[3];
+   evalRhoGradRho(x,y,z,rho,g);
+   if ( rho<1.0e-12 ) {rho=1.0e-12;}
+   solreal led=0.0e0;
+   for ( int i=0 ; i<3 ; i++ ) {led+=(g[i]*g[i]);}
+   led=sqrt(led);
+   led*=0.5e0;
+   led/=rho;
+   return led;
+}
+/* *************************************************************************************** */
+solreal gaussWaveFunc::evalReducedDensityGradient(solreal x,solreal y,solreal z)
+{
+   static const solreal cc=0.161620459673995481331661e0; /* $(2(3\pi^2)^{1/3})^{-1}$  */
+   static const solreal fouo3=4.0e0/3.0e0;
+   solreal rho,g[3];
+   evalRhoGradRho(x,y,z,rho,g);
+   if ( rho<1.0e-10 ) {rho=1.0e-10;}
+   return (cc*sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2])/pow(rho,fouo3));
+}
+/* *************************************************************************************** */
+solreal gaussWaveFunc::evalRoSE(solreal x,solreal y,solreal z)
+{
+   static const solreal cc=2.87123400018819181594250e0; /* (3/10)(3\pi^2)^{2/3}  */
+   static const solreal fivo3=5.0e0/3.0e0;
+   solreal rho,tau;
+   evalNabPhi2(x,y,z,rho,tau); //Here tau=2G
+   tau*=0.5e0; //tau=G
+   solreal tau0=cc*pow(rho,fivo3);
+   return ((tau0-tau)/(tau0+tau));
+}
+/* *************************************************************************************** */
+/* *************************************************************************************** */
+/* *************************************************************************************** */
+/* *************************************************************************************** */
+/* *************************************************************************************** */
 /* *************************************************************************************** */
 /* *************************************************************************************** */
 /* *************************************************************************************** */
