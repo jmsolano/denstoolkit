@@ -146,10 +146,10 @@ inline string gnuplotFieldTitle(const char p2p)
          plbl=string("ELF");
          break;
       case 'p' :
-         plbl=string("/Bold ~P{1.0\\176}");
+         plbl=string("~{/Bold P}{0.6\\176} [LED]");
          break;
       case 'P' :
-         plbl=string("/Bold |~P{1.0\\176}|");
+         plbl=string("|~{/Bold P}{0.6\\176}| [|LED|]");
          break;
       case 'r' :
          plbl=string("RoSE");

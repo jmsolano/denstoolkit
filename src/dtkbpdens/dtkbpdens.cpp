@@ -83,8 +83,9 @@ int main (int argc, char ** argv)
    
    /* Checking for non valid property fields */
    
-   if (!(prop=='d'||prop=='g'||prop=='l'||prop=='E'||prop=='L'||prop=='M'
-         ||prop=='S'||prop=='G'||prop=='K'||prop=='V')) {
+   if (!(prop=='d'||prop=='g'||prop=='l'||prop=='E'||prop=='L'||prop=='M'\
+         ||prop=='S'||prop=='G'||prop=='K'||prop=='V'\
+         ||prop=='P'||prop=='r'||prop=='s')) {
       displayErrorMessage("Non valid field type");
       cout << "\nTry: \n\t" << argv[0] << " -h\n" << endl << "to view the help menu.\n\n";
       exit(1);
@@ -446,6 +447,15 @@ solreal evalFieldProperty(char prop,solreal (&x)[3],gaussWaveFunc &wf)
          break;
       case 'M':
          res=wf.evalMagGradLOL(x[0],x[1],x[2]);
+         break;
+      case 'P' :
+         res=wf.evalMagLED(x[0],x[1],x[2]);
+         break;
+      case 'r' :
+         res=wf.evalRoSE(x[0],x[1],x[2]);
+         break;
+      case 's' :
+         res=wf.evalReducedDensityGradient(x[0],x[1],x[2]);
          break;
       case 'S':
          res=wf.evalShannonEntropy(x[0],x[1],x[2]);
