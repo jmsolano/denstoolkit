@@ -13,8 +13,8 @@
 #include "solmemhand.h"
 #include "solmath.h"
 
-//**************************************************************************************************
-//**************************************************************************************************
+/* ********************************************************************************** */
+/* ********************************************************************************** */
 waveFunctionGrid1D::waveFunctionGrid1D()
 {
    for (int i=0; i<3; i++) {
@@ -28,23 +28,23 @@ waveFunctionGrid1D::waveFunctionGrid1D()
    prop2plot=NONE;
    imsetup=false;
 }
-//**************************************************************************************************
+/* ********************************************************************************** */
 waveFunctionGrid1D::~waveFunctionGrid1D()
 {
    dealloc1DRealArray(prop1d);
 }
-//**************************************************************************************************
+/* ********************************************************************************** */
 void waveFunctionGrid1D::setNPts(int nn)
 {
    npts=nn;
    return;
 }
-//**************************************************************************************************
+/* ********************************************************************************** */
 int waveFunctionGrid1D::getNPts(void)
 {
    return npts;
 }
-//**************************************************************************************************
+/* ********************************************************************************** */
 void waveFunctionGrid1D::setUpSimpleLine(bondNetWork &bn,int na,int nb)
 {
    if (!(bn.imstp())) {
@@ -77,7 +77,7 @@ void waveFunctionGrid1D::setUpSimpleLine(bondNetWork &bn,int na,int nb)
    imsetup=true;
    return;
 }
-//**************************************************************************************************
+/* ********************************************************************************** */
 void waveFunctionGrid1D::setUpSimpleLine(bondNetWork &bn,solreal (&ta)[3],solreal (&tb)[3])
 {
    solreal eta[3],orig[3];
@@ -108,7 +108,7 @@ void waveFunctionGrid1D::setUpSimpleLine(bondNetWork &bn,solreal (&ta)[3],solrea
    //cout << "Or: " << orig[0] << " " << orig[1] << " " << orig[2] << endl;
    return;
 }
-//**************************************************************************************************
+/* ********************************************************************************** */
 bool waveFunctionGrid1D::writeLineDatRho(ofstream &ofil,gaussWaveFunc &wf)
 {
    if (!imsetup) {
@@ -146,7 +146,7 @@ bool waveFunctionGrid1D::writeLineDatRho(ofstream &ofil,gaussWaveFunc &wf)
    }
    return true;
 }
-//**************************************************************************************************
+/* ********************************************************************************** */
 void waveFunctionGrid1D::setUpSimpleLine(bondNetWork &bn,int na)
 {
    if (!(bn.imstp())) {
@@ -176,7 +176,7 @@ void waveFunctionGrid1D::setUpSimpleLine(bondNetWork &bn,int na)
    imsetup=true;
    return;
 }
-//**************************************************************************************************
+/* ********************************************************************************** */
 bool waveFunctionGrid1D::writeLineDatLapRho(ofstream &ofil,gaussWaveFunc &wf)
 {
    if (!imsetup) {
@@ -214,7 +214,7 @@ bool waveFunctionGrid1D::writeLineDatLapRho(ofstream &ofil,gaussWaveFunc &wf)
    }
    return true;
 }
-//**************************************************************************************************
+/* ********************************************************************************** */
 bool waveFunctionGrid1D::writeLineDatELF(ofstream &ofil,gaussWaveFunc &wf)
 {
    if (!imsetup) {
@@ -252,7 +252,7 @@ bool waveFunctionGrid1D::writeLineDatELF(ofstream &ofil,gaussWaveFunc &wf)
    }
    return true;
 }
-//**************************************************************************************************
+/* ********************************************************************************** */
 bool waveFunctionGrid1D::writeLineDatLOL(ofstream &ofil,gaussWaveFunc &wf)
 {
    if (!imsetup) {
@@ -290,7 +290,7 @@ bool waveFunctionGrid1D::writeLineDatLOL(ofstream &ofil,gaussWaveFunc &wf)
    }
    return true;
 }
-//**************************************************************************************************
+/* ********************************************************************************** */
 bool waveFunctionGrid1D::writeLineDatMagGradLOL(ofstream &ofil,gaussWaveFunc &wf)
 {
    if (!imsetup) {
@@ -330,7 +330,7 @@ bool waveFunctionGrid1D::writeLineDatMagGradLOL(ofstream &ofil,gaussWaveFunc &wf
    }
    return true;
 }
-//**************************************************************************************************
+/* ********************************************************************************** */
 bool waveFunctionGrid1D::writeLineDatShannonEntropy(ofstream &ofil,gaussWaveFunc &wf)
 {
    if (!imsetup) {
@@ -368,7 +368,7 @@ bool waveFunctionGrid1D::writeLineDatShannonEntropy(ofstream &ofil,gaussWaveFunc
    }
    return true;
 }
-//**************************************************************************************************
+/* ********************************************************************************** */
 bool waveFunctionGrid1D::writeLineDatMagGradRho(ofstream &ofil,gaussWaveFunc &wf)
 {
    if (!imsetup) {
@@ -406,7 +406,7 @@ bool waveFunctionGrid1D::writeLineDatMagGradRho(ofstream &ofil,gaussWaveFunc &wf
    }
    return true;
 }
-//**************************************************************************************************
+/* ********************************************************************************** */
 bool waveFunctionGrid1D::writeLineDatKinetEnerDensG(ofstream &ofil,gaussWaveFunc &wf)
 {
    if (!imsetup) {
@@ -444,7 +444,7 @@ bool waveFunctionGrid1D::writeLineDatKinetEnerDensG(ofstream &ofil,gaussWaveFunc
    }
    return true;
 }
-//**************************************************************************************************
+/* ********************************************************************************** */
 bool waveFunctionGrid1D::writeLineDatKinetEnerDensK(ofstream &ofil,gaussWaveFunc &wf)
 {
    if (!imsetup) {
@@ -474,7 +474,6 @@ bool waveFunctionGrid1D::writeLineDatKinetEnerDensK(ofstream &ofil,gaussWaveFunc
       printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
    }
-   //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
    solreal e2=-1.0e0*maxdim;
    for (int i=0; i<npts; i++) {
       ofil << e2 << " " << prop1d[i] << endl;
@@ -482,7 +481,7 @@ bool waveFunctionGrid1D::writeLineDatKinetEnerDensK(ofstream &ofil,gaussWaveFunc
    }
    return true;
 }
-//**************************************************************************************************
+/* ********************************************************************************** */
 bool waveFunctionGrid1D::writeLineDatMolElecPot(ofstream &ofil,gaussWaveFunc &wf)
 {
    if (!imsetup) {
@@ -520,48 +519,127 @@ bool waveFunctionGrid1D::writeLineDatMolElecPot(ofstream &ofil,gaussWaveFunc &wf
    }
    return true;
 }
-//**************************************************************************************************
+/* ********************************************************************************** */
+bool waveFunctionGrid1D::writeLineDatMagLED(ofstream &ofil,gaussWaveFunc &wf)
+{
+   if (!imsetup) {
+      cout << "Error: the grid has not been set up!" << endl;
+      cout << "No output will be written." << endl;
+      for (int j=0; j<4; j++) {
+         for (int i=0; i<4; i++) {
+            ofil << solreal(i) << " " << 2.0e0*solreal(i) << " " << 3.2e0*solreal(i) << endl;
+         }
+         ofil << endl;
+      }
+#if DEBUG
+      cout << "From: " << __FILE__ << " at line " << __LINE__ << endl;
+#endif
+      return false;
+   }
+   solreal delta[3],xx[3];
+   for (int i=0; i<3; i++) {
+      delta[i]=(Cb[i]-Ca[i]);
+      xx[i]=Ca[i];
+   }
+   for (int i=0; i<3; i++) {delta[i]/=solreal(npts-1);}
+   for (int i=0; i<npts; i++) {
+      prop1d[i]=wf.evalMagLED(xx[0],xx[1],xx[2]);
+      for (int j=0; j<3; j++) {xx[j]+=delta[j];}
+#if USEPROGRESSBAR
+      printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+#endif
+   }
+   //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
+   solreal e2=-1.0e0*maxdim;
+   for (int i=0; i<npts; i++) {
+      ofil << e2 << " " << prop1d[i] << endl;
+      e2+=dx*maxdim;
+   }
+   return true;
+}/* ********************************************************************************** */
+bool waveFunctionGrid1D::writeLineDatRedDensGrad(ofstream &ofil,gaussWaveFunc &wf)
+{
+   if (!imsetup) {
+      cout << "Error: the grid has not been set up!" << endl;
+      cout << "No output will be written." << endl;
+      for (int j=0; j<4; j++) {
+         for (int i=0; i<4; i++) {
+            ofil << solreal(i) << " " << 2.0e0*solreal(i) << " " << 3.2e0*solreal(i) << endl;
+         }
+         ofil << endl;
+      }
+#if DEBUG
+      cout << "From: " << __FILE__ << " at line " << __LINE__ << endl;
+#endif
+      return false;
+   }
+   solreal delta[3],xx[3];
+   for (int i=0; i<3; i++) {
+      delta[i]=(Cb[i]-Ca[i]);
+      xx[i]=Ca[i];
+   }
+   for (int i=0; i<3; i++) {delta[i]/=solreal(npts-1);}
+   for (int i=0; i<npts; i++) {
+      prop1d[i]=wf.evalReducedDensityGradient(xx[0],xx[1],xx[2]);
+      for (int j=0; j<3; j++) {xx[j]+=delta[j];}
+#if USEPROGRESSBAR
+      printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+#endif
+   }
+   //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
+   solreal e2=-1.0e0*maxdim;
+   for (int i=0; i<npts; i++) {
+      ofil << e2 << " " << prop1d[i] << endl;
+      e2+=dx*maxdim;
+   }
+   return true;
+}/* ********************************************************************************** */
+bool waveFunctionGrid1D::writeLineDatRoSE(ofstream &ofil,gaussWaveFunc &wf)
+{
+   if (!imsetup) {
+      cout << "Error: the grid has not been set up!" << endl;
+      cout << "No output will be written." << endl;
+      for (int j=0; j<4; j++) {
+         for (int i=0; i<4; i++) {
+            ofil << solreal(i) << " " << 2.0e0*solreal(i) << " " << 3.2e0*solreal(i) << endl;
+         }
+         ofil << endl;
+      }
+#if DEBUG
+      cout << "From: " << __FILE__ << " at line " << __LINE__ << endl;
+#endif
+      return false;
+   }
+   solreal delta[3],xx[3];
+   for (int i=0; i<3; i++) {
+      delta[i]=(Cb[i]-Ca[i]);
+      xx[i]=Ca[i];
+   }
+   for (int i=0; i<3; i++) {delta[i]/=solreal(npts-1);}
+   for (int i=0; i<npts; i++) {
+      prop1d[i]=wf.evalRoSE(xx[0],xx[1],xx[2]);
+      for (int j=0; j<3; j++) {xx[j]+=delta[j];}
+#if USEPROGRESSBAR
+      printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+#endif
+   }
+   //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
+   solreal e2=-1.0e0*maxdim;
+   for (int i=0; i<npts; i++) {
+      ofil << e2 << " " << prop1d[i] << endl;
+      e2+=dx*maxdim;
+   }
+   return true;
+}/* ********************************************************************************** */
 void waveFunctionGrid1D::makeDat(string &onam,gaussWaveFunc &wf,ScalarFieldType ft)
 {
    if (!wf.imldd) {
       cout << "Error: trying to use a non loaded wave function object!\nNothing done!\n";
       return;
    }
-   switch (ft) {
-      case DENS:
-         comments+=string("Property: Density");
-         break;
-      case LAPD:
-         comments+=string("Property: Laplacian of Density");
-         break;
-      case ELFD:
-         comments+=string("Property: Electron Localization Function -ELF-");
-         break;
-      case SENT:
-         comments+=string("Property: Shannon Entropy Density");
-         break;
-      case MGRD:
-         comments+=string("Property: Magnitude of the Gradient of the Density");
-         break;
-      case LOLD:
-         comments+=string("Property: Localized Orbital Locator -LOL-");
-         break;
-      case MGLD:
-         comments+=string("Property: Magnitude of the Gradient of LOL");
-         break;
-      case KEDG:
-         comments+=string("Property: Kinetic Energy Density G");
-         break;
-      case KEDK:
-         comments+=string("Property: Kinetic Energy Density K");
-         break;
-      case MEPD:
-         comments+=string("Property: Molecular Electrostatic Potential");
-         break;
-      default:
-         cout << "Error: Field type not known!\n dat file incomplete!" << endl;
-         break;
-   }
+   char cft=convertScalarFieldType2Char(ft);
+   comments+=string("Property: ");
+   comments+=getFieldTypeKeyLong(cft);
    ofstream ofil;
    ofil.open(onam.c_str());
 #if USEPROGRESSBAR
@@ -598,6 +676,15 @@ void waveFunctionGrid1D::makeDat(string &onam,gaussWaveFunc &wf,ScalarFieldType 
       case MEPD:
          writeLineDatMolElecPot(ofil,wf);
          break;
+      case MLED :
+         writeLineDatMagLED(ofil,wf);
+         break;
+      case ROSE :
+         writeLineDatRoSE(ofil,wf);
+         break;
+      case REDG :
+         writeLineDatRedDensGrad(ofil,wf);
+         break;
       default:
          cout << "Error: Field type not known!\n dat file incomplete!" << endl;
          break;
@@ -609,6 +696,6 @@ void waveFunctionGrid1D::makeDat(string &onam,gaussWaveFunc &wf,ScalarFieldType 
    ofil.close();
    return;
 }
-//**************************************************************************************************
+/* ********************************************************************************** */
 
 #endif//_WFGRID1D_CPP_

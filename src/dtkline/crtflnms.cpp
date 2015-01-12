@@ -45,6 +45,7 @@
 #include "crtflnms.h"
 #include "../common/solfileutils.h"
 #include "../common/solscrutils.h"
+#include "../common/fldtypesdef.h"
 
 void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn, string &o_fn,string &g_fn)
 {
@@ -79,7 +80,8 @@ void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn, string &o_fn,str
    }
    pos=o_fn.find_last_of('.');
    if (pos!=string::npos) {
-      string plbl;
+      string plbl=getFieldTypeKeyShort(prop);
+      /*
       switch (prop) {
          case 'd':
             plbl="Rho";
@@ -115,6 +117,7 @@ void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn, string &o_fn,str
             plbl="";
             break;
       }
+      // */
       o_fn.insert(pos,plbl);
       g_fn.insert(pos,plbl);
    }

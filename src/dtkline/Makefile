@@ -116,4 +116,4 @@ distclean: clean
 	rm -f $(OBJDIR)/*.o
 
 runben: build
-	./dtkline benceno_sto3g.wfx -n 200
+	./dtkline benceno_sto3g.wfx -n 200 -p P

@@ -154,48 +154,45 @@ int main (int argc, char ** argv)
    /* Main calculation loop, chooses between different available fields. */
    
    cout << "Evaluating and writing property..." << endl;
-   cout << "(Scalar Field to plot: ";
+      cout << "(Scalar Field to plot: " << getFieldTypeKeyLong(prop) << ")." << endl << endl;
    switch (prop) {
       case 'd':
-         cout << "Density.)" << endl << endl;
          grid.makeDat(outfilnam,gwf,DENS);
-         cout << endl;
          break;
       case 'g':
-         cout << "Magnitude of the Gradient of the Density.)" << endl << endl;
          grid.makeDat(outfilnam,gwf,MGRD);
          break;
       case 'l':
-         cout << "Laplacian of the density.)" << endl << endl;
          grid.makeDat(outfilnam,gwf,LAPD);
-         cout << endl;
          break;
       case 'E':
-         cout << "Electron Localization Function.)" << endl << endl;
          grid.makeDat(outfilnam,gwf,ELFD);
          break;
+      case 'P' :
+         grid.makeDat(outfilnam,gwf,MLED);
+         break;
+      case 'r' :
+         grid.makeDat(outfilnam,gwf,REDG);
+         break;
+      case 's' :
+         grid.makeDat(outfilnam,gwf,ROSE);
+         break;
       case 'S':
-         cout << "Shannon-Entropy Density.)" << endl << endl;
          grid.makeDat(outfilnam,gwf,SENT);
          break;
       case 'L':
-         cout << "Localized Orbital Locator.)" << endl << endl;
          grid.makeDat(outfilnam,gwf,LOLD);
          break;
       case 'M':
-         cout << "Magnitude of the Gradrient of LOL.)" << endl << endl;
          grid.makeDat(outfilnam,gwf,MGLD);
          break;
       case 'G':
-         cout << "Kinetic Energy Density G.)" << endl << endl;
          grid.makeDat(outfilnam,gwf,KEDG);
          break;
       case 'K':
-         cout << "Kinetic Energy Density K.)" << endl << endl;
          grid.makeDat(outfilnam,gwf,KEDK);
          break;
       case 'V':
-         cout << "Molecular Electrostatic Potential.)" << endl << endl;
          grid.makeDat(outfilnam,gwf,MEPD);
          break;
       default:
@@ -269,49 +266,6 @@ void makeGnuplotFile(string &gnpn,string &outn,char p2p,solreal dist,string &l1,
    
    string plbl="";
    plbl=gnuplotFieldTitle(p2p);
-   /*
-   switch (p2p) {
-      case 'd':
-         plbl=string("{/Symbol r}");
-         break;
-      case 'g':
-         plbl=string("|{/Symbol \321 f}|");
-         break;
-      case 'l':
-         plbl=string("{/Symbol \321}^2{/Symbol r}");
-         break;
-      case 'E':
-         plbl=string("ELF");
-         break;
-      case 'S':
-         plbl=string("S_{/Symbol r}");
-         break;
-      case 'L':
-         plbl=string("LOL");
-         break;
-      case 'M':
-         plbl=string("|{/Symbol \321}LOL|");
-         break;
-      case 'G':
-         plbl=string("{/Bold G}");
-         break;
-      case 'K':
-         plbl=string("{/Bold K}");
-         break;
-      case 'V':
-         plbl=string("MEP");
-         break;
-      default:
-         setScrRedBoldFont();
-         cout << "Error: The property \"" << p2p << "\" does not exist!" << endl;
-         setScrNormalFont();
-         exit(1);
-         break;
-   }
-   // */
-   
-   //gfil << "plot '" << outn << "' with lines ls 1 lw 2 title '" << plbl << "'" << endl;
-   /* The above line causes a call to the xterm window (or aqua) */
    
    /* In this part the name is scanned for possible occurrings of the character '_'.
       For a proper display in the eps file, it has to be changed to "\_" */
@@ -342,12 +296,12 @@ void makeGnuplotFile(string &gnpn,string &outn,char p2p,solreal dist,string &l1,
    
    /* Here is enabled the logarithmic scale in the case of G, d or g */
    gfil << "set terminal postscript eps enhanced color fontscale 1.75 lw 2 dashlength 4" << endl;
-   if (p2p=='G'||p2p=='d'||p2p=='g') {
+   if (p2p=='G'||p2p=='d'||p2p=='g'||p2p=='r') {
       gfil << "set logscale y" << endl << "set format y \"10^{%T}\"" << endl;
-      gfil << "set yrange [0.01:1000]" << endl;
+      gfil << "set yrange [0.001:1000]" << endl;
    } else {
       gfil << "#set logscale y" << endl << "#set format y \"10^{%T}\"" << endl;
-      gfil << "#set yrange [0.01:1000]" << endl;
+      gfil << "#set yrange [0.001:1000]" << endl;
    }
    
    string imgnam;
