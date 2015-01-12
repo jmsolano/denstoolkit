@@ -129,48 +129,47 @@ int main (int argc, char ** argv)
    /* Main calculation loop, chooses between different available fields. */
    
    cout << "Evaluating and writing property..." << endl;
-   cout << "(Scalar Field to plot: ";
+   cout << "(Scalar Field to plot: " << getFieldTypeKeyLong(prop) << ")." << endl << endl;
    switch (prop) {
       case 'd':
-         cout << "Density.)" << endl << endl;
          grid.makeCube(outfilnam,gwf,DENS);
          cout << endl;
          break;
       case 'g':
-         cout << "Magnitude of the Gradient of the Density.)" << endl << endl;
          grid.makeCube(outfilnam,gwf,MGRD);
          break;
       case 'l':
-         cout << "Laplacian of the density.)" << endl << endl;
          grid.makeCube(outfilnam,gwf,LAPD);
          cout << endl;
          break;
       case 'E':
-         cout << "Electron Localization Function.)" << endl << endl;
          grid.makeCube(outfilnam,gwf,ELFD);
          break;
+      case 'P' :
+         grid.makeCube(outfilnam,gwf,MLED);
+         break;
+      case 'r' :
+         grid.makeCube(outfilnam,gwf,ROSE);
+         break;
+      case 's' :
+         grid.makeCube(outfilnam,gwf,REDG);
+         break;
       case 'S':
-         cout << "Shannon-Entropy Density.)" << endl << endl;
          grid.makeCube(outfilnam,gwf,SENT);
          break;
       case 'L':
-         cout << "Localized Orbital Locator.)" << endl << endl;
          grid.makeCube(outfilnam,gwf,LOLD);
          break;
       case 'M':
-         cout << "Magnitude of the Gradient of LOL.)" << endl << endl;
          grid.makeCube(outfilnam,gwf,MGLD);
          break;
       case 'G':
-         cout << "Kinetic Energy Density G.)" << endl << endl;
          grid.makeCube(outfilnam,gwf,KEDG);
          break;
       case 'K':
-         cout << "Kinetic Energy Density K.)" << endl << endl;
          grid.makeCube(outfilnam,gwf,KEDK);
          break;
       case 'V':
-         cout << "Molecular Electrostatic Potential.)" << endl << endl;
          grid.makeCube(outfilnam,gwf,MEPD);
          break;
       default:

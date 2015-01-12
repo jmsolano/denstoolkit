@@ -213,6 +213,9 @@ void printHelpMenu(int &argc, char** &argv)
         << "         \t\tE (Electron Localization Function -ELF-)" << endl
         << "         \t\tL (Localized Orbital Locator -LOL-)" << endl
         << "         \t\tM (Magnitude of the gradient of LOL)" << endl
+        << "         \t\tP (Magnitude of Localized Electrons Detector -LED-)" << endl
+        << "         \t\tr (Region of Slow electrons -RoSE-)" << endl
+        << "         \t\ts (Reduced Density Gradient -s-)" << endl
         << "         \t\tS (Shannon Entropy Density)" << endl;
    cout << "         \t\tV (Molecular Electrostatic Potential)" << endl;
 #if (defined(__APPLE__)||defined(__linux__))

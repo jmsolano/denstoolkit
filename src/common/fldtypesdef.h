@@ -14,8 +14,81 @@
 using std::string;
 //**********************************************************************************************
 enum ScalarFieldType {
-   NONE,DENS,MGRD,LAPD,LOLD,ELFD,SENT,KEDK,KEDG,MGLD,GLOL,MEPD,LEDV,MLED,REDG,ROSE
+   NONE,\
+   DENS,/* Electron density (Rho)  */\
+   MGRD,/* MagGradRho Density  */\
+   LAPD,/* Laplacian Density  */\
+   LOLD,/* LOL Density  */\
+   ELFD,/* ELF Density  */\
+   SENT,/* Shannon Entropy Density  */\
+   KEDK,/* Kinetic Energy Density K  */\
+   KEDG,/* Kinetic Energy Density G  */\
+   MGLD,/* MagGradLOL Density  */\
+   GLOL,/* Grad LOL  */\
+   MEPD,/* Molecular Electrostatic Potential Density  */\
+   LEDV,/* LEDVector  */\
+   MLED,/* MagLEDVector  */\
+   REDG,/* Reduced Density Grandient  */\
+   ROSE /* Region of Slow Electrons  */
 };
+//**********************************************************************************************
+inline char convertScalarFieldType2Char(ScalarFieldType fftt)
+{
+   char res='d';
+   switch ( fftt ) {
+      case DENS :
+         res='d';
+         break;
+      case MGRD :
+         res='g';
+         break;
+      case LAPD :
+         res='l';
+         break;
+      case ELFD :
+         res='E';
+         break;
+      case LOLD :
+         res='L';
+         break;
+      case MGLD :
+         res='M';
+         break;
+      case SENT :
+         res='S';
+         break;
+      case KEDK :
+         res='K';
+         break;
+      case KEDG :
+         res='G';
+         break;
+      case GLOL :
+         res='M';
+         break;
+      case MEPD :
+         res='V';
+         break;
+      case LEDV :
+         res='p';
+         break;
+      case MLED :
+         res='P';
+         break;
+      case ROSE :
+         res='r';
+         break;
+      case REDG :
+         res='s';
+         break;
+      case NONE :
+      default :
+         res='0';
+         std::cerr << "Invalid Field Type!" << endl;
+         break;
+   }
+   return res;
+}
 //**********************************************************************************************
 inline string getFieldTypeKeyShort(const char prop)
 {
@@ -67,7 +140,7 @@ inline string getFieldTypeKeyShort(const char prop)
          plbl="MEP";
          break;
       default:
-         plbl="";
+         plbl="Unknown";
          break;
    }
    return plbl;
@@ -123,7 +196,7 @@ inline string getFieldTypeKeyLong(const char prop)
          plbl="Molecular Electrostatic Potential";
          break;
       default:
-         plbl="";
+         plbl="Unknown Field Type!";
          break;
    }
    return plbl;
@@ -176,7 +249,7 @@ inline string gnuplotFieldTitle(const char p2p)
          plbl=string("M.E.P.");
          break;
       default:
-         plbl="";
+         plbl="Unknown";
          break;
    }
    return plbl;
