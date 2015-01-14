@@ -1951,6 +1951,7 @@ void critPtNetWork::writeCPProps(string &ofnam,string &wfnnam)
    ofil << endl;
    ofil << "nACP: " << nACP << "\nnBCP: " << nBCP
         << "\nnRCP: " << nRCP << "\nnCCP: " << nCCP << endl;
+   ofil << "nACP-nBCP+nRCP-nCCP: " << (nACP-nBCP+nRCP-nCCP) << endl;
    writeScrStarLine(ofil);
    ofil << cptp << "Attractor Critical Points Information" << endl;
    for (int i=0; i<80; i++) {ofil << '*';}

@@ -145,107 +145,104 @@ public:
    solreal totener,virial;
    bool imldd;
    /* *********************************************************************************** */
-   solreal getR(const int nucnum,const int cart);
-   /*
+   /**
       This function returns the value of the cart-th Cartesian coordinate of the nucnum-th nucleus.
       (0 for x, 1 for y and 1 for z coordinates.)
     */
+   solreal getR(const int nucnum,const int cart);
    /* *********************************************************************************** */
-   int getAng(int primn,int cartn); //This function returns the angular exponent of the 
-                                       //cartn-th cartesian coordinate of the primn-th primivite.
+   /** This function returns the angular exponent of the cartn-th cartesian coordinate 
+    * of the primn-th primivite. */
+   int getAng(int primn,int cartn); 
    /* *********************************************************************************** */
-   solreal getCoef(const int orbn,const int primn);
-   /*
+   /**
       This function returns the value of the primitive coefficient of the orbn-th orbital
       and primn-th primitive. As any function in c, the indices run from 0 to some number.
       You should be careful about this.
     */
+   solreal getCoef(const int orbn,const int primn);
    /* *********************************************************************************** */
-   solreal evalDensityArray(solreal x,solreal y, solreal z);
-   /* 
-      This function returns the value of the density ($\rho$) at the point $\vec{r}=(x,y,z)$ using
+   /** 
+      This function returns the value of the density (\f$\rho\f$) at the point \f$\vec{r}=(x,y,z)\f$ using
       a non optimized algorithm. It remains in this class for having a reference for the
       subsequent optimization of the function evalDensity. Unless you change evalDensity, use the 
       latter to obtain the density (it is the faster function).
     */
+   solreal evalDensityArray(solreal x,solreal y, solreal z);
    /* *********************************************************************************** */
+   /** This function calculates and prints to screen all the programmed field properties.
+    */
    void displayAllFieldProperties(solreal x,solreal y,solreal z);
-   /* This function calculates and prints to screen all the programmed field properties.
-    */
    /* *********************************************************************************** */
+   /** This function calculates and writes to ofil all the programmed field properties.
+    */
    void writeAllFieldProperties(solreal x,solreal y,solreal z,ofstream &ofil);
-   /* This function calculates and writes to ofil all the programmed field properties.
-    */
    /* *********************************************************************************** */
-   solreal evalDensity(solreal x,solreal y,solreal z);
-   /*
-      This function returns the value of the density ($\rho$) at the point $\vec{r}=(x,y,z)$ using
+   /**
+      This function returns the value of the density (\f$\rho\f$) at the point \f$\vec{r}=(x,y,z)\f$ using
       the most optimized algorithm.
     */
+   solreal evalDensity(solreal x,solreal y,solreal z);
    /* *********************************************************************************** */
-   bool sameMolOrbOccNums(void);
-   /*
+   /**
       This function returns true if all the Molecular Orbital Occupation Numers have the same
-      value. It only takes one occupation number to be different in order to this function returning false.
+      value. It only takes one occupation number to be different in order to this
+      function returning false.
     */
+   bool sameMolOrbOccNums(void);
    /* ************************************************************************************** */
-   void evalRhoGradRho(solreal x, solreal y, solreal z,solreal &rho, solreal &dx, solreal &dy, solreal &dz);
-   /*
-      This function returns the value of the density ($\rho$) and the gradient of it 
-      ($\nabla\rho=dx\hat{\mathi}+dy\hat{\mathj}+dz\hat{k}$) at the point 
-      $\vec{r}=(x,y,z)$ using the most optimized algorithm.
+   /** This function returns the value of the density (\f$\rho\f$) and the gradient of it 
+      (\f$\nabla\rho=dx\hat{\imath}+dy\hat{\jmath}+dz\hat{k}\f$) at the point 
+      \f$\vec{r}=(x,y,z)\f$ using the most optimized algorithm.
     */
+   void evalRhoGradRho(solreal x, solreal y, solreal z,\
+         solreal &rho, solreal &dx, solreal &dy, solreal &dz);
    /* ************************************************************************************** */
-   void evalRhoGradRho(solreal x, solreal y, solreal z,solreal &rho, solreal (&grd)[3]);
-   /*
+   /**
       This function is the same as evalRhoGraRho, but using an array for the gradient instead of
       individual components of the gradient. i.e.
       evalRhoGradRho(x,y,z,rho,g[3])=evalRhoGradRho(x,y,z,rho,g[0],g[1],g[2])
     */
+   void evalRhoGradRho(solreal x, solreal y, solreal z,solreal &rho, solreal (&grd)[3]);
    /* ************************************************************************************** */
-   bool readFromFileWFN(string inname);
-   /*
+   /**
       This function will load all the values of the wave function (title, orbDesc, etc.) from a 
       file, which name is inname. As the name of the function suggest, the file must be *.wfn The function
       will automatically allocate the corresponding arrays. And since a destructor is given, you
       one does not need to deallocate the arrays of the wave function.
     */
+   bool readFromFileWFN(string inname);
    /* *********************************************************************************** */
-   bool readFromFileWFX(string inname);
-   /*
-      This function is essentially the same as readFromFileWFN, but using a *wfx file. In the future, it is
-      expected that both functions differ from each other, since the files wfx are/will be capable of
-      containing a larger amount of information.
+   /**
+      This function is essentially the same as readFromFileWFN, but using a *wfx file. 
+      In the future, it is expected that both functions differ from each other, 
+      since the files wfx are/will be capable of containing a larger amount of information.
     */
+   bool readFromFileWFX(string inname);
    /* *********************************************************************************** */
-   bool readFromFile(string inname);
-   /*
+   /**
       This function just look for the extension of the inname, if it is wfn(wfx), then calls
       readFromFileWFN(readFromFileWFX)
     */
+   bool readFromFile(string inname);
    /* *********************************************************************************** */
-   bool allocAuxArrays(void);
-   /*
-      This function allocates memory space for the auxiliar arrays the gaussWaveFunction object
+   /** This function allocates memory space for the auxiliar arrays the gaussWaveFunction object
       uses for calculating numerical properties (rho, grad(rho), hess(rho), etc.).
     */
+   bool allocAuxArrays(void);
    /* *********************************************************************************** */
-   void countPrimsPerCenter(void);
-   /*
-      This function counts the number of primitives associated with each one
+   /** This function counts the number of primitives associated with each one
       of the nuclear centers.
     */
+   void countPrimsPerCenter(void);
    /* *********************************************************************************** */
-   void calcCab(void);
-   /*
-      This function calculates the values of the matrix coefficients array $C_{\dot{A}\dot{B}}$
+   /** This function calculates the values of the matrix coefficients array \f$C_{\dot{A}\dot{B}}\f$
       (see notes ******* for notation details.)
     */
+   void calcCab(void);
    /* *********************************************************************************** */
+   /** This function will write the wave function into a wfx file which name is outname. */
    bool writeToFileWFX(string outname);
-   /*
-      This function will write the wave function into a wfx file which name is outname. 
-    */
    /* *********************************************************************************** */
    bool testSupport(void);
    /*
@@ -255,146 +252,141 @@ public:
    /* *********************************************************************************** */
    solreal evalPrimCases(int &pty,solreal &alp, solreal x, solreal y, solreal z);
    /* *********************************************************************************** */
-   solreal evalAngACases(int &pty, solreal x, solreal y, solreal z);
-   /*
-      This funtion returns the value of the angular part of the primitive, i.e., it returns the
-      value of $x^{a_1}y^{a_2}z^{a^3}$, where a1,a2,a3 are the values of the angular exponents.
+   /** This funtion returns the value of the angular part of the primitive, i.e., it returns the
+      value of \f$x^{a_1}y^{a_2}z^{a^3}\f$, where a1,a2,a3 are the values of the angular exponents.
       The values of a_i are coded in the value of pty (the type of primitive). For correct results,
       x must be the difference between the field point and the primitive center.
     */
+   solreal evalAngACases(int &pty, solreal x, solreal y, solreal z);
    /* *********************************************************************************** */
-   void evalDkPrimCases(int pty,solreal alp,solreal x, solreal y, solreal z, solreal &grx, solreal &gry, solreal &grz);
-   /*
-      This function evaluates the gradient of $phi_{\dot{A}}(x,y,z)$. $\nabla\phi=(grx,gry,grz)$.
+   /** This function evaluates the gradient of \f$\phi_{\dot{A}}(x,y,z)\f$. 
+    * \f$\nabla\phi=(grx,gry,grz)\f$.
     For correct results, x must be the difference between the field point and the primitive center. 
     */
+   void evalDkPrimCases(int pty,solreal alp,solreal x, solreal y, solreal z,\
+         solreal &grx, solreal &gry, solreal &grz);
    /* *********************************************************************************** */
-   void evalDkAngCases(int &pty,solreal alp,solreal x, solreal y, solreal z, solreal &anx, solreal &any, solreal &anz);
-   /*
-      Let the field point be $\vec{\xi}$, and a primitive $\phi_{\dot{A}}$, with center 
-      $R_{\dot{A}}$, type pty, and primitive exponent alp. The function
+   /** Let the field point be \f$\vec{\xi}\f$, and a primitive \f$\phi_{\dot{A}}\f$, with center 
+      \f$R_{\dot{A}}\f$, type pty, and primitive exponent alp. The function
       evalDkAngCases returns the value of
-      ($\nabla\phi_{\dot{A}}(x,y,z))/exp(-2\alp r^2)$, where x=\xi_x-R^x_{\dot{A}}..., and
-      $r^2=x^2+y^2+z^2$. The individual components are anx, any, anz, respectively
+      (\f$\nabla\phi_{\dot{A}}(x,y,z))\exp(-2\alpha r^2)\f$, where \f$x=\xi_x-R^x_{\dot{A}}\f$..., and
+      \f$r^2=x^2+y^2+z^2\f$. The individual components are anx, any, anz, respectively
     */
+   void evalDkAngCases(int &pty,solreal alp,solreal x, solreal y, solreal z,\
+         solreal &anx, solreal &any, solreal &anz);
    /* *********************************************************************************** */
-   void evalDkDlAngCases(int &pty,solreal alp,solreal x,solreal y,solreal z,
-                         solreal &axx,solreal &ayy,solreal &azz,solreal &axy,solreal &axz,solreal &ayz);
-   /*
-    Let the field point be $\vec{\xi}$, and a primitive $\phi_{\dot{A}}$, with center 
-    $R_{\dot{A}}$, type pty, and primitive exponent alp. The function
+   /**
+    Let the field point be \f$\vec{\xi}\f$, and a primitive \f$\phi_{\dot{A}}\f$, with center 
+    \f$R_{\dot{A}}\f$, type pty, and primitive exponent alp. The function
     evalDkDlAngCases returns the value of
-    ($\partial_k\partial_l\phi_{\dot{A}}(x,y,z))/exp(-2\alp r^2)$, where x=\xi_x-R^x_{\dot{A}}..., and
-    $r^2=x^2+y^2+z^2$. The individual components are axx,ayy,azz,axy,axz,ayz, respectively.
+    (\f$\partial_k\partial_l\phi_{\dot{A}}(x,y,z))/exp(-2 alp r^2)\f$, where x=\xi_x-R^x_{\dot{A}}..., and
+    \f$r^2=x^2+y^2+z^2\f$. The individual components are axx,ayy,azz,axy,axz,ayz, respectively.
     */
+   void evalDkDlAngCases(int &pty,solreal alp,solreal x,solreal y,solreal z,\
+         solreal &axx,solreal &ayy,solreal &azz,solreal &axy,solreal &axz,solreal &ayz);
    /* *********************************************************************************** */
-   solreal evalLapAngCases(int &pty,solreal alp,solreal x,solreal y,solreal z,solreal rr);
-   /*
-    Let the field point be $\vec{\xi}$, and a primitive $\phi_{\dot{A}}$, with center 
-    $R_{\dot{A}}$, type pty, and primitive exponent alp. The function
+   /** Let the field point be \f$\vec{\xi}\f$, and a primitive \f$\phi_{\dot{A}}\f$, with center 
+    \f$R_{\dot{A}}\f$, type pty, and primitive exponent alp. The function
     evalLapAngCases returns the value of
-    ($\nabla^2\phi_{\dot{A}}(x,y,z))/exp(-2\alp rr)$, where x=\xi_x-R^x_{\dot{A}}..., and
-    $rr=x^2+y^2+z^2$.
+    (\f$\nabla^2\phi_{\dot{A}}(x,y,z))/exp(-2 alp rr)\f$, where x=\xi_x-R^x_{\dot{A}}..., and
+    \f$rr=x^2+y^2+z^2\f$.
     */
+   solreal evalLapAngCases(int &pty,solreal alp,solreal x,solreal y,solreal z,solreal rr);
    /* *********************************************************************************** */
-   void evalHessian(solreal x, solreal y, solreal z,solreal &dxx, solreal &dyy, solreal &dzz,
-                    solreal &dxy, solreal &dxz, solreal &dyz);
-   /*
-      This function evaluates the six independent components of the Hessian of $\rho$ 
-      (dxx,dyy,dzz,dxy,dxz,dyz) at the point $(x,y,z)$
+   /** This function evaluates the six independent components of the Hessian of \f$\rho\f$ 
+      (dxx,dyy,dzz,dxy,dxz,dyz) at the point \f$(x,y,z)\f$
     */
+   void evalHessian(solreal x, solreal y, solreal z,solreal &dxx, solreal &dyy, solreal &dzz,\
+         solreal &dxy, solreal &dxz, solreal &dyz);
    /* *********************************************************************************** */
+   /** This function evaluates the Hessian of \f$\rho\f$ at the point \f$(x,y,z)\f$ and 
+    * store them in the array h.
+    */
    void evalHessian(solreal x, solreal y, solreal z,solreal (&h)[3][3]);
-   /*
-      This function evaluates the Hessian of $\rho$ at the point $(x,y,z)$ and store them in the
-      array h.
-    */
    /* *********************************************************************************** */
+   /** This function evaluates the gradient and Hessian of \f$\rho\f$ at the point 
+    \f$(x,y,z)\f$ and store them in the arrays g and h.
+    */
    void evalHessian(solreal x, solreal y, solreal z,solreal &dens,solreal (&g)[3],solreal (&h)[3][3]);
-   /*
-    This function evaluates the gradient and Hessian of $\rho$ at the point 
-    $(x,y,z)$ and store them in the arrays g and h.
-    */
    /* *********************************************************************************** */
-   solreal evalLapRho(solreal x, solreal y, solreal z);
-   /*
+   /**
       This function returns the value of the Laplacian of the density
-      ($\nabla^2\rho$) at the point $(x,y,z)$
+      (\f$\nabla^2\rho\f$) at the point \f$(x,y,z)\f$
     */
+   solreal evalLapRho(solreal x, solreal y, solreal z);
    /* *********************************************************************************** */
-   solreal evalELF(solreal x,solreal y,solreal z);
-   /*
+   /**
       This function returns the value of the Electron Localization Function, EFL 
-      ($\eta(x,y,z)=\frac{1}{1+[D(x,y,z)/D_h(x,y,z)]^2}$, where $D(x,y,z)=\frac{1}{2}
-        \sum_i|\nabla\phi_i(x,y,z)|^2-\frac{1}{8}\frac{|\nabla\rho(x,y,z)|^2}{\rho(x,y,z)}$,
-      and $D_h(x,y,z)=(3/10)(3\phi^2)^{2/3}\rho(x,y,z)^{5/3}$) at the
+      (\f$\eta(x,y,z)=\frac{1}{1+[D(x,y,z)/D_h(x,y,z)]^2}\f$, where \f$D(x,y,z)=\frac{1}{2}
+        \sum_i|\nabla\phi_i(x,y,z)|^2-\frac{1}{8}\frac{|\nabla\rho(x,y,z)|^2}{\rho(x,y,z)}\f$,
+      and \f$D_h(x,y,z)=(3/10)(3\phi^2)^{2/3}\rho(x,y,z)^{5/3}\f$) at the
       point (x,y,z).
     */
+   solreal evalELF(solreal x,solreal y,solreal z);
    /* *********************************************************************************** */
-   solreal evalShannonEntropy(solreal x,solreal y,solreal z);
-   /*
-      This function returns the value of the Shannon entropy density ($-\rho\ln\rho$) at the
+   /**
+      This function returns the value of the Shannon entropy density (\f$-\rho\ln\rho\f$) at the
       point (x,y,z).
+    */
+   solreal evalShannonEntropy(solreal x,solreal y,solreal z);
+   /* *********************************************************************************** */
+   /**
+    This function returns the value of the Shannon entropy density in the momentum space 
+    (\f$-\pi\ln\pi\f$) at the point (px,py,pz).
     */
    solreal evalMomentumShannonEntropy(solreal px,solreal py,solreal pz);
-   /*
-    This function returns the value of the Shannon entropy density in the momentum space 
-    ($-\pi\ln\pi$) at the point (px,py,pz).
-    */
    /* *********************************************************************************** */
+   /**
+    This function returns the value of the Magnitude of the Density Gradient 
+    (\f$|\nabla\rho|\f$) at the point (x,y,z).
+    */
    solreal evalMagGradRho(solreal x,solreal y,solreal z);
-   /*
-    This function returns the value of the Magnitude of the Density Gradient ($|\nabla\rho|$) at the
-    point (x,y,z).
-    */
    /* *********************************************************************************** */
-   solreal evalLOL(solreal x,solreal y,solreal z);
-//#if PARALLELISEDTK
-//   solreal evalLOLNew(solreal x, solreal y,solreal z);
-//#endif
-   /*
+   /**
     This function returns the value of the Localized Orbital Locator, LOL, 
-    ($\gamma(x,y,z)=\frac{\tau(x,y,z)}{1+\tau(x,y,z)}$, where
+    (\f$\gamma(x,y,z)=\frac{\tau(x,y,z)}{1+\tau(x,y,z)}\f$, where
      \tau=2D_h(x,y,z)/(\sum_i|\nabla\chi_i|^2)) at the field point (x,y,z)
     */
+   solreal evalLOL(solreal x,solreal y,solreal z);
    /* *********************************************************************************** */
-   solreal evalKineticEnergyG(solreal x,solreal y,solreal z);
-   /*
+   /**
     This function returns the value of the Kinetic Energy Density G, defined through
-    $G(\vec{x})=\frac{1}{2}\sum_{\dot{A}\sum_{\dot{B}}}C_{\dot{A}\dot{B}}\nabla\phi_{\dot{A}}
-     \cdot\nabla\phi_{\dot{B}}$
+    \f$G(\vec{x})=\frac{1}{2}\sum_{\dot{A}\sum_{\dot{B}}}C_{\dot{A}\dot{B}}\nabla\phi_{\dot{A}}
+     \cdot\nabla\phi_{\dot{B}}\f$
     */
+   solreal evalKineticEnergyG(solreal x,solreal y,solreal z);
    /* *********************************************************************************** */
-   void evalNabPhi2(solreal const x,solreal const y,solreal const z,\
-         solreal &rho2ret,solreal &twoG);
-   /*
+   /**
     This function returns the value of
-    $\sum_{\dot{A}\sum_{\dot{B}}}C_{\dot{A}\dot{B}}\nabla\phi_{\dot{A}}
-     \cdot\nabla\phi_{\dot{B}}$, and rho. It severs for evaluation of
+    \f$\sum_{\dot{A}\sum_{\dot{B}}}C_{\dot{A}\dot{B}}\nabla\phi_{\dot{A}}
+     \cdot\nabla\phi_{\dot{B}}\f$, and rho. It severs for evaluation of
      indices such as the 'reduced density gradient' or 'region of
      slow electrons'.
     */
+   void evalNabPhi2(solreal const x,solreal const y,solreal const z,\
+         solreal &rho2ret,solreal &twoG);
    /* *********************************************************************************** */
-   solreal evalKineticEnergyK(solreal x,solreal y,solreal z);
-   /*
+   /**
     This function returns the value of the Kinetic Energy Density K, defined through
-    $K(\vec{x})=-\frac{1}{4}\sum_{\dot{A}\sum_{\dot{B}}}C_{\dot{A}\dot{B}}
-    (\phi_{\dot{A}}\nabla^2\phi_{\dot{B}}+\phi_{\dot{B}}\nabla^2\phi_{\dot{A}})$
+    \f$K(\vec{x})=-\frac{1}{4}\sum_{\dot{A}\sum_{\dot{B}}}C_{\dot{A}\dot{B}}
+    (\phi_{\dot{A}}\nabla^2\phi_{\dot{B}}+\phi_{\dot{B}}\nabla^2\phi_{\dot{A}})\f$
     */
+   solreal evalKineticEnergyK(solreal x,solreal y,solreal z);
    /* *********************************************************************************** */
-   void seekBondCP(int ii,int jj,solreal &rx,solreal &ry,solreal &rz,solreal &gx,solreal &gy,solreal &gz);
-   /*
+   /**
       This function seeks for a Bond Critical Point. The integers ii and jj are used to set
-      $\vec{x}_0=\frac{1}{2}(\vec{R}_i+\vec{R}_j)$. The final values of the search are 
+      \f$\vec{x}_0=\frac{1}{2}(\vec{R}_i+\vec{R}_j)\f$. The final values of the search are 
       stored in rx,ry,rz; in addition the values of the gradient at the point rx,ry,rz are 
       saved in gx,gy,gz. If the maximum number of iterations is reached and the critical
       was not found, then rx,ry,rz are the last values obtained from the search (and
       the gradient at such a point).
+      <b>Important: For searching critical points, please use the class critPtNetWork instead of
+      this function. This function will be deprecated within the next few revisions.</b>
     */
+   void seekBondCP(int ii,int jj,solreal &rx,solreal &ry,solreal &rz,solreal &gx,solreal &gy,solreal &gz);
    /* *********************************************************************************** */
-   void getBondCPStep(solreal (&x)[3],solreal (&hh)[3],solreal (&gg)[3]);
    /*
-      This function uses the vector $\vec{x}$ as the original position, then it calculates 
+      This function uses the vector \f$\vec{x}\f$ as the original position, then it calculates 
       the step hh using the eigen-vector following algorithm. This algorithm is described with 
       detail for  this particular problem in 
          Chem. Phys. Lett. 228 (1994) 160--164, "A robust algorithm to locate automatically
@@ -402,20 +394,20 @@ public:
       More details (and ) can be found in references [9-11] of the above article.
       This particular function aims to locate Bond Critical Points.
    */
+   void getBondCPStep(solreal (&x)[3],solreal (&hh)[3],solreal (&gg)[3]);
    /* *********************************************************************************** */
-   void seekRingCP(solreal &r1,solreal &r2,solreal &r3,solreal &gx,solreal &gy,solreal &gz);
    /*
-    This function seeks for a Ring Critical Point. The vector $\vec{x}_0=(r1,r2,r3)$ is used as
+    This function seeks for a Ring Critical Point. The vector \f$\vec{x}_0=(r1,r2,r3)\f$ is used as
     the starting point for the search. The final values of the search are 
     stored in rx,ry,rz; in addition the values of the gradient at the point rx,ry,rz are 
     saved in gx,gy,gz. If the maximum number of iterations is reached and the critical
     was not found, then rx,ry,rz are the last values obtained from the search (and
     the gradient at such a point).
     */
+   void seekRingCP(solreal &r1,solreal &r2,solreal &r3,solreal &gx,solreal &gy,solreal &gz);
    /* *********************************************************************************** */
-   void getRingCPStep(solreal (&x)[3],solreal (&hh)[3],solreal (&g)[3]);
    /*
-    This function uses the vector $\vec{x}$ as the original position, then it calculates 
+    This function uses the vector \f$\vec{x}\f$ as the original position, then it calculates 
     the step hh using the eigen-vector following algorithm. This algorithm is described with 
     detail for  this particular problem in 
     Chem. Phys. Lett. 228 (1994) 160--164, "A robust algorithm to locate automatically
@@ -423,20 +415,20 @@ public:
     More details (and ) can be found in references [9-11] of the above article.
     This particular function aims to locate Ring Critical Points.
     */
+   void getRingCPStep(solreal (&x)[3],solreal (&hh)[3],solreal (&g)[3]);
    /* *********************************************************************************** */
-   void seekCageCP(solreal &r1,solreal &r2,solreal &r3,solreal &gx,solreal &gy,solreal &gz);
    /*
-    This function seeks for a Cage Critical Point. The vector $\vec{x}_0=(r1,r2,r3)$ is used as
+    This function seeks for a Cage Critical Point. The vector \f$\vec{x}_0=(r1,r2,r3)\f$ is used as
     the starting point for the search. The final values of the search are 
     stored in rx,ry,rz; in addition the values of the gradient at the point r1,r2,r3 are 
     saved in gx,gy,gz. If the maximum number of iterations is reached and the critical
     was not found, then rx,ry,rz are the last values obtained from the search (and
     the gradient at such a point).
     */
+   void seekCageCP(solreal &r1,solreal &r2,solreal &r3,solreal &gx,solreal &gy,solreal &gz);
    /* *********************************************************************************** */
-   void getCageCPStep(solreal (&x)[3],solreal (&hh)[3],solreal (&g)[3]);
    /*
-    This function uses the vector $\vec{x}$ as the original position, then it calculates 
+    This function uses the vector \f$\vec{x}\f$ as the original position, then it calculates 
     the step hh using the eigen-vector following algorithm. This algorithm is described with 
     detail for  this particular problem in 
     Chem. Phys. Lett. 228 (1994) 160--164, "A robust algorithm to locate automatically
@@ -444,66 +436,97 @@ public:
     More details (and ) can be found in references [9-11] of the above article.
     This particular function aims to locate Cage Critical Points.
     */
+   void getCageCPStep(solreal (&x)[3],solreal (&hh)[3],solreal (&g)[3]);
    /* *********************************************************************************** */
    void evald3SingCartA(int &ang,solreal &t,solreal &f,solreal &x,solreal &x2,
                       solreal &d0,solreal &d1,solreal &d2,solreal &d3);
    /* *********************************************************************************** */
+   /** This function returns the third derivatives of the angular factors for evaluating
+    * the third derivatives of the primitives. Since these derivatives are usually
+    * needed when computing the derivatives of the electron density, the function
+    * also evaluates the zero-th (angular factor), first, second, and third derivative
+    * factors of the primitives. The final derivatives of the primitives are
+    * obtained by multiplying the components of di times \f$\exp(-r^2\alpha)\f$.  */
    void evald3Ang(int (&a)[3],solreal &alp,solreal (&x)[3],solreal (&x2)[3],
                   solreal (&d0)[3],solreal (&d1)[3],solreal (&d2)[3],solreal (&d3)[3]);
    /* *********************************************************************************** */
    void evald4SingCartA(int &ang,solreal &t,solreal &f,solreal &x,solreal &x2,
                         solreal &d0,solreal &d1,solreal &d2,solreal &d3,solreal &d4);
    /* *********************************************************************************** */
-   void evald4Ang(int (&a)[3],solreal &alp,solreal (&x)[3],solreal (&x2)[3],
+   /** This function returns the fourth derivatives of the angular factors for evaluating
+    * the fourth derivatives of the primitives. Since these derivatives are usually
+    * needed when computing the derivatives of the electron density, the function
+    * also evaluates the zero-th (angular factor), first, second, third, and fourth derivative
+    * factors of the primitives. The final derivatives of the primitives are
+    * obtained by multiplying the components of di times \f$\exp(-r^2\alpha)\f$.  */
+void evald4Ang(int (&a)[3],solreal &alp,solreal (&x)[3],solreal (&x2)[3],
                   solreal (&d0)[3],solreal (&d1)[3],solreal (&d2)[3],solreal (&d3)[3],
                   solreal (&d4)[3]);
    /* *********************************************************************************** */
+   /** This function evaluates \f$\nabla^2\rho(x,y,z)\f$. It is implemented in order to
+    * test evalDkDlAngCases(...)  */
    solreal evalLapRhoUsingd2(solreal x,solreal y,solreal z);
    /* *********************************************************************************** */
-   void evalDiDjDkChi(int &pty,solreal &alp,solreal x,solreal y,solreal z,
-                      solreal (&dlm)[3][3],solreal (&dijk)[3][3][3]);
    /* void evalDkDlAngCases(int &pty,solreal alp,solreal x,solreal y,solreal z,
     solreal &axx,solreal &ayy,solreal &azz,solreal &axy,solreal &axz,solreal &ayz); */
+   void evalDiDjDkChi(int &pty,solreal &alp,solreal x,solreal y,solreal z,\
+                      solreal (&dlm)[3][3],solreal (&dijk)[3][3][3]);
    /* *********************************************************************************** */
+   /** Evaluates the Hessian of LOL (dxx,dyy,dzz,dxy,dxz,dyz). 
+    * On the fly, it evaluates the electron density (dens),
+    * the kinetic energy G (keG, LOL (lol), and the gradient of LOL (dx,dy,dz).  */
    void evalHessLOL(solreal x, solreal y, solreal z, solreal &dens,solreal &keG, solreal &lol,
-                                   solreal &ddx, solreal &ddy, solreal &ddz,
-                                   solreal &dxx, solreal &dyy, solreal &dzz,
-                                   solreal &dxy, solreal &dxz, solreal &dyz);
+         solreal &ddx, solreal &ddy, solreal &ddz,
+         solreal &dxx, solreal &dyy, solreal &dzz,
+         solreal &dxy, solreal &dxz, solreal &dyz);
    /* *********************************************************************************** */
+   /** Evaluates the Hessian of LOL. It is an overloaded function.  */
    void evalHessLOL(solreal (&x)[3],solreal &lol,solreal (&glol)[3],solreal (&hlol)[3][3]);
    /* ************************************************************************************ */
-   void evalFTASingCartA(int &ang,solreal &a,solreal &ooa,solreal &osra,
-                         solreal &px,solreal &px2,solreal &Rx,
-                         solreal &RePhi,solreal &ImPhi);
-   /*
+   /**
      This function evaluates the "angular" part of the Fourier transform of every primitive.
        ang is the angular exponent for the component, ooa is 1/alpha, osra=1/sqrt(a),
        Rx is the component of the primitive center, px is the component of the momentum, and
        px2=px*px.
     */
+   void evalFTASingCartA(int &ang,solreal &a,solreal &ooa,solreal &osra,\
+         solreal &px,solreal &px2,solreal &Rx,\
+         solreal &RePhi,solreal &ImPhi);
    /* ************************************************************************************ */
-   void evalFTAng(int (&a)[3],solreal &alp,solreal &ooalp,solreal (&p)[3],solreal (&p2)[3],
+   void evalFTAng(int (&a)[3],solreal &alp,solreal &ooalp,solreal (&p)[3],solreal (&p2)[3],\
                   solreal (&Rx)[3],complex<solreal> &pang);
    /* ************************************************************************************ */
    void evalFTChi(int &pty,solreal &alp,solreal (&Rx)[3],solreal px,solreal py,solreal pz,
                       complex<solreal> &phi);
    /* ************************************************************************************ */
+   /** This function computes the Fourier Transform of the electron density. <em>i.e.</em>
+    * the momentum-space electron density.  */
    solreal evalFTDensity(solreal px,solreal py,solreal pz);
    /* ************************************************************************************ */
+   /** This function computes the Kinetic energy density K in momentum space.  */
    solreal evalFTKineticEnergy(solreal px,solreal py,solreal pz);
    /* ************************************************************************************ */
+   /** This function evaluates the Density Matrix of Order 1 at the points
+    * \f$(x,y,z)\f$ and \f$(xp,yp,zp)\f$  */
    solreal evalDensityMatrix1(solreal x,solreal y,solreal z,solreal xp,solreal yp,solreal zp);
    /* ************************************************************************************ */
+   /** This function evaluates the gradients of the Density Matrix of order 1, with
+    * respect to the primed and non-primed variables.  */
    void evalGradDensityMatrix1(solreal x,solreal y,solreal z,\
          solreal xp,solreal yp,solreal zp,\
          solreal &gamm,solreal (&gg)[3],solreal (&gp)[3]);
    /* ************************************************************************************ */
+   /** This function computes the Hessian of the Density Matrix of Order 1 (second
+    * derivatives), with respect to the primed, non-primed and combined cases.  */
    void evalHessDensityMatrix1(solreal (&xx)[3],solreal (&xxp)[3],\
          solreal &gamm,solreal (&gg)[3],solreal (&gp)[3],\
          solreal (&hh)[3][3],solreal (&hph)[3][3],solreal (&hp)[3][3]);
    /* ************************************************************************************ */
+   /** This fucntion evaluats the magnitude of the grandient of LOL.  */
    solreal evalMagGradLOL(solreal x,solreal y,solreal z);
    /* ************************************************************************************ */
+   /** This function returns the Molecular Electrostatic Potential (MEP) at the
+    * point (x,y,z).  */
    solreal evalMolElecPot(solreal x,solreal y,solreal z);
    /* ************************************************************************************ */
    void evalHermiteCoefs(int (&aia)[3],int (&aib)[3],solreal &alpab,
@@ -520,16 +543,25 @@ public:
    solreal evalOverlapIntegralAB(int (&aa)[3],int (&ab)[3],solreal &alpa,solreal &alpb,
                          solreal (&ra)[3],solreal (&rb)[3]);
    /* ************************************************************************************ */
+   /** This function returns the integral of the electron density. It uses the analytical
+    * properties of the Gauss-type orbital basis.  */
    solreal integralRho(void);
    /* ************************************************************************************ */
+   /** This function returns the sum of the total number of protons of the molecule.  */
    solreal totalNuclearCharge(void);
    /* ************************************************************************************ */
+   /** This function evaluates the Localized Electrons Detector vector (led) at the
+    * point x.  */
    void evalLED(solreal const (&x)[3],solreal (&led)[3]);
    /* ************************************************************************************ */
+   /** This function returns the magnitude of the vector LED.  */
    solreal evalMagLED(solreal x,solreal y,solreal z);
    /* ************************************************************************************ */
+   /** This function returns the Reduced Density Gradient at the point (x,y,z)  */
    solreal evalReducedDensityGradient(solreal x,solreal y,solreal z);
    /* ************************************************************************************ */
+   /** This function computes the Region of Slow Electron index at the point
+    * (x,y,z).  */
    solreal evalRoSE(solreal x,solreal y,solreal z);
    /* ************************************************************************************ */
 private:
