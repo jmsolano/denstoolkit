@@ -201,6 +201,12 @@ int main (int argc, char ** argv)
       case 's' :
          grid.makeTsv(outfilnam,gwf,REDG);
          break;
+      case 'u' :
+         grid.makeTsv(outfilnam,gwf,SCFD);
+         break;
+      case 'U' :
+         grid.makeTsv(outfilnam,gwf,VCFD);
+         break;
       case 'V':
          grid.makeTsv(outfilnam,gwf,MEPD);
          break;
@@ -330,6 +336,14 @@ void makeGnuplotFile(optFlags &opts, string &gnpn,string &outn,char p2p,
          minzrange=0.0e0;
          maxzrange=1.0e0;
          break;
+      case 'u' :
+         minzrange=-1.0e0;
+         maxzrange=1.0e0;
+         break;
+      case 'U' :
+         minzrange=-1.0e0;
+         maxzrange=1.0e0;
+         break;
       case 'V':
          minzrange=-0.6e0;
          maxzrange=0.6e0;
@@ -374,7 +388,7 @@ void makeGnuplotFile(optFlags &opts, string &gnpn,string &outn,char p2p,
    gfil << "set table 'contourtemp.dat'" << endl;
    
    gfil << "splot '" << outn << "'";
-   if (p2p=='N' || p2p=='p') {gfil << " using 1:2:(sqrt($3*$3+$4*$4))";}
+   if (p2p=='N' || p2p=='p' || p2p=='U') {gfil << " using 1:2:(sqrt($3*$3+$4*$4))";}
    gfil << endl;
    
    gfil << "unset table" << endl;
@@ -390,7 +404,7 @@ void makeGnuplotFile(optFlags &opts, string &gnpn,string &outn,char p2p,
    gfil << "dimparam=" << dimparam
         << " #Decrease this number to zoom in the plot" << endl;
    
-   if (p2p=='N'||p2p=='p') {
+   if (p2p=='N'||p2p=='p'||p2p=='U') {
       gfil << "VMXS=dimparam/40.0 #Maximum lenght of the vectors" << endl;
    }
    
@@ -406,7 +420,7 @@ void makeGnuplotFile(optFlags &opts, string &gnpn,string &outn,char p2p,
    
    gfil << "set palette rgbformulae 33,13,10" << endl;
    
-   if (p2p=='N'||p2p=='p') {
+   if (p2p=='N'||p2p=='p'||p2p=='U') {
       //gfil << "plot '" << outn << "' using 1:2:3:4:(sqrt($3*$3+$4*$4)) "
       //<< "with vectors head size 0.1,20,60 filled lc palette";
       gfil << "plot '" << outn << "' every 1:1 using 1:2:(sqrt($3*$3+$4*$4)>VMXS? VMXS*$3/sqrt($3*$3+$4*$4) : $3):(sqrt($3*$3+$4*$4)>VMXS ? VMXS*$4/sqrt($3*$3+$4*$4) : $4):(sqrt($3*$3+$4*$4)) "

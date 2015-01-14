@@ -420,6 +420,12 @@ void waveFunctionGrid2D::makeTsv(string &onam,gaussWaveFunc &wf,ScalarFieldType 
       case REDG :
          writePlaneTsvRedDensMag(ofil,wf);
          break;
+      case SCFD :
+         writePlaneTsvScalarCustFld(ofil,wf);
+         break;
+      case VCFD :
+         writePlaneTsvVectorCustFld(ofil,wf);
+         break;
       default:
          cout << "Error: Field type not known!\n dat file incomplete!" << endl;
          break;
@@ -892,6 +898,78 @@ bool waveFunctionGrid2D::writePlaneTsvRoSE(ofstream &ofil,gaussWaveFunc &wf)
    }
    return false;
 }
+/* ************************************************************************************ */
+bool waveFunctionGrid2D::writePlaneTsvScalarCustFld(ofstream &ofil,gaussWaveFunc &wf)
+{
+   ofil << scientific << setprecision (10);
+   solreal e1,e2,xx[3];
+   e1=-1.0e0;
+   for (int i=0; i<npts[0]; i++) {
+      e2=-1.0e0;
+      for (int j=0; j<npts[1]; j++) {
+         for (int k=0; k<3; k++) {
+            xx[k]=Ca[k]*(1.0e0-e1)*(1.0e0-e2);
+            xx[k]+=Cb[k]*(1.0e0+e1)*(1.0e0-e2);
+            xx[k]+=Cc[k]*(1.0e0+e1)*(1.0e0+e2);
+            xx[k]+=Cd[k]*(1.0e0-e1)*(1.0e0+e2);
+            xx[k]*=0.25e0;
+         }
+         prop1d[j]=wf.evalCustomScalarField(xx[0],xx[1],xx[2]);
+         e2+=dx[1];
+      }
+      e2=-1.0e0*maxdim;
+      for (int j=0; j<npts[1]; j++) {
+         ofil << e1*maxdim << "\t" << e2 << "\t" << prop1d[j] << endl;
+         e2+=dx[1]*maxdim;
+      }
+      e1+=dx[0];
+      ofil << endl;
+#if USEPROGRESSBAR
+      printProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+#endif
+   }
+   return false;
+}
+
+/* ************************************************************************************ */
+bool waveFunctionGrid2D::writePlaneTsvVectorCustFld(ofstream &ofil,gaussWaveFunc &wf)
+{
+   ofil << scientific << setprecision (10);
+   solreal e1,e2,xx[3],vcf[3];
+   e1=-1.0e0;
+   for (int i=0; i<npts[0]; i++) {
+      e2=-1.0e0;
+      for (int j=0; j<npts[1]; j++) {
+         for (int k=0; k<3; k++) {
+            xx[k]=Ca[k]*(1.0e0-e1)*(1.0e0-e2);
+            xx[k]+=Cb[k]*(1.0e0+e1)*(1.0e0-e2);
+            xx[k]+=Cc[k]*(1.0e0+e1)*(1.0e0+e2);
+            xx[k]+=Cd[k]*(1.0e0-e1)*(1.0e0+e2);
+            xx[k]*=0.25e0;
+         }
+         wf.evalCustomVectorField(xx[0],xx[1],xx[2],vcf);
+         //prop1d[j]=sqrt(gl[0]*gl[0]+gl[1]*gl[1]+gl[2]*gl[2]);
+         prop2d[j][0]=prop2d[j][1]=0.0e0;
+         for (int p=0; p<3; p++) {
+            prop2d[j][0]+=(dircos1[p]*vcf[p]);
+            prop2d[j][1]+=(dircos2[p]*vcf[p]);
+         }
+         e2+=dx[1];
+      }
+      e2=-1.0e0*maxdim;
+      for (int j=0; j<npts[1]; j++) {
+         ofil << e1*maxdim << "\t" << e2 << "\t" << prop2d[j][0] << "\t" << prop2d[j][1] << endl;
+         e2+=dx[1]*maxdim;
+      }
+      e1+=dx[0];
+      ofil << endl;
+#if USEPROGRESSBAR
+      printProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+#endif
+   }
+   return false;
+}
+/* ************************************************************************************ */
 /* ************************************************************************************ */
 
 #endif//_WFGRID2D_CPP_
