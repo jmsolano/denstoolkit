@@ -210,6 +210,7 @@ void printHelpMenu(int &argc, char** &argv)
         << "         \t\tr (Region of Slower Electrons -RoSE-)" << endl
         << "         \t\ts (Reduced Density Gradient -s-)" << endl
         << "         \t\tS (Shannon Entropy Density)" << endl;
+   cout << "         \t\tu (Scalar Custom Field)" << endl;
    cout << "         \t\tV (Molecular Electrostatic Potential)" << endl;
 #if _HAVE_GNUPLOT_
    cout << "  -P     \tCreate a plot using gnuplot." << endl

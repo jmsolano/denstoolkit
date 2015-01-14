@@ -192,6 +192,9 @@ int main (int argc, char ** argv)
       case 'K':
          grid.makeDat(outfilnam,gwf,KEDK);
          break;
+      case 'u' :
+         grid.makeDat(outfilnam,gwf,SCFD);
+         break;
       case 'V':
          grid.makeDat(outfilnam,gwf,MEPD);
          break;
