@@ -100,6 +100,8 @@ public:
    /* ******************************************************************************* */
    void writeCubeRoSE(ofstream &ofil,gaussWaveFunc &wf);
    /* ******************************************************************************* */
+   void writeCubeScalarCustFld(ofstream &ofil,gaussWaveFunc &wf);
+   /* ******************************************************************************* */
 private:
    bool imsetup;
    int npts[3];

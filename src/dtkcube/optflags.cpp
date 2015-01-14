@@ -218,6 +218,7 @@ void printHelpMenu(int &argc, char** &argv)
         << "         \t\ts (Reduced Density Gradient -s-)" << endl
         << "         \t\tS (Shannon Entropy Density)" << endl;
    cout << "         \t\tV (Molecular Electrostatic Potential)" << endl;
+   cout << "         \t\tu (Scalar Custom Field)" << endl;
 #if (defined(__APPLE__)||defined(__linux__))
    cout << "  -z     \tCompress the cube file using gzip (which must be installed" << endl
         << "         \t   in your system)." << endl;

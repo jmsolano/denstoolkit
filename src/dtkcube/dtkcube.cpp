@@ -169,6 +169,9 @@ int main (int argc, char ** argv)
       case 'K':
          grid.makeCube(outfilnam,gwf,KEDK);
          break;
+      case 'u' :
+         grid.makeCube(outfilnam,gwf,SCFD);
+         break;
       case 'V':
          grid.makeCube(outfilnam,gwf,MEPD);
          break;

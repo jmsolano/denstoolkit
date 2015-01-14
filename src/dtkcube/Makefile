@@ -126,4 +126,4 @@ distclean: clean
 	rm -f $(OBJDIR)/*.o
 
 runben: dtkcube benceno_sto3g.wfx
-	./dtkcube benceno_sto3g.wfx -n 50 -l -p P
+	./dtkcube benceno_sto3g.wfx -n 50 -l -p u
