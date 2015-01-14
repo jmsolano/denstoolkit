@@ -110,12 +110,21 @@ int main (int argc, char ** argv)
    
    /* Setting the property to be computed */
 
+   /*
    char prop;
    if (options.prop2plot) {
       prop=argv[options.prop2plot][0];
    } else {
       prop='a';
    }
+   // */
+
+   /* Checking whether custom fields should be computed  */
+
+   if ( options.setscustfld ) {gwf.useScalarCustomField(true);}
+   if ( options.setvcustfld ) {gwf.useVectorCustomField(true);}
+
+   /* Openning the output log-file.  */
    
    ofile.open(outfilnam.c_str(),ios::out);
    writeCommentedHappyStart(argv,ofile,CURRENTVERSION,PROGRAMCONTRIBUTORS);

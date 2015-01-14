@@ -93,6 +93,7 @@ gaussWaveFunc::gaussWaveFunc()
    totener=0.00e0;
    virial=0.0e0;
    imldd=false;
+   usescustfld=usevcustfld=false;
 }
 /* ************************************************************************************** */
 int gaussWaveFunc::prTy[]={
@@ -393,6 +394,14 @@ void gaussWaveFunc::displayAllFieldProperties(solreal x,solreal y,solreal z)
    cout << "        |LED|: " << setw(20) << sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]) << endl;
    cout << "  RedDensGrad: " << setw(20) << evalReducedDensityGradient(xx[0],xx[1],xx[2]) << endl;
    cout << "         RoSE: " << setw(20) << evalRoSE(xx[0],xx[1],xx[2]) << endl;
+   if ( usescustfld ) {
+      cout << "Cust. S. Field: " << setw(20) << evalCustomScalarField(xx[0],xx[1],xx[2]) << endl;
+   }
+   if ( usevcustfld ) {
+      evalCustomVectorField(xx[0],xx[1],xx[2],g);
+      cout << "Cust. V. Field: " <<  setw(20) << g[0] << setw(20) << g[1] 
+                                 << setw(20) << g[2] << endl;
+   }
    return;
 }
 /* ************************************************************************************** */
@@ -455,7 +464,15 @@ void gaussWaveFunc::writeAllFieldProperties(solreal x,solreal y,solreal z,ofstre
    ofil << "  |LED|:       " << setw(20) << sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]) << endl;
    ofil << "  RedDensGrad: " << setw(20) << evalReducedDensityGradient(x,y,z) << endl;
    ofil << "  RoSE:        " << setw(20) << evalRoSE(x,y,z) << endl;
-   return;
+   if ( usescustfld ) {
+      ofil << "Cust. S. Field: " << setw(20) << evalCustomScalarField(xx[0],xx[1],xx[2]) << endl;
+   }
+   if ( usevcustfld ) {
+      evalCustomVectorField(xx[0],xx[1],xx[2],g);
+      ofil << "Cust. V. Field: " <<  setw(20) << g[0] << setw(20) << g[1] 
+                                 << setw(20) << g[2] << endl;
+   }
+return;
 }
 /* ************************************************************************************** */
 solreal gaussWaveFunc::evalPrimCases(int &pty, solreal &alp, solreal x, solreal y, solreal z)
@@ -3948,6 +3965,8 @@ solreal gaussWaveFunc::evalRoSE(solreal x,solreal y,solreal z)
 /* *************************************************************************************** */
 /* *************************************************************************************** */
 /* *************************************************************************************** */
+/* The following line includes the implementation of the custom scalar and vector fields.  */
+#include "custfld-wfnclass.cpp"
 /* *************************************************************************************** */
 #endif//_SOLWAVEFUNCTIONCLASS_CPP_
 

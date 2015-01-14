@@ -74,6 +74,8 @@ optFlags::optFlags()
    setat=0;
    crdfil=0;
    rcrds=0;
+   setscustfld=0;
+   setvcustfld=0;
 }
 
 
@@ -120,6 +122,12 @@ void getOptions(int &argc, char** &argv, optFlags &flags)
             case 'o':
                flags.outfname=(++i);
                if (i>=argc) {printErrorMsg(argv,'o');}
+               break;
+            case 'u' :
+               flags.setscustfld=i;
+               break;
+            case 'U' :
+               flags.setvcustfld=i;
                break;
             //case 'p':
             //  flags.prop2plot=(++i);
@@ -205,7 +213,9 @@ void printHelpMenu(int &argc, char** &argv)
         << "         \t\tM (Magnitude of the Gradient of LOL)" << endl
         << "         \t\tS (Shannon Entropy Density)" << endl;
    // */
-   cout << "  -V        \tDisplays the version of this program." << endl;
+   cout << "  -u     \tDisplay values of custom scalar field." << endl;
+   cout << "  -U     \tDisplay values of custom vector field." << endl;
+   cout << "  -V     \tDisplays the version of this program." << endl;
    cout << "  -h     \tDisplay the help menu.\n\n";
    //-------------------------------------------------------------------------------------
    cout << "  --help    \t\tSame as -h" << endl;

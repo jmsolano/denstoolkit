@@ -564,9 +564,22 @@ void evald4Ang(int (&a)[3],solreal &alp,solreal (&x)[3],solreal (&x2)[3],
     * (x,y,z).  */
    solreal evalRoSE(solreal x,solreal y,solreal z);
    /* ************************************************************************************ */
+   /** This function is left to the final user for implementing its own custom 
+    * scalar field.  */
+   solreal evalCustomScalarField(solreal x,solreal y,solreal z);
+   /* ************************************************************************************ */
+   /** This function is left to the final user for implementing its own custom 
+    * vector field.  */
+   void evalCustomVectorField(solreal x,solreal y,solreal z,solreal (&v)[3]);
+   /* ************************************************************************************ */
+   void useScalarCustomField(bool ucf) {usescustfld=ucf;}
+   /* ************************************************************************************ */
+   void useVectorCustomField(bool ucf) {usevcustfld=ucf;}
+   /* ************************************************************************************ */
 private:
    static int prTy[MAXPRIMTYPEDEFINED*3];
    /* ************************************************************************************ */
+   bool usescustfld,usevcustfld;
    /* ************************************************************************************ */
    /* ************************************************************************************ */
    /* ************************************************************************************ */
