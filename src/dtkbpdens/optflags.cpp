@@ -239,6 +239,7 @@ void printHelpMenu(int &argc, char** &argv)
         << "            \t\ts (Reduced Density Gradient -s-)" << endl
         << "            \t\tS (Shannon Entropy Density)" << endl;
    cout << "            \t\tV (Molecular Electrostatic Potential)" << endl;
+   cout << "            \t\tu (Scalar Custom Field)" << endl;
    cout << "  -s step   \tSet the stepsize for the bond path to be 'step'." << endl
         << "            \t  Default value: " << DEFAULTBONDPATHSTEPMD1 << endl;
 #if _HAVE_GNUPLOT_

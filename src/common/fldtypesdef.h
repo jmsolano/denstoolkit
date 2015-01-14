@@ -29,7 +29,9 @@ enum ScalarFieldType {
    LEDV,/* LEDVector  */\
    MLED,/* MagLEDVector  */\
    REDG,/* Reduced Density Grandient  */\
-   ROSE /* Region of Slow Electrons  */
+   ROSE, /* Region of Slow Electrons  */
+   SCFD, /* Scalar Custom Field Density */\
+   VCFD /* Vector Custom Field Density */
 };
 //**********************************************************************************************
 inline char convertScalarFieldType2Char(ScalarFieldType fftt)
@@ -80,6 +82,12 @@ inline char convertScalarFieldType2Char(ScalarFieldType fftt)
          break;
       case REDG :
          res='s';
+         break;
+      case SCFD :
+         res='u';
+         break;
+      case VCFD :
+         res='U';
          break;
       case NONE :
       default :
@@ -134,6 +142,12 @@ inline string getFieldTypeKeyShort(const char prop)
          break;
       case 'K':
          plbl="KinEnerDensK";
+         break;
+      case 'u' :
+         plbl="ScalarCustFld";
+         break;
+      case 'U' :
+         plbl="VectorCustFld";
          break;
       case 'V':
          plbl="MEP";
@@ -191,6 +205,12 @@ inline string getFieldTypeKeyLong(const char prop)
       case 'K':
          plbl="Kinetic Energy Density K";
          break;
+      case 'u':
+         plbl="Scalar Custom Field";
+         break;
+      case 'U' :
+         plbl="Vector Custom Field";
+         break;
       case 'V':
          plbl="Molecular Electrostatic Potential";
          break;
@@ -243,6 +263,12 @@ inline string gnuplotFieldTitle(const char p2p)
          break;
       case 'K':
          plbl=string("{/Bold K}");
+         break;
+      case 'u' :
+         plbl=string("S.C.F.");
+         break;
+      case 'U' :
+         plbl=string("V.C.F.");
          break;
       case 'V':
          plbl=string("M.E.P.");
