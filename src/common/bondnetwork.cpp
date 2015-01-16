@@ -170,7 +170,7 @@ bool bondNetWork::lookForBonds(void)
       cout << "Unknonw error from " << __FILE__ << ", line: " << __LINE__ << endl;
       return false;
    }
-   solreal d,vdwd;
+   solreal d,vdwd,clsstatd=1.0e+50;
    for (int i=0; i<nNuc; i++) {
       for (int j=i+1; j<nNuc; j++) {
          d=dist(i,j);
@@ -183,11 +183,12 @@ bool bondNetWork::lookForBonds(void)
             }
             nBonds++;
          }
+         if ( d<clsstatd ) {clsstatd=d;}
       }
    }
    if (nNuc==1) {maxBondDist=AUTOMATICMAXBONDDIST;}
    if ((maxBondDist<0.0e0)&&(nNuc==2)) {maxBondDist=dist(0,1);}
-   if (maxBondDist<0.0e0) {maxBondDist=AUTOMATICMAXBONDDIST;}
+   if (maxBondDist<0.0e0) {maxBondDist=clsstatd;}
    return true;
 }
 //**********************************************************************************************
