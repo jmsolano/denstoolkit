@@ -42,7 +42,7 @@ using std::endl;
 #define CPNW_MINLOLSIGNIFICATIVEVAL (5.0e-04)
 #define CPNW_EXTENDEDBONDDISTFACTOR (3.5e0)
 #define CPNW_BONDISTEXTCCPSEARCHFACTOR (2.0e0)
-#define CPNW_ATOMCRITICALPOINTSIZEFACTOR (0.2e0)
+#define CPNW_ATOMCRITICALPOINTSIZEFACTOR (0.25e0)
 
 #ifndef CPNW_EPSEIGENVALUECPSEARCH
 #define CPNW_EPSEIGENVALUECPSEARCH (1.0e-08)
@@ -2691,6 +2691,7 @@ bool critPtNetWork::seekSingleRhoBCP(int ata,int atb,solreal (&x)[3])
 void critPtNetWork::getNextPointInGradientPathRK5(solreal (&xn)[3],solreal &stepsize,\
       solreal &mgg)
 {
+   /*
    static const solreal b[15]={0.2e0, 3.0e0/40.0e0, 9.0e0/40.0e0, 0.3e0, -0.9e0, 1.2e0, \
       -11.0e0/54.0e0, 2.5e0, -70.0e0/27.0e0, 35.0e0/27.0e0, 1631.0e0/55296.0e0, \
          175.0e0/512.0e0, 575.0e0/13824.0e0, 44275.0e0/110592.0e0, 253.0e0/4096.0e0};
@@ -2714,8 +2715,36 @@ void critPtNetWork::getNextPointInGradientPathRK5(solreal (&xn)[3],solreal &step
          k[i][l] = stepsize*g[l]/maggrad;
       }
    }
-   for(int i=0; i<3; i++) {
-      xn[i]+=(c1*k[0][i]+c3*k[2][i]+c4*k[3][i]+c6*k[5][i]);
+   // */
+   static const solreal b[21]={1.0e0/5.0e0, \
+      3.0e0/40.0e0, 9.0e0/40.0e0, \
+      44.0e0/45.0e0, -56.0e0/15.0e0, 32.0e0/9.0e0, \
+      19372.0e0/6561.0e0, -25360.0e0/2187.0e0, 64448.0e0/6561.0e0, -212.0e0/729.0e0,\
+      9017.0e0/3168.0e0, -355.0e0/33.0e0, 46732.0e0/5247.0e0, 49.0e0/176.0e0, -5103.0e0/18656.0e0,\
+      35.0e0/384.0e0, 0.0e0, 500.0e0/1113.0e0, 125.0e0/192.0e0, -2187.0e0/6784.0e0,11.0e0/84.0e0};
+   static const solreal c1=35.0e0/384.0e0;
+   static const solreal c3=500.0e0/1113.0e0;
+   static const solreal c4=125.0e0/192.0e0;
+   static const solreal c5=-2187.0e0/6784.0e0;
+   static const solreal c6=11.0e0/84.0e0;
+   solreal k[7][3],rho,g[3],xt[3],maggrad;
+   int offset;
+   for(int i=0; i<7; i++) {
+      offset=((i*(i-1))>>1);
+      for(int j=0; j<3; j++) {
+         xt[j] = xn[j];
+         for(int l=0; l<i; l++) {
+            xt[j] += b[l+offset]*k[l][j];
+         }
+      }
+      wf->evalRhoGradRho(xt[0],xt[1],xt[2],rho,g);
+      maggrad=sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]);
+      for(int l=0; l<3; l++) {
+         k[i][l] = stepsize*g[l]/maggrad;
+      }
+   }
+for(int i=0; i<3; i++) {
+      xn[i]+=(c1*k[0][i]+c3*k[2][i]+c4*k[3][i]+c5*k[4][i]+c6*k[5][i]);
    }
    wf->evalRhoGradRho(xn[0],xn[1],xn[2],rho,g);
    mgg=sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]);

@@ -137,8 +137,14 @@ runben: build
 runete: build
 	./dtkfindcp ethane.wfn -P -g -T -k
 
+runch4: build
+	./dtkfindcp ch4.wfx -P -g -k -a
+
 runc60: build
 	./dtkfindcp c60-321g.wfx -P -g -T -k
+
+runb2h6: build
+	./dtkfindcp b2h6-mp2-cctvz-gopt.wfn -a -P -k -c 111 -g -e
 
 runf2: build
 	./dtkfindcp f2.ccsd.augccpvtz.wfn -a -t L -P -k -c 100 -g -e
