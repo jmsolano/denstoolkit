@@ -522,7 +522,7 @@ void evald4Ang(int (&a)[3],solreal &alp,solreal (&x)[3],solreal (&x2)[3],
          solreal &gamm,solreal (&gg)[3],solreal (&gp)[3],\
          solreal (&hh)[3][3],solreal (&hph)[3][3],solreal (&hp)[3][3]);
    /* ************************************************************************************ */
-   /** This fucntion evaluats the magnitude of the grandient of LOL.  */
+   /** This function evaluates the magnitude of the grandient of LOL.  */
    solreal evalMagGradLOL(solreal x,solreal y,solreal z);
    /* ************************************************************************************ */
    /** This function returns the Molecular Electrostatic Potential (MEP) at the
