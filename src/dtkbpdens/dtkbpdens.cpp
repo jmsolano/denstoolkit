@@ -336,10 +336,15 @@ int main (int argc, char ** argv)
    gfil << "set xrange [xmin2plot:xmax2plot]" << endl;
    gfil << "set yrange [ymin2plot:ymax2plot]" << endl;
    if (!options.showatlbls) {gfil << "#";}
-   gfil << "set label 1 '" << getEnhancedEpsAtLbl(bnw.atLbl[at1]) << "' at "
+   solreal tmpdist=0.0e0;
+   for ( int i=0 ; i<3 ; i++ ) {tmpdist+=((bnw.R[at1][i]-rbgp[0][i])*(bnw.R[at1][i]-rbgp[0][i]));}
+   tmpdist=sqrt(tmpdist);
+   int tmpa1=at1,tmpa2=at2;
+   if ( tmpdist>0.1 ) {tmpa1=at2; tmpa2=at1;}
+   gfil << "set label 1 '" << getEnhancedEpsAtLbl(bnw.atLbl[tmpa1]) << "' at "
    << 0.05e0*(lenline) << "," << 0.1e0*(maxval) << " front offset character 0,0.75" << endl;
    if (!options.showatlbls) {gfil << "#";}
-   gfil << "set label 2 '" << getEnhancedEpsAtLbl(bnw.atLbl[at2]) << "' at "
+   gfil << "set label 2 '" << getEnhancedEpsAtLbl(bnw.atLbl[tmpa2]) << "' at "
    << 0.95e0*(lenline) << "," << 0.1e0*(maxval) << " front offset character -2,0.75" << endl;
    gfil << "set arrow 1 from " << 0.05e0*(lenline) << "," << 0.1e0*(maxval) << " to "
         << "0.0,ymin2plot" << endl;
