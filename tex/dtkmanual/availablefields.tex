@@ -4,7 +4,10 @@
 %**********************************************************************************************
 %**********************************************************************************************
 
-As is well known from Quantum Mechanics theory, all the information of a quantum system is contained in the wave function. For a molecular system,  the wave function, $\psi(\boldsymbol{r})$, can be spanned by $M$ molecular orbitals $\chi_m(\boldsymbol{r})$ ($m=1,\dots,M$, and these molecular orbitals can be obtained by any of the self consisten field methods available)
+As is well known from Quantum Mechanics theory, all the information of a quantum system is
+contained in the wave function. For a molecular system,  the wave function, $\psi(\boldsymbol{r})$,
+can be spanned by $M$ molecular orbitals $\chi_m(\boldsymbol{r})$ ($m=1,\dots,M$, and these
+molecular orbitals can be obtained by any of the self consistent field methods available)
 %
 \begin{equation}
    \psi(\boldsymbol{r})=\sum_{m=1}^{M}\sqrt{C_m}\chi_m(\boldsymbol{r}).
@@ -15,9 +18,19 @@ In turn, each molecular orbital can be spanned by a linear combination of Gaussi
    \chi_m(\boldsymbol{r})=\sum_{\dA=\done}^{\dN}D_{m\dA}\phi_{\dA}(\boldsymbol{r}-\boldsymbol{R}_{\dA}).
 \end{equation}
 %
-We have used here a slightly different notation in order to clearly separate the different index types that one encounters while handling molecular wave functions. We use upper case dotted indices for identifying Gaussian basis functions. Under our notation, each individual basis function is uniquely identified with a dotted index, and each basis function has associated three integers ($a^1_{\dA}$, $a^2_{\dA}$, and $a^3_{\dA}$), and a point which denotes the center of the primitive $\boldsymbol{R}_{\dA}$ (with this notation a primitive center $\boldsymbol{R}_{\dA}$ can be the same than another primitive center $\boldsymbol{R}_{\dB}$, \textit{i.e.} the index associates the Cartesian coordinates of a nucleus to a particular basis function, rather than associating a basis function with a nucleus; similar behavior is observed for the integers $a^i_{\dA}$). This index naming is actually more natural for reading and understanding the \texttt{wfn} and \texttt{wfx} files. 
+We have used here a slightly different notation (as opposed to the traditional notation) to denote
+primitives in order to clearly separate the different index types that one encounters while handling
+molecular wave functions. We use upper case dotted indices for identifying Gaussian basis functions.
+Under our notation, each individual basis function is uniquely identified with a dotted index, and
+each basis function has associated three integers ($a^1_{\dA}$, $a^2_{\dA}$, and $a^3_{\dA}$), and a
+point which denotes the center of the primitive $\boldsymbol{R}_{\dA}$ (with this notation a
+primitive center $\boldsymbol{R}_{\dA}$ can be the same than another primitive center
+$\boldsymbol{R}_{\dB}$, \textit{i.e.} the index associates the Cartesian coordinates of a nucleus
+to a particular basis function, rather than associating a basis function with a nucleus;
+similar behavior is observed for the integers $a^i_{\dA}$). This index naming is actually more
+natural for reading and understanding the \texttt{wfn} and \texttt{wfx} files. 
 
-Each Gaussian basis function is given by
+Each Gaussian basis function (or primitive) is given by
 %
 \begin{equation}
    \phi_{\dA}(\boldsymbol{r})=(x^1-R^1_{\dA})^{a^1_{\dA}}(x^2-R^2_{\dA})^{a^2_{\dA}}(x^3-R^3_{\dA})^{a^3_{\dA}}
@@ -39,7 +52,7 @@ The electron density is therefore given by
                         \phi_{\dA}(\boldsymbol{r})\phi_{\dB}(\boldsymbol{r}),
 \end{equation}
 %
-where $\dP$ is the number of primitives used in the expansion of the wave function.
+where $\dP$ is the total number of primitives used in the expansion of the wave function.
 
 Defining the density matrix, $c_{\dA\dB}$, as
 %
@@ -78,14 +91,19 @@ Also, we will use latin indices to denote the Cartesian components of a vector. 
    [\boldsymbol{A}]^{i}\equiv A^i,
 \end{equation}
 %
-and the $i$-th partial derivative of a function $\varphi$ is
+and the $i$-th partial derivative of a function $\varphi$ is denoted as follows:
 %
 \begin{equation}
    \frac{\partial\varphi}{\partial x^i}\equiv\partial_i\varphi.
 \end{equation}
 %
 
-The Einstein summation convention is also implied every time a latin index appears twice in the same term. The limits of the summation should be obvious depending on the index type. For instance upper case, dotted indices will run from $\dot{1}$ to the number of primitives in the expansion ($\dot{P}$); while latin, lower case indices will run from 1 to 3 (since they are used for cartesian components). This is one of the advantages of introducing such index naming system.
+The Einstein summation convention is also implied every time a latin index appears twice in the
+same term. The limits of the summation should be obvious depending on the index type. For
+instance upper case, dotted indices will run from $\dot{1}$ to the number of primitives in
+the expansion ($\dot{P}$); while latin, lower case indices will run from 1 to 3 (since they
+are used for cartesian components). This is one of the advantages of introducing such an
+index naming system.
 
 
 %----------------------------------------------------------------------------------------------
@@ -121,8 +139,8 @@ By defining the objects
 %
 %
 \begin{eqnarray}
-   D_i^0&\equiv&\phi^i_{\dA},\nonumber\\
-   D_i^n&\equiv&\partial_i^n\phi^i_{\dA},\qquad\qquad\textrm{(no summation)}
+  D_{i\dA}^0&\equiv&\phi^i_{\dA},\nonumber\\
+   D_{i\dA}^n&\equiv&\partial_i^n\phi^i_{\dA},\qquad\qquad\textrm{(no summation)}
 \end{eqnarray}
 %
 and recalling that
@@ -134,21 +152,29 @@ and recalling that
 we can obtain any derivative of the primitives in any combination:
 %
 \begin{equation}
-   \partial_1^l\partial_2^m\partial_3^n\phi_{\dA}=D_1^lD_2^mD_3^n.
+  \partial_1^l\partial_2^m\partial_3^n\phi_{\dA}=D_{1\dA}^lD_{2\dA}^mD_{3\dA}^n.
+  \qquad\textrm{(no summation)}.
 \end{equation}
 %
 
-The object $D_i^n$ has the properties:
+The object $D_{i\dA}^n$ has the properties:
 %
 \begin{equation}
-   D^a_iD^a_i=D^{a+b}_i,\qquad\qquad\textrm{(no sum)}
+  D^a_{i\dA}D^a_{i\dA}=D^{a+b}_{i\dA},\qquad\qquad\textrm{(no summation)}
 \end{equation}
-% 
+%
+and the primitive can be expressed as
+%
+\begin{equation}%\label{eq:}
+  \phi_{\dA}=D^0_{1\dA}D^0_{2\dA}D^0_{3\dA}, \qquad\textrm{(no summation)}
+\end{equation}
+%
+
 
 Therefore, higher derivatives of the electron density, such as the Hessian, can be obtained from expression as
 %
 \begin{equation}
-   \partial_i\partial_k\phi_{\dA}=D_i^1D_j^1\prod_{k\neq i,j}D^0_k.
+  \partial_i\partial_j\phi_{\dA}=D_{i\dA}^1D_{j\dA}^1D^0_{k\dA}, \qquad\textrm{(no summation)}
 \end{equation}
 %
 While this notation may seem cumbersome, it simplifies the implementation of higher derivatives of the electron density by the use of arrays. For example, the Hessian of the electron density is given by
@@ -158,7 +184,9 @@ While this notation may seem cumbersome, it simplifies the implementation of hig
 \end{equation}
 %
 
-In \DTK{} we evaluate up to fourth derivatives (when seeking critical points of LOL, see \S\ref{sec:topolanalysis}).
+In \DTK{} we implemented functions to evaluate up to fourth derivatives of the primitives
+(when seeking critical points of LOL,
+see \S\ref{sec:topolanalysis}).
 
 %----------------------------------------------------------------------------------------------
 \section{Magnitude of $\nabla\rho$}
@@ -288,7 +316,7 @@ A table of the Fourier transforms of the cartesian primitives is listed in Ref. 
 \end{center}
 \end{table}
 
-For the evaluation of this field, we must account for the imaginary terms of the Fourier terms. \DTK{} exploit the library \texttt{<complex>} distributed as standard library of c++. 
+For the evaluation of this field, we must account for the imaginary terms of the Fourier terms. \DTK{} exploit the library \texttt{<complex>} distributed as standard library of \texttt{C++}. 
 
 %----------------------------------------------------------------------------------------------
 \section{Shannon entropy density}
@@ -320,7 +348,7 @@ and it also uses a simple call to evaluate $\pi(\boldsymbol{p})$, as given by \r
 In terms of the density matrix, the Density Matrix of order 1 (DM1, and denoted by the symbol $\Gamma(\boldsymbol{r},\boldsymbol{r}')$) is given by
 %
 \begin{equation}
-   \Gamma(\boldsymbol{r},\boldsymbol{r}')=\phi_{\dA}(\boldsymbol{r})\big\{c_{\dA\dB}\phi_{\dB}(\boldsymbol{r}')\big\}.
+   \Gamma(\boldsymbol{r},\boldsymbol{r}')=\phi_{\dA}(\boldsymbol{r})\big(c_{\dA\dB}\phi_{\dB}(\boldsymbol{r}')\big).
 \end{equation}
 %
 

@@ -1,9 +1,27 @@
-
+#
+#
+#Default path for installation of DensToolKit:
+#
 INSTALL_PATH = /usr/local/bin
-
+#
+#
+#Change the following line for Windows OS, choose the
+#appropriate name of povray
+#USERPOVCMD = pvengine.exe
+#USERPOVCMD = pvengine64.exe
+#
 USERPOVCMD = povray
 
+#
+#Set the number of processors that will be used by DTK.
+#
 SETDTKNPROC=1
+
+#
+#*************************************************************
+# Please, do not modify below this line
+#*************************************************************
+#
 
 LCL_SRCDIR   = $(shell pwd)
 TOP          = $(shell cd ..; pwd)

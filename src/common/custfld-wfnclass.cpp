@@ -55,7 +55,7 @@ void gaussWaveFunc::evalCustomVectorField(solreal x,solreal y,solreal z,\
 
    /* The following example implements grad(rho)/rho, it may not have a meaning, 
     * and it only has the purpose of showing its implementation  */
-   static const USRFLD_EPS_DEF=1.0e-10; //avoid division by zero
+   static const solreal USRFLD_EPS_DEF=1.0e-10; //avoid division by zero
    solreal rho,gr[3];
    evalRhoGradRho(x,y,z,rho,gr);
    if ( rho<USRFLD_EPS_DEF ) {rho=USRFLD_EPS_DEF;}
