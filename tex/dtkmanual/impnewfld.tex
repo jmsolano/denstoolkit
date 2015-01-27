@@ -1,0 +1,36 @@
+%**********************************************************************************************
+%**********************************************************************************************
+\chapter{Implementing a new field and developer's documentation}
+%**********************************************************************************************
+%**********************************************************************************************
+
+Implementing a new field in \DTK{} is an easy task. The file \texttt{src/\-com\-mon/\-cust\-fld-wfn\-class.\-cpp}
+contains the implementation of a dummy field, which can be easily changed in order to implement
+the new field.
+
+\begin{figure}
+\lstinputlisting[language=C++, firstline=4, lastline=64]{custfld-wfnclass.cpp}
+\caption{Implementation of the scalar dummy field $\rho^2$, and the vector dummy field
+$\nabla\rho/\rho$.}
+\label{fig:codecustfld}
+\end{figure}
+
+For instance, in Fig. \ref{fig:codecustfld} we show how to implement the scalar field $\rho^2$
+and the vector field $\nabla\rho/\rho$. The functions evalCustomScalarField and evalCustomVectorField
+are already integrated with \DTK's programs. Therefore, computing new user-implemented fields
+is, after re-compilation of the suite, almost straightforward. 
+
+In version \dtkversion, this easy implementation of new fields is limited to the type of
+new field. If the new field is derivative of any combination of the already implemented fields,
+then the implementation is almost trivial. Otherwise, it requires a bit more time and effort to
+implement it.
+
+More information about the complete set of functions of the gaussWaveFunc class can be found by
+installing doxygen in your system. After this, in \texttt{/top/src} type
+\begin{lstlisting}
+$make develdocs
+\end{lstlisting}
+Here we have assumed that \texttt{/top} is the directory where the source code of \DTK{} is 
+located. After executing the above command, a file named \texttt{/top/src/devdoc/html/in\-dex.\-html}
+should be present. The html file has the developer's documentation created by doxygen.
+

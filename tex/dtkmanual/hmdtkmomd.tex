@@ -1,0 +1,44 @@
+Usage:
+
+	dtkmomd wf?name [option [value(s)]] ... [option [value(s)]]
+
+Where wf?name is the input wfx(wfn) name, and options can be:
+Where wf?name is the input wfx(wfn) name, and options can be:
+
+  -0 x y z  	Evaluate the momentum density at the point (x,y,z).
+            	  Here x,y, and z are numbers. No file is created.
+  -1  x     	Evaluate the momentum density on a line. "x" sets the coordinate
+            	  direction, and can take the values x, y or z.
+            	  Here x is a character. It creates a *.dat file.
+  -2  xy    	Evaluate the momentum density on a plane. "xy" sets the plane of
+            	  interest, and can take the values xy,xz,yz.
+            	  Here xy are two characters. It creates a *.tsv file.
+  -3        	Evaluate the momentum density on a cube.
+            	  It creates a *.cub file.
+  -n  dim   	Set the number of points for the cub/tsv/dat file per direction
+  -o outname	Set the output file name.
+            	  (If not given the program will create one out of
+            	  the input name; if given, the dat/tsv/cub/gnp/pdf files will
+            	  use this name as well --but different extension--).
+  -p prop   	Choose the property to be computed. prop is a character,
+            	  which can be (d is the default value):
+            	     d Density (momentum density)
+            	     K Kinetic Energy Density (in momentum space)
+  -P     	Create a plot using gnuplot. (Only works with options -1 or -2)
+  -k     	Keeps the *.gnp file to be used later by gnuplot.
+  -v     	Verbose (display extra information, usually output from third-
+         	  party sofware such as gnuplot, etc.)
+  -z     	Compress the tsv file using gzip (which must be intalled
+         	   in your system).
+  -V        	Displays the version of this program.
+  -h     	Display the help menu.
+
+  --help    		Same as -h
+  --version 		Same as -V
+********************************************************************************
+  Note that the following programs must be properly installed in your system:
+                                    gnuplot
+                                    epstool
+                                    epstopdf
+                                      gzip
+********************************************************************************

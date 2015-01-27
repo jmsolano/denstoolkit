@@ -1,0 +1,47 @@
+Usage:
+
+	dtkline wf?name [option [value(s)]] ... [option [value(s)]]
+
+Where wf?name is the input wfx(wfn) name, and options can be:
+Where wf?name is the input wfx(wfn) name, and options can be:
+
+  -a a1 a2  	Define the atoms  (a1,a2) used to define the line.
+            	  If this option is not activated, the program will 
+            	  define the line using the first atom and the vector
+            	  (1,1,1).
+  -n  dim   	Set the number of points for the dat file
+  -o outname	Set the output file name.
+            	  (If not given the program will create one out of
+            	  the input name; if given, the gnp file and the pdf will
+            	  use this name as well --but different extension--).
+  -p prop	Choose the property to be computed. prop is a character,
+         	  which can be (d is the default value): 
+         		d (Density)
+         		g (Magnitude of the Gradient of the Density)
+         		l (Laplacian of density)
+         		K (Kinetic Energy Density K)
+         		G (Kinetic Energy Density G)
+         		E (Electron Localization Function -ELF-)
+         		L (Localized Orbital Locator -LOL-)
+         		M (Magnitude of the Gradient of LOL)
+         		P (Magnitude of the Localized Electrons Detector -LED-)
+         		r (Region of Slower Electrons -RoSE-)
+         		s (Reduced Density Gradient -s-)
+         		S (Shannon Entropy Density)
+         		u (Scalar Custom Field)
+         		V (Molecular Electrostatic Potential)
+  -P     	Create a plot using gnuplot.
+  -k     	Keeps the *.gnp file to be used later by gnuplot.
+  -z     	Compress the cube file using gzip (which must be intalled
+         	   in your system).
+  -V        	Displays the version of this program.
+  -h     	Display the help menu.
+
+  --help    		Same as -h
+  --version 		Same as -V
+********************************************************************************
+  Note that the following programs must be properly installed in your system:
+                                    gnuplot
+                                    epstopdf
+                                      gzip
+********************************************************************************

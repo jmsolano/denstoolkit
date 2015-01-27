@@ -1,0 +1,41 @@
+Usage:
+
+	dtkcube wf?name [option [value(s)]] ... [option [value(s)]]
+
+Where wf?name is the input wfx(wfn) name, and options can be:
+Where wf?name is the input wfx(wfn) name, and options can be:
+
+  -l        	Write cpu time, input/output information etc. on a log file
+  -n  dim   	Set the number of points per direction for the cube
+            	  to be dim x dim x dim.
+  -N nx ny nz	Set the individual points per direction for the cube
+            	  to be nx x ny x nz.
+  -o outname	Set the output file name.
+  -s        	Use a smart cuboid for the grid. The number of points for the
+            	  largest direction will be 80.
+  -S ln     	Use a smart cuboid for the grid. ln is the number of points
+            	  the largest axis will have. The remaining axes will have
+            	  a number of points proportional to its length.
+  -p prop	Choose the property to be computed. prop is a character,
+         	  which can be (d is the default value): 
+         		d (Density)
+         		g (Magnitude of the Gradient of the Density)
+         		l (Laplacian of density)
+         		K (Kinetic Energy Density K)
+         		G (Kinetic Energy Density G)
+         		E (Electron Localization Function -ELF-)
+         		L (Localized Orbital Locator -LOL-)
+         		M (Magnitude of the gradient of LOL)
+         		P (Magnitude of Localized Electrons Detector -LED-)
+         		r (Region of Slow electrons -RoSE-)
+         		s (Reduced Density Gradient -s-)
+         		S (Shannon Entropy Density)
+         		V (Molecular Electrostatic Potential)
+         		u (Scalar Custom Field)
+  -z     	Compress the cube file using gzip (which must be installed
+         	   in your system).
+  -V        	Displays the version of this program.
+  -h		Display the help menu.
+
+  --help    		Same as -h
+  --version 		Same as -V

@@ -7,9 +7,26 @@
 \usepackage{epstopdf}
 \usepackage[12pt]{moresize}
 \usepackage{lmodern}
-\usepackage{verbatim}
+\usepackage{fancyvrb}
 \usepackage{subfigure}
 \DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset{language=C++%
+,basicstyle=\scriptsize\ttfamily%
+,backgroundcolor=\color{black!10}%
+,breaklines=true%
+,keywordstyle=\bfseries\color{magenta!90}%
+,commentstyle=\itshape\color{green!40!black}%
+,identifierstyle=\color{black}%
+,stringstyle=\color{red!95!black}%
+%,numbers=left%
+%,numberstyle=\tiny%
+,identifierstyle=\color{blue}%
+%,title=\lstname%
+}
+
 
 \usepackage[colorlinks=true, pdfstartview=FitV, linkcolor=blue, 
             citecolor=blue, urlcolor=blue]{hyperref}
@@ -163,6 +180,8 @@ Programming and Management of Open Source Software Packages}, 2014.
 \include{topology}
 
 \include{programsscripts}
+
+\include{impnewfld}
 
 
 \bibliography{dtkbibliography}

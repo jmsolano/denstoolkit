@@ -1,0 +1,58 @@
+Usage:
+
+	dtkplane wf?name [option [value(s)]] ... [option [value(s)]]
+
+Where wf?name is the input wfx(wfn) name, and options can be:
+Where wf?name is the input wfx(wfn) name, and options can be:
+
+  -a a1 a2 a3	Define the atoms  (a1,a2,a3) used to define the plane.
+            	  If this option is not activated, the program will 
+            	  choose a default plane, but you may not like the view.
+            	  Note: if the *.wfn (*.wfx) file has only one or two atoms
+            	  this option must not be used. The program will define
+            	  a plane which includes that(those) one(two) atom(s).
+  -n  dim   	Set the number of points for the tsv file per direction
+  -o outname	Set the output file name.
+            	  (If not given the program will create one out of
+            	  the input name; if given, the tsv, gnp and pdf files will
+            	  use this name as well --but different extension--).
+  -p prop	Choose the property to be computed. prop is a character,
+         	  which can be (d is the default value): 
+         		d (Density)
+         		g (Magnitude of the Gradient of the Density)
+         		l (Laplacian of density)
+         		K (Kinetic Energy Density K)
+         		G (Kinetic Energy Density G)
+         		E (Electron Localization Function -ELF-)
+         		L (Localized Orbital Locator -LOL-)
+         		M (Magnitude of the Gradient of LOL)
+         		N (Gradient of LOL)
+         		p (Localized Electrons Detector -LED-)
+         		P (Magnitued of Localized Electrons Detector)
+         		r (Region of Slow Electrons -RoSE-)
+         		s (Reduced Density Gradient -s-)
+         		S (Shannon Entropy Density)
+         		u (Scalar Custom Field)
+         		U (Vector Custom Field)
+         		V (Molecular Electrostatic Potential)
+  -P     	Create a plot using gnuplot.
+  -c     	Show contour lines in the plot.
+  -k     	Keeps the *.gnp file to be used later by gnuplot.
+  -l     	Show labels of atoms (those set in option -a) in the plot.
+  -L     	Show the labels of ALL of the atoms in the wf? file.
+  -v     	Verbose (display extra information, usually output from third-
+         	  party sofware such as gnuplot, etc.)
+  -z     	Compress the tsv file using gzip (which must be intalled
+         	   in your system).
+  -V        	Displays the version of this program.
+  -h     	Display the help menu.
+
+  --help    		Same as -h
+  --version 		Same as -V
+********************************************************************************
+  Note that the following programs must be properly installed in your system:
+                                    gnuplot
+                                    epstool
+                                    epstopdf
+                                      gzip
+********************************************************************************

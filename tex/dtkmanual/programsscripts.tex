@@ -72,7 +72,7 @@ All programs in \DTK{} share the following options:
 \section{dtkpoint}
 %----------------------------------------------------------------------------------------------
 
-This program calculates all the implemented properties that can be calculated at a single point (see \S \ref{sec:availablefields}). Additionally, the program will perform the integration of the electron density over the whole space (which should render the molecule's total number of electrons). The program will take the wave function file and calculate the fields at the point given by the user. The point(s) for the fields can be given in three different forms:
+This program calculates all the implemented properties at a point or at a set of them (see \S \ref{sec:availablefields}). Additionally, the program will perform the integration of the electron density over the whole space (which should render the molecule's total number of electrons). The program takes the wavefunction file and calculates the fields at the point(s) given by the user. The point(s) for the fields can be given in three different forms:
 \begin{itemize}
    \item \textbf{Cartesian coordinates}. The fields are calculated at the point $(x,y,z)$. Example:\\
       \progusg{dtkpoint}{-c 0.75e0 -5.0e-01 1.2e0}
@@ -98,29 +98,7 @@ This program calculates all the implemented properties that can be calculated at
 {\center\texttt{dtkpoint} help menu.\\}
 \rule{\textwidth}{1pt}
 \begin{small}
-\begin{verbatim}
-Usage:
-
-     dtkpoint wf?name [option [value(s)]] ... [option [value(s)]]
-
-Where wf?name is the input wfx(wfn) name, and options can be:
-
-  -a a         Calculate the properties at the coordinates ofthe a-th atom.
-  -c x y z     Calculate the properties at the point (x,y,z).
-  -i crdfname  Calculate the properties at all points contained
-                 in the file crdfname. The file must be a list of three 
-                 space-separated real numbers per row.
-                 Please ensure the file has always the format specified above,
-                 otherwise unpredictable errors may occur.
-  -o outname   Set the output file name.
-                 (If not given the program will create one out of
-                 the input name.)
-  -V           Displays the version of this program.
-  -h           Display the help menu.
-
-  --help          Same as -h
-  --version       Same as -V
-\end{verbatim}
+\VerbatimInput{hmdtkpoint.tex}
 \end{small}
 \rule{\textwidth}{1pt}
 
@@ -149,47 +127,7 @@ Sometimes, it is convenient to increase/decrease the number of points to evaluat
 {\center\texttt{dtkline} help menu.\\}
 \rule{\textwidth}{1pt}
 \begin{footnotesize}
-\begin{verbatim}
-Usage:
-
-	dtkline wf?name [option [value(s)]] ... [option [value(s)]]
-
-Where wf?name is the input wfx(wfn) name, and options can be:
-
-  -a a1 a2     Define the atoms  (a1,a2) used to define the line.
-            	  If this option is not activated, the program will 
-            	  define the line using the first atom and the vector
-            	  (1,1,1).
-  -n  dim      Set the number of points for the dat file
-  -o outname   Set the output file name.
-                 (If not given the program will create one out of
-                 the input name; if given, the gnp file and the pdf will
-                 use this name as well --but different extension--).
-  -p prop      Choose the property to be computed. prop is a character,
-                 which can be (d is the default value): 
-                   d (Density)
-                   g (Magnitude of the Gradient of the Density)
-                   l (Laplacian of density)
-                   K (Kinetic Energy Density K)
-                   G (Kinetic Energy Density G)
-                   E (Electron Localization Function -ELF-)
-                   L (Localized Orbital Locator -LOL-)
-                   M (Magnitude of the Gradient of LOL)
-                   S (Shannon Entropy Density)
-                   V (Molecular Electrostatic Potential)
-  -P        Create a plot using gnuplot.
-  -k        Keeps the *.gnp file to be used later by gnuplot.
-  -z        Compress the cube file using gzip (which must be intalled
-               in your system).
-  -V        Displays the version of this program.
-  -h        Display the help menu.
-  --help       Same as -h
-  --version    Same as -V
-********************************************************************************
-  Note that the following programs must be properly installed in your system:
-                             gnuplot,epstopdf,gzip
-********************************************************************************
-\end{verbatim}
+\VerbatimInput{hmdtkline.tex}
 \end{footnotesize}
 \rule{\textwidth}{1pt}
 
@@ -226,7 +164,7 @@ In the above command line, the option \texttt{-a 1 2 3} is used to provide the a
 
 \textbf{Special cases:}
 \begin{itemize}
-   \item \textbf{Wave function with one single atom:} In this case, \texttt{dtkplane} will use the single atom present in the wave function file and then define a plane that passes through this atom. The option \texttt{-a} is ignored, thus it is not necessary to use it, however if used the syntax must include three numbers. It is recommended, when you are interested in single atom wave functions, better not use the option \texttt{-a}.
+   \item \textbf{Wave function with one single atom:} In this case, \texttt{dtkplane} will use the single atom present in the wave function file and then define a plane that passes through this atom. The option \texttt{-a} is ignored, thus it is not necessary to use it, however if it is used, then the syntax must include three numbers. It is recommended, when you are interested in single atom wave functions, not to use the option \texttt{-a}.
    \item \textbf{Wave function with only two atoms:} For diatomic systems, \texttt{dtkplane} will use these atoms to define the plane, and if option \texttt{-a} is used, it will be ignored, however it must contain three numbers.
 \end{itemize}
 
@@ -234,55 +172,7 @@ In the above command line, the option \texttt{-a 1 2 3} is used to provide the a
 {\center\texttt{dtkplane} help menu.\\}
 \rule{\textwidth}{1pt}
 \begin{footnotesize}
-\begin{verbatim}
-Usage:
-
-      dtkplane wf?name [option [value(s)]] ... [option [value(s)]]
-
-Where wf?name is the input wfx(wfn) name, and options can be:
-
-  -a a1 a2 a3  Define the atoms  (a1,a2,a3) used to define the plane.
-                 If this option is not activated, the program will 
-                 choose a default plane, but you may not like the view.
-                 Note: if the *.wfn (*.wfx) file has only one or two atoms
-                 this option must not be used. The program will define
-                 a plane which includes that(those) one(two) atom(s).
-  -n  dim      Set the number of points for the tsv file per direction
-  -o outname   Set the output file name.
-                 (If not given the program will create one out of
-                 the input name; if given, the tsv, gnp and pdf files will
-                 use this name as well --but different extension--).
-  -p prop     Choose the property to be computed. prop is a character,
-                 which can be (d is the default value): 
-                    d (Density)
-                    g (Magnitude of the Gradient of the Density)
-                    l (Laplacian of density)
-                    K (Kinetic Energy Density K)
-                    G (Kinetic Energy Density G)
-                    E (Electron Localization Function -ELF-)
-                    L (Localized Orbital Locator -LOL-)
-                    M (Magnitude of the Gradient of LOL)
-                    N (Gradient of LOL)
-                    S (Shannon Entropy Density)
-                    V (Molecular Electrostatic Potential)
-  -P          Create a plot using gnuplot.
-  -c          Show contour lines in the plot.
-  -k          Keeps the *.gnp file to be used later by gnuplot.
-  -l          Show labels of atoms (those set in option -a) in the plot.
-  -L          Show the labels of ALL of the atoms in the wf? file.
-  -v          Verbose (display extra information, usually output from third-
-                 party sofware such as gnuplot, etc.)
-  -z          Compress the tsv file using gzip (which must be intalled
-                 in your system).
-  -V          Displays the version of this program.
-  -h          Display the help menu.
-  --help         Same as -h
-  --version      Same as -V
-********************************************************************************
-  Note that the following programs must be properly installed in your system:
-                       gnuplot, epstool, epstopdf, gzip
-********************************************************************************
-\end{verbatim}
+\VerbatimInput{hmdtkplane.tex}
 \end{footnotesize}
 \rule{\textwidth}{1pt}
 %----------------------------------------------------------------------------------------------
@@ -303,9 +193,12 @@ we produce the cub file that later is used in VMD to create the Figure \ref{fig:
 %
 The option \texttt{-p l} tells \texttt{dtkcube} to evaluate the Laplacian of the electron density (see below for the complete list of available fields), and \texttt{-S 100} activates a \textit{smart} cube. By smart cube, we mean that we try to minimize the number of trivial points, this is, we adjust the cube to be a rectangular cuboid such that it encloses the molecule and a few extra space around the most outer atoms of the molecule. This allows \DTK{} to skip the calculation of spatial points that offer only trivial information (since the wave function and its derivatives decay rapidly as the point moves away from the molecule). For instance, the cuboid generated by the example command generates a grid of \texttt{96 x 100 x 90 = 864,000} points, which is 86.4 \% of the points that would have been calculated if a normal cube had been evaluated.
 
-\texttt{dtkcube} always creates the grid around the geometric center of the molecule. This also reduces the number of trivial points in the final cube/cuboid.
+\texttt{dtkcube} always creates the grid around the geometric center of the molecule. This also reduces the number of trivial points in the final cube/cuboid. This criterion is different from
+the procedure usually followed for creating wavefunction files (wherein the molecule's center
+is the charge center).
 
 If you want to save the information about wfx input file name, CPU time (time taken to evaluate the whole grid), and some other extra-information, you may want to activate option \texttt{-l}.
+Such an option produces a \texttt{log} file which contains that information.
 
 %..............................................................................................
 \subsection{Managing the dimensions of the grid}
@@ -326,50 +219,14 @@ In the current version, \texttt{dtkcube} does not rotate the molecule to minimiz
 {\center\texttt{dtkcube} help menu.\\}
 \rule{\textwidth}{1pt}
 \begin{footnotesize}
-\begin{verbatim}
-Usage:
-
-	dtkcube wf?name [option [value(s)]] ... [option [value(s)]]
-
-Where wf?name is the input wfx(wfn) name, and options can be:
-
-  -l           Write cpu time, input/output information etc. on a log file
-  -n  dim      Set the number of points per direction for the cube
-                  to be dim x dim x dim.
-  -N nx ny nz Set the individual points per direction for the cube
-                  to be nx x ny x nz.
-  -o outname   Set the output file name.
-  -s           Use a smart cuboid for the grid. The number of points for the
-                  largest direction will be 80.
-  -S ln        Use a smart cuboid for the grid. ln is the number of points
-                  the largest axis will have. The remaining axes will have
-                  a number of points proportional to its length.
-  -p prop      Choose the property to be computed. prop is a character,
-                  which can be (d is the default value): 
-                     d (Density)
-                     g (Magnitude of the Gradient of the Density)
-                     l (Laplacian of density)
-                     K (Kinetic Energy Density K)
-                     G (Kinetic Energy Density G)
-                     E (Electron Localization Function -ELF-)
-                     L (Localized Orbital Locator -LOL-)
-                     M (Magnitude of the gradient of LOL)
-                     S (Shannon Entropy Density)
-                     V (Molecular Electrostatic Potential)
-  -z           Compress the cube file using gzip (which must be intalled
-                  in your system).
-  -V           Displays the version of this program.
-  -h	         Display the help menu.
-  --help          Same as -h
-  --version       Same as -V
-\end{verbatim}
+\VerbatimInput{hmdtkcube.tex}
 \end{footnotesize}
 \rule{\textwidth}{1pt}
 %----------------------------------------------------------------------------------------------
 \section{dtkfindcp}\label{sec:dtkfindcp}
 %----------------------------------------------------------------------------------------------
 
-This program search critical points (CP) within a molecule. In version \dtkversion, the complete analysis is implemented for the electron density (ED). Partial implementation is offered for searching LOL critical points. In the future, additional fields will be implemented.
+This program searches critical points (CP) within a molecule. In version \dtkversion, the complete analysis is implemented for the electron density (ED). Partial implementation is offered for searching LOL critical points. In the future, additional fields will be implemented.
 
 The complete search of critical points of a molecule can be found by the following command:\\
 \progusg{dtkfindcp}{}
@@ -387,6 +244,15 @@ This command produces a \texttt{pov} file and calls povray to render the image d
 %
 
 If you are interested only in finding the critical points, but you do not want to seek the gradient bond paths, you can deactivated the search of bond paths by using the option \texttt{-G}.
+
+Sometimes, depending on the complexity of a molecule, a simple search of critical points is not enough to find all of them. In such cases, you can request to perform an \textit{extended search}
+by adding the option ``\texttt{-e}'' to the command line. This command will tell \texttt{dtkfindcp}
+to make additional searches of critical points after the normal search.
+ The extended search consists of setting, as initial searching points,
+a set of points traced around (and included) the positions of each non-nuclear
+attractor, Hydrogen-bond-like BCP, RCP, and CCP found during the normal search. The set of points
+are drawn using the icosahedron vertices as reference, and they are traced with a distance from
+the center proportional to the maximum geometrically bond distance found in the molecule.
 
 If you do not wish to create a \texttt{png} image, but you do want the \texttt{pov} file, using the option \texttt{-p} will accomplish that.
 
@@ -414,47 +280,7 @@ Finally, in future implementations there will be the possibility to search criti
 {\center\texttt{dtkfindcp} help menu.\\}
 \rule{\textwidth}{1pt}
 \begin{footnotesize}
-\begin{verbatim}
-Usage:
-
-	dtkfindcp wf?name [option [value(s)]] ... [option [value(s)]]
-
-Where wf?name is the input wfx(wfn) name, and options can be:
-
-  -a           Draw transparent spheres around each nuclei in the wf? file.
-  -o outname   Set the output file name (*.log).
-                  (If not given the program will create one out of
-                  the input name; if given, the pov file will
-                  use this name as well --but different extension--).
-  -m           Save the coordinates of atoms, critical points and gradient
-                  paths (if calculated, see option -G) into *dat files.
-  -p           Create a pov file. No image will be generated.
-  -P           Create a png image using povray (calls povray),
-                  deletes pov file.
-  -c p         Set the camera vector direction for the povray scene.
-                  p is an integer which can take the values
-                  001,010,100,101,110,111; the camera will be located
-                  somewhere in the direction (x,y,z), where xyz is one of 
-                  the above values.
-  -g           Draw the bond paths (gradient paths) in the POV file.
-  -T           Set the style for the gradient paths to be tubes.
-  -G           Skip the calculation of the bond gradient paths.
-  -k           Keeps the pov file if option -P is used.
-  -t cpt       Set the type of critical point to be searched. cpt can be 
-                  one of the following fields (Density is the default):
-                     d (Density)
-                     L (Localized Orbital Locator -LOL-)
-  -v           Verbose mode (displays additional information (for example the 
-                  output of povray, etc.
-  -V           Display the version of this program.
-  -h	         Display the help menu.
-  --help          Same as -h
-  --version       Same as -V
-********************************************************************************
-  Note that the following programs must be properly installed in your system:
-                        povray, graphicsmagick, gzip
-********************************************************************************
-\end{verbatim}
+\VerbatimInput{hmdtkfindcp.tex}
 \end{footnotesize}
 \rule{\textwidth}{1pt}
 
@@ -703,8 +529,8 @@ This program evaluates the electron momentum density (EMD), \textit{i.e.,} the F
 \begin{itemize}
    \item \textbf{Point (0D)}: No output is created, instead the value is displayed at the screen. This grid is set by the option \texttt{-0 $\mathtt{P}_\mathtt{x}$ $\mathtt{P}_\mathtt{y}$ $\mathtt{P}_\mathtt{z}$}, where \texttt{$\mathtt{P}_\mathtt{i}$} are the values at which the EMD is evaluated.
    \item \textbf{Line (1D)}: The output is written to a \texttt{dat} file and, in the current version, only lines parallel to the axis are implemented. This grid is accessible through the option \texttt{-1 x}, where ``\texttt{x}'' indicates the axis to be evaluated and can take the values ``\texttt{x}'', ``\texttt{y}'' or ``\texttt{z}''. Creation of gnuplot scritps is enabled for this grid (option \texttt{-P}).
-   \item{Plane (2D)}: The data is saved into a \texttt{tsv} file, and in the present version, only planes normal to the axis are implemented (the planes contain the origin of the momentum space coordinates). To evaluate the EMD in a plane, one must use the option \texttt{-2 xy}, where \texttt{xy} are two non-spaced characters that indicates the plane whereat the EMD will be evaluated, and can be \texttt{xy}, \texttt{xz}, or \texttt{yz}. Creation of gnuplot scritps is also enabled for this grid (option \texttt{-P}).
-   \item{Cube (3D)}: The values of the EMD are stored in a \texttt{cub} file (standard Gaussian cube file), and this grid is set by using option \texttt{-3}. For this grid, there is no immediate visualization, but it needs to be produced through other programs such as VMD.
+   \item{\textbf{Plane (2D)}}: The data is saved into a \texttt{tsv} file, and in the present version, only planes normal to the axis are implemented (the planes contain the origin of the momentum space coordinates). To evaluate the EMD in a plane, one must use the option \texttt{-2 xy}, where \texttt{xy} are two non-spaced characters that indicates the plane whereat the EMD will be evaluated, and can be \texttt{xy}, \texttt{xz}, or \texttt{yz}. Creation of gnuplot scritps is also enabled for this grid (option \texttt{-P}).
+   \item{\textbf{Cube (3D)}}: The values of the EMD are stored in a \texttt{cub} file (standard Gaussian cube file), and this grid is set by using option \texttt{-3}. For this grid, there is no immediate visualization, but it needs to be produced through other programs such as VMD.
 \end{itemize}
 %
 \begin{figure}[hb!]
@@ -716,46 +542,10 @@ This program evaluates the electron momentum density (EMD), \textit{i.e.,} the F
 %
 
 \rule{\textwidth}{1pt}
-{\center\texttt{dtkfindcp} help menu.\\}
+{\center\texttt{dtkmomd} help menu.\\}
 \rule{\textwidth}{1pt}
 \begin{footnotesize}
-\begin{verbatim}
-Usage:
-
-	dtkmomd wf?name [option [value(s)]] ... [option [value(s)]]
-
-Where wf?name is the input wfx(wfn) name, and options can be:
-
-  -0 x y z     Evaluate the momentum density at the point (x,y,z).
-                  Here x,y, and z are numbers. No file is created.
-  -1  x        Evaluate the momentum density on a line. "x" sets the coordinate
-                  direction, and can take the values x, y or z.
-                  Here x is a character. It creates a *.dat file.
-  -2  xy       Evaluate the momentum density on a plane. "xy" sets the plane of
-                  interest, and can take the values xy,xz,yz.
-                  Here xy are two characters. It creates a *.tsv file.
-  -3           Evaluate the momentum density on a cube.
-                  It creates a *.cub file.
-  -n  dim      Set the number of points for the cub/tsv/dat file per direction
-  -o outname   Set the output file name.
-                  (If not given the program will create one out of
-                  the input name; if given, the dat/tsv/cub/gnp/pdf files will
-                  use this name as well --but different extension--).
-  -P           Create a plot using gnuplot. (Only works with options -1 or -2)
-  -k           Keeps the *.gnp file to be used later by gnuplot.
-  -v           Verbose (display extra information, usually output from third-
-                  party sofware such as gnuplot, etc.)
-  -z           Compress the tsv file using gzip (which must be intalled
-                  in your system).
-  -V           Displays the version of this program.
-  -h           Display the help menu.
-  --help          Same as -h
-  --version       Same as -V
-********************************************************************************
-  Note that the following programs must be properly installed in your system:
-                      gnuplot, epstool, epstopdf, gzip
-********************************************************************************
-\end{verbatim}
+\VerbatimInput{hmdtkmomd.tex}
 \end{footnotesize}
 \rule{\textwidth}{1pt}
 
@@ -770,7 +560,7 @@ This program evaluates the density matrix of order 1 (DM1) along a line, which c
 \texttt{dtkdemat1} can be called, for example, by\\
 \progusg{dtkdemat1}{-P -l -c -s 0.02}
 
-The above command was used for evaluating the data shown in Fig. \ref{fig:dtkdemat1usex}. The output of the program consists on four files. The data for generating the three-dimensional and two-dimensional plots is saved in a \texttt{tsv} file. The data for the main and secondary diagonal (white solid and dashed line of figure \ref{fig:md12d}) are saved in two \texttt{dat} files. In addition, a \texttt{log} file is created, where some information about the position of the critical point (or the minimum of the ED) is located, etc.
+The above command was used for evaluating the data shown in Fig. \ref{fig:dtkdemat1usex}. The output of the program consists of four files. The data for generating the three-dimensional and two-dimensional plots is saved in a \texttt{tsv} file. The data for the main and secondary diagonal (white solid and dashed line of figure \ref{fig:md12d}) are saved in two \texttt{dat} files. In addition, a \texttt{log} file is created, where some information about the position of the critical point (or the minimum of the ED) is located, etc.
 %
 \begin{figure}[hb!]
 \centering
@@ -794,51 +584,10 @@ For increasing the number of points within the bond path line, you may want to l
 
 
 \rule{\textwidth}{1pt}
-{\center\texttt{dtkfindcp} help menu.\\}
+{\center\texttt{dtkdemat1} help menu.\\}
 \rule{\textwidth}{1pt}
 \begin{footnotesize}
-\begin{verbatim}
-Usage:
-
-	dtkdemat1 wf?name [option [value(s)]] ... [option [value(s)]]
-
-Where wf?name is the input wfx(wfn) name, and options can be:
-
-  -a a1 a2     Define the atoms  (a1,a2) used to define bond path/line.
-                  If this option is not activated, the program will 
-                  set a1=1, a2=2.
-                  Note: if the *.wfn (*.wfx) file has only one atom
-                  the program will exit and no output will be generated.
-  -L           Calculate DM1 upon the straight line that joins the atoms
-                  instead of upon the bond path.
-  -n  dim      Set the number of points for the tsv file per direction.
-                  Note: for the bond path you may want to look for a good 
-                  combination of n and the number "step" given in option -s,
-                  since the number of points in the bond path will be mainly 
-                  governed by step.
-  -o outname   Set the output file name.
-                  (If not given the program will create one out of
-                  the input name; if given, the tsv, gnp and pdf files will
-                  use this name as well --but different extension--).
-  -s step      Set the stepsize for the bond path to be 'step'.
-                  Default value: 0.03
-  -P           Create a plot using gnuplot.
-  -c           Show contour lines in the plot.
-  -l           Show labels of atoms (those set in option -a) in the plot.
-  -v           Verbose (display extra information, usually output from third-
-                  party sofware such as gnuplot, etc.)
-  -z           Compress the tsv file using gzip (which must be intalled
-                  in your system).
-  -h           Display the help menu.
-  -V           Displays the version of this program.
-  --help          Same as -h
-  --version       Same as -V
-
-********************************************************************************
-  Note that the following programs must be properly installed in your system:
-                     gnuplot, epstool, epstopdf, gzip
-********************************************************************************
-\end{verbatim}
+\VerbatimInput{hmdtkdemat1.tex}
 \end{footnotesize}
 \rule{\textwidth}{1pt}
 
@@ -846,7 +595,7 @@ Where wf?name is the input wfx(wfn) name, and options can be:
 \section{dtkbpdens}
 %----------------------------------------------------------------------------------------------
 
-This program seeks the bond path between two atoms and then evaluate the requested scalar/vector field at the points belonging to the bond path. This is specially meaningfull when the bond path is not the straight line that joins the atoms, and especially in cases where they differ considerable such as in hydrogen bonds.
+This program seeks the bond path between two atoms and then evaluates the requested scalar/vector field at the points belonging to the bond path. This is specially meaningfull when the bond path is not the straight line that joins the atoms, and especially in cases where they differ considerable such as in hydrogen bonds.
 
 The data for producing Figure \ref{fig:dtkbpdensusex} was obtained by typing the two following commands.\\
 \phantom{M}\\
@@ -869,70 +618,10 @@ If the property is evaluated at the line that join the atoms (activating the swi
 To choose the scalar field to plot, one simply uses the option \texttt{-p c}, where \texttt{c} is a character that can be one of those included in the list shown in the menu (below).
 
 \rule{\textwidth}{1pt}
-{\center\texttt{dtkfindcp} help menu.\\}
+{\center\texttt{dtkbpdens} help menu.\\}
 \rule{\textwidth}{1pt}
 \begin{footnotesize}
-\begin{verbatim}
-Usage:
-
-	dtkbpdens wf?name [option [value(s)]] ... [option [value(s)]]
-
-Where wf?name is the input wfx(wfn) name, and options can be:
-
-  -a a1 a2     Define the atoms  (a1,a2) used to define bond path/line.
-                  If this option is not activated, the program will 
-                  set a1=1, a2=2.
-                  Note: if the *.wfn (*.wfx) file has only one atom
-                  the program will exit and no output will be generated.
-  -L           Calculate the field upon the straight line that joins the atoms
-                  instead of upon the bond path.
-  -n  dim      Set the number of points for the dat file.
-                  Note: for the bond path you may want to look for a good 
-                  combination of n and the number "step" given in option -s,
-                  since the number of points in the bond path will be mainly 
-                  governed by step.
-  -o outname   Set the output file name.
-                  (If not given the program will create one out of
-                  the input name; if given, the dat, gnp and (eps)pdf files will
-                  use this name as well --but different extension--).
-  -p prop      Choose the property to be computed. prop is a character,
-                  which can be (d is the default value): 
-                     d (Density)
-                     g (Magnitude of the Gradient of the Density)
-                     l (Laplacian of density)
-                     K (Kinetic Energy Density K)
-                     G (Kinetic Energy Density G)
-                     E (Electron Localization Function -ELF-)
-                     L (Localized Orbital Locator -LOL-)
-                     M (Magnitude of the Gradient of LOL)
-                     S (Shannon Entropy Density)
-                     V (Molecular Electrostatic Potential)
-  -s step      Set the stepsize for the bond path to be 'step'.
-                     Default value: 0.03
-  -P           Create a plot using gnuplot.
-  -l           Show labels of atoms (those set in option -a) in the plot.
-  -v           Verbose (display extra information, usually output from third-
-                  party sofware such as gnuplot, etc.)
-  -z           Compress the dat file using gzip (which must be intalled
-                  in your system).
-  -h           Display the help menu.
-  -V           Displays the version of this program.
-  --help          Same as -h
-  --version       Same as -V
-
---------------------------------------------------------------------------------
-         The format of the dat file is:
-            L  X  Y  Z  V
-         where L is the value of the parameter that maps the bond
-         path to a line; X, Y, and Z are the actual spatial coordinates
-         of each point in the bond path; and V is the value of the
-         chosen field at the point (X,Y,Z) ---see option -p.
---------------------------------------------------------------------------------
-********************************************************************************
-  Note that the following programs must be properly installed in your system:
-                           gnuplot, epstopdf, gzip
-********************************************************************************
-\end{verbatim}
+\VerbatimInput{hmdtkbpdens.tex}
 \end{footnotesize}
 \rule{\textwidth}{1pt}
 
@@ -964,32 +653,10 @@ To immediately call gnuplot, use the option \texttt{-r}. If this switch is not a
 To close the interactive window, select it (if it is not active), and press any key.
 
 \rule{\textwidth}{1pt}
-{\center\texttt{dtkfindcp} help menu.\\}
+{\center\texttt{dtkqdmol} help menu.\\}
 \rule{\textwidth}{1pt}
 \begin{footnotesize}
-\begin{verbatim}
-Usage:
-
-	dtkqdmol wf?name [option [value(s)]] ... [option [value(s)]]
-
-Where wf?name is the input wfx(wfn) name, and options can be:
-
-  -o outname   Set the output file name.
-                  (If not given the program will create one out of
-                  the input name; if given, the gnp file will
-                  use this name as well --but different extension--).
-  -r           Run the generated gnuplot file.
-  -t term      Set the terminal for gnuplot (x11,qt,wxt,...)
-                  (Default terminal: x11).
-  -V           Displays the version of this program.
-  -h           Display the help menu.
-  --help          Same as -h
-  --version       Same as -V
-********************************************************************************
-  Note that the following programs must be properly installed in your system:
-                                    gnuplot
-********************************************************************************
-\end{verbatim}
+\VerbatimInput{hmdtkqdmol.tex}
 \end{footnotesize}
 \rule{\textwidth}{1pt}
 
@@ -1010,25 +677,10 @@ For the scripts, please note that the options must be written \textit{before} th
 
 This script has only one option for setting the output name.\\
 \rule{\textwidth}{1pt}
-{\center\texttt{dtkfindcp} help menu.\\}
+{\center\texttt{dtkeps2pdf} help menu.\\}
 \rule{\textwidth}{1pt}
 \begin{footnotesize}
-\begin{verbatim}
-usage: dtkeps2pdf [option(s) [argument(s)]] [inputname.eps]
-
-This script takes the file inputname.eps, calls epstool to correct the bounding
-box of the eps, and finally calls epstopdf. The options can be:
-
-   -o outname.pdf   Set the final name for the pdf to be "outname.pdf"
-   -h               Display the help menu.
-
-Notice that epstool and epstopdf must be installed in your system. Please, visit
-
-http://pages.cs.wisc.edu/~ghost/gsview/epstool.htm
-http://www.ctan.org/pkg/epstopdf
-
-for more information about this excelent tools.
-\end{verbatim}
+\VerbatimInput{hmdtkeps2pdf.tex}
 \end{footnotesize}
 \rule{\textwidth}{1pt}
 

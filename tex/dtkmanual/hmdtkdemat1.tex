@@ -1,0 +1,58 @@
+
+
+Usage:
+
+	dtkdemat1 wf?name [option [value(s)]] ... [option [value(s)]]
+
+Where wf?name is the input wfx(wfn) name, and options can be:
+Where wf?name is the input wfx(wfn) name, and options can be:
+
+  -a a1 a2  	Define the atoms  (a1,a2) used to define bond path/line.
+            	  If this option is not activated, the program will 
+            	  set a1=1, a2=2.
+            	  Note: if the *.wfn (*.wfx) file has only one atom
+            	  the program will exit and no output will be generated.
+  -L        	Calculate MD1 upon the straight line that joins the atoms
+            	  instead of upon the bond path.
+  -n  dim   	Set the number of points for the tsv file per direction.
+            	  Note: for the bond path you may want to look for a good 
+            	  combination of n and the number "step" given in option -s,
+            	  since the number of points in the bond path will be mainly 
+            	  governed by step.
+  -p prop   	Choose the property to be computed. prop is a character,
+            	  which can be (D is the default value):
+            	      D (Density Matrix of order 1)
+            	      G (Gradient of the density Matrix of order 1)
+  -o outname	Set the output file name.
+            	  (If not given the program will create one out of
+            	  the input name; if given, the tsv, gnp and pdf files will
+            	  use this name as well --but different extension--).
+  -s step   	Set the stepsize for the bond path to be 'step'.
+            	  Default value: 0.03
+  -T        	Perform the Topological analysis (find critical points).
+
+  -P        	Create a plot using gnuplot.
+  -c        	Show contour lines in the plot.
+  -C s i e  	Set the contour values (incremental style).
+            	  s, i, and e are real numbers. s is the first
+            	  contour value, i is the increment, and 
+            	  e is the last contour value.
+  -l     	Show labels of atoms (those set in option -a) in the plot.
+
+  -v     	Verbose (display extra information, usually output from third-
+         	  party sofware such as gnuplot, etc.)
+  -z     	Compress the tsv file using gzip (which must be intalled
+         	   in your system).
+
+  -h     	Display the help menu.
+  -V     	Displays the version of this program.
+  --help    		Same as -h
+  --version 		Same as -V
+
+********************************************************************************
+  Note that the following programs must be properly installed in your system:
+                                    gnuplot
+                                    epstool
+                                    epstopdf
+                                      gzip
+********************************************************************************

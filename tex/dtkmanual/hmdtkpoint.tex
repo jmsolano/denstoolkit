@@ -1,0 +1,26 @@
+
+
+Usage:
+
+	dtkpoint wf?name [option [value(s)]] ... [option [value(s)]]
+
+Where wf?name is the input wfx(wfn) name, and options can be:
+Where wf?name is the input wfx(wfn) name, and options can be:
+
+  -a a      	Calculate the properties at the coordinates ofthe a-th atom.
+  -c x y z  	Calculate the properties at the point (x,y,z).
+  -i crdfname	Calculate the properties at all points contained
+            	  in the file crdfname. The file must be a list of three 
+            	  space-separated real numbers per row.
+            	  Please ensure the file has always the format specified above,
+            	  otherwise unpredictable errors may occur.
+  -o outname	Set the output file name.
+            	  (If not given the program will create one out of
+            	  the input name.)
+  -u     	Display values of custom scalar field.
+  -U     	Display values of custom vector field.
+  -V     	Displays the version of this program.
+  -h     	Display the help menu.
+
+  --help    		Same as -h
+  --version 		Same as -V

@@ -1,0 +1,19 @@
+
+    usage: dtkpov2png [option(s) [argument(s)]] [inputname.pov]
+
+This script takes the file inputname.pov, calls povray to create a png, then it
+calls gm convert to trim the png file. The options can be:
+
+   -o outname.png   Set the final name for the png to be "outname.png"
+   -w width         Set the width of the image to be "width"
+                      (Default value: 1200. Since the image will be trimmed, 
+                       the actual width will be smaller than "width".)
+   -h               Display the help menu.
+
+Notice that povray and graphics magic must be installed in your system.
+Please, visit
+
+http://www.povray.org
+http://www.graphicsmagick.org
+
+for more information about this fabulous programs.

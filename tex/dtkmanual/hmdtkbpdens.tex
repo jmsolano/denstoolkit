@@ -1,0 +1,71 @@
+
+
+Usage:
+
+	dtkbpdens wf?name [option [value(s)]] ... [option [value(s)]]
+
+Where wf?name is the input wfx(wfn) name, and options can be:
+Where wf?name is the input wfx(wfn) name, and options can be:
+
+  -a a1 a2  	Define the atoms  (a1,a2) used to define bond path/line.
+            	  If this option is not activated, the program will 
+            	  set a1=1, a2=2.
+            	  Note: if the *.wfn (*.wfx) file has only one atom
+            	  the program will exit and no output will be generated.
+  -L        	Calculate the field upon the straight line that joins the atoms
+            	  instead of upon the bond path.
+  -n  dim   	Set the number of points for the dat file.
+            	  Note: for the bond path you may want to look for a good 
+            	  combination of n and the number "step" given in option -s,
+            	  since the number of points in the bond path will be mainly 
+            	  governed by step.
+  -o outname	Set the output file name.
+            	  (If not given the program will create one out of
+            	  the input name; if given, the dat, gnp and (eps)pdf files will
+            	  use this name as well --but different extension--).
+  -p prop   	Choose the property to be computed. prop is a character,
+            	  which can be (d is the default value): 
+            		d (Density)
+            		g (Magnitude of the Gradient of the Density)
+            		l (Laplacian of density)
+            		K (Kinetic Energy Density K)
+            		G (Kinetic Energy Density G)
+            		E (Electron Localization Function -ELF-)
+            		L (Localized Orbital Locator -LOL-)
+            		M (Magnitude of the Gradient of LOL)
+            		P (Magnitude of Localized Electrons Detector -LED-)
+            		r (Region of Slow Electrons -RoSE-)
+            		s (Reduced Density Gradient -s-)
+            		S (Shannon Entropy Density)
+            		V (Molecular Electrostatic Potential)
+            		u (Scalar Custom Field)
+  -s step   	Set the stepsize for the bond path to be 'step'.
+            	  Default value: 0.03
+
+  -P     	Create a plot using gnuplot.
+  -l     	Show labels of atoms (those set in option -a) in the plot.
+
+  -v     	Verbose (display extra information, usually output from third-
+         	  party sofware such as gnuplot, etc.)
+  -z     	Compress the dat file using gzip (which must be intalled
+         	   in your system).
+
+  -h     	Display the help menu.
+  -V     	Displays the version of this program.
+  --help    		Same as -h
+  --version 		Same as -V
+
+--------------------------------------------------------------------------------
+            	The format of the dat file is:
+            	      L  X  Y  Z  V
+            	  where L is the value of the parameter that maps the bond
+            	  path to a line; X, Y, and Z are the actual spatial coordinates
+            	  of each point in the bond path; and V is the value of the
+            	  chosen field at the point (X,Y,Z) ---see option -p.
+--------------------------------------------------------------------------------
+********************************************************************************
+  Note that the following programs must be properly installed in your system:
+                                    gnuplot
+                                    epstopdf
+                                      gzip
+********************************************************************************

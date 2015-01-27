@@ -1,0 +1,44 @@
+	dtkfindcp wf?name [option [value(s)]] ... [option [value(s)]]
+
+Where wf?name is the input wfx(wfn) name, and options can be:
+Where wf?name is the input wfx(wfn) name, and options can be:
+
+  -a        	Draw transparent spheres around each nuclei in the wf? file.
+  -o outname	Set the output file name (*.log).
+            	  (If not given the program will create one out of
+            	  the input name; if given, the pov file will
+            	  use this name as well --but different extension--).
+  -m        	Save the coordinates of atoms, critical points and gradient
+            	  paths (if calculated, see option -G) into *dat files.
+  -p     	Create a pov file. No image will be generated.
+  -P     	Create a png image using povray (calls povray),
+         	  deletes pov file.
+  -c p   	Set the camera vector direction for the povray scene.
+         	  p is an integer which can take the values
+         	  001,010,100,101,110,111; the camera will be located
+         	  somewhere in the direction (x,y,z), where xyz is one of 
+         	  the above values.
+  -g     	Draw the bond paths (gradient paths) in the POV file.
+  -T     	Set the style for the gradient paths to be tubes.
+  -G     	Skip the calculation of the bond gradient paths.
+  -k     	Keeps the pov file if option -P is used.
+  -t cpt 	Set the type of critical point to be searched. cpt can be 
+         	  one of the following fields (Density is the default):
+         		d (Density)
+         		L (Localized Orbital Locator -LOL-)
+  -e     	Perform an extended search of critical points. This
+         	  will take some more time, but it could find more CPs
+         	  than the simple search.
+  -v     	Verbose mode (displays additional information (for example the 
+         	  output of povray, etc.
+  -V        	Display the version of this program.
+  -h		Display the help menu.
+
+  --help    		Same as -h
+  --version 		Same as -V
+********************************************************************************
+  Note that the following programs must be properly installed in your system:
+                                     povray
+                                 graphicsmagick
+                                      gzip
+********************************************************************************
