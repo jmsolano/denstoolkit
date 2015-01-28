@@ -1,10 +1,4 @@
-//
-//  custfmtmathfuncts.h
-//  
-//
-//  Created by Juan Manuel Solano on 2013-10-28.
-//
-//
+
 
 #ifndef _CUSTFMTMATHFUNCTS_H_
 #define _CUSTFMTMATHFUNCTS_H_
