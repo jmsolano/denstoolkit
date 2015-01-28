@@ -1,10 +1,4 @@
-//
-//  solstringtools.cpp
-//  
-//
-//  Created by Juan Manuel Solano on 2013-10-06.
-//
-//
+
 
 #ifndef _SOL_STRING_TOOLS_CPP_
 #define _SOL_STRING_TOOLS_CPP_
@@ -81,6 +75,13 @@ string getStringFromInt(const int number)
    numstr.str("");
    numstr << number;
    return numstr.str();
+}/* ******************************************************************************************* */
+string getFilledStringFromInt(const int number,const int width,char filler)
+{
+   std::ostringstream numstr;
+   numstr.str("");
+   numstr << std::setfill(filler) << std::setw(width) << number;
+   return numstr.str();
 }
 /* ******************************************************************************************* */
 string genStrRandSeq(const int len)
@@ -122,6 +123,12 @@ string getStrFromRealForFileNaming(solreal number,int prev,int post)
    return finstr;
 }
 /* ******************************************************************************************* */
+string getFirstChunk(const string &line,char delim)
+{
+   size_t pos=line.find_first_of(delim);
+   string res=line.substr(0,pos);
+   return res;
+}
 /* ******************************************************************************************* */
 /* ******************************************************************************************* */
 /* ******************************************************************************************* */

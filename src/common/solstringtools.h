@@ -1,10 +1,4 @@
-//
-//  solstringtools.h
-//  
-//
-//  Created by Juan Manuel Solano on 2013-10-06.
-//
-//
+
 
 #ifndef _SOL_STRING_TOOLS_H_
 #define _SOL_STRING_TOOLS_H_
@@ -36,6 +30,8 @@ string getStringFromReal(const solreal number); //alternative implementation of 
 /* ******************************************************************************************* */
 string getStringFromInt(const int number); //alternative implementation of to_string (C++11)
 /* ******************************************************************************************* */
+string getFilledStringFromInt(const int number,const int width,char filler='0');
+/* ******************************************************************************************* */
 string genStrRandSeq(const int len);
 /* ******************************************************************************************* */
 void replaceTabsForSpaces(string &s);
@@ -44,6 +40,7 @@ void removeRedundantSpaces(string &s);
 /* ******************************************************************************************* */
 string getStrFromRealForFileNaming(solreal number,int prev=2,int post=2);
 /* ******************************************************************************************* */
+string getFirstChunk(const string &line,char delim=' ');
 /* ******************************************************************************************* */
 /* ******************************************************************************************* */
 /* ******************************************************************************************* */

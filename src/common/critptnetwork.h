@@ -1,13 +1,4 @@
-/*
- *  critptnetwork.h
- *  
- *
- *  Created by Juan Manuel Solano Altamirano on 05/06/13.
- *  Copyright 2013. All rights reserved.
- *  This is a new version, several functions and some
- *  redesign of the class is done in 03-04/Jan/2015.
- *
- */
+
 
 #ifndef _CRITPTNETWORK_H_
 #define _CRITPTNETWORK_H_

@@ -1,11 +1,4 @@
-/*
- *  bondnetwork.h
- *  
- *
- *  Created by Juan Manuel Solano Altamirano on 03/04/13.
- *  Copyright 2013. All rights reserved.
- *
- */
+
 
 #ifndef _BONDNETWORK_H_
 #define _BONDNETWORK_H_

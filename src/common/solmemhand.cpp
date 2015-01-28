@@ -1,11 +1,4 @@
-/*
- *  solmemhand.cpp
- *  
- *
- *  Created by Juan Manuel Solano Altamirano on 25/03/13.
- *  Copyright 2013 __MyCompanyName__. All rights reserved.
- *
- */
+
 
 #ifndef _SOLMEMHANDLE_CPP_
 #define _SOLMEMHANDLE_CPP_

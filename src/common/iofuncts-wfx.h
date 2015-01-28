@@ -1,11 +1,4 @@
-/*
- *  iofuncts-wfx.h
- *  
- *
- *  Created by Juan Manuel Solano Altamirano on 25/03/13.
- *  Copyright 2013 __MyCompanyName__. All rights reserved.
- *
- */
+
 
 #ifndef _IOFUNCTS_WFX_H_
 #define _IOFUNCTS_WFX_H_

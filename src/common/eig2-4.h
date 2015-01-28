@@ -1,4 +1,6 @@
-/* 
+
+
+/*
  
  Eigen-decomposition code for symmetric 3x3 and 4x4 matrices.
  

@@ -1,11 +1,4 @@
-/*
- *  iofuncts-wfn.h
- *  
- *
- *  Created by Juan Manuel Solano Altamirano on 25/03/13.
- *  Copyright 2013. All rights reserved.
- *
- */
+
 
 #ifndef _IOFUNCTS_WFN_H_
 #define _IOFUNCTS_WFN_H_

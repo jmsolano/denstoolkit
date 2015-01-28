@@ -1,11 +1,3 @@
-/*
- *  fldtypesdef.h
- *  
- *
- *  Created by Juan Manuel Solano Altamirano on 10/05/13.
- *  Copyright 2013 . All rights reserved.
- *
- */
 
 
 #ifndef _FLDTYPESDEF_H_

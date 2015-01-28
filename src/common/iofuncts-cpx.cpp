@@ -1,10 +1,4 @@
-//
-//  iofuncts-cpx.cpp
-//  
-//
-//  Created by Juan Manuel Solano on 2013-10-28.
-//
-//
+
 
 #ifndef _IOFUNCTS_CPX_CPP_
 #define _IOFUNCTS_CPX_CPP_

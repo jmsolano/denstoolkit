@@ -1,11 +1,4 @@
-/*
- *  solcubetools.h
- *  
- *
- *  Created by Juan Manuel Solano Altamirano on 07/05/13.
- *  Copyright 2013. All rights reserved.
- *
- */
+
 
 #ifndef _SOLCUBETOOLS_H_
 #define _SOLCUBETOOLS_H_

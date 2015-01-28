@@ -1,11 +1,4 @@
-/*
- *  solpovtools.h
- *  
- *
- *  Created by Juan Manuel Solano Altamirano on 06/04/13.
- *  Copyright 2013. All rights reserved.
- *
- */
+
 
 #ifndef _SOLPOVTOOLS_H_
 #define _SOLPOVTOOLS_H_

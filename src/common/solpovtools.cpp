@@ -1,11 +1,4 @@
-/*
- *  solpovtools.cpp
- *  
- *
- *  Created by Juan Manuel Solano Altamirano on 06/04/13.
- *  Copyright 2013. All rights reserved.
- *
- */
+
 
 #ifndef _SOLPOVTOOLS_CPP_
 #define _SOLPOVTOOLS_CPP_

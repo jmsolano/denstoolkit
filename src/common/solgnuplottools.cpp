@@ -1,10 +1,4 @@
-//
-//  solgnuplottools.cpp
-//  
-//
-//  Created by Juan Manuel Solano on 2013-11-14.
-//
-//
+
 
 #ifndef _SOL_GNUPLOT_TOOLS_CPP_
 #define _SOL_GNUPLOT_TOOLS_CPP_
