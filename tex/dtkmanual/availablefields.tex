@@ -23,11 +23,11 @@ primitives in order to clearly separate the different index types that one encou
 molecular wave functions. We use upper case dotted indices for identifying Gaussian basis functions.
 Under our notation, each individual basis function is uniquely identified with a dotted index, and
 each basis function has associated three integers ($a^1_{\dA}$, $a^2_{\dA}$, and $a^3_{\dA}$), and a
-point which denotes the center of the primitive $\boldsymbol{R}_{\dA}$ (with this notation a
-primitive center $\boldsymbol{R}_{\dA}$ can be the same than another primitive center
+point which denotes the centre of the primitive $\boldsymbol{R}_{\dA}$ (with this notation a
+primitive centre $\boldsymbol{R}_{\dA}$ can be the same than another primitive centre
 $\boldsymbol{R}_{\dB}$, \textit{i.e.} the index associates the Cartesian coordinates of a nucleus
 to a particular basis function, rather than associating a basis function with a nucleus;
-similar behavior is observed for the integers $a^i_{\dA}$). This index naming is actually more
+similar behaviour is observed for the integers $a^i_{\dA}$). This index naming is actually more
 natural for reading and understanding the \texttt{wfn} and \texttt{wfx} files. 
 
 Each Gaussian basis function (or primitive) is given by
@@ -39,7 +39,7 @@ Each Gaussian basis function (or primitive) is given by
 %
 and the normalization constants are already included in the coefficients $D_{m\dA}$.
 
-Finally, unless otherwise especified, we will assume that Im$(\phi_{\dA})=0$. While this is not true in general, it does hold for the gausian basis sets we will be interested in (\textit{i.e.,} those obtained as \texttt{wfn} or \texttt{wfx} files from Gaussian, Gamess, MolPro, NWChem, etc.)
+Finally, unless otherwise specified, we will assume that Im$(\phi_{\dA})=0$. While this is not true in general, it does hold for the Gaussian basis sets we will be interested in (\textit{i.e.,} those obtained as \texttt{wfn} or \texttt{wfx} files from Gaussian, Gamess, MolPro, NWChem, etc.)
 
 %----------------------------------------------------------------------------------------------
 \section{Electron density ($\rho$)}
@@ -85,7 +85,7 @@ In what follows, unless stated otherwise, we will follow the Einstein summation 
 
 While this notation is not customary in chemistry fields, it allows oneself to perform all the tensor gymnastics developed in other fields of physics, as we will see below.
 
-Also, we will use latin indices to denote the Cartesian components of a vector. Therefore the $i$-th componen of a vector $\boldsymbol{A}$ is
+Also, we will use latin indices to denote the Cartesian components of a vector. Therefore the $i$-th component of a vector $\boldsymbol{A}$ is
 %
 \begin{equation}
    [\boldsymbol{A}]^{i}\equiv A^i,
@@ -312,7 +312,7 @@ A table of the Fourier transforms of the cartesian primitives is listed in Ref. 
 \hline
 \hline
 \end{tabular}
-\caption{Fourier transforms of Cartesian GTOs with orbital exponent $\alpha$, center $R_k$, and angular power $n$ (single coordinate). No summation is implied here.}\label{tab:momdensang}
+\caption{Fourier transforms of Cartesian GTOs with orbital exponent $\alpha$, centre $R_k$, and angular power $n$ (single coordinate). No summation is implied here.}\label{tab:momdensang}
 \end{center}
 \end{table}
 
@@ -396,7 +396,7 @@ which have the following symmetry properties
    \alpha_{\dA\dB}=\alpha_{\dB\dA},\qquad\boldsymbol{R}_{\dA\dB}=\boldsymbol{R}_{\dB\dA},\qquad\textrm{ and }
    \qquad E_{\dA\dB}=E_{\dB\dA}.
 \end{equation}
-With this notation, the use of the same letter for the exponents and vector positions does not introduce confusion since the new quantities carry two indices, as opposed to the single index carried by the original single centered Gaussian. Thus, the integral now can be expressed as
+With this notation, the use of the same letter for the exponents and vector positions does not introduce confusion since the new quantities carry two indices, as opposed to the single index carried by the original single centred Gaussian. Thus, the integral now can be expressed as
 %
 \begin{equation}\label{eq:iabred}
    \mathfrak{I}_{\dA\dB}=E_{\dA\dB}\int\frac{d\boldsymbol{x}}{|\boldsymbol{x}-\boldsymbol{r}|}

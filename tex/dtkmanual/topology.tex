@@ -11,18 +11,18 @@ In addition to evaluate density fields on different grids, one of the purposes o
    \nabla F(\boldsymbol{r}_*)=\boldsymbol{0},
 \end{equation}
 %
-where $F$ is any density field. The critical points can be classified according to the sign of the Hessian eigen-values at $\boldsymbol{r}_*$, as we explain below. 
+where $F$ is any density field. The critical points can be classified according to the sign of the Hessian eigenvalues at $\boldsymbol{r}_*$, as we explain below. 
 
 In version \dtkversion, we have implemented the seek of all electron density critical points, including bond paths, and some of the critical points of LOL.
 
-The development of this part of \DTK{} will be active during the upcoming years, and it is expected to grow as that of the needs of our research group. Obvioulsy, for the interested developer, any contribution
+The development of this part of \DTK{} will be active during the upcoming years, and it is expected to grow as that of the needs of our research group. Obviously, for the interested developer, any contribution
 will be welcome.
 
 %==============================================================================================
 \section{Classification of critical points}
 %==============================================================================================
 
-A critical point can be classified by means of the Hessian eigen-values at the critical point.
+A critical point can be classified by means of the Hessian eigenvalues at the critical point.
 Since we will be interested only in three dimensional spaces, and on non-degenerated Hessians,
 the Hessian will always have three eigenvalues. Therefore, we can find four combinations of
 the eigenvalues' signs. We will follow the QTAIM notation, wherein a critical point is
@@ -34,7 +34,7 @@ The classification of the critical points is as follows.
 \begin{itemize}
    \item (3,-3): The three Hessian eigenvalues are all negative. A critical point of this nature represents a maximum. A critical point (3,-3) of the electron density is called \textit{Attractor Critical Point} (ACP).
    \item (3,-1): Two negative and one positive Hessian eigenvalues. This is a saddle point, maximum in two directions and minimum in the other. When the critical point is of the electron density, it is called \textit{Bond Critical Point} (BCP).
-   \item (3,+1): One negative and two positive Hessian eigenvalues. This is also a saddle point, but this time is a maximum in one direction and mininum in the rest. The electron density critical point is called \textit{Ring Critical Point} (RCP).
+   \item (3,+1): One negative and two positive Hessian eigenvalues. This is also a saddle point, but this time is a maximum in one direction and minimum in the rest. The electron density critical point is called \textit{Ring Critical Point} (RCP).
    \item (3,+3): All the three Hessian eigenvalues are positive. This critical point corresponds to a minimum of the field. Critical points of the electron density with this properties are called \textit{Cage Critical Points} (CCP).
 \end{itemize}
 
@@ -92,7 +92,7 @@ is less than the sum of their respective atomic Covalent radii.
 \item[CCP] For each pair of RCPs in the molecule, if the distance of separation among them is less than two times the maximum bond distance (as found in the search of BCPs), then we set the seed to be the middle point between the two RCPs.
 \item [E.S.] (Extended Search) By request, an extended search is done after the first scanning described 
   above. This search uses every non-nuclear ACP, every extended BCP, and all RCPs, and CCPs as 
-  points where we construct a set of seeds placed at the center and vertices of an
+  points where we construct a set of seeds placed at the centre and vertices of an
   icosahedron. At each one of these seeds, we perform searches of all critical points (except the
   type of the current ACP used for setting the seeds, \textit{i.e.} if we are using an ACP for 
   constructing seeds, then we only search for BCPs, RCPs, and CCPs).
@@ -106,7 +106,7 @@ The search for LOL critical points is not finished in version \dtkversion. Howev
 
 \begin{itemize}
 \item[ACP] We look for LOL ACPs around every molecule's nucleus. In \DTK{} \dtkversion,
-  we set seeds at the center and vertices of an icosahedron centered at the nucleus position.
+  we set seeds at the centre and vertices of an icosahedron centred at the nucleus position.
 \item[BCP] We set the seed for looking LOL BCPs as the middle point between every pair of ACPs found in the molecule.
 \end{itemize}
 
