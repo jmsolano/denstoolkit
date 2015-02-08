@@ -16,6 +16,8 @@ Make the proper changes in the correspoding files:
    ---> soldefines.h (new version)
    ---> dtkmanual: available fields, help menus
 =======================================================================
+Adding the GPL License. See:
+$TOP/src/scripts/dtkaddGPLv3 -h
 =======================================================================
 =======================================================================
 =======================================================================

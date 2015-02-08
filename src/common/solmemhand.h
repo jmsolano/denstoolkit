@@ -53,7 +53,7 @@ typedef double solreal;
 
 #include <iostream>
 
-#include <string>
+#include <cstring>
 using std::string;
 
 /* ********************************************************************************** */
