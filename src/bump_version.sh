@@ -13,6 +13,14 @@
 # a file called CHANGES (under the title of the new version
 # number) and create a GIT tag.
 
+SRC_DIR=$(pwd)
+TOP_DIR=$SRC_DIR/..
+SCRIPT_DIR=$SRC_DIR/scripts
+TEX_DIR=$TOP_DIR/tex/dtkmanual
+SOURCES=$(ls $SRC_DIR/dtk*/*.h $SRC_DIR/dtk*/*.h $SRC_DIR/common/*.h\
+          $SRC_DIR/common/*.cpp | sed '/eig2/d')
+TEXES=$(ls $TEX_DIR/*.tex | sed '/hmdtk/d')
+
 if [ -f VERSION ]; then
    BASE_STRING=`cat VERSION`
    BASE_LIST=(`echo $BASE_STRING | tr '.' ' '`)
@@ -35,10 +43,13 @@ if [ -f VERSION ]; then
    echo "" >> tmpfile
    cat CHANGES >> tmpfile
    mv tmpfile CHANGES
-   #git add CHANGES VERSION
-   #git commit -m "Version bump to $INPUT_STRING"
-   #git tag -a -m "Tagging version $INPUT_STRING" "v$INPUT_STRING"
-   #git push origin --tags
+   git add CHANGES VERSION
+   ./preprelease
+   for i in $SOURCES; do git add $i;done
+   for i in $TEXES; do git add $i;done
+   git commit -m "Version bump to $INPUT_STRING"
+   git tag -a -m "Tagging version $INPUT_STRING" "v$INPUT_STRING"
+   git push origin --tags
 else
    echo "Could not find a VERSION file"
    read -p "Do you want to create a version file and start from scratch? [y]" RESPONSE
@@ -50,13 +61,13 @@ else
    if [ "$RESPONSE" = "y" ]; then
       echo "1.0.0" > VERSION
       echo "Version 1.0.0" > CHANGES
-      git log --pretty=format:" - %s" >> CHANGES
+      #git log --pretty=format:" - %s" >> CHANGES
       echo "" >> CHANGES
       echo "" >> CHANGES
-      #git add VERSION CHANGES
-      #git commit -m "Added VERSION and CHANGES files, Version bump to v1.0.0"
-      #git tag -a -m "Tagging version 1.0.0" "v1.0.0"
-      #git push origin --tags
+      git add VERSION CHANGES
+      git commit -m "Added CHANGES file, Version bump to v1.0.0"
+      git tag -a -m "Tagging version 1.0.0" "v1.0.0"
+      git push origin --tags
    fi
 
 fi
