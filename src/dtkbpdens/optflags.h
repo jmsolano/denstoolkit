@@ -101,7 +101,7 @@
    Juan Manuel Solano Altamirano
    Adscription at the moment the template for this class is initiated:
    Centro de Investigaciones y Estudios Avanzados del 
-   Instituto Politécnico Nacional, 
+   Instituto Politecnico Nacional, 
    Unidad Monterrey, Mexico.
    2011
    e-mail: jmsolanoalt@gmail.com
