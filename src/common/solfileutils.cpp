@@ -49,7 +49,7 @@
                Present institution at the moment of the creation of this file:
                Centro de Investigaciones y Estudios Avanzados del IPN,
                Unidad Monterrey.
-               México.
+               Mexico.
                email: jmsolanoalt@gmail.com (prefered)
                       jmsolano@venus.ifuap.buap.mx (alternative)
                

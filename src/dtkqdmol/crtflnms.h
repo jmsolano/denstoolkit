@@ -99,8 +99,8 @@
    Juan Manuel Solano Altamirano
    Adscription at the moment this project is initiated:
    Centro de Investigaciones y Estudios Avanzados del 
-   Instituto Politécnico Nacional, 
-   Unidad Monterrey, México.
+   Instituto Politecnico Nacional, 
+   Unidad Monterrey, Mexico.
    e-mail: jmsolanoalt@gmail.com
  
    Adscription at the moment the particular implementation for this program is started:
