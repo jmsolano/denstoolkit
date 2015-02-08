@@ -17,13 +17,13 @@ RMFDL=$SCRIPT_DIR/dtkrmfdl
 for i in $SOURCES
 do
    echo "$SCRIPT_DIR/dtkchgsuiteversion $i -v $(cat VERSION)"
-   $SCRIPT_DIR/dtkaddGPLv3 -v $(cat VERSION) $i
+   $SCRIPT_DIR/dtkchgsuiteversion $i $(cat VERSION)
 done
 
 for i in $TEXES
 do
    echo "$SCRIPT_DIR/dtkchgsuiteversion $i -v $(cat VERSION)"
-   $SCRIPT_DIR/dtkaddFDL -v $(cat VERSION) $i
+   $SCRIPT_DIR/dtkchgsuiteversion $i $(cat VERSION)
 done
 
 
