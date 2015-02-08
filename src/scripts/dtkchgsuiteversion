@@ -52,13 +52,13 @@ done
 
 shift $(($OPTIND - 1))
 
-echo "name: $FILENAME"
+#echo "name: $FILENAME"
 
 TMPNAME=tmp${RANDOM}${RANDOM}
 
 cat $FILENAME | sed "s/\(.*\)VERSION: \(.*\)/\1VERSION: $VERSION/g" > $TMPNAME
 if [ "$OVERWRITE" == true ]; then
    mv $TMPNAME $FILENAME
-   echo "this is were the file with the old version is overwritten..."
+   #echo "this is were the file with the old version is overwritten..."
 fi
 

@@ -8,6 +8,8 @@ SOURCES=$(ls $SRC_DIR/dtk*/*.h $SRC_DIR/dtk*/*.cpp $SRC_DIR/common/*.h\
           $SRC_DIR/common/*.cpp | sed '/eig2/d')
 TEXES=$(ls $TEX_DIR/*.tex | sed '/hmdtk/d')
 
+SOLDEFINES=$(ls $SRC_DIR/dtk*/soldefines.h)
+
 ADDGPL=$SCRIPT_DIR/dtkaddGPLv3
 RMGPL=$SCRIPT_DIR/dtkrmGPLv3
 
@@ -16,14 +18,20 @@ RMFDL=$SCRIPT_DIR/dtkrmfdl
 
 for i in $SOURCES
 do
-   echo "$SCRIPT_DIR/dtkchgsuiteversion $i -v $(cat VERSION)"
+   echo "$SCRIPT_DIR/dtkchgsuiteversion $i $(cat VERSION)"
    $SCRIPT_DIR/dtkchgsuiteversion $i $(cat VERSION)
 done
 
 for i in $TEXES
 do
-   echo "$SCRIPT_DIR/dtkchgsuiteversion $i -v $(cat VERSION)"
+   echo "$SCRIPT_DIR/dtkchgsuiteversion $i $(cat VERSION)"
    $SCRIPT_DIR/dtkchgsuiteversion $i $(cat VERSION)
+done
+
+for i in $SOLDEFINES
+do
+   echo "$SCRIPT_DIR/dtkchgcurrversion $i $(cat VERSION)"
+   $SCRIPT_DIR/dtkchgcurrversion $i $(cat VERSION)
 done
 
 
