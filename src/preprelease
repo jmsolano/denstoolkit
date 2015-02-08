@@ -1,2 +1,29 @@
 #!/bin/bash
 
+SRC_DIR=$(pwd)
+TOP_DIR=$SRC_DIR/..
+SCRIPT_DIR=$SRC_DIR/scripts
+TEX_DIR=$TOP_DIR/tex/dtkmanual
+SOURCES=$(ls $SRC_DIR/dtk*/*.h $SRC_DIR/dtk*/*.h $SRC_DIR/common/*.h\
+          $SRC_DIR/common/*.cpp | sed '/eig2/d')
+TEXES=$(ls $TEX_DIR/*.tex | sed '/hmdtk/d')
+
+ADDGPL=$SCRIPT_DIR/dtkaddGPLv3
+RMGPL=$SCRIPT_DIR/dtkrmGPLv3
+
+ADDFDL=$SCRIPT_DIR/dtkaddfdl
+RMFDL=$SCRIPT_DIR/dtkrmfdl
+
+for i in $SOURCES
+do
+   echo "$SCRIPT_DIR/dtkchgsuiteversion $i -v $(cat VERSION)"
+   #$SCRIPT_DIR/dtkaddGPLv3 -v $(cat VERSION) $i
+done
+
+for i in $TEXES
+do
+   echo "$SCRIPT_DIR/dtkchgsuiteversion $i -v $(cat VERSION)"
+   #$SCRIPT_DIR/dtkaddFDL -v $(cat VERSION) $i
+done
+
+

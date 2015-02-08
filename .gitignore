@@ -31,8 +31,6 @@ src/dtkmomd/dtkmomd
 src/dtkplane/dtkplane
 src/dtkpoint/dtkpoint
 src/dtkqdmol/dtkqdmol
-src/scripts/dtkaddGPLv3
-src/scripts/dtkrmGPLv3
 
 #Trash and system files
 *~
@@ -69,4 +67,10 @@ src/dtkpoint/incoords.txt
 tmpcppaste.cpp
 src/Makefile.macsol
 cprght.txt
+src/scripts/dtkaddFDL
+src/scripts/dtkrmFDL
+src/scripts/dtkaddGPLv3
+src/scripts/dtkrmGPLv3
+src/firstrelease
+AFTER_PUB
 
