@@ -2,14 +2,15 @@
 
 usage()
 {
-echo -e "\n    usage: \033[1m$0 filename version\033[0m"
+echo -e "\n    usage: \033[1m$0 filename NEWVERSION\033[0m"
 cat << END_USAGE_TEXT
 
-This file changes the line that contains the version of the 
-suite in the license message. The version is replaced by
-the one given in the command line.
-"version" must have the format "X.Y.Z",
-where X, Y, and Z are numbers.
+This file changes the line that contains the CURRENTVERSION of the 
+program. The CURRENTVERSION is replaced by
+the NEWVERSION given in the command line.
+"NEWVERSION" must have the format "X.Y.Zx",
+where X, Y, and Z are numbers, and x may be a character, or 
+nothing.
    -h               Display the help menu.
 
 END_USAGE_TEXT
@@ -56,7 +57,7 @@ echo "name: $FILENAME"
 
 TMPNAME=tmp${RANDOM}${RANDOM}
 
-cat $FILENAME | sed "s/\(.*\)VERSION: \(.*\)/\1VERSION: $VERSION/g" > $TMPNAME
+cat $FILENAME | sed "s/\(.*\)CURRENTVERSION \"\(.*\)\"/\1CURRENTVERSION \"$VERSION\"/" > $TMPNAME
 if [ "$OVERWRITE" == true ]; then
    mv $TMPNAME $FILENAME
    echo "this is were the file with the old version is overwritten..."
