@@ -61,7 +61,7 @@ typedef double solreal;
 #endif
 
 #define USEPROGRESSBAR 1
-#define CURRENTVERSION "1.0.4"
+#define CURRENTVERSION "1.0.0"
 #define PROGRAMCONTRIBUTORS "JMSA/JMHP"
 #define EPSFORELFVALUE (2.871e-05)
 

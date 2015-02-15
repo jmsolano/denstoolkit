@@ -1,0 +1,14 @@
+Version 1.0.0:
+ - Removing some superfluous messages in bump_version.sh and dtkchgcurrversion
+ - Fixbug: <string> ---> <cstring> in common/solmemhand.h
+ - Automatic update of CURRENTVERSIONS
+ - added dtkchgcurrversion.
+ - Fixbug: bump_version.sh (and remove redundant GPLs)
+ - optflags* fix bug while using sed
+ - Merge branch 'master' of https://bitbucket.org/jmsolano/denstoolkitdevbb
+ - Fixed bad character. (Caused a bug with sed)
+ - Fixed bad character. (Caused a bug with sed)
+ - Added GPLv3 license to missing cpp files
+ - Fixed preprelease
+ - bump_version.sh and preprelease finished (betas)
+
