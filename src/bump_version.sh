@@ -46,6 +46,7 @@ if [ -f VERSION ]; then
    git add CHANGES VERSION
    ./preprelease
    for i in $SOURCES; do git add $i;done
+   #no need to git-add $SOLDEFINES, since they are included in $SOURCES...
    for i in $TEXES; do git add $i;done
    git commit -m "Version bump to $INPUT_STRING"
    git tag -a -m "Tagging version $INPUT_STRING" "v$INPUT_STRING"
