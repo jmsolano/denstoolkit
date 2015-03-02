@@ -8,7 +8,7 @@ Once you have recived an invitation you are able to see this page. Now you can i
 
 ```
 $cd /local/path/for/dtk
-$git clone https://username@bitbucket.org/jmsolano/denstoolkitdevbb.git
+$git clone https://username@bitbucket.org/jmsolano/denstoolkitdevbb.git denstoolkit
 ```
 
 Your bitbucket password will be requested to clone the repository. This is because this repository is not public.
@@ -17,7 +17,7 @@ After this, git will transfer the source files to ```/local/path/for/dtk/denstoo
 
 Optionally, you may want to first run
 ```
-/local/path/for/dtk/src/checkdependencies
+/local/path/for/dtk/denstoolkit/src/checkdependencies
 ```
 This will check that auxiliary programs (to plot the data computed by DensToolKit) are installed
 in your system. You can skip this step if you are only interested in obtaining the numerical 
@@ -27,7 +27,7 @@ data. You may process the data later with your preferred plotting program.
 For building the binaries, type:
 
 ```
-$cd denstoolkit/src
+$cd /local/path/for/dtk/denstoolkit/src
 $make
 $sudo make install
 ```
@@ -39,7 +39,7 @@ If you want to test the correct compilation of the program, type:
 ```
 $make runtest
 ```
-The above command will use the binaries present in /local/path/for/dtk/bin, therefore, the
+The above command will use the binaries present in /local/path/for/dtk/denstoolkit/bin, therefore, the
 tests can be made without running "sudo make install".
 
 ## Updating DensToolKit
