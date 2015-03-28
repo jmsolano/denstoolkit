@@ -211,8 +211,12 @@ develdocs: devdochtmldir
         else (ln -s $(LCL_DVDCDIR)/html/index.html $(LCL_DVDCDIR)/DeveloperDocumentation.html) \
         fi
 
+latexdeveldocs: develdocs
+	@cd $(LCL_DVDCDIR)/latex; make; mv $(LCL_DVDCDIR)/latex/refman.pdf $(LCL_DVDCDIR)
+
 cleandeveldocs:
 	@rm -rf $(LCL_DVDCDIR)/html/*
+	@rm -rf $(LCL_DVDCDIR)/latex/*
 	@rm -f $(LCL_DVDCDIR)/DeveloperDocumentation.html
 
 bindir:

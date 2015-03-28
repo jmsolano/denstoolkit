@@ -64,7 +64,11 @@ public:
 /* ************************************************************************************ */
 //                    Variables
 /* ************************************************************************************ */
-   int nACP,nBCP,nRCP,nCCP,nBGP;
+   int nACP, /*!< Number of ACPs  */
+       nBCP, /*!< Number of BCPs  */
+       nRCP, /*!< Number of RCPs  */
+       nCCP, /*!< Number of CCPs  */
+       nBGP; /*!< Number of Bond Gradient Paths.  */
    /** This array contains the atoms (acps) associated with a BCP.
     * In atBCP[i][j], i refers to the i-th BCP in the list.
     * j=0 (j=1) contains the first (second) ACP connected to the BCP.
@@ -117,12 +121,19 @@ public:
 /* ************************************************************************************ */
 //                   Functions
 /* ************************************************************************************ */
+   /** The only allowed constructor. It requires a gaussWaveFunc and
+    * a bondNetWork objects. <b>Warning: these objects must be
+    * properly initialized before passing to the critPtNetWork object.</b>  */
    critPtNetWork(class gaussWaveFunc &uwf,class bondNetWork &ubn);
    ~critPtNetWork();
 /* ************************************************************************************ */
+   /** Self descriptive.  */
    void setMaxIterationsACP(int ii) {maxItACP=ii;}
+   /** Self descriptive.  */
    void setMaxIterationsBCP(int ii) {maxItBCP=ii;}
+   /** Self descriptive.  */
    void setMaxIterationsRCP(int ii) {maxItRCP=ii;}
+   /** Self descriptive.  */
    void setMaxIterationsCCP(int ii) {maxItCCP=ii;}
 /* ************************************************************************************ */
    /** The main public function for searching all critical points.
@@ -134,34 +145,65 @@ public:
     */
    void setCriticalPoints(ScalarFieldType ft);
 /* ************************************************************************************ */
+   /** Displays the coordinates of the critical points of type 'cpt'.
+    * @param cpt: This char parameter is used to request the critical
+    * point type. It can take the values: 'a', 'b', 'r', and 'c'.
+    */
    void displayXCPCoords(char cpt);
 /* ************************************************************************************ */
+   /** Prints to the std::cout the coordinates of all CPs found.  */
    void displayAllCPCoords(void);
 /* ************************************************************************************ */
+   /** Self descriptive.  */
    void displayACPCoords(void) {displayXCPCoords('a');}
 /* ************************************************************************************ */
+   /** Self descriptive.  */
    void displayBCPCoords(void) {displayXCPCoords('b');}
 /* ************************************************************************************ */
+   /** Self descriptive.  */
    void displayRCPCoords(void) {displayXCPCoords('r');}
 /* ************************************************************************************ */
+
    void displayCCPCoords(void) {displayXCPCoords('c');}
 /* ************************************************************************************ */
+   /** Prints to the std::cout the coordinates used for seeding around a point.
+    * Here seeding means to set starting points for a cp search. The letters
+    * IHV are the acronynm of <b>I</b>cosa<b>H</b>edron <b>V</b>ertices.
+    */
    void displayIHVCoords(void);
 /* ************************************************************************************ */
+   /** Self descriptive. 
+    * This function uses a point as a spatial reference. A icosahedron, whose vertices
+    * are considered to coincide with a sphere centered at the reference point, is
+    * drawn, and its vertices are used as starting points for searching critical points.
+    * @param oo: The coordinates of the point around of which ACPs will be looked for.
+    * @param ddxx: The radius of the sphere around the point.
+    * @param blbl: The base label used for naming the critical points found within
+    * this function.
+    * @param nvrt: Number of vertices. If only nvrt vertices must be used.
+    * if nvrt=-1, the total number of vertices will be used as seeds. This is
+    * useful for partial searches. For instance, the first four 'vertices' are not
+    * really vertices, but the origin, and three points along x, y, and z axis,
+    * displaced a small distance away from the center.
+    */
    void seekRhoACPsAroundAPoint(solreal const (&oo)[3],solreal const ddxx,\
          string const &blbl,int nvrt=-1);
 /* ************************************************************************************ */
    void seekRhoBCPWithExtraACP(int acppos,solreal maxrad);
 /* ************************************************************************************ */
+   /** Same functionality as critPtNetWork::seekRhoACPsAroundAPoint, but for BCPs.  */
    void seekRhoBCPsAroundAPoint(solreal const (&oo)[3],solreal const ddxx,\
          string const &blbl,int nvrt=-1);
 /* ************************************************************************************ */
+   /** Same functionality as critPtNetWork::seekRhoACPsAroundAPoint, but for RCPs.  */
    void seekRhoRCPsAroundAPoint(solreal const (&oo)[3],solreal const ddxx,\
          string const &blbl,int nvrt=-1);
 /* ************************************************************************************ */
+   /** Same functionality as critPtNetWork::seekRhoACPsAroundAPoint, but for CCPs.  */
    void seekRhoCCPsAroundAPoint(solreal const (&oo)[3],solreal const ddxx,\
          string const &blbl,int nvrt=-1);
 /* ************************************************************************************ */
+   /** Same functionality as critPtNetWork::seekRhoACPsAroundAPoint, but for LOL ACPs.  */
    void seekLOLACPsAroundAPoint(solreal const (&oo)[3],solreal const ddxx,\
          string const &blbl,int nvrt=-1);
 /* ************************************************************************************ */
