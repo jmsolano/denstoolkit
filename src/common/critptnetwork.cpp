@@ -171,6 +171,7 @@ void critPtNetWork::init()
    iknowallcps=false;
    iknowbgps=false;
    mycptype=NONE;
+   maxBondDist=maxBCPACPDist=-1.0e+50;
    drawNuc=false;
    drawBnd=true;
    drawBGPs=false;
@@ -384,6 +385,7 @@ void critPtNetWork::setBondPaths()
 #endif
    if (nBGP!=nBCP) {displayWarningMessage("For some unknown reason nBGP!=nBCP...");}
    iknowbgps=true;
+   findMaxBondDist();
 }
 /* ************************************************************************************ */
 bool critPtNetWork::setRhoACPs()
@@ -2783,6 +2785,39 @@ for(int i=0; i<3; i++) {
    mgg=sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]);
    return;
 }
+/* ************************************************************************************ */
+void critPtNetWork::findMaxBondDist()
+{
+   if ( !iknowbgps ) {
+      displayErrorMessage("First you need to find the Bond Gradient Paths!");
+      return;
+   }
+   if ( wf->nNuc==1 ) { maxBondDist=0.0e0; return; }
+   solreal magd;
+   int bcp1,bcp2;
+   for ( int i=0 ; i<nBCP ; ++i ) {
+      bcp1=atBCP[i][0];
+      bcp2=atBCP[i][1];
+      magd=0.0e0;
+      for ( int j=0 ; j<3 ; ++j ) {
+         magd+=((RACP[bcp1][j]-RACP[bcp2][j])*(RACP[bcp1][j]-RACP[bcp2][j]));
+      }
+      if ( magd>maxBondDist ) { maxBondDist=magd; }
+      magd=0.0e0;
+      for ( int j=0 ; j<3 ; ++j ) {
+         magd+=((RBCP[i][j]-RACP[bcp1][j])*(RBCP[i][j]-RACP[bcp1][j]));
+      }
+      if ( magd>maxBCPACPDist ) { maxBCPACPDist=magd; }
+      magd=0.0e0;
+      for ( int j=0 ; j<3 ; ++j ) {
+         magd+=((RBCP[i][j]-RACP[bcp2][j])*(RBCP[i][j]-RACP[bcp2][j]));
+      }
+      if ( magd>maxBCPACPDist ) { maxBCPACPDist=magd; }
+   }
+   maxBondDist=sqrt(maxBondDist);
+   maxBCPACPDist=sqrt(maxBCPACPDist);
+}
+/* ************************************************************************************ */
 /* ************************************************************************************ */
 
 

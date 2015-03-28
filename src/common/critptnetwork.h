@@ -65,17 +65,55 @@ public:
 //                    Variables
 /* ************************************************************************************ */
    int nACP,nBCP,nRCP,nCCP,nBGP;
-   int **atBCP; //This array contains the atoms (acps) associated with a BCP, the third number is
-   // reserved to store the number of points for the gradient path (associated also
-   // to the BCP) if the bond gradient paths are requested.
-   // In the old version, atBCP only included atoms which were part of the wf.
-   // In contrast, in this version atBCP contains indices to actual ACPs. This is
-   // needed in order to correctly search BCPs and Bond paths between atoms and 
-   // non-nuclear ACPs.
-   solreal **RACP,**RBCP,**RRCP,**RCCP;
+   /** This array contains the atoms (acps) associated with a BCP.
+    * In atBCP[i][j], i refers to the i-th BCP in the list.
+    * j=0 (j=1) contains the first (second) ACP connected to the BCP.
+    * j=2 is reserved to store the number of points for the gradient path
+    * (associated also to the BCP) if the bond gradient paths are requested.
+    * In the old version, atBCP only included atoms which were part of the wf.
+    * In contrast, in this version atBCP contains indices to actual ACPs. This is
+    * needed in order to correctly search BCPs and Bond paths between atoms and 
+    * non-nuclear ACPs.
+    */
+   int **atBCP;
+   /** The array atRCP contains the information of the gradient paths that connect
+    * an RCP with a set of BCPs. in atBCP[i][j][k], the index i identifies
+    * the RCP. The index j identifies   */
+   int **atRCP;
+   /** This array contains the coordinates of ACPs. in RACP[i][j], the j-th cartesian
+    * coordinates of the i-th ACP are stored.  */
+   solreal **RACP;
+   /** This array contains the coordinates of BCPs. in RBCP[i][j], the j-th cartesian
+    * coordinates of the i-th ACP are stored.  */
+   solreal **RBCP;
+   /** This array contains the coordinates of RCPs. in RRCP[i][j], the j-th cartesian
+    * coordinates of the i-th RCP are stored.  */
+   solreal **RRCP;
+   /** This array contains the coordinates of CCPs. in RCCP[i][j], the j-th cartesian
+    * coordinates of the i-th CCP are stored.  */
+   solreal **RCCP;
+   /** RGBP contains the coordinates of the <b>B</b>ond <b>G</b>radient
+    * <b>P</b>aths. In this implementation the bond path consists of a set
+    * of points along the real bond path (which is a continuos curve in 
+    * space). Each bond path is uniquely associated to a BCP.
+    * In RGBP[i][n][j], the first index indicates the index of the 
+    * i-th BCP, the second indicates
+    * the n-th point in the bond path, and the third index is the cartesian
+    * coordinate of the n-th point.  */
    solreal ***RBGP;
-   solreal centMolecVec[3],RGP[CPNW_ARRAYSIZEGRADPATH][3];
-   string *lblACP,*lblBCP,*lblRCP,*lblCCP;
+   /** centMolecVec is a vector used for centering the molecule. This array
+    * is used for producing POV files. <b>Warning: In the current version,
+    * after the POV has been recorded, the coordinates of the critical
+    * points will no longer correspond to the coordinate system of the
+    * wavefunction.</b>  */
+   solreal centMolecVec[3];
+   /** The array RGP is an auxiliary array, used for manipulating the order
+    * of the points in a bond path searching procedure.  */
+   solreal RGP[CPNW_ARRAYSIZEGRADPATH][3];
+   string *lblACP, /*!< An array to store the labels of the ACPs.  */\
+      *lblBCP, /*!< An array to store the labels of the BCPs. */\
+      *lblRCP, /*!< An array to store the labels of the RCPs.  */\
+      *lblCCP; /*!< An array to store the labels of the CCPs.  */
 /* ************************************************************************************ */
 //                   Functions
 /* ************************************************************************************ */
@@ -87,6 +125,13 @@ public:
    void setMaxIterationsRCP(int ii) {maxItRCP=ii;}
    void setMaxIterationsCCP(int ii) {maxItCCP=ii;}
 /* ************************************************************************************ */
+   /** The main public function for searching all critical points.
+    * Configuration, such as requesting extended search should be
+    * done before calling this function.
+    * ft is used for requesting the type of critical points.
+    * In current implementation, only the electron density
+    * (DENS) and some of the LOL (LOLD) CPs are found.
+    */
    void setCriticalPoints(ScalarFieldType ft);
 /* ************************************************************************************ */
    void displayXCPCoords(char cpt);
@@ -174,6 +219,10 @@ public:
 /* ************************************************************************************ */
    ScalarFieldType myCPType(void) {return mycptype;}
 /* ************************************************************************************ */
+   solreal getMaxBondDist() {return maxBondDist;}
+/* ************************************************************************************ */
+   solreal getMaxDistBetwBCPAndBCP() {return maxBCPACPDist;}
+/* ************************************************************************************ */
 protected:
 /* ************************************************************************************ */
    class gaussWaveFunc *wf;
@@ -188,6 +237,8 @@ protected:
    bool mkextsearch;
    solreal stepSizeACP,stepSizeBCP,stepSizeRCP,stepSizeCCP;
    ScalarFieldType mycptype;
+   solreal maxBondDist; /*!< The maximum distance between two ACPs related by a BCP  */
+   solreal maxBCPACPDist; /*!< The maximum distance between a BCP and associated ACPs  */
    static const int nIHV=16; //It is actually the vertices of an icosahedron plus the origin
    // (0,0,0)
    static solreal V0,V5,V8,IHV[nIHV][3];
@@ -276,7 +327,7 @@ protected:
 /* ************************************************************************************ */
    void putBonds(ofstream &pof);
 /* ************************************************************************************ */
-
+   void findMaxBondDist();
 /* ************************************************************************************ */
 /* ************************************************************************************ */
 /* ************************************************************************************ */
