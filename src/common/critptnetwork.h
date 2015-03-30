@@ -69,21 +69,25 @@ public:
        nRCP, /*!< Number of RCPs  */
        nCCP, /*!< Number of CCPs  */
        nBGP; /*!< Number of Bond Gradient Paths.  */
-   /** This array contains the atoms (acps) associated with a BCP.
-    * In atBCP[i][j], i refers to the i-th BCP in the list.
+   /** This array (connectivity of a BCP) contains the acps associated with a BCP.
+    * In conBCP[i][j], i refers to the i-th BCP in the list.
     * j=0 (j=1) contains the first (second) ACP connected to the BCP.
     * j=2 is reserved to store the number of points for the gradient path
     * (associated also to the BCP) if the bond gradient paths are requested.
-    * In the old version, atBCP only included atoms which were part of the wf.
-    * In contrast, in this version atBCP contains indices to actual ACPs. This is
+    * In the old version, conBCP only included atoms which were part of the wf.
+    * In contrast, in this version conBCP contains indices to actual ACPs. This is
     * needed in order to correctly search BCPs and Bond paths between atoms and 
     * non-nuclear ACPs.
     */
-   int **atBCP;
-   /** The array atRCP contains the information of the gradient paths that connect
-    * an RCP with a set of BCPs. in atBCP[i][j][k], the index i identifies
-    * the RCP. The index j identifies   */
-   int **atRCP;
+   int **conBCP;
+   /** This array (connectivity of a RCP) contains the bcps associated with a RCP.
+    * In conRCP[i][j][k], i refers to the i-th RCP in the list.
+    * [j=0][k] contains the list of kth-bcps possibly connected to the rcp.
+    * [j=1][k] contains the list of the number of points in the Ring Path.
+    * Here Ring Path is equivalent to Ring Grad Path, and are the Gradient
+    * paths that connects RCPs with BCPs (BGP connects BCPs with ACPs).
+    */
+   int ***conRCP;
    /** This array contains the coordinates of ACPs. in RACP[i][j], the j-th cartesian
     * coordinates of the i-th ACP are stored.  */
    solreal **RACP;
@@ -96,7 +100,7 @@ public:
    /** This array contains the coordinates of CCPs. in RCCP[i][j], the j-th cartesian
     * coordinates of the i-th CCP are stored.  */
    solreal **RCCP;
-   /** RGBP contains the coordinates of the <b>B</b>ond <b>G</b>radient
+   /** RBGP contains the coordinates of the <b>B</b>ond <b>G</b>radient
     * <b>P</b>aths. In this implementation the bond path consists of a set
     * of points along the real bond path (which is a continuos curve in 
     * space). Each bond path is uniquely associated to a BCP.
@@ -105,6 +109,18 @@ public:
     * the n-th point in the bond path, and the third index is the cartesian
     * coordinate of the n-th point.  */
    solreal ***RBGP;
+   /** RRGP contains the coordinates of the <b>R</b>ing <b>G</b>radient
+    * <b>P</b>aths. In this implementation the ring path consists of a set
+    * of BCPs associated with the RCP. Each RCP-BCP pair consists, in turn,
+    * of a set of points along the real ring path (which is a continuos curve in 
+    * space). Several ring paths are associated to an RCP (each one of the
+    * paths associated uniquely to a BCP-RCP pair.
+    * In RRGP[i][j][n][k], the first index indicates the index of the 
+    * i-th RCP, the second indicates
+    * the j-th BCP connected to the i-th RCP,
+    * n refers to the n-tn point in the ring path, and the fourth index is the cartesian
+    * coordinate of the n-th point.  */
+   solreal ***RRGP;
    /** centMolecVec is a vector used for centering the molecule. This array
     * is used for producing POV files. <b>Warning: In the current version,
     * after the POV has been recorded, the coordinates of the critical

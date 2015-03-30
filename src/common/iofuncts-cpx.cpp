@@ -266,7 +266,7 @@ void writeConnectivityBCPs(ofstream &ofil,critPtNetWork &cp)
    writeOpenningAttribute(ofil,key.c_str(),false);
    ofil << endl;
    for (int i=0; i<cp.nBCP; i++) {
-      ofil << (i+1) << " 2 " << (cp.atBCP[i][0]+1) << " " << (cp.atBCP[i][1]+1) << endl;
+      ofil << (i+1) << " 2 " << (cp.conBCP[i][0]+1) << " " << (cp.conBCP[i][1]+1) << endl;
    }
    writeClosingAttribute(ofil,key.c_str());
    return;
@@ -379,7 +379,7 @@ void writeNumberOfPointsPerBondPath(ofstream &ofil,critPtNetWork &cp)
    ofil << endl;
    int ninps=0;
    for (int i=0; i<cp.nBCP; i++) {
-      ofil << " " << cp.atBCP[i][2];
+      ofil << " " << cp.conBCP[i][2];
       if ((++ninps)==5) {ofil << endl; ninps=0;}
    }
    if (ninps!=0) {ofil << endl;}
@@ -407,7 +407,7 @@ void writeBondPathsCoordinates(ofstream &ofil,critPtNetWork &cp)
       writeClosingAttribute(ofil,ikey.c_str());
       writeOpenningAttribute(ofil,ckey.c_str(),false);
       ofil << endl;
-      npts=cp.atBCP[i][2];
+      npts=cp.conBCP[i][2];
       for (int j=0; j<npts; j++) {
          for (int k=0; k<3; k++) {
             ofil << " " << setw(19) << cp.RBGP[i][j][k];

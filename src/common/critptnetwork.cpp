@@ -152,7 +152,7 @@ void critPtNetWork::init()
    nACP=nBCP=nRCP=nCCP=0;
    normalbcp=0;
    nBGP=0;
-   atBCP=NULL;
+   conBCP=NULL;
    RACP=RBCP=RRCP=RCCP=NULL;
    RBGP=NULL;
    lblACP=lblBCP=lblRCP=lblCCP=NULL;
@@ -194,7 +194,7 @@ critPtNetWork::~critPtNetWork()
    dealloc1DStringArray(lblACP);
    dealloc2DRealArray(RBCP,dBCP);
    dealloc1DStringArray(lblBCP);
-   dealloc2DIntArray(atBCP,dBCP);
+   dealloc2DIntArray(conBCP,dBCP);
    dealloc2DRealArray(RRCP,dRCP);
    dealloc1DStringArray(lblRCP);
    dealloc2DRealArray(RCCP,dCCP);
@@ -270,7 +270,7 @@ void critPtNetWork::setCriticalPoints(ScalarFieldType ft)
       dBCP=(nACP*(nACP-1))/2;
       if ( dBCP<CPNW_MINARRAYSIZE ) {dBCP=CPNW_MINARRAYSIZE;}
       alloc2DRealArray(string("RBCP"),dBCP,3,RBCP,1.0e+50);
-      alloc2DIntArray(string("atBCP"),dBCP,3,atBCP,-1);
+      alloc2DIntArray(string("conBCP"),dBCP,3,conBCP,-1);
       alloc1DStringArray("lblBCP",dBCP,lblBCP);
    } else {
       displayErrorMessage("First look for ACPs...\n");
@@ -367,10 +367,10 @@ void critPtNetWork::setBondPaths()
    int at1,at2;
    for (int i=0; i<nBCP; i++) {
       for (int k=0; k<3; k++) {rseed[k]=RBCP[i][k];}
-      at1=atBCP[i][0];
-      at2=atBCP[i][1];
+      at1=conBCP[i][0];
+      at2=conBCP[i][1];
       npts=findSingleRhoGradientPathRK5(at1,at2,hstep,arrsize,RBGP[i],rseed);
-      atBCP[i][2]=npts;
+      conBCP[i][2]=npts;
       if (npts>0) {nBGP++;}
       //for (int j=0; j<npts; j++) {
       //   for (int k=0; k<3; k++) {RBGP[i][j][k]=RGP[j][k];}
@@ -472,8 +472,8 @@ bool critPtNetWork::setRhoBCPs(void)
             lbl=bn->atLbl[atb]+string("-")+bn->atLbl[ata];
          }
          if (rho>CPNW_MINRHOSIGNIFICATIVEVAL&&addRhoBCP(x,sig,lbl,mypos)&&mypos>=0) {
-            atBCP[mypos][0]=ata;
-            atBCP[mypos][1]=atb;
+            conBCP[mypos][0]=ata;
+            conBCP[mypos][1]=atb;
          }
          atb=bn->bNet[ata][k];
          ++k;
@@ -523,8 +523,8 @@ bool critPtNetWork::setRhoBCPs(void)
                if ((rho>CPNW_MINRHOSIGNIFICATIVEVAL)&&(computeMagnitudeV3(g)<CPNW_EPSRHOACPGRADMAG)) {
                   addRhoBCP(x,sig,lbl,mypos);
                   if ((mypos>=0)&&(mypos<dBCP)) {
-                     atBCP[mypos][0]=ata;
-                     atBCP[mypos][1]=atb;
+                     conBCP[mypos][0]=ata;
+                     conBCP[mypos][1]=atb;
                   }
                }
             }
@@ -545,8 +545,8 @@ bool critPtNetWork::setRhoBCPs(void)
       for ( int i=normalbcp ; i<nBCP ; i++ ) {
          for ( int k=0 ; k<3 ; k++ ) {tbcp[k]=RBCP[i][k];}
          findTwoClosestACPs(tbcp,ata,atb);
-         atBCP[i][0]=ata;
-         atBCP[i][1]=atb;
+         conBCP[i][0]=ata;
+         conBCP[i][1]=atb;
          lblBCP[i]="*"+lblACP[ata]+"-"+lblACP[atb];
       }
       cout << (nBCP-normalbcp) << " new BCP";
@@ -734,8 +734,8 @@ bool critPtNetWork::setLOLBCPs(void)
             lbl=bn->atLbl[atb]+string("-")+bn->atLbl[ata];
          }
          if (addRhoBCP(x,sig,lbl,mypos)&&mypos>=0) {
-            atBCP[mypos][0]=ata;
-            atBCP[mypos][1]=atb;
+            conBCP[mypos][0]=ata;
+            conBCP[mypos][1]=atb;
          }
          atb=bn->bNet[ata][k];
          ++k;
@@ -786,8 +786,8 @@ bool critPtNetWork::setLOLBCPs(void)
                if ((rho>CPNW_MINRHOSIGNIFICATIVEVAL)&&(computeMagnitudeV3(g)<CPNW_EPSRHOACPGRADMAG)) {
                   addRhoBCP(x,sig,lbl,mypos);
                   if ((mypos>=0)&&(mypos<dBCP)) {
-                     atBCP[mypos][0]=ata;
-                     atBCP[mypos][1]=atb;
+                     conBCP[mypos][0]=ata;
+                     conBCP[mypos][1]=atb;
                   }
                }
             }
@@ -808,8 +808,8 @@ bool critPtNetWork::setLOLBCPs(void)
       for ( int i=normalbcp ; i<nBCP ; i++ ) {
          for ( int k=0 ; k<3 ; k++ ) {tbcp[k]=RBCP[i][k];}
          findTwoClosestACPs(tbcp,ata,atb);
-         atBCP[i][0]=ata;
-         atBCP[i][1]=atb;
+         conBCP[i][0]=ata;
+         conBCP[i][1]=atb;
          lblBCP[i]="*"+lblACP[ata]+"-"+lblACP[atb];
       }
       cout << (nBCP-normalbcp) << " new BCP";
@@ -1049,8 +1049,8 @@ void critPtNetWork::seekRhoBCPWithExtraACP(int acppos,solreal maxrad)
                   (computeMagnitudeV3(g)<CPNW_EPSRHOACPGRADMAG)) {
                addRhoBCP(xx,sig,lbl,mypos);
                if ((mypos>=0)&&(mypos<dBCP)) {
-                  atBCP[mypos][0]=i;
-                  atBCP[mypos][1]=acppos;
+                  conBCP[mypos][0]=i;
+                  conBCP[mypos][1]=acppos;
                }
             }
          }
@@ -1080,8 +1080,8 @@ void critPtNetWork::seekLOLBCPWithExtraACP(int acppos,solreal maxrad)
             if (computeMagnitudeV3(g)<CPNW_EPSLOLACPGRADMAG) {
                addRhoBCP(xx,sig,lbl,mypos);
                if ((mypos>=0)&&(mypos<dBCP)) {
-                  atBCP[mypos][0]=i;
-                  atBCP[mypos][1]=acppos;
+                  conBCP[mypos][0]=i;
+                  conBCP[mypos][1]=acppos;
                }
             }
          }
@@ -2292,7 +2292,7 @@ bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
       pof << "#if(DrawGradientPathSpheres)" << endl;
       pof << "union {" << endl;
       for (int i=0; i<nBCP; i++) {
-         npts=atBCP[i][2];
+         npts=conBCP[i][2];
          writePOVSphere(pof,1,RBGP[i][0][0],RBGP[i][0][1],RBGP[i][0][2], \
                gprad,"ColorABGradPath");
          for (int j=1; j<npts; j++) {
@@ -2309,7 +2309,7 @@ bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
       pof << "#if(DrawGradientPathTubes)" << endl;
       pof << "union {" << endl;
       for (int i=0; i<nBCP; i++) {
-         npts=atBCP[i][2];
+         npts=conBCP[i][2];
          writePOVSphere(pof,1,RBGP[i][0][0],RBGP[i][0][1],RBGP[i][0][2], \
                gprad,"ColorABGradPath");
          for (int j=1; j<npts; j++) {
@@ -2419,7 +2419,7 @@ void critPtNetWork::centerMolecule(void)
    }
    if (iknowbgps) {
       for (int i=0; i<nBCP; i++) {
-         for (int j=0; j<atBCP[i][2]; j++) {
+         for (int j=0; j<conBCP[i][2]; j++) {
             for (int k=0; k<3; k++) {
                RBGP[i][j][k]-=trn[k];
             }
@@ -2478,11 +2478,11 @@ bool critPtNetWork::readFromFile(string inname)
       nBCP=cpxGetNOfBCPs(cfil);
       dBCP=(nACP*(nACP-1))/2;
       alloc2DRealArray(string("RBCP"),dBCP,3,RBCP,1.0e+50);
-      alloc2DIntArray(string("atBCP"),dBCP,3,atBCP,-1);
+      alloc2DIntArray(string("conBCP"),dBCP,3,conBCP,-1);
       alloc1DStringArray("lblBCP",dBCP,lblBCP);
       if (nBCP>=0) {
          cpxGetBCPCartCoordFromFile(cfil,nBCP,RBCP);
-         cpxGetBCPConnectivityFromFile(cfil,nBCP,atBCP);
+         cpxGetBCPConnectivityFromFile(cfil,nBCP,conBCP);
          cpxGetBCPLabelsFromFile(cfil,nBCP,lblBCP);
          iknowbcps=true;
       } else {
@@ -2523,9 +2523,9 @@ bool critPtNetWork::readFromFile(string inname)
    iknowallcps=(iknowacps&&iknowbcps&&iknowrcps&&iknowccps);
    nBGP=cpxGetNOfBondPaths(cfil);
    if (dBCP>0) {alloc3DRealArray(string("RBGP"),dBCP,CPNW_ARRAYSIZEGRADPATH,3,RBGP);}
-   if (nBGP>=0&&atBCP!=NULL) {
-      cpxGetNOfPtsPerBondPath(cfil,nBGP,atBCP);
-      cpxGetBondPathData(cfil,nBGP,atBCP,RBGP);
+   if (nBGP>=0&&conBCP!=NULL) {
+      cpxGetNOfPtsPerBondPath(cfil,nBGP,conBCP);
+      cpxGetBondPathData(cfil,nBGP,conBCP,RBGP);
       iknowbgps=true;
    } else {iknowbgps=false;}
    cout << "Critical Point State Loaded!" << endl;
@@ -2537,7 +2537,7 @@ void critPtNetWork::displayStatus(bool lngdesc)
 {
    printScrCharLine('+');
    if (lngdesc) {
-      if (atBCP==NULL) {displayWarningMessage("atBCP is not allocated.");}
+      if (conBCP==NULL) {displayWarningMessage("conBCP is not allocated.");}
       if (RACP==NULL) {displayWarningMessage("RACP is not allocated.");}
       if (RBCP==NULL) {displayWarningMessage("RBCP is not allocated.");}
       if (RRCP==NULL) {displayWarningMessage("RRCP is not allocated.");}
@@ -2796,8 +2796,8 @@ void critPtNetWork::findMaxBondDist()
    solreal magd;
    int bcp1,bcp2;
    for ( int i=0 ; i<nBCP ; ++i ) {
-      bcp1=atBCP[i][0];
-      bcp2=atBCP[i][1];
+      bcp1=conBCP[i][0];
+      bcp2=conBCP[i][1];
       magd=0.0e0;
       for ( int j=0 ; j<3 ; ++j ) {
          magd+=((RACP[bcp1][j]-RACP[bcp2][j])*(RACP[bcp1][j]-RACP[bcp2][j]));
