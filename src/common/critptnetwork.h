@@ -83,7 +83,8 @@ public:
    /** This array (connectivity of a RCP) contains the bcps associated with a RCP.
     * In conRCP[i][j][k], i refers to the i-th RCP in the list.
     * [j=0][k] contains the list of kth-bcps possibly connected to the rcp.
-    * [j=1][k] contains the list of the number of points in the Ring Path.
+    * [j=1][k] contains the list of the number of points in the Ring Path
+    * that connects the i-th rcp with the k-th bcp.
     * Here Ring Path is equivalent to Ring Grad Path, and are the Gradient
     * paths that connects RCPs with BCPs (BGP connects BCPs with ACPs).
     */
@@ -241,7 +242,9 @@ public:
    int findSingleRhoGradientPathRK5(int at1,int at2,solreal hstep,\
          int dima,solreal** (&arbgp),solreal (&ro)[3]);
 /* ************************************************************************************ */
+   void correctRCPConnectivity(void);
 /* ************************************************************************************ */
+   void removeFromConRCP(const int rcpIdx,const int pos2rem);
 /* ************************************************************************************ */
 /* ************************************************************************************ */
 /* ************************************************************************************ */
@@ -371,6 +374,8 @@ protected:
    void findTwoClosestAtoms(solreal (&xo)[3],int &idx1st,int &idx2nd);
 /* ************************************************************************************ */
    void findTwoClosestACPs(solreal (&xo)[3],int &idx1st,int &idx2nd);
+/* ************************************************************************************ */
+   void addBCP2ConRCP(const int rcpIdx,const int bcpIdx);
 /* ************************************************************************************ */
    void invertOrderBGPPoints(int dim);
 /* ************************************************************************************ */

@@ -325,7 +325,7 @@ void writeLabelsRCPs(ofstream &ofil,critPtNetWork &cp)
    int ninps=0;
    for (int i=0; i<cp.nRCP; i++) {
       ofil << " " << cp.lblRCP[i];
-      if ((++ninps)==4) {ofil << endl; ninps=0;}
+      if ((++ninps)==2) {ofil << endl; ninps=0;}
    }
    if (ninps!=0) {ofil << endl;}
    writeClosingAttribute(ofil,key.c_str());

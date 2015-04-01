@@ -145,6 +145,10 @@ using std::endl;
 #define CPNW_MINARRAYSIZE (8)
 #endif
 
+#ifndef CPNW_MAXBCPSCONNECTEDTORCP
+#define CPNW_MAXBCPSCONNECTEDTORCP (18)
+#endif
+
 /* ************************************************************************************ */
 void critPtNetWork::init()
 {
@@ -153,8 +157,10 @@ void critPtNetWork::init()
    normalbcp=0;
    nBGP=0;
    conBCP=NULL;
+   conRCP=NULL;
    RACP=RBCP=RRCP=RCCP=NULL;
    RBGP=NULL;
+   RRGP=NULL;
    lblACP=lblBCP=lblRCP=lblCCP=NULL;
    for (int i=0; i<3; i++) {centMolecVec[i]=0.0e0;}
    //privates
@@ -197,6 +203,7 @@ critPtNetWork::~critPtNetWork()
    dealloc2DIntArray(conBCP,dBCP);
    dealloc2DRealArray(RRCP,dRCP);
    dealloc1DStringArray(lblRCP);
+   dealloc3DIntArray(conRCP,dRCP,2);
    dealloc2DRealArray(RCCP,dCCP);
    dealloc1DStringArray(lblCCP);
    wf=NULL;
@@ -300,6 +307,7 @@ void critPtNetWork::setCriticalPoints(ScalarFieldType ft)
       if ( dRCP<CPNW_MINARRAYSIZE ) {dRCP=CPNW_MINARRAYSIZE;}
       alloc2DRealArray(string("RRCP"),dRCP,3,RRCP,1.0e+50);
       alloc1DStringArray("lblRCP",dRCP,lblRCP);
+      alloc3DIntArray("conRCP",dRCP,2,CPNW_MAXBCPSCONNECTEDTORCP,conRCP,-1);
    }
    cout << "Looking for Ring Critical Points..." << endl;
    switch (ft) {
@@ -571,6 +579,10 @@ bool critPtNetWork::setRhoRCPs(void)
          //wf->evalRhoGradRho(x[0],x[1],x[2],rho,g);
          if ((rho>CPNW_MINRHOSIGNIFICATIVEVAL)&&(computeMagnitudeV3(g)<CPNW_EPSRHOACPGRADMAG)) {
             addRhoRCP(x,sig,lbl,mypos);
+            if (mypos>=0) {
+               addBCP2ConRCP(mypos,i);
+               addBCP2ConRCP(mypos,j);
+            }  
          }
       }
 #if USEPROGRESSBAR
@@ -913,6 +925,7 @@ bool critPtNetWork::addRhoRCP(solreal (&x)[3],int sig,string &lbl,int &pos)
    } else {
       if ((int(ttpos)<nRCP)&&(ttpos!=string::npos)) {
          lblRCP[ttpos]+=(string("-")+lbl);
+         pos=int(ttpos);
       }
    }
    return false;
@@ -2497,8 +2510,10 @@ bool critPtNetWork::readFromFile(string inname)
    if (iknowbcps) {
       nRCP=cpxGetNOfRCPs(cfil);
       dRCP=(nBCP*(nBCP-1))/2;
+      if ( dRCP<CPNW_MINARRAYSIZE ) {dRCP=CPNW_MINARRAYSIZE;}
       alloc2DRealArray(string("RRCP"),dRCP,3,RRCP,1.0e+50);
       alloc1DStringArray("lblRCP",dRCP,lblRCP);
+      alloc3DIntArray("conRCP",dRCP,2,CPNW_MAXBCPSCONNECTEDTORCP,conRCP,-1);
       if (nRCP>=0) {
          cpxGetRCPCartCoordFromFile(cfil,nRCP,RRCP);
          cpxGetRCPLabelsFromFile(cfil,nRCP,lblRCP);
@@ -2817,6 +2832,93 @@ void critPtNetWork::findMaxBondDist()
    maxBondDist=sqrt(maxBondDist);
    maxBCPACPDist=sqrt(maxBCPACPDist);
 }
+/* ************************************************************************************ */
+void critPtNetWork::addBCP2ConRCP(const int rcpIdx,const int bcpIdx)
+{
+#if DEBUG
+   if ( conRCP==NULL ) {
+      displayErrorMessage("conRCP is not allocated!");
+      DISPLAYDEBUGINFOFILELINE;
+   }
+#endif /* ( DEBUG ) */
+   int k=0;
+   while ( k<CPNW_MAXBCPSCONNECTEDTORCP && conRCP[rcpIdx][0][k]!=bcpIdx ) {
+      if ( conRCP[rcpIdx][0][k]<0 ) {conRCP[rcpIdx][0][k]=bcpIdx; return;}
+      ++k;
+   }
+   if ( k==CPNW_MAXBCPSCONNECTEDTORCP ) {
+      displayWarningMessage("Perhaps you need a larger array for conRCP!");
+#if DEBUG
+         DISPLAYDEBUGINFOFILELINE;
+#endif /* ( DEBUG ) */
+   }
+}
+/* ************************************************************************************ */
+void critPtNetWork::correctRCPConnectivity(void)
+{
+   findMaxBondDist();
+   //solreal maxallwdd=1.414213562373095e0*maxBCPACPDist;
+   solreal maxallwdd=0.90*maxBondDist;
+   cout << "maxallwdd: " << maxallwdd << endl;
+   solreal dd;
+   int j,bcpIdx;
+   for ( int i=0 ; i<nRCP ; ++i ) {
+      j=0;
+      while ( j<CPNW_MAXBCPSCONNECTEDTORCP && conRCP[i][0][j]>=0 ) {
+         bcpIdx=conRCP[i][0][j];
+         dd=0.0e0;
+         for ( int k=0; k<3 ; ++k ) {
+            dd+=((RRCP[i][k]-RBCP[bcpIdx][k])*(RRCP[i][k]-RBCP[bcpIdx][k]));
+         }
+         dd=sqrt(dd);
+         cout << "d: " << dd << "; " << lblBCP[bcpIdx] << endl;
+         if ( dd<=maxallwdd ) {
+            ++j;
+         } else {
+            removeFromConRCP(i,j);
+         }
+      }
+   }
+}
+/* ************************************************************************************ */
+void critPtNetWork::removeFromConRCP(const int rcpIdx,const int pos2rem)
+{
+   int total=0;
+   while ( conRCP[rcpIdx][0][total]>=0 ) {++total;}
+   --total;
+   if ( pos2rem==total ) {
+      conRCP[rcpIdx][0][total]=conRCP[rcpIdx][1][total]=-1;
+      return;
+   }
+   int tmp=conRCP[rcpIdx][0][total];
+   conRCP[rcpIdx][0][pos2rem]=tmp;
+   tmp=conRCP[rcpIdx][1][total];
+   conRCP[rcpIdx][1][pos2rem]=tmp;
+   conRCP[rcpIdx][0][total]=conRCP[rcpIdx][1][total]=-1;
+   /*
+   int total=0;
+   while ( conRCP[rcpIdx][0][total]>=0 ) {++total;}
+   if ( conRCP[rcpIdx][0][total-1]==bcpIdx ) {
+      conRCP[rcpIdx][0][total-1]=conRCP[rcpIdx][1][total-1]=-1;
+      return;
+   }
+   int mypos=0;
+   while ( conRCP[rcpIdx][0][mypos]!=bcpIdx && mypos<total ) {++mypos;}
+   --total;
+   int tmp=conRCP[rcpIdx][0][total];
+   conRCP[rcpIdx][0][mypos]=tmp;
+   tmp=conRCP[rcpIdx][1][total];
+   conRCP[rcpIdx][1][mypos];
+   conRCP[rcpIdx][0][total]=conRCP[rcpIdx][1][total]=-1;
+   // */
+}
+/* ************************************************************************************ */
+/* ************************************************************************************ */
+/* ************************************************************************************ */
+/* ************************************************************************************ */
+/* ************************************************************************************ */
+/* ************************************************************************************ */
+/* ************************************************************************************ */
 /* ************************************************************************************ */
 /* ************************************************************************************ */
 
