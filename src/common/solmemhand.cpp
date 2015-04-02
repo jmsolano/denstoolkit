@@ -301,11 +301,78 @@ bool alloc3DRealArray(string ptrname,const int idx1,const int idx2,const int idx
    }
 }
 /* ************************************************************************************** */
+bool alloc4DRealArray(string ptrname,const int idx1,const int idx2,\
+      const int idx3,const int idx4,solreal**** &thptr,solreal val)
+{
+   string errmsg=string("Warning: cannot allocate ")+ptrname\
+                 +string(", in alloc4DRealArray(...) function.\n");
+   if (!(thptr=new solreal***[idx1])) {
+      std::cout << errmsg;
+      std::cout << __FILE__ << " " << __LINE__ << std::endl;
+      return false;
+   } else {
+      for (int i=0; i<idx1; i++) {
+         if (!(thptr[i]=new solreal**[idx2])) {
+            std::cout << errmsg;
+            std::cout << __FILE__ << " " << __LINE__ << std::endl;
+         } else {
+            for (int j=0; j<idx2; j++) {
+               if (!(thptr[i][j]=new solreal*[idx3])) {
+                  std::cout << errmsg;
+                  std::cout << __FILE__ << " " << __LINE__ << std::endl;
+               } else {
+                  for ( int k=0 ; k<idx3 ; k++ ) {
+                     if ( !(thptr[i][j][k]=new solreal[idx4]) ) {
+                        std::cout << errmsg;
+                        std::cout << __FILE__ << " " << __LINE__ << std::endl;
+                     }
+                  }
+               }
+            }
+         }
+      }
+      for (int i=0; i<idx1; i++) {
+         for (int j=0; j<idx2; j++) {
+            for (int k=0; k<idx3; k++) {
+               for ( int l=0 ; l<idx4 ; l++ ) {
+                  thptr[i][j][k][l]=val;
+               }
+            }
+         }
+      }
+      return true;
+   }
+}
+/* ************************************************************************************** */
 bool dealloc3DRealArray(solreal*** &tp,const int idx1,const int idx2)
 {
    if (tp!=NULL) {
       for (int i=0; i<idx1; i++) {
          for (int j=0; j<idx2; j++) {
+            delete[] tp[i][j];
+            tp[i][j]=NULL;
+         }
+         delete[] tp[i];
+         tp[i]=NULL;
+      }
+      delete[] tp;
+      tp=NULL;
+      return true;
+   } else {
+      return false;
+   }
+}
+/* ************************************************************************************** */
+bool dealloc4DRealArray(solreal**** &tp,const int idx1,const int idx2,\
+      const int idx3)
+{
+   if (tp!=NULL) {
+      for (int i=0; i<idx1; i++) {
+         for (int j=0; j<idx2; j++) {
+            for ( int k=0 ; k<idx3 ; k++ ) {
+               delete[] tp[i][j][k];
+               tp[i][j][k]=NULL;
+            }
             delete[] tp[i][j];
             tp[i][j]=NULL;
          }
