@@ -121,7 +121,7 @@ public:
     * the j-th BCP connected to the i-th RCP,
     * n refers to the n-tn point in the ring path, and the fourth index is the cartesian
     * coordinate of the n-th point.  */
-   solreal ***RRGP;
+   solreal ****RRGP;
    /** centMolecVec is a vector used for centering the molecule. This array
     * is used for producing POV files. <b>Warning: In the current version,
     * after the POV has been recorded, the coordinates of the critical
@@ -237,9 +237,11 @@ public:
 /* ************************************************************************************ */
    void setBondPaths(void);
 /* ************************************************************************************ */
+   void setRingPaths(void);
+/* ************************************************************************************ */
    bool seekSingleRhoBCP(int ata,int atb,solreal (&x)[3]);
 /* ************************************************************************************ */
-   int findSingleRhoGradientPathRK5(int at1,int at2,solreal hstep,\
+   int findSingleRhoBondGradientPathRK5(int at1,int at2,solreal hstep,\
          int dima,solreal** (&arbgp),solreal (&ro)[3]);
 /* ************************************************************************************ */
    void correctRCPConnectivity(void);
@@ -278,6 +280,8 @@ public:
 /* ************************************************************************************ */
    bool iKnowBGPs(void) {return iknowbgps;}
 /* ************************************************************************************ */
+   bool iKnowRGPs(void) {return iknowrgps;}
+/* ************************************************************************************ */
    ScalarFieldType myCPType(void) {return mycptype;}
 /* ************************************************************************************ */
    solreal getMaxBondDist() {return maxBondDist;}
@@ -292,7 +296,7 @@ protected:
    int maxItACP,maxItBCP,maxItRCP,maxItCCP;
    int normalbcp;
    bool iknowacps,iknowbcps,iknowrcps,iknowccps, iknowallcps;
-   bool iknowbgps;
+   bool iknowbgps,iknowrgps;
    bool drawNuc,drawBnd,drawBGPs;
    bool tubeBGPStyle;
    bool mkextsearch;

@@ -90,6 +90,11 @@ bool alloc3DRealArray(string ptrname,const int idx1,const int idx2,const int idx
 /* ********************************************************************************** */
 bool dealloc3DRealArray(solreal*** & tp,const int idx1,const int idx2);
 /* ********************************************************************************** */
+bool alloc4DRealArray(string ptrname,const int idx1,const int idx2,const int idx3,
+      const int idx4,solreal**** &thptr,const solreal val=0.0e0);
+/* ********************************************************************************** */
+bool dealloc4DRealArray(solreal**** & tp,const int idx1,const int idx2,const int idx3);
+/* ********************************************************************************** */
 bool alloc2DIntArray(string ptrname,const int rows,const int cols,int** &thptr,const int val);
 /* ********************************************************************************** */
 bool alloc2DIntArray(string ptrname,const int rows,const int cols,int** &thptr);
