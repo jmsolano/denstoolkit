@@ -376,7 +376,8 @@ void critPtNetWork::setBondPaths()
       //   for (int k=0; k<3; k++) {RBGP[i][j][k]=RGP[j][k];}
       //}
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((nBCP-1))));
+      printProgressBar(int(100.0e0*solreal(i)/\
+               solreal((nBCP>1) ? (nBCP-1) : 1 )));
 #endif
    }
 #if USEPROGRESSBAR
@@ -433,7 +434,8 @@ bool critPtNetWork::setRhoACPs()
          }
       }
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((bn->nNuc-1))));
+      printProgressBar(int(100.0e0*solreal(i)/\
+               solreal((bn->nNuc > 1)? (bn->nNuc-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
@@ -479,7 +481,8 @@ bool critPtNetWork::setRhoBCPs(void)
          ++k;
       }
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((nACP-1))));
+      printProgressBar(int(100.0e0*solreal(i)/\
+               solreal((nACP>1)? (nACP-1) : 1)));
 #endif
    }
    normalbcp=nBCP;
@@ -497,7 +500,8 @@ bool critPtNetWork::setRhoBCPs(void)
    for ( int i=(bn->nNuc) ; i<nACP ; i++ ) {
       seekRhoBCPWithExtraACP(i,(bn->maxBondDist));
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((nACP-1))));
+      printProgressBar(int(100.0e0*solreal(i)/\
+               solreal((nACP>1)? (nACP-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
@@ -531,7 +535,8 @@ bool critPtNetWork::setRhoBCPs(void)
          }
       }
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((nACP-1))));
+      printProgressBar(int(100.0e0*solreal(i)/\
+               solreal((nACP>1)? (nACP-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
@@ -574,7 +579,8 @@ bool critPtNetWork::setRhoRCPs(void)
          }
       }
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((nBCP-1))));
+      printProgressBar(int(100.0e0*solreal(i)/\
+               solreal((nBCP>1)? (nBCP-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
@@ -611,7 +617,8 @@ bool critPtNetWork::setRhoCCPs(void)
          }
       }
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((nRCP))));
+      printProgressBar(int(100.0e0*solreal(i)/\
+               solreal((nRCP>0)? (nRCP) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
@@ -668,7 +675,8 @@ bool critPtNetWork::setLOLACPs()
          rad*=0.01e0;
          seekLOLACPsAroundAPoint(xs,rad,lbl,-1);
 #if USEPROGRESSBAR
-         printProgressBar(int(100.0e0*solreal(i)/solreal((bn->nNuc-1))));
+         printProgressBar(int(100.0e0*solreal(i)/\
+                  solreal((bn->nNuc > 1)? (bn->nNuc-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
@@ -694,7 +702,8 @@ bool critPtNetWork::setLOLACPs()
          }
       }
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((bn->nNuc-1))));
+      printProgressBar(int(100.0e0*solreal(i)/\
+               solreal((bn->nNuc > 1)? (bn->nNuc-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
@@ -741,7 +750,8 @@ bool critPtNetWork::setLOLBCPs(void)
          ++k;
       }
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((nACP-1))));
+      printProgressBar(int(100.0e0*solreal(i)/\
+               solreal((nACP>1)? (nACP-1) : 1)));
 #endif
    }
    normalbcp=nBCP;
@@ -759,7 +769,8 @@ bool critPtNetWork::setLOLBCPs(void)
    for ( int i=(bn->nNuc) ; i<nACP ; i++ ) {
       seekLOLBCPWithExtraACP(i,(bn->maxBondDist));
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((nACP-1))));
+      printProgressBar(int(100.0e0*solreal(i)/\
+               solreal((nACP>1)? (nACP-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
@@ -1150,7 +1161,8 @@ void critPtNetWork::seekLOLACPsOnASphere(int atIdx,int nDivR,int nDivT,int nDivP
          }
       }
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(count)/solreal(nseeds-1)));
+      printProgressBar(int(100.0e0*solreal(count)/\
+               solreal((nseeds>1) ? (nseeds-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
@@ -1181,7 +1193,8 @@ void critPtNetWork::extendedSearchCPs(void)
       seekRhoCCPsAroundAPoint(xs,dx,lbl,nIHV);
       ++count;
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(count)/solreal(nBCP-normalbcp-1)));
+      printProgressBar(int(100.0e0*solreal(count)/\
+               solreal((nBCP>normalbcp)? (nBCP-normalbcp-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
@@ -1203,7 +1216,8 @@ void critPtNetWork::extendedSearchCPs(void)
       seekRhoCCPsAroundAPoint(xs,dx,lbl,nIHV);
       ++count;
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(count)/solreal(nBCP-normalbcp-1)));
+      printProgressBar(int(100.0e0*solreal(count)/\
+               solreal((nBCP>normalbcp)? (nBCP-normalbcp-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
@@ -1225,7 +1239,8 @@ void critPtNetWork::extendedSearchCPs(void)
       seekRhoRCPsAroundAPoint(xs,dx,lbl,nIHV);
       ++count;
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(count)/solreal(nBCP-normalbcp-1)));
+      printProgressBar(int(100.0e0*solreal(count)/\
+               solreal((nBCP>normalbcp)? (nBCP-normalbcp-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
