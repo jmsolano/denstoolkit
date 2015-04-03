@@ -1232,7 +1232,7 @@ void critPtNetWork::extendedSearchCPs(void)
       ++count;
 #if USEPROGRESSBAR
       printProgressBar(int(100.0e0*solreal(count)/\
-               solreal(((nBCP-normalbcp)>1)? (nBCP-normalbcp-1) : 1)));
+               solreal((nRCP>1)? (nRCP-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
