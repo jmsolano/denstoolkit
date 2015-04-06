@@ -2962,6 +2962,29 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
    normalizeV3(ux);
    normalizeV3(uy);
    normalizeV3(uz);
+   solreal xmmxr[3],dir1[3];
+   for ( int i=0 ; i<3 ; ++i ) {
+      xmmxr[i]=xm[i]-xr[i];
+      dir1[i]=xrmxb[i];
+   }
+   solreal proj0=dotProductV3(xmmxr,uy),currProj;
+   bool samedir=true;
+   int iter=0;
+   do {
+      for ( int i=0 ; i<3 ; ++i ) {xn[i]=xmmxr[i];}
+      normalizeV3(xn);
+      for ( int i=0 ; i<3 ; ++i ) {
+         xn[i]*=hstep;
+         xn[i]+=xb[i];
+      }
+      imatrcp=walkGradientPathRK5ToEndPoint(xb,xn,xr,xm,magd,hstep,\
+            dima,arrgp,count,maxalllen,false /* uphilldir=false  */);
+      if ( imatrcp ) {return count;}
+      for ( int i=0 ; i<3 ; ++i ) {xmmxr[i]=xm[i]-xr[i];}
+      currProj=dotProductV3(xmmxr,uy);
+      if ( (proj0*currProj)<0.0e0 ) {samedir=false;}
+      ++iter;
+   } while (samedir && (iter<10));
    return count;
 }
 /* ************************************************************************************ */
