@@ -78,6 +78,8 @@ void writeCoordinatesCCPs(ofstream &ofil,critPtNetWork &cp);
 //**************************************************************************************************
 void writeConnectivityBCPs(ofstream &ofil,critPtNetWork &cp);
 //**************************************************************************************************
+void writeConnectivityRCPs(ofstream &ofil,critPtNetWork &cp);
+//**************************************************************************************************
 void writeLabelsACPs(ofstream &ofil,critPtNetWork &cp);
 //**************************************************************************************************
 void writeLabelsBCPs(ofstream &ofil,critPtNetWork &cp);
@@ -88,9 +90,15 @@ void writeLabelsCCPs(ofstream &ofil,critPtNetWork &cp);
 //**************************************************************************************************
 void writeNumberOfBondPaths(ofstream &ofil,critPtNetWork &cp);
 //**************************************************************************************************
+void writeNumberOfRingPaths(ofstream &ofil,critPtNetWork &cp);
+//**************************************************************************************************
 void writeNumberOfPointsPerBondPath(ofstream &ofil,critPtNetWork &cp);
 //**************************************************************************************************
+void writeNumberOfPointsPerRingPath(ofstream &ofil,critPtNetWork &cp);
+//**************************************************************************************************
 void writeBondPathsCoordinates(ofstream &ofil,critPtNetWork &cp);
+//**************************************************************************************************
+void writeRingPathsCoordinates(ofstream &ofil,critPtNetWork &cp);
 //**************************************************************************************************
 bool cpxGetPosBetweenKeyInFile(ifstream &ifil,int &aftik,int &befek,string key,bool frombeg);
 //**************************************************************************************************

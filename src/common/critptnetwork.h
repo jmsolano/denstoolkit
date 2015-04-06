@@ -244,6 +244,9 @@ public:
    int findSingleRhoBondGradientPathRK5(int at1,int at2,solreal hstep,\
          int dima,solreal** (&arbgp),solreal (&ro)[3]);
 /* ************************************************************************************ */
+   int findSingleRhoRingGradientPathRK5(int rcpIdx,int bcpIdxInRRGP,\
+         solreal hstep,int dima,solreal** (&arrgp));
+/* ************************************************************************************ */
    void correctRCPConnectivity(void);
 /* ************************************************************************************ */
    void removeFromConRCP(const int rcpIdx,const int pos2rem);
@@ -259,6 +262,8 @@ public:
    void drawBonds(bool db) {drawBnd=db;}
 /* ************************************************************************************ */
    void drawBondGradPaths(bool dbg) {drawBGPs=dbg;}
+/* ************************************************************************************ */
+   void drawRingGradPaths(bool dbg) {drawRGPs=dbg;}
 /* ************************************************************************************ */
    void tubeStyleBGP(bool stl) {tubeBGPStyle=stl;}
 /* ************************************************************************************ */
@@ -288,6 +293,10 @@ public:
 /* ************************************************************************************ */
    solreal getMaxDistBetwBCPAndBCP() {return maxBCPACPDist;}
 /* ************************************************************************************ */
+   int getNofRingPathsOfRCP(int rcpIdx);
+/* ************************************************************************************ */
+   int getTotalNofRingPaths(void);
+/* ************************************************************************************ */
 protected:
 /* ************************************************************************************ */
    class gaussWaveFunc *wf;
@@ -297,7 +306,7 @@ protected:
    int normalbcp;
    bool iknowacps,iknowbcps,iknowrcps,iknowccps, iknowallcps;
    bool iknowbgps,iknowrgps;
-   bool drawNuc,drawBnd,drawBGPs;
+   bool drawNuc,drawBnd,drawBGPs,drawRGPs;
    bool tubeBGPStyle;
    bool mkextsearch;
    solreal stepSizeACP,stepSizeBCP,stepSizeRCP,stepSizeCCP;
@@ -385,8 +394,11 @@ protected:
 /* ************************************************************************************ */
    void invertOrderBGPPoints(int dim,solreal** (&arr));
 /* ************************************************************************************ */
-   void getNextPointInGradientPathRK5(solreal (&xn)[3],solreal &stepsize,solreal &mgg);
+   void getNextPointInGradientPathRK5UpHill(solreal (&xn)[3],\
+         solreal &stepsize,solreal &mgg);
 /* ************************************************************************************ */
+   void getNextPointInGradientPathRK5DownHill(solreal (&xn)[3],\
+         solreal &stepsize,solreal &mgg);
 /* ************************************************************************************ */
    void centerMolecule(void);
 /* ************************************************************************************ */
