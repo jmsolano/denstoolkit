@@ -2799,6 +2799,7 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
       int bcpIdxInRRGP,solreal hstep,int dima,\
       solreal** (&arrgp))
 {
+   /*
    int bcpGlobIdx=conRCP[rcpIdx][0][bcpIdxInRRGP];
 #if DEBUG
    if ( bcpIdxInRRGP>CPNW_MAXBCPSCONNECTEDTORCP || bcpIdxInRRGP < 0 ) {
@@ -2813,10 +2814,11 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
       displayErrorMessage("Non existent bcp!");
       DISPLAYDEBUGINFOFILELINE;
    }
-#endif /* ( DEBUG ) */
-   for ( int i=0 ; i<CPNW_ARRAYSIZEGRADPATH ; ++i ) {
-      for ( int j=0 ; j<3 ; ++j ) {RGP[i][j]=0.0e0;}
-   }
+#endif
+   //It seems we do not need to clear RGP (the number of points is saved)
+   //for ( int i=0 ; i<CPNW_ARRAYSIZEGRADPATH ; ++i ) {
+   //   for ( int j=0 ; j<3 ; ++j ) {RGP[i][j]=0.0e0;}
+   //}
    solreal xn[3],xb[3],xr[3];
    for ( int i=0 ; i<3 ; ++i ) {
       xb[i]=RBCP[bcpGlobIdx][i];
@@ -2841,7 +2843,7 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
       displayWarningMessage("maggrad<=CPNW_EPSRHOACPGRADMAG");
       DISPLAYDEBUGINFOFILELINE;
    }
-#endif /* ( DEBUG ) */
+#endif 
    solreal pathlen=0.0e0;
    while ((!iminrcp)&&(count<dima)&&(maggrad>CPNW_EPSRHOACPGRADMAG)) {
       getNextPointInGradientPathRK5DownHill(xn,hstep,maggrad);
@@ -2889,7 +2891,7 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
             cout << "loopdist: " << loopdist << "(" << (maxBondDist*maxBondDist)
                  << "); count: " << count << endl;
             DISPLAYDEBUGINFOFILELINE;
-#endif /* ( DEBUG ) */
+#endif
             //return -1;
             ++count;
             break;
@@ -2900,7 +2902,7 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
          displayWarningMessage("End of array reached!");
 #if DEBUG
          DISPLAYDEBUGINFOFILELINE;
-#endif /* ( DEBUG ) */
+#endif
          return -1;
       }
    }
@@ -2908,6 +2910,113 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
       for ( int k=0 ; k<3 ; ++k ) {arrgp[i][k]=RGP[i][k];}
    }
    return count;
+   // */
+   int bcpGlobIdx=conRCP[rcpIdx][0][bcpIdxInRRGP];
+#if DEBUG
+   if ( bcpIdxInRRGP>CPNW_MAXBCPSCONNECTEDTORCP || bcpIdxInRRGP < 0 ) {
+      displayErrorMessage("Out of conRCP bounds!");
+      DISPLAYDEBUGINFOFILELINE;
+   }
+   if ( rcpIdx>nRCP ) {
+      displayErrorMessage("rcpIdx>nRCP");
+      DISPLAYDEBUGINFOFILELINE;
+   }
+   if ( bcpGlobIdx>nBCP || bcpGlobIdx<0 ) {
+      displayErrorMessage("Non existent bcp!");
+      DISPLAYDEBUGINFOFILELINE;
+   }
+#endif
+   int count;
+   solreal xm[3],xb[3],xr[3],xn[3];
+   solreal magd=0.0e0,maxalllen=maxBondDist*1.5e0;
+   for ( int i=0 ; i<3 ; ++i ) {
+      xb[i]=RBCP[bcpGlobIdx][i];
+      xr[i]=RRCP[rcpIdx][i];
+      xn[i]=xr[i]-xb[i];
+      magd+=(xn[i]*xn[i]);
+   }
+   magd=sqrt(magd);
+   for ( int i=0 ; i<3 ; ++i ) {
+      xn[i]*=(hstep/magd);
+      xn[i]+=xb[i];
+   }
+   bool imatrcp=walkGradientPathRK5ToEndPoint(xb,xn,xr,xm,hstep,\
+         dima,arrgp,count,maxalllen,false /* uphilldir=false  */);
+   return count;
+}
+/* ************************************************************************************ */
+bool critPtNetWork::walkGradientPathRK5ToEndPoint(\
+      solreal (&xi)[3],solreal (&x1)[3],\
+      solreal (&xe)[3],solreal (&xm)[3],solreal hstep,int dima,\
+      solreal** (&arrgp), int &npia,solreal maxlen,bool uphilldir)
+{
+   solreal xn[3],xmin[3],dmin=0.0e0,magd=0.0e0;
+   for ( int i=0 ; i<3 ; ++i ) {
+      RGP[0][i]=xi[i];
+      RGP[1][i]=x1[i];
+      xn[i]=x1[i];
+      xmin[i]=xn[i]-xe[i];
+      dmin+=(xmin[i]*xmin[i]);
+      magd+=((xn[i]-x1[i])*(xn[i]-x1[i]));
+   }
+   solreal mxlen2=maxlen*maxlen,pathlength=magd;
+   solreal epsd2=CPNW_EPSFABSDIFFCOORD*CPNW_EPSFABSDIFFCOORD;
+   solreal maggrad=1.0e0;
+   bool imatend=false;
+   int count=2;
+   while ((!imatend)&&(count<dima)&&(pathlength<mxlen2)) {
+      if ( uphilldir ) {
+         getNextPointInGradientPathRK5UpHill(xn,hstep,maggrad);
+      } else {
+         getNextPointInGradientPathRK5DownHill(xn,hstep,maggrad);
+      }
+      magd=maggrad=0.0e0;
+      for (int i=0; i<3; ++i) {
+         magd+=((xn[i]-xe[i])*(xn[i]-xe[i]));
+         RGP[count][i]=xn[i];
+         maggrad+=((xn[i]-RGP[count-1][i])*(xn[i]-RGP[count-1][i]));
+      }
+      pathlength+=maggrad;
+      if ( magd<epsd2 || maggrad<1.0e-4 ) {
+         imatend=true;
+         ++count;
+         break;
+      }
+      if ( magd<=dmin ) {
+         dmin=magd;
+         for ( int i=0 ; i<3 ; ++i ) { xmin[i]=xn[i]; }
+      } else {
+#if DEBUG
+         displayWarningMessage("Getting away from x_e!");
+         cout << "count: " << count
+              << "; magd: " << magd << "; dmin: " << dmin << endl;
+         DISPLAYDEBUGINFOFILELINE;
+#endif /* ( DEBUG ) */
+         ++count;
+         break;
+      }
+      ++count;
+   }
+   if ( count==CPNW_ARRAYSIZEGRADPATH ) {
+      displayWarningMessage("End or array reached, need larger array?");
+#if DEBUG
+      DISPLAYDEBUGINFOFILELINE;
+#endif /* ( DEBUG ) */
+   }
+   for ( int i=0 ; i<3 ; ++i ) {xm[i]=xmin[i];}
+   if ( imatend ) {
+      copyRGP2Array(arrgp,count);
+      npia=count;
+   } else {
+#if DEBUG
+      displayWarningMessage("Not at end!");
+      cout << "count: " << count << endl;
+      DISPLAYDEBUGINFOFILELINE;
+#endif /* ( DEBUG ) */
+      copyRGP2Array(arrgp,count);
+      npia=count;
+   }
+   return imatend;
 }
 /* ************************************************************************************ */
 bool critPtNetWork::seekSingleRhoBCP(int ata,int atb,solreal (&x)[3])
@@ -3229,6 +3338,12 @@ int critPtNetWork::getTotalNofRingPaths(void)
    return res;
 }
 /* ************************************************************************************ */
+void critPtNetWork::copyRGP2Array(solreal** (&thearr),int nn)
+{
+   for ( int i=0 ; i<nn ; ++i ) {
+      for ( int j=0 ; j<3 ; ++j ) {thearr[i][j]=RGP[i][j];}
+   }
+}
 /* ************************************************************************************ */
 /* ************************************************************************************ */
 /* ************************************************************************************ */

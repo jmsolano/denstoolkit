@@ -247,6 +247,28 @@ public:
    int findSingleRhoRingGradientPathRK5(int rcpIdx,int bcpIdxInRRGP,\
          solreal hstep,int dima,solreal** (&arrgp));
 /* ************************************************************************************ */
+   /** This function will follow the grandient path that starts at x_1.
+    *  It will use the point x_1 as the actual starting point. This is so, because
+    *  usually paths starts at some CP, thus it is not well defined the direction
+    *  to follow. Once x_1 is defined, the path has a starting point.
+    *  x_e is used to track the case when the path is supposed to end at a 
+    *  specific point. For instance, when looking for a path that connects
+    *  a BCP and an RCP; if this is not required, then a dummy array must be
+    *  passed to this function. x_m will save the closest point to x_e in
+    *  the path. h_{step} is the maximum distance between two consecutive
+    *  points in the path. dima is the dimension of the array passed to 
+    *  store the coordinates of the gradient path (arrgp). maxlen is the 
+    *  maximum length the path should be. uphilldir is a bool to indicate
+    *  that the gradient path must be uphill; if false, then it is downhill.
+    *  The function returns true when the path ends at x_e. The number of
+    *  points in the path is saved in npia. If the path does not end
+    *  at x_e, the function saves the closest point in the path with 
+    *  respect to x_e in x_m.
+    * */
+   bool walkGradientPathRK5ToEndPoint(solreal (&xi)[3],solreal (&x1)[3],\
+         solreal (&xe)[3],solreal (&xm)[3],solreal hstep,int dima,\
+         solreal** (&arrgp),int &npia,solreal maxlen,bool uphilldir);
+/* ************************************************************************************ */
    void correctRCPConnectivity(void);
 /* ************************************************************************************ */
    void removeFromConRCP(const int rcpIdx,const int pos2rem);
@@ -408,6 +430,7 @@ protected:
 /* ************************************************************************************ */
    void findMaxBondDist();
 /* ************************************************************************************ */
+   void copyRGP2Array(solreal** (&thearr),int nn);
 /* ************************************************************************************ */
 /* ************************************************************************************ */
 };
