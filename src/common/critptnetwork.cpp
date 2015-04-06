@@ -61,6 +61,7 @@ using std::endl;
 #include "atomradiicust.h"
 #include "solstringtools.h"
 #include "solpovtools.h"
+#include "solmath.h"
 // The first 94 atomic radii are given,
 //  the rest are set to be 0.80e0
 //
@@ -121,8 +122,12 @@ using std::endl;
 #define CPNW_MAXITERATIONCCPSEARCH 120
 #endif
 
-//#ifndef CPNW_CPNW_EPSRHOACPGRADMAG
-//#define CPNW_CPNW_EPSRHOACPGRADMAG (1.0e-12)
+#ifndef CPNW_MAXITERATIONRINGPATHBISECT
+#define CPNW_MAXITERATIONRINGPATHBISECT 20
+#endif
+
+//#ifndef CPNW_EPSRHOACPGRADMAG
+//#define CPNW_EPSRHOACPGRADMAG (1.0e-12)
 //#endif
 
 #ifndef CPNW_EPSRHOACPGRADMAG
@@ -2927,27 +2932,42 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
    }
 #endif
    int count;
-   solreal xm[3],xb[3],xr[3],xn[3];
-   solreal magd=0.0e0,maxalllen=maxBondDist*1.5e0;
+   solreal xm[3],xb[3],xr[3],xn[3],xrmxb[3];
+   solreal magd=0.0e0,maxalllen=maxBondDist*1.2e0;
    for ( int i=0 ; i<3 ; ++i ) {
       xb[i]=RBCP[bcpGlobIdx][i];
       xr[i]=RRCP[rcpIdx][i];
-      xn[i]=xr[i]-xb[i];
+      xrmxb[i]=xr[i]-xb[i];
+      xn[i]=xrmxb[i];
       magd+=(xn[i]*xn[i]);
    }
    magd=sqrt(magd);
    for ( int i=0 ; i<3 ; ++i ) {
-      xn[i]*=(hstep/magd);
+      xn[i]/=magd;
+      xn[i]*=hstep;
       xn[i]+=xb[i];
    }
-   bool imatrcp=walkGradientPathRK5ToEndPoint(xb,xn,xr,xm,hstep,\
+   cout << scientific << setprecision(16) << endl;
+   printV3Comp("xn: ",xn);
+   bool imatrcp=walkGradientPathRK5ToEndPoint(xb,xn,xr,xm,magd,hstep,\
          dima,arrgp,count,maxalllen,false /* uphilldir=false  */);
+   if ( imatrcp ) {return count;}
+   solreal ux[3],uy[3],uz[3];
+   for ( int i=0 ; i<3 ; ++i ) {
+      ux[i]=xr[i]-xb[i];
+      uy[i]=xm[i]-xb[i];
+   }
+   crossProductV3(ux,uy,uz);
+   crossProductV3(uz,ux,uy);
+   normalizeV3(ux);
+   normalizeV3(uy);
+   normalizeV3(uz);
    return count;
 }
 /* ************************************************************************************ */
 bool critPtNetWork::walkGradientPathRK5ToEndPoint(\
       solreal (&xi)[3],solreal (&x1)[3],\
-      solreal (&xe)[3],solreal (&xm)[3],solreal hstep,int dima,\
+      solreal (&xe)[3],solreal (&xm)[3],solreal &dm,solreal hstep,int dima,\
       solreal** (&arrgp), int &npia,solreal maxlen,bool uphilldir)
 {
    solreal xn[3],xmin[3],dmin=0.0e0,magd=0.0e0;
@@ -2986,12 +3006,6 @@ bool critPtNetWork::walkGradientPathRK5ToEndPoint(\
          dmin=magd;
          for ( int i=0 ; i<3 ; ++i ) { xmin[i]=xn[i]; }
       } else {
-#if DEBUG
-         displayWarningMessage("Getting away from x_e!");
-         cout << "count: " << count
-              << "; magd: " << magd << "; dmin: " << dmin << endl;
-         DISPLAYDEBUGINFOFILELINE;
-#endif /* ( DEBUG ) */
          ++count;
          break;
       }
@@ -3004,15 +3018,11 @@ bool critPtNetWork::walkGradientPathRK5ToEndPoint(\
 #endif /* ( DEBUG ) */
    }
    for ( int i=0 ; i<3 ; ++i ) {xm[i]=xmin[i];}
+   dm=sqrt(dmin);
    if ( imatend ) {
       copyRGP2Array(arrgp,count);
       npia=count;
    } else {
-#if DEBUG
-      displayWarningMessage("Not at end!");
-      cout << "count: " << count << endl;
-      DISPLAYDEBUGINFOFILELINE;
-#endif /* ( DEBUG ) */
       copyRGP2Array(arrgp,count);
       npia=count;
    }
@@ -3204,7 +3214,7 @@ void critPtNetWork::correctRCPConnectivity(void)
    findMaxBondDist();
    //solreal maxallwdd=1.414213562373095e0*maxBCPACPDist;
    solreal maxallwdd=0.90*maxBondDist;
-   cout << "maxallwdd: " << maxallwdd << endl;
+   //cout << "maxallwdd: " << maxallwdd << endl;
    solreal dd;
    int j,bcpIdx;
    for ( int i=0 ; i<nRCP ; ++i ) {
@@ -3216,7 +3226,7 @@ void critPtNetWork::correctRCPConnectivity(void)
             dd+=((RRCP[i][k]-RBCP[bcpIdx][k])*(RRCP[i][k]-RBCP[bcpIdx][k]));
          }
          dd=sqrt(dd);
-         cout << "d: " << dd << "; " << lblBCP[bcpIdx] << endl;
+         //cout << "d: " << dd << "; " << lblBCP[bcpIdx] << endl;
          if ( dd<=maxallwdd ) {
             ++j;
          } else {

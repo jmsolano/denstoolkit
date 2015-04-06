@@ -255,7 +255,8 @@ public:
     *  specific point. For instance, when looking for a path that connects
     *  a BCP and an RCP; if this is not required, then a dummy array must be
     *  passed to this function. x_m will save the closest point to x_e in
-    *  the path. h_{step} is the maximum distance between two consecutive
+    *  the path, and dm the distance from x_e to x_m.
+    *  h_{step} is the maximum distance between two consecutive
     *  points in the path. dima is the dimension of the array passed to 
     *  store the coordinates of the gradient path (arrgp). maxlen is the 
     *  maximum length the path should be. uphilldir is a bool to indicate
@@ -266,7 +267,7 @@ public:
     *  respect to x_e in x_m.
     * */
    bool walkGradientPathRK5ToEndPoint(solreal (&xi)[3],solreal (&x1)[3],\
-         solreal (&xe)[3],solreal (&xm)[3],solreal hstep,int dima,\
+         solreal (&xe)[3],solreal (&xm)[3],solreal &dm,solreal hstep,int dima,\
          solreal** (&arrgp),int &npia,solreal maxlen,bool uphilldir);
 /* ************************************************************************************ */
    void correctRCPConnectivity(void);
