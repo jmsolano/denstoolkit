@@ -94,6 +94,11 @@ void crossProductV3(solreal (&a)[3],solreal (&b)[3],solreal (&c)[3])
    return;
 }
 /* ************************************************************************** */
+solreal dotProductV3(solreal (&a)[3],solreal (&b)[3])
+{
+   return (a[0]*b[0]+a[1]*b[1]+a[2]*b[2]);
+}
+/* ************************************************************************** */
 /*
 inline void sort2intmin2max(int &a,int&b)
 {

@@ -89,8 +89,7 @@ void crossProductV3(solreal (&a)[3],solreal (&b)[3],solreal (&c)[3]);
    This function calculates the cross product: c=axb
 */
 /* ************************************************************************** */
-solreal dotProductV3(solreal (&a)[3],solreal (&b)[3])
-{return (a[0]*b[0]+a[1]*b[1]+a[2]*b[2]);}
+solreal dotProductV3(solreal (&a)[3],solreal (&b)[3]);
 /* ************************************************************************** */
 /* ************************************************************************** */
 inline void sort2intmin2max(int &a,int&b)
