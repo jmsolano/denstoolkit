@@ -51,6 +51,7 @@
 using std::cout;
 using std::endl;
 #include "solmemhand.h"
+#include "solstringtools.h"
 
 #define MAXWFXKEYSDEF 36
 static const string wfxKeysTab[MAXWFXKEYSDEF]=
@@ -230,7 +231,11 @@ bool getTitleFromFileWFX(ifstream &ifil,int &nt,string* &tit)
    }
    alloc1DStringArray("tit",nt,tit);
    ifil.seekg(ipos);
-   for (int i=0; i<nt; i++) {getline(ifil,tit[i]);}
+   for (int i=0; i<nt; i++) {
+      getline(ifil,tit[i]);
+      removeSpacesLeftAndRight(tit[i];);
+      removeRedundantSpaces(tit[i]);
+   }
    return true;
 }
 /* ********************************************************************************************* */
@@ -304,7 +309,7 @@ void getAtLabelsFromFileWFX(ifstream &ifil,const int nn,string* &al)
    ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Nuclear Names")));
    for (int i=0; i<nn; i++) {
       getline(ifil,al[i]);
-      while (al[i][0]==' ') {al[i].erase(0,1);}
+      removeSpacesLeftAndRight(al[i]);
    }
    return;
 }
