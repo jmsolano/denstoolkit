@@ -233,7 +233,7 @@ bool getTitleFromFileWFX(ifstream &ifil,int &nt,string* &tit)
    ifil.seekg(ipos);
    for (int i=0; i<nt; i++) {
       getline(ifil,tit[i]);
-      removeSpacesLeftAndRight(tit[i];);
+      removeSpacesLeftAndRight(tit[i]);
       removeRedundantSpaces(tit[i]);
    }
    return true;
