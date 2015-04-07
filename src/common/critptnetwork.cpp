@@ -123,7 +123,7 @@ using std::endl;
 #endif
 
 #ifndef CPNW_MAXITERATIONRINGPATHBISECT
-#define CPNW_MAXITERATIONRINGPATHBISECT 20
+#define CPNW_MAXITERATIONRINGPATHBISECT 60
 #endif
 
 //#ifndef CPNW_EPSRHOACPGRADMAG
@@ -2932,7 +2932,7 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
    }
 #endif
    int count;
-   solreal xm[3],xb[3],xr[3],xn[3],xrmxb[3];
+   solreal xm[3],xb[3],xr[3],xn[3],xrmxb[3],xmmxr[3];
    solreal magd=0.0e0,maxalllen=maxBondDist*1.2e0;
    for ( int i=0 ; i<3 ; ++i ) {
       xb[i]=RBCP[bcpGlobIdx][i];
@@ -2947,11 +2947,10 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
       xn[i]*=hstep;
       xn[i]+=xb[i];
    }
-   cout << scientific << setprecision(16) << endl;
-   printV3Comp("xn: ",xn);
    bool imatrcp=walkGradientPathRK5ToEndPoint(xb,xn,xr,xm,magd,hstep,\
          dima,arrgp,count,maxalllen,false /* uphilldir=false  */);
    if ( imatrcp ) {return count;}
+   for ( int i=0 ; i<3 ; ++i ) {xmmxr[i]=xm[i]-xr[i];}
    solreal ux[3],uy[3],uz[3];
    for ( int i=0 ; i<3 ; ++i ) {
       ux[i]=xr[i]-xb[i];
@@ -2962,7 +2961,7 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
    normalizeV3(ux);
    normalizeV3(uy);
    normalizeV3(uz);
-   solreal xmmxr[3],dir1[3];
+   solreal dir1[3],dir2[3];
    for ( int i=0 ; i<3 ; ++i ) {
       xmmxr[i]=xm[i]-xr[i];
       dir1[i]=xrmxb[i];
@@ -2970,8 +2969,11 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
    solreal proj0=dotProductV3(xmmxr,uy),currProj;
    bool samedir=true;
    int iter=0;
+   solreal thefactor=0.2e0*hstep;
+   for ( int i=0 ; i<3 ; ++i ) {xmmxr[i]=xm[i]-xr[i];}
    do {
-      for ( int i=0 ; i<3 ; ++i ) {xn[i]=xmmxr[i];}
+      currProj=dotProductV3(xmmxr,uy);
+      for ( int i=0 ; i<3 ; ++i ) {xn[i]=xrmxb[i]-thefactor*uy[i];}
       normalizeV3(xn);
       for ( int i=0 ; i<3 ; ++i ) {
          xn[i]*=hstep;
@@ -2982,9 +2984,62 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
       if ( imatrcp ) {return count;}
       for ( int i=0 ; i<3 ; ++i ) {xmmxr[i]=xm[i]-xr[i];}
       currProj=dotProductV3(xmmxr,uy);
-      if ( (proj0*currProj)<0.0e0 ) {samedir=false;}
+      if ( (proj0*currProj)<0.0e0 ) {
+         samedir=false;
+         for ( int i=0 ; i<3 ; ++i ) { dir2[i]=xrmxb[i]+thefactor*uy[i]; }
+      } else {
+         for ( int i=0 ; i<3 ; ++i ) { dir1[i]=xrmxb[i]-thefactor*uy[i]; }
+      }
       ++iter;
    } while (samedir && (iter<10));
+   cout << "dmin: " << magd << "iter: " << iter << endl;
+   if ( iter==10 ) {
+      displayWarningMessage("Iter>10!");
+#if DEBUG
+      DISPLAYDEBUGINFOFILELINE;
+#endif /* ( DEBUG ) */
+   }
+   string mess;
+   iter=0;
+   cout << scientific << setprecision(16);
+   while ( iter<(CPNW_MAXITERATIONRINGPATHBISECT) ) {
+      for ( int i=0 ; i<3 ; ++i ) {xn[i]=0.5e0*(dir1[i]+dir2[i]);}
+      normalizeV3(xn);
+      for ( int i=0 ; i<3 ; ++i ) {
+         xn[i]*=hstep;
+         xn[i]+=xb[i];
+      }
+      mess=getStringFromInt(iter);
+      while ( mess.length()<3 ) {mess.insert(0,"0");}
+      mess.insert(0,"xn(");
+      mess+="): ";
+      //printV3Comp(mess,xn);
+      imatrcp=walkGradientPathRK5ToEndPoint(xb,xn,xr,xm,magd,hstep,\
+            dima,arrgp,count,maxalllen,false /* uphilldir=false  */);
+      if ( imatrcp || magd<5.0e-02 ) { return count; }
+      for ( int i=0 ; i<3 ; ++i ) {xmmxr[i]=xm[i]-xr[i];}
+      currProj=dotProductV3(xmmxr,uy);
+      for ( int i=0 ; i<3 ; ++i ) {xmmxr[i]=0.5e0*(dir1[i]+dir2[i]);}
+      //cout << "xmmxr: " << xmmxr[0] << " " << xmmxr[1] << " " << xmmxr[2]\
+           << "; dmin: " << magV3(xmmxr) << endl;
+      cout << "d1-d2: " << (dir1[0]-dir2[0]) << " " << (dir1[1]-dir2[1])\
+         << " " << (dir1[2]-dir2[2]) << "; sig: " << (currProj*proj0) << endl;
+      if ( (currProj*proj0)<0.0e0 ) {
+         //samedir=false;
+         for ( int i=0 ; i<3 ; ++i ) {
+            //dir2[i]=xrmxb[i]+(fabs(currProj)<hstep?fabs(currProj):hstep)*uy[i];
+            dir2[i]=xmmxr[i];
+         }
+      } else {
+         //samedir=true;
+         for ( int i=0 ; i<3 ; ++i ) {
+            //dir1[i]=xrmxb[i]-(fabs(currProj)<hstep?fabs(currProj):hstep)*uy[i];
+            dir1[i]=xmmxr[i];
+         }
+      }
+      ++iter;
+   }
+   cout << "iter: " << iter << endl;
    return count;
 }
 /* ************************************************************************************ */
@@ -3003,7 +3058,8 @@ bool critPtNetWork::walkGradientPathRK5ToEndPoint(\
       magd+=((xn[i]-x1[i])*(xn[i]-x1[i]));
    }
    solreal mxlen2=maxlen*maxlen,pathlength=magd;
-   solreal epsd2=CPNW_EPSFABSDIFFCOORD*CPNW_EPSFABSDIFFCOORD;
+   solreal epsd2=hstep*hstep;
+   //solreal epsd2=CPNW_EPSFABSDIFFCOORD*CPNW_EPSFABSDIFFCOORD;
    solreal maggrad=1.0e0;
    bool imatend=false;
    int count=2;
