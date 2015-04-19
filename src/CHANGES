@@ -1,3 +1,40 @@
+Version 1.0.1:
+ - Ring and Cage paths included in dtkfindcp
+ - Merge branch 'develop'
+ - Added visualization of Cage Paths. setCagePaths seems to be working.
+ - First apparently working version of setCagePaths (needs visualization)
+ - Working version, ring path search almost complete.
+ - Improving findSingleRhoRingGrad...
+ - Improving findSingleRhoRingGrad...
+ - Merge branch 'develop' into dev-rcpcon
+ - Updated solmath.*
+ - Merge branch 'develop' into dev-rcpcon
+ - Updated solmath.*
+ - Advances on walkGrad...
+ - Implemented walkGradientPathRK5ToEndPoint.
+ - Merge branch 'develop' into dev-rcpcon
+ - Removing spaces in AtLbls (wfx-reader)
+ - Merge branch 'develop' into dev-rcpcon
+ - Removing spaces in AtLbls (wfx-reader)
+ - First implementation of RingPath search.
+ - Merge branch 'develop' into dev-rcpcon
+ - Amend progressBar bugfix
+ - Merge branch 'develop' into dev-rcpcon
+ - Amend progressBar bugfix
+ - Renamed findSingleRhoGradientPath... in dtkbpdens and dtkdemat1
+ - Merge branch 'develop' into dev-rcpcon
+ - Corrected progress bar display
+ - Merge branch 'develop' into dev-rcpcon
+ - Updated solmemhand.* (Added alloc4DRealArray)
+ - Inserted setRingGradientPaths() into critPtNetWork class.
+ - First stage of correct rcp connectivity implemented.
+ - Changed atBCP for conBCP, and added conRCP and RRGP arrays.
+ - Added CircleDots3D class.
+ - Improved documentation, mainpage, added logo.
+ - Added maxBondDist and maxBCPACPDist. Improved crtPtNtwrk documentation.
+ - Spelling corrections on README.md
+ - Added info about checkdependencies and make runtests ro README.md
+
 Version 1.0.0:
  - Removing some superfluous messages in bump_version.sh and dtkchgcurrversion
  - Fixbug: <string> ---> <cstring> in common/solmemhand.h
