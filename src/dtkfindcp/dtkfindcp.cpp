@@ -168,8 +168,14 @@ int main (int argc, char ** argv)
       default:
          break;
    }
-   if ( options.mkextsearch ) {cpn.extendedSearchCPs();}
-   
+   if ( options.mkextsearch ) {
+      cpn.extendedSearchCPs();
+   }
+   if (options.calcrgps) {
+      cpn.setRingPaths();
+      cpn.setCagePaths();
+   }
+
    //cpn.displayIHVCoords();
    //cpn.displayACPCoords();
    //cpn.displayBCPCoords();

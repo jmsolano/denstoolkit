@@ -2996,7 +2996,7 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
    } while (iter<100 && fabs(magd)>CPNW_EPSRHOACPGRADMAG);
    //cout << "iter: " << iter << ", delta: " << magd << endl;
    for ( int i=0 ; i<3 ; ++i ) {tmpv[i]=xn[i]-xr[i];}
-   if ( magV3(tmpv)<(25.0e0*hstep) ) {
+   if ( magV3(tmpv)<(5.0e0*hstep) ) {
       return count;
    } else {
       return -1;
@@ -3431,6 +3431,7 @@ void critPtNetWork::setRingPaths()
    }
    alloc4DRealArray(string("RRGP"),dRCP,CPNW_MAXBCPSCONNECTEDTORCP,\
          CPNW_ARRAYSIZEGRADPATH,3,RRGP);
+   correctRCPConnectivity();
    cout << "Calculating Ring Gradient Paths..." << endl;
 #if DEBUG
    cout << "nRCP: " << nRCP << endl;
@@ -3543,6 +3544,19 @@ int critPtNetWork::getNofRingPathsOfRCP(int rcpIdx)
    return res;
 }
 /* ************************************************************************************ */
+int critPtNetWork::getNofCagePathsOfCCP(int ccpIdx)
+{
+   if ( !iknowcgps ) {
+      displayWarningMessage("First seek for Cage Gradient Paths! Returning 0.");
+#if DEBUG
+      DISPLAYDEBUGINFOFILELINE;
+#endif /* ( DEBUG ) */
+   }
+   int res=0;
+   while ( conCCP[ccpIdx][0][res]>=0 ) {++res;}
+   return res;
+}
+/* ************************************************************************************ */
 int critPtNetWork::getTotalNofRingPaths(void)
 {
 #if DEBUG
@@ -3554,6 +3568,20 @@ int critPtNetWork::getTotalNofRingPaths(void)
 #endif /* ( DEBUG ) */
    int res=0;
    for ( int i=0 ; i<nRCP ; ++i ) {res+=getNofRingPathsOfRCP(i);}
+   return res;
+}
+/* ************************************************************************************ */
+int critPtNetWork::getTotalNofCagePaths(void)
+{
+#if DEBUG
+   if ( !iknowcgps ) {
+      displayWarningMessage("First seek for Cage Gradient Paths! Returning -1.");
+      DISPLAYDEBUGINFOFILELINE;
+      return -1;
+   }
+#endif /* ( DEBUG ) */
+   int res=0;
+   for ( int i=0 ; i<nCCP ; ++i ) {res+=getNofCagePathsOfCCP(i);}
    return res;
 }
 /* ************************************************************************************ */

@@ -88,6 +88,7 @@ optFlags::optFlags()
    cptype=0;
    drawnuc=0;
    calcbgps=1;
+   calcrgps=0;
    drawbgps=bgptubes=0;
    camvdir=0;
    mkdatmat=0;
@@ -162,6 +163,9 @@ void getOptions(int &argc, char** &argv, optFlags &flags)
             //case 'z':
             //   flags.zipdat=i;
             //   break;
+            case 'r' :
+               flags.calcrgps=i;
+               break;
             case 't':
                flags.cptype=(++i);
                if (i>=argc) {printErrorMsg(argv,'t');}
@@ -241,9 +245,10 @@ void printHelpMenu(int &argc, char** &argv)
         << "         \t  001,010,100,101,110,111; the camera will be located" << endl
         << "         \t  somewhere in the direction (x,y,z), where xyz is one of "<< endl
         << "         \t  the above values." << endl;
-   cout << "  -g     \tDraw the bond paths (gradient paths) in the POV file." << endl
+   cout << "  -g     \tDraw the gradient paths in the POV file." << endl
         << "  -T     \tSet the style for the gradient paths to be tubes." << endl;
    cout << "  -G     \tSkip the calculation of the bond gradient paths." << endl;
+   cout << "  -r     \tPerform the search of ring and cage gradient paths." << endl;
    cout << "  -k     \tKeeps the pov file if option -P is used." << endl;
 #endif
    cout << "  -t cpt \tSet the type of critical point to be searched. cpt can be "<< endl

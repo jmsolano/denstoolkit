@@ -146,6 +146,12 @@ runc60: build
 runb2h6: build
 	./dtkfindcp b2h6-mp2-cctvz-gopt.wfn -a -P -k -c 111 -g -e
 
+runcub: build
+	./dtkfindcp cubano_sto3g.wfx  -a -r -P -k -c 111 -g -e
+
+runcic: build
+	./dtkfindcp ciclopropano_st3g.wfx  -a -P -k -c 111 -g -e -r
+
 runf2: build
 	./dtkfindcp f2.ccsd.augccpvtz.wfn -a -t L -P -k -c 100 -g -e
 
