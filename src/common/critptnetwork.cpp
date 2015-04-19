@@ -2825,7 +2825,7 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
 #endif
    int count;
    solreal xm[3],xb[3],xr[3],xn[3],xrmxb[3],xmmxr[3];
-   solreal magd=0.0e0,maxalllen=maxBondDist*1.2e0;
+   solreal magd=0.0e0,maxalllen=maxBondDist*1.5e0;
    for ( int i=0 ; i<3 ; ++i ) {
       xb[i]=RBCP[bcpGlobIdx][i];
       xr[i]=RRCP[rcpIdx][i];
@@ -2843,10 +2843,8 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
          dima,arrgp,count,maxalllen,false /* uphilldir=false  */);
    if ( imatrcp ) {return count;}
    //if ( magd>maxBCPACPDist ) { return -1; }
-   solreal ux[3],uy[3],uz[3];
-   for ( int i=0 ; i<3 ; ++i ) {
-      ux[i]=0.0e0;
-   }
+   solreal ux[3],uy[3],uz[3],xm0mxr[3];
+   for ( int i=0 ; i<3 ; ++i ) { xm0mxr[i]=xm[i]-xr[i]; }
    solreal hess[3][3],eivec[3][3],tmpv[3];
    wf->evalHessian(xb[0],xb[1],xb[2],magd,ux,hess);
    if ( magV3(ux)>CPNW_EPSRHOACPGRADMAG ) {
@@ -2858,38 +2856,114 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
       ux[i]=eivec[i][0];
       uy[i]=eivec[i][1];
       uz[i]=eivec[i][2];
-   }
-   solreal dir1[3],dir2[3],d1dux,d1duy,currdmin;
-   d1dux=dotProductV3(xrmxb,ux);
-   d1duy=dotProductV3(xrmxb,uy);
-   for ( int i=0 ; i<3 ; ++i ) {
-      dir1[i]=d1dux*ux[i]+d1duy*uy[i];
       xmmxr[i]=xm[i]-xr[i];
    }
+   solreal dir1[3],dir2[3];
+   for ( int i=0 ; i<3 ; ++i ) {
+      dir1[i]=xrmxb[i];
+      dir2[i]=xm[i]-xb[i];
+   }
+   solreal alpha,beta,delta,gamma,currdmin;
+   alpha=atan2(dotProductV3(dir1,uy),dotProductV3(dir1,ux));
+   beta=atan2(dotProductV3(dir2,uy),dotProductV3(dir2,ux));
+   delta=alpha-beta;
+   gamma=alpha;
+   int sign0=(delta >= 0.0e0 ? 1 : -1),currSign;
+   int mymaxiter=fabs(int(6.28318530717959e0/delta))+10;
    bool samedir=true;
    int iter=0;
-   solreal proj0=dotProductV3(xmmxr,uy),currProj;
-   solreal thefactor=1.0e0;
+   magd=1.0e0;
    do {
+      gamma+=delta;
       for ( int i=0 ; i<3 ; ++i ) {
-         dir2[i]=dir1[i]-uy[i]*thefactor*proj0;
+         dir2[i]=(cos(gamma)*ux[i]+sin(gamma)*uy[i]);
          xn[i]=dir2[i];
       }
-      magd=0.5e0*hstep/magV3(xn);
+      normalizeV3(xn);
       for ( int i=0 ; i<3 ; ++i ) {
-         xn[i]*=magd;
+         xn[i]*=0.5e0*hstep;
          xn[i]+=xb[i];
       }
       imatrcp=walkGradientPathRK5ToEndPoint(xb,xn,xr,xm,currdmin,hstep,\
-            dima,arrgp,count,maxalllen,false /* uphilldir=false  */);
+            dima,arrgp,count,maxalllen,false);
+      if ( imatrcp ) {
+         displayGreenMessage("imatrcp!");
+         for ( int i=0 ; i<3 ; ++i ) { tmpv[i]=xm[i]-xb[i]; }
+         magd=atan2(dotProductV3(tmpv,uy),dotProductV3(tmpv,ux));
+         cout << "iter: " << iter << ", delta: " << magd << endl;
+         return count;
+      }
+      for ( int i=0 ; i<3 ; ++i ) { tmpv[i]=xm[i]-xb[i]; }
+      magd=atan2(dotProductV3(tmpv,uy),dotProductV3(tmpv,ux));
+      currSign=((alpha-magd)>=0? 1 : -1);
+      if ( currSign!=sign0 ) {
+         samedir=false;
+         break;
+      } else {
+         for ( int i=0 ; i<3 ; ++i ) { dir1[i]=dir2[i]; }
+      }
+      ++iter;
+   } while (samedir && iter<mymaxiter);
+   iter=0;
+   do {
+      for ( int i=0 ; i<3 ; ++i ) { xn[i]=0.5e0*(dir1[i]+dir2[i]); }
+      normalizeV3(xn);
+      for ( int i=0 ; i<3 ; ++i ) {
+         xn[i]*=hstep;
+         xn[i]+=xb[i];
+      }
+      imatrcp=walkGradientPathRK5ToEndPoint(xb,xn,xr,xm,currdmin,hstep,\
+            dima,arrgp,count,maxalllen,false);
+      if ( imatrcp ) { cout << "iter(retimat): " << iter << endl; return count; }
+      for ( int i=0 ; i<3 ; ++i ) { tmpv[i]=xm[i]-xb[i]; }
+      magd=atan2(dotProductV3(tmpv,uy),dotProductV3(tmpv,ux));
+      currSign=((alpha-magd)>=0? 1 : -1);
+      if ( currSign == sign0 ) {
+         for ( int i=0; i<3; ++i ) { dir1[i]+=dir2[i]; dir1[i]*=0.5e0; }
+      } else {
+         for ( int i=0; i<3; ++i ) { dir2[i]+=dir1[i]; dir2[i]*=0.5e0; }
+      }
+      ++iter;
+   } while (iter<100 && fabs(magd)>CPNW_EPSRHOACPGRADMAG);
+   cout << "iter: " << iter << ", delta: " << magd << endl;
+   for ( int i=0 ; i<3 ; ++i ) {tmpv[i]=xn[i]-xr[i];}
+   if ( magV3(tmpv)<(25.0e0*hstep) ) {
+      return count;
+   } else {
+      return -1;
+   }
+   /*
+      solreal dir1[3],dir2[3],d1dux,d1duy,currdmin;
+      d1dux=dotProductV3(xrmxb,ux);
+      d1duy=dotProductV3(xrmxb,uy);
+      for ( int i=0 ; i<3 ; ++i ) {
+      dir1[i]=d1dux*ux[i]+d1duy*uy[i];
+      xmmxr[i]=xm[i]-xr[i];
+      }
+      bool samedir=true;
+      int iter=0;
+      solreal proj0=dotProductV3(xmmxr,uy),currProj;
+      solreal thefactor=1.0e0;
+      do {
+      for ( int i=0 ; i<3 ; ++i ) {
+      dir2[i]=dir1[i]-uy[i]*thefactor*proj0;
+      xn[i]=dir2[i];
+      }
+      magd=0.5e0*hstep/magV3(xn);
+      for ( int i=0 ; i<3 ; ++i ) {
+      xn[i]*=magd;
+      xn[i]+=xb[i];
+      }
+      imatrcp=walkGradientPathRK5ToEndPoint(xb,xn,xr,xm,currdmin,hstep,\
+      dima,arrgp,count,maxalllen,false);
       for ( int i=0 ; i<3 ; ++i ) { xmmxr[i]=xm[i]-xr[i]; }
       currProj=dotProductV3(xmmxr,uy);
       cout << "dmin: " << magV3(xmmxr) << "; proy0: " << proj0\
-           << ";currProj: " << currProj << endl;
+      << ";currProj: " << currProj << endl;
       if ( imatrcp ) { cout << "imatrcp!"; return count; }
       if ( (currProj*proj0)<0.0e0 ) {
-         cout << "chdir" << endl;
-         break;
+      cout << "chdir" << endl;
+      break;
       } else {
          for ( int i=0 ; i<3 ; ++i ) { dir1[i]-=(uy[i]*thefactor*proj0); }
       }
@@ -2901,7 +2975,7 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
       displayWarningMessage("Iter>20!");
 #if DEBUG
       DISPLAYDEBUGINFOFILELINE;
-#endif /* ( DEBUG ) */
+#endif
    }
    return count;
    string mess;
@@ -2920,7 +2994,7 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
       mess+="): ";
       //printV3Comp(mess,xn);
       imatrcp=walkGradientPathRK5ToEndPoint(xb,xn,xr,xm,magd,hstep,\
-            dima,arrgp,count,maxalllen,false /* uphilldir=false  */);
+            dima,arrgp,count,maxalllen,false);
       if ( imatrcp || magd<5.0e-02 ) { return count; }
       for ( int i=0 ; i<3 ; ++i ) {xmmxr[i]=xm[i]-xr[i];}
       currProj=dotProductV3(xmmxr,uy);
@@ -2946,6 +3020,7 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
    }
    cout << "iter: " << iter << endl;
    return count;
+   // */
 }
 /* ************************************************************************************ */
 bool critPtNetWork::walkGradientPathRK5ToEndPoint(\
@@ -2981,10 +3056,8 @@ bool critPtNetWork::walkGradientPathRK5ToEndPoint(\
          maggrad+=((xn[i]-RGP[count-1][i])*(xn[i]-RGP[count-1][i]));
       }
       pathlength+=maggrad;
-      if ( magd<epsd2 || maggrad<1.0e-6 ) {
+      if ( magd<=epsd2 || maggrad<1.0e-6 ) {
          imatend=true;
-         ++count;
-         break;
       }
       if ( magd<=dmin ) {
          dmin=magd;
