@@ -2193,8 +2193,9 @@ bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
    //pof << "#declare ColorCCP=rgb <0.9,0.9,0.9>;" << endl;
    pof << "#declare ColorCCP=rgb <1.0,0.0,0.0>;" << endl;
    pof << "#declare RadiusCCP=RadiusAllCriticalPoints;" << endl;
-   pof << "#declare ColorABGradPath=rgb <0.0,1.0,0.0>;" << endl;
-   pof << "#declare ColorARGradPath=rgb <0.5,0.5,0.5>;" << endl;
+   pof << "#declare ColorABGradPath=rgb <0.0,0.2,1.0>;" << endl;
+   pof << "#declare ColorARGradPath=rgb <0.0,0.8,0.0>;" << endl;
+   pof << "#declare ColorACGradPath=rgb <1.0,0.5,0.0>;" << endl;
    pof << "#default { finish { specular 0.3 roughness 0.03 phong .1 } }" << endl;
    writeScrCharLine(pof,'/');
    pof << "//For the colors, instead of rgb <...>, you may want to try Red, Yellow, ..." << endl;
@@ -2395,6 +2396,7 @@ bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
                writePOVSphere(pof,1,RRGP[rcpIdx][currBcpPos][j][0],\
                      RRGP[rcpIdx][currBcpPos][j][1],\
                      RRGP[rcpIdx][currBcpPos][j][2],gprad,"ColorARGradPath");
+               if ( j%2 ==0 ) {
                writePOVCylinder(pof,1,\
                      RRGP[rcpIdx][currBcpPos][j][0],\
                      RRGP[rcpIdx][currBcpPos][j][1],\
@@ -2403,6 +2405,7 @@ bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
                      RRGP[rcpIdx][currBcpPos][j-1][1],\
                      RRGP[rcpIdx][currBcpPos][j-1][2],\
                      gprad,"ColorARGradPath");
+               }
             }
             ++currBcpPos;
          }
@@ -2422,6 +2425,59 @@ bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
                      RRGP[rcpIdx][currBcpPos][j][2],gprad,"ColorARGradPath");
             }
             ++currBcpPos;
+         }
+      }
+      pof << "}" << endl;
+      pof << "#end\n//end if DrawGradientPathSpheres" << endl;
+ 
+   }
+   if ( iknowcgps ) {
+      solreal gprad=0.045;
+      int npts,currRcpPos;
+      pof << "#if(DrawGradientPathTubes)" << endl;
+      pof << "union {" << endl;
+      for (int ccpIdx=0; ccpIdx<nCCP; ++ccpIdx) {
+         currRcpPos=0;
+         while ( conCCP[ccpIdx][1][currRcpPos]>0 ) {
+            npts=conCCP[ccpIdx][1][currRcpPos];
+            writePOVSphere(pof,1,RCGP[ccpIdx][currRcpPos][0][0],\
+                  RCGP[ccpIdx][currRcpPos][0][1],\
+                  RCGP[ccpIdx][currRcpPos][0][2],gprad,"ColorACGradPath");
+            for ( int j=1 ; j<npts ; ++j ) {
+               if (j%3 != 1) {
+               writePOVSphere(pof,1,RCGP[ccpIdx][currRcpPos][j][0],\
+                     RCGP[ccpIdx][currRcpPos][j][1],\
+                     RCGP[ccpIdx][currRcpPos][j][2],gprad,"ColorACGradPath");
+               }
+               if (j%3 ==0) {
+               writePOVCylinder(pof,1,\
+                     RCGP[ccpIdx][currRcpPos][j][0],\
+                     RCGP[ccpIdx][currRcpPos][j][1],\
+                     RCGP[ccpIdx][currRcpPos][j][2],\
+                     RCGP[ccpIdx][currRcpPos][j-1][0],\
+                     RCGP[ccpIdx][currRcpPos][j-1][1],\
+                     RCGP[ccpIdx][currRcpPos][j-1][2],\
+                     gprad,"ColorACGradPath");
+               }
+            }
+            ++currRcpPos;
+         }
+      }
+      pof << "}" << endl;
+      pof << "#end\n//end if DrawGradientPathTubes" << endl;
+      //-------------------
+      pof << "#if(DrawGradientPathSpheres)" << endl;
+      pof << "union {" << endl;
+      for (int ccpIdx=0; ccpIdx<nCCP; ++ccpIdx) {
+         currRcpPos=0;
+         while ( conCCP[ccpIdx][1][currRcpPos]>0 ) {
+            npts=conCCP[ccpIdx][1][currRcpPos];
+            for ( int j=0 ; j<npts ; ++j ) {
+               writePOVSphere(pof,1,RCGP[ccpIdx][currRcpPos][j][0],\
+                     RCGP[ccpIdx][currRcpPos][j][1],\
+                     RCGP[ccpIdx][currRcpPos][j][2],gprad,"ColorACGradPath");
+            }
+            ++currRcpPos;
          }
       }
       pof << "}" << endl;
@@ -2900,10 +2956,10 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
       imatrcp=walkGradientPathRK5ToEndPoint(xb,xn,xr,xm,currdmin,hstep,\
             dima,arrgp,count,maxalllen,false);
       if ( imatrcp ) {
-         displayGreenMessage("imatrcp!");
+         //displayGreenMessage("imatrcp!");
          for ( int i=0 ; i<3 ; ++i ) { tmpv[i]=xm[i]-xb[i]; }
          magd=atan2(dotProductV3(tmpv,uy),dotProductV3(tmpv,ux));
-         cout << "iter: " << iter << ", delta: " << magd << endl;
+         //cout << "iter: " << iter << ", delta: " << magd << endl;
          return count;
       }
       for ( int i=0 ; i<3 ; ++i ) { tmpv[i]=xm[i]-xb[i]; }
@@ -2995,10 +3051,10 @@ int critPtNetWork::findSingleRhoCageGradientPathRK5(int ccpIdx,\
    imatccp=walkGradientPathRK5ToEndPoint(xr,xn,xc,xm,magd,hstep,\
          dima,arrgp,count,maxalllen,false); //uphill=false
    if ( imatccp ) {return count;}
-   
    displayErrorMessage("Unknown error!");
 #if DEBUG
    DISPLAYDEBUGINFOFILELINE;
+   wf->displayAllFieldProperties(xn[0],xn[1],xn[2]);
 #endif /* ( DEBUG ) */
    return -1;
 }
