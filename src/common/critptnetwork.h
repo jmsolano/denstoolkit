@@ -89,6 +89,15 @@ public:
     * paths that connects RCPs with BCPs (BGP connects BCPs with ACPs).
     */
    int ***conRCP;
+   /** This array (connectivity of a CCP) contains the rcps associated with a CCP.
+    * In conCCP[i][j][k], i refers to the i-th CCP in the list.
+    * [j=0][k] contains the list of kth-rcps possibly connected to the ccp.
+    * [j=1][k] contains the list of the number of points in the Cage Path
+    * that connects the i-th ccp with the k-th rcp.
+    * Here Cage Path is equivalent to Cage Grad Path [CGP], and are the Gradient
+    * paths that connects CCPs with RCPs (BGP connects BCPs with ACPs).
+    */
+   int ***conCCP;
    /** This array contains the coordinates of ACPs. in RACP[i][j], the j-th cartesian
     * coordinates of the i-th ACP are stored.  */
    solreal **RACP;
@@ -122,6 +131,18 @@ public:
     * n refers to the n-tn point in the ring path, and the fourth index is the cartesian
     * coordinate of the n-th point.  */
    solreal ****RRGP;
+   /** RCGP contains the coordinates of the <b>C</b>age <b>G</b>radient
+    * <b>P</b>aths. In this implementation the cage path consists of a set
+    * of RCPs associated with the CCP. Each CCP-RCP pair consists, in turn,
+    * of a set of points along the real cage path (which is a continuos curve in 
+    * space). Several cage paths are associated to an CCP (each one of the
+    * paths associated uniquely to a RCP-CCP pair.
+    * In RCGP[i][j][n][k], the first index indicates the index of the 
+    * i-th CCP, the second indicates
+    * the j-th RCP connected to the i-th CCP,
+    * n refers to the n-tn point in the cage path, and the fourth index is the k-th cartesian
+    * coordinate of the n-th point.  */
+   solreal ****RCGP;
    /** centMolecVec is a vector used for centering the molecule. This array
     * is used for producing POV files. <b>Warning: In the current version,
     * after the POV has been recorded, the coordinates of the critical
@@ -239,12 +260,17 @@ public:
 /* ************************************************************************************ */
    void setRingPaths(void);
 /* ************************************************************************************ */
+   void setCagePaths(void);
+/* ************************************************************************************ */
    bool seekSingleRhoBCP(int ata,int atb,solreal (&x)[3]);
 /* ************************************************************************************ */
    int findSingleRhoBondGradientPathRK5(int at1,int at2,solreal hstep,\
          int dima,solreal** (&arbgp),solreal (&ro)[3]);
 /* ************************************************************************************ */
    int findSingleRhoRingGradientPathRK5(int rcpIdx,int bcpIdxInRRGP,\
+         solreal hstep,int dima,solreal** (&arrgp));
+/* ************************************************************************************ */
+   int findSingleRhoCageGradientPathRK5(int ccpIdx,int rcpIdxInRCGP,\
          solreal hstep,int dima,solreal** (&arrgp));
 /* ************************************************************************************ */
    /** This function will follow the grandient path that starts at x_1.
@@ -275,6 +301,8 @@ public:
    void removeFromConRCP(const int rcpIdx,const int pos2rem);
 /* ************************************************************************************ */
    void addToConRCP(const int rcpIdx,const int bcpIdx);
+/* ************************************************************************************ */
+   void addToConCCP(const int ccpIdx,const int rcpIdx);
 /* ************************************************************************************ */
 /* ************************************************************************************ */
 /* ************************************************************************************ */
@@ -311,6 +339,8 @@ public:
 /* ************************************************************************************ */
    bool iKnowRGPs(void) {return iknowrgps;}
 /* ************************************************************************************ */
+   bool iKnowCGPs(void) {return iknowcgps;}
+/* ************************************************************************************ */
    ScalarFieldType myCPType(void) {return mycptype;}
 /* ************************************************************************************ */
    solreal getMaxBondDist() {return maxBondDist;}
@@ -329,8 +359,8 @@ protected:
    int maxItACP,maxItBCP,maxItRCP,maxItCCP;
    int normalbcp;
    bool iknowacps,iknowbcps,iknowrcps,iknowccps, iknowallcps;
-   bool iknowbgps,iknowrgps;
-   bool drawNuc,drawBnd,drawBGPs,drawRGPs;
+   bool iknowbgps,iknowrgps,iknowcgps;
+   bool drawNuc,drawBnd,drawBGPs,drawRGPs,drawCGPs;
    bool tubeBGPStyle;
    bool mkextsearch;
    solreal stepSizeACP,stepSizeBCP,stepSizeRCP,stepSizeCCP;
@@ -413,6 +443,8 @@ protected:
    void findTwoClosestACPs(solreal (&xo)[3],int &idx1st,int &idx2nd);
 /* ************************************************************************************ */
    void addBCP2ConRCP(const int rcpIdx,const int bcpIdx);
+/* ************************************************************************************ */
+   void addRCP2ConCCP(const int ccpIdx,const int rcpIdx);
 /* ************************************************************************************ */
    void invertOrderBGPPoints(int dim);
 /* ************************************************************************************ */

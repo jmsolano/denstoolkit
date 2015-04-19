@@ -158,6 +158,10 @@ using std::endl;
 #define CPNW_MAXBCPSCONNECTEDTORCP (18)
 #endif
 
+#ifndef CPNW_MAXRCPSCONNECTEDTOCCP
+#define CPNW_MAXRCPSCONNECTEDTOCCP (8)
+#endif
+
 /* ************************************************************************************ */
 void critPtNetWork::init()
 {
@@ -166,10 +170,10 @@ void critPtNetWork::init()
    normalbcp=0;
    nBGP=0;
    conBCP=NULL;
-   conRCP=NULL;
+   conRCP=conCCP=NULL;
    RACP=RBCP=RRCP=RCCP=NULL;
    RBGP=NULL;
-   RRGP=NULL;
+   RRGP=RCGP=NULL;
    lblACP=lblBCP=lblRCP=lblCCP=NULL;
    for (int i=0; i<3; i++) {centMolecVec[i]=0.0e0;}
    //privates
@@ -184,12 +188,12 @@ void critPtNetWork::init()
    stepSizeCCP=CPNW_MAXSTEPSIZECCPSEARCH;
    iknowacps=iknowbcps=iknowrcps=iknowccps=false;
    iknowallcps=false;
-   iknowbgps=iknowrgps=false;
+   iknowbgps=iknowrgps=iknowcgps=false;
    mycptype=NONE;
    maxBondDist=maxBCPACPDist=-1.0e+50;
    drawNuc=false;
    drawBnd=true;
-   drawBGPs=drawRGPs=false;
+   drawBGPs=drawRGPs=drawCGPs=false;
    tubeBGPStyle=false;
    wf=NULL;
    bn=NULL;
@@ -204,6 +208,8 @@ critPtNetWork::critPtNetWork(gaussWaveFunc &uwf,bondNetWork &ubn)
 /* ************************************************************************************ */
 critPtNetWork::~critPtNetWork()
 {
+   dealloc4DRealArray(RCGP,dCCP,CPNW_MAXRCPSCONNECTEDTOCCP,\
+         CPNW_ARRAYSIZEGRADPATH);
    dealloc4DRealArray(RRGP,dRCP,CPNW_MAXBCPSCONNECTEDTORCP,\
          CPNW_ARRAYSIZEGRADPATH);
    dealloc3DRealArray(RBGP,dBCP,CPNW_ARRAYSIZEGRADPATH);
@@ -215,6 +221,7 @@ critPtNetWork::~critPtNetWork()
    dealloc2DRealArray(RRCP,dRCP);
    dealloc1DStringArray(lblRCP);
    dealloc3DIntArray(conRCP,dRCP,2);
+   dealloc3DIntArray(conCCP,dCCP,2);
    dealloc2DRealArray(RCCP,dCCP);
    dealloc1DStringArray(lblCCP);
    wf=NULL;
@@ -341,6 +348,7 @@ void critPtNetWork::setCriticalPoints(ScalarFieldType ft)
       if ( dCCP<CPNW_MINARRAYSIZE ) {dCCP=CPNW_MINARRAYSIZE;}
       alloc2DRealArray(string("RCCP"),dCCP,3,RCCP,1.0e+50);
       alloc1DStringArray("lblCCP",dCCP,lblCCP);
+      alloc3DIntArray("conCCP",dCCP,2,CPNW_MAXRCPSCONNECTEDTOCCP,conCCP,-1);
    }
    cout << "Looking for Cage Critical Points..." << endl;
    switch (ft) {
@@ -637,6 +645,10 @@ bool critPtNetWork::setRhoCCPs(void)
          wf->evalRhoGradRho(x[0],x[1],x[2],rho,g);
          if ((rho>CPNW_MINRHOSIGNIFICATIVEVAL)&&(computeMagnitudeV3(g)<CPNW_EPSRHOACPGRADMAG)) {
             addRhoCCP(x,sig,lbl,mypos);
+            if (mypos>=0) {
+               addRCP2ConCCP(mypos,i);
+               addRCP2ConCCP(mypos,j);
+            } 
          }
       }
 #if USEPROGRESSBAR
@@ -980,6 +992,7 @@ bool critPtNetWork::addRhoCCP(solreal (&x)[3],int sig,string &lbl,int &pos)
    } else {
       if ((int(ttpos)<nCCP)&&(ttpos!=string::npos)) {
          lblCCP[ttpos]+=(string("-")+lbl);
+         pos=int(ttpos);
       }
    }
    return false;
@@ -2914,7 +2927,7 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
       }
       imatrcp=walkGradientPathRK5ToEndPoint(xb,xn,xr,xm,currdmin,hstep,\
             dima,arrgp,count,maxalllen,false);
-      if ( imatrcp ) { cout << "iter(retimat): " << iter << endl; return count; }
+      if ( imatrcp ) { return count; }
       for ( int i=0 ; i<3 ; ++i ) { tmpv[i]=xm[i]-xb[i]; }
       magd=atan2(dotProductV3(tmpv,uy),dotProductV3(tmpv,ux));
       currSign=((alpha-magd)>=0? 1 : -1);
@@ -2925,102 +2938,69 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
       }
       ++iter;
    } while (iter<100 && fabs(magd)>CPNW_EPSRHOACPGRADMAG);
-   cout << "iter: " << iter << ", delta: " << magd << endl;
+   //cout << "iter: " << iter << ", delta: " << magd << endl;
    for ( int i=0 ; i<3 ; ++i ) {tmpv[i]=xn[i]-xr[i];}
    if ( magV3(tmpv)<(25.0e0*hstep) ) {
       return count;
    } else {
       return -1;
    }
-   /*
-      solreal dir1[3],dir2[3],d1dux,d1duy,currdmin;
-      d1dux=dotProductV3(xrmxb,ux);
-      d1duy=dotProductV3(xrmxb,uy);
-      for ( int i=0 ; i<3 ; ++i ) {
-      dir1[i]=d1dux*ux[i]+d1duy*uy[i];
-      xmmxr[i]=xm[i]-xr[i];
-      }
-      bool samedir=true;
-      int iter=0;
-      solreal proj0=dotProductV3(xmmxr,uy),currProj;
-      solreal thefactor=1.0e0;
-      do {
-      for ( int i=0 ; i<3 ; ++i ) {
-      dir2[i]=dir1[i]-uy[i]*thefactor*proj0;
-      xn[i]=dir2[i];
-      }
-      magd=0.5e0*hstep/magV3(xn);
-      for ( int i=0 ; i<3 ; ++i ) {
-      xn[i]*=magd;
-      xn[i]+=xb[i];
-      }
-      imatrcp=walkGradientPathRK5ToEndPoint(xb,xn,xr,xm,currdmin,hstep,\
-      dima,arrgp,count,maxalllen,false);
-      for ( int i=0 ; i<3 ; ++i ) { xmmxr[i]=xm[i]-xr[i]; }
-      currProj=dotProductV3(xmmxr,uy);
-      cout << "dmin: " << magV3(xmmxr) << "; proy0: " << proj0\
-      << ";currProj: " << currProj << endl;
-      if ( imatrcp ) { cout << "imatrcp!"; return count; }
-      if ( (currProj*proj0)<0.0e0 ) {
-      cout << "chdir" << endl;
-      break;
-      } else {
-         for ( int i=0 ; i<3 ; ++i ) { dir1[i]-=(uy[i]*thefactor*proj0); }
-      }
-      ++iter;
-   } while (samedir && (iter<20));
-   for ( int i=0 ; i<3 ; ++i ) {xmmxr[i]=xm[i]-xr[i];}
-   cout << "dmin: " << magd << "iter: " << iter << endl;
-   if ( iter==20 ) {
-      displayWarningMessage("Iter>20!");
+}
+/* ************************************************************************************ */
+int critPtNetWork::findSingleRhoCageGradientPathRK5(int ccpIdx,\
+      int rcpIdxInRCGP,solreal hstep,int dima,\
+      solreal** (&arrgp))
+{
+   int rcpGlobIdx=conCCP[ccpIdx][0][rcpIdxInRCGP];
 #if DEBUG
+   if ( rcpIdxInRCGP>CPNW_MAXRCPSCONNECTEDTOCCP || rcpIdxInRCGP < 0 ) {
+      displayErrorMessage("Out of conCCP bounds!");
       DISPLAYDEBUGINFOFILELINE;
+   }
+   if ( ccpIdx>nCCP ) {
+      displayErrorMessage("ccpIdx>nCCP");
+      DISPLAYDEBUGINFOFILELINE;
+   }
+   if ( rcpGlobIdx>nRCP || rcpGlobIdx<0 ) {
+      displayErrorMessage("Non existent rcp!");
+      DISPLAYDEBUGINFOFILELINE;
+   }
 #endif
+   solreal xn[3],xr[3],xc[3],xm[3];
+   solreal magd;
+   for ( int i=0 ; i<3 ; ++i ) {
+      xr[i]=RRCP[rcpGlobIdx][i];
+      xc[i]=RCCP[ccpIdx][i];
    }
-   return count;
-   string mess;
-   iter=0;
-   cout << scientific << setprecision(16);
-   while ( iter<(CPNW_MAXITERATIONRINGPATHBISECT) ) {
-      for ( int i=0 ; i<3 ; ++i ) {xn[i]=0.5e0*(dir1[i]+dir2[i]);}
-      normalizeV3(xn);
-      for ( int i=0 ; i<3 ; ++i ) {
-         xn[i]*=hstep;
-         xn[i]+=xb[i];
-      }
-      mess=getStringFromInt(iter);
-      while ( mess.length()<3 ) {mess.insert(0,"0");}
-      mess.insert(0,"xn(");
-      mess+="): ";
-      //printV3Comp(mess,xn);
-      imatrcp=walkGradientPathRK5ToEndPoint(xb,xn,xr,xm,magd,hstep,\
-            dima,arrgp,count,maxalllen,false);
-      if ( imatrcp || magd<5.0e-02 ) { return count; }
-      for ( int i=0 ; i<3 ; ++i ) {xmmxr[i]=xm[i]-xr[i];}
-      currProj=dotProductV3(xmmxr,uy);
-      for ( int i=0 ; i<3 ; ++i ) {xmmxr[i]=0.5e0*(dir1[i]+dir2[i]);}
-      //cout << "xmmxr: " << xmmxr[0] << " " << xmmxr[1] << " " << xmmxr[2]\
-           << "; dmin: " << magV3(xmmxr) << endl;
-      cout << "d1-d2: " << (dir1[0]-dir2[0]) << " " << (dir1[1]-dir2[1])\
-         << " " << (dir1[2]-dir2[2]) << "; sig: " << (currProj*proj0) << endl;
-      if ( (currProj*proj0)<0.0e0 ) {
-         //samedir=false;
-         for ( int i=0 ; i<3 ; ++i ) {
-            //dir2[i]=xrmxb[i]+(fabs(currProj)<hstep?fabs(currProj):hstep)*uy[i];
-            dir2[i]=xmmxr[i];
-         }
-      } else {
-         //samedir=true;
-         for ( int i=0 ; i<3 ; ++i ) {
-            //dir1[i]=xrmxb[i]-(fabs(currProj)<hstep?fabs(currProj):hstep)*uy[i];
-            dir1[i]=xmmxr[i];
-         }
-      }
-      ++iter;
+   solreal hess[3][3],eivec[3][3],tmpv[3],dir2min[3];
+   wf->evalHessian(xr[0],xr[1],xr[2],magd,tmpv,hess); //here tmpv is gradRho
+   if ( magV3(tmpv)>CPNW_EPSRHOACPGRADMAG ) {
+      displayWarningMessage(string("Not at an RCP? (")+\
+            getStringFromReal(magV3(tmpv))+string(")"));
    }
-   cout << "iter: " << iter << endl;
-   return count;
-   // */
+   eigen_decomposition3(hess,eivec,tmpv);
+   for ( int i=0 ; i<3 ; ++i ) {
+      dir2min[i]=eivec[i][0];
+      xn[i]=xr[i]+hstep*dir2min[i];
+   }
+   int count;
+   solreal maxalllen=maxBondDist;
+   bool imatccp=walkGradientPathRK5ToEndPoint(xr,xn,xc,xm,magd,hstep,\
+         dima,arrgp,count,maxalllen,false); //uphill=false
+   if ( imatccp ) {return count;}
+   for ( int i=0 ; i<3 ; ++i ) {
+      dir2min[i]=eivec[i][0];
+      xn[i]=xr[i]-hstep*dir2min[i];
+   }
+   imatccp=walkGradientPathRK5ToEndPoint(xr,xn,xc,xm,magd,hstep,\
+         dima,arrgp,count,maxalllen,false); //uphill=false
+   if ( imatccp ) {return count;}
+   
+   displayErrorMessage("Unknown error!");
+#if DEBUG
+   DISPLAYDEBUGINFOFILELINE;
+#endif /* ( DEBUG ) */
+   return -1;
 }
 /* ************************************************************************************ */
 bool critPtNetWork::walkGradientPathRK5ToEndPoint(\
@@ -3266,6 +3246,27 @@ void critPtNetWork::addBCP2ConRCP(const int rcpIdx,const int bcpIdx)
    }
 }
 /* ************************************************************************************ */
+void critPtNetWork::addRCP2ConCCP(const int ccpIdx,const int rcpIdx)
+{
+#if DEBUG
+   if ( conCCP==NULL ) {
+      displayErrorMessage("conCCP is not allocated!");
+      DISPLAYDEBUGINFOFILELINE;
+   }
+#endif /* ( DEBUG ) */
+   int k=0;
+   while ( k<CPNW_MAXRCPSCONNECTEDTOCCP && conCCP[ccpIdx][0][k]!=rcpIdx ) {
+      if ( conCCP[ccpIdx][0][k]<0 ) {conCCP[ccpIdx][0][k]=rcpIdx; return;}
+      ++k;
+   }
+   if ( k==CPNW_MAXRCPSCONNECTEDTOCCP ) {
+      displayWarningMessage("Perhaps you need a larger array for conCCP!");
+#if DEBUG
+         DISPLAYDEBUGINFOFILELINE;
+#endif /* ( DEBUG ) */
+   }
+}
+/* ************************************************************************************ */
 void critPtNetWork::correctRCPConnectivity(void)
 {
    findMaxBondDist();
@@ -3349,6 +3350,23 @@ void critPtNetWork::addToConRCP(const int rcpIdx,const int bcpIdx)
    conRCP[rcpIdx][0][mypos]=bcpIdx;
 }
 /* ************************************************************************************ */
+void critPtNetWork::addToConCCP(const int ccpIdx,const int rcpIdx)
+{
+   int mypos=0;
+   while (conCCP[ccpIdx][0][mypos]>=0) {
+      if ( conCCP[ccpIdx][0][mypos]==rcpIdx ) {return;}
+      ++mypos;
+      if ( mypos==CPNW_MAXRCPSCONNECTEDTOCCP ) {
+         displayWarningMessage("End of array reached, need bigger array!");
+#if DEBUG
+         DISPLAYDEBUGINFOFILELINE;
+#endif /* ( DEBUG ) */
+         return;
+      }
+   }
+   conCCP[ccpIdx][0][mypos]=rcpIdx;
+}
+/* ************************************************************************************ */
 void critPtNetWork::setRingPaths()
 {
    if (!iknowrcps) {
@@ -3400,6 +3418,60 @@ void critPtNetWork::setRingPaths()
    cout << endl;
 #endif
    iknowrgps=true;
+}
+/* ************************************************************************************ */
+void critPtNetWork::setCagePaths(void)
+{
+  if (!iknowccps) {
+      displayErrorMessage("Please look first for the CCPs...\nNothing to be done!");
+      return;
+   }
+   alloc4DRealArray(string("RCGP"),dCCP,CPNW_MAXRCPSCONNECTEDTOCCP,\
+         CPNW_ARRAYSIZEGRADPATH,3,RCGP);
+   cout << "Calculating Cage Gradient Paths..." << endl;
+#if DEBUG
+   cout << "nCCP: " << nCCP << endl;
+#endif /* ( DEBUG ) */
+   /* Remember this is just a trial function,  */
+#if USEPROGRESSBAR
+   printProgressBar(0);
+#endif
+   solreal hstep,rseed[3];
+   hstep=CPNW_DEFAULTGRADIENTPATHS;
+   int arrsize=CPNW_ARRAYSIZEGRADPATH;
+   int rcpIdx,currRcpPos,npts;
+   for (int ccpIdx=0; ccpIdx<nCCP; ccpIdx++) {
+      currRcpPos=0;
+      while ( conCCP[ccpIdx][0][currRcpPos]>=0 ) {
+         rcpIdx=conCCP[ccpIdx][0][currRcpPos];
+#if DEBUG
+         if ( ccpIdx>=nCCP || ccpIdx<0 ) {
+            displayErrorMessage("CCP out of bounds!");
+            DISPLAYDEBUGINFOFILELINE;
+         }
+#endif
+         for (int k=0; k<3; k++) {rseed[k]=RCCP[ccpIdx][k];}
+         npts=findSingleRhoCageGradientPathRK5(ccpIdx,\
+               currRcpPos,hstep,arrsize,RCGP[ccpIdx][currRcpPos]);
+#if DEBUG
+         if ( npts<0 ) {
+            displayWarningMessage("Catched -1");
+            DISPLAYDEBUGINFOFILELINE;
+         }
+#endif /* ( DEBUG ) */
+         conCCP[ccpIdx][1][currRcpPos]=npts;
+         ++currRcpPos;
+      }
+#if USEPROGRESSBAR
+      printProgressBar(int(100.0e0*solreal(ccpIdx)/\
+               solreal( (nCCP>1) ? (nCCP-1) : 1 )));
+#endif
+   }
+#if USEPROGRESSBAR
+   printProgressBar(100);
+   cout << endl;
+#endif
+   iknowcgps=true;
 }
 /* ************************************************************************************ */
 int critPtNetWork::getNofRingPathsOfRCP(int rcpIdx)
