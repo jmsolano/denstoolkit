@@ -242,7 +242,7 @@ public:
          solreal &rho, solreal &dx, solreal &dy, solreal &dz);
    /* ************************************************************************************** */
    /**
-      This function is the same as evalRhoGraRho, but using an array for the gradient instead of
+      This function is the same as evalRhoGradRho, but using an array for the gradient instead of
       individual components of the gradient. i.e.
       evalRhoGradRho(x,y,z,rho,g[3])=evalRhoGradRho(x,y,z,rho,g[0],g[1],g[2])
     */

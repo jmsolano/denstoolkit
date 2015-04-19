@@ -110,7 +110,7 @@ void writeDatMatBondPathCrds(string &bpfn,critPtNetWork &cp)
    int npts,nbps;
    nbps=cp.nBCP;
    for (int i=0; i<nbps; i++) {
-      npts=cp.atBCP[i][2];
+      npts=cp.conBCP[i][2];
       for (int j=0; j<npts; j++) {
          ofil << cp.RBGP[i][j][0] << " " << cp.RBGP[i][j][1] << " " << cp.RBGP[i][j][2] << endl;
       }

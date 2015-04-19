@@ -61,6 +61,7 @@ using std::endl;
 #include "atomradiicust.h"
 #include "solstringtools.h"
 #include "solpovtools.h"
+#include "solmath.h"
 // The first 94 atomic radii are given,
 //  the rest are set to be 0.80e0
 //
@@ -121,8 +122,16 @@ using std::endl;
 #define CPNW_MAXITERATIONCCPSEARCH 120
 #endif
 
-//#ifndef CPNW_CPNW_EPSRHOACPGRADMAG
-//#define CPNW_CPNW_EPSRHOACPGRADMAG (1.0e-12)
+#ifndef CPNW_MAXITERATIONRINGPATHBISECT
+#define CPNW_MAXITERATIONRINGPATHBISECT 60
+#endif
+
+#ifndef CPNW_MINDISTFORPINTINPATH
+#define CPNW_MINDISTFORPINTINPATH (0.6e0)
+#endif
+
+//#ifndef CPNW_EPSRHOACPGRADMAG
+//#define CPNW_EPSRHOACPGRADMAG (1.0e-12)
 //#endif
 
 #ifndef CPNW_EPSRHOACPGRADMAG
@@ -145,6 +154,14 @@ using std::endl;
 #define CPNW_MINARRAYSIZE (8)
 #endif
 
+#ifndef CPNW_MAXBCPSCONNECTEDTORCP
+#define CPNW_MAXBCPSCONNECTEDTORCP (18)
+#endif
+
+#ifndef CPNW_MAXRCPSCONNECTEDTOCCP
+#define CPNW_MAXRCPSCONNECTEDTOCCP (8)
+#endif
+
 /* ************************************************************************************ */
 void critPtNetWork::init()
 {
@@ -152,9 +169,11 @@ void critPtNetWork::init()
    nACP=nBCP=nRCP=nCCP=0;
    normalbcp=0;
    nBGP=0;
-   atBCP=NULL;
+   conBCP=NULL;
+   conRCP=conCCP=NULL;
    RACP=RBCP=RRCP=RCCP=NULL;
    RBGP=NULL;
+   RRGP=RCGP=NULL;
    lblACP=lblBCP=lblRCP=lblCCP=NULL;
    for (int i=0; i<3; i++) {centMolecVec[i]=0.0e0;}
    //privates
@@ -169,11 +188,12 @@ void critPtNetWork::init()
    stepSizeCCP=CPNW_MAXSTEPSIZECCPSEARCH;
    iknowacps=iknowbcps=iknowrcps=iknowccps=false;
    iknowallcps=false;
-   iknowbgps=false;
+   iknowbgps=iknowrgps=iknowcgps=false;
    mycptype=NONE;
+   maxBondDist=maxBCPACPDist=-1.0e+50;
    drawNuc=false;
    drawBnd=true;
-   drawBGPs=false;
+   drawBGPs=drawRGPs=drawCGPs=false;
    tubeBGPStyle=false;
    wf=NULL;
    bn=NULL;
@@ -188,14 +208,20 @@ critPtNetWork::critPtNetWork(gaussWaveFunc &uwf,bondNetWork &ubn)
 /* ************************************************************************************ */
 critPtNetWork::~critPtNetWork()
 {
+   dealloc4DRealArray(RCGP,dCCP,CPNW_MAXRCPSCONNECTEDTOCCP,\
+         CPNW_ARRAYSIZEGRADPATH);
+   dealloc4DRealArray(RRGP,dRCP,CPNW_MAXBCPSCONNECTEDTORCP,\
+         CPNW_ARRAYSIZEGRADPATH);
    dealloc3DRealArray(RBGP,dBCP,CPNW_ARRAYSIZEGRADPATH);
    dealloc2DRealArray(RACP,dACP);
    dealloc1DStringArray(lblACP);
    dealloc2DRealArray(RBCP,dBCP);
    dealloc1DStringArray(lblBCP);
-   dealloc2DIntArray(atBCP,dBCP);
+   dealloc2DIntArray(conBCP,dBCP);
    dealloc2DRealArray(RRCP,dRCP);
    dealloc1DStringArray(lblRCP);
+   dealloc3DIntArray(conRCP,dRCP,2);
+   dealloc3DIntArray(conCCP,dCCP,2);
    dealloc2DRealArray(RCCP,dCCP);
    dealloc1DStringArray(lblCCP);
    wf=NULL;
@@ -269,7 +295,7 @@ void critPtNetWork::setCriticalPoints(ScalarFieldType ft)
       dBCP=(nACP*(nACP-1))/2;
       if ( dBCP<CPNW_MINARRAYSIZE ) {dBCP=CPNW_MINARRAYSIZE;}
       alloc2DRealArray(string("RBCP"),dBCP,3,RBCP,1.0e+50);
-      alloc2DIntArray(string("atBCP"),dBCP,3,atBCP,-1);
+      alloc2DIntArray(string("conBCP"),dBCP,3,conBCP,-1);
       alloc1DStringArray("lblBCP",dBCP,lblBCP);
    } else {
       displayErrorMessage("First look for ACPs...\n");
@@ -299,6 +325,7 @@ void critPtNetWork::setCriticalPoints(ScalarFieldType ft)
       if ( dRCP<CPNW_MINARRAYSIZE ) {dRCP=CPNW_MINARRAYSIZE;}
       alloc2DRealArray(string("RRCP"),dRCP,3,RRCP,1.0e+50);
       alloc1DStringArray("lblRCP",dRCP,lblRCP);
+      alloc3DIntArray("conRCP",dRCP,2,CPNW_MAXBCPSCONNECTEDTORCP,conRCP,-1);
    }
    cout << "Looking for Ring Critical Points..." << endl;
    switch (ft) {
@@ -321,6 +348,7 @@ void critPtNetWork::setCriticalPoints(ScalarFieldType ft)
       if ( dCCP<CPNW_MINARRAYSIZE ) {dCCP=CPNW_MINARRAYSIZE;}
       alloc2DRealArray(string("RCCP"),dCCP,3,RCCP,1.0e+50);
       alloc1DStringArray("lblCCP",dCCP,lblCCP);
+      alloc3DIntArray("conCCP",dCCP,2,CPNW_MAXRCPSCONNECTEDTOCCP,conCCP,-1);
    }
    cout << "Looking for Cage Critical Points..." << endl;
    switch (ft) {
@@ -366,16 +394,17 @@ void critPtNetWork::setBondPaths()
    int at1,at2;
    for (int i=0; i<nBCP; i++) {
       for (int k=0; k<3; k++) {rseed[k]=RBCP[i][k];}
-      at1=atBCP[i][0];
-      at2=atBCP[i][1];
-      npts=findSingleRhoGradientPathRK5(at1,at2,hstep,arrsize,RBGP[i],rseed);
-      atBCP[i][2]=npts;
+      at1=conBCP[i][0];
+      at2=conBCP[i][1];
+      npts=findSingleRhoBondGradientPathRK5(at1,at2,hstep,arrsize,RBGP[i],rseed);
+      conBCP[i][2]=npts;
       if (npts>0) {nBGP++;}
       //for (int j=0; j<npts; j++) {
       //   for (int k=0; k<3; k++) {RBGP[i][j][k]=RGP[j][k];}
       //}
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((nBCP-1))));
+      printProgressBar(int(100.0e0*solreal(i)/\
+               solreal((nBCP>1) ? (nBCP-1) : 1 )));
 #endif
    }
 #if USEPROGRESSBAR
@@ -384,6 +413,7 @@ void critPtNetWork::setBondPaths()
 #endif
    if (nBGP!=nBCP) {displayWarningMessage("For some unknown reason nBGP!=nBCP...");}
    iknowbgps=true;
+   findMaxBondDist();
 }
 /* ************************************************************************************ */
 bool critPtNetWork::setRhoACPs()
@@ -431,7 +461,8 @@ bool critPtNetWork::setRhoACPs()
          }
       }
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((bn->nNuc-1))));
+      printProgressBar(int(100.0e0*solreal(i)/\
+               solreal((bn->nNuc > 1)? (bn->nNuc-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
@@ -470,14 +501,15 @@ bool critPtNetWork::setRhoBCPs(void)
             lbl=bn->atLbl[atb]+string("-")+bn->atLbl[ata];
          }
          if (rho>CPNW_MINRHOSIGNIFICATIVEVAL&&addRhoBCP(x,sig,lbl,mypos)&&mypos>=0) {
-            atBCP[mypos][0]=ata;
-            atBCP[mypos][1]=atb;
+            conBCP[mypos][0]=ata;
+            conBCP[mypos][1]=atb;
          }
          atb=bn->bNet[ata][k];
          ++k;
       }
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((nACP-1))));
+      printProgressBar(int(100.0e0*solreal(i)/\
+               solreal((nACP>1)? (nACP-1) : 1)));
 #endif
    }
    normalbcp=nBCP;
@@ -495,7 +527,8 @@ bool critPtNetWork::setRhoBCPs(void)
    for ( int i=(bn->nNuc) ; i<nACP ; i++ ) {
       seekRhoBCPWithExtraACP(i,(bn->maxBondDist));
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((nACP-1))));
+      printProgressBar(int(100.0e0*solreal(i)/\
+               solreal((nACP>1)? (nACP-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
@@ -521,15 +554,16 @@ bool critPtNetWork::setRhoBCPs(void)
                if ((rho>CPNW_MINRHOSIGNIFICATIVEVAL)&&(computeMagnitudeV3(g)<CPNW_EPSRHOACPGRADMAG)) {
                   addRhoBCP(x,sig,lbl,mypos);
                   if ((mypos>=0)&&(mypos<dBCP)) {
-                     atBCP[mypos][0]=ata;
-                     atBCP[mypos][1]=atb;
+                     conBCP[mypos][0]=ata;
+                     conBCP[mypos][1]=atb;
                   }
                }
             }
          }
       }
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((nACP-1))));
+      printProgressBar(int(100.0e0*solreal(i)/\
+               solreal((nACP>1)? (nACP-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
@@ -543,8 +577,8 @@ bool critPtNetWork::setRhoBCPs(void)
       for ( int i=normalbcp ; i<nBCP ; i++ ) {
          for ( int k=0 ; k<3 ; k++ ) {tbcp[k]=RBCP[i][k];}
          findTwoClosestACPs(tbcp,ata,atb);
-         atBCP[i][0]=ata;
-         atBCP[i][1]=atb;
+         conBCP[i][0]=ata;
+         conBCP[i][1]=atb;
          lblBCP[i]="*"+lblACP[ata]+"-"+lblACP[atb];
       }
       cout << (nBCP-normalbcp) << " new BCP";
@@ -569,10 +603,15 @@ bool critPtNetWork::setRhoRCPs(void)
          //wf->evalRhoGradRho(x[0],x[1],x[2],rho,g);
          if ((rho>CPNW_MINRHOSIGNIFICATIVEVAL)&&(computeMagnitudeV3(g)<CPNW_EPSRHOACPGRADMAG)) {
             addRhoRCP(x,sig,lbl,mypos);
+            if (mypos>=0) {
+               addBCP2ConRCP(mypos,i);
+               addBCP2ConRCP(mypos,j);
+            }  
          }
       }
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((nBCP-1))));
+      printProgressBar(int(100.0e0*solreal(i)/\
+               solreal((nBCP>1)? (nBCP-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
@@ -606,10 +645,15 @@ bool critPtNetWork::setRhoCCPs(void)
          wf->evalRhoGradRho(x[0],x[1],x[2],rho,g);
          if ((rho>CPNW_MINRHOSIGNIFICATIVEVAL)&&(computeMagnitudeV3(g)<CPNW_EPSRHOACPGRADMAG)) {
             addRhoCCP(x,sig,lbl,mypos);
+            if (mypos>=0) {
+               addRCP2ConCCP(mypos,i);
+               addRCP2ConCCP(mypos,j);
+            } 
          }
       }
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((nRCP))));
+      printProgressBar(int(100.0e0*solreal(i)/\
+               solreal((nRCP>0)? (nRCP) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
@@ -666,7 +710,8 @@ bool critPtNetWork::setLOLACPs()
          rad*=0.01e0;
          seekLOLACPsAroundAPoint(xs,rad,lbl,-1);
 #if USEPROGRESSBAR
-         printProgressBar(int(100.0e0*solreal(i)/solreal((bn->nNuc-1))));
+         printProgressBar(int(100.0e0*solreal(i)/\
+                  solreal((bn->nNuc > 1)? (bn->nNuc-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
@@ -692,7 +737,8 @@ bool critPtNetWork::setLOLACPs()
          }
       }
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((bn->nNuc-1))));
+      printProgressBar(int(100.0e0*solreal(i)/\
+               solreal((bn->nNuc > 1)? (bn->nNuc-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
@@ -732,14 +778,15 @@ bool critPtNetWork::setLOLBCPs(void)
             lbl=bn->atLbl[atb]+string("-")+bn->atLbl[ata];
          }
          if (addRhoBCP(x,sig,lbl,mypos)&&mypos>=0) {
-            atBCP[mypos][0]=ata;
-            atBCP[mypos][1]=atb;
+            conBCP[mypos][0]=ata;
+            conBCP[mypos][1]=atb;
          }
          atb=bn->bNet[ata][k];
          ++k;
       }
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((nACP-1))));
+      printProgressBar(int(100.0e0*solreal(i)/\
+               solreal((nACP>1)? (nACP-1) : 1)));
 #endif
    }
    normalbcp=nBCP;
@@ -757,7 +804,8 @@ bool critPtNetWork::setLOLBCPs(void)
    for ( int i=(bn->nNuc) ; i<nACP ; i++ ) {
       seekLOLBCPWithExtraACP(i,(bn->maxBondDist));
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((nACP-1))));
+      printProgressBar(int(100.0e0*solreal(i)/\
+               solreal((nACP>1)? (nACP-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
@@ -784,8 +832,8 @@ bool critPtNetWork::setLOLBCPs(void)
                if ((rho>CPNW_MINRHOSIGNIFICATIVEVAL)&&(computeMagnitudeV3(g)<CPNW_EPSRHOACPGRADMAG)) {
                   addRhoBCP(x,sig,lbl,mypos);
                   if ((mypos>=0)&&(mypos<dBCP)) {
-                     atBCP[mypos][0]=ata;
-                     atBCP[mypos][1]=atb;
+                     conBCP[mypos][0]=ata;
+                     conBCP[mypos][1]=atb;
                   }
                }
             }
@@ -806,8 +854,8 @@ bool critPtNetWork::setLOLBCPs(void)
       for ( int i=normalbcp ; i<nBCP ; i++ ) {
          for ( int k=0 ; k<3 ; k++ ) {tbcp[k]=RBCP[i][k];}
          findTwoClosestACPs(tbcp,ata,atb);
-         atBCP[i][0]=ata;
-         atBCP[i][1]=atb;
+         conBCP[i][0]=ata;
+         conBCP[i][1]=atb;
          lblBCP[i]="*"+lblACP[ata]+"-"+lblACP[atb];
       }
       cout << (nBCP-normalbcp) << " new BCP";
@@ -911,6 +959,7 @@ bool critPtNetWork::addRhoRCP(solreal (&x)[3],int sig,string &lbl,int &pos)
    } else {
       if ((int(ttpos)<nRCP)&&(ttpos!=string::npos)) {
          lblRCP[ttpos]+=(string("-")+lbl);
+         pos=int(ttpos);
       }
    }
    return false;
@@ -943,6 +992,7 @@ bool critPtNetWork::addRhoCCP(solreal (&x)[3],int sig,string &lbl,int &pos)
    } else {
       if ((int(ttpos)<nCCP)&&(ttpos!=string::npos)) {
          lblCCP[ttpos]+=(string("-")+lbl);
+         pos=int(ttpos);
       }
    }
    return false;
@@ -1047,8 +1097,8 @@ void critPtNetWork::seekRhoBCPWithExtraACP(int acppos,solreal maxrad)
                   (computeMagnitudeV3(g)<CPNW_EPSRHOACPGRADMAG)) {
                addRhoBCP(xx,sig,lbl,mypos);
                if ((mypos>=0)&&(mypos<dBCP)) {
-                  atBCP[mypos][0]=i;
-                  atBCP[mypos][1]=acppos;
+                  conBCP[mypos][0]=i;
+                  conBCP[mypos][1]=acppos;
                }
             }
          }
@@ -1078,8 +1128,8 @@ void critPtNetWork::seekLOLBCPWithExtraACP(int acppos,solreal maxrad)
             if (computeMagnitudeV3(g)<CPNW_EPSLOLACPGRADMAG) {
                addRhoBCP(xx,sig,lbl,mypos);
                if ((mypos>=0)&&(mypos<dBCP)) {
-                  atBCP[mypos][0]=i;
-                  atBCP[mypos][1]=acppos;
+                  conBCP[mypos][0]=i;
+                  conBCP[mypos][1]=acppos;
                }
             }
          }
@@ -1148,7 +1198,8 @@ void critPtNetWork::seekLOLACPsOnASphere(int atIdx,int nDivR,int nDivT,int nDivP
          }
       }
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(count)/solreal(nseeds-1)));
+      printProgressBar(int(100.0e0*solreal(count)/\
+               solreal((nseeds>1) ? (nseeds-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
@@ -1179,7 +1230,8 @@ void critPtNetWork::extendedSearchCPs(void)
       seekRhoCCPsAroundAPoint(xs,dx,lbl,nIHV);
       ++count;
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(count)/solreal(nBCP-normalbcp-1)));
+      printProgressBar(int(100.0e0*solreal(count)/\
+               solreal(((nBCP-normalbcp)>1)? (nBCP-normalbcp-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
@@ -1201,7 +1253,8 @@ void critPtNetWork::extendedSearchCPs(void)
       seekRhoCCPsAroundAPoint(xs,dx,lbl,nIHV);
       ++count;
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(count)/solreal(nBCP-normalbcp-1)));
+      printProgressBar(int(100.0e0*solreal(count)/\
+               solreal((nRCP>1)? (nRCP-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
@@ -1223,7 +1276,8 @@ void critPtNetWork::extendedSearchCPs(void)
       seekRhoRCPsAroundAPoint(xs,dx,lbl,nIHV);
       ++count;
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(count)/solreal(nBCP-normalbcp-1)));
+      printProgressBar(int(100.0e0*solreal(count)/\
+               solreal(((nBCP-normalbcp)>1)? (nBCP-normalbcp-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
@@ -2139,7 +2193,9 @@ bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
    //pof << "#declare ColorCCP=rgb <0.9,0.9,0.9>;" << endl;
    pof << "#declare ColorCCP=rgb <1.0,0.0,0.0>;" << endl;
    pof << "#declare RadiusCCP=RadiusAllCriticalPoints;" << endl;
-   pof << "#declare ColorABGradPath=rgb <0.0,1.0,0.0>;" << endl;
+   pof << "#declare ColorABGradPath=rgb <0.0,0.2,1.0>;" << endl;
+   pof << "#declare ColorARGradPath=rgb <0.0,0.8,0.0>;" << endl;
+   pof << "#declare ColorACGradPath=rgb <1.0,0.5,0.0>;" << endl;
    pof << "#default { finish { specular 0.3 roughness 0.03 phong .1 } }" << endl;
    writeScrCharLine(pof,'/');
    pof << "//For the colors, instead of rgb <...>, you may want to try Red, Yellow, ..." << endl;
@@ -2285,12 +2341,12 @@ bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
       writeScrCharLine(pof,'/');
    }
    if (iknowbgps) {
-      solreal gprad=0.05;
+      solreal gprad=0.06;
       int npts;
       pof << "#if(DrawGradientPathSpheres)" << endl;
       pof << "union {" << endl;
       for (int i=0; i<nBCP; i++) {
-         npts=atBCP[i][2];
+         npts=conBCP[i][2];
          writePOVSphere(pof,1,RBGP[i][0][0],RBGP[i][0][1],RBGP[i][0][2], \
                gprad,"ColorABGradPath");
          for (int j=1; j<npts; j++) {
@@ -2302,12 +2358,12 @@ bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
       pof << "#end\n//end if DrawGradientPathSpheres" << endl;
    }
    if (iknowbgps) {
-      solreal gprad=0.05;
+      solreal gprad=0.06;
       int npts;
       pof << "#if(DrawGradientPathTubes)" << endl;
       pof << "union {" << endl;
       for (int i=0; i<nBCP; i++) {
-         npts=atBCP[i][2];
+         npts=conBCP[i][2];
          writePOVSphere(pof,1,RBGP[i][0][0],RBGP[i][0][1],RBGP[i][0][2], \
                gprad,"ColorABGradPath");
          for (int j=1; j<npts; j++) {
@@ -2323,6 +2379,110 @@ bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
       }
       pof << "}" << endl;
       pof << "#end\n//end if DrawGradientPathTubes" << endl;
+   }
+   if ( iknowrgps ) {
+      solreal gprad=0.045;
+      int npts,currBcpPos;
+      pof << "#if(DrawGradientPathTubes)" << endl;
+      pof << "union {" << endl;
+      for (int rcpIdx=0; rcpIdx<nRCP; ++rcpIdx) {
+         currBcpPos=0;
+         while ( conRCP[rcpIdx][1][currBcpPos]>0 ) {
+            npts=conRCP[rcpIdx][1][currBcpPos];
+            writePOVSphere(pof,1,RRGP[rcpIdx][currBcpPos][0][0],\
+                  RRGP[rcpIdx][currBcpPos][0][1],\
+                  RRGP[rcpIdx][currBcpPos][0][2],gprad,"ColorARGradPath");
+            for ( int j=1 ; j<npts ; ++j ) {
+               writePOVSphere(pof,1,RRGP[rcpIdx][currBcpPos][j][0],\
+                     RRGP[rcpIdx][currBcpPos][j][1],\
+                     RRGP[rcpIdx][currBcpPos][j][2],gprad,"ColorARGradPath");
+               if ( j%2 ==0 ) {
+               writePOVCylinder(pof,1,\
+                     RRGP[rcpIdx][currBcpPos][j][0],\
+                     RRGP[rcpIdx][currBcpPos][j][1],\
+                     RRGP[rcpIdx][currBcpPos][j][2],\
+                     RRGP[rcpIdx][currBcpPos][j-1][0],\
+                     RRGP[rcpIdx][currBcpPos][j-1][1],\
+                     RRGP[rcpIdx][currBcpPos][j-1][2],\
+                     gprad,"ColorARGradPath");
+               }
+            }
+            ++currBcpPos;
+         }
+      }
+      pof << "}" << endl;
+      pof << "#end\n//end if DrawGradientPathTubes" << endl;
+      //-------------------
+      pof << "#if(DrawGradientPathSpheres)" << endl;
+      pof << "union {" << endl;
+      for (int rcpIdx=0; rcpIdx<nRCP; ++rcpIdx) {
+         currBcpPos=0;
+         while ( conRCP[rcpIdx][1][currBcpPos]>0 ) {
+            npts=conRCP[rcpIdx][1][currBcpPos];
+            for ( int j=0 ; j<npts ; ++j ) {
+               writePOVSphere(pof,1,RRGP[rcpIdx][currBcpPos][j][0],\
+                     RRGP[rcpIdx][currBcpPos][j][1],\
+                     RRGP[rcpIdx][currBcpPos][j][2],gprad,"ColorARGradPath");
+            }
+            ++currBcpPos;
+         }
+      }
+      pof << "}" << endl;
+      pof << "#end\n//end if DrawGradientPathSpheres" << endl;
+ 
+   }
+   if ( iknowcgps ) {
+      solreal gprad=0.045;
+      int npts,currRcpPos;
+      pof << "#if(DrawGradientPathTubes)" << endl;
+      pof << "union {" << endl;
+      for (int ccpIdx=0; ccpIdx<nCCP; ++ccpIdx) {
+         currRcpPos=0;
+         while ( conCCP[ccpIdx][1][currRcpPos]>0 ) {
+            npts=conCCP[ccpIdx][1][currRcpPos];
+            writePOVSphere(pof,1,RCGP[ccpIdx][currRcpPos][0][0],\
+                  RCGP[ccpIdx][currRcpPos][0][1],\
+                  RCGP[ccpIdx][currRcpPos][0][2],gprad,"ColorACGradPath");
+            for ( int j=1 ; j<npts ; ++j ) {
+               if (j%3 != 1) {
+               writePOVSphere(pof,1,RCGP[ccpIdx][currRcpPos][j][0],\
+                     RCGP[ccpIdx][currRcpPos][j][1],\
+                     RCGP[ccpIdx][currRcpPos][j][2],gprad,"ColorACGradPath");
+               }
+               if (j%3 ==0) {
+               writePOVCylinder(pof,1,\
+                     RCGP[ccpIdx][currRcpPos][j][0],\
+                     RCGP[ccpIdx][currRcpPos][j][1],\
+                     RCGP[ccpIdx][currRcpPos][j][2],\
+                     RCGP[ccpIdx][currRcpPos][j-1][0],\
+                     RCGP[ccpIdx][currRcpPos][j-1][1],\
+                     RCGP[ccpIdx][currRcpPos][j-1][2],\
+                     gprad,"ColorACGradPath");
+               }
+            }
+            ++currRcpPos;
+         }
+      }
+      pof << "}" << endl;
+      pof << "#end\n//end if DrawGradientPathTubes" << endl;
+      //-------------------
+      pof << "#if(DrawGradientPathSpheres)" << endl;
+      pof << "union {" << endl;
+      for (int ccpIdx=0; ccpIdx<nCCP; ++ccpIdx) {
+         currRcpPos=0;
+         while ( conCCP[ccpIdx][1][currRcpPos]>0 ) {
+            npts=conCCP[ccpIdx][1][currRcpPos];
+            for ( int j=0 ; j<npts ; ++j ) {
+               writePOVSphere(pof,1,RCGP[ccpIdx][currRcpPos][j][0],\
+                     RCGP[ccpIdx][currRcpPos][j][1],\
+                     RCGP[ccpIdx][currRcpPos][j][2],gprad,"ColorACGradPath");
+            }
+            ++currRcpPos;
+         }
+      }
+      pof << "}" << endl;
+      pof << "#end\n//end if DrawGradientPathSpheres" << endl;
+ 
    }
    pof.close();
    return true;
@@ -2417,9 +2577,21 @@ void critPtNetWork::centerMolecule(void)
    }
    if (iknowbgps) {
       for (int i=0; i<nBCP; i++) {
-         for (int j=0; j<atBCP[i][2]; j++) {
+         for (int j=0; j<conBCP[i][2]; j++) {
             for (int k=0; k<3; k++) {
                RBGP[i][j][k]-=trn[k];
+            }
+         }
+      }
+   }
+   if ( iknowrgps ) {
+      int kn,kp;
+      for ( int rcpIdx=0 ; rcpIdx<nRCP ; ++rcpIdx ) {
+         kn=getNofRingPathsOfRCP(rcpIdx);
+         for ( int j=0 ; j<kn ; ++j ) {
+            kp=conRCP[rcpIdx][1][j];
+            for ( int k=0 ; k<kp ; ++k ) {
+               for ( int l=0 ; l<3 ; ++l ) {RRGP[rcpIdx][j][k][l]-=trn[l];}
             }
          }
       }
@@ -2476,11 +2648,11 @@ bool critPtNetWork::readFromFile(string inname)
       nBCP=cpxGetNOfBCPs(cfil);
       dBCP=(nACP*(nACP-1))/2;
       alloc2DRealArray(string("RBCP"),dBCP,3,RBCP,1.0e+50);
-      alloc2DIntArray(string("atBCP"),dBCP,3,atBCP,-1);
+      alloc2DIntArray(string("conBCP"),dBCP,3,conBCP,-1);
       alloc1DStringArray("lblBCP",dBCP,lblBCP);
       if (nBCP>=0) {
          cpxGetBCPCartCoordFromFile(cfil,nBCP,RBCP);
-         cpxGetBCPConnectivityFromFile(cfil,nBCP,atBCP);
+         cpxGetBCPConnectivityFromFile(cfil,nBCP,conBCP);
          cpxGetBCPLabelsFromFile(cfil,nBCP,lblBCP);
          iknowbcps=true;
       } else {
@@ -2495,8 +2667,10 @@ bool critPtNetWork::readFromFile(string inname)
    if (iknowbcps) {
       nRCP=cpxGetNOfRCPs(cfil);
       dRCP=(nBCP*(nBCP-1))/2;
+      if ( dRCP<CPNW_MINARRAYSIZE ) {dRCP=CPNW_MINARRAYSIZE;}
       alloc2DRealArray(string("RRCP"),dRCP,3,RRCP,1.0e+50);
       alloc1DStringArray("lblRCP",dRCP,lblRCP);
+      alloc3DIntArray("conRCP",dRCP,2,CPNW_MAXBCPSCONNECTEDTORCP,conRCP,-1);
       if (nRCP>=0) {
          cpxGetRCPCartCoordFromFile(cfil,nRCP,RRCP);
          cpxGetRCPLabelsFromFile(cfil,nRCP,lblRCP);
@@ -2521,9 +2695,9 @@ bool critPtNetWork::readFromFile(string inname)
    iknowallcps=(iknowacps&&iknowbcps&&iknowrcps&&iknowccps);
    nBGP=cpxGetNOfBondPaths(cfil);
    if (dBCP>0) {alloc3DRealArray(string("RBGP"),dBCP,CPNW_ARRAYSIZEGRADPATH,3,RBGP);}
-   if (nBGP>=0&&atBCP!=NULL) {
-      cpxGetNOfPtsPerBondPath(cfil,nBGP,atBCP);
-      cpxGetBondPathData(cfil,nBGP,atBCP,RBGP);
+   if (nBGP>=0&&conBCP!=NULL) {
+      cpxGetNOfPtsPerBondPath(cfil,nBGP,conBCP);
+      cpxGetBondPathData(cfil,nBGP,conBCP,RBGP);
       iknowbgps=true;
    } else {iknowbgps=false;}
    cout << "Critical Point State Loaded!" << endl;
@@ -2535,7 +2709,7 @@ void critPtNetWork::displayStatus(bool lngdesc)
 {
    printScrCharLine('+');
    if (lngdesc) {
-      if (atBCP==NULL) {displayWarningMessage("atBCP is not allocated.");}
+      if (conBCP==NULL) {displayWarningMessage("conBCP is not allocated.");}
       if (RACP==NULL) {displayWarningMessage("RACP is not allocated.");}
       if (RBCP==NULL) {displayWarningMessage("RBCP is not allocated.");}
       if (RRCP==NULL) {displayWarningMessage("RRCP is not allocated.");}
@@ -2568,7 +2742,7 @@ void critPtNetWork::displayStatus(bool lngdesc)
    return;
 }
 /* ************************************************************************************ */
-int critPtNetWork::findSingleRhoGradientPathRK5(int at1,int at2,solreal hstep,\
+int critPtNetWork::findSingleRhoBondGradientPathRK5(int at1,int at2,solreal hstep,\
       int dima,solreal** (&arbgp),solreal (&ro)[3])
 {
    solreal rn[3],rho,g[3],h[3][3],eive[3][3],eival[3],dist,maggrad;
@@ -2597,7 +2771,7 @@ int critPtNetWork::findSingleRhoGradientPathRK5(int at1,int at2,solreal hstep,\
    iacp2=3*at2;
    solreal loopdist;
    while ((!iminacp)&&(count<maxit)&&(maggrad>EPSGRADMAG)) {
-      getNextPointInGradientPathRK5(rn,hstep,maggrad);
+      getNextPointInGradientPathRK5UpHill(rn,hstep,maggrad);
       for (int i=0; i<3; i++) {arbgp[count][i]=rn[i];}
       dist=0.0e0;
       for (int i=0; i<3; i++) {dist+=((rn[i]-wf->R[iacp1+i])*(rn[i]-wf->R[iacp1+i]));}
@@ -2648,7 +2822,7 @@ int critPtNetWork::findSingleRhoGradientPathRK5(int at1,int at2,solreal hstep,\
    maxit+=count;
    iminacp=false;
    while ((!iminacp)&&(count<maxit)&&(maggrad>EPSGRADMAG)) {
-      getNextPointInGradientPathRK5(rn,hstep,maggrad);
+      getNextPointInGradientPathRK5UpHill(rn,hstep,maggrad);
       for (int i=0; i<3; i++) {arbgp[count][i]=rn[i];}
       dist=0.0e0;
       for (int i=0; i<3; i++) {dist+=((rn[i]-wf->R[iacp1+i])*(rn[i]-wf->R[iacp1+i]));}
@@ -2687,7 +2861,8 @@ int critPtNetWork::findSingleRhoGradientPathRK5(int at1,int at2,solreal hstep,\
       count++;
    }
    dist=0.0e0;
-   for (int i=0; i<3; i++) {dist+=((arbgp[count-1][i]-wf->R[iacp2+i])*(arbgp[count-1][i]-wf->R[iacp2+i]));}
+   for (int i=0; i<3; i++) {dist+=((arbgp[count-1][i]-wf->R[iacp2+i])\
+         *(arbgp[count-1][i]-wf->R[iacp2+i]));}
    dist=sqrt(dist);
    if (dist<=hstep) {
       for (int i=0; i<3; i++) {arbgp[count][i]=wf->R[iacp2+i];}
@@ -2696,6 +2871,255 @@ int critPtNetWork::findSingleRhoGradientPathRK5(int at1,int at2,solreal hstep,\
    //cout << "Checkpoint2... count: " << count  << endl;
    return count;
    //wf->displayAllFieldProperties(rn[0],rn[1],rn[2]);
+}
+/* ************************************************************************************ */
+int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
+      int bcpIdxInRRGP,solreal hstep,int dima,\
+      solreal** (&arrgp))
+{
+   int bcpGlobIdx=conRCP[rcpIdx][0][bcpIdxInRRGP];
+#if DEBUG
+   if ( bcpIdxInRRGP>CPNW_MAXBCPSCONNECTEDTORCP || bcpIdxInRRGP < 0 ) {
+      displayErrorMessage("Out of conRCP bounds!");
+      DISPLAYDEBUGINFOFILELINE;
+   }
+   if ( rcpIdx>nRCP ) {
+      displayErrorMessage("rcpIdx>nRCP");
+      DISPLAYDEBUGINFOFILELINE;
+   }
+   if ( bcpGlobIdx>nBCP || bcpGlobIdx<0 ) {
+      displayErrorMessage("Non existent bcp!");
+      DISPLAYDEBUGINFOFILELINE;
+   }
+#endif
+   int count;
+   solreal xm[3],xb[3],xr[3],xn[3],xrmxb[3],xmmxr[3];
+   solreal magd=0.0e0,maxalllen=maxBondDist*1.5e0;
+   for ( int i=0 ; i<3 ; ++i ) {
+      xb[i]=RBCP[bcpGlobIdx][i];
+      xr[i]=RRCP[rcpIdx][i];
+      xrmxb[i]=xr[i]-xb[i];
+      xn[i]=xrmxb[i];
+      magd+=(xn[i]*xn[i]);
+   }
+   magd=sqrt(magd);
+   for ( int i=0 ; i<3 ; ++i ) {
+      xn[i]/=magd;
+      xn[i]*=hstep;
+      xn[i]+=xb[i];
+   }
+   bool imatrcp=walkGradientPathRK5ToEndPoint(xb,xn,xr,xm,magd,hstep,\
+         dima,arrgp,count,maxalllen,false /* uphilldir=false  */);
+   if ( imatrcp ) {return count;}
+   //if ( magd>maxBCPACPDist ) { return -1; }
+   solreal ux[3],uy[3],uz[3],xm0mxr[3];
+   for ( int i=0 ; i<3 ; ++i ) { xm0mxr[i]=xm[i]-xr[i]; }
+   solreal hess[3][3],eivec[3][3],tmpv[3];
+   wf->evalHessian(xb[0],xb[1],xb[2],magd,ux,hess);
+   if ( magV3(ux)>CPNW_EPSRHOACPGRADMAG ) {
+      displayWarningMessage(string("Not at a BCP? (")+getStringFromReal(magV3(ux))\
+            +string(")"));
+   }
+   eigen_decomposition3(hess,eivec,tmpv);
+   for ( int i=0 ; i<3 ; ++i ) {
+      ux[i]=eivec[i][0];
+      uy[i]=eivec[i][1];
+      uz[i]=eivec[i][2];
+      xmmxr[i]=xm[i]-xr[i];
+   }
+   solreal dir1[3],dir2[3];
+   for ( int i=0 ; i<3 ; ++i ) {
+      dir1[i]=xrmxb[i];
+      dir2[i]=xm[i]-xb[i];
+   }
+   solreal alpha,beta,delta,gamma,currdmin;
+   alpha=atan2(dotProductV3(dir1,uy),dotProductV3(dir1,ux));
+   beta=atan2(dotProductV3(dir2,uy),dotProductV3(dir2,ux));
+   delta=alpha-beta;
+   gamma=alpha;
+   int sign0=(delta >= 0.0e0 ? 1 : -1),currSign;
+   int mymaxiter=fabs(int(6.28318530717959e0/delta))+10;
+   bool samedir=true;
+   int iter=0;
+   magd=1.0e0;
+   do {
+      gamma+=delta;
+      for ( int i=0 ; i<3 ; ++i ) {
+         dir2[i]=(cos(gamma)*ux[i]+sin(gamma)*uy[i]);
+         xn[i]=dir2[i];
+      }
+      normalizeV3(xn);
+      for ( int i=0 ; i<3 ; ++i ) {
+         xn[i]*=0.5e0*hstep;
+         xn[i]+=xb[i];
+      }
+      imatrcp=walkGradientPathRK5ToEndPoint(xb,xn,xr,xm,currdmin,hstep,\
+            dima,arrgp,count,maxalllen,false);
+      if ( imatrcp ) {
+         //displayGreenMessage("imatrcp!");
+         for ( int i=0 ; i<3 ; ++i ) { tmpv[i]=xm[i]-xb[i]; }
+         magd=atan2(dotProductV3(tmpv,uy),dotProductV3(tmpv,ux));
+         //cout << "iter: " << iter << ", delta: " << magd << endl;
+         return count;
+      }
+      for ( int i=0 ; i<3 ; ++i ) { tmpv[i]=xm[i]-xb[i]; }
+      magd=atan2(dotProductV3(tmpv,uy),dotProductV3(tmpv,ux));
+      currSign=((alpha-magd)>=0? 1 : -1);
+      if ( currSign!=sign0 ) {
+         samedir=false;
+         break;
+      } else {
+         for ( int i=0 ; i<3 ; ++i ) { dir1[i]=dir2[i]; }
+      }
+      ++iter;
+   } while (samedir && iter<mymaxiter);
+   iter=0;
+   do {
+      for ( int i=0 ; i<3 ; ++i ) { xn[i]=0.5e0*(dir1[i]+dir2[i]); }
+      normalizeV3(xn);
+      for ( int i=0 ; i<3 ; ++i ) {
+         xn[i]*=hstep;
+         xn[i]+=xb[i];
+      }
+      imatrcp=walkGradientPathRK5ToEndPoint(xb,xn,xr,xm,currdmin,hstep,\
+            dima,arrgp,count,maxalllen,false);
+      if ( imatrcp ) { return count; }
+      for ( int i=0 ; i<3 ; ++i ) { tmpv[i]=xm[i]-xb[i]; }
+      magd=atan2(dotProductV3(tmpv,uy),dotProductV3(tmpv,ux));
+      currSign=((alpha-magd)>=0? 1 : -1);
+      if ( currSign == sign0 ) {
+         for ( int i=0; i<3; ++i ) { dir1[i]+=dir2[i]; dir1[i]*=0.5e0; }
+      } else {
+         for ( int i=0; i<3; ++i ) { dir2[i]+=dir1[i]; dir2[i]*=0.5e0; }
+      }
+      ++iter;
+   } while (iter<100 && fabs(magd)>CPNW_EPSRHOACPGRADMAG);
+   //cout << "iter: " << iter << ", delta: " << magd << endl;
+   for ( int i=0 ; i<3 ; ++i ) {tmpv[i]=xn[i]-xr[i];}
+   if ( magV3(tmpv)<(25.0e0*hstep) ) {
+      return count;
+   } else {
+      return -1;
+   }
+}
+/* ************************************************************************************ */
+int critPtNetWork::findSingleRhoCageGradientPathRK5(int ccpIdx,\
+      int rcpIdxInRCGP,solreal hstep,int dima,\
+      solreal** (&arrgp))
+{
+   int rcpGlobIdx=conCCP[ccpIdx][0][rcpIdxInRCGP];
+#if DEBUG
+   if ( rcpIdxInRCGP>CPNW_MAXRCPSCONNECTEDTOCCP || rcpIdxInRCGP < 0 ) {
+      displayErrorMessage("Out of conCCP bounds!");
+      DISPLAYDEBUGINFOFILELINE;
+   }
+   if ( ccpIdx>nCCP ) {
+      displayErrorMessage("ccpIdx>nCCP");
+      DISPLAYDEBUGINFOFILELINE;
+   }
+   if ( rcpGlobIdx>nRCP || rcpGlobIdx<0 ) {
+      displayErrorMessage("Non existent rcp!");
+      DISPLAYDEBUGINFOFILELINE;
+   }
+#endif
+   solreal xn[3],xr[3],xc[3],xm[3];
+   solreal magd;
+   for ( int i=0 ; i<3 ; ++i ) {
+      xr[i]=RRCP[rcpGlobIdx][i];
+      xc[i]=RCCP[ccpIdx][i];
+   }
+   solreal hess[3][3],eivec[3][3],tmpv[3],dir2min[3];
+   wf->evalHessian(xr[0],xr[1],xr[2],magd,tmpv,hess); //here tmpv is gradRho
+   if ( magV3(tmpv)>CPNW_EPSRHOACPGRADMAG ) {
+      displayWarningMessage(string("Not at an RCP? (")+\
+            getStringFromReal(magV3(tmpv))+string(")"));
+   }
+   eigen_decomposition3(hess,eivec,tmpv);
+   for ( int i=0 ; i<3 ; ++i ) {
+      dir2min[i]=eivec[i][0];
+      xn[i]=xr[i]+hstep*dir2min[i];
+   }
+   int count;
+   solreal maxalllen=maxBondDist;
+   bool imatccp=walkGradientPathRK5ToEndPoint(xr,xn,xc,xm,magd,hstep,\
+         dima,arrgp,count,maxalllen,false); //uphill=false
+   if ( imatccp ) {return count;}
+   for ( int i=0 ; i<3 ; ++i ) {
+      dir2min[i]=eivec[i][0];
+      xn[i]=xr[i]-hstep*dir2min[i];
+   }
+   imatccp=walkGradientPathRK5ToEndPoint(xr,xn,xc,xm,magd,hstep,\
+         dima,arrgp,count,maxalllen,false); //uphill=false
+   if ( imatccp ) {return count;}
+   displayErrorMessage("Unknown error!");
+#if DEBUG
+   DISPLAYDEBUGINFOFILELINE;
+   wf->displayAllFieldProperties(xn[0],xn[1],xn[2]);
+#endif /* ( DEBUG ) */
+   return -1;
+}
+/* ************************************************************************************ */
+bool critPtNetWork::walkGradientPathRK5ToEndPoint(\
+      solreal (&xi)[3],solreal (&x1)[3],\
+      solreal (&xe)[3],solreal (&xm)[3],solreal &dm,solreal hstep,int dima,\
+      solreal** (&arrgp), int &npia,solreal maxlen,bool uphilldir)
+{
+   solreal xn[3],xmin[3],dmin=0.0e0,magd=0.0e0;
+   for ( int i=0 ; i<3 ; ++i ) {
+      RGP[0][i]=xi[i];
+      RGP[1][i]=x1[i];
+      xn[i]=x1[i];
+      xmin[i]=xn[i]-xe[i];
+      dmin+=(xmin[i]*xmin[i]);
+      magd+=((xn[i]-x1[i])*(xn[i]-x1[i]));
+   }
+   solreal mxlen2=maxlen*maxlen,pathlength=magd;
+   solreal epsd2=hstep*hstep;
+   //solreal epsd2=CPNW_EPSFABSDIFFCOORD*CPNW_EPSFABSDIFFCOORD;
+   solreal maggrad=1.0e0;
+   bool imatend=false;
+   int count=2;
+   while ((!imatend)&&(count<dima)&&(pathlength<mxlen2)) {
+      if ( uphilldir ) {
+         getNextPointInGradientPathRK5UpHill(xn,hstep,maggrad);
+      } else {
+         getNextPointInGradientPathRK5DownHill(xn,hstep,maggrad);
+      }
+      magd=maggrad=0.0e0;
+      for (int i=0; i<3; ++i) {
+         magd+=((xn[i]-xe[i])*(xn[i]-xe[i]));
+         RGP[count][i]=xn[i];
+         maggrad+=((xn[i]-RGP[count-1][i])*(xn[i]-RGP[count-1][i]));
+      }
+      pathlength+=maggrad;
+      if ( magd<=epsd2 || maggrad<1.0e-6 ) {
+         imatend=true;
+      }
+      if ( magd<=dmin ) {
+         dmin=magd;
+         for ( int i=0 ; i<3 ; ++i ) { xmin[i]=xn[i]; }
+      } else {
+         ++count;
+         break;
+      }
+      ++count;
+   }
+   if ( count==CPNW_ARRAYSIZEGRADPATH ) {
+      displayWarningMessage("End or array reached, need larger array?");
+#if DEBUG
+      DISPLAYDEBUGINFOFILELINE;
+#endif /* ( DEBUG ) */
+   }
+   for ( int i=0 ; i<3 ; ++i ) {xm[i]=xmin[i];}
+   dm=sqrt(dmin);
+   if ( imatend ) {
+      copyRGP2Array(arrgp,count);
+      npia=count;
+   } else {
+      copyRGP2Array(arrgp,count);
+      npia=count;
+   }
+   return imatend;
 }
 /* ************************************************************************************ */
 bool critPtNetWork::seekSingleRhoBCP(int ata,int atb,solreal (&x)[3])
@@ -2721,7 +3145,7 @@ bool critPtNetWork::seekSingleRhoBCP(int ata,int atb,solreal (&x)[3])
    return true;
 }
 /* ************************************************************************************ */
-void critPtNetWork::getNextPointInGradientPathRK5(solreal (&xn)[3],solreal &stepsize,\
+void critPtNetWork::getNextPointInGradientPathRK5UpHill(solreal (&xn)[3],solreal &stepsize,\
       solreal &mgg)
 {
    /*
@@ -2776,13 +3200,374 @@ void critPtNetWork::getNextPointInGradientPathRK5(solreal (&xn)[3],solreal &step
          k[i][l] = stepsize*g[l]/maggrad;
       }
    }
-for(int i=0; i<3; i++) {
+   for(int i=0; i<3; i++) {
       xn[i]+=(c1*k[0][i]+c3*k[2][i]+c4*k[3][i]+c5*k[4][i]+c6*k[5][i]);
    }
    wf->evalRhoGradRho(xn[0],xn[1],xn[2],rho,g);
    mgg=sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]);
    return;
 }
+/* ************************************************************************************ */
+void critPtNetWork::getNextPointInGradientPathRK5DownHill(solreal (&xn)[3],\
+      solreal &stepsize,solreal &mgg)
+{
+   static const solreal b[21]={1.0e0/5.0e0, \
+      3.0e0/40.0e0, 9.0e0/40.0e0, \
+         44.0e0/45.0e0, -56.0e0/15.0e0, 32.0e0/9.0e0, \
+         19372.0e0/6561.0e0, -25360.0e0/2187.0e0, \
+         64448.0e0/6561.0e0, -212.0e0/729.0e0,\
+         9017.0e0/3168.0e0, -355.0e0/33.0e0, 46732.0e0/5247.0e0, \
+         49.0e0/176.0e0, -5103.0e0/18656.0e0,\
+         35.0e0/384.0e0, 0.0e0, 500.0e0/1113.0e0, 125.0e0/192.0e0, \
+         -2187.0e0/6784.0e0,11.0e0/84.0e0};
+   static const solreal c1=35.0e0/384.0e0;
+   static const solreal c3=500.0e0/1113.0e0;
+   static const solreal c4=125.0e0/192.0e0;
+   static const solreal c5=-2187.0e0/6784.0e0;
+   static const solreal c6=11.0e0/84.0e0;
+   solreal k[7][3],rho,g[3],xt[3],maggrad;
+   int offset;
+   for(int i=0; i<7; i++) {
+      offset=((i*(i-1))>>1);
+      for(int j=0; j<3; j++) {
+         xt[j] = xn[j];
+         for(int l=0; l<i; l++) {
+            xt[j] += b[l+offset]*k[l][j];
+         }
+      }
+      wf->evalRhoGradRho(xt[0],xt[1],xt[2],rho,g);
+      maggrad=sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]);
+      for(int l=0; l<3; l++) {
+         k[i][l] = -stepsize*g[l]/maggrad;
+      }
+   }
+   for(int i=0; i<3; i++) {
+      xn[i]+=(c1*k[0][i]+c3*k[2][i]+c4*k[3][i]+c5*k[4][i]+c6*k[5][i]);
+   }
+   wf->evalRhoGradRho(xn[0],xn[1],xn[2],rho,g);
+   mgg=sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]);
+   return;
+}
+/* ************************************************************************************ */
+void critPtNetWork::findMaxBondDist()
+{
+   if ( !iknowbgps ) {
+      displayErrorMessage("First you need to find the Bond Gradient Paths!");
+      return;
+   }
+   if ( wf->nNuc==1 ) { maxBondDist=0.0e0; return; }
+   solreal magd;
+   int bcp1,bcp2;
+   for ( int i=0 ; i<nBCP ; ++i ) {
+      bcp1=conBCP[i][0];
+      bcp2=conBCP[i][1];
+      magd=0.0e0;
+      for ( int j=0 ; j<3 ; ++j ) {
+         magd+=((RACP[bcp1][j]-RACP[bcp2][j])*(RACP[bcp1][j]-RACP[bcp2][j]));
+      }
+      if ( magd>maxBondDist ) { maxBondDist=magd; }
+      magd=0.0e0;
+      for ( int j=0 ; j<3 ; ++j ) {
+         magd+=((RBCP[i][j]-RACP[bcp1][j])*(RBCP[i][j]-RACP[bcp1][j]));
+      }
+      if ( magd>maxBCPACPDist ) { maxBCPACPDist=magd; }
+      magd=0.0e0;
+      for ( int j=0 ; j<3 ; ++j ) {
+         magd+=((RBCP[i][j]-RACP[bcp2][j])*(RBCP[i][j]-RACP[bcp2][j]));
+      }
+      if ( magd>maxBCPACPDist ) { maxBCPACPDist=magd; }
+   }
+   maxBondDist=sqrt(maxBondDist);
+   maxBCPACPDist=sqrt(maxBCPACPDist);
+}
+/* ************************************************************************************ */
+void critPtNetWork::addBCP2ConRCP(const int rcpIdx,const int bcpIdx)
+{
+#if DEBUG
+   if ( conRCP==NULL ) {
+      displayErrorMessage("conRCP is not allocated!");
+      DISPLAYDEBUGINFOFILELINE;
+   }
+#endif /* ( DEBUG ) */
+   int k=0;
+   while ( k<CPNW_MAXBCPSCONNECTEDTORCP && conRCP[rcpIdx][0][k]!=bcpIdx ) {
+      if ( conRCP[rcpIdx][0][k]<0 ) {conRCP[rcpIdx][0][k]=bcpIdx; return;}
+      ++k;
+   }
+   if ( k==CPNW_MAXBCPSCONNECTEDTORCP ) {
+      displayWarningMessage("Perhaps you need a larger array for conRCP!");
+#if DEBUG
+         DISPLAYDEBUGINFOFILELINE;
+#endif /* ( DEBUG ) */
+   }
+}
+/* ************************************************************************************ */
+void critPtNetWork::addRCP2ConCCP(const int ccpIdx,const int rcpIdx)
+{
+#if DEBUG
+   if ( conCCP==NULL ) {
+      displayErrorMessage("conCCP is not allocated!");
+      DISPLAYDEBUGINFOFILELINE;
+   }
+#endif /* ( DEBUG ) */
+   int k=0;
+   while ( k<CPNW_MAXRCPSCONNECTEDTOCCP && conCCP[ccpIdx][0][k]!=rcpIdx ) {
+      if ( conCCP[ccpIdx][0][k]<0 ) {conCCP[ccpIdx][0][k]=rcpIdx; return;}
+      ++k;
+   }
+   if ( k==CPNW_MAXRCPSCONNECTEDTOCCP ) {
+      displayWarningMessage("Perhaps you need a larger array for conCCP!");
+#if DEBUG
+         DISPLAYDEBUGINFOFILELINE;
+#endif /* ( DEBUG ) */
+   }
+}
+/* ************************************************************************************ */
+void critPtNetWork::correctRCPConnectivity(void)
+{
+   findMaxBondDist();
+   //solreal maxallwdd=1.414213562373095e0*maxBCPACPDist;
+   solreal maxallwdd=0.90*maxBondDist;
+   //cout << "maxallwdd: " << maxallwdd << endl;
+   solreal dd;
+   int j,bcpIdx;
+   for ( int i=0 ; i<nRCP ; ++i ) {
+      j=0;
+      while ( j<CPNW_MAXBCPSCONNECTEDTORCP && conRCP[i][0][j]>=0 ) {
+         bcpIdx=conRCP[i][0][j];
+         dd=0.0e0;
+         for ( int k=0; k<3 ; ++k ) {
+            dd+=((RRCP[i][k]-RBCP[bcpIdx][k])*(RRCP[i][k]-RBCP[bcpIdx][k]));
+         }
+         dd=sqrt(dd);
+         //cout << "d: " << dd << "; " << lblBCP[bcpIdx] << endl;
+         if ( dd<=maxallwdd ) {
+            ++j;
+         } else {
+            removeFromConRCP(i,j);
+         }
+      }
+   }
+   solreal tmpv[3];
+   for ( int i=0 ; i<nRCP ; ++i ) {
+      for ( int j=0 ; j<nBCP ; ++j ) {
+         for ( int k=0 ; k<3 ; ++k ) {tmpv[k]=RRCP[i][k]-RBCP[j][k];}
+         if ( magV3(tmpv)<maxBCPACPDist ) {addToConRCP(i,j);}
+      }
+   }
+}
+/* ************************************************************************************ */
+void critPtNetWork::removeFromConRCP(const int rcpIdx,const int pos2rem)
+{
+   int total=0;
+   while ( conRCP[rcpIdx][0][total]>=0 ) {++total;}
+   --total;
+   if ( pos2rem==total ) {
+      conRCP[rcpIdx][0][total]=conRCP[rcpIdx][1][total]=-1;
+      return;
+   }
+   int tmp=conRCP[rcpIdx][0][total];
+   conRCP[rcpIdx][0][pos2rem]=tmp;
+   tmp=conRCP[rcpIdx][1][total];
+   conRCP[rcpIdx][1][pos2rem]=tmp;
+   conRCP[rcpIdx][0][total]=conRCP[rcpIdx][1][total]=-1;
+   /*
+   int total=0;
+   while ( conRCP[rcpIdx][0][total]>=0 ) {++total;}
+   if ( conRCP[rcpIdx][0][total-1]==bcpIdx ) {
+      conRCP[rcpIdx][0][total-1]=conRCP[rcpIdx][1][total-1]=-1;
+      return;
+   }
+   int mypos=0;
+   while ( conRCP[rcpIdx][0][mypos]!=bcpIdx && mypos<total ) {++mypos;}
+   --total;
+   int tmp=conRCP[rcpIdx][0][total];
+   conRCP[rcpIdx][0][mypos]=tmp;
+   tmp=conRCP[rcpIdx][1][total];
+   conRCP[rcpIdx][1][mypos];
+   conRCP[rcpIdx][0][total]=conRCP[rcpIdx][1][total]=-1;
+   // */
+}
+/* ************************************************************************************ */
+void critPtNetWork::addToConRCP(const int rcpIdx,const int bcpIdx)
+{
+   int mypos=0;
+   while (conRCP[rcpIdx][0][mypos]>=0) {
+      if ( conRCP[rcpIdx][0][mypos]==bcpIdx ) {return;}
+      ++mypos;
+      if ( mypos==CPNW_MAXBCPSCONNECTEDTORCP ) {
+         displayWarningMessage("End of array reached, need bigger array!");
+#if DEBUG
+         DISPLAYDEBUGINFOFILELINE;
+#endif /* ( DEBUG ) */
+         return;
+      }
+   }
+   conRCP[rcpIdx][0][mypos]=bcpIdx;
+}
+/* ************************************************************************************ */
+void critPtNetWork::addToConCCP(const int ccpIdx,const int rcpIdx)
+{
+   int mypos=0;
+   while (conCCP[ccpIdx][0][mypos]>=0) {
+      if ( conCCP[ccpIdx][0][mypos]==rcpIdx ) {return;}
+      ++mypos;
+      if ( mypos==CPNW_MAXRCPSCONNECTEDTOCCP ) {
+         displayWarningMessage("End of array reached, need bigger array!");
+#if DEBUG
+         DISPLAYDEBUGINFOFILELINE;
+#endif /* ( DEBUG ) */
+         return;
+      }
+   }
+   conCCP[ccpIdx][0][mypos]=rcpIdx;
+}
+/* ************************************************************************************ */
+void critPtNetWork::setRingPaths()
+{
+   if (!iknowrcps) {
+      displayErrorMessage("Please look first for the RCPs...\nNothing to be done!");
+      return;
+   }
+   alloc4DRealArray(string("RRGP"),dRCP,CPNW_MAXBCPSCONNECTEDTORCP,\
+         CPNW_ARRAYSIZEGRADPATH,3,RRGP);
+   cout << "Calculating Ring Gradient Paths..." << endl;
+#if DEBUG
+   cout << "nRCP: " << nRCP << endl;
+#endif /* ( DEBUG ) */
+#if USEPROGRESSBAR
+   printProgressBar(0);
+#endif
+   solreal hstep,rseed[3];
+   hstep=CPNW_DEFAULTGRADIENTPATHS;
+   int arrsize=CPNW_ARRAYSIZEGRADPATH;
+   int bcpIdx,currBcpPos,npts;
+   for (int rcpIdx=0; rcpIdx<nRCP; rcpIdx++) {
+      currBcpPos=0;
+      while ( conRCP[rcpIdx][0][currBcpPos]>=0 ) {
+         bcpIdx=conRCP[rcpIdx][0][currBcpPos];
+#if DEBUG
+         if ( bcpIdx>=nBCP || bcpIdx<0 ) {
+            displayErrorMessage("BCP out of bounds!");
+            DISPLAYDEBUGINFOFILELINE;
+         }
+#endif
+         for (int k=0; k<3; k++) {rseed[k]=RBCP[bcpIdx][k];}
+         npts=findSingleRhoRingGradientPathRK5(rcpIdx,\
+               currBcpPos,hstep,arrsize,RRGP[rcpIdx][currBcpPos]);
+#if DEBUG
+         if ( npts<0 ) {
+            displayWarningMessage("Catched -1");
+            DISPLAYDEBUGINFOFILELINE;
+         }
+#endif /* ( DEBUG ) */
+         conRCP[rcpIdx][1][currBcpPos]=npts;
+         ++currBcpPos;
+      }
+#if USEPROGRESSBAR
+      printProgressBar(int(100.0e0*solreal(rcpIdx)/\
+               solreal( (nRCP>1) ? (nRCP-1) : 1 )));
+#endif
+   }
+#if USEPROGRESSBAR
+   printProgressBar(100);
+   cout << endl;
+#endif
+   iknowrgps=true;
+}
+/* ************************************************************************************ */
+void critPtNetWork::setCagePaths(void)
+{
+  if (!iknowccps) {
+      displayErrorMessage("Please look first for the CCPs...\nNothing to be done!");
+      return;
+   }
+   alloc4DRealArray(string("RCGP"),dCCP,CPNW_MAXRCPSCONNECTEDTOCCP,\
+         CPNW_ARRAYSIZEGRADPATH,3,RCGP);
+   cout << "Calculating Cage Gradient Paths..." << endl;
+#if DEBUG
+   cout << "nCCP: " << nCCP << endl;
+#endif /* ( DEBUG ) */
+   /* Remember this is just a trial function,  */
+#if USEPROGRESSBAR
+   printProgressBar(0);
+#endif
+   solreal hstep,rseed[3];
+   hstep=CPNW_DEFAULTGRADIENTPATHS;
+   int arrsize=CPNW_ARRAYSIZEGRADPATH;
+   int rcpIdx,currRcpPos,npts;
+   for (int ccpIdx=0; ccpIdx<nCCP; ccpIdx++) {
+      currRcpPos=0;
+      while ( conCCP[ccpIdx][0][currRcpPos]>=0 ) {
+         rcpIdx=conCCP[ccpIdx][0][currRcpPos];
+#if DEBUG
+         if ( ccpIdx>=nCCP || ccpIdx<0 ) {
+            displayErrorMessage("CCP out of bounds!");
+            DISPLAYDEBUGINFOFILELINE;
+         }
+#endif
+         for (int k=0; k<3; k++) {rseed[k]=RCCP[ccpIdx][k];}
+         npts=findSingleRhoCageGradientPathRK5(ccpIdx,\
+               currRcpPos,hstep,arrsize,RCGP[ccpIdx][currRcpPos]);
+#if DEBUG
+         if ( npts<0 ) {
+            displayWarningMessage("Catched -1");
+            DISPLAYDEBUGINFOFILELINE;
+         }
+#endif /* ( DEBUG ) */
+         conCCP[ccpIdx][1][currRcpPos]=npts;
+         ++currRcpPos;
+      }
+#if USEPROGRESSBAR
+      printProgressBar(int(100.0e0*solreal(ccpIdx)/\
+               solreal( (nCCP>1) ? (nCCP-1) : 1 )));
+#endif
+   }
+#if USEPROGRESSBAR
+   printProgressBar(100);
+   cout << endl;
+#endif
+   iknowcgps=true;
+}
+/* ************************************************************************************ */
+int critPtNetWork::getNofRingPathsOfRCP(int rcpIdx)
+{
+   if ( !iknowrgps ) {
+      displayWarningMessage("First seek for Ring Gradient Paths! Returning 0.");
+#if DEBUG
+      DISPLAYDEBUGINFOFILELINE;
+#endif /* ( DEBUG ) */
+   }
+   int res=0;
+   while ( conRCP[rcpIdx][0][res]>=0 ) {++res;}
+   return res;
+}
+/* ************************************************************************************ */
+int critPtNetWork::getTotalNofRingPaths(void)
+{
+#if DEBUG
+   if ( !iknowrgps ) {
+      displayWarningMessage("First seek for Ring Gradient Paths! Returning -1.");
+      DISPLAYDEBUGINFOFILELINE;
+      return -1;
+   }
+#endif /* ( DEBUG ) */
+   int res=0;
+   for ( int i=0 ; i<nRCP ; ++i ) {res+=getNofRingPathsOfRCP(i);}
+   return res;
+}
+/* ************************************************************************************ */
+void critPtNetWork::copyRGP2Array(solreal** (&thearr),int nn)
+{
+   for ( int i=0 ; i<nn ; ++i ) {
+      for ( int j=0 ; j<3 ; ++j ) {thearr[i][j]=RGP[i][j];}
+   }
+}
+/* ************************************************************************************ */
+/* ************************************************************************************ */
+/* ************************************************************************************ */
+/* ************************************************************************************ */
+/* ************************************************************************************ */
 /* ************************************************************************************ */
 
 

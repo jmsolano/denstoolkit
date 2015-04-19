@@ -200,7 +200,7 @@ int main (int argc, char ** argv)
    
    if (options.uponbp) {
       /* Compute the gradient path */
-      nbgppts=cpn.findSingleRhoGradientPathRK5(at1,at2,dl,dimarr,rbgp,robcp);
+      nbgppts=cpn.findSingleRhoBondGradientPathRK5(at1,at2,dl,dimarr,rbgp,robcp);
       //cout << "npts: " << nbgppts << endl;
       for (int i=0; i<3; i++) {x1[i]=rbgp[0][i];}
       for (int i=1; i<nbgppts; i++) {

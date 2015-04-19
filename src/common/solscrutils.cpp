@@ -213,8 +213,9 @@ void printHappyStart(char ** (&argv),const char *vers,const char *contrib)
 void displayErrorMessage(const std::string &s)
 {
    setScrRedBoldFont();
-   std::cout << "Error: " << s << std::endl;
+   std::cout << "Error: " << s;
    setScrNormalFont();
+   std::cout << std::endl;
    return;
 }
 /* ************************************************************************************** */
@@ -227,8 +228,9 @@ void displayErrorMessage(const char* word)
 void displayWarningMessage(const std::string &s)
 {
    setScrYellowBoldFont();
-   std::cout << "Warning: " << s << std::endl;
+   std::cout << "Warning: " << s;
    setScrNormalFont();
+   std::cout << std::endl;
    return;
 }
 /* ************************************************************************************** */
@@ -241,8 +243,9 @@ void displayWarningMessage(const char* word)
 void displayGreenMessage(const std::string &s)
 {
    setScrGreenBoldFont();
-   std::cout << s << std::endl;
+   std::cout << s;
    setScrNormalFont();
+   std::cout << std::endl;
    return;
 }
 /* ************************************************************************************** */

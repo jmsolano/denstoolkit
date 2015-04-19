@@ -41,82 +41,49 @@
  *
  */
 
-/*
- solmath.h
- 
- 
- Created by Juan Manuel Solano Altamirano on 11/03/13.
- e-mail: jmsolanoalt@gmail.com
- This program was developed in The University of Guelph,
- 50 Stone Road West, Guelph
- ON, N1G 2W1, Canada
- 
- */
-
-#ifndef _SOLMATH_H_
-#define _SOLMATH_H_
+#ifndef _CIRCLEDOTS3D_H_
+#define _CIRCLEDOTS3D_H_
 
 #ifndef _HAVE_DEF_SOLREAL_TYPE_
 #define _HAVE_DEF_SOLREAL_TYPE_
 typedef double solreal;
-//typedef float solreal;
 #endif
-
-#ifndef DEBUG
-#define DEBUG 0
-#endif
-
-#ifndef EPSTODIVIDE
-#define EPSTODIVIDE (1.0e-60)
-#endif
-
-#ifndef _SOL_USE_SAFE_CHECKS_
-#define _SOL_USE_SAFE_CHECKS_ 1
-#endif
+#include <string>
+using std::string;
 
 /* ************************************************************************** */
+class CircleDots3D {
 /* ************************************************************************** */
-int factorial(const int n); //This function only works up to n=16.
+public:
 /* ************************************************************************** */
-int doubfact(const int n);  //This function only works up to n=19.
+   CircleDots3D();
+   ~CircleDots3D();
 /* ************************************************************************** */
-solreal magV3(solreal (&v)[3]);
+   solreal getCartCoord(const int i,const int j);
 /* ************************************************************************** */
-void normalizeV3(solreal (&v)[3]);
+   solreal getPhi(const int i);
 /* ************************************************************************** */
-void crossProductV3(solreal (&a)[3],solreal (&b)[3],solreal (&c)[3]);
-/*
-   This function calculates the cross product: c=axb
-*/
+   void getCartCoords(const int i,solreal (&xx)[3]);
 /* ************************************************************************** */
-solreal dotProductV3(solreal (&a)[3],solreal (&b)[3]);
+   void setE1(const solreal x,const solreal y,const solreal z);
 /* ************************************************************************** */
+   void setE2(const solreal x,const solreal y,const solreal z);
 /* ************************************************************************** */
-inline void sort2intmin2max(int &a,int&b)
-{
-   if (a<=b) {
-      return;
-   } else {
-      int c=a;
-      a=b;
-      b=c;
-   }
-   return;
-}
+   void setE1AndE2(const solreal (&ee1)[3],const solreal (&ee2)[3]);
 /* ************************************************************************** */
-solreal rfactorial(const int n);
+   void setOrigin(const solreal x,const solreal y,const solreal z);
 /* ************************************************************************** */
-solreal BoysFunction(const int m,solreal x);
+   void computeUE3(void);
 /* ************************************************************************** */
-solreal RecursiveBoysFunction(const int m,const solreal x);
+   void setNPts(const int nn) {npts_=nn;}
 /* ************************************************************************** */
-solreal TabBoysFunction(const int m,const solreal x);
+   void setRadius(const solreal rr) {radius_=rr;}
 /* ************************************************************************** */
-void BoysFunction(const solreal x,const int nmax,solreal (&fn)[7]);
+   void setupCircle(void);
 /* ************************************************************************** */
-void BoysFunctionRec(const solreal x,const int nmax,solreal (&fn)[7]);
+   void displayCoordinates(void);
 /* ************************************************************************** */
-void BoysFunctionTab(const solreal x,const int nmax,solreal (&fn)[7]);
+   void writeCoordinates(const string &oname,bool wrtoo=false);
 /* ************************************************************************** */
 /* ************************************************************************** */
 /* ************************************************************************** */
@@ -125,16 +92,49 @@ void BoysFunctionTab(const solreal x,const int nmax,solreal (&fn)[7]);
 /* ************************************************************************** */
 /* ************************************************************************** */
 /* ************************************************************************** */
+protected:
+/* ************************************************************************** */
+   void init();
+/* ************************************************************************** */
+   int npts_; /*!< Number of points of the circle discretization  */
+/* ************************************************************************** */
+   solreal radius_; /*!< Radius of the circle  */
+/* ************************************************************************** */
+   solreal e1_[3]; /*!< First unit vector. The circle will be drawn in 
+                        the plane spanned by \f$\{\vec{e}_1\vec{e}_2\}\f$.  */
+   solreal e2_[3]; /*!< Second unit vector. The circle will be drawn in 
+                        the plane spanned by \f$\{\vec{e}_1\vec{e}_2\}\f$.  */
+   solreal e3_[3]; /*!< This will contain the vector 
+                        \f$\vec{e}_3\equiv\vec{e_1}\times\vec{e}_2/
+                        |\vec{e_1}\times\vec{e}_2|\f$  */
+   solreal ue1_[3]; /*!< First user unit vector. The circle will be drawn in 
+                        the plane spanned by \f$\{\vec{e}_1\vec{e}_2\}\f$.  */
+   solreal ue2_[3]; /*!< Second user unit vector. The circle will be drawn in 
+                        the plane spanned by \f$\{\vec{e}_1\vec{e}_2\}\f$.  */
+   solreal ue3_[3]; /*!< This will contain the user vector 
+                        \f$\vec{e}_3\equiv\vec{e_1}\times\vec{e}_2/
+                        |\vec{e_1}\times\vec{e}_2|\f$  */
+   solreal oo_[3]; /*!< This will contain the origin vector (center of
+                        coordinates).  */
+/* ************************************************************************** */
+   /** This array contains the Cartesian coordinates of the points within
+    * the circle's boundary. In \f$xx\_[i][j]\f$, the jth-Cartesian coordinate
+    * of the i-th point is stored. When j==3 the stored value is the 
+    * angle measured counter clock-wise w.r.t. the vector \f$\hat e_1\f$. */
+   solreal **xx_;
+/* ************************************************************************** */
+   bool havee1,havee2,havee3;
+   bool imsetup;
+/* ************************************************************************** */
+   solreal dphi_;
+/* ************************************************************************** */
+   static const solreal twoPi;
 /* ************************************************************************** */
 /* ************************************************************************** */
 /* ************************************************************************** */
+};
 /* ************************************************************************** */
-/* ************************************************************************** */
-/* ************************************************************************** */
-/* ************************************************************************** */
-/* ************************************************************************** */
-/* ************************************************************************** */
-/* ************************************************************************** */
-/* ************************************************************************** */
-#endif//_SOLMATH_H_
+
+
+#endif  /* _CIRCLEDOTS3D_H_ */
 
