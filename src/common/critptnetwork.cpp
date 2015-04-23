@@ -159,7 +159,7 @@ using std::endl;
 #endif
 
 #ifndef CPNW_MAXRCPSCONNECTEDTOCCP
-#define CPNW_MAXRCPSCONNECTEDTOCCP (8)
+#define CPNW_MAXRCPSCONNECTEDTOCCP (32)
 #endif
 
 /* ************************************************************************************ */
