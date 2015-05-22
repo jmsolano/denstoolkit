@@ -1,3 +1,8 @@
+Version 1.1.1:
+ - First implementation of EDF (Gauss-type pseudopotentials) contributions.
+ - added more space for cage paths
+ - Updated solmath
+
 Version 1.0.1:
  - Ring and Cage paths included in dtkfindcp
  - Merge branch 'develop'
