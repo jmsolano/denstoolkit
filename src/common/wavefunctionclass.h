@@ -57,6 +57,7 @@
       int nNuc          --> The number of nuclei
       int nMOr          --> The number of Molecular Orbitals
       int nPri          --> The number of Primitives
+      int EDFPri        --> The number of EDF primitives
       string *atLbl     --> The atom labels (for the wfn, the atom labels will be created as in the
                             following examples)
                               O    1    (CENTRE  1)  ----->   O1
@@ -85,6 +86,8 @@
       solreal totener      --> The total energy of the system.
       solreal virial       --> The virial ratio (-V/T)
       bool imldd        --> true if the wave function have been loaded (from a wf? file), false otherwise.
+      bool ihaveEDF;    --> true if the wave function includes EDF information.
+                               (this only works with wfx)
  
  The description of the functions is given below, right after every single function. 
  
@@ -132,7 +135,7 @@ typedef double solreal;
 #define PARALLELISEDTK 0
 #endif
 
-#define MAXPRIMTYPEDEFINED 20
+#define MAXPRIMTYPEDEFINED 56
 #define MAXSTEPSIZEBCPSEARCH 0.4
 #define MAXSTEPSIZERCPSEARCH 0.35
 #define MAXSTEPSIZECCPSEARCH 0.3
@@ -180,13 +183,13 @@ public:
    ~gaussWaveFunc(); //Destructor
    /* *********************************************************************************** */
    string *title,orbDesc; /* title */
-   int nTit,nNuc,nMOr,nPri;
+   int nTit,nNuc,nMOr,nPri,EDFPri,totPri,coreElec;
    string *atLbl;
    int *primType, *primCent,*myPN;
-   solreal *R, *atCharge, *primExp, *MOCoeff, *occN, *MOEner;
+   solreal *R, *atCharge, *primExp, *MOCoeff, *occN, *MOEner,*EDFCoeff;
    solreal *cab,*chi,*gx,*gy,*gz,*hxx,*hyy,*hzz,*hxy,*hxz,*hyz;
    solreal totener,virial;
-   bool imldd;
+   bool imldd,ihaveEDF;
    /* *********************************************************************************** */
    /**
       This function returns the value of the cart-th Cartesian coordinate of the nucnum-th nucleus.
@@ -506,9 +509,9 @@ void evald4Ang(int (&a)[3],solreal &alp,solreal (&x)[3],solreal (&x2)[3],
                   solreal (&d0)[3],solreal (&d1)[3],solreal (&d2)[3],solreal (&d3)[3],
                   solreal (&d4)[3]);
    /* *********************************************************************************** */
-   /** This function evaluates \f$\nabla^2\rho(x,y,z)\f$. It is implemented in order to
+   /* This function evaluates \f$\nabla^2\rho(x,y,z)\f$. It is implemented in order to
     * test evalDkDlAngCases(...)  */
-   solreal evalLapRhoUsingd2(solreal x,solreal y,solreal z);
+   //solreal evalLapRhoUsingd2(solreal x,solreal y,solreal z);
    /* *********************************************************************************** */
    /* void evalDkDlAngCases(int &pty,solreal alp,solreal x,solreal y,solreal z,
     solreal &axx,solreal &ayy,solreal &azz,solreal &axy,solreal &axz,solreal &ayz); */

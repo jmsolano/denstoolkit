@@ -161,3 +161,6 @@ runh2ocomp: build
 runli2: build
 	./dtkfindcp li2.ccsd.augccpvtz.wfn -P -g -k -a -c 100
 
+runch2: build
+	./dtkfindcp ch2brcl_b3lyp_lanl2dz_combinededfs.wfx -P -g -k -a
+

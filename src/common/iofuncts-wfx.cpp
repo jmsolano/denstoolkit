@@ -75,7 +75,7 @@ static const string wfxKeysTab[MAXWFXKEYSDEF]=
    ,"EDF Primitive Exponents","EDF Primitive Coefficients"
 };
 
-/* ********************************************************************************************* */
+/* ************************************************************************** */
 string getWfxKey(const int ii)
 {
 #if DEBUG
@@ -87,7 +87,7 @@ string getWfxKey(const int ii)
 #endif
    return wfxKeysTab[ii];
 }
-/* ********************************************************************************************* */
+/* ************************************************************************** */
 void getPosInFile(ifstream &ifil,bool frombeg,string idkey,int & ist,int &ien)
 {
    int orpos,pos;
@@ -141,7 +141,7 @@ void getPosInFile(ifstream &ifil,bool frombeg,string idkey,int & ist,int &ien)
    }
    // */
 }
-/* ********************************************************************************************* */
+/* ************************************************************************** */
 int getInitPosOfKeyInFile(ifstream &ifil,bool frombeg,string idkey)
 {
    int orpos,pos;
@@ -176,9 +176,10 @@ int getInitPosOfKeyInFile(ifstream &ifil,bool frombeg,string idkey)
          return pos;
       }
    }
+   //cout << "Not found getInitPosOfKeyInFile..." << endl;
    return -1; //if it does not return within the loop, there is an error...
 }
-/* ********************************************************************************************* */
+/* ************************************************************************** */
 int getFinPosOfKeyInFile(ifstream &ifil,bool frombeg,string idkey)
 {
    int orpos,pos;
@@ -215,7 +216,7 @@ int getFinPosOfKeyInFile(ifstream &ifil,bool frombeg,string idkey)
    }
    return -1; //if the function does not return before, there is an error...
 }
-/* ********************************************************************************************* */
+/* ************************************************************************** */
 bool getTitleFromFileWFX(ifstream &ifil,int &nt,string* &tit)
 {
    ifil.seekg(ifil.beg);
@@ -238,7 +239,7 @@ bool getTitleFromFileWFX(ifstream &ifil,int &nt,string* &tit)
    }
    return true;
 }
-/* ********************************************************************************************* */
+/* ************************************************************************** */
 bool getKeyWordsFromFileWFX(ifstream &ifil,string &kw)
 {
    ifil.seekg(ifil.beg);
@@ -256,20 +257,41 @@ bool getKeyWordsFromFileWFX(ifstream &ifil,string &kw)
    //cout << kw;
    return true;
 }
-/* ********************************************************************************************* */
+/* ************************************************************************** */
+void getNetCharge(ifstream &ifil,int &nc)
+{
+   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Net Charge")));
+   ifil >> nc;
+   return;
+}
+/* ************************************************************************** */
 void getNofNucleiFromFileWFX(ifstream &ifil, int & nnuc)
 {
    ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Number of Nuclei")));
    ifil >> nnuc;
    return;
 }
-/* ********************************************************************************************* */
+/* ************************************************************************** */
+void getNofElectronsFromFileWFX(ifstream &ifil, int & nel)
+{
+   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Number of Electrons")));
+   ifil >> nel;
+   return;
+}
+/* ************************************************************************** */
+void getNofCoreElectronsFromFileWFX(ifstream &ifil, int & ncel)
+{
+   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Number of Core Electrons")));
+   ifil >> ncel;
+   return;
+}
+/* ************************************************************************** */
 void getNofMolOrbFromFileWFX(ifstream &ifil,int &nmo)
 {
    ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Number of Occupied Molecular Orbitals")));
    ifil >> nmo;
 }
-/* ********************************************************************************************* */
+/* ************************************************************************** */
 void getNucCartCoordsFromFileWFX(ifstream &ifil,const int nn,solreal* &rr)
 {
    if (!rr) {alloc1DRealArray(string("NuclCartCoords"),3*nn,rr);}
@@ -283,7 +305,7 @@ void getNucCartCoordsFromFileWFX(ifstream &ifil,const int nn,solreal* &rr)
    }
    return;
 }
-/* ********************************************************************************************* */
+/* ************************************************************************** */
 void getNucCartCoordsFromFileWFX(ifstream &ifil,const int nn,solreal** &rr3)
 {
    if (!rr3) {alloc2DRealArray(string("NuclCartCoords"),nn,3,rr3);}
@@ -295,14 +317,40 @@ void getNucCartCoordsFromFileWFX(ifstream &ifil,const int nn,solreal** &rr3)
    }
    return;
 }
-/* ********************************************************************************************* */
+/* ************************************************************************** */
 void getNofPrimFromFileWFX(ifstream &ifil,int &npri)
 {
    ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Number of Primitives")));
    ifil >> npri;
    return;
 }
-/* ********************************************************************************************* */
+/* ************************************************************************** */
+void getNofEDFPrimFromFileWFX(ifstream &ifil,const int nedfc,int &nedfprim)
+{
+   int nc=0;
+   int totp=0,tmp;
+   ifil.seekg(ifil.beg);
+   //cout << "nedfc: " << nedfc << endl;
+   size_t tt;
+   while ( nedfc>nc ) {
+      if ( (tt=getInitPosOfKeyInFile(ifil,false,\
+                  string("Number of EDF Primitives"))) == string::npos ) {
+         cout << "Error: key not found!" << endl;
+         break;
+      }
+      //ifil.seekg(getInitPosOfKeyInFile(ifil,false,\
+               string("Number of EDF Primitives")));
+      ifil.seekg(tt);
+      ifil >> tmp;
+      //cout << "tmp: " << tmp << endl;
+      totp+=tmp;
+      nc++;
+   }
+   nedfprim=totp;
+   ifil.clear();
+   return;
+}
+/* ************************************************************************** */
 void getAtLabelsFromFileWFX(ifstream &ifil,const int nn,string* &al)
 {
    if (!al) {alloc1DStringArray(string("al"),nn,al);}
@@ -313,7 +361,7 @@ void getAtLabelsFromFileWFX(ifstream &ifil,const int nn,string* &al)
    }
    return;
 }
-/* ********************************************************************************************* */
+/* ************************************************************************** */
 void getAtChargesFromFileWFX(ifstream &ifil,const int nn,solreal* &ach)
 {
    if (!ach) {alloc1DRealArray(string("ach"),nn,ach);}
@@ -321,18 +369,20 @@ void getAtChargesFromFileWFX(ifstream &ifil,const int nn,solreal* &ach)
    for (int i=0; i<nn; i++) {ifil >> ach[i];}
    return;
 }
-/* ********************************************************************************************* */
-void getAtNumbersFromFileWFX(ifstream &ifil,const int nn,int* &anu)
+/* ************************************************************************** */
+int getAtNumbersFromFileWFX(ifstream &ifil,const int nn,int* &anu)
 {
    if(!anu){alloc1DIntArray(string("anu"),nn,anu);}
    ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Atomic Numbers")));
+   int nprot=0;
    for (int i=0; i<nn; i++) {
       ifil >> anu[i];
+      nprot+=anu[i];
       anu[i]--;
    }
-   return;
+   return nprot;
 }
-/* ********************************************************************************************* */
+/* ************************************************************************** */
 void getPrimCentersFromFileWFX(ifstream &ifil,const int npr,int* &pc)
 {
    if (!pc) {alloc1DIntArray(string("pc"),npr,pc);}
@@ -343,7 +393,19 @@ void getPrimCentersFromFileWFX(ifstream &ifil,const int npr,int* &pc)
    }
    return;
 }
-/* ********************************************************************************************* */
+/* ************************************************************************** */
+void getEDFPrimCentersFromFileWFX(ifstream &ifil,const int npr,\
+      const int ntot,int* &pc)
+{
+   if (pc==NULL) {alloc1DIntArray(string("pc"),ntot,pc);}
+   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("EDF Primitive Centers")));
+   for (int i=npr; i<ntot; ++i) {
+      ifil >> pc[i];
+      pc[i]--;
+   }
+   return;
+}
+/* ************************************************************************** */
 void getPrimTypesFromFileWFX(ifstream &ifil,const int npr,int* &pt)
 {
    if (!pt) {alloc1DIntArray(string("pt"),npr,pt);}
@@ -354,7 +416,19 @@ void getPrimTypesFromFileWFX(ifstream &ifil,const int npr,int* &pt)
    }
    return;
 }
-/* ********************************************************************************************* */
+/* ************************************************************************** */
+void getEDFPrimTypesFromFileWFX(ifstream &ifil,const int npr,\
+      const int ntot,int* &pt)
+{
+   if (pt==NULL) {alloc1DIntArray(string("pt"),ntot,pt);}
+   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("EDF Primitive Types")));
+   for (int i=npr; i<ntot; ++i) {
+      ifil >> pt[i];
+      pt[i]--;
+   }
+   return;
+}
+/* ************************************************************************** */
 void getPrimExponentsFromFileWFX(ifstream &ifil,const int npr,solreal* &pex)
 {
    if (!pex) {alloc1DRealArray(string("pex"),npr,pex);}
@@ -362,7 +436,16 @@ void getPrimExponentsFromFileWFX(ifstream &ifil,const int npr,solreal* &pex)
    for (int i=0; i<npr; i++) {ifil >> pex[i];}
    return;
 }
-/* ********************************************************************************************* */
+/* ************************************************************************** */
+void getEDFPrimExponentsFromFileWFX(ifstream &ifil,const int npr,\
+      const int ntot,solreal* &pex)
+{
+   if (pex==NULL) {alloc1DRealArray(string("pex"),ntot,pex);}
+   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("EDF Primitive Exponents")));
+   for (int i=npr; i<ntot; ++i) {ifil >> pex[i];}
+   return;
+}
+/* ************************************************************************** */
 void getMolecOrbOccNumsFromFileWFX(ifstream &ifil,const int nmo,solreal* &ocnu)
 {
    if (!ocnu) {alloc1DRealArray(string("ocnu"),nmo,ocnu);}
@@ -370,7 +453,7 @@ void getMolecOrbOccNumsFromFileWFX(ifstream &ifil,const int nmo,solreal* &ocnu)
    for (int i=0; i<nmo; i++) {ifil >> ocnu[i];}
    return;
 }
-/* ********************************************************************************************* */
+/* ************************************************************************** */
 void getMolecOrbEnergiesFromFileWFX(ifstream &ifil,const int nmo,solreal* &orben)
 {
    if (!orben) {alloc1DRealArray(string("orben"),nmo,orben);}
@@ -378,7 +461,7 @@ void getMolecOrbEnergiesFromFileWFX(ifstream &ifil,const int nmo,solreal* &orben
    for (int i=0; i<nmo; i++) {ifil >> orben[i];}
    return;
 }
-/* ********************************************************************************************* */
+/* ************************************************************************** */
 void getMolecOrbCoefficientsFromFileWFX(ifstream &ifil,const int nmo,const int npr,solreal* &tcf)
 {
    if (!tcf) {alloc1DRealArray(string("tcf"),(nmo*npr),tcf);}
@@ -391,7 +474,17 @@ void getMolecOrbCoefficientsFromFileWFX(ifstream &ifil,const int nmo,const int n
    }
    return;
 }
-/* ********************************************************************************************* */
+/* ************************************************************************** */
+void getEDFPrimCoefficientsFromFileWFX(ifstream &ifil,const int nedfp,\
+      solreal* &edfc)
+{
+   if (edfc==NULL) {alloc1DRealArray(string("edfc"),nedfp,edfc);}
+   ifil.seekg(getInitPosOfKeyInFile(ifil,true,\
+            string("EDF Primitive Coefficients")));
+   for (int i=0; i<nedfp; ++i) {ifil >> edfc[i];}
+   return;
+}
+/* ************************************************************************** */
 void getTotEnerAndVirialFromFileWFX(ifstream &ifil,solreal &tote,solreal &vir)
 {
    ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Energy = T + Vne + Vee + Vnn")));
@@ -400,9 +493,40 @@ void getTotEnerAndVirialFromFileWFX(ifstream &ifil,solreal &tote,solreal &vir)
    ifil >> vir;
    return;
 }
-/* ********************************************************************************************* */
-/* ********************************************************************************************* */
-/* ********************************************************************************************* */
-/* ********************************************************************************************* */
+/* ************************************************************************** */
+void countEDFCentersFromFileWFX(ifstream &ifil,int &nedfc)
+{
+   string line;
+   int nn=0;
+   size_t orpos=ifil.tellg();
+   ifil.seekg(ifil.beg);
+   while ( !ifil.eof() ) {
+      getline(ifil,line);
+      removeSpacesLeftAndRight(line);
+      if ( line==string("<EDF Name>") ) {++nn;}
+   }
+   nedfc=nn;
+   ifil.seekg(orpos);
+   ifil.clear();
+}
+/* ************************************************************************** */
+void getEDFExistenceFromFileWFX(ifstream &ifil,bool &ihaveEDF)
+{
+   string line;
+   size_t orpos=ifil.tellg();
+   ifil.seekg(ifil.beg);
+   while ( !ifil.eof() ) {
+      getline(ifil,line);
+      removeSpacesLeftAndRight(line);
+      if ( line==string("<Number of EDF Primitives>") ) {
+         ihaveEDF=true;
+         break;
+      }
+   }
+   ifil.seekg(orpos);
+   if ( ifil.eof() ) { ifil.clear(); }
+}
+/* ************************************************************************** */
+/* ************************************************************************** */
 #endif//_IOFUNCTS_WFX_CPP_
 
