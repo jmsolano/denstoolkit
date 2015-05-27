@@ -68,7 +68,7 @@ natural for reading and understanding the \texttt{wfn} and \texttt{wfx} files.
 
 Each Gaussian basis function (or primitive) is given by
 %
-\begin{equation}
+\begin{equation}\label{eq:primitivedef}
    \phi_{\dA}(\boldsymbol{r})=(x^1-R^1_{\dA})^{a^1_{\dA}}(x^2-R^2_{\dA})^{a^2_{\dA}}(x^3-R^3_{\dA})^{a^3_{\dA}}
    \exp\left(-\alpha_{\dA}(\boldsymbol{r}-\boldsymbol{R}_{\dA})^2\right),
 \end{equation}
@@ -77,9 +77,67 @@ and the normalization constants are already included in the coefficients $D_{m\d
 
 Finally, unless otherwise specified, we will assume that Im$(\phi_{\dA})=0$. While this is not true in general, it does hold for the Gaussian basis sets we will be interested in (\textit{i.e.,} those obtained as \texttt{wfn} or \texttt{wfx} files from Gaussian, Gamess, MolPro, NWChem, etc.)
 
+
+%..............................................................................................
+\subsection*{Pseudopotentials}
+%..............................................................................................
+
+In the current version of \DTK{}, the wavefunctions with pseudopotentials can be
+input. However, the wavefunction file is restricted to have \texttt{wfx} format
+and the Gaussian primitives used for describing the core electrons must be in a
+single \texttt{<Additional Electron Density Function (EDF)>} block (see
+\cite{bib:webwfxformat} for more details).
+
+For the core electrons, there will be a single ``orbital'', and the core electron
+density  is obtained as follows
+%
+\begin{equation}\label{eq:rhoadotdef}
+  \rho_{\textrm{core}}=\sum_{\bA=\bar 1}^{\bar E}C_{\bA}\rho_{\bA}.
+\end{equation}
+%
+In Eq. (\ref{eq:rhoadotdef}), another index type is used. This time, the index runs
+from one to the number of EDF primitives (denoted by $\bar E$), 
+each $\rho_{\bA}$ is a $s$-type Gaussian basis
+function, \textit{i.e.}
+%
+\begin{equation}%\label{eq:}
+  \rho_{\bA}\equiv\exp\left( -\beta_{\bA}(\boldsymbol r-\boldsymbol R_{\bA})^2 \right)
+  =\left( \exp\left( -\alpha_{\bA}(\boldsymbol r_{\bA}-\boldsymbol R_{\bA})^2 \right) \right)^2
+  \equiv\phi_{\bA}^2.
+\end{equation}
+%
+The coefficients $C_{\bA}$ can be easily differentiated from $C_m$ just by
+looking at the type of index, and 
+%
+\begin{equation}%\label{eq:}
+  \alpha_{\bA}=\frac{\beta_{\bA}}{2}.
+\end{equation}
+%
+
+
+In the \texttt{wfx} file, the coefficients $C_{\bA}$ are referred to as the
+\texttt{``EDF Primitive Coefficients''}, and $\beta_{\bA}$ are the so-called
+\texttt{``EDF Primitive Exponents''}.
+Clearly, there exists a very close relationship between dotted functions, and barred
+functions, however we keep the barred index to remind the subtle differences 
+in how each part of the total electron density must be treated.
+
+Another feature (noteworthy to our purposes) is that pseudopotentials are 
+spanned by $s$-type primitives, which reduces many mathematical developments.
+
+
+
 %----------------------------------------------------------------------------------------------
 \section{Electron density ($\rho$)}
 %----------------------------------------------------------------------------------------------
+
+%..............................................................................................
+\subsection{Regular expansion}
+%..............................................................................................
+
+Hereafter, we will use the term ``Regular Expansion'' whenever we are describing
+the standard Gaussian-type orbital expansions, \textit{ie.e} the wavefunction
+does not use pseudopotentials.
 
 The electron density is therefore given by
 %
@@ -141,6 +199,53 @@ the expansion ($\dot{P}$); while latin, lower case indices will run from 1 to 3 
 are used for cartesian components). This is one of the advantages of introducing such an
 index naming system.
 
+%..............................................................................................
+\subsection{Pseudopotentials}
+%..............................................................................................
+
+For wavefunctions with pseudopotentials, the coefficients $C_{\bA}$ can be coded if needed
+in a $C_{\bA\bB}$ form as follows:
+%
+\begin{equation}%\label{eq:}
+  C_{\bA\bB}=\left\{
+  \begin{array}{ll}
+    0,&\qquad \bA\neq\bB\\
+    C_{\bA},&\qquad\bA=\bB
+  \end{array}
+  \right..
+\end{equation}
+%
+The above definition will serve to closely follow mathematical developments used with
+dotted indices (regular primitives), since most of the field definitions will have
+a direct mirror by changing $\dA\to\bA$ (as we will see below). The Einstein
+summation convention also applies for barred indices.
+
+The electron density is thus given by
+%
+\begin{equation}\label{eq:rhowithpsdpot}
+  \rho=C_{\dA\dB}\phi_{\dA}\phi_{\dB}+C_{\bA}\rho_{\bA}
+      =C_{\dA\dB}\phi_{\dA}\phi_{\dB}+C_{\bA\bB}\phi_{\bA}\phi_{\bB}.
+\end{equation}
+%
+
+From the type of index it is easy to know their range. The only
+subtlety that we must always bear in mind when dealing with pseudopotentials is that
+dotted indices run from $\done$ to the number of regular (or valence) primitives,
+for simplicity also denoted by $\dN$,
+and the barred indices run from $\bar 1$ to the number of EDF primitives,
+denoted by $\bar E$.
+
+Notice that when dealing with the core density, there is no mathematical
+difference between using $\rho_{\bA}$ or $\phi_{\bA}$, as they differ each
+other only by the exponent value ($\beta_{\bA}$ \textit{vs} $\alpha_{\bA}$).
+However, in computational terms, the difference is huge because all
+non-diagonal terms of $C_{\bA\bB}$ are zero, which reduces the number
+of operations to be proportional to $\bar E$. This feature, along with the
+$s$-type character of the primitives/density will be often
+exploited below, and the primitive product (last equality of Eq.
+(\ref{eq:rhowithpsdpot})) will be avoided wherever we can.
+
+
 
 %----------------------------------------------------------------------------------------------
 \section{Gradient of the electron density ($\nabla\rho$)}\label{sec:gradrho}
@@ -155,16 +260,30 @@ With the notation proposed in the previous section, the gradient of the electron
 where we have used the symmetry properties of $c_{\dA\dB}$ in the last equality, and
 %
 \begin{eqnarray}
-   \partial_i\phi_{\dB}&=&\left(-2\alpha_{\dB}(x^i-R^i_{\dB})^{a^i_{\dB}+1}+a^i_{\dB}(x^i-R^i_{\dB})^{a^i-1}\right)\prod_{j\neq i}(x^j-R^j_{\dB})^{a^j_{\dB}}\nonumber\\
+   \partial_i\phi_{\dB}&=&\left(-2\alpha_{\dB}(x^i-R^i_{\dB})^{a^i_{\dB}+1}+
+   a^i_{\dB}(x^i-R^i_{\dB})^{a^i_{\dB}-1}\right)\prod_{j\neq i}(x^j-R^j_{\dB})^{a^j_{\dB}}\nonumber\\
                        & &\times\exp\left(-\alpha_{\dB}(\boldsymbol{r}-\boldsymbol{R}_{\dB})^2\right)
                        \label{eq:diphidbexplicit}
 \end{eqnarray}
 %
 (no summation in Eq. (\ref{eq:diphidbexplicit})).
 
-%----------------------------------------------------------------------------------------------
+The case of wavefunctions with pseudopotentials is trivially found by replacing 
+dots by bars in every equations related to primitives. From now on, we will ommit
+comments related to pseudopotentials, unless there is some none trivial remark.
+For instance, in finding the gradient of the core electron density, the total
+derivatives can be reduced to
+%
+\begin{equation}%\label{eq:}
+   \partial_i\rho=2c_{\dA\dB}\phi_{\dA}\partial_i\phi_{\dB}
+   +C_{\bA}\partial_i\rho_{\bA}.
+\end{equation}
+%
+
+
+%..............................................................................................
 \subsection{Higher derivatives the electron density}
-%----------------------------------------------------------------------------------------------
+%..............................................................................................
 
 By defining the objects
 %
@@ -224,6 +343,19 @@ In \DTK{} we implemented functions to evaluate up to fourth derivatives of the p
 (when seeking critical points of LOL,
 see \S\ref{sec:topolanalysis}).
 
+
+%..............................................................................................
+\subsubsection{Pseudopotentials}
+%..............................................................................................
+
+The Hessian of wavefunctions with pseudopotentials are found by
+%
+\begin{equation}%\label{eq:}
+  \partial_i\partial_j\rho=2c_{\dA\dB}\left(\phi_{\dA}\partial_i\partial_j\phi_{\dB}+\partial_i\phi_{\dA}\partial_j\phi_{\dB}\right)+C_{\bA}\partial_i\partial_j\rho_{\bA}.
+\end{equation}
+%
+
+
 %----------------------------------------------------------------------------------------------
 \section{Magnitude of $\nabla\rho$}
 %----------------------------------------------------------------------------------------------
@@ -244,6 +376,16 @@ The Laplacian of the electron density is evaluated by means of
    \nabla^2\rho=\partial_k\partial_k\rho=2c_{\dA\dB}\left(\partial_k\phi_{\dA}\partial_k\phi_{\dB}+\phi_{\dA}\partial_k\partial_k\phi_{\dB}\right)
 \end{equation}
 %
+If pseudopotentials are used, the Laplacian is then
+%
+\begin{equation}%\label{eq:}
+   \partial_k\partial_k\rho=
+   2c_{\dA\dB}\left(\partial_k\phi_{\dA}\partial_k\phi_{\dB}+
+   \phi_{\dA}\partial_k\partial_k\phi_{\dB}\right)
+   +C_{\bA}\partial_k\partial_k\rho_{\bA}.
+\end{equation}
+%
+
 
 %----------------------------------------------------------------------------------------------
 \section{Kinetic Energy $G$}
@@ -258,6 +400,15 @@ The definition of the Kinetic energy density $G$ we implemented in \DTK{} is (in
 
 Let us recall that some improvements on the speed of \DTK{} rely on the fact that we are assuming that the primitives are pure-real. The parenthesis in the last equation denotes that in \DTK{} we first save the sum of the three terms $c_{\dA\dB}\partial_i\phi_{\dB}$ within the inner loop, and after this loop is completed, we multiply and add each one of these sums by $\partial_i\phi_{\dA}$ on the outer loop. While this procedure may seem a bit obscure, it improves the speed of the computations.
 
+The kinentic energy $G$ of a wavefunction that uses pseudopotentials is reduced to
+%
+\begin{equation}%\label{eq:}
+  G=\frac{1}{2}\sum_{\dA\dB}\partial_k\phi_{\dA}\left(c_{\dA\dB}\partial_k\phi_{\dB}\right)
+  +\frac{1}{2}\sum_{\bA}C_{\bA}\left( \partial_k\phi_{\bA}\cdot\partial_k\phi_{\bA} \right).
+\end{equation}
+%
+
+
 
 %----------------------------------------------------------------------------------------------
 \section{Kinetic Energy $K$}
@@ -269,6 +420,16 @@ The Kinetic energy density $K$ definition we implemented in \DTK{} is
    K(\boldsymbol{r})=\frac{1}{4}c_{\dA\dB}\left(\phi_{\dA}^*\nabla^2\phi_{\dB}+\phi_{\dB}^*\nabla^2\phi_{\dA}\right)=\frac{1}{2}\phi_{\dA}\left(c_{\dA\dB}\partial_k\partial_k\phi_{\dB}\right).
 \end{equation}
 %
+
+For wavefunctions with pseudopotentials, this field is given by
+%
+\begin{equation}%\label{eq:}
+  K(\boldsymbol{r})=\frac{1}{2}\sum_{\dA\dB}
+    \phi_{\dA}\left(c_{\dA\dB}\partial_k\partial_k\phi_{\dB}\right)
+    +\frac{1}{2}\sum_{\bA}C_{\bA}\phi_{\bA}\partial_k\partial_k\phi_{\bA}.
+\end{equation}
+%
+
 
 %----------------------------------------------------------------------------------------------
 \section{Electron Localization Function (ELF)}
@@ -354,6 +515,23 @@ A table of the Fourier transforms of the cartesian primitives is listed in Ref. 
 
 For the evaluation of this field, we must account for the imaginary terms of the Fourier terms. \DTK{} exploit the library \texttt{<complex>} distributed as standard library of \texttt{C++}. 
 
+%..............................................................................................
+\subsection{Pseudopotentials}
+%..............................................................................................
+
+Since the core electron density is an expansion of $s$-type primitives, and recalling
+the linearity of the equations, the momentum density follows directly from Eq.
+(\ref{eq:momdensdef}), which is found to be
+%
+\begin{equation}%\label{eq:}
+  \pi(\boldsymbol{p})=\sum_{\dA\dB}
+   \hat{\phi}_{\dA}^*(\boldsymbol{p})c_{\dA\dB}\hat{\phi}_{\dB}(\boldsymbol{p})+
+   \sum_{\bA}
+   \hat{\phi}_{\bA}^*(\boldsymbol{p})C_{\bA}\hat{\phi}_{\bA}(\boldsymbol{p}).
+\end{equation}
+%
+
+
 %----------------------------------------------------------------------------------------------
 \section{Shannon entropy density}
 %----------------------------------------------------------------------------------------------
@@ -387,6 +565,17 @@ In terms of the density matrix, the Density Matrix of order 1 (DM1, and denoted 
    \Gamma(\boldsymbol{r},\boldsymbol{r}')=\phi_{\dA}(\boldsymbol{r})\big(c_{\dA\dB}\phi_{\dB}(\boldsymbol{r}')\big).
 \end{equation}
 %
+
+The Density Matrix of order 1 of wavefunctions with pseudopotentials is
+%
+\begin{equation}%\label{eq:}
+  \Gamma(\boldsymbol{r},\boldsymbol{r}')=\sum_{\dA\dB}
+  \phi_{\dA}(\boldsymbol{r})\big(c_{\dA\dB}\phi_{\dB}(\boldsymbol{r}')\big)
+  +\sum_{\bA}
+  \phi_{\dA}(\boldsymbol{r})\big(C_{\bA}\phi_{\dA}(\boldsymbol{r}')\big)
+\end{equation}
+%
+
 
 %----------------------------------------------------------------------------------------------
 \section{Electrostatic potential}
@@ -490,4 +679,21 @@ For this field, we also exploit the symmetry of the product $c_{\dA\dB}\phi_{\dA
    \sum_{\dA}\left(c_{\dA\dA}\mathfrak{I}_{\dA\dA}+2\sum_{\dB>\dA}c_{\dA\dB}\mathfrak{I}_{\dA\dB}\right).
 \end{eqnarray}
 %
+
+%..............................................................................................
+\subsection{Pseudopotentials}
+%..............................................................................................
+
+Finally, the electrostatic potential of a wavefunction that contains pseudpotentials
+in its expansion is
+%
+\begin{equation}%\label{eq:}
+  V(\boldsymbol{r})=\sum_a\frac{Z_a}{|\boldsymbol{r}-\boldsymbol{R}_a|}-
+   \sum_{\dA}\left(c_{\dA\dA}\mathfrak{I}_{\dA\dA}+
+   2\sum_{\dB>\dA}c_{\dA\dB}\mathfrak{I}_{\dA\dB}\right)+
+   \sum_{\bA}C_{\bA}\mathfrak{I}_{\bA\bA}.
+\end{equation}
+%
+
+
 
