@@ -1,3 +1,7 @@
+Version 1.1.2:
+ - BugFix (totPri=nPri in wfn loading file function)
+ - Included pseudopotential formulae in dtkmanual.
+
 Version 1.1.1:
  - First implementation of EDF (Gauss-type pseudopotentials) contributions.
  - added more space for cage paths

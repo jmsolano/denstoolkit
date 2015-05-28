@@ -3,7 +3,7 @@
  *
  *                  D  E  N  S  T  O  O  L  K  I  T
  *
- *                         VERSION: 1.1.1
+ *                         VERSION: 1.1.2
  *
  *             Contributors: Juan Manuel Solano-Altamirano
  *                           Julio Manuel Hernandez-Perez
