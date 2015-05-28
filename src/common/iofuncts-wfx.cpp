@@ -523,8 +523,8 @@ void getEDFExistenceFromFileWFX(ifstream &ifil,bool &ihaveEDF)
          break;
       }
    }
-   ifil.seekg(orpos);
    if ( ifil.eof() ) { ifil.clear(); }
+   ifil.seekg(orpos);
 }
 /* ************************************************************************** */
 /* ************************************************************************** */

@@ -242,6 +242,7 @@ bool gaussWaveFunc::readFromFileWFN(string inname)
    tif.seekg(tif.beg);
    nTit=1;
    processFirstDataStringinWFNFile(tif,title,orbDesc,nMOr,nPri,nNuc);
+   totPri=nPri;
    processCentersWFN(tif,nNuc,atLbl,R,atCharge);
    processPrimitivesWFN(tif,nPri,primCent,primType,primExp);
    processMolecularOrbitalPropsAndCoefs(tif,nMOr,nPri,occN,MOEner,MOCoeff);
@@ -1166,7 +1167,7 @@ void gaussWaveFunc::evalDkAngCases(int &pty,solreal alp,solreal x, solreal y, so
          break;
       default:
          cout << "Not implemented angular function!!\n";
-         anz=any=anz=0.000000e0;
+         anx=any=anz=0.000000e0;
          break;
    }
    return;
