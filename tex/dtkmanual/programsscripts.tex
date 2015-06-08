@@ -268,18 +268,23 @@ The complete search of critical points of a molecule can be found by the followi
 \progusg{dtkfindcp}{}
 This will find all the ED critical points (including ACPs, BCPs, RCPs, and CCPs), as well as the bond gradient paths (paths that connect ACPs with BCPs). The information of the critical points are saved into two files. The \texttt{log} file contains the coordinates of all CPs found, and the field properties at such points. The \texttt{cpx} file shares the coordinates of the CPs, but additional information is stored in these files, such as the coordinates of the gradient bond paths, and the name of the wave function used to perform the search of CPs.
 
-\texttt{dtkfindcp} is also capable of producing \texttt{pov} files (and internal callings to povray) for rendering 3D images of the critical points. For instance, the Figure  was produced by typing\\
-\progusg{dtkfindcp}{-P -g -T -k}
-This command produces a \texttt{pov} file and calls povray to render the image displayed in Fig. \ref{fig:dtkfindcpusex}. The option \texttt{-g} tells \texttt{dtkfindcp} to display the bond gradient paths; and the option \texttt{-T} sets the style of the bond gradient paths to be tubes.
+\texttt{dtkfindcp} is also capable of producing \texttt{pov} files (and internal callings to povray) for rendering 3D images of the critical points. For instance, the Figure \ref{fig:cyclopCPs} was produced by typing\\
+\progusg{dtkfindcp}{-P -g -T -k -a}
+This command produces a \texttt{pov} file and calls povray to render the image displayed in Fig. \ref{fig:dtkfindcpusex}. The option \texttt{-g} tells \texttt{dtkfindcp} to display the bond gradient paths; and the option \texttt{-T} sets the style of the bond gradient paths to be tubes. On the other hand, Figure \ref{fig:cubaneCPs} was produced using \\\progusg{dtkfindcp}{-P -g -T -k -r -a}.
 %
 \begin{figure}[hb!]
 \centering
-\includegraphics[width=0.45\textwidth]{cyclopCPs}%\label{fig:cyclopCPs}
-\caption{Electron density critical points of the cyclopropane molecule. The green lines are the bond paths joining the BCPs and the ACPs.}\label{fig:dtkfindcpusex}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{cyclopCPs}\label{fig:cyclopCPs}}
+\subfigure[]{\includegraphics[width=0.45\textwidth]{cubaneCPs}\label{fig:cubaneCPs}}
+%\label{fig:cyclopCPs}
+\caption{Electron density critical points of \subref{fig:cyclopCPs} cyclopropane and
+\subref{fig:cubaneCPs} cubane molecules. Blue lines are the bond paths joining the BCPs and the ACPs,
+green lines are the gradient paths joining RCPs and BCPs, and orange lines are the
+gradient paths joining CCPs and RCPs.}\label{fig:dtkfindcpusex}
 \end{figure}
 %
 
-If you are interested only in finding the critical points, but you do not want to seek the gradient bond paths, you can deactivated the search of bond paths by using the option \texttt{-G}.
+If you are interested only in finding the critical points, but you do not want to seek the gradient bond paths, you can deactivated the search of bond paths by using the option \texttt{-G}. In this version, the search of gradient paths connecting RCPs-BCPs and CCPs-RCPs is made only upon request with the option ``\texttt{-r}''. However, the algorithm for finding these last two types of gradient paths is not finished and should be used with caution.
 
 Sometimes, depending on the complexity of a molecule, a simple search of critical points is not enough to find all of them. In such cases, you can request to perform an \textit{extended search}
 by adding the option ``\texttt{-e}'' to the command line. This command will tell \texttt{dtkfindcp}
