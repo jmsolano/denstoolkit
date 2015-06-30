@@ -20,6 +20,7 @@ cachegrind.*
 *.blg
 *.out
 *.bkp
+*.user
 
 #binaries
 src/dtkbpdens/dtkbpdens
@@ -59,6 +60,7 @@ tex/dtkmanual/tmp/*
 tex/ejemplos/*
 wavefiles/*
 arts/*
+src/dtkview/build/*
 
 #specific files
 namefiglet.txt
