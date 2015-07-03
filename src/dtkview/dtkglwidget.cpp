@@ -1,10 +1,12 @@
 #include "dtkglwidget.h"
 #ifdef __APPLE__
 #include <GLUT/glut.h>
+#include <QOpenGLWidget>
 #else
 #include <GL/glut.h>
+#include <QGLWidget>
 #endif
-//#include <QtGui>
+#include <QtGui>
 #include <QVector3D>
 #include <QMatrix4x4>
 #include <cmath>

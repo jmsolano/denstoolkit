@@ -7,7 +7,7 @@
 #endif
 #include <QMouseEvent>
 #include <QMatrix4x4>
-//#include <QtGui>
+#include <QtGui>
 #include <QVector3D>
 
 #define INITIAL_CAMERA_DISTANCE 2.5e0
