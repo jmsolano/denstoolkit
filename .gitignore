@@ -50,6 +50,7 @@ raytracing/*
 proc/*
 outputs/*
 src/test/*
+src/bin/*
 cudatest/*
 src/dtk*/*.wfn
 src/dtk*/*.wfx
