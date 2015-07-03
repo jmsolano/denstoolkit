@@ -17,6 +17,28 @@ set(the_usr_rcs
 
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
+if(UNIX)
+   if(APPLE)
+      set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH}
+         /Users/jmsolano/binsol/Qt5/5.4/clang_64
+      )
+else(APPLE)
+      set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH}
+         /usr/lib/x86_64-linux-gnu/cmake
+         /usr/lib/x86_64-linux-gnu/cmake/Qt5OpenGL
+       )
+      set(Qt5OpenGL_DIR 
+         /usr/lib/x86_64-linux-gnu/cmake/Qt5OpenGL
+      )
+   endif(APPLE)
+endif(UNIX)
+
+find_package(Qt5Core)
+find_package(Qt5Widgets)
+find_package(Qt5Gui)
+find_package(Qt5OpenGL)
+
+
 set(the_usr_include_dirs
    ${OPENGL_INCLUDE_DIR} ${GLUT_INCLUDE_DIR}
 )
@@ -34,17 +56,7 @@ set(the_usr_srcs
    dtkglwidget.cpp
 )
 
-set(the_usr_qt5_modules Core Gui Widgets opengl)
-
-set(CMAKE_AUTOMOC OFF)
-
-set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH}
-   /Users/jmsolano/binsol/Qt5/5.4/clang_64
-)
-
-find_package(Qt5Core)
-find_package(Qt5Widgets)
-find_package(Qt5Gui)
+set(the_usr_qt5_modules Core Gui Widgets OpenGL)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)

@@ -4,6 +4,7 @@
 #else
 #include <GL/glut.h>
 #endif
+//#include <QtGui>
 #include <QVector3D>
 #include <QMatrix4x4>
 #include <cmath>
@@ -12,7 +13,11 @@ using std::cout;
 using std::endl;
 
 DTKGLWidget::DTKGLWidget(QWidget *parent)
+#ifdef __APPLE__
    : QOpenGLWidget(parent)
+#else
+   : QGLWidget(parent)
+#endif
 {
    Q_UNUSED(parent);
    xRot=0;

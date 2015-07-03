@@ -1,16 +1,24 @@
 #ifndef DTKGLWIDGET_H
 #define DTKGLWIDGET_H
+#ifdef __APPLE__
 #include <QOpenGLWidget>
+#else
+#include <QGLWidget>
+#endif
 #include <QMouseEvent>
 #include <QMatrix4x4>
+//#include <QtGui>
 #include <QVector3D>
 
 #define INITIAL_CAMERA_DISTANCE 2.5e0
 
 /* This factor decreases the speed of rotation when a mouse drag is
  performed. The bigger the factor, the slower the change. */
-
+#ifdef __APPLE__
 class DTKGLWidget : public QOpenGLWidget
+#else
+class DTKGLWidget : public QGLWidget
+#endif
 {
    Q_OBJECT
 public:
