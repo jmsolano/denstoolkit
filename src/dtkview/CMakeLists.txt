@@ -105,7 +105,7 @@ SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
 #  CMake's way of creating an executable
 add_executable( ${the_usr_bin_name} MACOSX_BUNDLE WIN32
   ${the_usr_srcs}
-  ${the_gen_moc_hdrs} 
+  #${the_gen_moc_hdrs} 
   ${the_gen_uis}
   ${the_gen_rcs}
 )
