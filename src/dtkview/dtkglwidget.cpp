@@ -43,11 +43,31 @@ DTKGLWidget::~DTKGLWidget()
 
 void DTKGLWidget::initializeGL()
 {
+    /*
    glClearColor(0.2,0.2,0.2,1.0);
    glEnable(GL_DEPTH_TEST);
    glEnable(GL_LIGHTING);
    glEnable(GL_LIGHT0);
    glEnable(GL_COLOR_MATERIAL);
+   // */
+
+   GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+   GLfloat mat_shininess[] = { 80.0 };
+   GLfloat light_position[] = { 2.0f*INITIAL_CAMERA_DISTANCE,\
+                                2.0f*INITIAL_CAMERA_DISTANCE,\
+                                2.0f*INITIAL_CAMERA_DISTANCE, 0.0 };
+   glClearColor((48.f/255.f),(62.f/255.f),(115.f/255.f),1.0f);
+   glShadeModel (GL_SMOOTH);
+
+   glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+   glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+   glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+
+   glEnable(GL_LIGHTING);
+   glEnable(GL_LIGHT0);
+   glEnable(GL_DEPTH_TEST);
+   glEnable(GL_COLOR_MATERIAL);
+   glEnable(GL_NORMALIZE); //Needed for keeping light uniform
 }
 
 void DTKGLWidget::paintGL()
