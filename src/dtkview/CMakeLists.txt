@@ -6,6 +6,24 @@ project(DTKViewer)
 set(the_usr_moc_hdrs
    dtkmainwindow.h
    dtkglwidget.h
+   ../common/bondnetwork.h 
+   ../common/iofuncts-cpx.h 
+   ../common/iofuncts-wfn.h 
+   ../common/iofuncts-wfx.h 
+   soldefines.h 
+   ../common/solpovtools.h 
+   ../common/solmemhand.h 
+   ../common/atomradiicust.h 
+   ../common/solscrutils.h 
+   ../common/atomcolschjmol.h 
+   ../common/solstringtools.h 
+   ../common/critptnetwork.h 
+   ../common/wavefunctionclass.h 
+   ../common/eig2-4.h 
+   ../common/solmath.h 
+   ../common/solfileutils.h 
+   dtkglbondnetwork.h 
+   dtkglutils.h
 )
 
 set(the_usr_bin_name "DensToolKitViewer")
@@ -32,6 +50,23 @@ set(the_usr_srcs
    main.cpp
    dtkmainwindow.cpp
    dtkglwidget.cpp
+   ../common/bondnetwork.cpp 
+   ../common/iofuncts-cpx.cpp 
+   ../common/iofuncts-wfn.cpp 
+   ../common/iofuncts-wfx.cpp 
+   ../common/solpovtools.cpp 
+   ../common/solmemhand.cpp 
+   ../common/atomradiicust.cpp 
+   ../common/solscrutils.cpp 
+   ../common/atomcolschjmol.cpp 
+   ../common/solstringtools.cpp 
+   ../common/critptnetwork.cpp 
+   ../common/wavefunctionclass.cpp 
+   ../common/eig2-4.cpp 
+   ../common/solmath.cpp 
+   ../common/solfileutils.cpp 
+   dtkglbondnetwork.cpp 
+   dtkglutils.cpp
 )
 
 set(the_usr_qt5_modules Core Gui Widgets OpenGL)
@@ -170,6 +205,14 @@ qt5_use_modules(${the_usr_bin_name} ${the_usr_qt5_modules})
 #execute_process(COMMAND "cat moc_dtkglwidget.cpp | sed 's/QGLWidget/QOpenGLWidget/' > moc_dtkglwidget.cpp"
 #   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 #   )
+
+ADD_DEFINITIONS(-include soldefines.h)
+
+if (CMAKE_COMPILER_IS_GNUCXX)
+   set(CMAKE_CXX_FLAGS "-Wall -O2 -m64 -funroll-loops -falign-loops=16")
+   set(CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS})
+endif()
+
 
 # Now the work of copying dependencies into the bundle/package
 # The quotes are escaped and variables to use at install time have their $ escaped

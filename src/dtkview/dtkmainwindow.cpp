@@ -54,7 +54,11 @@ void DTKMainWindow::createActions()
 
 void DTKMainWindow::loadMolecule()
 {
+#ifdef __APPLE__
    QString fname=tr("/Users/jmsolano/Documents/LongRun/proj/readwfn/wavefiles/cubano_sto3g.wfx");
+#else
+   QString fname=tr("/home/jmsolano/Documents/prog/dtk/wavefiles/cubano_sto3g.wfx");
+#endif
    ui->openGLWidget->addMolecule(fname);
    ui->openGLWidget->update();
 }
