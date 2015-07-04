@@ -2,27 +2,36 @@
 #define DTKMAINWINDOW_H
 
 #include <QMainWindow>
+#include <QAction>
 
 namespace Ui {
-class DTKMainWindow;
+   class DTKMainWindow;
 }
 
 class DTKMainWindow : public QMainWindow
 {
-    Q_OBJECT
+   Q_OBJECT
 
 public:
-    explicit DTKMainWindow(QWidget *parent = 0);
-    ~DTKMainWindow();
+   explicit DTKMainWindow(QWidget *parent = 0);
+   ~DTKMainWindow();
 
 public slots:
-    void updateStatusBar(void);
+   void updateStatusBar(void);
+   void loadMolecule(void);
 
 private slots:
-    void on_resetPushButton_clicked();
+   void on_resetPushButton_clicked();
 
 private:
-    Ui::DTKMainWindow *ui;
+   Ui::DTKMainWindow *ui;
+   // ++++++++++++++++++++ ACTIONS ++++++++++++++++++++
+   QAction *loadMoleculeAction;
+   // +++++++++++++++++++++ MENUS +++++++++++++++++++++
+   QMenu *fileMenu;
+   // +++++++++++++++++++++++++++++++++++++++++++++++++
+   void createMenus(void);
+   void createActions(void);
 };
 
 #endif // DTKMAINWINDOW_H

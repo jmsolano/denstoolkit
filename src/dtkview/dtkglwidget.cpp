@@ -13,6 +13,9 @@
 #include <iostream>
 using std::cout;
 using std::endl;
+#include "dtkglutils.h"
+
+#define DEFAULT_SPHERE_RADIUS 0.5f
 
 DTKGLWidget::DTKGLWidget(QWidget *parent)
 #ifdef __APPLE__
@@ -21,13 +24,20 @@ DTKGLWidget::DTKGLWidget(QWidget *parent)
    : QGLWidget(parent)
 #endif
 {
-   Q_UNUSED(parent);
    xRot=0;
    yRot=0;
    zRot=0;
    cameraDistance=INITIAL_CAMERA_DISTANCE;
+   bondNW.clear();
    //zNear=0.01f;
    //zFar=100.0f;
+}
+
+DTKGLWidget::~DTKGLWidget()
+{
+   for(int i=0; i<bondNW.size(); ++i){
+       delete bondNW[i];
+   }
 }
 
 void DTKGLWidget::initializeGL()
@@ -74,19 +84,38 @@ void DTKGLWidget::resizeGL(int w, int h)
    glMatrixMode(GL_MODELVIEW);
 }
 
+void DTKGLWidget::drawAtoms()
+{
+   DTKGLBondNetWork *bn;
+   QVector3D pos,col;
+   float rad = DEFAULT_SPHERE_RADIUS;
+   for (int i=0; i<bondNW.size(); ++i) {
+      bn=bondNW[i];
+      for (int j=0; j<(bn->numAtoms()); ++j) {
+         pos=bn->getAtomCoordinates(j);
+         //col[0]=0.8f; col[1]=0.0f; col[2]=0.0f;
+         col=bn->getAtomColor(j);
+         drawSingleSphere(
+                     pos[0],pos[1],pos[2],
+                     rad, col[0], col[1], col[2]
+                 );
+      }
+   }
+}
+
 void DTKGLWidget::drawEverything()
 {
    GLfloat white[] = {1.0f, 1.0f, 1.0f, 1.0f};
    glMaterialfv(GL_FRONT, GL_DIFFUSE, white);
 
-   QVector3D va(-1.0f,0.0f,0.0f);
-   QVector3D vb(1.0f,0.0f,0.0f);
+   drawAtoms();
+}
 
-   float rad=0.5;
-   drawSingleSphere(-1.0f,0.0f,0.0f, rad ,1.0f,0.6f,0.0f);
-   drawSingleSphere(1.0f,0.0f,0.0f, rad ,1.0f,0.0f,0.1f);
-   rad*=0.4f;
-   drawSingleCylinder(va, vb, rad, 1.0f,0.6f,1.0f);
+void DTKGLWidget::addMolecule(QString fnam)
+{
+    DTKGLBondNetWork *bn_lcl=new DTKGLBondNetWork();
+    bn_lcl->readFromFile(fnam);
+    bondNW.push_back(bn_lcl);
 }
 
 static void qNormalizeAngle(int &angle)
@@ -200,7 +229,7 @@ void DTKGLWidget::drawSingleCylinder(QVector3D &v1, QVector3D &v2, \
    float height=v1.distanceToPoint(v2);
    float angle;
    QVector3D vrot;
-   getRotationVectorAndAngle(v1,v2,vrot,angle);
+   dtkglutils::getRotationVectorAndAngle(v1,v2,vrot,angle);
    glPushMatrix();
    glTranslatef(v1[0], v1[1], v1[2]);
    glRotatef(angle,vrot[0],vrot[1],vrot[2]);
@@ -209,19 +238,6 @@ void DTKGLWidget::drawSingleCylinder(QVector3D &v1, QVector3D &v2, \
    gluCylinder(cylinder,radius,radius,height,24,1);
    gluDeleteQuadric(cylinder);
    glPopMatrix();
-}
-
-void DTKGLWidget::getRotationVectorAndAngle(const QVector3D &v1, const QVector3D &v2,\
-                                            QVector3D &vres, float &ares)
-{
-    const float oeoPI = 180.0f/acos(-1.0f);
-    static const QVector3D zAxis(0.0f, 0.0f, 1.0f);
-    QVector3D diff=v2-v1;
-    //float prod=QVector3D::dotProduct(diff,zAxis);
-    vres=QVector3D::crossProduct(zAxis,diff);
-    //float rad = acos(prod / ( v1.length() * v2.length()));
-    float radians=acos(QVector3D::dotProduct(zAxis,diff)/(v1.length()*v2.length()));
-    ares = radians * oeoPI;
 }
 
 

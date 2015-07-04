@@ -9,6 +9,7 @@
 #include <QMatrix4x4>
 #include <QtGui>
 #include <QVector3D>
+#include "dtkglbondnetwork.h"
 
 #define INITIAL_CAMERA_DISTANCE 2.5e0
 
@@ -23,10 +24,13 @@ class DTKGLWidget : public QGLWidget
    Q_OBJECT
 public:
    DTKGLWidget(QWidget *parent);
+   ~DTKGLWidget();
    void initializeGL();
    void paintGL();
    void resizeGL(int w,int h);
+   void drawAtoms();
    void drawEverything();
+   void addMolecule(QString fnam);
    int getXRot(void) {return (xRot);}
    int getYRot(void) {return (yRot);}
    int getZRot(void) {return (zRot);}
@@ -54,8 +58,6 @@ protected:
    void drawSingleCylinder(QVector3D &v1, QVector3D &v2, \
                            float radius,
                            float colr, float colg, float colb);
-   void getRotationVectorAndAngle(const QVector3D &v1,const QVector3D &v2,\
-                                  QVector3D &vres,float &ares);
 private:
    int xRot;
    int yRot;
@@ -63,6 +65,7 @@ private:
    double cameraDistance;
    QPoint lastPos;
    QMatrix4x4 pMatrix;
+   QVector<DTKGLBondNetWork*> bondNW;
 };
 
 #endif // DTKGLWIDGET_H

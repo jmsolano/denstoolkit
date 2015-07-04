@@ -1,5 +1,6 @@
 #include "dtkmainwindow.h"
 #include "ui_dtkmainwindow.h"
+#include <QString>
 
 DTKMainWindow::DTKMainWindow(QWidget *parent) :
    QMainWindow(parent),
@@ -10,6 +11,9 @@ DTKMainWindow::DTKMainWindow(QWidget *parent) :
    connect(ui->openGLWidget,SIGNAL(rotationChanged()),this,SLOT(updateStatusBar()));
    connect(ui->openGLWidget,SIGNAL(zoomChanged()),this,SLOT(updateStatusBar()));
    updateStatusBar();
+
+   createActions();
+   createMenus();
 }
 
 void DTKMainWindow::updateStatusBar()
@@ -27,9 +31,30 @@ void DTKMainWindow::updateStatusBar()
 DTKMainWindow::~DTKMainWindow()
 {
    delete ui;
+   delete loadMoleculeAction;
 }
 
 void DTKMainWindow::on_resetPushButton_clicked()
 {
     ui->openGLWidget->resetView();
+}
+
+void DTKMainWindow::createMenus()
+{
+   fileMenu = menuBar()->addMenu(tr("&File"));
+   fileMenu->addAction(loadMoleculeAction);
+}
+
+void DTKMainWindow::createActions()
+{
+    loadMoleculeAction = new QAction(tr("&Open Molecule..."), this);
+    loadMoleculeAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_O));
+    connect(loadMoleculeAction,SIGNAL(triggered()),this,SLOT(loadMolecule()));
+}
+
+void DTKMainWindow::loadMolecule()
+{
+   QString fname=tr("/Users/jmsolano/Documents/LongRun/proj/readwfn/wavefiles/cubano_sto3g.wfx");
+   ui->openGLWidget->addMolecule(fname);
+   ui->openGLWidget->update();
 }

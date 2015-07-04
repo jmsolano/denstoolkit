@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     ../common/eig2-4.cpp \
     ../common/solmath.cpp \
     ../common/solfileutils.cpp \
-    dtkglbondnetwork.cpp
+    dtkglbondnetwork.cpp \
+    dtkglutils.cpp
 
 HEADERS  += dtkmainwindow.h \
     dtkglwidget.h \
@@ -50,7 +51,8 @@ HEADERS  += dtkmainwindow.h \
     ../common/eig2-4.h \
     ../common/solmath.h \
     ../common/solfileutils.h \
-    dtkglbondnetwork.h
+    dtkglbondnetwork.h \
+    dtkglutils.h
 
 FORMS    += dtkmainwindow.ui
 
