@@ -29,6 +29,7 @@ public:
    void paintGL();
    void resizeGL(int w,int h);
    void drawAtoms();
+   void drawLinks();
    void drawEverything();
    void addMolecule(QString fnam);
    int getXRot(void) {return (xRot);}
@@ -55,9 +56,9 @@ protected:
    void wheelEvent(QWheelEvent *event);
    void drawSingleSphere(float x,float y,float z,float radius,\
                          float colr,float colg,float colb);
-   void drawSingleCylinder(QVector3D &v1, QVector3D &v2, \
-                           float radius,
-                           float colr, float colg, float colb);
+   void drawSingleCylinder(QVector3D v0, float height, \
+                           float radius, float angle,QVector3D vrot,
+                           QVector3D col);
 private:
    int xRot;
    int yRot;

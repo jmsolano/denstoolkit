@@ -15,7 +15,8 @@ using std::cout;
 using std::endl;
 #include "dtkglutils.h"
 
-#define DEFAULT_SPHERE_RADIUS 0.5f
+#define DTKGL_DEFAULT_SPHERE_RADIUS 0.5f
+#define DTKGL_DEFAULT_LINK_RADIUS 0.2f
 
 DTKGLWidget::DTKGLWidget(QWidget *parent)
 #ifdef __APPLE__
@@ -88,7 +89,7 @@ void DTKGLWidget::drawAtoms()
 {
    DTKGLBondNetWork *bn;
    QVector3D pos,col;
-   float rad = DEFAULT_SPHERE_RADIUS;
+   float rad = DTKGL_DEFAULT_SPHERE_RADIUS;
    for (int i=0; i<bondNW.size(); ++i) {
       bn=bondNW[i];
       for (int j=0; j<(bn->numAtoms()); ++j) {
@@ -103,12 +104,28 @@ void DTKGLWidget::drawAtoms()
    }
 }
 
+void DTKGLWidget::drawLinks()
+{
+    DTKGLBondNetWork *bn;
+    float rad = DTKGL_DEFAULT_LINK_RADIUS;
+    for (int bIdx=0; bIdx<bondNW.size(); ++bIdx) {
+       bn=bondNW[bIdx];
+       for (int i=0; i<bn->numLinks(); ++i) {
+          drawSingleCylinder(bn->getLinkStart(i),bn->getLinkHeight(i),rad,\
+                             bn->getLinkAngle(i),bn->getLinkRotationVector(i),\
+                             bn->getLinkColor(i));
+       }
+
+    }
+}
+
 void DTKGLWidget::drawEverything()
 {
    GLfloat white[] = {1.0f, 1.0f, 1.0f, 1.0f};
    glMaterialfv(GL_FRONT, GL_DIFFUSE, white);
 
    drawAtoms();
+   drawLinks();
 }
 
 void DTKGLWidget::addMolecule(QString fnam)
@@ -116,6 +133,9 @@ void DTKGLWidget::addMolecule(QString fnam)
     DTKGLBondNetWork *bn_lcl=new DTKGLBondNetWork();
     bn_lcl->readFromFile(fnam);
     bondNW.push_back(bn_lcl);
+    if (cameraDistance<bn_lcl->getViewRadius()) {
+        setCameraDistance(INITIAL_CAMERA_DISTANCE/bn_lcl->getViewRadius());
+    }
 }
 
 static void qNormalizeAngle(int &angle)
@@ -222,18 +242,14 @@ void DTKGLWidget::drawSingleSphere(float x, float y, float z, float radius,\
    glPopMatrix();
 }
 
-void DTKGLWidget::drawSingleCylinder(QVector3D &v1, QVector3D &v2, \
-                                     float radius, \
-                                     float colr, float colg, float colb)
+void DTKGLWidget::drawSingleCylinder(QVector3D v0, float height, \
+                                     float radius, float angle, QVector3D vrot, \
+                                     QVector3D col)
 {
-   float height=v1.distanceToPoint(v2);
-   float angle;
-   QVector3D vrot;
-   dtkglutils::getRotationVectorAndAngle(v1,v2,vrot,angle);
    glPushMatrix();
-   glTranslatef(v1[0], v1[1], v1[2]);
+   glTranslatef(v0[0], v0[1], v0[2]);
    glRotatef(angle,vrot[0],vrot[1],vrot[2]);
-   glColor3f(colr,colg,colb);
+   glColor3f(col[0],col[1],col[2]);
    GLUquadric *cylinder=gluNewQuadric();
    gluCylinder(cylinder,radius,radius,height,24,1);
    gluDeleteQuadric(cylinder);
