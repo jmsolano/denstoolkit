@@ -9,7 +9,9 @@
 #include <QMatrix4x4>
 #include <QtGui>
 #include <QVector3D>
+#include "../common/wavefunctionclass.h"
 #include "dtkglbondnetwork.h"
+#include "dtkglcriticalpointnetwork.h"
 
 #define INITIAL_CAMERA_DISTANCE 2.5e0
 
@@ -30,6 +32,13 @@ public:
    void resizeGL(int w,int h);
    void drawAtoms();
    void drawLinks();
+   void drawACPs();
+   void drawBCPs();
+   void drawRCPs();
+   void drawCCPs();
+   void drawCriticalPoints();
+   void drawBGPs();
+   void drawGradientPaths();
    void drawEverything();
    void addMolecule(QString fnam);
    int getXRot(void) {return (xRot);}
@@ -56,6 +65,9 @@ protected:
    void wheelEvent(QWheelEvent *event);
    void drawSingleSphere(float x,float y,float z,float radius,\
                          float colr,float colg,float colb);
+   void drawSingleSphere(QVector3D r,float rad,QVector3D c) {
+      return drawSingleSphere(r[0],r[1],r[2],rad,c[0],c[1],c[2]);
+   }
    void drawSingleCylinder(QVector3D v0, float height, \
                            float radius, float angle,QVector3D vrot,
                            QVector3D col);
@@ -66,7 +78,9 @@ private:
    double cameraDistance;
    QPoint lastPos;
    QMatrix4x4 pMatrix;
+   QVector<gaussWaveFunc*> waveFunction;
    QVector<DTKGLBondNetWork*> bondNW;
+   QVector<DTKGLCriticalPointNetWork*> critPtNW;
 };
 
 #endif // DTKGLWIDGET_H

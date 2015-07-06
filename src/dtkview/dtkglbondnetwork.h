@@ -13,6 +13,7 @@
 class DTKGLBondNetWork : public QWidget
 {
    Q_OBJECT
+   friend class DTKGLCriticalPointNetWork;
 public:
    DTKGLBondNetWork(QWidget *parent = 0);
    ~DTKGLBondNetWork();
@@ -41,10 +42,11 @@ public:
       QVector3D r;
       QVector3D color;
    };
+protected:
+   bondNetWork *bnw;
 private:
    QVector<Link>   links;
    QVector<Atom>   atoms;
-   bondNetWork *bnw;
 };
 
 #endif // DTKGLBONDNETWORK_H

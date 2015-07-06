@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     ../common/solmath.cpp \
     ../common/solfileutils.cpp \
     dtkglbondnetwork.cpp \
-    dtkglutils.cpp
+    dtkglutils.cpp \
+    dtkglcriticalpointnetwork.cpp
 
 HEADERS  += dtkmainwindow.h \
     dtkglwidget.h \
@@ -52,7 +53,8 @@ HEADERS  += dtkmainwindow.h \
     ../common/solmath.h \
     ../common/solfileutils.h \
     dtkglbondnetwork.h \
-    dtkglutils.h
+    dtkglutils.h \
+    dtkglcriticalpointnetwork.h
 
 FORMS    += dtkmainwindow.ui
 
@@ -64,3 +66,5 @@ macx:  {
 }
 
 QMAKE_CXXFLAGS += -include soldefines.h
+
+DISTFILES +=

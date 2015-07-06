@@ -7,43 +7,61 @@
 #include <QGLWidget>
 #endif
 #include <QtGui>
+#include <QMessageBox>
 #include <QVector3D>
 #include <QMatrix4x4>
+#include <QDebug>
 #include <cmath>
 #include <iostream>
 using std::cout;
 using std::endl;
+#include <fstream>
+using std::ifstream;
 #include "dtkglutils.h"
+#include "../common/iofuncts-cpx.h"
 
 #define DTKGL_DEFAULT_SPHERE_RADIUS 0.5f
 #define DTKGL_DEFAULT_LINK_RADIUS 0.2f
+#define DTKGL_DEFAULT_CRIT_PT_RADIUS 0.125f
+#define DTKGL_DEFAULT_GRAD_PATH_RADIUS 0.045f
 
 DTKGLWidget::DTKGLWidget(QWidget *parent)
 #ifdef __APPLE__
    : QOpenGLWidget(parent)
 #else
    : QGLWidget(parent)
-#endif
+   #endif
 {
    xRot=0;
    yRot=0;
    zRot=0;
    cameraDistance=INITIAL_CAMERA_DISTANCE;
+   waveFunction.clear();
    bondNW.clear();
+   critPtNW.clear();
    //zNear=0.01f;
    //zFar=100.0f;
 }
 
 DTKGLWidget::~DTKGLWidget()
 {
-   for(int i=0; i<bondNW.size(); ++i){
-       delete bondNW[i];
+   for (int i=0; i<waveFunction.size(); ++i) {
+      delete waveFunction[i];
+      waveFunction[i]=NULL;
+   }
+   for (int i=0; i<bondNW.size(); ++i){
+      delete bondNW[i];
+      bondNW[i]=NULL;
+   }
+   for (int i=0; i<critPtNW.size(); ++i) {
+      delete critPtNW[i];
+      critPtNW[i]=NULL;
    }
 }
 
 void DTKGLWidget::initializeGL()
 {
-    /*
+   /*
    glClearColor(0.2,0.2,0.2,1.0);
    glEnable(GL_DEPTH_TEST);
    glEnable(GL_LIGHTING);
@@ -139,23 +157,150 @@ void DTKGLWidget::drawLinks()
     }
 }
 
+void DTKGLWidget::drawACPs()
+{
+   DTKGLCriticalPointNetWork *cp;
+   const static QVector3D colACP(0.0f,0.0f,0.0f);
+   QVector3D pos;
+   float rad=DTKGL_DEFAULT_CRIT_PT_RADIUS;
+   for (int cpIdx=0; cpIdx<critPtNW.size(); ++cpIdx) {
+      cp=critPtNW[cpIdx];
+      if (!(cp->iKnowACPs())) {return;}
+      for (int i=0; i<cp->getNumACPs(); ++i) {
+         pos=cp->getACPCoordinates(i);
+         drawSingleSphere(pos,rad,colACP);
+      }
+   }
+}
+
+void DTKGLWidget::drawBCPs()
+{
+   DTKGLCriticalPointNetWork *cp;
+   const static QVector3D colBCP(0.0f,0.6f,1.0f);
+   QVector3D pos;
+   float rad=DTKGL_DEFAULT_CRIT_PT_RADIUS;
+   for (int cpIdx=0; cpIdx<critPtNW.size(); ++cpIdx) {
+      cp=critPtNW[cpIdx];
+      if (!(cp->iKnowBCPs())) {return;}
+      for (int i=0; i<cp->getNumBCPs(); ++i) {
+         pos=cp->getBCPCoordinates(i);
+         drawSingleSphere(pos,rad,colBCP);
+      }
+   }
+}
+
+void DTKGLWidget::drawRCPs()
+{
+   DTKGLCriticalPointNetWork *cp;
+   const static QVector3D colRCP(1.0f,1.0f,0.0f);
+   QVector3D pos;
+   float rad=DTKGL_DEFAULT_CRIT_PT_RADIUS;
+   for (int cpIdx=0; cpIdx<critPtNW.size(); ++cpIdx) {
+      cp=critPtNW[cpIdx];
+      if (!(cp->iKnowRCPs())) {return;}
+      for (int i=0; i<cp->getNumRCPs(); ++i) {
+         pos=cp->getRCPCoordinates(i);
+         drawSingleSphere(pos,rad,colRCP);
+      }
+   }
+}
+
+void DTKGLWidget::drawCCPs()
+{
+   DTKGLCriticalPointNetWork *cp;
+   const static QVector3D colCCP(1.0f,0.0f,0.0f);
+   QVector3D pos;
+   float rad=DTKGL_DEFAULT_CRIT_PT_RADIUS;
+   for (int cpIdx=0; cpIdx<critPtNW.size(); ++cpIdx) {
+      cp=critPtNW[cpIdx];
+      if (!(cp->iKnowCCPs())) {return;}
+      for (int i=0; i<cp->getNumCCPs(); ++i) {
+         pos=cp->getCCPCoordinates(i);
+         drawSingleSphere(pos,rad,colCCP);
+      }
+   }
+}
+
+void DTKGLWidget::drawCriticalPoints()
+{
+   drawACPs();
+   drawBCPs();
+   drawRCPs();
+   drawCCPs();
+}
+
+void DTKGLWidget::drawBGPs()
+{
+   DTKGLCriticalPointNetWork *cp;
+   const static QVector3D colBGP(0.0f,0.2f,1.0f);
+   QVector3D pos;
+   int npts;
+   float rad=DTKGL_DEFAULT_GRAD_PATH_RADIUS;
+   for (int cpIdx=0; cpIdx<critPtNW.size(); ++cpIdx) {
+      cp=critPtNW[cpIdx];
+      for (int i=0; i<cp->getNumBCPs(); ++i) {
+         npts=cp->getNumPtsOfBGP(i);
+         for (int j=0; j<npts; ++j) {
+            pos=cp->getBGPPointCoordinates(i,j);
+            drawSingleSphere(pos,rad,colBGP);
+         }
+      }
+   }
+}
+
+void DTKGLWidget::drawGradientPaths()
+{
+   drawBGPs();
+}
+
 void DTKGLWidget::drawEverything()
 {
    GLfloat white[] = {1.0f, 1.0f, 1.0f, 1.0f};
    glMaterialfv(GL_FRONT, GL_DIFFUSE, white);
 
-   drawAtoms();
-   drawLinks();
+   //drawAtoms();
+   //drawLinks();
+   drawCriticalPoints();
+   drawGradientPaths();
 }
 
 void DTKGLWidget::addMolecule(QString fnam)
 {
-    DTKGLBondNetWork *bn_lcl=new DTKGLBondNetWork();
-    bn_lcl->readFromFile(fnam);
-    bondNW.push_back(bn_lcl);
-    if (cameraDistance<bn_lcl->getViewRadius()) {
-        setCameraDistance(INITIAL_CAMERA_DISTANCE/bn_lcl->getViewRadius());
-    }
+   QString wfnname=dtkglutils::getWFNFileNameFromCPX(fnam);
+
+   gaussWaveFunc *wf_lcl=new gaussWaveFunc();
+   if ( !(wf_lcl->readFromFile(wfnname.toStdString())) ) {
+      QMessageBox::warning(this, tr("Error"),\
+            (tr("Could not open the file ")+wfnname+tr("!")));
+      delete wf_lcl;
+      wf_lcl=NULL;
+      return;
+   }
+   waveFunction.push_back(wf_lcl);
+
+   DTKGLBondNetWork *bn_lcl=new DTKGLBondNetWork(this);
+   if ( !(bn_lcl->readFromFile(wfnname)) ) {
+      QMessageBox::warning(this, tr("Error"),\
+            (tr("Could not open the file ")+wfnname+tr("!")));
+      delete bn_lcl;
+      bn_lcl=NULL;
+      return;
+   }
+   if (cameraDistance<bn_lcl->getViewRadius()) {
+      setCameraDistance(INITIAL_CAMERA_DISTANCE/bn_lcl->getViewRadius());
+   }
+   bondNW.push_back(bn_lcl);
+
+   DTKGLCriticalPointNetWork *cp_lcl=new DTKGLCriticalPointNetWork(this);
+   cp_lcl->setupRegularCPN(wf_lcl,bn_lcl);
+   if ( !(cp_lcl->loadCPNStateFromFile(fnam)) ) {
+      QMessageBox::warning(this, tr("Error"),\
+            (tr("Could not open the file ")+fnam+tr("!")));
+      delete cp_lcl;
+      cp_lcl=NULL;
+      return;
+   }
+   critPtNW.push_back(cp_lcl);
 }
 
 static void qNormalizeAngle(int &angle)

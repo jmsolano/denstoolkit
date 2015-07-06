@@ -1,5 +1,11 @@
 #include "dtkglutils.h"
+#include <QFileInfo>
 #include <cmath>
+#include <string>
+using std::string;
+#include <fstream>
+using std::ifstream;
+#include "../common/iofuncts-cpx.h"
 
 
 void dtkglutils::getRotationVectorAndAngle(const QVector3D &v1, const QVector3D &v2, QVector3D &vres, float &ares)
@@ -10,4 +16,16 @@ void dtkglutils::getRotationVectorAndAngle(const QVector3D &v1, const QVector3D 
     vres=QVector3D::crossProduct(zAxis,diff);
     float radians=acos(QVector3D::dotProduct(zAxis,diff)/(diff.length()));
     ares = radians * oeoPI;
+}
+
+
+QString dtkglutils::getWFNFileNameFromCPX(QString cpxname)
+{
+   QFileInfo fi(cpxname);
+   string str=cpxname.toStdString();
+   ifstream ifil(str.c_str());
+   str=cpxGetWFXFileName(ifil);
+   ifil.close();
+   QString res=fi.absolutePath()+QString("/")+QString::fromStdString(str);
+   return res;
 }

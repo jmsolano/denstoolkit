@@ -8,10 +8,10 @@
 
 int main(int argc, char *argv[])
 {
-    glutInit(&argc,argv);
-    QApplication a(argc, argv);
-    DTKMainWindow w;
-    w.show();
+   glutInit(&argc,argv);
+   QApplication a(argc, argv);
+   DTKMainWindow w;
+   w.show();
 
-    return a.exec();
+   return a.exec();
 }
