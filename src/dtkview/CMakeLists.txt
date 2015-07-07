@@ -4,13 +4,10 @@ cmake_minimum_required (VERSION 3.0)
 project(DTKViewer)
 
 set(the_usr_moc_hdrs
-   dtkmainwindow.h
-   dtkglwidget.h
    ../common/bondnetwork.h 
    ../common/iofuncts-cpx.h 
    ../common/iofuncts-wfn.h 
    ../common/iofuncts-wfx.h 
-   soldefines.h 
    ../common/solpovtools.h 
    ../common/solmemhand.h 
    ../common/atomradiicust.h 
@@ -22,8 +19,12 @@ set(the_usr_moc_hdrs
    ../common/eig2-4.h 
    ../common/solmath.h 
    ../common/solfileutils.h 
+   soldefines.h 
+   dtkmainwindow.h
+   dtkglwidget.h
    dtkglbondnetwork.h 
    dtkglutils.h
+   dtkglcriticalpointnetwork.h
 )
 
 set(the_usr_bin_name "DensToolKitViewer")
@@ -67,6 +68,7 @@ set(the_usr_srcs
    ../common/solfileutils.cpp 
    dtkglbondnetwork.cpp 
    dtkglutils.cpp
+   dtkglcriticalpointnetwork.cpp
 )
 
 set(the_usr_qt5_modules Core Gui Widgets OpenGL)
