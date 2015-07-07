@@ -189,6 +189,7 @@ void critPtNetWork::init()
    iknowacps=iknowbcps=iknowrcps=iknowccps=false;
    iknowallcps=false;
    iknowbgps=iknowrgps=iknowcgps=false;
+   iknowallgps=false;
    mycptype=NONE;
    maxBondDist=maxBCPACPDist=-1.0e+50;
    drawNuc=false;
@@ -413,6 +414,7 @@ void critPtNetWork::setBondPaths()
 #endif
    if (nBGP!=nBCP) {displayWarningMessage("For some unknown reason nBGP!=nBCP...");}
    iknowbgps=true;
+   iknowallgps=(iknowbgps&&iknowrgps&&iknowcgps);
    findMaxBondDist();
 }
 /* ************************************************************************************ */
@@ -2674,6 +2676,7 @@ bool critPtNetWork::readFromFile(string inname)
       if (nRCP>=0) {
          cpxGetRCPCartCoordFromFile(cfil,nRCP,RRCP);
          cpxGetRCPLabelsFromFile(cfil,nRCP,lblRCP);
+         cpxGetRCPConnectivityFromFile(cfil,nRCP,conRCP);
          iknowrcps=true;
       } else {
          iknowrcps=false;
@@ -2682,11 +2685,14 @@ bool critPtNetWork::readFromFile(string inname)
    if (iknowrcps) {
       nCCP=cpxGetNOfCCPs(cfil);
       dCCP=(nRCP*(nRCP-1))/2;
+      if ( dCCP<CPNW_MINARRAYSIZE ) {dCCP=CPNW_MINARRAYSIZE;}
       alloc2DRealArray(string("RCCP"),dCCP,3,RCCP,1.0e+50);
       alloc1DStringArray("lblCCP",dCCP,lblCCP);
+      alloc3DIntArray("conCCP",dCCP,2,CPNW_MAXRCPSCONNECTEDTOCCP,conCCP,-1);
       if (nCCP>=0) {
          cpxGetCCPCartCoordFromFile(cfil,nCCP,RCCP);
          cpxGetCCPLabelsFromFile(cfil,nCCP,lblCCP);
+         cpxGetCCPConnectivityFromFile(cfil,nCCP,conCCP);
          iknowccps=true;
       } else {
          iknowccps=false;
@@ -2700,6 +2706,27 @@ bool critPtNetWork::readFromFile(string inname)
       cpxGetBondPathData(cfil,nBGP,conBCP,RBGP);
       iknowbgps=true;
    } else {iknowbgps=false;}
+   nRGP=cpxGetNOfRingPaths(cfil);
+   if (dRCP>0) {
+      alloc4DRealArray(string("RRGP"),dRCP,CPNW_MAXBCPSCONNECTEDTORCP,\
+            CPNW_ARRAYSIZEGRADPATH,3,RRGP);
+   }
+   if ( nRGP>=0 && conRCP!=NULL ) {
+      cpxGetNOfPtsPerRingPath(cfil,nRCP,conRCP);
+      cpxGetRingPathData(cfil,nRCP,conRCP,RRGP);
+      iknowrgps=true;
+   } else { iknowrgps=false; }
+   nCGP=cpxGetNOfCagePaths(cfil);
+   if (dCCP>0) {
+      alloc4DRealArray(string("RCGP"),dCCP,CPNW_MAXRCPSCONNECTEDTOCCP,\
+            CPNW_ARRAYSIZEGRADPATH,3,RCGP);
+   }
+   if ( nCGP>=0 && conCCP!=NULL ) {
+      cpxGetNOfPtsPerCagePath(cfil,nCCP,conCCP);
+      cpxGetCagePathData(cfil,nCCP,conCCP,RCGP);
+      iknowcgps=true;
+   } else { iknowcgps=false; }
+   iknowallgps;
    cout << "Critical Point State Loaded!" << endl;
    displayStatus(true);
    return true;
@@ -3475,6 +3502,7 @@ void critPtNetWork::setRingPaths()
    cout << endl;
 #endif
    iknowrgps=true;
+   iknowallgps=(iknowbgps&&iknowrgps&&iknowcgps);
 }
 /* ************************************************************************************ */
 void critPtNetWork::setCagePaths(void)
@@ -3529,6 +3557,7 @@ void critPtNetWork::setCagePaths(void)
    cout << endl;
 #endif
    iknowcgps=true;
+   iknowallgps=(iknowbgps&&iknowrgps&&iknowcgps);
 }
 /* ************************************************************************************ */
 int critPtNetWork::getNofRingPathsOfRCP(int rcpIdx)
