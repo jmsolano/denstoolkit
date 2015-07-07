@@ -21,6 +21,13 @@ public:
     int getNumRCPs(void) {return cpn->nRCP;}
     int getNumCCPs(void) {return cpn->nCCP;}
     int getNumPtsOfBGP(int bcpIdx) {return cpn->conBCP[bcpIdx][2];}
+    int getBCPIdxInConnRCP(int rcpIdx,int bcpBox) {return cpn->conRCP[rcpIdx][0][bcpBox];}
+    int getNumPtsOfRGP(int rcpIdx,int bcpBox) {return cpn->conCCP[rcpIdx][1][bcpBox];}
+    int getRCPIdxInConnCCP(int ccpIdx,int rcpBox) {
+       if (rcpBox>=CPNW_MAXRCPSC) {return -1;}
+       return cpn->conCCP[ccpIdx][0][rcpBox];
+    }
+    int getNumPtsOfCGP(int ccpIdx,int rcpBox) {return cpn->conCCP[rcpIdx][1][bcpBox];}
 
     QVector3D getACPCoordinates(int idx) {
        return QVector3D(cpn->RACP[idx][0],cpn->RACP[idx][1],cpn->RACP[idx][2]);

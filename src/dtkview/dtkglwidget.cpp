@@ -248,6 +248,21 @@ void DTKGLWidget::drawBGPs()
    }
 }
 
+void DTKGLWidget::drawRGPs()
+{
+   DTKGLCriticalPointNetWork *cp;
+   const static QVector3D colRGP(0.0f,0.2f,1.0f);
+   QVector3D pos;
+   int npts,k;
+   float rad=DTKGL_DEFAULT_GRAD_PATH_RADIUS;
+   for (int cpIdx=0; cpIdx<critPtNW.size(); ++cpIdx) {
+      cp=critPtNW[cpIdx];
+      for (int i=0; i<cp->getNumRCPs(); ++i) {
+         k=0;
+      }
+   }
+}
+
 void DTKGLWidget::drawGradientPaths()
 {
    drawBGPs();

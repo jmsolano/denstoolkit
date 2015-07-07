@@ -38,6 +38,7 @@ public:
    void drawCCPs();
    void drawCriticalPoints();
    void drawBGPs();
+   void drawRGPs();
    void drawGradientPaths();
    void drawEverything();
    void addMolecule(QString fnam);
