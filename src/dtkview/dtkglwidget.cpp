@@ -74,7 +74,8 @@ void DTKGLWidget::initializeGL()
    GLfloat light_position[] = { 2.0f*INITIAL_CAMERA_DISTANCE,\
                                 2.0f*INITIAL_CAMERA_DISTANCE,\
                                 2.0f*INITIAL_CAMERA_DISTANCE, 0.0 };
-   glClearColor((48.f/255.f),(62.f/255.f),(115.f/255.f),1.0f);
+   //glClearColor((48.f/255.f),(62.f/255.f),(115.f/255.f),1.0f); // MediumBlue01
+   glClearColor((57.f/255.f),(105.f/255.f),(196.f/255.f),1.0f); // Ocean
    glShadeModel (GL_SMOOTH);
 
    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
@@ -86,6 +87,8 @@ void DTKGLWidget::initializeGL()
    glEnable(GL_DEPTH_TEST);
    glEnable(GL_COLOR_MATERIAL);
    glEnable(GL_NORMALIZE); //Needed for keeping light uniform
+   glEnable(GL_BLEND); //Enable blending.
+   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); //Set blending function.
 }
 
 void DTKGLWidget::paintGL()
@@ -134,10 +137,11 @@ void DTKGLWidget::drawAtoms()
          pos=bn->getAtomCoordinates(j);
          //col[0]=0.8f; col[1]=0.0f; col[2]=0.0f;
          col=bn->getAtomColor(j);
-         drawSingleSphere(
-                     pos[0],pos[1],pos[2],
-                     rad, col[0], col[1], col[2]
-                 );
+         //drawSingleSphere(
+                     //pos[0],pos[1],pos[2],
+                     //rad, col[0], col[1], col[2]
+                 //);
+         drawSingleTransparentSphere(pos,rad,col,0.4f);
       }
    }
 }
@@ -251,7 +255,7 @@ void DTKGLWidget::drawBGPs()
 void DTKGLWidget::drawRGPs()
 {
    DTKGLCriticalPointNetWork *cp;
-   const static QVector3D colRGP(0.0f,0.2f,1.0f);
+   const static QVector3D colRGP(0.0f,0.8f,0.0f);
    QVector3D pos;
    int npts,k;
    float rad=DTKGL_DEFAULT_GRAD_PATH_RADIUS;
@@ -259,6 +263,37 @@ void DTKGLWidget::drawRGPs()
       cp=critPtNW[cpIdx];
       for (int i=0; i<cp->getNumRCPs(); ++i) {
          k=0;
+         while (cp->getBCPIdxInConnRCP(i,k)>=0) {
+            npts=cp->getNumPtsOfRGP(i,k);
+            for (int l=0; l<npts; ++l) {
+               pos=cp->getRGPPointCoordinates(i,k,l);
+               drawSingleSphere(pos,rad,colRGP);
+            }
+            ++k;
+         }
+      }
+   }
+}
+
+void DTKGLWidget::drawCGPs()
+{
+   DTKGLCriticalPointNetWork *cp;
+   const static QVector3D colCGP(1.0f,0.5f,0.0f);
+   QVector3D pos;
+   int npts,k;
+   float rad=DTKGL_DEFAULT_GRAD_PATH_RADIUS;
+   for (int cpIdx=0; cpIdx<critPtNW.size(); ++cpIdx) {
+      cp=critPtNW[cpIdx];
+      for (int i=0; i<cp->getNumCCPs(); ++i) {
+         k=0;
+         while (cp->getRCPIdxInConnCCP(i,k)>=0) {
+            npts=cp->getNumPtsOfCGP(i,k);
+            for (int l=0; l<npts; ++l) {
+               pos=cp->getCGPPointCoordinates(i,k,l);
+               drawSingleSphere(pos,rad,colCGP);
+            }
+            ++k;
+         }
       }
    }
 }
@@ -266,6 +301,8 @@ void DTKGLWidget::drawRGPs()
 void DTKGLWidget::drawGradientPaths()
 {
    drawBGPs();
+   drawRGPs();
+   drawCGPs();
 }
 
 void DTKGLWidget::drawEverything()
@@ -273,10 +310,10 @@ void DTKGLWidget::drawEverything()
    GLfloat white[] = {1.0f, 1.0f, 1.0f, 1.0f};
    glMaterialfv(GL_FRONT, GL_DIFFUSE, white);
 
-   //drawAtoms();
-   //drawLinks();
    drawCriticalPoints();
    drawGradientPaths();
+   drawAtoms();
+   //drawLinks();
 }
 
 void DTKGLWidget::addMolecule(QString fnam)
@@ -417,7 +454,18 @@ void DTKGLWidget::drawSingleSphere(float x, float y, float z, float radius,\
    glTranslatef(x,y,z);
    glColor3f(colr,colg,colb);
    GLUquadric *atomsph=gluNewQuadric();
-   gluSphere(atomsph,radius,32,16);
+   gluSphere(atomsph,radius,16,8);
+   gluDeleteQuadric(atomsph);
+   glPopMatrix();
+}
+
+void DTKGLWidget::drawSingleTransparentSphere(QVector3D r, float rad, QVector3D c, float t)
+{
+   glPushMatrix();
+   glTranslatef(r[0],r[1],r[2]);
+   glColor4f(c[0],c[1],c[2],t);
+   GLUquadric *atomsph=gluNewQuadric();
+   gluSphere(atomsph,rad,32,16);
    gluDeleteQuadric(atomsph);
    glPopMatrix();
 }

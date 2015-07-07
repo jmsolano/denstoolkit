@@ -21,14 +21,26 @@ public:
     int getNumRCPs(void) {return cpn->nRCP;}
     int getNumCCPs(void) {return cpn->nCCP;}
     int getNumPtsOfBGP(int bcpIdx) {return cpn->conBCP[bcpIdx][2];}
-    int getBCPIdxInConnRCP(int rcpIdx,int bcpBox) {return cpn->conRCP[rcpIdx][0][bcpBox];}
-    int getNumPtsOfRGP(int rcpIdx,int bcpBox) {return cpn->conCCP[rcpIdx][1][bcpBox];}
-    int getRCPIdxInConnCCP(int ccpIdx,int rcpBox) {
-       if (rcpBox>=CPNW_MAXRCPSC) {return -1;}
-       return cpn->conCCP[ccpIdx][0][rcpBox];
+    int getBCPIdxInConnRCP(int rcpIdx,int bcpBox) {
+       if (bcpBox<CPNW_MAXBCPSCONNECTEDTORCP) {
+         return cpn->conRCP[rcpIdx][0][bcpBox];
+       } else { return -1; }
     }
-    int getNumPtsOfCGP(int ccpIdx,int rcpBox) {return cpn->conCCP[rcpIdx][1][bcpBox];}
-
+    int getNumPtsOfRGP(int rcpIdx,int bcpBox) {
+       if (bcpBox<CPNW_MAXBCPSCONNECTEDTORCP) {
+          return cpn->conRCP[rcpIdx][1][bcpBox];
+       } else { return -1; }
+    }
+    int getRCPIdxInConnCCP(int ccpIdx,int rcpBox) {
+       if (rcpBox<CPNW_MAXRCPSCONNECTEDTOCCP) {
+         return cpn->conCCP[ccpIdx][0][rcpBox];
+       } else { return -1; }
+    }
+    int getNumPtsOfCGP(int ccpIdx,int rcpBox) {
+       if (rcpBox<CPNW_MAXRCPSCONNECTEDTOCCP) {
+          return cpn->conCCP[ccpIdx][1][rcpBox];
+       } else { return -1; }
+    }
     QVector3D getACPCoordinates(int idx) {
        return QVector3D(cpn->RACP[idx][0],cpn->RACP[idx][1],cpn->RACP[idx][2]);
     }
@@ -46,6 +58,16 @@ public:
        return QVector3D(cpn->RBGP[bcpIdx][ptIdx][0],
                         cpn->RBGP[bcpIdx][ptIdx][1],
                         cpn->RBGP[bcpIdx][ptIdx][2]);
+    }
+    QVector3D getRGPPointCoordinates(int rcpIdx,int bcpBox,int ptIdx){
+       return QVector3D(cpn->RRGP[rcpIdx][bcpBox][ptIdx][0],
+                        cpn->RRGP[rcpIdx][bcpBox][ptIdx][1],
+                        cpn->RRGP[rcpIdx][bcpBox][ptIdx][2]);
+    }
+    QVector3D getCGPPointCoordinates(int ccpIdx,int rcpBox,int ptIdx){
+       return QVector3D(cpn->RCGP[ccpIdx][rcpBox][ptIdx][0],
+                        cpn->RCGP[ccpIdx][rcpBox][ptIdx][1],
+                        cpn->RCGP[ccpIdx][rcpBox][ptIdx][2]);
     }
 
     bool iKnowACPs(void) {return cpn->iKnowACPs();}

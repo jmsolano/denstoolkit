@@ -154,14 +154,6 @@ using std::endl;
 #define CPNW_MINARRAYSIZE (8)
 #endif
 
-#ifndef CPNW_MAXBCPSCONNECTEDTORCP
-#define CPNW_MAXBCPSCONNECTEDTORCP (18)
-#endif
-
-#ifndef CPNW_MAXRCPSCONNECTEDTOCCP
-#define CPNW_MAXRCPSCONNECTEDTOCCP (32)
-#endif
-
 /* ************************************************************************************ */
 void critPtNetWork::init()
 {

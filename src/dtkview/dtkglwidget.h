@@ -39,6 +39,7 @@ public:
    void drawCriticalPoints();
    void drawBGPs();
    void drawRGPs();
+   void drawCGPs();
    void drawGradientPaths();
    void drawEverything();
    void addMolecule(QString fnam);
@@ -69,6 +70,7 @@ protected:
    void drawSingleSphere(QVector3D r,float rad,QVector3D c) {
       return drawSingleSphere(r[0],r[1],r[2],rad,c[0],c[1],c[2]);
    }
+   void drawSingleTransparentSphere(QVector3D r,float rad,QVector3D c,float t);
    void drawSingleCylinder(QVector3D v0, float height, \
                            float radius, float angle,QVector3D vrot,
                            QVector3D col);
