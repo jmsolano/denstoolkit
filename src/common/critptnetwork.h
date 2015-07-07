@@ -57,6 +57,15 @@ using std::ofstream;
 #define CPNW_ARRAYSIZEGRADPATH 100
 #endif
 
+
+#ifndef CPNW_MAXBCPSCONNECTEDTORCP
+#define CPNW_MAXBCPSCONNECTEDTORCP (18)
+#endif
+
+#ifndef CPNW_MAXRCPSCONNECTEDTOCCP
+#define CPNW_MAXRCPSCONNECTEDTOCCP (32)
+#endif
+
 /* ************************************************************************************ */
 class critPtNetWork {
 /* ************************************************************************************ */
