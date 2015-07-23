@@ -1,7 +1,7 @@
 # DensToolKit
 
 This is a first development distribution to the suite DensToolKit.
-If you like it, please consider it citing us in your work.
+If you like it, please consider it citing us in your work: *Comput. Phys. Commun.* (2015), http://dx.doi.org/10.1016/j.cpc.2015.07.005.
 
 # Git instructions
 
