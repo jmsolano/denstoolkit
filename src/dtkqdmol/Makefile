@@ -113,6 +113,9 @@ distclean: clean
 	rm -f $(OBJDIR)/*.o
 
 runben: build
-	./dtkqdmol  benceno_sto3g.wfx -t qt
+	./dtkqdmol  benceno_sto3g.wfx -r -t wx
+
+runbennh: build
+	./dtkqdmol  benceno_sto3g.wfx -r -t wx -H
 
 
