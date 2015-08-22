@@ -19,6 +19,8 @@ public:
 public slots:
    void updateStatusBar(void);
    void loadMolecule(void);
+   void loadTestMolecule(void);
+   void clearViewPort(void);
 
 private slots:
    void on_resetPushButton_clicked();
@@ -27,6 +29,8 @@ private:
    Ui::DTKMainWindow *ui;
    // ++++++++++++++++++++ ACTIONS ++++++++++++++++++++
    QAction *loadMoleculeAction;
+   QAction *loadTestMoleculeAction;
+   QAction *clearViewPortAction;
    // +++++++++++++++++++++ MENUS +++++++++++++++++++++
    QMenu *fileMenu;
    // +++++++++++++++++++++++++++++++++++++++++++++++++

@@ -27,6 +27,7 @@ class DTKGLWidget : public QGLWidget
 public:
    DTKGLWidget(QWidget *parent);
    ~DTKGLWidget();
+   void clearWFsBNsCPXs(void);
    void initializeGL();
    void paintGL();
    void resizeGL(int w,int h);

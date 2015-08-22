@@ -45,18 +45,26 @@ DTKGLWidget::DTKGLWidget(QWidget *parent)
 
 DTKGLWidget::~DTKGLWidget()
 {
+   clearWFsBNsCPXs();
+}
+
+void DTKGLWidget::clearWFsBNsCPXs()
+{
    for (int i=0; i<waveFunction.size(); ++i) {
       delete waveFunction[i];
       waveFunction[i]=NULL;
    }
+   waveFunction.clear();
    for (int i=0; i<bondNW.size(); ++i){
       delete bondNW[i];
       bondNW[i]=NULL;
    }
+   bondNW.clear();
    for (int i=0; i<critPtNW.size(); ++i) {
       delete critPtNW[i];
       critPtNW[i]=NULL;
    }
+   critPtNW.clear();
 }
 
 void DTKGLWidget::initializeGL()
@@ -323,7 +331,9 @@ void DTKGLWidget::addMolecule(QString fnam)
    gaussWaveFunc *wf_lcl=new gaussWaveFunc();
    if ( !(wf_lcl->readFromFile(wfnname.toStdString())) ) {
       QMessageBox::warning(this, tr("Error"),\
-            (tr("Could not open the file ")+wfnname+tr("!")));
+            (tr("Could not open the file ")+wfnname+tr("!")\
+             +tr("\nPlease remember that cpx and its associated"\
+                 " wfn(wfx) file must be in the same directory.")));
       delete wf_lcl;
       wf_lcl=NULL;
       return;
