@@ -82,6 +82,7 @@ optFlags::optFlags()
    outfname=0;
    rungnp=0;
    settermgnp=0;
+   drawhydrogens=1;
 }
 
 
@@ -122,7 +123,10 @@ void getOptions(int &argc, char** &argv, optFlags &flags)
             case 't':
                flags.settermgnp=(++i);
                if (i>=argc) {printErrorMsg(argv,'t');}
-                break;
+               break;
+            case 'H':
+               flags.drawhydrogens=0;
+               break;
             case 'h':
                printHelpMenu(argc,argv);
                exit(1);
@@ -180,6 +184,7 @@ void printHelpMenu(int &argc, char** &argv)
    cout << "\nUsage:\n\n\t" << progname << " wf?name [option [value(s)]] ... [option [value(s)]]\n\n";
    setScrNormalFont();
    cout << "Where wf?name is the input wfx(wfn) name, and options can be:\n\n"
+        << "  -H        \tHide Hydrogens. Hydrogen atoms will not be displayed." << endl
         << "  -o outname\tSet the output file name." << endl
         << "            \t  (If not given the program will create one out of" << endl
         << "            \t  the input name; if given, the gnp file will" << endl
