@@ -57,6 +57,15 @@ using std::ofstream;
 #define CPNW_ARRAYSIZEGRADPATH 100
 #endif
 
+
+#ifndef CPNW_MAXBCPSCONNECTEDTORCP
+#define CPNW_MAXBCPSCONNECTEDTORCP (18)
+#endif
+
+#ifndef CPNW_MAXRCPSCONNECTEDTOCCP
+#define CPNW_MAXRCPSCONNECTEDTOCCP (32)
+#endif
+
 /* ************************************************************************************ */
 class critPtNetWork {
 /* ************************************************************************************ */
@@ -68,7 +77,9 @@ public:
        nBCP, /*!< Number of BCPs  */
        nRCP, /*!< Number of RCPs  */
        nCCP, /*!< Number of CCPs  */
-       nBGP; /*!< Number of Bond Gradient Paths.  */
+       nBGP, /*!< Number of Bond Gradient Paths.  */
+       nRGP, /*!< Number of Ring Gradient Paths.  */
+       nCGP; /*!< Number of Cage Gradient Paths.  */
    /** This array (connectivity of a BCP) contains the acps associated with a BCP.
     * In conBCP[i][j], i refers to the i-th BCP in the list.
     * j=0 (j=1) contains the first (second) ACP connected to the BCP.
@@ -363,7 +374,7 @@ protected:
    int maxItACP,maxItBCP,maxItRCP,maxItCCP;
    int normalbcp;
    bool iknowacps,iknowbcps,iknowrcps,iknowccps, iknowallcps;
-   bool iknowbgps,iknowrgps,iknowcgps;
+   bool iknowbgps,iknowrgps,iknowcgps,iknowallgps;
    bool drawNuc,drawBnd,drawBGPs,drawRGPs,drawCGPs;
    bool tubeBGPStyle;
    bool mkextsearch;

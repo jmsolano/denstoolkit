@@ -79,7 +79,7 @@ using std::setprecision;
 #include "optflags.h"
 #include "crtflnms.h"
 
-void makeMolGnuplotFile(string &gname,bondNetWork &bn,const string term = "x11");
+void makeMolGnuplotFile(string &gname,bondNetWork &bn,bool putHs=true,const string term = "x11");
 
 int main (int argc, char ** argv)
 {
@@ -118,8 +118,13 @@ int main (int argc, char ** argv)
    if (options.settermgnp) {
       userterm=string(argv[options.settermgnp]);
    }
+
+   bool drawHydrogens=true;
+   if ( !(options.drawhydrogens) ) {
+      drawHydrogens=false;
+   }
    
-   makeMolGnuplotFile(gnpnam,bnw,userterm);
+   makeMolGnuplotFile(gnpnam,bnw,drawHydrogens,userterm);
    
    cout << endl << "Tip: to see the molecule type on your command line:\n" << endl;
 #if (defined(__APPLE__)||defined(__linux__))
@@ -158,7 +163,7 @@ int main (int argc, char ** argv)
 
 //*******************************************************************************************
 
-void makeMolGnuplotFile(string &gname,bondNetWork &bn,const string term)
+void makeMolGnuplotFile(string &gname,bondNetWork &bn,bool putHs,const string term)
 {
    ofstream gfil;
    gfil.open(gname.c_str(),ios::out);
@@ -190,15 +195,18 @@ void makeMolGnuplotFile(string &gname,bondNetWork &bn,const string term)
    
    //gfil << "set label 1 at 0,0,0 'Press any key on this window to quit...' front" << endl;
    
-   for (int i=0; i<bn.nNuc; i++) {
+   int effIdx=0;
+   for (int i=0; i<bn.nNuc; ++i) {
+      if ( (!putHs)&&(bn.atNum[effIdx]==0) ) { continue; }
       tit="set label ";
-      tit+=(getStringFromInt(i+1)+string(" \""));
-      tit+=(getEnhancedEpsAtLbl(bn.atLbl[i])+string("\" at "));
-      tit+=(getStringFromReal(bn.R[i][0])+string(","));
-      tit+=(getStringFromReal(bn.R[i][1])+string(","));
-      tit+=(getStringFromReal(bn.R[i][2])+string(" "));
+      tit+=(getStringFromInt(effIdx+1)+string(" \""));
+      tit+=(getEnhancedEpsAtLbl(bn.atLbl[effIdx])+string("\" at "));
+      tit+=(getStringFromReal(bn.R[effIdx][0])+string(","));
+      tit+=(getStringFromReal(bn.R[effIdx][1])+string(","));
+      tit+=(getStringFromReal(bn.R[effIdx][2])+string(" "));
       tit+=string("front offset character 0.75,0");
       gfil << tit << endl;
+      ++effIdx;
    }
    writeScrCharLine(gfil,'#');
    
@@ -209,8 +217,9 @@ void makeMolGnuplotFile(string &gname,bondNetWork &bn,const string term)
         << " lc rgb 'black' lw 3 lt 1 notitle" << endl;
    int atnum;
    for (int i=0; i<bn.nNuc; i++) {
-      gfil << bn.R[i][0] << " " << bn.R[i][1] << " " << bn.R[i][2] << " ";
       atnum=bn.atNum[i];
+      if ( (!putHs)&&(atnum==0) ) { continue; }
+      gfil << bn.R[i][0] << " " << bn.R[i][1] << " " << bn.R[i][2] << " ";
       if (atnum==0) {
          gfil << "200 200 200" << endl;
       } else {
@@ -221,8 +230,10 @@ void makeMolGnuplotFile(string &gname,bondNetWork &bn,const string term)
    gfil << "e" << endl;
    int k;
    for (int i=0; i<bn.nNuc; i++) {
+      if ( (!putHs)&&(bn.atNum[i]==0) ) { continue; }
       for (int j=0; j<MAXBONDINGATOMS; j++) {
          k=bn.bNet[i][j];
+         if ( (!putHs)&&(bn.atNum[k]==0) ) { continue; }
          if (k>0) {
             gfil << bn.R[i][0] << " " << bn.R[i][1] << " " << bn.R[i][2] << " ";
             gfil << bn.R[k][0] << " " << bn.R[k][1] << " " << bn.R[k][2] << endl;

@@ -116,6 +116,8 @@ void cpxSetPosOfFileAfterOpenningKey(ifstream &ifil,string key,bool frombeg);
 /* ************************************************************************** */
 int cpxGetPosBeforeClosingKeyInFile(ifstream &ifil,string key,bool frombeg);
 /* ************************************************************************** */
+string cpxGetWFXFileName(const string cpxname);
+/* ************************************************************************** */
 string cpxGetWFXFileName(ifstream &ifil);
 /* ************************************************************************** */
 ScalarFieldType cpxGetCriticalPointFieldType(ifstream &ifil);
@@ -152,7 +154,20 @@ void cpxGetNOfPtsPerBondPath(ifstream &ifil,const int nn,int** (&ii));
 /* ************************************************************************** */
 void cpxGetBondPathData(ifstream &ifil,const int nn,int** (&ii),solreal*** (&rrr));
 /* ************************************************************************** */
+void cpxGetRCPConnectivityFromFile(ifstream &ifil,const int nn,int*** (&cc));
 /* ************************************************************************** */
+int cpxGetNOfRingPaths(ifstream &ifil);
 /* ************************************************************************** */
+void cpxGetNOfPtsPerRingPath(ifstream &ifil,const int nn,int*** (&ii));
+/* ************************************************************************** */
+void cpxGetRingPathData(ifstream &ifil,const int nn,int*** (&ii),solreal**** (&rrr));
+/* ************************************************************************** */
+void cpxGetCCPConnectivityFromFile(ifstream &ifil,const int nn,int*** (&cc));
+/* ************************************************************************** */
+int cpxGetNOfCagePaths(ifstream &ifil);
+/* ************************************************************************** */
+void cpxGetNOfPtsPerCagePath(ifstream &ifil,const int nn,int*** (&ii));
+/* ************************************************************************** */
+void cpxGetCagePathData(ifstream &ifil,const int nn,int*** (&ii),solreal**** (&rrr));
 /* ************************************************************************** */
 #endif /* defined(_IOFUNCTS_CPX_H_) */

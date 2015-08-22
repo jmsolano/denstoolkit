@@ -721,6 +721,15 @@ void cpxSetPosOfFileAfterOpenningKey(ifstream &ifil,string key,bool frombeg)
    return;
 }
 /* ************************************************************************** */
+string cpxGetWFXFileName(const string cpxname)
+{
+   ifstream ifil(cpxname.c_str());
+   string res=cpxGetWFXFileName(ifil);
+   ifil.close();
+   ifil.clear();
+   return res;
+}
+/* ************************************************************************** */
 string cpxGetWFXFileName(ifstream &ifil)
 {
    string wfxnam;
@@ -884,6 +893,123 @@ void cpxGetBondPathData(ifstream &ifil,const int nn,int** (&ii),solreal*** (&rrr
    return;
 }
 /* ************************************************************************** */
+void cpxGetRCPConnectivityFromFile(ifstream &ifil,const int nn,int*** (&cc))
+{
+   cpxSetPosOfFileAfterOpenningKey(ifil,"RCPConnectivity",true);
+   int nrgps;
+   for (int i=0; i<nn; i++) {
+      ifil >> nrgps;
+      if ((nrgps-1)!=i) {displayWarningMessage("Disordered RCPs!");}
+      ifil >> nrgps;
+      for ( int j=0 ; j<nrgps ; ++j ) {
+         ifil >> cc[i][0][j];
+      }
+   }
+}
+/* ************************************************************************** */
+int cpxGetNOfRingPaths(ifstream &ifil)
+{
+   int res;
+   cpxSetPosOfFileAfterOpenningKey(ifil,"NumberOfRingPaths",true);
+   ifil >> res;
+   return res;
+}
+/* ************************************************************************** */
+void cpxGetNOfPtsPerRingPath(ifstream &ifil,const int nn,int*** (&ii))
+{
+   cpxSetPosOfFileAfterOpenningKey(ifil,"NumbersOfPointsPerRingPath",true);
+   int k;
+   for ( int i=0 ; i<nn ; ++i ) {
+      k=0;
+      while ( ii[i][0][k]>=0 ) {
+         ifil >> ii[i][1][k++];
+      }
+   }
+   return;
+}
+/* ************************************************************************** */
+void cpxGetRingPathData(ifstream &ifil,const int nn,int*** (&ii),solreal**** (&rrr))
+{
+   cpxSetPosOfFileAfterOpenningKey(ifil,"RingPathsData",true);
+   int nnpts,ktmp,glblIdx=0;
+   for (int rcpIdx=0; rcpIdx<nn; ++rcpIdx) {
+      cpxSetPosOfFileAfterOpenningKey(ifil,"RingPathIndex",false);
+      ifil >> nnpts;
+      if (nnpts!=glblIdx) {displayWarningMessage("Disordered bond paths!");}
+      ktmp=0;
+      while ( ii[rcpIdx][0][ktmp]>=0 ) {
+         nnpts=ii[rcpIdx][1][ktmp];
+         cpxSetPosOfFileAfterOpenningKey(ifil,"CoordinatesOfRingPathPoints",false);
+         for ( int l=0 ; l<nnpts ; ++l ) {
+            ifil >> rrr[rcpIdx][ktmp][l][0];
+            ifil >> rrr[rcpIdx][ktmp][l][1];
+            ifil >> rrr[rcpIdx][ktmp][l][2];
+         }
+         ++ktmp;
+         ++glblIdx;
+      }
+   }
+   return;
+}
+/* ************************************************************************** */
+void cpxGetCCPConnectivityFromFile(ifstream &ifil,const int nn,int*** (&cc))
+{
+   cpxSetPosOfFileAfterOpenningKey(ifil,"CCPConnectivity",true);
+   int ncgps;
+   for (int i=0; i<nn; i++) {
+      ifil >> ncgps;
+      if ((ncgps-1)!=i) {displayWarningMessage("Disordered CCPs!");}
+      ifil >> ncgps;
+      for ( int j=0 ; j<ncgps ; ++j ) {
+         ifil >> cc[i][0][j];
+      }
+   }
+}
+/* ************************************************************************** */
+int cpxGetNOfCagePaths(ifstream &ifil)
+{
+   int res;
+   cpxSetPosOfFileAfterOpenningKey(ifil,"NumberOfCagePaths",true);
+   ifil >> res;
+   return res;
+}
+/* ************************************************************************** */
+void cpxGetNOfPtsPerCagePath(ifstream &ifil,const int nn,int*** (&ii))
+{
+   cpxSetPosOfFileAfterOpenningKey(ifil,"NumbersOfPointsPerCagePath",true);
+   int k;
+   for ( int i=0 ; i<nn ; ++i ) {
+      k=0;
+      while ( ii[i][0][k]>=0 ) {
+         ifil >> ii[i][1][k++];
+      }
+   }
+   return;
+}
+/* ************************************************************************** */
+void cpxGetCagePathData(ifstream &ifil,const int nn,int*** (&ii),solreal**** (&rrr))
+{
+   cpxSetPosOfFileAfterOpenningKey(ifil,"CagePathsData",true);
+   int nnpts,ktmp,glblIdx=0;
+   for (int ccpIdx=0; ccpIdx<nn; ++ccpIdx) {
+      cpxSetPosOfFileAfterOpenningKey(ifil,"CagePathIndex",false);
+      ifil >> nnpts;
+      if (nnpts!=glblIdx) {displayWarningMessage("Disordered bond paths!");}
+      ktmp=0;
+      while ( ii[ccpIdx][0][ktmp]>=0 ) {
+         nnpts=ii[ccpIdx][1][ktmp];
+         cpxSetPosOfFileAfterOpenningKey(ifil,"CoordinatesOfCagePathPoints",false);
+         for ( int l=0 ; l<nnpts ; ++l ) {
+            ifil >> rrr[ccpIdx][ktmp][l][0];
+            ifil >> rrr[ccpIdx][ktmp][l][1];
+            ifil >> rrr[ccpIdx][ktmp][l][2];
+         }
+         ++ktmp;
+         ++glblIdx;
+      }
+   }
+   return;
+}
 /* ************************************************************************** */
 #endif /* defined(_IOFUNCTS_CPX_CPP_) */
 
