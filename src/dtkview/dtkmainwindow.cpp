@@ -131,6 +131,10 @@ void DTKMainWindow::exportViewPortImage()
                                        );
     delete myfdiag;
     if (fname.size()==0) { return; }
+#ifdef __APPLE__
     QImage imgbuff=ui->openGLWidget->grabFramebuffer();
-   imgbuff.save(fname,0,100);
+#else
+    QImage imgbuff=ui->openGLWidget->grabFrameBuffer(true);
+#endif
+    imgbuff.save(fname,0,100);
 }
