@@ -2,6 +2,7 @@
 #include "ui_dtkmainwindow.h"
 #include <QString>
 #include <QFileDialog>
+#include <QImage>
 
 DTKMainWindow::DTKMainWindow(QWidget *parent) :
    QMainWindow(parent),
@@ -46,6 +47,7 @@ void DTKMainWindow::createMenus()
    fileMenu->addAction(loadMoleculeAction);
    fileMenu->addAction(loadTestMoleculeAction);
    fileMenu->addAction(clearViewPortAction);
+   fileMenu->addAction(exportViewPortImageAction);
 }
 
 void DTKMainWindow::createActions()
@@ -61,6 +63,10 @@ void DTKMainWindow::createActions()
     clearViewPortAction = new QAction(tr("&Clear Molecules"), this);
     clearViewPortAction->setShortcut(QKeySequence(Qt::CTRL+Qt::ShiftModifier+Qt::Key_C));
     connect(clearViewPortAction,SIGNAL(triggered()),this,SLOT(clearViewPort()));
+
+    exportViewPortImageAction = new QAction(tr("&Export Image..."), this);
+    exportViewPortImageAction->setShortcut(QKeySequence(Qt::CTRL+Qt::ShiftModifier+Qt::Key_E));
+    connect(exportViewPortImageAction,SIGNAL(triggered()),this,SLOT(exportViewPortImage()));
 }
 
 void DTKMainWindow::loadMolecule()
@@ -76,7 +82,7 @@ void DTKMainWindow::loadMolecule()
    QFileDialog *myfdiag=new QFileDialog;
    fname=myfdiag->getOpenFileName(this,
                                       tr("Load cpx file"),
-                                      QDir::currentPath(),
+                                      QDir::homePath(),
                                       tr("DTK CPX files (*.cpx)"\
                                       /*";;WFN files (*.wfn)"\
                                       ";;WFX files (*.wfx)"\
@@ -101,11 +107,30 @@ void DTKMainWindow::loadTestMolecule()
 #endif
    ui->openGLWidget->addMolecule(fname);
    ui->openGLWidget->update();
-
 }
 
 void DTKMainWindow::clearViewPort()
 {
    ui->openGLWidget->clearWFsBNsCPXs();
    ui->openGLWidget->update();
+}
+
+void DTKMainWindow::exportViewPortImage()
+{
+    QString selfilter = tr("Portable Network Graphics (*.png)");
+    QFileDialog *myfdiag=new QFileDialog;
+    QString fname=myfdiag->getSaveFileName(this,
+                                       tr("Save Image"),
+                                       QDir::homePath(),
+                                       tr("Portable Network Graphcis (*.png)"\
+                                       ";;JPEG (*.jpg)"\
+                                       ";;Windows BitMap (*.bmp)"\
+                                       ";;All suported images (*.bmp *.png *.jpg)"
+                                          ),
+                                       &selfilter
+                                       );
+    delete myfdiag;
+    if (fname.size()==0) { return; }
+    QImage imgbuff=ui->openGLWidget->grabFramebuffer();
+   imgbuff.save(fname,0,100);
 }

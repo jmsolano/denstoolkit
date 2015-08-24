@@ -21,6 +21,7 @@ public slots:
    void loadMolecule(void);
    void loadTestMolecule(void);
    void clearViewPort(void);
+   void exportViewPortImage(void);
 
 private slots:
    void on_resetPushButton_clicked();
@@ -31,6 +32,7 @@ private:
    QAction *loadMoleculeAction;
    QAction *loadTestMoleculeAction;
    QAction *clearViewPortAction;
+   QAction *exportViewPortImageAction;
    // +++++++++++++++++++++ MENUS +++++++++++++++++++++
    QMenu *fileMenu;
    // +++++++++++++++++++++++++++++++++++++++++++++++++
