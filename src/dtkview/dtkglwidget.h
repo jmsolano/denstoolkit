@@ -33,6 +33,7 @@ public:
    void resizeGL(int w,int h);
    void drawAtoms();
    void drawLinks();
+   void drawAtomLabels();
    void drawACPs();
    void drawBCPs();
    void drawRCPs();
@@ -54,6 +55,7 @@ public slots:
    void setXRotation(int angle);
    void setYRotation(int angle);
    void setZRotation(int angle);
+   void setDrawAtomLabels(bool dal);
    void setCameraDistance(double dist);
    void resetView(void);
 signals:
@@ -62,6 +64,7 @@ signals:
    void yRotationChanged(int angle);
    void zRotationChanged(int angle);
    void zoomChanged(void);
+   void drawAtLblsChanged(void);
 protected:
    void mousePressEvent(QMouseEvent *event);
    void mouseMoveEvent(QMouseEvent *event);
@@ -75,10 +78,12 @@ protected:
    void drawSingleCylinder(QVector3D v0, float height, \
                            float radius, float angle,QVector3D vrot,
                            QVector3D col);
+   void drawText(QVector3D r,QString lbl);
 private:
    int xRot;
    int yRot;
    int zRot;
+   bool drawAtLbls;
    double cameraDistance;
    QPoint lastPos;
    QMatrix4x4 pMatrix;

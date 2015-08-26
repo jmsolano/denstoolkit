@@ -11,6 +11,7 @@
 #include <QVector3D>
 #include <QMatrix4x4>
 #include <QDebug>
+#include <QPainter>
 #include <cmath>
 #include <iostream>
 using std::cout;
@@ -35,6 +36,7 @@ DTKGLWidget::DTKGLWidget(QWidget *parent)
    xRot=0;
    yRot=0;
    zRot=0;
+   drawAtLbls=false;
    cameraDistance=INITIAL_CAMERA_DISTANCE;
    waveFunction.clear();
    bondNW.clear();
@@ -167,6 +169,21 @@ void DTKGLWidget::drawLinks()
        }
 
     }
+}
+
+void DTKGLWidget::drawAtomLabels()
+{
+   DTKGLBondNetWork *bn;
+   QVector3D pos;
+   QString lbl;
+   for (int bIdx=0; bIdx<bondNW.size(); ++bIdx) {
+      bn=bondNW[bIdx];
+      for (int i=0; i<(bn->numAtoms()); ++i) {
+         lbl=bn->getAtomLabel(i);
+         pos=bn->getAtomCoordinates(i);
+         drawText(pos,lbl);
+      }
+   }
 }
 
 void DTKGLWidget::drawACPs()
@@ -321,6 +338,7 @@ void DTKGLWidget::drawEverything()
    drawCriticalPoints();
    drawGradientPaths();
    drawAtoms();
+   if (drawAtLbls) { drawAtomLabels(); }
    //drawLinks();
 }
 
@@ -402,6 +420,13 @@ void DTKGLWidget::setZRotation(int angle)
       emit rotationChanged();
       update();
    }
+}
+
+void DTKGLWidget::setDrawAtomLabels(bool dal)
+{
+   drawAtLbls=dal;
+   emit drawAtLblsChanged();
+   update();
 }
 
 void DTKGLWidget::setCameraDistance(double dist)
@@ -492,6 +517,74 @@ void DTKGLWidget::drawSingleCylinder(QVector3D v0, float height, \
    gluCylinder(cylinder,radius,radius,height,24,1);
    gluDeleteQuadric(cylinder);
    glPopMatrix();
+}
+
+void DTKGLWidget::drawText(QVector3D r, QString lbl)
+{
+   //unsigned char *str=(unsigned char *)(lbl.toLatin1().constData());
+   /*
+   GLdouble modelview[16],projection[16];
+   GLint viewport[4];
+   GLdouble wX,wY,wZ;
+   glGetDoublev(GL_MODELVIEW_MATRIX,modelview);
+   glGetDoublev(GL_PROJECTION_MATRIX, projection);
+   glGetIntegerv(GL_VIEWPORT,viewport);
+   GLdouble x,y,z;
+   x=GLdouble(r[0]);
+   y=GLdouble(r[1]);
+   z=GLdouble(r[2]);
+   gluProject(x,y,z,modelview,projection,viewport,&wX,&wY,&wZ);
+   qDebug() << "wxyz: " << wX << " " << wY << " " << wZ;
+   glPushMatrix();
+   glColor3f(0.0f,0.0f,0.0f);
+   glTranslatef(r[0],r[1],r[2]);
+   //glWindowPos3f(x,y,z*cameraDistance);
+   int np=lbl.size();
+   string str=lbl.toStdString();
+   for (int i=0; i<np; ++i) {
+      glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, str[i]);
+   }
+   glPopMatrix();
+   // */
+
+   //*
+   GLdouble modelview[16],projection[16];
+   GLint viewport[4];
+   GLdouble wX,wY,wZ;
+   glGetDoublev(GL_MODELVIEW_MATRIX,modelview);
+   glGetDoublev(GL_PROJECTION_MATRIX, projection);
+   glGetIntegerv(GL_VIEWPORT,viewport);
+   GLdouble x,y,z;
+   x=GLdouble(r[0]);
+   y=GLdouble(r[1]);
+   z=GLdouble(r[2]);
+   gluProject(x,y,z,modelview,projection,viewport,&wX,&wY,&wZ);
+   glMatrixMode(GL_PROJECTION);
+   glPushMatrix();
+   glLoadIdentity();
+   gluOrtho2D(0.0, float(this->width()), 0.0, float(this->height()));
+
+   glMatrixMode(GL_MODELVIEW);
+   glPushMatrix();
+   glLoadIdentity();
+
+   glDisable(GL_LIGHTING);
+   glColor3f(1.0, 1.0, 1.0); // Green
+   glRasterPos2i(GLint(wX),GLint(wY));
+   string s=lbl.toStdString();
+   void * font = GLUT_BITMAP_HELVETICA_12;
+   for (string::iterator i = s.begin(); i != s.end(); ++i)
+   {
+       //char c = *i;
+       glutBitmapCharacter(font, *i);
+   }
+   glEnable(GL_LIGHTING);
+   glMatrixMode(GL_PROJECTION);
+   glPopMatrix();
+
+   glMatrixMode(GL_MODELVIEW);
+   glPopMatrix();
+   // */
 }
 
 

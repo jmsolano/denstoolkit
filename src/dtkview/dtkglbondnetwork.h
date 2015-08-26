@@ -8,6 +8,7 @@
 #include <QGLWidget>
 #endif
 #include <QVector3D>
+#include <QString>
 #include "../common/bondnetwork.h"
 
 class DTKGLBondNetWork : public QWidget
@@ -30,6 +31,7 @@ public:
    QVector3D getLinkColor(int idx) {return links[idx].color;}
    double getViewRadius(void) {if (bnw) {return ((bnw->rView)-(bnw->maxBondDist));}\
                                else {return 1.0e0;}}
+   QString getAtomLabel(int idx) {return QString::fromStdString(bnw->atLbl[idx]);}
    struct Link{
       float     angle;
       float     height;

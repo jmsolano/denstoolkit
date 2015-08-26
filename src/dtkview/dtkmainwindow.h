@@ -26,6 +26,8 @@ public slots:
 private slots:
    void on_resetPushButton_clicked();
 
+   void on_viewAtLblsCheckBox_clicked();
+
 private:
    Ui::DTKMainWindow *ui;
    // ++++++++++++++++++++ ACTIONS ++++++++++++++++++++

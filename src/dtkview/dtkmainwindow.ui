@@ -47,6 +47,13 @@
        </spacer>
       </item>
       <item>
+       <widget class="QCheckBox" name="viewAtLblsCheckBox">
+        <property name="text">
+         <string>View Atom Labels</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="resetPushButton">
         <property name="text">
          <string>Reset View</string>

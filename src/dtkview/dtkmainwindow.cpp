@@ -138,3 +138,8 @@ void DTKMainWindow::exportViewPortImage()
 #endif
     imgbuff.save(fname,0,100);
 }
+
+void DTKMainWindow::on_viewAtLblsCheckBox_clicked()
+{
+    ui->openGLWidget->setDrawAtomLabels(ui->viewAtLblsCheckBox->isChecked());
+}
