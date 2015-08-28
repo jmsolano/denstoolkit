@@ -31,11 +31,15 @@ private slots:
 private:
    Ui::DTKMainWindow *ui;
    // ++++++++++++++++++++ ACTIONS ++++++++++++++++++++
+   // When adding new actions, do not forget to delete
+   // them within ~DTKMainWindow().
    QAction *loadMoleculeAction;
    QAction *loadTestMoleculeAction;
    QAction *clearViewPortAction;
    QAction *exportViewPortImageAction;
    // +++++++++++++++++++++ MENUS +++++++++++++++++++++
+   // When adding new menus, do not forget to delete
+   // them within ~DTKMainWindow().
    QMenu *fileMenu;
    // +++++++++++++++++++++++++++++++++++++++++++++++++
    void createMenus(void);

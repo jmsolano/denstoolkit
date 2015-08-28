@@ -33,7 +33,12 @@ void DTKMainWindow::updateStatusBar()
 DTKMainWindow::~DTKMainWindow()
 {
    delete ui;
+
    delete loadMoleculeAction;
+   delete loadTestMoleculeAction;
+   delete clearViewPortAction;
+   delete exportViewPortImageAction;
+   delete fileMenu;
 }
 
 void DTKMainWindow::on_resetPushButton_clicked()
