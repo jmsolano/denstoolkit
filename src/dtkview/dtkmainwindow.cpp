@@ -48,6 +48,9 @@ void DTKMainWindow::on_resetPushButton_clicked()
 
 void DTKMainWindow::createMenus()
 {
+#ifdef __linux__
+   menuBar()->setNativeMenuBar(false);
+#endif
    fileMenu = menuBar()->addMenu(tr("&File"));
    fileMenu->addAction(loadMoleculeAction);
    fileMenu->addAction(loadTestMoleculeAction);
