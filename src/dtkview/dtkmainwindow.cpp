@@ -34,14 +34,18 @@ void DTKMainWindow::updateStatusBar()
 
 DTKMainWindow::~DTKMainWindow()
 {
-   delete ui;
-
    delete loadMoleculeAction;
    delete loadTestMoleculeAction;
    delete clearViewPortAction;
    delete exportViewPortImageAction;
+   delete viewAtomLabelsAction;
+
    delete fileMenu;
+   delete viewMenu;
+
    delete fileToolBar;
+
+   delete ui;
 }
 
 void DTKMainWindow::on_resetPushButton_clicked()
@@ -59,6 +63,9 @@ void DTKMainWindow::createMenus()
    fileMenu->addAction(loadTestMoleculeAction);
    fileMenu->addAction(clearViewPortAction);
    fileMenu->addAction(exportViewPortImageAction);
+
+   viewMenu = menuBar()->addMenu(tr("&View"));
+   viewMenu->addAction(viewAtomLabelsAction);
 }
 
 void DTKMainWindow::createActions()
@@ -78,6 +85,12 @@ void DTKMainWindow::createActions()
     exportViewPortImageAction = new QAction(QIcon(":/images/save.png"),tr("&Export Image..."), this);
     exportViewPortImageAction->setShortcut(QKeySequence(Qt::CTRL+Qt::ShiftModifier+Qt::Key_E));
     connect(exportViewPortImageAction,SIGNAL(triggered()),this,SLOT(exportViewPortImage()));
+
+    viewAtomLabelsAction = new QAction(QIcon(":/images/showatlbls.png"),tr("View Atom &Labels"), this);
+    viewAtomLabelsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_L));
+    viewAtomLabelsAction->setCheckable(true);
+    viewAtomLabelsAction->setChecked(ui->viewAtLblsCheckBox->isChecked());
+    connect(viewAtomLabelsAction,SIGNAL(triggered()),this,SLOT(setViewAtomLabels()));
 }
 
 void DTKMainWindow::setupMainToolbar()
@@ -85,6 +98,8 @@ void DTKMainWindow::setupMainToolbar()
    ui->mainToolBar->addAction(loadMoleculeAction);
    ui->mainToolBar->addAction(exportViewPortImageAction);
    ui->mainToolBar->addAction(clearViewPortAction);
+   ui->mainToolBar->addSeparator();
+   ui->mainToolBar->addAction(viewAtomLabelsAction);
 }
 
 void DTKMainWindow::loadMolecule()
@@ -157,7 +172,18 @@ void DTKMainWindow::exportViewPortImage()
     imgbuff.save(fname,0,100);
 }
 
+void DTKMainWindow::setViewAtomLabels()
+{
+   bool val=ui->viewAtLblsCheckBox->isChecked();
+   val=(!val);
+   ui->viewAtLblsCheckBox->setChecked(val);
+   viewAtomLabelsAction->setChecked(val);
+   ui->openGLWidget->setDrawAtomLabels(val);
+}
+
 void DTKMainWindow::on_viewAtLblsCheckBox_clicked()
 {
-    ui->openGLWidget->setDrawAtomLabels(ui->viewAtLblsCheckBox->isChecked());
+   bool val=ui->viewAtLblsCheckBox->isChecked();
+    ui->openGLWidget->setDrawAtomLabels(val);
+    viewAtomLabelsAction->setChecked(val);
 }
