@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QAction>
+#include <QToolBar>
 
 namespace Ui {
    class DTKMainWindow;
@@ -42,8 +43,14 @@ private:
    // them within ~DTKMainWindow().
    QMenu *fileMenu;
    // +++++++++++++++++++++++++++++++++++++++++++++++++
+   // +++++++++++++++++++ TOOLBARS ++++++++++++++++++++
+   // When adding new toolbars, do not forget to delete
+   // them within ~DTKMainWindow().
+   QToolBar *fileToolBar;
+   // +++++++++++++++++++++++++++++++++++++++++++++++++
    void createMenus(void);
    void createActions(void);
+   void setupMainToolbar(void);
 };
 
 #endif // DTKMAINWINDOW_H

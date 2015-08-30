@@ -3,6 +3,7 @@
 #include <QString>
 #include <QFileDialog>
 #include <QImage>
+#include <QIcon>
 
 DTKMainWindow::DTKMainWindow(QWidget *parent) :
    QMainWindow(parent),
@@ -16,6 +17,7 @@ DTKMainWindow::DTKMainWindow(QWidget *parent) :
 
    createActions();
    createMenus();
+   setupMainToolbar();
 }
 
 void DTKMainWindow::updateStatusBar()
@@ -39,6 +41,7 @@ DTKMainWindow::~DTKMainWindow()
    delete clearViewPortAction;
    delete exportViewPortImageAction;
    delete fileMenu;
+   delete fileToolBar;
 }
 
 void DTKMainWindow::on_resetPushButton_clicked()
@@ -60,7 +63,7 @@ void DTKMainWindow::createMenus()
 
 void DTKMainWindow::createActions()
 {
-    loadMoleculeAction = new QAction(tr("&Open Molecule..."), this);
+    loadMoleculeAction = new QAction(QIcon(":/images/open.png"),tr("&Open Molecule..."), this);
     loadMoleculeAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_O));
     connect(loadMoleculeAction,SIGNAL(triggered()),this,SLOT(loadMolecule()));
 
@@ -68,13 +71,20 @@ void DTKMainWindow::createActions()
     loadTestMoleculeAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_T));
     connect(loadTestMoleculeAction,SIGNAL(triggered()),this,SLOT(loadTestMolecule()));
 
-    clearViewPortAction = new QAction(tr("&Clear Molecules"), this);
+    clearViewPortAction = new QAction(QIcon(":/images/square.png"),tr("&Clear Molecules"), this);
     clearViewPortAction->setShortcut(QKeySequence(Qt::CTRL+Qt::ShiftModifier+Qt::Key_C));
     connect(clearViewPortAction,SIGNAL(triggered()),this,SLOT(clearViewPort()));
 
-    exportViewPortImageAction = new QAction(tr("&Export Image..."), this);
+    exportViewPortImageAction = new QAction(QIcon(":/images/save.png"),tr("&Export Image..."), this);
     exportViewPortImageAction->setShortcut(QKeySequence(Qt::CTRL+Qt::ShiftModifier+Qt::Key_E));
     connect(exportViewPortImageAction,SIGNAL(triggered()),this,SLOT(exportViewPortImage()));
+}
+
+void DTKMainWindow::setupMainToolbar()
+{
+   ui->mainToolBar->addAction(loadMoleculeAction);
+   ui->mainToolBar->addAction(exportViewPortImageAction);
+   ui->mainToolBar->addAction(clearViewPortAction);
 }
 
 void DTKMainWindow::loadMolecule()

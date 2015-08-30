@@ -31,7 +31,7 @@ set(the_usr_bin_name "DensToolKitViewer")
 set(usr_have_icons TRUE)
 
 set(the_usr_rcs
-
+   DensToolKitViewer.qrc
 )
 
 find_package(OpenGL REQUIRED)

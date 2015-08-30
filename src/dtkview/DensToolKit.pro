@@ -68,3 +68,6 @@ macx:  {
 QMAKE_CXXFLAGS += -include soldefines.h
 
 DISTFILES +=
+
+RESOURCES += \
+    denstoolkitviewer.qrc
