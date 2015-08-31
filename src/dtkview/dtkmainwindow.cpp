@@ -192,7 +192,7 @@ void DTKMainWindow::setViewAtomLabels()
 
 void DTKMainWindow::showAboutDTK()
 {
-   QMessageBox about(this);
+   QMessageBox about(NULL);
    about.setText(tr("About DensToolKitViewer"));
    about.setInformativeText(tr("(C) J. M. Solano-Altamirano, 2015."
                             "\nThis program is licensed with a GPLv3"
