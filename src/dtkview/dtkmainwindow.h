@@ -24,6 +24,7 @@ public slots:
    void clearViewPort(void);
    void exportViewPortImage(void);
    void setViewAtomLabels(void);
+   void showAboutDTK(void);
 
 private slots:
    void on_resetPushButton_clicked();
@@ -40,11 +41,13 @@ private:
    QAction *clearViewPortAction;
    QAction *exportViewPortImageAction;
    QAction *viewAtomLabelsAction;
+   QAction *showAboutDTKAction;
    // +++++++++++++++++++++ MENUS +++++++++++++++++++++
    // When adding new menus, do not forget to delete
    // them within ~DTKMainWindow().
    QMenu *fileMenu;
    QMenu *viewMenu;
+   QMenu *helpMenu;
    // +++++++++++++++++++++++++++++++++++++++++++++++++
    // +++++++++++++++++++ TOOLBARS ++++++++++++++++++++
    // When adding new toolbars, do not forget to delete

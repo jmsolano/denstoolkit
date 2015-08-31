@@ -4,6 +4,7 @@
 #include <QFileDialog>
 #include <QImage>
 #include <QIcon>
+#include <QMessageBox>
 
 DTKMainWindow::DTKMainWindow(QWidget *parent) :
    QMainWindow(parent),
@@ -39,9 +40,11 @@ DTKMainWindow::~DTKMainWindow()
    delete clearViewPortAction;
    delete exportViewPortImageAction;
    delete viewAtomLabelsAction;
+   delete showAboutDTKAction;
 
    delete fileMenu;
    delete viewMenu;
+   delete helpMenu;
 
    delete fileToolBar;
 
@@ -66,6 +69,9 @@ void DTKMainWindow::createMenus()
 
    viewMenu = menuBar()->addMenu(tr("&View"));
    viewMenu->addAction(viewAtomLabelsAction);
+
+   helpMenu = menuBar()->addMenu(tr("&Help"));
+   helpMenu->addAction(showAboutDTKAction);
 }
 
 void DTKMainWindow::createActions()
@@ -91,6 +97,9 @@ void DTKMainWindow::createActions()
     viewAtomLabelsAction->setCheckable(true);
     viewAtomLabelsAction->setChecked(ui->viewAtLblsCheckBox->isChecked());
     connect(viewAtomLabelsAction,SIGNAL(triggered()),this,SLOT(setViewAtomLabels()));
+
+    showAboutDTKAction = new QAction(tr("&About DTK"), this);
+    connect(showAboutDTKAction,SIGNAL(triggered()),this,SLOT(showAboutDTK()));
 }
 
 void DTKMainWindow::setupMainToolbar()
@@ -179,6 +188,19 @@ void DTKMainWindow::setViewAtomLabels()
    ui->viewAtLblsCheckBox->setChecked(val);
    viewAtomLabelsAction->setChecked(val);
    ui->openGLWidget->setDrawAtomLabels(val);
+}
+
+void DTKMainWindow::showAboutDTK()
+{
+   QMessageBox about(this);
+   about.setText(tr("DensToolKitViewer"));
+   about.setInformativeText("(C) J. M. Solano-Altamirano, 2015."
+                            "\nThis program is licensed with a GPLv3"
+                            "\nlicense. See\n\nhttp://www.gnu.org/licenses/gpl-3.0.en.html\n"
+                            "\nfor more information.");
+   QPixmap myicon(QString(":/images/dtk256x256.png"));
+   about.setIconPixmap(myicon);
+   int ret=about.exec();
 }
 
 void DTKMainWindow::on_viewAtLblsCheckBox_clicked()
