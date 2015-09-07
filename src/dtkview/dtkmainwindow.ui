@@ -47,6 +47,36 @@
        </spacer>
       </item>
       <item>
+       <widget class="QCheckBox" name="viewBGPsCheckBox">
+        <property name="text">
+         <string>Draw ACP-BCP Paths</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="viewRGPsCheckBox">
+        <property name="text">
+         <string>Draw BCP-RCP Paths</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="viewCGPsCheckBox">
+        <property name="text">
+         <string>Draw RCP-CCP Paths</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QCheckBox" name="viewAtLblsCheckBox">
         <property name="text">
          <string>View Atom Labels</string>

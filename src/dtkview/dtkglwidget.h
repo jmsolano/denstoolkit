@@ -34,14 +34,14 @@ public:
    void drawAtoms();
    void drawLinks();
    void drawAtomLabels();
-   void drawACPs();
-   void drawBCPs();
-   void drawRCPs();
-   void drawCCPs();
+   void drawAttractorCriticalPoints();
+   void drawBondCriticalPoints();
+   void drawRingCriticalPoints();
+   void drawCageCriticalPoints();
    void drawCriticalPoints();
-   void drawBGPs();
-   void drawRGPs();
-   void drawCGPs();
+   void drawBondGradientPaths();
+   void drawRingGradientPaths();
+   void drawCageGradientPaths();
    void drawGradientPaths();
    void drawEverything();
    void addMolecule(QString fnam);
@@ -56,6 +56,9 @@ public slots:
    void setYRotation(int angle);
    void setZRotation(int angle);
    void setDrawAtomLabels(bool dal);
+   void setViewBondGradientPaths(bool dbgp);
+   void setViewRingGradientPaths(bool drgp);
+   void setViewCageGradientPaths(bool dcgp);
    void setCameraDistance(double dist);
    void resetView(void);
 signals:
@@ -84,6 +87,9 @@ private:
    int yRot;
    int zRot;
    bool drawAtLbls;
+   bool drawBGPs;
+   bool drawRGPs;
+   bool drawCGPs;
    double cameraDistance;
    QPoint lastPos;
    QMatrix4x4 pMatrix;

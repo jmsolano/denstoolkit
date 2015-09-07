@@ -40,6 +40,9 @@ DTKMainWindow::~DTKMainWindow()
    delete clearViewPortAction;
    delete exportViewPortImageAction;
    delete viewAtomLabelsAction;
+   delete viewBondGradientPathsAction;
+   delete viewRingGradientPathsAction;
+   delete viewCageGradientPathsAction;
    delete showAboutDTKAction;
 
    delete fileMenu;
@@ -69,6 +72,9 @@ void DTKMainWindow::createMenus()
 
    viewMenu = menuBar()->addMenu(tr("&View"));
    viewMenu->addAction(viewAtomLabelsAction);
+   viewMenu->addAction(viewBondGradientPathsAction);
+   viewMenu->addAction(viewRingGradientPathsAction);
+   viewMenu->addAction(viewCageGradientPathsAction);
 
    helpMenu = menuBar()->addMenu(tr("&Help"));
    helpMenu->addAction(showAboutDTKAction);
@@ -98,6 +104,24 @@ void DTKMainWindow::createActions()
     viewAtomLabelsAction->setChecked(ui->viewAtLblsCheckBox->isChecked());
     connect(viewAtomLabelsAction,SIGNAL(triggered()),this,SLOT(setViewAtomLabels()));
 
+    viewBondGradientPathsAction = new QAction(QIcon(":/images/viewbgps.png"),tr("Draw &Bond Gradient Paths"), this);
+    viewBondGradientPathsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_1));
+    viewBondGradientPathsAction->setCheckable(true);
+    viewBondGradientPathsAction->setChecked(ui->viewBGPsCheckBox->isChecked());
+    connect(viewBondGradientPathsAction,SIGNAL(triggered()),this,SLOT(setViewBondGradientPaths()));
+
+    viewRingGradientPathsAction = new QAction(QIcon(":/images/viewrgps.png"),tr("Draw &Ring Gradient Paths"), this);
+    viewRingGradientPathsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_2));
+    viewRingGradientPathsAction->setCheckable(true);
+    viewRingGradientPathsAction->setChecked(ui->viewRGPsCheckBox->isChecked());
+    connect(viewRingGradientPathsAction,SIGNAL(triggered()),this,SLOT(setViewRingGradientPaths()));
+
+    viewCageGradientPathsAction = new QAction(QIcon(":/images/viewcgps.png"),tr("Draw &Cage Gradient Paths"), this);
+    viewCageGradientPathsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_3));
+    viewCageGradientPathsAction->setCheckable(true);
+    viewCageGradientPathsAction->setChecked(ui->viewCGPsCheckBox->isChecked());
+    connect(viewCageGradientPathsAction,SIGNAL(triggered()),this,SLOT(setViewCageGradientPaths()));
+
     showAboutDTKAction = new QAction(tr("&About DTK"), this);
     connect(showAboutDTKAction,SIGNAL(triggered()),this,SLOT(showAboutDTK()));
 }
@@ -109,6 +133,9 @@ void DTKMainWindow::setupMainToolbar()
    ui->mainToolBar->addAction(clearViewPortAction);
    ui->mainToolBar->addSeparator();
    ui->mainToolBar->addAction(viewAtomLabelsAction);
+   ui->mainToolBar->addAction(viewBondGradientPathsAction);
+   ui->mainToolBar->addAction(viewRingGradientPathsAction);
+   ui->mainToolBar->addAction(viewCageGradientPathsAction);
 }
 
 void DTKMainWindow::loadMolecule()
@@ -190,6 +217,33 @@ void DTKMainWindow::setViewAtomLabels()
    ui->openGLWidget->setDrawAtomLabels(val);
 }
 
+void DTKMainWindow::setViewBondGradientPaths()
+{
+   bool val=ui->viewBGPsCheckBox->isChecked();
+   val=(!val);
+   ui->viewBGPsCheckBox->setChecked(val);
+   viewBondGradientPathsAction->setChecked(val);
+   ui->openGLWidget->setViewBondGradientPaths(val);
+}
+
+void DTKMainWindow::setViewRingGradientPaths()
+{
+   bool val=ui->viewRGPsCheckBox->isChecked();
+   val=(!val);
+   ui->viewRGPsCheckBox->setChecked(val);
+   viewRingGradientPathsAction->setChecked(val);
+   ui->openGLWidget->setViewRingGradientPaths(val);
+}
+
+void DTKMainWindow::setViewCageGradientPaths()
+{
+   bool val=ui->viewCGPsCheckBox->isChecked();
+   val=(!val);
+   ui->viewCGPsCheckBox->setChecked(val);
+   viewCageGradientPathsAction->setChecked(val);
+   ui->openGLWidget->setViewCageGradientPaths(val);
+}
+
 void DTKMainWindow::showAboutDTK()
 {
    QMessageBox about(NULL);
@@ -211,4 +265,25 @@ void DTKMainWindow::on_viewAtLblsCheckBox_clicked()
    bool val=ui->viewAtLblsCheckBox->isChecked();
     ui->openGLWidget->setDrawAtomLabels(val);
     viewAtomLabelsAction->setChecked(val);
+}
+
+void DTKMainWindow::on_viewCGPsCheckBox_clicked()
+{
+   bool val=ui->viewCGPsCheckBox->isChecked();
+   ui->openGLWidget->setViewCageGradientPaths(val);
+   viewBondGradientPathsAction->setChecked(val);
+}
+
+void DTKMainWindow::on_viewRGPsCheckBox_clicked()
+{
+   bool val=ui->viewRGPsCheckBox->isChecked();
+   ui->openGLWidget->setViewRingGradientPaths(val);
+   viewRingGradientPathsAction->setChecked(val);
+}
+
+void DTKMainWindow::on_viewBGPsCheckBox_clicked()
+{
+   bool val=ui->viewBGPsCheckBox->isChecked();
+   ui->openGLWidget->setViewBondGradientPaths(val);
+   viewCageGradientPathsAction->setChecked(val);
 }

@@ -37,6 +37,7 @@ DTKGLWidget::DTKGLWidget(QWidget *parent)
    yRot=0;
    zRot=0;
    drawAtLbls=false;
+   drawBGPs=drawRGPs=drawCGPs=true;
    cameraDistance=INITIAL_CAMERA_DISTANCE;
    waveFunction.clear();
    bondNW.clear();
@@ -186,7 +187,7 @@ void DTKGLWidget::drawAtomLabels()
    }
 }
 
-void DTKGLWidget::drawACPs()
+void DTKGLWidget::drawAttractorCriticalPoints()
 {
    DTKGLCriticalPointNetWork *cp;
    const static QVector3D colACP(0.0f,0.0f,0.0f);
@@ -202,7 +203,7 @@ void DTKGLWidget::drawACPs()
    }
 }
 
-void DTKGLWidget::drawBCPs()
+void DTKGLWidget::drawBondCriticalPoints()
 {
    DTKGLCriticalPointNetWork *cp;
    const static QVector3D colBCP(0.0f,0.6f,1.0f);
@@ -218,7 +219,7 @@ void DTKGLWidget::drawBCPs()
    }
 }
 
-void DTKGLWidget::drawRCPs()
+void DTKGLWidget::drawRingCriticalPoints()
 {
    DTKGLCriticalPointNetWork *cp;
    const static QVector3D colRCP(1.0f,1.0f,0.0f);
@@ -234,7 +235,7 @@ void DTKGLWidget::drawRCPs()
    }
 }
 
-void DTKGLWidget::drawCCPs()
+void DTKGLWidget::drawCageCriticalPoints()
 {
    DTKGLCriticalPointNetWork *cp;
    const static QVector3D colCCP(1.0f,0.0f,0.0f);
@@ -252,13 +253,13 @@ void DTKGLWidget::drawCCPs()
 
 void DTKGLWidget::drawCriticalPoints()
 {
-   drawACPs();
-   drawBCPs();
-   drawRCPs();
-   drawCCPs();
+   drawAttractorCriticalPoints();
+   drawBondCriticalPoints();
+   drawRingCriticalPoints();
+   drawCageCriticalPoints();
 }
 
-void DTKGLWidget::drawBGPs()
+void DTKGLWidget::drawBondGradientPaths()
 {
    DTKGLCriticalPointNetWork *cp;
    const static QVector3D colBGP(0.0f,0.2f,1.0f);
@@ -277,7 +278,7 @@ void DTKGLWidget::drawBGPs()
    }
 }
 
-void DTKGLWidget::drawRGPs()
+void DTKGLWidget::drawRingGradientPaths()
 {
    DTKGLCriticalPointNetWork *cp;
    const static QVector3D colRGP(0.0f,0.8f,0.0f);
@@ -300,7 +301,7 @@ void DTKGLWidget::drawRGPs()
    }
 }
 
-void DTKGLWidget::drawCGPs()
+void DTKGLWidget::drawCageGradientPaths()
 {
    DTKGLCriticalPointNetWork *cp;
    const static QVector3D colCGP(1.0f,0.5f,0.0f);
@@ -325,9 +326,9 @@ void DTKGLWidget::drawCGPs()
 
 void DTKGLWidget::drawGradientPaths()
 {
-   drawBGPs();
-   drawRGPs();
-   drawCGPs();
+   if (drawBGPs) {drawBondGradientPaths();}
+   if (drawRGPs) {drawRingGradientPaths();}
+   if (drawCGPs) {drawCageGradientPaths();}
 }
 
 void DTKGLWidget::drawEverything()
@@ -426,6 +427,24 @@ void DTKGLWidget::setDrawAtomLabels(bool dal)
 {
    drawAtLbls=dal;
    emit drawAtLblsChanged();
+   update();
+}
+
+void DTKGLWidget::setViewBondGradientPaths(bool dbgp)
+{
+   drawBGPs=dbgp;
+   update();
+}
+
+void DTKGLWidget::setViewRingGradientPaths(bool drgp)
+{
+   drawRGPs=drgp;
+   update();
+}
+
+void DTKGLWidget::setViewCageGradientPaths(bool dcgp)
+{
+   drawCGPs=dcgp;
    update();
 }
 
