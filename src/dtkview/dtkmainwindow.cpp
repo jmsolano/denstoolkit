@@ -291,7 +291,9 @@ void DTKMainWindow::showAboutDTK()
 {
    QMessageBox about(NULL);
    about.setText(tr("About DensToolKitViewer"));
-   about.setInformativeText(tr("(C) J. M. Solano-Altamirano, 2015."
+   about.setInformativeText(tr("Version: "
+                            CURRENTVERSION 
+                            "\n\n(C) J. M. Solano-Altamirano, 2015."
                             "\nThis program is licensed with a GPLv3"
                             "\nlicense. See\n\nhttp://www.gnu.org/licenses/gpl-3.0.en.html\n"
                             "\nfor more information."
