@@ -1,3 +1,50 @@
+Version 1.2.0:
+ - Added version in dtkviewer->dtkaboutdialog
+ - Merge branch 'master' of https://bitbucket.org/jmsolano/denstoolkitdevbb
+ - Added boilerplates, improved install instructions.
+ - Added boilerplates
+ - Preparing release of DTKViewer (adding images, etc.)
+ - Added toobar-buttons, checkboxes, and actions in view menu for optionally viewing BGPs, RGPs, and CGPs.
+ - Small mod to about dialog. (no parent)
+ - Improved about dialog (included paper's doi).
+ - Corrected main window icon size.
+ - Added about dialog.
+ - Fixed linux compilation
+ - Added action and toolbar button for view atom labels.
+ - Added icons to toolbar.
+ - Using non-native menus in linux (ubuntu problem).
+ - Corrected destructor of dtkmainwindow class. (delete actions and menus)
+ - This version is able to draw atom labels.
+ - Fixed linux/darwing grabframebuffer names.
+ - Implemented export image for saving the opengl viewport.
+ - Implemented open file dialog (cpx) and clear viewport.
+ - Merge branch 'master' into incgui
+ - Merge branch 'develop': After adding option for not drawing Hydrogens in dtkqdmol.
+ - Added option for not drawing Hydrogens in dtkqdmol.
+ - Updated doi for DTK paper.
+ - Updated README.md: improved git instructions, added developer git info.
+ - Corrected git address for read-only access.
+ - Changed git address.
+ - Finished display of Ring and Cage Paths. Merge needed (see below)
+ - Moved definition of MAXBCPCONNECTEDTORCP and MAXRCPCONNECTEDTOCCP to *.h
+ - Partial commit (displaying ring and cage paths)
+ - Merge branch 'incgui' of https://bitbucket.org/jmsolano/denstoolkitdevbb into incgui
+ - Merge branch 'develop' into incgui
+ - Added rign and cage paths reading into readFromFile (cpx)
+ - Added README for installation of DTKViewer on Ubuntu
+ - Mac/linux compilation fixed.
+ - Implemented visualization of Critical Points and Grandient Paths.
+ - Linux/mac compatibility
+ - Added shining and specular effects. Corrected zoom.
+ - Drawing bonds done.
+ - Drawing atoms done
+ - Integrated bondnetwork
+ - Third iteration linux/mac
+ - More fixings for linux/mac
+ - Linux/mac compilation working
+ - Base openglviewer implementation.
+ - Included dtkfindcp option -r description in manual
+
 Version 1.1.2:
  - BugFix (totPri=nPri in wfn loading file function)
  - Included pseudopotential formulae in dtkmanual.
