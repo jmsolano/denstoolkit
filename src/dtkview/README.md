@@ -11,6 +11,8 @@ Then go to a directory wherein you plan to build dtk. In this example, replace `
 ~~~~~~~~~~~~~
 $cd /path/to/dtk
 $git clone git://github.com/jmsolano/denstoolkit.git builddtk
+$#also may be:
+$#git clone --bare https://github.com/jmsolano/denstoolkit.git builddtk
 $cd builddtk/src/dtkview
 $mkdir build
 $cd build
