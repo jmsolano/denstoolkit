@@ -85,6 +85,8 @@ SETDTKNPROC=N
 ~~~~~~~~~~
 
 In the current version, it is not advised to use more than 4 processors. There will be no speed improvement using more processors. Also, less than 3 makes no difference in the processing times.
+#DensToolKit manual
+The manual, wherein some formal theory is developed, and also where more information about how to use the programs of the suite can be viewed, is ```/local/path/to/dtk/denstoolkit/tex/dtkmanual/dtk-manual.pdf```
 #Developer instructions
 
 Please, notice that the described in the "Git instructions" section
