@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/open.png</file>
+        <file>images/save.png</file>
+        <file>DensToolKitViewer.icns</file>
+        <file>images/square.png</file>
+        <file>images/showatlbls.png</file>
+        <file>images/dtk32x32.png</file>
+        <file>images/dtk128x128.png</file>
+        <file>images/dtk256x256.png</file>
+        <file>images/viewbgps.png</file>
+        <file>images/viewcgps.png</file>
+        <file>images/viewrgps.png</file>
+    </qresource>
+</RCC>
