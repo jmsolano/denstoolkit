@@ -10,7 +10,7 @@ In your bash terminal type:
 
 ~~~~~~~~~~
 $cd /local/path/to/dtk
-$git clone git://github.com/jmsolano/denstoolkit.git
+$git clone --bare https://github.com/jmsolano/denstoolkit.git
 ~~~~~~~~~~
 
 After this, git will transfer the source files to ```/local/path/to/dtk/denstoolkit```
