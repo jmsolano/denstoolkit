@@ -77,9 +77,47 @@
        </widget>
       </item>
       <item>
+       <widget class="Line" name="lineUponViewAtLbls">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QCheckBox" name="viewAtLblsCheckBox">
         <property name="text">
          <string>View Atom Labels</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="lineUponViewRegBnds">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="viewAtomsCheckBox">
+        <property name="text">
+         <string>View Atoms</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="viewRegularBondsCheckBox">
+        <property name="text">
+         <string>View Regular Bonds</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="lineUponResetView">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>

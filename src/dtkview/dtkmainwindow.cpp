@@ -82,7 +82,9 @@ DTKMainWindow::~DTKMainWindow()
    delete loadTestMoleculeAction;
    delete clearViewPortAction;
    delete exportViewPortImageAction;
+   delete viewAtomsAction;
    delete viewAtomLabelsAction;
+   delete viewRegularBondsAction;
    delete viewBondGradientPathsAction;
    delete viewRingGradientPathsAction;
    delete viewCageGradientPathsAction;
@@ -118,6 +120,8 @@ void DTKMainWindow::createMenus()
    viewMenu->addAction(viewBondGradientPathsAction);
    viewMenu->addAction(viewRingGradientPathsAction);
    viewMenu->addAction(viewCageGradientPathsAction);
+   viewMenu->addAction(viewAtomsAction);
+   viewMenu->addAction(viewRegularBondsAction);
 
    helpMenu = menuBar()->addMenu(tr("&Help"));
    helpMenu->addAction(showAboutDTKAction);
@@ -165,6 +169,18 @@ void DTKMainWindow::createActions()
     viewCageGradientPathsAction->setChecked(ui->viewCGPsCheckBox->isChecked());
     connect(viewCageGradientPathsAction,SIGNAL(triggered()),this,SLOT(setViewCageGradientPaths()));
 
+    viewRegularBondsAction = new QAction(tr("View R&egular Bonds"), this);
+    viewRegularBondsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_B));
+    viewRegularBondsAction->setCheckable(true);
+    viewRegularBondsAction->setChecked(ui->viewAtLblsCheckBox->isChecked());
+    connect(viewRegularBondsAction,SIGNAL(triggered()),this,SLOT(setViewRegularBonds()));
+
+    viewAtomsAction = new QAction(tr("View Ato&ms"), this);
+    viewAtomsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_A));
+    viewAtomsAction->setCheckable(true);
+    viewAtomsAction->setChecked(ui->viewAtomsCheckBox->isChecked());
+    connect(viewAtomsAction,SIGNAL(triggered()),this,SLOT(setViewAtoms()));
+
     showAboutDTKAction = new QAction(tr("&About DTK"), this);
     connect(showAboutDTKAction,SIGNAL(triggered()),this,SLOT(showAboutDTK()));
 }
@@ -211,8 +227,8 @@ void DTKMainWindow::loadMolecule()
 void DTKMainWindow::loadTestMolecule()
 {
 #ifdef __APPLE__
-   //QString fname=tr("/Users/jmsolano/Documents/LongRun/proj/readwfn/src/dtkview/cubano_sto3gRhoCP.cpx");
-   QString fname=tr("/Users/jmsolano/Documents/LongRun/proj/readwfn/src/dtkview/phenantreneRhoCP.cpx");
+   QString fname=tr("/Users/jmsolano/Documents/LongRun/proj/readwfn/src/dtkview/cubano_sto3gRhoCP.cpx");
+   //QString fname=tr("/Users/jmsolano/Documents/LongRun/proj/readwfn/src/dtkview/phenantreneRhoCP.cpx");
 #else
    QString fname=tr("/home/jmsolano/Documents/prog/dtk/src/dtkview/phenantreneRhoCP.cpx");
    //QString fname=tr("/home/jmsolano/Documents/prog/dtk/src/dtkview/cubano_sto3gRhoCP.cpx");
@@ -251,6 +267,15 @@ void DTKMainWindow::exportViewPortImage()
     imgbuff.save(fname,0,100);
 }
 
+void DTKMainWindow::setViewAtoms()
+{
+   bool val=ui->viewAtomsCheckBox->isChecked();
+   val=(!val);
+   ui->viewAtomsCheckBox->setChecked(val);
+   viewAtomsAction->setChecked(val);
+   ui->openGLWidget->setViewAtoms(val);
+}
+
 void DTKMainWindow::setViewAtomLabels()
 {
    bool val=ui->viewAtLblsCheckBox->isChecked();
@@ -258,6 +283,15 @@ void DTKMainWindow::setViewAtomLabels()
    ui->viewAtLblsCheckBox->setChecked(val);
    viewAtomLabelsAction->setChecked(val);
    ui->openGLWidget->setDrawAtomLabels(val);
+}
+
+void DTKMainWindow::setViewRegularBonds()
+{
+   bool val=ui->viewRegularBondsCheckBox->isChecked();
+   val=(!val);
+   ui->viewRegularBondsCheckBox->setChecked(val);
+   viewRegularBondsAction->setChecked(val);
+   ui->openGLWidget->setViewRegularBonds(val);
 }
 
 void DTKMainWindow::setViewBondGradientPaths()
@@ -331,4 +365,18 @@ void DTKMainWindow::on_viewBGPsCheckBox_clicked()
    bool val=ui->viewBGPsCheckBox->isChecked();
    ui->openGLWidget->setViewBondGradientPaths(val);
    viewCageGradientPathsAction->setChecked(val);
+}
+
+void DTKMainWindow::on_viewRegularBondsCheckBox_clicked()
+{
+   bool val=ui->viewRegularBondsCheckBox->isChecked();
+   ui->openGLWidget->setViewRegularBonds(val);
+   viewRegularBondsAction->setChecked(val);
+}
+
+void DTKMainWindow::on_viewAtomsCheckBox_clicked()
+{
+   bool val=ui->viewAtomsCheckBox->isChecked();
+   ui->openGLWidget->setViewAtoms(val);
+   //viewRegularBondsAction->setChecked(val);
 }

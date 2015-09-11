@@ -68,6 +68,7 @@ using std::ifstream;
 #define DTKGL_DEFAULT_LINK_RADIUS 0.2f
 #define DTKGL_DEFAULT_CRIT_PT_RADIUS 0.125f
 #define DTKGL_DEFAULT_GRAD_PATH_RADIUS 0.045f
+#define DTKGL_DEFAULT_TRANSPARENCY 0.4f
 
 DTKGLWidget::DTKGLWidget(QWidget *parent)
 #ifdef __APPLE__
@@ -79,7 +80,8 @@ DTKGLWidget::DTKGLWidget(QWidget *parent)
    xRot=0;
    yRot=0;
    zRot=0;
-   drawAtLbls=false;
+   drawAts=true;
+   drawAtLbls=drawBnds=false;
    drawBGPs=drawRGPs=drawCGPs=true;
    cameraDistance=INITIAL_CAMERA_DISTANCE;
    waveFunction.clear();
@@ -195,7 +197,7 @@ void DTKGLWidget::drawAtoms()
                      //pos[0],pos[1],pos[2],
                      //rad, col[0], col[1], col[2]
                  //);
-         drawSingleTransparentSphere(pos,rad,col,0.4f);
+         drawSingleTransparentSphere(pos,rad,col,DTKGL_DEFAULT_TRANSPARENCY);
       }
    }
 }
@@ -207,9 +209,13 @@ void DTKGLWidget::drawLinks()
     for (int bIdx=0; bIdx<bondNW.size(); ++bIdx) {
        bn=bondNW[bIdx];
        for (int i=0; i<bn->numLinks(); ++i) {
-          drawSingleCylinder(bn->getLinkStart(i),bn->getLinkHeight(i),rad,\
-                             bn->getLinkAngle(i),bn->getLinkRotationVector(i),\
-                             bn->getLinkColor(i));
+          //drawSingleCylinder(bn->getLinkStart(i),bn->getLinkHeight(i),rad,\
+                             //bn->getLinkAngle(i),bn->getLinkRotationVector(i),\
+                             //bn->getLinkColor(i));
+          drawSingleTransparentCylinder(\
+                   bn->getLinkStart(i),bn->getLinkHeight(i),rad,\
+                   bn->getLinkAngle(i),bn->getLinkRotationVector(i),\
+                   bn->getLinkColor(i),DTKGL_DEFAULT_TRANSPARENCY);
        }
 
     }
@@ -381,9 +387,9 @@ void DTKGLWidget::drawEverything()
 
    drawCriticalPoints();
    drawGradientPaths();
-   drawAtoms();
+   if (drawAts) { drawAtoms(); }
    if (drawAtLbls) { drawAtomLabels(); }
-   //drawLinks();
+   if (drawBnds) { drawLinks(); }
 }
 
 void DTKGLWidget::addMolecule(QString fnam)
@@ -466,10 +472,22 @@ void DTKGLWidget::setZRotation(int angle)
    }
 }
 
+void DTKGLWidget::setViewAtoms(bool val)
+{
+   drawAts=val;
+   update();
+}
+
 void DTKGLWidget::setDrawAtomLabels(bool dal)
 {
    drawAtLbls=dal;
    emit drawAtLblsChanged();
+   update();
+}
+
+void DTKGLWidget::setViewRegularBonds(bool vrb)
+{
+   drawBnds=vrb;
    update();
 }
 
@@ -575,6 +593,18 @@ void DTKGLWidget::drawSingleCylinder(QVector3D v0, float height, \
    glTranslatef(v0[0], v0[1], v0[2]);
    glRotatef(angle,vrot[0],vrot[1],vrot[2]);
    glColor3f(col[0],col[1],col[2]);
+   GLUquadric *cylinder=gluNewQuadric();
+   gluCylinder(cylinder,radius,radius,height,24,1);
+   gluDeleteQuadric(cylinder);
+   glPopMatrix();
+}
+
+void DTKGLWidget::drawSingleTransparentCylinder(QVector3D v0, float height, float radius, float angle, QVector3D vrot, QVector3D col, float t)
+{
+   glPushMatrix();
+   glTranslatef(v0[0], v0[1], v0[2]);
+   glRotatef(angle,vrot[0],vrot[1],vrot[2]);
+   glColor4f(col[0],col[1],col[2],t);
    GLUquadric *cylinder=gluNewQuadric();
    gluCylinder(cylinder,radius,radius,height,24,1);
    gluDeleteQuadric(cylinder);

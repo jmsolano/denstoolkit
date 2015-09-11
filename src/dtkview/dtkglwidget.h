@@ -98,7 +98,9 @@ public slots:
    void setXRotation(int angle);
    void setYRotation(int angle);
    void setZRotation(int angle);
+   void setViewAtoms(bool val);
    void setDrawAtomLabels(bool dal);
+   void setViewRegularBonds(bool vrb);
    void setViewBondGradientPaths(bool dbgp);
    void setViewRingGradientPaths(bool drgp);
    void setViewCageGradientPaths(bool dcgp);
@@ -124,12 +126,17 @@ protected:
    void drawSingleCylinder(QVector3D v0, float height, \
                            float radius, float angle,QVector3D vrot,
                            QVector3D col);
+   void drawSingleTransparentCylinder(QVector3D v0, float height, \
+                           float radius, float angle,QVector3D vrot,
+                           QVector3D col,float t);
    void drawText(QVector3D r,QString lbl);
 private:
    int xRot;
    int yRot;
    int zRot;
+   bool drawAts;
    bool drawAtLbls;
+   bool drawBnds;
    bool drawBGPs;
    bool drawRGPs;
    bool drawCGPs;
