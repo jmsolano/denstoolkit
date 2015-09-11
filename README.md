@@ -87,6 +87,8 @@ SETDTKNPROC=N
 In the current version, it is not advised to use more than 4 processors. There will be no speed improvement using more processors. Also, less than 3 makes no difference in the processing times.
 #DensToolKit manual
 The manual, wherein some formal theory is developed, and also where more information about how to use the programs of the suite can be viewed, is ```/local/path/to/dtk/denstoolkit/tex/dtkmanual/dtk-manual.pdf```
+#DensToolKitViewer
+As of version 1.2.0, we provide an experimental graphical viewer. It is based on Qt, OpenGL, and GLUT. This program is under construction and is expected to change somewhat frequently in the near future. Unfortunately, this program requires a bit of extra-effort to compile it. For further instructions, please visit https://github.com/jmsolano/denstoolkit/tree/master/src/dtkview.
 #Developer instructions
 
 Please, notice that the described in the "Git instructions" section
