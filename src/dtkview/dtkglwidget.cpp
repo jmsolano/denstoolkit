@@ -69,6 +69,8 @@ using std::ifstream;
 #define DTKGL_DEFAULT_CRIT_PT_RADIUS 0.125f
 #define DTKGL_DEFAULT_GRAD_PATH_RADIUS 0.045f
 #define DTKGL_DEFAULT_TRANSPARENCY 0.4f
+#define DTKGL_DISPLACEMENT_CP_LABEL_X 2
+#define DTKGL_DISPLACEMENT_CP_LABEL_Y 2
 
 DTKGLWidget::DTKGLWidget(QWidget *parent)
 #ifdef __APPLE__
@@ -83,6 +85,7 @@ DTKGLWidget::DTKGLWidget(QWidget *parent)
    drawAts=setTransp=true;
    drawAtLbls=drawBnds=false;
    drawBGPs=drawRGPs=drawCGPs=true;
+   drawCPLbls=false;
    cameraDistance=INITIAL_CAMERA_DISTANCE;
    waveFunction.clear();
    bondNW.clear();
@@ -324,6 +327,41 @@ void DTKGLWidget::drawCriticalPoints()
    drawCageCriticalPoints();
 }
 
+void DTKGLWidget::drawCPLabels()
+{
+   DTKGLCriticalPointNetWork *cpn;
+   QVector3D pos;
+   QString lbl;
+   int nn;
+   for (int cIdx=0; cIdx<critPtNW.size(); ++cIdx) {
+      cpn=critPtNW[cIdx];
+      nn=cpn->getNumACPs();
+      for (int i=0; i<nn; ++i) {
+         lbl=tr("A")+QString::number(i+1);
+         pos=cpn->getACPCoordinates(i);
+         drawText(pos,lbl,DTKGL_DISPLACEMENT_CP_LABEL_X,DTKGL_DISPLACEMENT_CP_LABEL_Y);
+      }
+      nn=cpn->getNumBCPs();
+      for (int i=0; i<nn; ++i) {
+         lbl=tr("B")+QString::number(i+1);
+         pos=cpn->getBCPCoordinates(i);
+         drawText(pos,lbl,DTKGL_DISPLACEMENT_CP_LABEL_X,DTKGL_DISPLACEMENT_CP_LABEL_Y);
+      }
+      nn=cpn->getNumRCPs();
+      for (int i=0; i<nn; ++i) {
+         lbl=tr("R")+QString::number(i+1);
+         pos=cpn->getRCPCoordinates(i);
+         drawText(pos,lbl,DTKGL_DISPLACEMENT_CP_LABEL_X,DTKGL_DISPLACEMENT_CP_LABEL_Y);
+      }
+      nn=cpn->getNumCCPs();
+      for (int i=0; i<nn; ++i) {
+         lbl=tr("C")+QString::number(i+1);
+         pos=cpn->getCCPCoordinates(i);
+         drawText(pos,lbl,DTKGL_DISPLACEMENT_CP_LABEL_X,DTKGL_DISPLACEMENT_CP_LABEL_Y);
+      }
+   }
+}
+
 void DTKGLWidget::drawBondGradientPaths()
 {
    DTKGLCriticalPointNetWork *cp;
@@ -405,6 +443,7 @@ void DTKGLWidget::drawEverything()
    drawGradientPaths();
    if (drawAts) { drawAtoms(); }
    if (drawAtLbls) { drawAtomLabels(); }
+   if (drawCPLbls) { drawCPLabels(); }
    if (drawBnds) { drawLinks(); }
 }
 
@@ -525,6 +564,12 @@ void DTKGLWidget::setViewCageGradientPaths(bool dcgp)
    update();
 }
 
+void DTKGLWidget::setDrawCPLabels(bool dal)
+{
+   drawCPLbls=dal;
+   update();
+}
+
 void DTKGLWidget::setTransparentAtomsAndLinks(bool val)
 {
    setTransp=val;
@@ -633,10 +678,8 @@ void DTKGLWidget::drawSingleTransparentCylinder(QVector3D v0, float height, floa
    glPopMatrix();
 }
 
-void DTKGLWidget::drawText(QVector3D r, QString lbl)
+void DTKGLWidget::drawText(QVector3D r, QString lbl,int dx,int dy)
 {
-   //unsigned char *str=(unsigned char *)(lbl.toLatin1().constData());
-   /*
    GLdouble modelview[16],projection[16];
    GLint viewport[4];
    GLdouble wX,wY,wZ;
@@ -648,31 +691,8 @@ void DTKGLWidget::drawText(QVector3D r, QString lbl)
    y=GLdouble(r[1]);
    z=GLdouble(r[2]);
    gluProject(x,y,z,modelview,projection,viewport,&wX,&wY,&wZ);
-   qDebug() << "wxyz: " << wX << " " << wY << " " << wZ;
-   glPushMatrix();
-   glColor3f(0.0f,0.0f,0.0f);
-   glTranslatef(r[0],r[1],r[2]);
-   //glWindowPos3f(x,y,z*cameraDistance);
-   int np=lbl.size();
-   string str=lbl.toStdString();
-   for (int i=0; i<np; ++i) {
-      glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, str[i]);
-   }
-   glPopMatrix();
-   // */
+   wX+=dx; wY+=dy;
 
-   //*
-   GLdouble modelview[16],projection[16];
-   GLint viewport[4];
-   GLdouble wX,wY,wZ;
-   glGetDoublev(GL_MODELVIEW_MATRIX,modelview);
-   glGetDoublev(GL_PROJECTION_MATRIX, projection);
-   glGetIntegerv(GL_VIEWPORT,viewport);
-   GLdouble x,y,z;
-   x=GLdouble(r[0]);
-   y=GLdouble(r[1]);
-   z=GLdouble(r[2]);
-   gluProject(x,y,z,modelview,projection,viewport,&wX,&wY,&wZ);
    glMatrixMode(GL_PROJECTION);
    glPushMatrix();
    glLoadIdentity();
@@ -689,7 +709,6 @@ void DTKGLWidget::drawText(QVector3D r, QString lbl)
    void * font = GLUT_BITMAP_HELVETICA_12;
    for (string::iterator i = s.begin(); i != s.end(); ++i)
    {
-       //char c = *i;
        glutBitmapCharacter(font, *i);
    }
    glEnable(GL_LIGHTING);
@@ -698,7 +717,6 @@ void DTKGLWidget::drawText(QVector3D r, QString lbl)
 
    glMatrixMode(GL_MODELVIEW);
    glPopMatrix();
-   // */
 }
 
 

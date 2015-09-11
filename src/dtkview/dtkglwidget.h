@@ -82,6 +82,7 @@ public:
    void drawRingCriticalPoints();
    void drawCageCriticalPoints();
    void drawCriticalPoints();
+   void drawCPLabels();
    void drawBondGradientPaths();
    void drawRingGradientPaths();
    void drawCageGradientPaths();
@@ -104,6 +105,7 @@ public slots:
    void setViewBondGradientPaths(bool dbgp);
    void setViewRingGradientPaths(bool drgp);
    void setViewCageGradientPaths(bool dcgp);
+   void setDrawCPLabels(bool dal);
    void setTransparentAtomsAndLinks(bool val);
    void setCameraDistance(double dist);
    void resetView(void);
@@ -130,7 +132,7 @@ protected:
    void drawSingleTransparentCylinder(QVector3D v0, float height, \
                            float radius, float angle,QVector3D vrot,
                            QVector3D col,float t);
-   void drawText(QVector3D r,QString lbl);
+   void drawText(QVector3D r, QString lbl, int dx=0, int dy=0);
 private:
    int xRot;
    int yRot;
@@ -141,6 +143,7 @@ private:
    bool drawBGPs;
    bool drawRGPs;
    bool drawCGPs;
+   bool drawCPLbls;
    bool setTransp;
    double cameraDistance;
    QPoint lastPos;

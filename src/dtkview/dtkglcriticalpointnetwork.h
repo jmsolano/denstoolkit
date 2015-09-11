@@ -112,6 +112,10 @@ public:
                         cpn->RCGP[ccpIdx][rcpBox][ptIdx][1],
                         cpn->RCGP[ccpIdx][rcpBox][ptIdx][2]);
     }
+    QString getACPLabel(int idx) {return QString::fromStdString(cpn->lblACP[idx]);}
+    QString getBCPLabel(int idx) {return QString::fromStdString(cpn->lblBCP[idx]);}
+    QString getRCPLabel(int idx) {return QString::fromStdString(cpn->lblRCP[idx]);}
+    QString getCCPLabel(int idx) {return QString::fromStdString(cpn->lblCCP[idx]);}
 
     bool iKnowACPs(void) {return cpn->iKnowACPs();}
     bool iKnowBCPs(void) {return cpn->iKnowBCPs();}

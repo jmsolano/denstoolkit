@@ -84,6 +84,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QCheckBox" name="viewCPLabelsCheckBox">
+        <property name="text">
+         <string>View C. P. Labels</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QCheckBox" name="viewAtLblsCheckBox">
         <property name="text">
          <string>View Atom Labels</string>

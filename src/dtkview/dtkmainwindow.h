@@ -73,6 +73,7 @@ public slots:
    void setViewBondGradientPaths(void);
    void setViewRingGradientPaths(void);
    void setViewCageGradientPaths(void);
+   void setViewCPLabels(void);
    void showAboutDTK(void);
 
 private slots:
@@ -84,6 +85,7 @@ private slots:
    void on_viewRegularBondsCheckBox_clicked();
    void on_viewAtomsCheckBox_clicked();
    void on_setTransparentCheckBox_clicked();
+   void on_viewCPLabelsCheckBox_clicked();
 
 private:
    Ui::DTKMainWindow *ui;
@@ -103,6 +105,7 @@ private:
    QAction *viewBondGradientPathsAction;
    QAction *viewRingGradientPathsAction;
    QAction *viewCageGradientPathsAction;
+   QAction *viewCPLabelsAction;
 
    QAction *showAboutDTKAction;
    // +++++++++++++++++++++ MENUS +++++++++++++++++++++

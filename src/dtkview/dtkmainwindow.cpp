@@ -91,6 +91,8 @@ DTKMainWindow::~DTKMainWindow()
    delete viewBondGradientPathsAction;
    delete viewRingGradientPathsAction;
    delete viewCageGradientPathsAction;
+   delete viewCPLabelsAction;
+
    delete showAboutDTKAction;
 
    delete fileMenu;
@@ -127,6 +129,7 @@ void DTKMainWindow::createMenus()
    viewMenu->addAction(viewBondGradientPathsAction);
    viewMenu->addAction(viewRingGradientPathsAction);
    viewMenu->addAction(viewCageGradientPathsAction);
+   viewMenu->addAction(viewCPLabelsAction);
 
    helpMenu = menuBar()->addMenu(tr("&Help"));
    helpMenu->addAction(showAboutDTKAction);
@@ -173,6 +176,12 @@ void DTKMainWindow::createActions()
     viewCageGradientPathsAction->setCheckable(true);
     viewCageGradientPathsAction->setChecked(ui->viewCGPsCheckBox->isChecked());
     connect(viewCageGradientPathsAction,SIGNAL(triggered()),this,SLOT(setViewCageGradientPaths()));
+
+    viewCPLabelsAction = new QAction(tr("View C&P Labels"), this);
+    viewCPLabelsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::ShiftModifier+Qt::Key_L));
+    viewCPLabelsAction->setCheckable(true);
+    viewCPLabelsAction->setChecked(ui->viewCPLabelsCheckBox->isChecked());
+    connect(viewCPLabelsAction,SIGNAL(triggered()),this,SLOT(setViewCPLabels()));
 
     setTransparentAtomsAndLinksAction = new QAction(tr("Set &Transparent"), this);
     setTransparentAtomsAndLinksAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_T));
@@ -341,6 +350,15 @@ void DTKMainWindow::setViewCageGradientPaths()
    ui->openGLWidget->setViewCageGradientPaths(val);
 }
 
+void DTKMainWindow::setViewCPLabels()
+{
+   bool val=ui->viewCPLabelsCheckBox->isChecked();
+   val=(!val);
+   ui->viewCPLabelsCheckBox->setChecked(val);
+   viewCPLabelsAction->setChecked(val);
+   ui->openGLWidget->setDrawCPLabels(val);
+}
+
 void DTKMainWindow::showAboutDTK()
 {
    QMessageBox about(NULL);
@@ -406,4 +424,11 @@ void DTKMainWindow::on_setTransparentCheckBox_clicked()
    bool val=ui->setTransparentCheckBox->isChecked();
    ui->openGLWidget->setTransparentAtomsAndLinks(val);
    setTransparentAtomsAndLinksAction->setChecked(val);
+}
+
+void DTKMainWindow::on_viewCPLabelsCheckBox_clicked()
+{
+   bool val=ui->viewCPLabelsCheckBox->isChecked();
+   ui->openGLWidget->setDrawCPLabels(val);
+   viewCPLabelsAction->setChecked(val);
 }
