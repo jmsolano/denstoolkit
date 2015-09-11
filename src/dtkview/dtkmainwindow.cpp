@@ -177,25 +177,25 @@ void DTKMainWindow::createActions()
     viewCageGradientPathsAction->setChecked(ui->viewCGPsCheckBox->isChecked());
     connect(viewCageGradientPathsAction,SIGNAL(triggered()),this,SLOT(setViewCageGradientPaths()));
 
-    viewCPLabelsAction = new QAction(tr("View C&P Labels"), this);
+    viewCPLabelsAction = new QAction(QIcon(":/images/drawcplbls.png"),tr("View C&P Labels"), this);
     viewCPLabelsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::ShiftModifier+Qt::Key_L));
     viewCPLabelsAction->setCheckable(true);
     viewCPLabelsAction->setChecked(ui->viewCPLabelsCheckBox->isChecked());
     connect(viewCPLabelsAction,SIGNAL(triggered()),this,SLOT(setViewCPLabels()));
 
-    setTransparentAtomsAndLinksAction = new QAction(tr("Set &Transparent"), this);
+    setTransparentAtomsAndLinksAction = new QAction(QIcon(":/images/toggletransp.png"),tr("Set &Transparent"), this);
     setTransparentAtomsAndLinksAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_T));
     setTransparentAtomsAndLinksAction->setCheckable(true);
     setTransparentAtomsAndLinksAction->setChecked(ui->setTransparentCheckBox->isChecked());
     connect(setTransparentAtomsAndLinksAction,SIGNAL(triggered()),this,SLOT(setTransparentAtomsAndLinks()));
 
-    viewRegularBondsAction = new QAction(tr("View R&egular Bonds"), this);
+    viewRegularBondsAction = new QAction(QIcon(":/images/drawlinks.png"),tr("View R&egular Bonds"), this);
     viewRegularBondsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_B));
     viewRegularBondsAction->setCheckable(true);
     viewRegularBondsAction->setChecked(ui->viewAtLblsCheckBox->isChecked());
     connect(viewRegularBondsAction,SIGNAL(triggered()),this,SLOT(setViewRegularBonds()));
 
-    viewAtomsAction = new QAction(tr("View Ato&ms"), this);
+    viewAtomsAction = new QAction(QIcon(":/images/drawatoms.png"),tr("View &Atoms"), this);
     viewAtomsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_A));
     viewAtomsAction->setCheckable(true);
     viewAtomsAction->setChecked(ui->viewAtomsCheckBox->isChecked());
@@ -211,10 +211,15 @@ void DTKMainWindow::setupMainToolbar()
    ui->mainToolBar->addAction(exportViewPortImageAction);
    ui->mainToolBar->addAction(clearViewPortAction);
    ui->mainToolBar->addSeparator();
+   ui->mainToolBar->addAction(viewAtomsAction);
+   ui->mainToolBar->addAction(viewRegularBondsAction);
    ui->mainToolBar->addAction(viewAtomLabelsAction);
+   ui->mainToolBar->addAction(setTransparentAtomsAndLinksAction);
+   ui->mainToolBar->addSeparator();
    ui->mainToolBar->addAction(viewBondGradientPathsAction);
    ui->mainToolBar->addAction(viewRingGradientPathsAction);
    ui->mainToolBar->addAction(viewCageGradientPathsAction);
+   ui->mainToolBar->addAction(viewCPLabelsAction);
 }
 
 void DTKMainWindow::loadMolecule()
