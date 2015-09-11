@@ -115,6 +115,16 @@
        </widget>
       </item>
       <item>
+       <widget class="QCheckBox" name="setTransparentCheckBox">
+        <property name="text">
+         <string>Set transparent</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="Line" name="lineUponResetView">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>

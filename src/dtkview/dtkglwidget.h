@@ -104,6 +104,7 @@ public slots:
    void setViewBondGradientPaths(bool dbgp);
    void setViewRingGradientPaths(bool drgp);
    void setViewCageGradientPaths(bool dcgp);
+   void setTransparentAtomsAndLinks(bool val);
    void setCameraDistance(double dist);
    void resetView(void);
 signals:
@@ -140,6 +141,7 @@ private:
    bool drawBGPs;
    bool drawRGPs;
    bool drawCGPs;
+   bool setTransp;
    double cameraDistance;
    QPoint lastPos;
    QMatrix4x4 pMatrix;

@@ -80,7 +80,7 @@ DTKGLWidget::DTKGLWidget(QWidget *parent)
    xRot=0;
    yRot=0;
    zRot=0;
-   drawAts=true;
+   drawAts=setTransp=true;
    drawAtLbls=drawBnds=false;
    drawBGPs=drawRGPs=drawCGPs=true;
    cameraDistance=INITIAL_CAMERA_DISTANCE;
@@ -187,17 +187,26 @@ void DTKGLWidget::drawAtoms()
    DTKGLBondNetWork *bn;
    QVector3D pos,col;
    float rad = DTKGL_DEFAULT_SPHERE_RADIUS;
-   for (int i=0; i<bondNW.size(); ++i) {
-      bn=bondNW[i];
-      for (int j=0; j<(bn->numAtoms()); ++j) {
-         pos=bn->getAtomCoordinates(j);
-         //col[0]=0.8f; col[1]=0.0f; col[2]=0.0f;
-         col=bn->getAtomColor(j);
-         //drawSingleSphere(
-                     //pos[0],pos[1],pos[2],
-                     //rad, col[0], col[1], col[2]
-                 //);
-         drawSingleTransparentSphere(pos,rad,col,DTKGL_DEFAULT_TRANSPARENCY);
+   if (setTransp) {
+      for (int i=0; i<bondNW.size(); ++i) {
+         bn=bondNW[i];
+         for (int j=0; j<(bn->numAtoms()); ++j) {
+            pos=bn->getAtomCoordinates(j);
+            col=bn->getAtomColor(j);
+            drawSingleTransparentSphere(pos,rad,col,DTKGL_DEFAULT_TRANSPARENCY);
+         }
+      }
+   } else {
+      for (int i=0; i<bondNW.size(); ++i) {
+         bn=bondNW[i];
+         for (int j=0; j<(bn->numAtoms()); ++j) {
+            pos=bn->getAtomCoordinates(j);
+            col=bn->getAtomColor(j);
+            drawSingleSphere(
+            pos[0],pos[1],pos[2],
+            rad, col[0], col[1], col[2]
+            );
+         }
       }
    }
 }
@@ -206,18 +215,25 @@ void DTKGLWidget::drawLinks()
 {
     DTKGLBondNetWork *bn;
     float rad = DTKGL_DEFAULT_LINK_RADIUS;
-    for (int bIdx=0; bIdx<bondNW.size(); ++bIdx) {
-       bn=bondNW[bIdx];
-       for (int i=0; i<bn->numLinks(); ++i) {
-          //drawSingleCylinder(bn->getLinkStart(i),bn->getLinkHeight(i),rad,\
-                             //bn->getLinkAngle(i),bn->getLinkRotationVector(i),\
-                             //bn->getLinkColor(i));
-          drawSingleTransparentCylinder(\
-                   bn->getLinkStart(i),bn->getLinkHeight(i),rad,\
-                   bn->getLinkAngle(i),bn->getLinkRotationVector(i),\
-                   bn->getLinkColor(i),DTKGL_DEFAULT_TRANSPARENCY);
+    if (setTransp) {
+       for (int bIdx=0; bIdx<bondNW.size(); ++bIdx) {
+          bn=bondNW[bIdx];
+          for (int i=0; i<bn->numLinks(); ++i) {
+             drawSingleTransparentCylinder(\
+                      bn->getLinkStart(i),bn->getLinkHeight(i),rad,\
+                      bn->getLinkAngle(i),bn->getLinkRotationVector(i),\
+                      bn->getLinkColor(i),DTKGL_DEFAULT_TRANSPARENCY);
+          }
        }
-
+    } else {
+       for (int bIdx=0; bIdx<bondNW.size(); ++bIdx) {
+          bn=bondNW[bIdx];
+          for (int i=0; i<bn->numLinks(); ++i) {
+             drawSingleCylinder(bn->getLinkStart(i),bn->getLinkHeight(i),rad,\
+                      bn->getLinkAngle(i),bn->getLinkRotationVector(i),\
+                      bn->getLinkColor(i));
+          }
+       }
     }
 }
 
@@ -506,6 +522,12 @@ void DTKGLWidget::setViewRingGradientPaths(bool drgp)
 void DTKGLWidget::setViewCageGradientPaths(bool dcgp)
 {
    drawCGPs=dcgp;
+   update();
+}
+
+void DTKGLWidget::setTransparentAtomsAndLinks(bool val)
+{
+   setTransp=val;
    update();
 }
 

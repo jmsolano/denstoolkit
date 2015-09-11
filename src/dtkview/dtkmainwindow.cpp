@@ -82,9 +82,12 @@ DTKMainWindow::~DTKMainWindow()
    delete loadTestMoleculeAction;
    delete clearViewPortAction;
    delete exportViewPortImageAction;
+
    delete viewAtomsAction;
    delete viewAtomLabelsAction;
    delete viewRegularBondsAction;
+   delete setTransparentAtomsAndLinksAction;
+
    delete viewBondGradientPathsAction;
    delete viewRingGradientPathsAction;
    delete viewCageGradientPathsAction;
@@ -116,12 +119,14 @@ void DTKMainWindow::createMenus()
    fileMenu->addAction(exportViewPortImageAction);
 
    viewMenu = menuBar()->addMenu(tr("&View"));
+   viewMenu->addAction(viewAtomsAction);
+   viewMenu->addAction(viewRegularBondsAction);
+   viewMenu->addAction(setTransparentAtomsAndLinksAction);
    viewMenu->addAction(viewAtomLabelsAction);
+   viewMenu->addSeparator();
    viewMenu->addAction(viewBondGradientPathsAction);
    viewMenu->addAction(viewRingGradientPathsAction);
    viewMenu->addAction(viewCageGradientPathsAction);
-   viewMenu->addAction(viewAtomsAction);
-   viewMenu->addAction(viewRegularBondsAction);
 
    helpMenu = menuBar()->addMenu(tr("&Help"));
    helpMenu->addAction(showAboutDTKAction);
@@ -134,7 +139,7 @@ void DTKMainWindow::createActions()
     connect(loadMoleculeAction,SIGNAL(triggered()),this,SLOT(loadMolecule()));
 
     loadTestMoleculeAction = new QAction(tr("Open &Test Molecule"), this);
-    loadTestMoleculeAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_T));
+    loadTestMoleculeAction->setShortcut(QKeySequence(Qt::CTRL+Qt::ShiftModifier+Qt::Key_T));
     connect(loadTestMoleculeAction,SIGNAL(triggered()),this,SLOT(loadTestMolecule()));
 
     clearViewPortAction = new QAction(QIcon(":/images/square.png"),tr("&Clear Molecules"), this);
@@ -168,6 +173,12 @@ void DTKMainWindow::createActions()
     viewCageGradientPathsAction->setCheckable(true);
     viewCageGradientPathsAction->setChecked(ui->viewCGPsCheckBox->isChecked());
     connect(viewCageGradientPathsAction,SIGNAL(triggered()),this,SLOT(setViewCageGradientPaths()));
+
+    setTransparentAtomsAndLinksAction = new QAction(tr("Set &Transparent"), this);
+    setTransparentAtomsAndLinksAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_T));
+    setTransparentAtomsAndLinksAction->setCheckable(true);
+    setTransparentAtomsAndLinksAction->setChecked(ui->setTransparentCheckBox->isChecked());
+    connect(setTransparentAtomsAndLinksAction,SIGNAL(triggered()),this,SLOT(setTransparentAtomsAndLinks()));
 
     viewRegularBondsAction = new QAction(tr("View R&egular Bonds"), this);
     viewRegularBondsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_B));
@@ -265,6 +276,15 @@ void DTKMainWindow::exportViewPortImage()
     QImage imgbuff=ui->openGLWidget->grabFrameBuffer(true);
 #endif
     imgbuff.save(fname,0,100);
+}
+
+void DTKMainWindow::setTransparentAtomsAndLinks()
+{
+   bool val=ui->setTransparentCheckBox->isChecked();
+   val=(!val);
+   ui->setTransparentCheckBox->setChecked(val);
+   setTransparentAtomsAndLinksAction->setChecked(val);
+   ui->openGLWidget->setTransparentAtomsAndLinks(val);
 }
 
 void DTKMainWindow::setViewAtoms()
@@ -378,5 +398,12 @@ void DTKMainWindow::on_viewAtomsCheckBox_clicked()
 {
    bool val=ui->viewAtomsCheckBox->isChecked();
    ui->openGLWidget->setViewAtoms(val);
-   //viewRegularBondsAction->setChecked(val);
+   viewAtomsAction->setChecked(val);
+}
+
+void DTKMainWindow::on_setTransparentCheckBox_clicked()
+{
+   bool val=ui->setTransparentCheckBox->isChecked();
+   ui->openGLWidget->setTransparentAtomsAndLinks(val);
+   setTransparentAtomsAndLinksAction->setChecked(val);
 }

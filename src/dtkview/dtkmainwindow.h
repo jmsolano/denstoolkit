@@ -66,6 +66,7 @@ public slots:
    void loadTestMolecule(void);
    void clearViewPort(void);
    void exportViewPortImage(void);
+   void setTransparentAtomsAndLinks(void);
    void setViewAtoms(void);
    void setViewAtomLabels(void);
    void setViewRegularBonds(void);
@@ -82,6 +83,7 @@ private slots:
    void on_viewBGPsCheckBox_clicked();
    void on_viewRegularBondsCheckBox_clicked();
    void on_viewAtomsCheckBox_clicked();
+   void on_setTransparentCheckBox_clicked();
 
 private:
    Ui::DTKMainWindow *ui;
@@ -92,12 +94,16 @@ private:
    QAction *loadTestMoleculeAction;
    QAction *clearViewPortAction;
    QAction *exportViewPortImageAction;
+
    QAction *viewAtomsAction;
    QAction *viewAtomLabelsAction;
    QAction *viewRegularBondsAction;
+   QAction *setTransparentAtomsAndLinksAction;
+
    QAction *viewBondGradientPathsAction;
    QAction *viewRingGradientPathsAction;
    QAction *viewCageGradientPathsAction;
+
    QAction *showAboutDTKAction;
    // +++++++++++++++++++++ MENUS +++++++++++++++++++++
    // When adding new menus, do not forget to delete
