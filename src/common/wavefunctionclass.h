@@ -201,6 +201,9 @@ public:
     * of the primn-th primivite. */
    int getAng(int primn,int cartn); 
    /* *********************************************************************************** */
+   /** This function returns the angular exponents of the primn-th type.  */
+   void getAng(int primn,int (&tt)[3]);
+   /* *********************************************************************************** */
    /**
       This function returns the value of the primitive coefficient of the orbn-th orbital
       and primn-th primitive. As any function in c, the indices run from 0 to some number.
@@ -272,6 +275,13 @@ public:
     */
    bool readFromFile(string inname);
    /* *********************************************************************************** */
+   /** As the name suggests, the function performs a series of test to verify the sanity
+    * (or suitability) of the loaded wavefunction. In the first implementation,
+    * for instance, if the primitive type of any primitive center is higher than
+    * 20, a warning message will be printed about the incompleteness of the implemented
+    * fiedls.  */
+   void sanityChecks(void);
+   /* *********************************************************************************** */
    /** This function allocates memory space for the auxiliar arrays the gaussWaveFunction object
       uses for calculating numerical properties (rho, grad(rho), hess(rho), etc.).
     */
@@ -296,7 +306,7 @@ public:
       only gaussian wave functions are handled.
     */
    /* *********************************************************************************** */
-   solreal evalPrimCases(int &pty,solreal &alp, solreal x, solreal y, solreal z);
+   //solreal evalPrimCases(int &pty,solreal &alp, solreal x, solreal y, solreal z);
    /* *********************************************************************************** */
    /** This funtion returns the value of the angular part of the primitive, i.e., it returns the
       value of \f$x^{a_1}y^{a_2}z^{a^3}\f$, where a1,a2,a3 are the values of the angular exponents.

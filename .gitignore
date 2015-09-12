@@ -62,6 +62,7 @@ tex/ejemplos/*
 wavefiles/*
 arts/*
 src/dtkview/build/*
+wishlist/*
 
 #specific files
 namefiglet.txt

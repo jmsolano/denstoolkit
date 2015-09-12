@@ -81,6 +81,7 @@
 #define _SOLWAVEFUNCTIONCLASS_CPP_
 
 #include "wavefunctionclass.h"
+#include "solscrutils.h"
 #include "solmemhand.h"
 #include "iofuncts-wfn.h"
 #include "iofuncts-wfx.h"
@@ -217,6 +218,14 @@ int gaussWaveFunc::getAng(int primn,int cartn)
    return prTy[tty*3+cartn];
 }
 /* ************************************************************************************** */
+void gaussWaveFunc::getAng(int primn,int (&tt)[3])
+{
+   int tty=primType[primn]*3;
+   tt[0]=prTy[tty+0];
+   tt[1]=prTy[tty+1];
+   tt[2]=prTy[tty+2];
+}
+/* ************************************************************************************** */
 bool gaussWaveFunc::sameMolOrbOccNums()
 {
    if (!occN) {
@@ -345,14 +354,31 @@ bool gaussWaveFunc::readFromFile(string inname)
 {
    string extension;
    extension=inname.substr(inname.length()-3,3);
+   bool res;
    if ((extension=="wfn")||(extension=="WFN")) {
-      return readFromFileWFN(inname);
+      res=readFromFileWFN(inname);
    } else if ((extension=="wfx")||(extension=="WFX")) {
-      return readFromFileWFX(inname);
+      res=readFromFileWFX(inname);
    } else {
       cout << "Error: unknown extension ("  << inname << ")!\nNothig to do, returning false...\n";
       cout << __FILE__ << ", line: " << __LINE__ << endl;
       return false;
+   }
+   if ( !res ) { return res; }
+   sanityChecks();
+   return res;
+}
+/* ************************************************************************************** */
+void gaussWaveFunc::sanityChecks(void)
+{
+   /* Warns about primitive types.  */
+   int maxPT=0;
+   for ( int i=0 ; i<nPri ; ++i ) {
+      if ( primType[i]>maxPT ) { maxPT=primType[i]; }
+   }
+   if ( maxPT>19 ) {
+      displayWarningMessage("Only Rho and MatDen1 are implemented for primitives"
+            "\nwith high angular momenta (i.e., primitive type > 20)");
    }
 }
 /* ************************************************************************************** */
@@ -561,6 +587,7 @@ void gaussWaveFunc::writeAllFieldProperties(solreal x,solreal y,solreal z,ofstre
 return;
 }
 /* ************************************************************************************** */
+/*
 solreal gaussWaveFunc::evalPrimCases(int &pty, solreal &alp, solreal x, solreal y, solreal z)
 {
    solreal xx,yy,zz,rr,pv;
@@ -644,16 +671,27 @@ solreal gaussWaveFunc::evalPrimCases(int &pty, solreal &alp, solreal x, solreal 
          pv*=z;
          break;
       default:
-         cout << "Not implemented angular function!\n";
+         cout << "Not implemented angular function! (a=" << pty << ")\n";
          break;
    }
    return pv;
 }
+// */
 /* ************************************************************************************** */
+/* Preliminary tests indicate that, surprisingly, the case choosing is slightly
+ * slower (around 1-2%) than the brute for(...) {pv*=x_i;}. Tested with phenantrene and 
+ * f2.g09.wfn  */
 solreal gaussWaveFunc::evalAngACases(int &pty, solreal x, solreal y, solreal z)
 {
-   solreal pv;
-   pv=1.00000000e0;
+   solreal pv=1.00000000e0;
+   //*
+   int a[3];
+   getAng(pty,a);
+   for ( int i=0 ; i<a[0] ; ++i ) { pv*=x; }
+   for ( int i=0 ; i<a[1] ; ++i ) { pv*=y; }
+   for ( int i=0 ; i<a[2] ; ++i ) { pv*=z; }
+   // */
+   /*
    switch (pty) {
       case 0:
          break;
@@ -725,10 +763,33 @@ solreal gaussWaveFunc::evalAngACases(int &pty, solreal x, solreal y, solreal z)
          pv*=y;
          pv*=z;
          break;
+      case 20 :
+      case 21 :
+      case 22 :
+      case 23 :
+      case 24 :
+      case 25 :
+      case 26 :
+      case 27 :
+      case 28 :
+      case 29 :
+      case 30 :
+      case 31 :
+      case 32 :
+      case 33 :
+      case 34 :
+      case 35 :
+         int a[3];
+         getAng(pty,a);
+         for ( int i=0 ; i<a[0] ; ++i ) { pv*=x; }
+         for ( int i=0 ; i<a[1] ; ++i ) { pv*=y; }
+         for ( int i=0 ; i<a[2] ; ++i ) { pv*=z; }
+         break;
       default:
-         cout << "Not implemented angular function!\n";
+         cout << "Not implemented angular function! (t=" << (pty+1) << ")\n";
          break;
    }
+   // */
    return pv;
 }
 /* ************************************************************************************** */
