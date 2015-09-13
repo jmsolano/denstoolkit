@@ -92,6 +92,10 @@
 #define DEBUG 0
 #endif
 
+#if DEBUG
+#include "solstringtools.h"
+#endif
+
 #ifndef EPSFORELFVALUE
 #define EPSFORELFVALUE (2.871e-05)
 #endif
@@ -366,12 +370,15 @@ bool gaussWaveFunc::sanityChecks(void)
 {
    bool ret=true;
    /* Warns about primitive types.  */
-   int maxPT=0;
+   maxPrimType=0;
    for ( int i=0 ; i<nPri ; ++i ) {
-      if ( primType[i]>maxPT ) { maxPT=primType[i]; }
+      if ( primType[i]>maxPrimType ) { maxPrimType=primType[i]; }
    }
-   if ( maxPT>19 ) {
-      displayWarningMessage("Only Rho, GradRho, MatDen1, and GradMatDen1 are implemented for"
+   if ( maxPrimType>19 ) {
+      displayWarningMessage("Unfortunately, in current version ("
+            CURRENTVERSION
+            "),\nfunctions requiring computation of Boys Function"
+            "\nterms are not implemented for"
             "\nprimitives with high angular momenta (i.e., primitive type > 20)");
    }
    return ret;
@@ -1240,11 +1247,32 @@ void gaussWaveFunc::evalDkAngCases(int &pty,solreal alp,solreal x, solreal y, so
    return;
 }
 /* *********************************************************************************** */
+/* Some loop tests shows that using directly evald2SingCartA (as opposed to
+ * use cases) for evalDkDlAngCases is slightly faster (~0.5-1.0%).
+ * For the time being, JMSA does not advise to remove old code, since
+ * this is thoroughly tested (numerically), thus it is reliable.
+ * So far, evald2SingCartA reproduces without fault values at single
+ * points.  */
 void gaussWaveFunc::evalDkDlAngCases(int &pty,solreal alp,solreal x,solreal y,solreal z,
       solreal &axx,solreal &ayy,solreal &azz,solreal &axy,solreal &axz,solreal &ayz)
 {
-   solreal ta,fa2,x2,y2,z2;
-   ta=(-2.00000e0*alp);
+   solreal ta=(-2.00000e0*alp);
+   //*
+   int a[3];
+   getAng(pty,a);
+   solreal d0x,d0y,d0z,d1x,d2x,d1y,d2y,d1z,d2z;
+   evald2SingCartA(a[0],ta,x,d0x,d1x,d2x);
+   evald2SingCartA(a[1],ta,y,d0y,d1y,d2y);
+   evald2SingCartA(a[2],ta,z,d0z,d1z,d2z);
+   axx=d2x*d0y*d0z;
+   ayy=d0x*d2y*d0z;
+   azz=d0x*d0y*d2z;
+   axy=d1x*d1y*d0z;
+   axz=d1x*d0y*d1z;
+   ayz=d0x*d1y*d1z;
+   // */
+   /*
+   solreal fa2,x2,y2,z2;
    fa2=ta*ta;
    x2=x*x;
    y2=y*y;
@@ -1411,14 +1439,23 @@ void gaussWaveFunc::evalDkDlAngCases(int &pty,solreal alp,solreal x,solreal y,so
          ayz=(1.00000e0+ta*y2)*(1.00000e0+ta*z2)*x;
          break;
       default:
-         axx=0.00000e0;
-         ayy=0.00000e0;
-         azz=0.00000e0;
-         axy=0.00000e0;
-         axz=0.00000e0;
-         ayz=0.00000e0;
+         {
+            int a[3];
+            getAng(pty,a);
+            solreal d0x,d0y,d0z,d1x,d2x,d1y,d2y,d1z,d2z;
+            evald2SingCartA(a[0],ta,x,d0x,d1x,d2x);
+            evald2SingCartA(a[1],ta,y,d0y,d1y,d2y);
+            evald2SingCartA(a[2],ta,z,d0z,d1z,d2z);
+            axx=d2x*d0y*d0z;
+            ayy=d0x*d2y*d0z;
+            azz=d0x*d0y*d2z;
+            axy=d1x*d1y*d0z;
+            axz=d1x*d0y*d1z;
+            ayz=d0x*d1y*d1z;
+         }
          break;
    }
+   // */
    return;
 }
 #if PARALLELISEDTK
@@ -1607,15 +1644,6 @@ void gaussWaveFunc::evalHessian(solreal x, solreal y, solreal z,
          sxz+=(cc*hxz[i]);
          syz+=(cc*hyz[i]);
       }
-      /*
-      cc=2.0e0*occN[nMOr];
-      dxx+=(cc*(sxx*chii+gxs*gxs));
-      dyy+=(cc*(syy*chii+gys*gys));
-      dzz+=(cc*(szz*chii+gzs*gzs));
-      dxy+=(cc*(sxy*chii+gxs*gys));
-      dxz+=(cc*(sxz*chii+gxs*gzs));
-      dyz+=(cc*(syz*chii+gys*gzs));
-      // */
       dxx+=(sxx);
       dyy+=(syy);
       dzz+=(szz);
@@ -1695,7 +1723,16 @@ solreal gaussWaveFunc::evalLapAngCases(int &pty,solreal alp,solreal x,solreal y,
          return ((9.00000e0*ta+fr)*x*y*z);
          break;
       default:
-         return 0.00000e0;
+         {
+            solreal 
+            int a[3];
+            getAng(pty,a);
+            solreal d0x,d0y,d0z,d1x,d2x,d1y,d2y,d1z,d2z;
+            evald2SingCartA(a[0],ta,x,d0x,d1x,d2x);
+            evald2SingCartA(a[1],ta,y,d0y,d1y,d2y);
+            evald2SingCartA(a[2],ta,z,d0z,d1z,d2z);
+            return (d2x*d0y*d0z+d0x*d2y*d0z+d0x*d0y*d2z);
+         }
          break;
    }
    return 0.00000e0;
@@ -3017,6 +3054,20 @@ void gaussWaveFunc::evald4SingCartA(int &ang,solreal &t,solreal &f,solreal &x,so
          d3=6.00000e0-x2*((9.00000e0*t-fax2)*(3.00000e0+t*x2));
          d4=x*(60.0000e0*t+fax2*(75.0000e0+x2*(18.0000e0*t+fax2)));
          break;
+      case 4 :
+         d0=x2*x2;
+         d1=x2*x*(4.00000e0+t*x2);
+         d2=x2*(12.0000e0+x2*(9.00000e0*t+fax2));
+         d3=x*(24.0000e0+t*x2*(48.0000e0+x2*(15.0000e0*t+fax2)));
+         d4=24.0e0+x2*(168.0e0*t+fax2*(123.0e0+t*x2*(22.0e0+t*x2)));
+         break;
+      case 5 :
+         d0=x2*x2*x;
+         d1=x2*x2*(5.00000e0+t*x2);
+         d2=x2*x*(20.0000e0+x2*(11.0000e0*t+fax2));
+         d3=x2*(60.0000e0+x2*(75.0000e0*t+fax2*(18.0000e0+t*x2)));
+         d4=x*(120.0e0+x2*(360.0e0*t+fax2*(183.0e0+x2*(26.0e0*t+fax2))));
+         break;
       default:
          d0=0.00000e0;
          d1=0.00000e0;
@@ -3061,10 +3112,68 @@ void gaussWaveFunc::evald1SingCartA(int &ang,solreal &t,solreal x,\
          d0=x*x2;
          d1=x2*(3.00000e0+t*x2);
          break;
+      case 4 :
+         d0=x2*x2;
+         d1=x2*x*(4.00000e0+t*x2);
+         break;
+      case 5 :
+         d0=x2*x2*x;
+         d1=x2*x2*(5.00000e0+t*x2);
+         break;
       default :
+         displayWarningMessage("Non supported primitive type. Numerical errors"
+               "are expected!");
          d0=d1=0.0e0;
          break;
    }
+}
+/* ************************************************************************************** */
+void gaussWaveFunc::evald2SingCartA(int &ang,solreal &t,solreal x,\
+                      solreal &d0,solreal &d1,solreal &d2)
+{
+   solreal x2=x*x;
+   solreal f=t*t;
+   solreal fax2=f*x2;
+   switch (ang) {
+      case 0:
+         d0=1.00000e0;
+         d1=t*x;
+         d2=t+fax2;
+         break;
+      case 1:
+         d0=x;
+         d1=1.00000e0+t*x2;
+         d2=x*(3.00000e0*t+fax2);
+         break;
+      case 2:
+         d0=x2;
+         d1=x*(2.00000e0+t*x2);
+         d2=2.00000e0+x2*(5.00000e0*t+fax2);
+         break;
+      case 3:
+         d0=x*x2;
+         d1=x2*(3.00000e0+t*x2);
+         d2=x*(6.00000e0+x2*(7.00000e0*t+fax2));
+         break;
+      case 4 :
+         d0=x2*x2;
+         d1=x2*x*(4.00000e0+t*x2);
+         d2=x2*(12.0000e0+x2*(9.00000e0*t+fax2));
+         break;
+      case 5 :
+         d0=x2*x2*x;
+         d1=x2*x2*(5.00000e0+t*x2);
+         d2=x2*x*(20.0000e0+x2*(11.0000e0*t+fax2));
+         break;
+      default:
+         displayWarningMessage("Non supported primitive type. Numerical errors"
+               "are expected!");
+         d0=0.00000e0;
+         d1=0.00000e0;
+         d2=0.00000e0;
+         break;
+   }
+   return;
 }
 /* ************************************************************************************** */
 void gaussWaveFunc::evald3SingCartA(int &ang,solreal &t,solreal &f,solreal &x,solreal &x2,
@@ -3096,7 +3205,21 @@ void gaussWaveFunc::evald3SingCartA(int &ang,solreal &t,solreal &f,solreal &x,so
          d2=x*(6.00000e0+x2*(7.00000e0*t+fax2));
          d3=6.00000e0-x2*((9.00000e0*t-fax2)*(3.00000e0+t*x2));
          break;
+      case 4 :
+         d0=x2*x2;
+         d1=x2*x*(4.00000e0+t*x2);
+         d2=x2*(12.0000e0+x2*(9.00000e0*t+fax2));
+         d3=x*(24.0000e0+t*x2*(48.0000e0+x2*(15.0000e0*t+fax2)));
+         break;
+      case 5 :
+         d0=x2*x2*x;
+         d1=x2*x2*(5.00000e0+t*x2);
+         d2=x2*x*(20.0000e0+x2*(11.0000e0*t+fax2));
+         d3=x2*(60.0000e0+x2*(75.0000e0*t+fax2*(18.0000e0+t*x2)));
+         break;
       default:
+         displayWarningMessage("Non supported primitive type. Numerical errors"
+               "are expected!");
          d0=0.00000e0;
          d1=0.00000e0;
          d2=0.00000e0;
@@ -4374,6 +4497,21 @@ solreal gaussWaveFunc::evalVAB(solreal (&xx)[3],int (&aa)[3],int (&ab)[3],solrea
 #if PARALLELISEDTK
 solreal gaussWaveFunc::evalMolElecPot(solreal x,solreal y,solreal z)
 {
+#if DEBUG
+   static bool showmsg=true;
+#endif
+   if ( maxPrimType>19 ) {
+#if DEBUG
+      if (showmsg) {
+         displayErrorMessage(string("Non supported angular momenta of"
+            "primitives, requesting type: ")\
+            +getStringFromInt(maxPrimType));
+         showmsg=false;
+
+      }
+#endif
+      return 0.0e0;
+   }
    int indr,inda,indp;
    solreal xx[3],ra[3],rb[3],alpa,alpb,mepaa,mepab,mepelec,cc;
    int aa[3],ab[3],i,j;
@@ -4425,6 +4563,21 @@ firstprivate(j) lastprivate(i) shared(xx) reduction(+: mepaa,mepab)
 /* *************************************************************************************** */
 solreal gaussWaveFunc::evalMolElecPot(solreal x,solreal y,solreal z)
 {
+#if DEBUG
+   static bool showmsg=true;
+#endif
+   if ( maxPrimType>19 ) {
+#if DEBUG
+      if (showmsg) {
+         displayErrorMessage(string("Non supported angular momenta of"
+            "primitives, requesting type: ")\
+            +getStringFromInt(maxPrimType));
+         showmsg=false;
+
+      }
+#endif
+      return 0.0e0;
+   }
    int indr,inda,indp;
    solreal xx[3],ra[3],rb[3],alpa,alpb,mepaa,mepab,mepelec,cc;
    int aa[3],ab[3];

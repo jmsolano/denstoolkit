@@ -180,8 +180,8 @@ void DeMat1CriticalPointNetwork::getXCoordinatesFromUV(solreal uu,solreal vv,\
    if ( vv>1.0e0 || vv<0.0e0 ) {
       displayErrorMessage("v out of range! v should be: 0<=v<=1");
       DISPLAYDEBUGINFOFILELINE;
-#endif /* ( DEBUG ) */
    }
+#endif /* ( DEBUG ) */
    for ( int i=0 ; i<3 ; i++ ) {
       xx[i]=x1[i]+x2mx1[i]*vv;
       xp[i]=x1[i]+x2mx1[i]*uu;
