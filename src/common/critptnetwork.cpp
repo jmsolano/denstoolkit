@@ -3157,8 +3157,10 @@ bool critPtNetWork::seekSingleRhoBCP(int ata,int atb,solreal (&x)[3])
    //magg=sqrt(magg);
    if (!((rho>CPNW_MINRHOSIGNIFICATIVEVAL)&&(computeMagnitudeV3(g)<CPNW_EPSRHOACPGRADMAG))) {
       displayErrorMessage(string("The chosen atoms ("+wf->atLbl[ata]\
-               +","+wf->atLbl[atb]+") do not lead to a BCP!"));
-      //wf->displayAllFieldProperties(x[0],x[1],x[2]);
+               +","+wf->atLbl[atb]+") probably do not lead to a BCP!"));
+#if DEBUG
+      wf->displayAllFieldProperties(x[0],x[1],x[2]);
+#endif
       return false;
    }
    return true;

@@ -668,16 +668,29 @@ int main (int argc, char ** argv)
       displayWarningMessage(string("md1lmin: "+getStringFromReal(md1lmin)));
    }
    cout << "gmin: " << gmd1min << ", gmax: " << gmd1max << endl;
-   cout << "minval: " << (round(110*md1min)/100.0e0) << endl;
+   cout << "md1dmax: " << md1dmax << endl;
+   cout << "md1lmin: " << md1lmin << endl;
+   cout << "range: " << range << endl;
 #endif
    minval=round(110*gmd1min)/100.0e0;
    maxval=round(110*(md1lmin+range))/100.0e0;
+#if DEBUG
+   cout << "minval: " << minval << endl;
+   cout << "maxval: " << maxval << endl;
+#endif /* ( DEBUG ) */
    if ((fabs(md1lmin-md1min)>range)&&(range<1.0e-02)) {
       range=2.0e0*fabs(md1lmin-md1min);
       //minval=round(90*md1min)/100.0e0;
       minval=round(110*gmd1min)/100.0e0;
       maxval=round(110*(md1min+range))/100.0e0;
    }
+   //if ( minval<0.0e0 ) {
+      //maxval=minval+2.0e0*fabs(minval);
+   //}
+#if DEBUG
+   cout << "minval: " << minval << endl;
+   cout << "maxval: " << maxval << endl;
+#endif /* ( DEBUG ) */
    ofstream gfil;
    gfil.open(gnpnam.c_str(),ios::out);
    gfil << "namedatfile='" << outfilnam << "'" << endl;

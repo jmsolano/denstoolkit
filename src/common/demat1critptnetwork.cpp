@@ -172,15 +172,13 @@ void DeMat1CriticalPointNetwork::computePolygonVertices(void)
 void DeMat1CriticalPointNetwork::getXCoordinatesFromUV(solreal uu,solreal vv,\
       solreal (&xx)[3],solreal (&xp)[3])
 {
-   if ( uu>1.0e0 || uu<0.0e0 ) {
-      //displayErrorMessage("u out of range! u should be: 0<=u<=1");
 #if DEBUG
+   if ( uu>1.0e0 || uu<0.0e0 ) {
+      displayErrorMessage("u out of range! u should be: 0<=u<=1");
       DISPLAYDEBUGINFOFILELINE;
-#endif /* ( DEBUG ) */
    }
    if ( vv>1.0e0 || vv<0.0e0 ) {
-      //displayErrorMessage("v out of range! v should be: 0<=v<=1");
-#if DEBUG
+      displayErrorMessage("v out of range! v should be: 0<=v<=1");
       DISPLAYDEBUGINFOFILELINE;
 #endif /* ( DEBUG ) */
    }

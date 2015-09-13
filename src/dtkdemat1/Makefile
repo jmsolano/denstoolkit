@@ -51,36 +51,39 @@ all: build
 
 build: dtkdemat1
 
-$(OBJDIR)/solmemhand.o: ../common/solmemhand.cpp soldefines.h
+$(OBJDIR)/solmemhand.o: ../common/solmemhand.cpp ../common/solmemhand.h soldefines.h
 	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
 
-$(OBJDIR)/solscrutils.o: ../common/solscrutils.cpp soldefines.h
+$(OBJDIR)/solscrutils.o: ../common/solscrutils.cpp ../common/solscrutils.h soldefines.h
 	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
 
-$(OBJDIR)/solstringtools.o: ../common/solstringtools.cpp soldefines.h
+$(OBJDIR)/solstringtools.o: ../common/solstringtools.cpp ../common/solstringtools.h soldefines.h
 	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
 
 $(OBJDIR)/solfileutils.o: ../common/solfileutils.cpp soldefines.h
 	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
 
-$(OBJDIR)/iofuncts-wfx.o: ../common/iofuncts-wfx.cpp ../common/solmemhand.cpp soldefines.h
+$(OBJDIR)/iofuncts-wfx.o: ../common/iofuncts-wfx.cpp ../common/iofuncts-wfx.h\
+	                       ../common/solmemhand.cpp ../common/solmemhand.h soldefines.h
 	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
 
-$(OBJDIR)/iofuncts-cpx.o: ../common/iofuncts-cpx.cpp ../common/solmemhand.cpp \
+$(OBJDIR)/iofuncts-cpx.o: ../common/iofuncts-cpx.cpp ../common/iofuncts-cpx.h \
+	                       ../common/solmemhand.cpp ../common/solmemhand.h \
                           soldefines.h ../common/fldtypesdef.h ../common/solscrutils.h \
                           ../common/solstringtools.h
 	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
 
-$(OBJDIR)/iofuncts-wfn.o: ../common/iofuncts-wfn.cpp ../common/solmemhand.cpp soldefines.h
+$(OBJDIR)/iofuncts-wfn.o: ../common/iofuncts-wfn.cpp ../common/iofuncts-wfn.h \
+	                       ../common/solmemhand.cpp ../common/solmemhand.h soldefines.h
 	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
 
-$(OBJDIR)/solmath.o: ../common/solmath.cpp soldefines.h
+$(OBJDIR)/solmath.o: ../common/solmath.cpp ../common/solmath.h soldefines.h
 	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
 
 $(OBJDIR)/eig2-4.o: ../common/eig2-4.cpp soldefines.h
 	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
 
-$(OBJDIR)/wavefunctionclass.o: ../common/wavefunctionclass.cpp soldefines.h
+$(OBJDIR)/wavefunctionclass.o: ../common/wavefunctionclass.cpp ../common/wavefunctionclass.h soldefines.h
 	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
 
 $(OBJDIR)/solpovtools.o: ../common/solpovtools.cpp soldefines.h
@@ -147,4 +150,7 @@ runch4a: build
 
 runch4: build
 	./dtkdemat1  ch4.wfx -P -l -c -L -n 40 -p G -T #-C -0.04 0.004 0.06
+
+runf2: build
+	./dtkdemat1  f2.g09.wfn -P -l -c -L -n 40 -p G -a 1 2
 

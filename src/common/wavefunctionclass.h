@@ -197,12 +197,8 @@ public:
     */
    solreal getR(const int nucnum,const int cart);
    /* *********************************************************************************** */
-   /** This function returns the angular exponent of the cartn-th cartesian coordinate 
-    * of the primn-th primivite. */
-   int getAng(int primn,int cartn); 
-   /* *********************************************************************************** */
-   /** This function returns the angular exponents of the primn-th type.  */
-   void getAng(int primn,int (&tt)[3]);
+   /** This function returns three angular exponents of the type pt (primitive type). */
+   void getAng(int pt,int (&tt)[3]);
    /* *********************************************************************************** */
    /**
       This function returns the value of the primitive coefficient of the orbn-th orbital
@@ -280,7 +276,7 @@ public:
     * for instance, if the primitive type of any primitive center is higher than
     * 20, a warning message will be printed about the incompleteness of the implemented
     * fiedls.  */
-   void sanityChecks(void);
+   bool sanityChecks(void);
    /* *********************************************************************************** */
    /** This function allocates memory space for the auxiliar arrays the gaussWaveFunction object
       uses for calculating numerical properties (rho, grad(rho), hess(rho), etc.).
@@ -300,14 +296,11 @@ public:
    /** This function will write the wave function into a wfx file which name is outname. */
    bool writeToFileWFX(string outname);
    /* *********************************************************************************** */
-   bool testSupport(void);
-   /*
-      This function returns true if the *.wfn or *.wfx is supported. At the current version,
+   /** This function returns true if the *.wfn or *.wfx is supported. At the current version,
       only gaussian wave functions are handled.
     */
-   /* *********************************************************************************** */
-   //solreal evalPrimCases(int &pty,solreal &alp, solreal x, solreal y, solreal z);
-   /* *********************************************************************************** */
+   bool testSupport(void);
+      /* *********************************************************************************** */
    /** This funtion returns the value of the angular part of the primitive, i.e., it returns the
       value of \f$x^{a_1}y^{a_2}z^{a^3}\f$, where a1,a2,a3 are the values of the angular exponents.
       The values of a_i are coded in the value of pty (the type of primitive). For correct results,
@@ -315,11 +308,11 @@ public:
     */
    solreal evalAngACases(int &pty, solreal x, solreal y, solreal z);
    /* *********************************************************************************** */
-   /** This function evaluates the gradient of \f$\phi_{\dot{A}}(x,y,z)\f$. 
+   /* This function evaluates the gradient of \f$\phi_{\dot{A}}(x,y,z)\f$. 
     * \f$\nabla\phi=(grx,gry,grz)\f$.
     For correct results, x must be the difference between the field point and the primitive center. 
     */
-   void evalDkPrimCases(int pty,solreal alp,solreal x, solreal y, solreal z,\
+   //void evalDkPrimCases(int pty,solreal alp,solreal x, solreal y, solreal z,\
          solreal &grx, solreal &gry, solreal &grz);
    /* *********************************************************************************** */
    /** Let the field point be \f$\vec{\xi}\f$, and a primitive \f$\phi_{\dot{A}}\f$, with center 
@@ -493,6 +486,8 @@ public:
     This particular function aims to locate Cage Critical Points.
     */
    void getCageCPStep(solreal (&x)[3],solreal (&hh)[3],solreal (&g)[3]);
+   /* *********************************************************************************** */
+   void evald1SingCartA(int &ang,solreal &t,solreal x,solreal &d0,solreal &d1);
    /* *********************************************************************************** */
    void evald3SingCartA(int &ang,solreal &t,solreal &f,solreal &x,solreal &x2,
                       solreal &d0,solreal &d1,solreal &d2,solreal &d3);

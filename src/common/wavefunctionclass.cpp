@@ -211,16 +211,9 @@ solreal gaussWaveFunc::getR(const int nucnum,const int cart)
    return R[3*nucnum+cart];
 }
 /* ************************************************************************************** */
-int gaussWaveFunc::getAng(int primn,int cartn)
+void gaussWaveFunc::getAng(int pt,int (&tt)[3])
 {
-   int tty;
-   tty=primType[primn];
-   return prTy[tty*3+cartn];
-}
-/* ************************************************************************************** */
-void gaussWaveFunc::getAng(int primn,int (&tt)[3])
-{
-   int tty=primType[primn]*3;
+   int tty=pt*3;
    tt[0]=prTy[tty+0];
    tt[1]=prTy[tty+1];
    tt[2]=prTy[tty+2];
@@ -365,21 +358,23 @@ bool gaussWaveFunc::readFromFile(string inname)
       return false;
    }
    if ( !res ) { return res; }
-   sanityChecks();
+   res=(res&&sanityChecks());
    return res;
 }
 /* ************************************************************************************** */
-void gaussWaveFunc::sanityChecks(void)
+bool gaussWaveFunc::sanityChecks(void)
 {
+   bool ret=true;
    /* Warns about primitive types.  */
    int maxPT=0;
    for ( int i=0 ; i<nPri ; ++i ) {
       if ( primType[i]>maxPT ) { maxPT=primType[i]; }
    }
    if ( maxPT>19 ) {
-      displayWarningMessage("Only Rho and MatDen1 are implemented for primitives"
-            "\nwith high angular momenta (i.e., primitive type > 20)");
+      displayWarningMessage("Only Rho, GradRho, MatDen1, and GradMatDen1 are implemented for"
+            "\nprimitives with high angular momenta (i.e., primitive type > 20)");
    }
+   return ret;
 }
 /* ************************************************************************************** */
 void gaussWaveFunc::countPrimsPerCenter(void)
@@ -1107,8 +1102,10 @@ bool gaussWaveFunc::allocAuxArrays(void)
 /* ************************************************************************************** */
 void gaussWaveFunc::evalDkAngCases(int &pty,solreal alp,solreal x, solreal y, solreal z, solreal &anx, solreal &any, solreal &anz)
 {
-   solreal cc;
-   cc=(-2.0000000e0*alp);
+   solreal cc=(-2.0000000e0*alp);
+   /* As opposed to the case of evalAngACases, tests indicate that a combination
+    * of cases-choose for small angular momentum, and the generic algorithm for
+    * large angular exponent is the fastets choice.  */
    switch (pty) {
       case 0:
          anx=cc*x;
@@ -1227,15 +1224,24 @@ void gaussWaveFunc::evalDkAngCases(int &pty,solreal alp,solreal x, solreal y, so
          anz=x*y+cc*z;
          break;
       default:
-         cout << "Not implemented angular function!!\n";
-         anx=any=anz=0.000000e0;
+         {
+            int a[3];
+            getAng(pty,a);
+            solreal tmpx,tmpy,tmpz;
+            evald1SingCartA(a[0],cc,x,tmpx,anx);
+            evald1SingCartA(a[1],cc,y,tmpy,any);
+            evald1SingCartA(a[2],cc,z,tmpz,anz);
+            anx*=(tmpy*tmpz);
+            any*=(tmpx*tmpz);
+            anz*=(tmpx*tmpy);
+         }
          break;
    }
    return;
 }
 /* *********************************************************************************** */
 void gaussWaveFunc::evalDkDlAngCases(int &pty,solreal alp,solreal x,solreal y,solreal z,
-                      solreal &axx,solreal &ayy,solreal &azz,solreal &axy,solreal &axz,solreal &ayz)
+      solreal &axx,solreal &ayy,solreal &azz,solreal &axy,solreal &axz,solreal &ayz)
 {
    solreal ta,fa2,x2,y2,z2;
    ta=(-2.00000e0*alp);
@@ -3032,6 +3038,33 @@ void gaussWaveFunc::evald4Ang(int (&a)[3],solreal &alp,solreal (&x)[3],solreal (
       evald4SingCartA(a[i],tma,fa2,x[i],x2[i],d0[i],d1[i],d2[i],d3[i],d4[i]);
    }
    return;
+}
+/* ************************************************************************************** */
+void gaussWaveFunc::evald1SingCartA(int &ang,solreal &t,solreal x,\
+      solreal &d0,solreal &d1)
+{
+   solreal x2=x*x;
+   switch ( ang ) {
+      case 0 :
+         d0=1.0e0;
+         d1=t*x;
+         break;
+      case 1 :
+         d0=x;
+         d1=1.0e0+t*x2;
+         break;
+      case 2 :
+         d0=x2;
+         d1=x*(2.00000e0+t*x2);
+         break;
+      case 3 :
+         d0=x*x2;
+         d1=x2*(3.00000e0+t*x2);
+         break;
+      default :
+         d0=d1=0.0e0;
+         break;
+   }
 }
 /* ************************************************************************************** */
 void gaussWaveFunc::evald3SingCartA(int &ang,solreal &t,solreal &f,solreal &x,solreal &x2,
