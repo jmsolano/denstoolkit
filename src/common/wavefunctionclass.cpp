@@ -1724,7 +1724,6 @@ solreal gaussWaveFunc::evalLapAngCases(int &pty,solreal alp,solreal x,solreal y,
          break;
       default:
          {
-            solreal 
             int a[3];
             getAng(pty,a);
             solreal d0x,d0y,d0z,d1x,d2x,d1y,d2y,d1z,d2z;
