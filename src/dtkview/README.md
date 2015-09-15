@@ -33,7 +33,7 @@ $sudo rm /usr/lib/x86_64-linux-gnu/libEGL.so; sudo ln /usr/lib/x86_64-linux-gnu/
 $sudo rm /usr/lib/x86_64-linux-gnu/libGL.so; sudo ln /usr/lib/x86_64-linux-gnu/libGL.so.1 /usr/lib/x86_64-linux-gnu/libGL.so
 ~~~~~~~~~~~~~
 #MacOSX
-The easiest way to obtain the viewer is for you to write us an e-mail (jmsolanoalt@gmail.com) We will send you the dmg (**Of course, if you know a better way to distribute a dmg, please let us know**). You may also try to compile it by yourself using cmake. 
+The easiest way to obtain the viewer is for you to download a compiled version of it (https://sites.google.com/site/jmsolanoalt/software/denstoolkit/downloads/DensToolKitViewer.dmg?attredirects=0&d=1). You may also try to compile it by yourself using cmake. 
 For compiling under MacOSX, Qt5, OpenGL (usually distributed with XCode), and freeglut packages/libraries are required. 
 
 Also, perhaps you may need to adjust a few lines in the CMakeFileLists.txt in order to tell cmake where is the root Qt5 directory (_i.e._ you may need to redefine the ```CMAKE_PREFIX_PATH``` variable by hand).
