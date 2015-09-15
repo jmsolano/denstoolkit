@@ -101,6 +101,11 @@ Your changes should be commited and pushed to your own repository.
 After this, a pull request should be made. We will then
 review your contribution, and consider it for inclusion in the official
 distribution. All contributions are welcome!
+#List of Contributors
+For a complete list of contributors, please visit:
+ 
+https://github.com/jmsolano/denstoolkit/blob/master/src/CONTRIBUTORS
+
 
 
 
