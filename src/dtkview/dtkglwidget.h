@@ -41,6 +41,10 @@
  *
  */
 
+/* Several aspects of this class were inspired by the program
+ * VizMol, whose author is Abraham Max Santos Ramos.
+ */
+
 #ifndef DTKGLWIDGET_H
 #define DTKGLWIDGET_H
 #ifdef __APPLE__
