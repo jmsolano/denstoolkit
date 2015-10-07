@@ -63,6 +63,7 @@ wavefiles/*
 arts/*
 src/dtkview/build/*
 wishlist/*
+src/devdoc/html/*
 
 #specific files
 namefiglet.txt
@@ -77,4 +78,5 @@ src/scripts/dtkaddGPLv3
 src/scripts/dtkrmGPLv3
 src/firstrelease
 AFTER_PUB
+src/devdoc/Dev*.html
 
