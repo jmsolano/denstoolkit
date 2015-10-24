@@ -45,6 +45,8 @@ else
       CCFLAGS   += -DPARALLELISEDTK=0
 endif
 
+CCFLAGS += -std=c++11
+
 OBJDIR        := ../objs
 INCSOLDEFS    := -include soldefines.h
 PARTDEPS      := crtflnms.h crtflnms.cpp optflags.h optflags.cpp ../common/fldtypesdef.h
