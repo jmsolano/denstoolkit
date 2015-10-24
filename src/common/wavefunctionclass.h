@@ -171,6 +171,7 @@ using namespace std;
 #include <iomanip>
 using std::setprecision;
 #include <complex>
+using std::complex;
 #if PARALLELISEDTK
 #include <omp.h>
 #endif
@@ -229,7 +230,7 @@ public:
     */
    solreal evalDensity(solreal x,solreal y,solreal z);
    /* *********************************************************************************** */
-   solreal evalOptimizedScalar(solreal x,solreal y,solreal z);
+   solreal evalOptimizedScalar(solreal px,solreal py,solreal pz);
    /* *********************************************************************************** */
    /**
       This function returns true if all the Molecular Orbital Occupation Numers have the same

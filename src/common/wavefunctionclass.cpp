@@ -933,107 +933,75 @@ solreal gaussWaveFunc::evalDensity(solreal x,solreal y,solreal z)
 }
 #endif
 /* ************************************************************************************** */
-solreal gaussWaveFunc::evalOptimizedScalar(solreal x,solreal y,solreal z)
+solreal gaussWaveFunc::evalOptimizedScalar(solreal px,solreal py,solreal pz)
 {
-   int indr,indp;
-   solreal xmr,ymr,zmr,rho,chib;
-   rho=0.000000e0;
-   solreal rr;
+   int indr,indp,ppt;
+   solreal rhop,Rx[3],alp;
+   complex<solreal> chit,chiu;
    indr=0;
    indp=0;
    for (int i=0; i<nNuc; i++) {
-      xmr=x-R[indr++];
-      ymr=y-R[indr++];
-      zmr=z-R[indr++];
-      rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+      Rx[0]=R[indr++];
+      Rx[1]=R[indr++];
+      Rx[2]=R[indr++];
       for (int j=0; j<myPN[i]; j++) {
-         chi[indp]=exp(primExp[indp]*rr);
-         chi[indp]*=evalAngACases(primType[indp],xmr,ymr,zmr);
+         ppt=primType[indp];
+         alp=primExp[indp];
+         evalFTChi(ppt,alp,Rx,px,py,pz,chit);
+         chi[indp]=chit.real();
+         gx[indp]=chit.imag();
          indp++;
       }
    }
+   rhop=0.000000e0;
    /*
-   //1078.94ms; average: 2.69736 ms
-   //1084.21ms; average: 2.71053 ms
+   complex<solreal> chiv;
    indr=0;
-   rho=0.000000e0;
-   indr=-1;
+   for (int i=0; i<nPri; i++) {
+      indr=i*(nPri+1);
+      chiu=complex<solreal>(chi[i],gx[i]);
+      //chiu.real(chi[i]); chiu.imag(gx[i]);
+      rhop+=(cab[indr++]*norm(chiu));
+      for (int j=(i+1); j<nPri; j++) {
+         chiv=complex<solreal>(chi[j],gx[j]);
+         //chiv.real(chi[j]); chiv.imag(gx[j]);
+         chit=(chiv*conj(chiu));
+         chit+=(conj(chiv)*chiu);
+         rhop+=(cab[indr++]*(chit.real()));
+      }
+   }
+   // */
+   solreal sumim,sumre,cc;
+   indr=0;
    for ( int i=0 ; i<nPri ; ++i ) {
-      //indr=(nPri*i);
-      chib=0.0e0;
+      sumim=sumre=0.0e0;
       for ( int j=0 ; j<nPri ; ++j ) {
-         chib+=(cab[++indr]*chi[j]);
+         cc=cab[indr++];
+         sumre+=cc*chi[j];
+         sumim+=cc*gx[j];
       }
-      rho+=chib*chi[i];
+      rhop+=sumre*chi[i];
+      rhop+=sumim*gx[i];
    }
-   // */
-   //* so far, this is the fastest version
-   //1064.04ms; average: 2.66011 ms
-   //1069.48ms; average: 2.67371 ms
-   int lowPri=nPri-(nPri%4);
-   rho=0.000000e0;
-   indr=-1;
-   for ( int i=0 ; i<nPri ; ++i ) {
-      //indr=(nPri*i);
-      chib=0.0e0;
-      for ( int j=0 ; j<lowPri ; j+=4 ) {
-         chib+=(cab[++indr]*chi[j  ]);
-         chib+=(cab[++indr]*chi[j+1]);
-         chib+=(cab[++indr]*chi[j+2]);
-         chib+=(cab[++indr]*chi[j+3]);
-      }
-      for ( int j=lowPri ; j<nPri ; ++j ) {
-         chib+=(cab[++indr]*chi[j]);
-      }
-      rho+=chib*chi[i];
-   }
-   // */
-   // */
-   /*
-   //
-   //
-   int lowPri=nPri-(nPri%8);
-   indr=0;
-   rho=0.000000e0;
-   indr=-1;
-   for ( int i=0 ; i<nPri ; ++i ) {
-      //indr=(nPri*i);
-      chib=0.0e0;
-      for ( int j=0 ; j<lowPri ; j+=8 ) {
-         chib+=(cab[++indr]*chi[j  ]);
-         chib+=(cab[++indr]*chi[j+1]);
-         chib+=(cab[++indr]*chi[j+2]);
-         chib+=(cab[++indr]*chi[j+3]);
-         chib+=(cab[++indr]*chi[j+4]);
-         chib+=(cab[++indr]*chi[j+5]);
-         chib+=(cab[++indr]*chi[j+6]);
-         chib+=(cab[++indr]*chi[j+7]);
-      }
-      for ( int j=lowPri ; j<nPri ; ++j ) {
-         chib+=(cab[++indr]*chi[j]);
-      }
-      rho+=chib*chi[i];
-   }
-   // */
    if ( ihaveEDF ) {
       for ( int i=nPri ; i<totPri ; ++i ) {
          indr=3*(primCent[i]);
-         xmr=x-R[indr];
-         ymr=y-R[indr+1];
-         zmr=z-R[indr+2];
-         rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
-         //cout << "pc: " << primCent[i] << ", rr: " << rr << endl;
-         chi[i]=evalAngACases(primType[i],xmr,ymr,zmr);
-         chi[i]*=exp(primExp[i]*rr);
+         Rx[0]=R[indr];
+         Rx[1]=R[indr+1];
+         Rx[2]=R[indr+2];
+         ppt=primType[i];
+         alp=0.5e0*primExp[i];
+         evalFTChi(ppt,alp,Rx,px,py,pz,chit);
+         chi[i]=chit.real();
+         gx[i]=chit.imag();
       }
-      chib=0.0e0;
       for (int i=nPri; i<totPri; ++i) {
-         chib+=(EDFCoeff[i-nPri]*chi[i]);
+         chiu=complex<solreal>(chi[i],gx[i]);
+         //chiu.real(chi[i]); chiu.imag(gx[i]);
+         rhop+=(EDFCoeff[i-nPri]*norm(chiu));
       }
-      //rho+=occN[nMOr]*chib*chib;
-      rho+=chib;
    }
-   return rho;
+   return rhop;
 }
 /* ************************************************************************************** */
 #if PARALLELISEDTK
@@ -4347,7 +4315,7 @@ solreal gaussWaveFunc::evalFTDensity(solreal px,solreal py,solreal pz)
 {
    int indr,indp,ppt;
    solreal rhop,Rx[3],alp;
-   complex<solreal> chit;
+   complex<solreal> chit,chiu;
    indr=0;
    indp=0;
    for (int i=0; i<nNuc; i++) {
@@ -4365,7 +4333,8 @@ solreal gaussWaveFunc::evalFTDensity(solreal px,solreal py,solreal pz)
    }
    indr=0;
    rhop=0.000000e0;
-   complex<solreal> chiu,chiv;
+   /*
+   complex<solreal> chiv;
    for (int i=0; i<nPri; i++) {
       indr=i*(nPri+1);
       chiu=complex<solreal>(chi[i],gx[i]);
@@ -4375,6 +4344,19 @@ solreal gaussWaveFunc::evalFTDensity(solreal px,solreal py,solreal pz)
          chit=((chiv*conj(chiu))+(conj(chiv)*chiu));
          rhop+=(cab[indr++]*(chit.real()));
       }
+   }
+   / */
+   solreal sumim,sumre,cc;
+   indr=0;
+   for ( int i=0 ; i<nPri ; ++i ) {
+      sumim=sumre=0.0e0;
+      for ( int j=0 ; j<nPri ; ++j ) {
+         cc=cab[indr++];
+         sumre+=cc*chi[j];
+         sumim+=cc*gx[j];
+      }
+      rhop+=sumre*chi[i];
+      rhop+=sumim*gx[i];
    }
    if ( ihaveEDF ) {
       for ( int i=nPri ; i<totPri ; ++i ) {
