@@ -882,6 +882,7 @@ solreal gaussWaveFunc::evalDensity(solreal x,solreal y,solreal z)
          indp++;
       }
    }
+   /*
    indr=0;
    rho=0.000000e0;
    for (int i=0; i<nPri; i++) {
@@ -892,6 +893,23 @@ solreal gaussWaveFunc::evalDensity(solreal x,solreal y,solreal z)
          chib+=(cab[indr++]*chi[j]);
       }
       rho+=(2.00000000e0*chib*chi[i]);
+   }
+   // */
+   int lowPri=nPri-(nPri%4);
+   rho=0.000000e0;
+   indr=-1;
+   for ( int i=0 ; i<nPri ; ++i ) {
+      chib=0.0e0;
+      for ( int j=0 ; j<lowPri ; j+=4 ) {
+         chib+=(cab[++indr]*chi[j  ]);
+         chib+=(cab[++indr]*chi[j+1]);
+         chib+=(cab[++indr]*chi[j+2]);
+         chib+=(cab[++indr]*chi[j+3]);
+      }
+      for ( int j=lowPri ; j<nPri ; ++j ) {
+         chib+=(cab[++indr]*chi[j]);
+      }
+      rho+=chib*chi[i];
    }
    if ( ihaveEDF ) {
       for ( int i=nPri ; i<totPri ; ++i ) {
@@ -914,6 +932,109 @@ solreal gaussWaveFunc::evalDensity(solreal x,solreal y,solreal z)
    return rho;
 }
 #endif
+/* ************************************************************************************** */
+solreal gaussWaveFunc::evalOptimizedScalar(solreal x,solreal y,solreal z)
+{
+   int indr,indp;
+   solreal xmr,ymr,zmr,rho,chib;
+   rho=0.000000e0;
+   solreal rr;
+   indr=0;
+   indp=0;
+   for (int i=0; i<nNuc; i++) {
+      xmr=x-R[indr++];
+      ymr=y-R[indr++];
+      zmr=z-R[indr++];
+      rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+      for (int j=0; j<myPN[i]; j++) {
+         chi[indp]=exp(primExp[indp]*rr);
+         chi[indp]*=evalAngACases(primType[indp],xmr,ymr,zmr);
+         indp++;
+      }
+   }
+   /*
+   //1078.94ms; average: 2.69736 ms
+   //1084.21ms; average: 2.71053 ms
+   indr=0;
+   rho=0.000000e0;
+   indr=-1;
+   for ( int i=0 ; i<nPri ; ++i ) {
+      //indr=(nPri*i);
+      chib=0.0e0;
+      for ( int j=0 ; j<nPri ; ++j ) {
+         chib+=(cab[++indr]*chi[j]);
+      }
+      rho+=chib*chi[i];
+   }
+   // */
+   //* so far, this is the fastest version
+   //1064.04ms; average: 2.66011 ms
+   //1069.48ms; average: 2.67371 ms
+   int lowPri=nPri-(nPri%4);
+   rho=0.000000e0;
+   indr=-1;
+   for ( int i=0 ; i<nPri ; ++i ) {
+      //indr=(nPri*i);
+      chib=0.0e0;
+      for ( int j=0 ; j<lowPri ; j+=4 ) {
+         chib+=(cab[++indr]*chi[j  ]);
+         chib+=(cab[++indr]*chi[j+1]);
+         chib+=(cab[++indr]*chi[j+2]);
+         chib+=(cab[++indr]*chi[j+3]);
+      }
+      for ( int j=lowPri ; j<nPri ; ++j ) {
+         chib+=(cab[++indr]*chi[j]);
+      }
+      rho+=chib*chi[i];
+   }
+   // */
+   // */
+   /*
+   //
+   //
+   int lowPri=nPri-(nPri%8);
+   indr=0;
+   rho=0.000000e0;
+   indr=-1;
+   for ( int i=0 ; i<nPri ; ++i ) {
+      //indr=(nPri*i);
+      chib=0.0e0;
+      for ( int j=0 ; j<lowPri ; j+=8 ) {
+         chib+=(cab[++indr]*chi[j  ]);
+         chib+=(cab[++indr]*chi[j+1]);
+         chib+=(cab[++indr]*chi[j+2]);
+         chib+=(cab[++indr]*chi[j+3]);
+         chib+=(cab[++indr]*chi[j+4]);
+         chib+=(cab[++indr]*chi[j+5]);
+         chib+=(cab[++indr]*chi[j+6]);
+         chib+=(cab[++indr]*chi[j+7]);
+      }
+      for ( int j=lowPri ; j<nPri ; ++j ) {
+         chib+=(cab[++indr]*chi[j]);
+      }
+      rho+=chib*chi[i];
+   }
+   // */
+   if ( ihaveEDF ) {
+      for ( int i=nPri ; i<totPri ; ++i ) {
+         indr=3*(primCent[i]);
+         xmr=x-R[indr];
+         ymr=y-R[indr+1];
+         zmr=z-R[indr+2];
+         rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+         //cout << "pc: " << primCent[i] << ", rr: " << rr << endl;
+         chi[i]=evalAngACases(primType[i],xmr,ymr,zmr);
+         chi[i]*=exp(primExp[i]*rr);
+      }
+      chib=0.0e0;
+      for (int i=nPri; i<totPri; ++i) {
+         chib+=(EDFCoeff[i-nPri]*chi[i]);
+      }
+      //rho+=occN[nMOr]*chib*chib;
+      rho+=chib;
+   }
+   return rho;
+}
 /* ************************************************************************************** */
 #if PARALLELISEDTK
 void gaussWaveFunc::evalRhoGradRho(solreal x, solreal y, solreal z,solreal &rho, solreal &dx, solreal &dy, solreal &dz)
@@ -987,12 +1108,35 @@ void gaussWaveFunc::evalRhoGradRho(solreal x, solreal y, solreal z,solreal &rho,
          gx[indp]*=cc;
          gy[indp]*=cc;
          gz[indp]*=cc;
-         indp++;
+         ++indp;
       }
    }
    nabx=naby=nabz=0.000000000000000e0;
    indp=0;
    trho=0.0000000e0;
+   int lowPri=nPri-(nPri%4);
+   nabx=naby=nabz=0.000000000000000e0;
+   indp=0;
+   trho=0.0000000e0;
+   //*
+   for (int i=0; i<nPri; i++) {
+      chib=0.0000000e0;
+      for (int j=0; j<lowPri; j+=4) {
+         chib+=(cab[indp++]*chi[j  ]);
+         chib+=(cab[indp++]*chi[j+1]);
+         chib+=(cab[indp++]*chi[j+2]);
+         chib+=(cab[indp++]*chi[j+3]);
+      }
+      for (int j=lowPri; j<nPri; j++) {
+         chib+=(cab[indp++]*chi[j]);
+      }
+      trho+=(chib*chi[i]);
+      nabx+=(chib*gx[i]);
+      naby+=(chib*gy[i]);
+      nabz+=(chib*gz[i]);
+   }
+   // */
+   /*
    for (int i=0; i<nPri; i++) {
       //indr=i*(nPri);
       //cc=cab[indr];
@@ -1000,6 +1144,97 @@ void gaussWaveFunc::evalRhoGradRho(solreal x, solreal y, solreal z,solreal &rho,
       for (int j=0; j<nPri; j++) {
          //cc=cab[indp++];
          chib+=(chi[j]*cab[indp++]);
+      }
+      trho+=(chib*chi[i]);
+      nabx+=(chib*gx[i]);
+      naby+=(chib*gy[i]);
+      nabz+=(chib*gz[i]);
+   }
+   // */
+   dx=2.00000e0*nabx;
+   dy=2.00000e0*naby;
+   dz=2.00000e0*nabz;
+   rho=trho;
+   if ( ihaveEDF ) {
+      for ( int i=nPri ; i<totPri ; ++i ) {
+         indr=3*(primCent[i]);
+         xmr=x-R[indr];
+         ymr=y-R[indr+1];
+         zmr=z-R[indr+2];
+         rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+         ppt=primType[i];
+         alp=primExp[i];
+         cc=exp(alp*rr);
+         chi[i]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[i]*=cc;
+         evalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[i],gy[i],gz[i]);
+         gx[i]*=cc;
+         gy[i]*=cc;
+         gz[i]*=cc;
+      }
+      chib=nabx=naby=nabz=0.0e0;
+      for (int i=nPri; i<totPri; ++i) {
+         cc=EDFCoeff[i-nPri];
+         chib+=(cc*chi[i]);
+         nabx+=(cc*gx[i]);
+         naby+=(cc*gy[i]);
+         nabz+=(cc*gz[i]);
+      }
+      /*
+      rho+=occN[nMOr]*chib*chib;
+      dx+=2.0e0*occN[nMOr]*chib*nabx;
+      dy+=2.0e0*occN[nMOr]*chib*naby;
+      dz+=2.0e0*occN[nMOr]*chib*nabz;
+      // */
+      rho+=chib;
+      dx+=nabx;
+      dy+=naby;
+      dz+=nabz;
+   }
+   return;
+}
+#endif
+/* ************************************************************************************** */
+void gaussWaveFunc::evalOptimizedVectorScalar(solreal x, solreal y, solreal z,solreal &rho, solreal &dx, solreal &dy, solreal &dz)
+{
+   solreal nabx,naby,nabz,xmr,ymr,zmr,trho,cc,rr,alp,chib;
+   int indp,indr,ppt;
+   indp=0;
+   indr=0;
+   for (int i=0; i<nNuc; i++) {
+      xmr=x-R[indr++];
+      ymr=y-R[indr++];
+      zmr=z-R[indr++];
+      rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+      for (int j=0; j<myPN[i]; j++) {
+         ppt=primType[indp];
+         alp=primExp[indp];
+         cc=exp(alp*rr);
+         chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[indp]*=cc;
+         evalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
+         gx[indp]*=cc;
+         gy[indp]*=cc;
+         gz[indp]*=cc;
+         indp++;
+      }
+   }
+   int lowPri=nPri-(nPri%4);
+   nabx=naby=nabz=0.000000000000000e0;
+   indp=0;
+   trho=0.0000000e0;
+   for (int i=0; i<nPri; i++) {
+      //indr=i*(nPri);
+      //cc=cab[indr];
+      chib=0.0000000e0;
+      for (int j=0; j<lowPri; j+=4) {
+         chib+=(cab[indp++]*chi[j  ]);
+         chib+=(cab[indp++]*chi[j+1]);
+         chib+=(cab[indp++]*chi[j+2]);
+         chib+=(cab[indp++]*chi[j+3]);
+      }
+      for (int j=lowPri; j<nPri; ++j) {
+         chib+=(cab[indp++]*chi[j]);
       }
       trho+=(chib*chi[i]);
       nabx+=(chib*gx[i]);
@@ -1048,7 +1283,6 @@ void gaussWaveFunc::evalRhoGradRho(solreal x, solreal y, solreal z,solreal &rho,
    }
    return;
 }
-#endif
 /* ************************************************************************************** */
 bool gaussWaveFunc::allocAuxArrays(void)
 {
@@ -1964,12 +2198,230 @@ void gaussWaveFunc::evalHessian(solreal x, solreal y, solreal z,solreal &dens,so
    }
    rho=delx=dely=delz=0.00000e0;
    nabxx=nabyy=nabzz=nabxy=nabxz=nabyz=0.000000000000000e0;
+   /*
    indr=0;
    for (int i=0; i<nPri; i++) {
       gxs=gys=gzs=0.00000e0;
       sxx=syy=szz=sxy=sxz=syz=0.00000e0;
       chii=0.00000e0;
       for (int j=0; j<nPri; j++) {
+         cc=cab[indr++];
+         chii+=cc*chi[j];
+         gxs+=cc*gx[j];
+         gys+=cc*gy[j];
+         gzs+=cc*gz[j];
+      }
+      rho+=chii*chi[i];
+      gxi=gx[i];
+      gyi=gy[i];
+      gzi=gz[i];
+      delx+=(gxi*chii);
+      dely+=(gyi*chii);
+      delz+=(gzi*chii);
+      nabxx+=chii*hxx[i]+gxi*gxs;
+      nabyy+=chii*hyy[i]+gyi*gys;
+      nabzz+=chii*hzz[i]+gzi*gzs;
+      nabxy+=chii*hxy[i]+gxi*gys;
+      nabxz+=chii*hxz[i]+gxi*gzs;
+      nabyz+=chii*hyz[i]+gyi*gzs;
+   }
+   // */
+   //*
+   int lowPri=nPri-(nPri%4);
+   indr=0;
+   for (int i=0; i<nPri; i++) {
+      gxs=gys=gzs=0.00000e0;
+      sxx=syy=szz=sxy=sxz=syz=0.00000e0;
+      chii=0.00000e0;
+      for (int j=0; j<lowPri; j+=4) {
+         //----------------
+         cc=cab[indr++];
+         chii+=cc*chi[j  ];
+         gxs+=cc*gx[j  ];
+         gys+=cc*gy[j  ];
+         gzs+=cc*gz[j  ];
+         //----------------
+         cc=cab[indr++];
+         chii+=cc*chi[j+1];
+         gxs+=cc*gx[j+1];
+         gys+=cc*gy[j+1];
+         gzs+=cc*gz[j+1];
+         //----------------
+         cc=cab[indr++];
+         chii+=cc*chi[j+2];
+         gxs+=cc*gx[j+2];
+         gys+=cc*gy[j+2];
+         gzs+=cc*gz[j+2];
+         //----------------
+         cc=cab[indr++];
+         chii+=cc*chi[j+3];
+         gxs+=cc*gx[j+3];
+         gys+=cc*gy[j+3];
+         gzs+=cc*gz[j+3];
+      }
+      for (int j=lowPri; j<nPri; ++j) {
+         cc=cab[indr++];
+         chii+=cc*chi[j];
+         gxs+=cc*gx[j];
+         gys+=cc*gy[j];
+         gzs+=cc*gz[j];
+      }
+      rho+=chii*chi[i];
+      gxi=gx[i];
+      gyi=gy[i];
+      gzi=gz[i];
+      delx+=(gxi*chii);
+      dely+=(gyi*chii);
+      delz+=(gzi*chii);
+      nabxx+=chii*hxx[i]+gxi*gxs;
+      nabyy+=chii*hyy[i]+gyi*gys;
+      nabzz+=chii*hzz[i]+gzi*gzs;
+      nabxy+=chii*hxy[i]+gxi*gys;
+      nabxz+=chii*hxz[i]+gxi*gzs;
+      nabyz+=chii*hyz[i]+gyi*gzs;
+   }
+   // */
+   dens=rho;
+   g[0]=2.00000e0*delx;
+   g[1]=2.00000e0*dely;
+   g[2]=2.00000e0*delz;
+   h[0][0]=2.00000e0*nabxx;
+   h[1][1]=2.00000e0*nabyy;
+   h[2][2]=2.00000e0*nabzz;
+   h[0][1]=2.00000e0*nabxy;
+   h[0][2]=2.00000e0*nabxz;
+   h[1][2]=2.00000e0*nabyz;
+   if ( ihaveEDF ) {
+      for ( int i=nPri ; i<totPri ; ++i ) {
+         indr=3*(primCent[i]);
+         xmr=x-R[indr];
+         ymr=y-R[indr+1];
+         zmr=z-R[indr+2];
+         rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+         ppt=primType[i];
+         alp=primExp[i];
+         cc=exp(alp*rr);
+         chi[i]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[i]*=cc;
+         evalDkAngCases(ppt,alp,xmr,ymr,zmr,
+                        gx[i],gy[i],gz[i]);
+         gx[i]*=cc;
+         gy[i]*=cc;
+         gz[i]*=cc;
+         evalDkDlAngCases(ppt,alp,xmr,ymr,zmr,
+                          hxx[i],hyy[i],hzz[i],
+                          hxy[i],hxz[i],hyz[i]);
+         hxx[i]*=cc;
+         hyy[i]*=cc;
+         hzz[i]*=cc;
+         hxy[i]*=cc;
+         hxz[i]*=cc;
+         hyz[i]*=cc;
+      }
+      chii=0.0e0;
+      gxs=gys=gzs=0.00000e0;
+      sxx=syy=szz=sxy=sxz=syz=0.00000e0;
+      for (int i=nPri; i<totPri; ++i) {
+         cc=EDFCoeff[i-nPri];
+         chii+=(cc*chi[i]);
+         gxs+=(cc*gx[i]);
+         gys+=(cc*gy[i]);
+         gzs+=(cc*gz[i]);
+         sxx+=(cc*hxx[i]);
+         syy+=(cc*hyy[i]);
+         szz+=(cc*hzz[i]);
+         sxy+=(cc*hxy[i]);
+         sxz+=(cc*hxz[i]);
+         syz+=(cc*hyz[i]);
+      }
+      dens+=(chii);
+      g[0]+=(gxs);
+      g[1]+=(gys);
+      g[2]+=(gzs);
+      h[0][0]+=(sxx);
+      h[1][1]+=(syy);
+      h[2][2]+=(szz);
+      h[0][1]+=(sxy);
+      h[0][2]+=(sxz);
+      h[1][2]+=(syz);
+   }
+   h[1][0]=h[0][1];
+   h[2][0]=h[0][2];
+   h[2][1]=h[1][2];
+   return;
+}
+/* ************************************************************************************** */
+void gaussWaveFunc::evalOptimizedScalVecHess(solreal x, solreal y, solreal z,solreal &dens,solreal (&g)[3],solreal (&h)[3][3])
+{
+   solreal nabxx,nabyy,nabzz,nabxy,nabxz,nabyz,xmr,ymr,zmr,cc,rr,alp,
+   chii,gxi,gyi,gzi,rho,delx,dely,delz;
+   solreal sxx,syy,szz,sxy,sxz,syz,gxs,gys,gzs;
+   int indp,indr,ppt;
+   indp=0;
+   indr=0;
+   for (int i=0; i<nNuc; i++) {
+      xmr=x-R[indr++];
+      ymr=y-R[indr++];
+      zmr=z-R[indr++];
+      rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+      for (int j=0; j<myPN[i]; j++) {
+         ppt=primType[indp];
+         alp=primExp[indp];
+         cc=exp(alp*rr);
+         chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[indp]*=cc;
+         evalDkAngCases(ppt,alp,xmr,ymr,zmr,
+                        gx[indp],gy[indp],gz[indp]);
+         gx[indp]*=cc;
+         gy[indp]*=cc;
+         gz[indp]*=cc;
+         evalDkDlAngCases(ppt,alp,xmr,ymr,zmr,
+                          hxx[indp],hyy[indp],hzz[indp],
+                          hxy[indp],hxz[indp],hyz[indp]);
+         hxx[indp]*=cc;
+         hyy[indp]*=cc;
+         hzz[indp]*=cc;
+         hxy[indp]*=cc;
+         hxz[indp]*=cc;
+         hyz[indp]*=cc;
+         indp++;
+      }
+   }
+   rho=delx=dely=delz=0.00000e0;
+   nabxx=nabyy=nabzz=nabxy=nabxz=nabyz=0.000000000000000e0;
+   int lowPri=nPri-(nPri%4);
+   indr=0;
+   for (int i=0; i<nPri; i++) {
+      gxs=gys=gzs=0.00000e0;
+      sxx=syy=szz=sxy=sxz=syz=0.00000e0;
+      chii=0.00000e0;
+      for (int j=0; j<lowPri; j+=4) {
+         //----------------
+         cc=cab[indr++];
+         chii+=cc*chi[j  ];
+         gxs+=cc*gx[j  ];
+         gys+=cc*gy[j  ];
+         gzs+=cc*gz[j  ];
+         //----------------
+         cc=cab[indr++];
+         chii+=cc*chi[j+1];
+         gxs+=cc*gx[j+1];
+         gys+=cc*gy[j+1];
+         gzs+=cc*gz[j+1];
+         //----------------
+         cc=cab[indr++];
+         chii+=cc*chi[j+2];
+         gxs+=cc*gx[j+2];
+         gys+=cc*gy[j+2];
+         gzs+=cc*gz[j+2];
+         //----------------
+         cc=cab[indr++];
+         chii+=cc*chi[j+3];
+         gxs+=cc*gx[j+3];
+         gys+=cc*gy[j+3];
+         gzs+=cc*gz[j+3];
+      }
+      for (int j=lowPri; j<nPri; ++j) {
          cc=cab[indr++];
          chii+=cc*chi[j];
          gxs+=cc*gx[j];

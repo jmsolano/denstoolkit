@@ -229,6 +229,8 @@ public:
     */
    solreal evalDensity(solreal x,solreal y,solreal z);
    /* *********************************************************************************** */
+   solreal evalOptimizedScalar(solreal x,solreal y,solreal z);
+   /* *********************************************************************************** */
    /**
       This function returns true if all the Molecular Orbital Occupation Numers have the same
       value. It only takes one occupation number to be different in order to this
@@ -241,6 +243,9 @@ public:
       \f$\vec{r}=(x,y,z)\f$ using the most optimized algorithm.
     */
    void evalRhoGradRho(solreal x, solreal y, solreal z,\
+         solreal &rho, solreal &dx, solreal &dy, solreal &dz);
+   /* ************************************************************************************** */
+   void evalOptimizedVectorScalar(solreal x, solreal y, solreal z,\
          solreal &rho, solreal &dx, solreal &dy, solreal &dz);
    /* ************************************************************************************** */
    /**
@@ -357,6 +362,8 @@ public:
     \f$(x,y,z)\f$ and store them in the arrays g and h.
     */
    void evalHessian(solreal x, solreal y, solreal z,solreal &dens,solreal (&g)[3],solreal (&h)[3][3]);
+   /* *********************************************************************************** */
+   void evalOptimizedScalVecHess(solreal x, solreal y, solreal z,solreal &dens,solreal (&g)[3],solreal (&h)[3][3]);
    /* *********************************************************************************** */
    /**
       This function returns the value of the Laplacian of the density
