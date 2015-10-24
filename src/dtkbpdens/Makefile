@@ -11,7 +11,7 @@ OS_ARCH = $(shell uname -m | sed -e "s/i386/i686/")
 # Flags to detect either a Linux system (linux) or Mac OSX (darwin)
 DARWIN = $(strip $(findstring DARWIN, $(OSUPPER)))
 
-GCC             ?= g++
+#GCC             ?= g++
 
 # Extra user flags
 OPTIM_CCFLAGS   ?= -O2 -funroll-loops -falign-loops=16
@@ -19,13 +19,15 @@ WARNING_CCFLAGS ?=  -W -Wall -pedantic -Wno-long-long
 
 # OS-specific build flags
 ifneq ($(DARWIN),) 
-      CCFLAGS   := -arch $(OS_ARCH) 
+   GCC       := g++-mp-4.8
+   CCFLAGS   := -arch $(OS_ARCH) 
 else
-  ifeq ($(OS_SIZE),32)
+   GCC       := g++
+   ifeq ($(OS_SIZE),32)
       CCFLAGS   := -m32
-  else
+else
       CCFLAGS   := -m64
-  endif
+endif
 endif
 
 # Debug build flags
@@ -36,6 +38,7 @@ else
 endif
 
 # Use OpenMP
+DTKUSEOPENMP := 0
 ifneq ($(DTKUSEOPENMP),0)
       CCFLAGS   += -DPARALLELISEDTK=$(DTKUSEOPENMP) -fopenmp
 else
