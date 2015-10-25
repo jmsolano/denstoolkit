@@ -330,7 +330,6 @@ void getNofEDFPrimFromFileWFX(ifstream &ifil,const int nedfc,int &nedfprim)
    int nc=0;
    int totp=0,tmp;
    ifil.seekg(ifil.beg);
-   //cout << "nedfc: " << nedfc << endl;
    size_t tt;
    while ( nedfc>nc ) {
       if ( (tt=getInitPosOfKeyInFile(ifil,false,\
@@ -338,11 +337,8 @@ void getNofEDFPrimFromFileWFX(ifstream &ifil,const int nedfc,int &nedfprim)
          cout << "Error: key not found!" << endl;
          break;
       }
-      //ifil.seekg(getInitPosOfKeyInFile(ifil,false,\
-               string("Number of EDF Primitives")));
       ifil.seekg(tt);
       ifil >> tmp;
-      //cout << "tmp: " << tmp << endl;
       totp+=tmp;
       nc++;
    }

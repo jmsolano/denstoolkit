@@ -150,7 +150,7 @@ typedef double solreal;
 #define MAXITERATIONCCPSEARCH 240
 #define MAXNUMBEROFPRIMITIVESFORMEMALLOC 10000
 
-#ifndef SIGNF(a)
+#ifndef SIGNF
 #define SIGNF(a) ((a)>=0?(1):(-1))
 #endif
 
@@ -313,13 +313,6 @@ public:
       x must be the difference between the field point and the primitive center.
     */
    solreal evalAngACases(int &pty, solreal x, solreal y, solreal z);
-   /* *********************************************************************************** */
-   /* This function evaluates the gradient of \f$\phi_{\dot{A}}(x,y,z)\f$. 
-    * \f$\nabla\phi=(grx,gry,grz)\f$.
-    For correct results, x must be the difference between the field point and the primitive center. 
-    */
-   //void evalDkPrimCases(int pty,solreal alp,solreal x, solreal y, solreal z,\
-         solreal &grx, solreal &gry, solreal &grz);
    /* *********************************************************************************** */
    /** Let the field point be \f$\vec{\xi}\f$, and a primitive \f$\phi_{\dot{A}}\f$, with center 
       \f$R_{\dot{A}}\f$, type pty, and primitive exponent alp. The function

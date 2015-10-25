@@ -110,6 +110,7 @@ solreal CircleDots3D::getCartCoord(const int i,const int j)
            return 0.0e0;
       }
    }
+   return 0.0e0;
 }
 /* ************************************************************************** */
 solreal CircleDots3D::getPhi(const int i)
@@ -133,6 +134,7 @@ solreal CircleDots3D::getPhi(const int i)
             return 0.0e0;
       }
    }
+   return 0.0e0;
 }
 /* ************************************************************************** */
 void CircleDots3D::setE1(const solreal x,const solreal y,const solreal z)
