@@ -77,7 +77,7 @@ using std::endl;
 #define DEMAT1MAXSTEPSIZERCPRHOSEARCH (0.02)
 #endif
 
-#ifndef SIGNF(a)                                                                                          
+#ifndef SIGNF
 #define SIGNF(a) ((a)>=0?(1):(-1))
 #endif
 
@@ -723,8 +723,6 @@ void DeMat1CriticalPointNetwork::seekSingleGammaSCP(solreal (&xs)[2],solreal &ga
    seekGammaSCP(xs,gamm,gg,sig);
    solreal magg=getV2Norm(gg);
    if ( magg<=DEMAT1EPSGRADMAG && gamm>DEMAT1MINGAMMSIGNIFICATIVEVAL && (sig==0) ) {
-      //cout << "Possible SCP found: " << xs[0] << " " << xs[1] << "; g: " \
-           << gg[0] << " " << gg[1] << ", gm: " << gamm << endl;
       addGammaSCP(xs,lbl);
    }
 }
@@ -742,8 +740,6 @@ void DeMat1CriticalPointNetwork::seekSingleGammaRCP(solreal (&xs)[2],solreal &ga
    seekGammaRCP(xs,gamm,gg,sig);
    solreal magg=getV2Norm(gg);
    if ( magg<=DEMAT1EPSGRADMAG && gamm>DEMAT1MINGAMMSIGNIFICATIVEVAL && (sig==2) ) {
-      //cout << "Possible RCP found: " << xs[0] << " " << xs[1] << "; g: " \
-           << gg[0] << " " << gg[1] << ", gm: " << gamm << endl;
       addGammaRCP(xs,lbl);
    }
 }

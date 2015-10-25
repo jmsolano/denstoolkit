@@ -2313,9 +2313,9 @@ bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
    if (iknowrcps) {
       //int indrcp;
       pof << "#if(DrawRingCriticalPoints)" << endl;
-      solreal rcprad;
+      //solreal rcprad;
       for (int i=0; i<nRCP; i++) {
-         rcprad=bn->drawAtSize*CPNW_ATOMCRITICALPOINTSIZEFACTOR;
+         //rcprad=bn->drawAtSize*CPNW_ATOMCRITICALPOINTSIZEFACTOR;
          writePOVSphere(pof,0,RRCP[i][0],RRCP[i][1],RRCP[i][2],"RadiusRCP",
                "ColorRCP");
       }
@@ -2325,9 +2325,9 @@ bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
    if (iknowccps) {
       //int indccp;
       pof << "#if(DrawCageCriticalPoints)" << endl;
-      solreal ccprad;
+      //solreal ccprad;
       for (int i=0; i<nCCP; i++) {
-         ccprad=bn->drawAtSize*CPNW_ATOMCRITICALPOINTSIZEFACTOR;
+         //ccprad=bn->drawAtSize*CPNW_ATOMCRITICALPOINTSIZEFACTOR;
          writePOVSphere(pof,0,RCCP[i][0],RCCP[i][1],RCCP[i][2],"RadiusCCP",
                "ColorCCP");
       }
@@ -2718,7 +2718,7 @@ bool critPtNetWork::readFromFile(string inname)
       cpxGetCagePathData(cfil,nCCP,conCCP,RCGP);
       iknowcgps=true;
    } else { iknowcgps=false; }
-   iknowallgps;
+   iknowallgps=iknowbgps&&iknowrgps&&iknowcgps;
    cout << "Critical Point State Loaded!" << endl;
    displayStatus(true);
    return true;
@@ -2912,7 +2912,7 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
    }
 #endif
    int count;
-   solreal xm[3],xb[3],xr[3],xn[3],xrmxb[3],xmmxr[3];
+   solreal xm[3],xb[3],xr[3],xn[3],xrmxb[3]; //,xmmxr[3];
    solreal magd=0.0e0,maxalllen=maxBondDist*1.5e0;
    for ( int i=0 ; i<3 ; ++i ) {
       xb[i]=RBCP[bcpGlobIdx][i];
@@ -2931,8 +2931,8 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
          dima,arrgp,count,maxalllen,false /* uphilldir=false  */);
    if ( imatrcp ) {return count;}
    //if ( magd>maxBCPACPDist ) { return -1; }
-   solreal ux[3],uy[3],uz[3],xm0mxr[3];
-   for ( int i=0 ; i<3 ; ++i ) { xm0mxr[i]=xm[i]-xr[i]; }
+   solreal ux[3],uy[3]; //,xm0mxr[3],uz[3];
+   //for ( int i=0 ; i<3 ; ++i ) { xm0mxr[i]=xm[i]-xr[i]; }
    solreal hess[3][3],eivec[3][3],tmpv[3];
    wf->evalHessian(xb[0],xb[1],xb[2],magd,ux,hess);
    if ( magV3(ux)>CPNW_EPSRHOACPGRADMAG ) {
@@ -2943,8 +2943,8 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
    for ( int i=0 ; i<3 ; ++i ) {
       ux[i]=eivec[i][0];
       uy[i]=eivec[i][1];
-      uz[i]=eivec[i][2];
-      xmmxr[i]=xm[i]-xr[i];
+      //uz[i]=eivec[i][2];
+      //xmmxr[i]=xm[i]-xr[i];
    }
    solreal dir1[3],dir2[3];
    for ( int i=0 ; i<3 ; ++i ) {
@@ -3460,21 +3460,24 @@ void critPtNetWork::setRingPaths()
 #if USEPROGRESSBAR
    printProgressBar(0);
 #endif
-   solreal hstep,rseed[3];
+   solreal hstep; //,rseed[3];
    hstep=CPNW_DEFAULTGRADIENTPATHS;
    int arrsize=CPNW_ARRAYSIZEGRADPATH;
-   int bcpIdx,currBcpPos,npts;
+   int currBcpPos,npts;
+#if DEBUG
+   int bcpIdx;
+#endif
    for (int rcpIdx=0; rcpIdx<nRCP; rcpIdx++) {
       currBcpPos=0;
       while ( conRCP[rcpIdx][0][currBcpPos]>=0 ) {
-         bcpIdx=conRCP[rcpIdx][0][currBcpPos];
 #if DEBUG
+         bcpIdx=conRCP[rcpIdx][0][currBcpPos];
          if ( bcpIdx>=nBCP || bcpIdx<0 ) {
             displayErrorMessage("BCP out of bounds!");
             DISPLAYDEBUGINFOFILELINE;
          }
 #endif
-         for (int k=0; k<3; k++) {rseed[k]=RBCP[bcpIdx][k];}
+         //for (int k=0; k<3; k++) {rseed[k]=RBCP[bcpIdx][k];}
          npts=findSingleRhoRingGradientPathRK5(rcpIdx,\
                currBcpPos,hstep,arrsize,RRGP[rcpIdx][currBcpPos]);
 #if DEBUG
@@ -3515,21 +3518,22 @@ void critPtNetWork::setCagePaths(void)
 #if USEPROGRESSBAR
    printProgressBar(0);
 #endif
-   solreal hstep,rseed[3];
+   solreal hstep; //,rseed[3];
    hstep=CPNW_DEFAULTGRADIENTPATHS;
    int arrsize=CPNW_ARRAYSIZEGRADPATH;
-   int rcpIdx,currRcpPos,npts;
+   //int rcpIdx;
+   int currRcpPos,npts;
    for (int ccpIdx=0; ccpIdx<nCCP; ccpIdx++) {
       currRcpPos=0;
       while ( conCCP[ccpIdx][0][currRcpPos]>=0 ) {
-         rcpIdx=conCCP[ccpIdx][0][currRcpPos];
+         //rcpIdx=conCCP[ccpIdx][0][currRcpPos];
 #if DEBUG
          if ( ccpIdx>=nCCP || ccpIdx<0 ) {
             displayErrorMessage("CCP out of bounds!");
             DISPLAYDEBUGINFOFILELINE;
          }
 #endif
-         for (int k=0; k<3; k++) {rseed[k]=RCCP[ccpIdx][k];}
+         //for (int k=0; k<3; k++) {rseed[k]=RCCP[ccpIdx][k];}
          npts=findSingleRhoCageGradientPathRK5(ccpIdx,\
                currRcpPos,hstep,arrsize,RCGP[ccpIdx][currRcpPos]);
 #if DEBUG
