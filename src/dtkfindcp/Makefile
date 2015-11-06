@@ -15,7 +15,7 @@ DARWIN = $(strip $(findstring DARWIN, $(OSUPPER)))
 #GCC             ?= g++
 
 # Extra user flags
-OPTIM_CCFLAGS   ?= -O2 -funroll-loops -falign-loops=16
+OPTIM_CCFLAGS   ?= -O2 -funroll-loops -falign-loops=8 -ffast-math
 WARNING_CCFLAGS ?=  -W -Wall -pedantic -Wno-long-long
 
 # OS-specific build flags
