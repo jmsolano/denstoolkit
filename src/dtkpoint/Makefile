@@ -12,7 +12,7 @@ OS_ARCH = $(shell uname -m | sed -e "s/i386/i686/")
 DARWIN = $(strip $(findstring DARWIN, $(OSUPPER)))
 
 # Extra user flags
-OPTIM_CCFLAGS   ?= -O2 -funroll-loops -falign-loops=16
+OPTIM_CCFLAGS   ?= -O2 -funroll-loops -falign-loops=8 -ffast-math
 WARNING_CCFLAGS ?=  -W -Wall -pedantic -Wno-long-long
 
 # OS-specific build flags
