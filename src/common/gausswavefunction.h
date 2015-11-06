@@ -42,10 +42,10 @@
  */
 
 /*
-    wavefunctionclass.h
+    gausswavefunction.h
  
    This class is for easy storaging/handling of a gaussian wave function. 
-   The main class, namely gaussWaveFunc, is a class that storages all the information
+   The main class, namely GaussWaveFunction, is a class that storages all the information
    of a Gauss-Type wave function. It may contain also other common information contained in 
    *.wfn and *.wfx files, such as some title(s), some keywords/descriptor, atom labels, etc. 
    Below you can find the complete list of variables. For all arrays, you should remember
@@ -122,8 +122,8 @@
  
  */
 
-#ifndef _SOLWAVEFUNCTIONCLASS_H_
-#define _SOLWAVEFUNCTIONCLASS_H_
+#ifndef _GAUSSWAVEFUNCTION_H_
+#define _GAUSSWAVEFUNCTION_H_
 
 #ifndef _HAVE_DEF_SOLREAL_TYPE_
 #define _HAVE_DEF_SOLREAL_TYPE_
@@ -176,12 +176,12 @@ using std::complex;
 #include <omp.h>
 #endif
 
-class gaussWaveFunc
+class GaussWaveFunction
 {
 public:
    /* *********************************************************************************** */
-   gaussWaveFunc(); //Default constructor
-   ~gaussWaveFunc(); //Destructor
+   GaussWaveFunction(); //Default constructor
+   ~GaussWaveFunction(); //Destructor
    /* *********************************************************************************** */
    string *title,orbDesc; /* title */
    int nTit,nNuc,nMOr,nPri,EDFPri,totPri,coreElec;
@@ -284,7 +284,7 @@ public:
     * fiedls.  */
    bool sanityChecks(void);
    /* *********************************************************************************** */
-   /** This function allocates memory space for the auxiliar arrays the gaussWaveFunction object
+   /** This function allocates memory space for the auxiliar arrays the GaussWaveFunctiontion object
       uses for calculating numerical properties (rho, grad(rho), hess(rho), etc.).
     */
    bool allocAuxArrays(void);
@@ -648,5 +648,5 @@ private:
 };
 /* *********************************************************************************** */
 /* *********************************************************************************** */
-#endif//_SOLWAVEFUNCTIONCLASS_H_
+#endif//_GAUSSWAVEFUNCTION_H_
 

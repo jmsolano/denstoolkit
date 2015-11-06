@@ -59,7 +59,7 @@ typedef double solreal;
 //typedef float solreal;
 #endif
 
-#include "wavefunctionclass.h"
+#include "gausswavefunction.h"
 #include "bondnetwork.h"
 #include "solmemhand.h"
 #include "fldtypesdef.h"
@@ -105,9 +105,9 @@ public:
    solreal *prop1d;
    ScalarFieldType prop2plot;
    /* ******************************************************************************* */
-   void setUpSimpleGrid(gaussWaveFunc &wf,bondNetWork &bn);
+   void setUpSimpleGrid(GaussWaveFunction &wf,bondNetWork &bn);
    /* ******************************************************************************* */
-   void setUpSmartCuboidGrid(gaussWaveFunc &wf,bondNetWork &bn,const int nmx);
+   void setUpSmartCuboidGrid(GaussWaveFunction &wf,bondNetWork &bn,const int nmx);
    /* ******************************************************************************* */
    void setNPts(int nx,int ny,int nz);
    /* ******************************************************************************* */
@@ -115,35 +115,35 @@ public:
    /* ******************************************************************************* */
    int getNPts(int ii);
    /* ******************************************************************************* */
-   void writeCubeRho(ofstream &ofil,gaussWaveFunc &wf);
+   void writeCubeRho(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
-   void writeCubeLapRho(ofstream &ofil,gaussWaveFunc &wf);
+   void writeCubeLapRho(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
-   void writeCubeELF(ofstream &ofil,gaussWaveFunc &wf);
+   void writeCubeELF(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
-   void writeCubeShannonEntropy(ofstream &ofil,gaussWaveFunc &wf);
+   void writeCubeShannonEntropy(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
-   void writeCubeMagGradRho(ofstream &ofil,gaussWaveFunc &wf);
+   void writeCubeMagGradRho(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
-   void writeCubeLOL(ofstream &ofil,gaussWaveFunc &wf);
+   void writeCubeLOL(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
-   void writeCubeKinetEnerDensG(ofstream &ofil,gaussWaveFunc &wf);
+   void writeCubeKinetEnerDensG(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
-   void writeCubeKinetEnerDensK(ofstream &ofil,gaussWaveFunc &wf);
+   void writeCubeKinetEnerDensK(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
-   void makeCube(string &onam,gaussWaveFunc &wf,ScalarFieldType ft);
+   void makeCube(string &onam,GaussWaveFunction &wf,ScalarFieldType ft);
    /* ******************************************************************************* */
-   void writeCubeMagGradLOL(ofstream &ofil,gaussWaveFunc &wf);
+   void writeCubeMagGradLOL(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
-   void writeCubeMolElecPot(ofstream &ofil,gaussWaveFunc &wf);
+   void writeCubeMolElecPot(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
-   void writeCubeMagLED(ofstream &ofil,gaussWaveFunc &wf);
+   void writeCubeMagLED(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
-   void writeCubeRedDensGrad(ofstream &ofil,gaussWaveFunc &wf);
+   void writeCubeRedDensGrad(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
-   void writeCubeRoSE(ofstream &ofil,gaussWaveFunc &wf);
+   void writeCubeRoSE(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
-   void writeCubeScalarCustFld(ofstream &ofil,gaussWaveFunc &wf);
+   void writeCubeScalarCustFld(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
 private:
    bool imsetup;

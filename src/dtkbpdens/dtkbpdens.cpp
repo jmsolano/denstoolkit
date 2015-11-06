@@ -70,7 +70,7 @@ using std::setprecision;
 #include "../common/solfileutils.h"
 #include "../common/solmemhand.h"
 #include "../common/solmath.h"
-#include "../common/wavefunctionclass.h"
+#include "../common/gausswavefunction.h"
 #include "../common/bondnetwork.h"
 #include "../common/critptnetwork.h"
 #include "../common/solstringtools.h"
@@ -78,7 +78,7 @@ using std::setprecision;
 #include "optflags.h"
 #include "crtflnms.h"
 
-solreal evalFieldProperty(char prop,solreal (&x)[3],gaussWaveFunc &wf);
+solreal evalFieldProperty(char prop,solreal (&x)[3],GaussWaveFunction &wf);
 
 
 int main (int argc, char ** argv)
@@ -118,7 +118,7 @@ int main (int argc, char ** argv)
    
    cout << endl << "Loading wave function from file: " << infilnam << "... ";
    
-   gaussWaveFunc gwf;
+   GaussWaveFunction gwf;
    if (!(gwf.readFromFile(infilnam))) { //Loading the wave function
       setScrRedBoldFont();
       cout << "Error: the wave function could not be loaded!\n";
@@ -130,7 +130,7 @@ int main (int argc, char ** argv)
    if (gwf.nNuc==1) {
       displayWarningMessage("This file contains only one atom... There are no bond paths...");
       cout << "Nothing to do!" << endl;
-      gwf.~gaussWaveFunc();
+      gwf.~GaussWaveFunction();
       exit(0);
    }
    
@@ -147,7 +147,7 @@ int main (int argc, char ** argv)
    }
    if (at1>=gwf.nNuc||at2>=gwf.nNuc||at1<0||at2<0) {
       displayErrorMessage("Requesting a non existent atom!");
-      gwf.~gaussWaveFunc();
+      gwf.~GaussWaveFunction();
       exit(1);
    }
    
@@ -170,7 +170,7 @@ int main (int argc, char ** argv)
       sscanf(argv[options.setn1],"%d",&dimarr);
       if (dimarr<=0) {
          displayErrorMessage("Please provide a positive number for the number of points!");
-         gwf.~gaussWaveFunc();
+         gwf.~GaussWaveFunction();
          bnw.~bondNetWork();
          cpn.~critPtNetWork();
          exit(1);
@@ -454,7 +454,7 @@ int main (int argc, char ** argv)
    return 0;
 }
 
-solreal evalFieldProperty(char prop,solreal (&x)[3],gaussWaveFunc &wf)
+solreal evalFieldProperty(char prop,solreal (&x)[3],GaussWaveFunction &wf)
 {
    solreal res;
    switch (prop) {

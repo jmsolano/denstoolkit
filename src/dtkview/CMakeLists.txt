@@ -15,7 +15,7 @@ set(the_usr_moc_hdrs
    ../common/atomcolschjmol.h 
    ../common/solstringtools.h 
    ../common/critptnetwork.h 
-   ../common/wavefunctionclass.h 
+   ../common/gausswavefunction.h 
    ../common/eig2-4.h 
    ../common/solmath.h 
    ../common/solfileutils.h 
@@ -62,7 +62,7 @@ set(the_usr_srcs
    ../common/atomcolschjmol.cpp 
    ../common/solstringtools.cpp 
    ../common/critptnetwork.cpp 
-   ../common/wavefunctionclass.cpp 
+   ../common/gausswavefunction.cpp 
    ../common/eig2-4.cpp 
    ../common/solmath.cpp 
    ../common/solfileutils.cpp 
@@ -78,7 +78,7 @@ set(CMAKE_AUTOMOC OFF)
 if(UNIX)
    if(APPLE)
       set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH}
-         /Users/jmsolano/binsol/Qt5/5.4/clang_64
+         /Users/jmsolano/binsol/Qt5/5.5/clang_64
       )
    else(APPLE)
       set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH}

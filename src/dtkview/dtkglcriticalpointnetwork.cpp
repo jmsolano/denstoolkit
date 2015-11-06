@@ -43,7 +43,7 @@
 
 #include "dtkglcriticalpointnetwork.h"
 #include <QDebug>
-#include "../common/wavefunctionclass.h"
+#include "../common/gausswavefunction.h"
 #include "../common/bondnetwork.h"
 #include "../common/critptnetwork.h"
 
@@ -61,7 +61,7 @@ DTKGLCriticalPointNetWork::~DTKGLCriticalPointNetWork()
   }
 }
 
-void DTKGLCriticalPointNetWork::setupRegularCPN(gaussWaveFunc *uwf, DTKGLBondNetWork *ubn)
+void DTKGLCriticalPointNetWork::setupRegularCPN(GaussWaveFunction *uwf, DTKGLBondNetWork *ubn)
 {
    cpn=new critPtNetWork(*uwf,*(ubn->bnw));
 

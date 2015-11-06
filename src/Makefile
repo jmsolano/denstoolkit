@@ -61,7 +61,7 @@ DTKCOMMONFILES  = $(DTKCOMMONDIR)/bondnetwork.cpp $(DTKCOMMONDIR)/bondnetwork.h 
                   $(DTKCOMMONDIR)/solpovtools.cpp $(DTKCOMMONDIR)/solpovtools.h \
                   $(DTKCOMMONDIR)/solscrutils.cpp $(DTKCOMMONDIR)/solscrutils.h \
                   $(DTKCOMMONDIR)/solstringtools.cpp  $(DTKCOMMONDIR)/solstringtools.h \
-                  $(DTKCOMMONDIR)/wavefunctionclass.cpp $(DTKCOMMONDIR)/wavefunctionclass.h \
+                  $(DTKCOMMONDIR)/gausswavefunction.cpp $(DTKCOMMONDIR)/gausswavefunction.h \
                   $(DTKCOMMONDIR)/wfgrid1d.cpp $(DTKCOMMONDIR)/wfgrid1d.h \
                   $(DTKCOMMONDIR)/wfgrid2d.cpp $(DTKCOMMONDIR)/wfgrid2d.h \
                   $(DTKCOMMONDIR)/wfgrid3d.cpp $(DTKCOMMONDIR)/wfgrid3d.h \

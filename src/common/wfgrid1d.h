@@ -58,7 +58,7 @@ typedef double solreal;
 //typedef float solreal;
 #endif
 
-#include "wavefunctionclass.h"
+#include "gausswavefunction.h"
 #include "bondnetwork.h"
 #include "fldtypesdef.h"
 
@@ -125,35 +125,35 @@ public:
    /* ******************************************************************************* */
    //void setUpSimpleLine(bondNetWork &bn,solreal (&ta)[3]);
    /* ******************************************************************************* */
-   bool writeLineDatRho(ofstream &ofil,gaussWaveFunc &wf);
+   bool writeLineDatRho(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
-   void makeDat(string &onam,gaussWaveFunc &wf,ScalarFieldType ft);
+   void makeDat(string &onam,GaussWaveFunction &wf,ScalarFieldType ft);
    /* ******************************************************************************* */
-   bool writeLineDatLapRho(ofstream &ofil,gaussWaveFunc &wf);
+   bool writeLineDatLapRho(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
-   bool writeLineDatELF(ofstream &ofil,gaussWaveFunc &wf);
+   bool writeLineDatELF(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
-   bool writeLineDatLOL(ofstream &ofil,gaussWaveFunc &wf);
+   bool writeLineDatLOL(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
-   bool writeLineDatMagGradLOL(ofstream &ofil,gaussWaveFunc &wf);
+   bool writeLineDatMagGradLOL(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
-   bool writeLineDatShannonEntropy(ofstream &ofil,gaussWaveFunc &wf);
+   bool writeLineDatShannonEntropy(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
-   bool writeLineDatMagGradRho(ofstream &ofil,gaussWaveFunc &wf);
+   bool writeLineDatMagGradRho(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
-   bool writeLineDatKinetEnerDensG(ofstream &ofil,gaussWaveFunc &wf);
+   bool writeLineDatKinetEnerDensG(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
-   bool writeLineDatKinetEnerDensK(ofstream &ofil,gaussWaveFunc &wf);
+   bool writeLineDatKinetEnerDensK(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
-   bool writeLineDatMolElecPot(ofstream &ofil,gaussWaveFunc &wf);
+   bool writeLineDatMolElecPot(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
-   bool writeLineDatMagLED(ofstream &ofil,gaussWaveFunc &wf);
+   bool writeLineDatMagLED(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
-   bool writeLineDatRedDensGrad(ofstream &ofil,gaussWaveFunc &wf);
+   bool writeLineDatRedDensGrad(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
-   bool writeLineDatRoSE(ofstream &ofil,gaussWaveFunc &wf);
+   bool writeLineDatRoSE(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
-   bool writeLineDatScalarCustFld(ofstream &ofil,gaussWaveFunc &wf);
+   bool writeLineDatScalarCustFld(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
    /* ******************************************************************************* */
    /* ******************************************************************************* */

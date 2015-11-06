@@ -170,10 +170,10 @@ public:
 /* ************************************************************************************ */
 //                   Functions
 /* ************************************************************************************ */
-   /** The only allowed constructor. It requires a gaussWaveFunc and
+   /** The only allowed constructor. It requires a GaussWaveFunction and
     * a bondNetWork objects. <b>Warning: these objects must be
     * properly initialized before passing to the critPtNetWork object.</b>  */
-   critPtNetWork(class gaussWaveFunc &uwf,class bondNetWork &ubn);
+   critPtNetWork(class GaussWaveFunction &uwf,class bondNetWork &ubn);
    ~critPtNetWork();
 /* ************************************************************************************ */
    /** Self descriptive.  */
@@ -368,7 +368,7 @@ public:
 /* ************************************************************************************ */
 protected:
 /* ************************************************************************************ */
-   class gaussWaveFunc *wf;
+   class GaussWaveFunction *wf;
    class bondNetWork *bn;
    int dACP,dBCP,dRCP,dCCP;
    int maxItACP,maxItBCP,maxItRCP,maxItCCP;
@@ -388,7 +388,7 @@ protected:
 /* ************************************************************************************ */
    void init();
    /** The constructor without arguments is not public. This will enforce the use
-    * of the constructor for assigning the pointers of gaussWaveFunc and 
+    * of the constructor for assigning the pointers of GaussWaveFunction and 
     * bondNetWork.  */
    critPtNetWork();
 /* ************************************************************************************ */

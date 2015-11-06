@@ -75,7 +75,7 @@ using std::setprecision;
 #include "../common/iofuncts-wfx.h"
 #include "../common/iofuncts-wfn.h"
 #include "../common/solmath.h"
-#include "../common/wavefunctionclass.h"
+#include "../common/gausswavefunction.h"
 #include "../common/bondnetwork.h"
 #include "../common/wfgrid1d.h"
 #include "optflags.h"
@@ -99,7 +99,7 @@ int main (int argc, char ** argv)
    
    cout << endl << "Loading wave function from file: " << infilnam << "... ";
    
-   gaussWaveFunc gwf;
+   GaussWaveFunction gwf;
    if (!(gwf.readFromFile(infilnam))) { //Loading the wave function
       setScrRedBoldFont();
       cout << "Error: the wave function could not be loaded!\n";

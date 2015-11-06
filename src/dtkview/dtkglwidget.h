@@ -56,7 +56,7 @@
 #include <QMatrix4x4>
 #include <QtGui>
 #include <QVector3D>
-#include "../common/wavefunctionclass.h"
+#include "../common/gausswavefunction.h"
 #include "dtkglbondnetwork.h"
 #include "dtkglcriticalpointnetwork.h"
 
@@ -152,7 +152,7 @@ private:
    double cameraDistance;
    QPoint lastPos;
    QMatrix4x4 pMatrix;
-   QVector<gaussWaveFunc*> waveFunction;
+   QVector<GaussWaveFunction*> waveFunction;
    QVector<DTKGLBondNetWork*> bondNW;
    QVector<DTKGLCriticalPointNetWork*> critPtNW;
 };

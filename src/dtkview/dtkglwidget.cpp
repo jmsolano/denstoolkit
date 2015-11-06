@@ -451,7 +451,7 @@ void DTKGLWidget::addMolecule(QString fnam)
 {
    QString wfnname=dtkglutils::getWFNFileNameFromCPX(fnam);
 
-   gaussWaveFunc *wf_lcl=new gaussWaveFunc();
+   GaussWaveFunction *wf_lcl=new GaussWaveFunction();
    if ( !(wf_lcl->readFromFile(wfnname.toStdString())) ) {
       QMessageBox::warning(this, tr("Error"),\
             (tr("Could not open the file ")+wfnname+tr("!")\

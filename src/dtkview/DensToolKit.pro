@@ -26,7 +26,7 @@ SOURCES += main.cpp\
     ../common/atomcolschjmol.cpp \
     ../common/solstringtools.cpp \
     ../common/critptnetwork.cpp \
-    ../common/wavefunctionclass.cpp \
+    ../common/gausswavefunction.cpp \
     ../common/eig2-4.cpp \
     ../common/solmath.cpp \
     ../common/solfileutils.cpp \
@@ -48,7 +48,7 @@ HEADERS  += dtkmainwindow.h \
     ../common/atomcolschjmol.h \
     ../common/solstringtools.h \
     ../common/critptnetwork.h \
-    ../common/wavefunctionclass.h \
+    ../common/gausswavefunction.h \
     ../common/eig2-4.h \
     ../common/solmath.h \
     ../common/solfileutils.h \
