@@ -50,7 +50,7 @@ using std::endl;
 #include <cstdlib>
 #include <cmath>
 #include "demat1critptnetwork.h"
-#include "wavefunctionclass.h"
+#include "gausswavefunction.h"
 #include "solmemhand.h"
 #include "solscrutils.h"
 #include "solstringtools.h"
@@ -118,7 +118,7 @@ void DeMat1CriticalPointNetwork::init()
    return;
 }
 /* ************************************************************************************ */
-DeMat1CriticalPointNetwork::DeMat1CriticalPointNetwork(gaussWaveFunc *usrwf,\
+DeMat1CriticalPointNetwork::DeMat1CriticalPointNetwork(GaussWaveFunction *usrwf,\
       int at1,int at2)
 {
    init();

@@ -152,7 +152,7 @@ void waveFunctionGrid1D::setUpSimpleLine(bondNetWork &bn,solreal (&ta)[3],solrea
    return;
 }
 /* ********************************************************************************** */
-bool waveFunctionGrid1D::writeLineDatRho(ofstream &ofil,gaussWaveFunc &wf)
+bool waveFunctionGrid1D::writeLineDatRho(ofstream &ofil,GaussWaveFunction &wf)
 {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
@@ -220,7 +220,7 @@ void waveFunctionGrid1D::setUpSimpleLine(bondNetWork &bn,int na)
    return;
 }
 /* ********************************************************************************** */
-bool waveFunctionGrid1D::writeLineDatLapRho(ofstream &ofil,gaussWaveFunc &wf)
+bool waveFunctionGrid1D::writeLineDatLapRho(ofstream &ofil,GaussWaveFunction &wf)
 {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
@@ -258,7 +258,7 @@ bool waveFunctionGrid1D::writeLineDatLapRho(ofstream &ofil,gaussWaveFunc &wf)
    return true;
 }
 /* ********************************************************************************** */
-bool waveFunctionGrid1D::writeLineDatELF(ofstream &ofil,gaussWaveFunc &wf)
+bool waveFunctionGrid1D::writeLineDatELF(ofstream &ofil,GaussWaveFunction &wf)
 {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
@@ -296,7 +296,7 @@ bool waveFunctionGrid1D::writeLineDatELF(ofstream &ofil,gaussWaveFunc &wf)
    return true;
 }
 /* ********************************************************************************** */
-bool waveFunctionGrid1D::writeLineDatLOL(ofstream &ofil,gaussWaveFunc &wf)
+bool waveFunctionGrid1D::writeLineDatLOL(ofstream &ofil,GaussWaveFunction &wf)
 {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
@@ -334,7 +334,7 @@ bool waveFunctionGrid1D::writeLineDatLOL(ofstream &ofil,gaussWaveFunc &wf)
    return true;
 }
 /* ********************************************************************************** */
-bool waveFunctionGrid1D::writeLineDatMagGradLOL(ofstream &ofil,gaussWaveFunc &wf)
+bool waveFunctionGrid1D::writeLineDatMagGradLOL(ofstream &ofil,GaussWaveFunction &wf)
 {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
@@ -374,7 +374,7 @@ bool waveFunctionGrid1D::writeLineDatMagGradLOL(ofstream &ofil,gaussWaveFunc &wf
    return true;
 }
 /* ********************************************************************************** */
-bool waveFunctionGrid1D::writeLineDatShannonEntropy(ofstream &ofil,gaussWaveFunc &wf)
+bool waveFunctionGrid1D::writeLineDatShannonEntropy(ofstream &ofil,GaussWaveFunction &wf)
 {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
@@ -412,7 +412,7 @@ bool waveFunctionGrid1D::writeLineDatShannonEntropy(ofstream &ofil,gaussWaveFunc
    return true;
 }
 /* ********************************************************************************** */
-bool waveFunctionGrid1D::writeLineDatMagGradRho(ofstream &ofil,gaussWaveFunc &wf)
+bool waveFunctionGrid1D::writeLineDatMagGradRho(ofstream &ofil,GaussWaveFunction &wf)
 {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
@@ -450,7 +450,7 @@ bool waveFunctionGrid1D::writeLineDatMagGradRho(ofstream &ofil,gaussWaveFunc &wf
    return true;
 }
 /* ********************************************************************************** */
-bool waveFunctionGrid1D::writeLineDatKinetEnerDensG(ofstream &ofil,gaussWaveFunc &wf)
+bool waveFunctionGrid1D::writeLineDatKinetEnerDensG(ofstream &ofil,GaussWaveFunction &wf)
 {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
@@ -488,7 +488,7 @@ bool waveFunctionGrid1D::writeLineDatKinetEnerDensG(ofstream &ofil,gaussWaveFunc
    return true;
 }
 /* ********************************************************************************** */
-bool waveFunctionGrid1D::writeLineDatKinetEnerDensK(ofstream &ofil,gaussWaveFunc &wf)
+bool waveFunctionGrid1D::writeLineDatKinetEnerDensK(ofstream &ofil,GaussWaveFunction &wf)
 {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
@@ -525,7 +525,7 @@ bool waveFunctionGrid1D::writeLineDatKinetEnerDensK(ofstream &ofil,gaussWaveFunc
    return true;
 }
 /* ********************************************************************************** */
-bool waveFunctionGrid1D::writeLineDatMolElecPot(ofstream &ofil,gaussWaveFunc &wf)
+bool waveFunctionGrid1D::writeLineDatMolElecPot(ofstream &ofil,GaussWaveFunction &wf)
 {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
@@ -563,7 +563,7 @@ bool waveFunctionGrid1D::writeLineDatMolElecPot(ofstream &ofil,gaussWaveFunc &wf
    return true;
 }
 /* ********************************************************************************** */
-bool waveFunctionGrid1D::writeLineDatMagLED(ofstream &ofil,gaussWaveFunc &wf)
+bool waveFunctionGrid1D::writeLineDatMagLED(ofstream &ofil,GaussWaveFunction &wf)
 {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
@@ -600,7 +600,7 @@ bool waveFunctionGrid1D::writeLineDatMagLED(ofstream &ofil,gaussWaveFunc &wf)
    }
    return true;
 }/* ********************************************************************************** */
-bool waveFunctionGrid1D::writeLineDatRedDensGrad(ofstream &ofil,gaussWaveFunc &wf)
+bool waveFunctionGrid1D::writeLineDatRedDensGrad(ofstream &ofil,GaussWaveFunction &wf)
 {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
@@ -637,7 +637,7 @@ bool waveFunctionGrid1D::writeLineDatRedDensGrad(ofstream &ofil,gaussWaveFunc &w
    }
    return true;
 }/* ********************************************************************************** */
-bool waveFunctionGrid1D::writeLineDatRoSE(ofstream &ofil,gaussWaveFunc &wf)
+bool waveFunctionGrid1D::writeLineDatRoSE(ofstream &ofil,GaussWaveFunction &wf)
 {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
@@ -675,7 +675,7 @@ bool waveFunctionGrid1D::writeLineDatRoSE(ofstream &ofil,gaussWaveFunc &wf)
    return true;
 }
 /* ********************************************************************************** */
-bool waveFunctionGrid1D::writeLineDatScalarCustFld(ofstream &ofil,gaussWaveFunc &wf)
+bool waveFunctionGrid1D::writeLineDatScalarCustFld(ofstream &ofil,GaussWaveFunction &wf)
 {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
@@ -713,7 +713,7 @@ bool waveFunctionGrid1D::writeLineDatScalarCustFld(ofstream &ofil,gaussWaveFunc 
    return true;
 }
 /* ********************************************************************************** */
-void waveFunctionGrid1D::makeDat(string &onam,gaussWaveFunc &wf,ScalarFieldType ft)
+void waveFunctionGrid1D::makeDat(string &onam,GaussWaveFunction &wf,ScalarFieldType ft)
 {
    if (!wf.imldd) {
       cout << "Error: trying to use a non loaded wave function object!\nNothing done!\n";

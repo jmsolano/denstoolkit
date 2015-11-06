@@ -56,7 +56,7 @@ public:
     DTKGLCriticalPointNetWork(QWidget *parent = 0);
     ~DTKGLCriticalPointNetWork();
 
-    void setupRegularCPN(class gaussWaveFunc *uwf, DTKGLBondNetWork *ubn);
+    void setupRegularCPN(class GaussWaveFunction *uwf, DTKGLBondNetWork *ubn);
     bool loadCPNStateFromFile(QString fname);
 
     int getNumACPs(void) {return cpn->nACP;}

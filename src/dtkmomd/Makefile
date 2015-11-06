@@ -81,7 +81,7 @@ $(OBJDIR)/solmath.o: ../common/solmath.cpp soldefines.h
 $(OBJDIR)/eig2-4.o: ../common/eig2-4.cpp soldefines.h
 	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
 
-$(OBJDIR)/wavefunctionclass.o: ../common/wavefunctionclass.cpp soldefines.h
+$(OBJDIR)/gausswavefunction.o: ../common/gausswavefunction.cpp soldefines.h
 	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
 
 $(OBJDIR)/solcubetools.o: ../common/solcubetools.cpp soldefines.h
@@ -101,7 +101,7 @@ dtkmomd.o: dtkmomd.cpp soldefines.h $(PARTDEPS)
 
 dtkmomd: dtkmomd.o optflags.o crtflnms.o $(OBJDIR)/solfileutils.o \
   $(OBJDIR)/iofuncts-wfx.o $(OBJDIR)/iofuncts-wfn.o \
-  $(OBJDIR)/wavefunctionclass.o $(OBJDIR)/solscrutils.o $(OBJDIR)/solmemhand.o \
+  $(OBJDIR)/gausswavefunction.o $(OBJDIR)/solscrutils.o $(OBJDIR)/solmemhand.o \
   $(OBJDIR)/solcubetools.o $(OBJDIR)/solmath.o $(OBJDIR)/eig2-4.o $(OBJDIR)/solstringtools.o
 	$(GCC) $(CCFLAGS) $(OPTIM_CCFLAGS) $(INCSOLDEFS) -o $@ $+
 clean:

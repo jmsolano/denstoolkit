@@ -54,7 +54,7 @@ using std::endl;
 #include "solscrutils.h"
 #include "solfileutils.h"
 #include "critptnetwork.h"
-#include "wavefunctionclass.h"
+#include "gausswavefunction.h"
 #include "bondnetwork.h"
 #include "eig2-4.h"
 #include "iofuncts-cpx.h"
@@ -192,7 +192,7 @@ void critPtNetWork::init()
    bn=NULL;
 }
 /* ************************************************************************************ */
-critPtNetWork::critPtNetWork(gaussWaveFunc &uwf,bondNetWork &ubn)
+critPtNetWork::critPtNetWork(GaussWaveFunction &uwf,bondNetWork &ubn)
 {
    init();
    wf=&uwf;

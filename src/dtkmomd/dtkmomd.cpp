@@ -73,7 +73,7 @@ using std::setprecision;
 #include "../common/iofuncts-wfx.h"
 #include "../common/iofuncts-wfn.h"
 #include "../common/solmath.h"
-#include "../common/wavefunctionclass.h"
+#include "../common/gausswavefunction.h"
 //#include "../common/bondnetwork.h"
 #include "../common/solcubetools.h"
 #include "optflags.h"
@@ -82,11 +82,11 @@ using std::setprecision;
 void makeLineGnuplotFile(optFlags &opts, string &gnpn,string &outn,char thefield);
 void makePlaneGnuplotFile(optFlags &opts, string &gnpn,string &outn,solreal dimparam,\
       char thefield);
-void makeLineDatFile(optFlags &opts,string &datnam,gaussWaveFunc &wf,int theaxis,\
+void makeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunction &wf,int theaxis,\
       int npts,char thefield);
-void makePlaneTsvFile(optFlags &opts,string &tsvnan,gaussWaveFunc &wf,int theplane,\
+void makePlaneTsvFile(optFlags &opts,string &tsvnan,GaussWaveFunction &wf,int theplane,\
       int npts,char thefield);
-void makeCubeFile(optFlags &opts,string &cubnam,gaussWaveFunc &wf,int npts,\
+void makeCubeFile(optFlags &opts,string &cubnam,GaussWaveFunction &wf,int npts,\
       char thefield,string &strfield);
 
 int main (int argc, char ** argv)
@@ -168,7 +168,7 @@ int main (int argc, char ** argv)
    
    cout << endl << "Loading wave function from file: " << infilnam << "... ";
    
-   gaussWaveFunc gwf;
+   GaussWaveFunction gwf;
    if (!(gwf.readFromFile(infilnam))) { //Loading the wave function
       setScrRedBoldFont();
       cout << "Error: the wave function could not be loaded!\n";
@@ -462,7 +462,7 @@ void makePlaneGnuplotFile(optFlags &opts, string &gnpn,string &outn,solreal dimp
 }
 
 /* ************************************************************************************ */
-void makeLineDatFile(optFlags &opts,string &datnam,gaussWaveFunc &wf,int theaxis,\
+void makeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunction &wf,int theaxis,\
       int npts,char thefield)
 {
 #if USEPROGRESSBAR
@@ -562,7 +562,7 @@ void makeLineDatFile(optFlags &opts,string &datnam,gaussWaveFunc &wf,int theaxis
 
 }
 /* ************************************************************************************ */
-void makePlaneTsvFile(optFlags &opts,string &tsvnam,gaussWaveFunc &wf,int theplane,\
+void makePlaneTsvFile(optFlags &opts,string &tsvnam,GaussWaveFunction &wf,int theplane,\
       int npts,char thefield)
 {
    ofstream ofile;
@@ -692,7 +692,7 @@ void makePlaneTsvFile(optFlags &opts,string &tsvnam,gaussWaveFunc &wf,int thepla
       ofile.close();
 }
 /* ************************************************************************************ */
-void makeCubeFile(optFlags &opts,string &cubnam,gaussWaveFunc &wf,int npts,\
+void makeCubeFile(optFlags &opts,string &cubnam,GaussWaveFunction &wf,int npts,\
       char thefield,string &strfield)
 {
    string comments="#Property: ";

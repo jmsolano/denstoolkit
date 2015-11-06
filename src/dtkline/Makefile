@@ -80,7 +80,7 @@ $(OBJDIR)/solmath.o: ../common/solmath.cpp soldefines.h
 $(OBJDIR)/eig2-4.o: ../common/eig2-4.cpp soldefines.h
 	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
 
-$(OBJDIR)/wavefunctionclass.o: ../common/wavefunctionclass.cpp soldefines.h
+$(OBJDIR)/gausswavefunction.o: ../common/gausswavefunction.cpp soldefines.h
 	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
 
 $(OBJDIR)/solpovtools.o: ../common/solpovtools.cpp soldefines.h
@@ -109,7 +109,7 @@ dtkline.o: dtkline.cpp soldefines.h $(PARTDEPS)
 
 dtkline: dtkline.o optflags.o crtflnms.o $(OBJDIR)/solfileutils.o \
   $(OBJDIR)/iofuncts-wfx.o $(OBJDIR)/iofuncts-wfn.o \
-  $(OBJDIR)/wavefunctionclass.o $(OBJDIR)/solscrutils.o $(OBJDIR)/solmemhand.o \
+  $(OBJDIR)/gausswavefunction.o $(OBJDIR)/solscrutils.o $(OBJDIR)/solmemhand.o \
   $(OBJDIR)/bondnetwork.o $(OBJDIR)/wfgrid1d.o $(OBJDIR)/solpovtools.o \
   $(OBJDIR)/solmath.o $(OBJDIR)/eig2-4.o $(OBJDIR)/solstringtools.o \
   $(OBJDIR)/atomradiicust.o $(OBJDIR)/atomcolschjmol.o
