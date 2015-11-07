@@ -176,8 +176,7 @@ using std::complex;
 #include <omp.h>
 #endif
 
-class GaussWaveFunction
-{
+class GaussWaveFunction {
 public:
    /* *********************************************************************************** */
    GaussWaveFunction(); //Default constructor
@@ -514,7 +513,7 @@ public:
     * also evaluates the zero-th (angular factor), first, second, third, and fourth derivative
     * factors of the primitives. The final derivatives of the primitives are
     * obtained by multiplying the components of di times \f$\exp(-r^2\alpha)\f$.  */
-void evald4Ang(int (&a)[3],solreal &alp,solreal (&x)[3],solreal (&x2)[3],
+   void evald4Ang(int (&a)[3],solreal &alp,solreal (&x)[3],solreal (&x2)[3],
                   solreal (&d0)[3],solreal (&d1)[3],solreal (&d2)[3],solreal (&d3)[3],
                   solreal (&d4)[3]);
    /* *********************************************************************************** */
@@ -631,7 +630,7 @@ void evald4Ang(int (&a)[3],solreal &alp,solreal (&x)[3],solreal (&x2)[3],
    /* ************************************************************************************ */
    void useVectorCustomField(bool ucf) {usevcustfld=ucf;}
    /* ************************************************************************************ */
-private:
+protected:
    static int prTy[MAXPRIMTYPEDEFINED*3];
    /* ************************************************************************************ */
    bool usescustfld,usevcustfld;
