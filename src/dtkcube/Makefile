@@ -12,7 +12,7 @@ OS_ARCH = $(shell uname -m | sed -e "s/i386/i686/")
 DARWIN = $(strip $(findstring DARWIN, $(OSUPPER)))
 
 #GCC             ?= g++
-#GCC             ?= g++-mp-4.8
+#GCC             ?= g++-mp-4.9
 #GCC             ?= llvm-g++-4.2
 
 # Extra user flags
@@ -21,7 +21,7 @@ WARNING_CCFLAGS ?=  -W -Wall -pedantic -Wno-long-long
 
 # OS-specific build flags
 ifneq ($(DARWIN),) 
-      GCC       := g++-mp-4.8
+      GCC       := g++-mp-4.9
       CCFLAGS   := -arch $(OS_ARCH) 
 else
       GCC       := g++

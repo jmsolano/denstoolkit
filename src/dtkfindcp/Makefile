@@ -11,7 +11,7 @@ OS_ARCH = $(shell uname -m | sed -e "s/i386/i686/")
 # Flags to detect either a Linux system (linux) or Mac OSX (darwin)
 DARWIN = $(strip $(findstring DARWIN, $(OSUPPER)))
 
-#GCC             ?= g++-mp-4.8 -std=c++11
+#GCC             ?= g++-mp-4.9 -std=c++11
 #GCC             ?= g++
 
 # Extra user flags
@@ -20,7 +20,7 @@ WARNING_CCFLAGS ?=  -W -Wall -pedantic -Wno-long-long
 
 # OS-specific build flags
 ifneq ($(DARWIN),) 
-      GCC       := g++-mp-4.8
+      GCC       := g++-mp-4.9
       CCFLAGS   := -arch $(OS_ARCH) 
 else
       GCC       := g++
