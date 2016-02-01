@@ -17,7 +17,7 @@ WARNING_CCFLAGS ?=  -W -Wall -pedantic -Wno-long-long
 
 # OS-specific build flags
 ifneq ($(DARWIN),) 
-      GCC       := g++-mp-4.8
+      GCC       := g++-mp-4.9
       CCFLAGS   := -arch $(OS_ARCH) 
 else
       GCC       := g++
