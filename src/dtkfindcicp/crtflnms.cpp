@@ -70,8 +70,8 @@
 #include "../common/solfileutils.h"
 #include "../common/solscrutils.h"
 
-void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn,string &o_fn,string &p_fn,
-                 string &n_fn,string &c_fn,ScalarFieldType &cpt)
+void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn,string &l_fn,\
+      string &ci_fn,string &c_fn)
 {
    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
    /*
@@ -81,8 +81,6 @@ void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn,string &o_fn,stri
    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
    i_fn=string(argv[1]);
    size_t pos;
-   //string sl="wfn";
-   //pos=i_fn.find(sl);
    if (!((i_fn.find("wfn")!=string::npos)||
        (i_fn.find("WFN")!=string::npos)||
        (i_fn.find("wfx")!=string::npos)||
@@ -92,51 +90,24 @@ void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn,string &o_fn,stri
       setScrNormalFont();
       exit(1);
    }
-   o_fn=i_fn.substr(0,(i_fn.length()-3));
-   p_fn=n_fn=c_fn=o_fn;
-   o_fn.append("log");
-   p_fn.append("pov");
-   n_fn.append("png");
+   string plbl="RhoCICPs";
+   l_fn=i_fn.substr(0,(i_fn.length()-3));
+   c_fn=l_fn;
+   ci_fn=l_fn;
+   l_fn.append("log");
+   ci_fn.append("log");
    c_fn.append("cpx");
-   pos=o_fn.find_last_of('.');
-   if (pos!=string::npos) {
-      string plbl;
-      switch (cpt) {
-         case LOLD:
-            plbl=string("LOLCP");
-            break;
-         case DENS:
-            plbl=string("RhoCP");
-            break;
-         default:
-            displayErrorMessage("Not implemented/unknown field type.");
-            break;
-      }
-      o_fn.insert(pos,plbl);
-      p_fn.insert(pos,plbl);
-      n_fn.insert(pos,plbl);
-      c_fn.insert(pos,plbl);
-   }
+   pos=l_fn.find_last_of('.');
+   ci_fn.insert(pos,plbl);
+   plbl="RhoCP";
+   c_fn.insert(pos,plbl);
+   l_fn.insert(pos,plbl);
    if (opts.outfname) {
-      o_fn=argv[opts.outfname];
-      p_fn=n_fn=c_fn=o_fn;
-      o_fn.append(".log");
-      p_fn.append(".pov");
-      n_fn.append(".png");
+      l_fn=argv[opts.outfname];
+      l_fn.append(".log");
       c_fn.append(".cpx");
+      ci_fn.append("CICPs.log");
    }
    return;
 }
-
-void mkDatMatFileNames(string &lgfn,string &acfn,string &cpfn,string &bpfn)
-{
-   acfn=lgfn.substr(0,(lgfn.length()-4));
-   cpfn=acfn;
-   bpfn=acfn;
-   acfn.append("-ATCrds.dat");
-   cpfn.append("-CPCrds.dat");
-   bpfn.append("-BPCrds.dat");
-   return;
-}
-
 #endif //_CRTFLNMS_CPP

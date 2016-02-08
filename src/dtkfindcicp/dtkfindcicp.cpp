@@ -99,11 +99,14 @@ using std::setprecision;
 #include "crtflnms.h"
 #include "custfmtmathfuncts.h"
 
+void writeCICPLogFile(string lnam,GaussWaveFunction &wf,critPtNetWork &cp);
+
+
 int main (int argc, char ** argv)
 {
    const clock_t begin_time = clock();
    const solreal begin_walltime = time(NULL);
-   string infilnam,outfilnam,povfilnam,pngfilnam,cpxfilnam;
+   string infilnam,logfilnam,cpxfilnam,cicpfilnam;
    string progname;
    optFlags options;
    ifstream ifile;
@@ -112,26 +115,7 @@ int main (int argc, char ** argv)
    
    getOptions(argc,argv,options); //This processes the options from the command line.
    
-   if (options.cptype) {
-      char ccpt;
-      ccpt=argv[options.cptype][0];
-      switch (ccpt) {
-         case 'd':
-            critpttype=DENS;
-            break;
-         case 'L':
-            critpttype=LOLD;
-            options.calcbgps=0;
-            break;
-         default:
-            displayErrorMessage("This type of field is not implemented/known...");
-            exit(1);
-            break;
-      }
-   }
-   
-   mkFileNames(argv,options,infilnam,outfilnam,povfilnam,
-               pngfilnam,cpxfilnam,critpttype); //This creates the names used.
+   mkFileNames(argv,options,infilnam,logfilnam,cicpfilnam,cpxfilnam); //This creates the names used.
    printHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS); //Just to let the user know that the initial configuration is OK
    
    cout << endl << "Loading wave function from file: " << infilnam << "... ";
@@ -144,11 +128,6 @@ int main (int argc, char ** argv)
       exit(1);
    }
    cout << "Done." << endl;
-   
-   cout << "nNuc: " << gwf.nNuc << " nPri: " << gwf.nPri
-        << " nMOr: "  << gwf.nMOr << endl;
-   
-   //return 0;
    
    bondNetWork bnw;
    bnw.readFromFile(infilnam); //Loading the bond-network (if the wave function
@@ -171,97 +150,20 @@ int main (int argc, char ** argv)
    if ( options.mkextsearch ) {
       cpn.extendedSearchCPs();
    }
-   if (options.calcrgps) {
-      cpn.setRingPaths();
-      cpn.setCagePaths();
-   }
 
-   //cpn.displayIHVCoords();
-   //cpn.displayACPCoords();
-   //cpn.displayBCPCoords();
-   //cpn.printCPProps(gwf);
-   
-   cpn.writeCPProps(outfilnam,infilnam);
+   cpn.writeCPProps(logfilnam,infilnam);
    ofstream lfil;
-   lfil.open(outfilnam.c_str(),std::ofstream::app);
+   lfil.open(logfilnam.c_str(),std::ofstream::app);
    lfil << setprecision(3) << "CPU Time: " << endl
         << solreal( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
    lfil.close();
    writeCPXFile(cpxfilnam,infilnam,cpn);
    
-   cout << endl << "Output written in files: " << outfilnam << ", and " << cpxfilnam << endl;
-   
-#if _HAVE_POVRAY_
-   int cameravdir=1;
-   if (options.camvdir) {sscanf(argv[options.camvdir],"%d",&cameravdir);}
-   if (options.drawnuc) {
-      cpn.drawNuclei(true);
-   }
-   string cmdl;
-   if (options.mkpov||options.mkpng) {
-      povRayConfProp povconf;
-      if (options.drawbgps&&(!options.calcbgps)) {
-         displayWarningMessage("If you want to see gradient paths, you must not use option -G");
-         displayWarningMessage("Nothing to include in the pov file.");
-      }
-      if (options.drawbgps&&options.calcbgps) {
-         cpn.drawBondGradPaths(true);
-         cpn.drawBonds(false);
-         if (options.bgptubes) {cpn.tubeStyleBGP(true);}
-      }
-      cpn.makePOVFile(povfilnam,povconf,cameravdir);
-   }
-   if (options.kppov) {
-      cout << "           PovRay file: " << povfilnam << endl;
-   }
-   if (options.mkpng) {
-      cout << "Calling povray..." << endl;
-      cmdl=string(CMD_POVRAY);
-#if (defined(__CYGWIN__))
-      cmdl+=string(" /EXIT /RENDER");
-#endif
-      cmdl+=(string(" ")+povfilnam+string(" +ua -D +FN"));
-      //cout << cmdl << endl;
-      if (options.quiet) {cmdl+=string(" > /dev/null 2>&1");}
-      system(cmdl.c_str());
-#if (_HAVE_IMAGEMAGICK_)
-      cmdl="convert ";
-#elif(_HAVE_GRAPHICSMAGICK_)
-      cmdl="gm convert ";
-#endif
-#if (((_HAVE_IMAGEMAGICK_))||(_HAVE_GRAPHICSMAGICK_))
-      cmdl+=(string("-trim ")+pngfilnam+string(" ")+pngfilnam);
-      system(cmdl.c_str());
-#endif
-      cout << "Rendering done." << endl;
-   }
-   if (!(options.kppov)) {
-#if (defined(__APPLE__)||defined(__linux__)||defined(__CYGWIN__))
-      cmdl="rm ";
-      cmdl+=povfilnam;
-      system(cmdl.c_str());
-#endif
-   }
-#endif /* _HAVE_POVRAY_ */
-   
-   if (options.mkdatmat) {
-      string acfname,cpfname,bpfname;
-      mkDatMatFileNames(outfilnam,acfname,cpfname,bpfname);
-      writeDatMatAtCrds(acfname,bnw);
-      writeDatMatCritPtsCrds(cpfname,cpn);
-      writeDatMatBondPathCrds(bpfname,cpn);
-   }
-   
-   
-//#if (defined(__APPLE__)||defined(__linux__))
-//   if (options.zipdat) {
-//      string cmdl;
-//      cmdl=string("gzip -9f ")+outfilnam;
-//      cout << "Calling gzip...";
-//      system(cmdl.c_str());
-//      cout << " Done!" << endl;
-//   }
-//#endif/* defined(__APPLE__)||defined(__linux__) */
+   writeCICPLogFile(cicpfilnam,gwf,cpn);
+
+   cout << endl << "Output written in files: " << logfilnam
+        << ", " << cpxfilnam
+        << ", and " << cicpfilnam << endl;
    
    
    /* At this point the computation has ended. Usually this means no errors ocurred. */
@@ -280,4 +182,38 @@ int main (int argc, char ** argv)
    setScrNormalFont();
    return 0;
 }
+
+
+void writeCICPLogFile(string lnam,GaussWaveFunction &wf,critPtNetWork &cp) {
+   ofstream lfil;
+   lfil.open(lnam.c_str(),ios::out);
+   int nbcp=cp.nBCP;
+   int acp1Idx,acp2Idx;
+   solreal RACP1[3],RACP2[3];
+   writeCommentedScrStarLine(lfil);
+   if ( nbcp==0 ) {
+      lfil << "No bond critical points found!" << endl;
+      lfil.close();
+      return;
+   }
+   solreal gamma,gg[3],gp[3],hh[3][3],hph[3][3],hp[3][3];
+   writeCommentedScrCharLine(lfil,'-');
+   for ( int i=0 ; i<nbcp ; ++i ) {
+      acp1Idx=cp.conBCP[i][0];
+      acp2Idx=cp.conBCP[i][1];
+      cout << cp.RBGP[i][0][0] << " " << cp.RBGP[i][0][1] << " " << cp.RBGP[i][0][2] << endl;
+      for ( int j=0 ; j<3 ; ++j ) {
+         RACP1[j]=cp.RACP[acp1Idx][j];
+         RACP2[j]=cp.RACP[acp2Idx][j];
+      }
+      lfil << "#Bond Critical Point Index: " << endl << i << endl;
+      wf.evalHessDensityMatrix1(RACP1,RACP2,gamma,gg,gp,hh,hph,hp);
+      lfil << "#Hessian of Density Matrix of Order 1 at CI:" << endl
+           << gamma << endl;
+      writeCommentedScrCharLine(lfil,'-');
+   }
+   writeCommentedScrStarLine(lfil);
+   lfil.close();
+}
+
 

@@ -81,8 +81,8 @@ using std::string;
  If no base name is given there, then the DEFAULTBASENAME will be
  used. The latter has been defined at the begining of the main program.
  */
-void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn,string &l_fn,string &p_fn,
-                 string &n_fn,string &c_fn,ScalarFieldType &cpt);
+void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn,string &l_fn,\
+      string &ci_fn,string &c_fn);
 
 /**
  This function creates some extra names. It takes as base name the string lgfn.
