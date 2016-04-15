@@ -1,18 +1,28 @@
 #Compilation and installation instructions (DensToolKitViewer)
-##Ubuntu 14
-For compiling and installing DensToolKitViewer, please type in your terminal:
+##Install dependencies
+Before building DensToolKitViewer, please install some dependecies as described below. After this, continue with the building of DensToolKitViewer as outlined in "Common procedure"
+###Ubuntu 14 dependencies
+For compiling and installing DensToolKitViewer in Ubuntu 14 (most likely any Debian-based distro), please type in your terminal:
 
 ~~~~~~~~~~~~~
 $sudo apt-get install aptitude build-essential make g++ git cmake freeglut3-dev qtdeclarative5-dev libxmu-dev libxi-dev mesa-common-dev libgl1-mesa-dev
 ~~~~~~~~~~~~~
 
-Then go to a directory wherein you plan to build dtk. In this example, replace ```/path/to/dtk/``` by the corresponding path.
+###Fedora 21
+
+For compiling and installing DensToolKitViewer under Fedora (and most likely under any RPM-based distro), please type in your terminal:
+
+~~~~~~~~~~~~~
+sudo yum install gcc-g++ git cmake gnuplot epstool texlive-epstopdf povray GraphicsMagick freeglut-devel qt5-qtbase-devel libXmu-devel libXi-devel
+~~~~~~~~~~~~~
+
+##Common procedure
+
+After installing the corresponding packages, go to a directory wherein you plan to build dtk. In this example, replace ```/path/to/dtk/``` by the corresponding path.
 
 ~~~~~~~~~~~~~
 $cd /path/to/dtk
 $git clone git://github.com/jmsolano/denstoolkit.git builddtk
-$#also may be:
-$#git clone --bare https://github.com/jmsolano/denstoolkit.git builddtk
 $cd builddtk/src/dtkview
 $mkdir build
 $cd build
@@ -20,6 +30,7 @@ $cmake ..
 $make
 $sudo cp bin/DensToolKitViewer /usr/local/bin
 ~~~~~~~~~~~~~
+
 
 This should make available DensToolKitViewer from the command line. If this does not work, please check next section.
 
