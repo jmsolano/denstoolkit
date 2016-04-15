@@ -71,7 +71,7 @@ if command -v gzip >/dev/null 2>&1; then
 fi
 have_all=$(($have_gnuplot + $have_epstool + $have_epstopdf + $have_povray\
    + $have_graphicsmagick + $have_gzip))
-echo -e "have_all=$have_all"
+#echo -e "have_all=$have_all"
 if [[ $have_all -gt "0" ]];then
       echo -e "\033[31m"
       echo -e "\nError: Some of the packages are not installed in your system!\n"

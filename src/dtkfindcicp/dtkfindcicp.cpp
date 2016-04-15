@@ -136,28 +136,18 @@ int main (int argc, char ** argv)
    
    critPtNetWork cpn(gwf,bnw);
    
-   switch (critpttype) {
-      case DENS:
-         cpn.setCriticalPoints(DENS);
-         if (options.calcbgps) {cpn.setBondPaths();}
-         break;
-      case LOLD:
-         cpn.setCriticalPoints(LOLD);
-         break;
-      default:
-         break;
-   }
-   if ( options.mkextsearch ) {
-      cpn.extendedSearchCPs();
-   }
-
+   cpn.setCriticalPoints(DENS);
+   cpn.setBondPaths();
    cpn.writeCPProps(logfilnam,infilnam);
+   writeCPXFile(cpxfilnam,infilnam,cpn);
+
+   /* Searching of CPs finished.  */
+
    ofstream lfil;
    lfil.open(logfilnam.c_str(),std::ofstream::app);
    lfil << setprecision(3) << "CPU Time: " << endl
         << solreal( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
    lfil.close();
-   writeCPXFile(cpxfilnam,infilnam,cpn);
    
    writeCICPLogFile(cicpfilnam,gwf,cpn);
 
