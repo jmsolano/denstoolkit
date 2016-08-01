@@ -95,6 +95,7 @@ using std::setprecision;
 #include "../common/gausswavefunction.h"
 #include "../common/bondnetwork.h"
 #include "../common/critptnetwork.h"
+#include "../common/demat1critptnetworkbp.h"
 #include "optflags.h"
 #include "crtflnms.h"
 #include "custfmtmathfuncts.h"
@@ -149,7 +150,9 @@ int main (int argc, char ** argv)
         << solreal( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
    lfil.close();
    
-   writeCICPLogFile(cicpfilnam,gwf,cpn);
+   //writeCICPLogFile(cicpfilnam,gwf,cpn);
+
+   DeMat1CriticalPointNetworkBP dmcpbp(gwf,cpn);
 
    cout << endl << "Output written in files: " << logfilnam
         << ", " << cpxfilnam

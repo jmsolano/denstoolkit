@@ -102,6 +102,9 @@ $(OBJDIR)/solcubetools.o: ../common/solcubetools.cpp soldefines.h
 $(OBJDIR)/critptnetwork.o: ../common/critptnetwork.cpp soldefines.h
 	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
 
+$(OBJDIR)/demat1critptnetworkbp.o: ../common/demat1critptnetworkbp.cpp soldefines.h
+	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
+
 $(OBJDIR)/iofuncts-cpx.o: ../common/iofuncts-cpx.cpp soldefines.h
 	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
 
@@ -128,7 +131,7 @@ dtkfindcicp: dtkfindcicp.o optflags.o crtflnms.o custfmtmathfuncts.o $(OBJDIR)/s
   $(OBJDIR)/gausswavefunction.o $(OBJDIR)/solscrutils.o $(OBJDIR)/solmemhand.o \
   $(OBJDIR)/bondnetwork.o $(OBJDIR)/solpovtools.o $(OBJDIR)/critptnetwork.o \
   $(OBJDIR)/iofuncts-cpx.o $(OBJDIR)/solstringtools.o $(OBJDIR)/atomradiicust.o \
-  $(OBJDIR)/atomcolschjmol.o $(OBJDIR)/solmath.o
+  $(OBJDIR)/atomcolschjmol.o $(OBJDIR)/solmath.o $(OBJDIR)/demat1critptnetworkbp.o
 	$(GCC) $(CCFLAGS) $(OPTIM_CCFLAGS) $(INCSOLDEFS) -o $@ $+
 clean:
 	rm -f *.o dtkfindcicp
