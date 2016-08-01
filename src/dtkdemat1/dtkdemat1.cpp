@@ -74,7 +74,7 @@ using std::setprecision;
 #include "../common/gausswavefunction.h"
 #include "../common/bondnetwork.h"
 #include "../common/critptnetwork.h"
-#include "../common/demat1critptnetwork.h"
+#include "../common/demat1critptnetworksl.h"
 #include "../common/solstringtools.h"
 #include "optflags.h"
 #include "crtflnms.h"
@@ -650,7 +650,7 @@ int main (int argc, char ** argv)
 
    /* Finding critical points (if requested)  */
 
-   DeMat1CriticalPointNetwork cp(&gwf,at1,at2);
+   DeMat1CriticalPointNetworkSL cp(&gwf,at1,at2);
    if ( options.findcps ) {
       printBetweenStarLines("Searching Critical Points");
       cp.setGammaCriticalPoints();
