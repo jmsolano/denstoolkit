@@ -184,6 +184,8 @@ public:
    void setMaxIterationsRCP(int ii) {maxItRCP=ii;}
    /** Self descriptive.  */
    void setMaxIterationsCCP(int ii) {maxItCCP=ii;}
+   /** Self descriptive  */
+   void setStepSizeBGP(solreal ss) {stepSizeBGP=ss;}
 /* ************************************************************************************ */
    /** The main public function for searching all critical points.
     * Configuration, such as requesting extended search should be
@@ -397,6 +399,7 @@ protected:
    bool tubeBGPStyle;
    bool mkextsearch;
    solreal stepSizeACP,stepSizeBCP,stepSizeRCP,stepSizeCCP;
+   solreal stepSizeBGP;
    ScalarFieldType mycptype;
    solreal maxBondDist; /*!< The maximum distance between two ACPs related by a BCP  */
    solreal maxBCPACPDist; /*!< The maximum distance between a BCP and associated ACPs  */

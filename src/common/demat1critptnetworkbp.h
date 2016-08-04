@@ -6,20 +6,22 @@ class DeMat1CriticalPointNetworkBP {
 /* ************************************************************************** */
 public:
    DeMat1CriticalPointNetworkBP(class GaussWaveFunction &usrwf,\
-         class critPtNetWork &usrcp);
+         class bondNetWork &usrbn);
    ~DeMat1CriticalPointNetworkBP();
    inline bool ImSetup(void) {return imsetup;}
-   void SetupBondPath(int ata,int atb);
+   void SeekBondPath(int ata,int atb);
+/* ************************************************************************** */
+   class critPtNetWork *cpn;
 /* ************************************************************************** */
 protected:
 /* ************************************************************************** */
    void init(void);
    void destroy(void);
-   void SafetyChecks(void);
+   bool SafetyChecks(void);
 /* ************************************************************************** */
 /* ************************************************************************** */
    class GaussWaveFunction *wf;
-   class critPtNetWork *cp;
+   class bondNetWork *bn;
    int at1,at2;
 /* ************************************************************************** */
 private:

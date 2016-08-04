@@ -138,17 +138,13 @@ int main (int argc, char ** argv) {
                                //was read, there souldn't be problems here.
    bnw.setUpBNW();             //To setup the bond network.
    
-   critPtNetWork cpn(gwf,bnw);
-   //cpn.setCriticalPoints(DENS);
-   //cpn.setBondPaths();
-   //cpn.writeCPProps(logfilnam,infilnam);
-   //writeCPXFile(cpxfilnam,infilnam,cpn);
-   cpn.setupACPs(DENS);
-   cpn.setACPs(DENS);
-   cpn.setupBCPs(DENS);
-   cpn.setupBondPaths();
+   //critPtNetWork cpn(gwf,bnw);
 
-   DeMat1CriticalPointNetworkBP dmcpbp(gwf,cpn);
+   DeMat1CriticalPointNetworkBP dmcpbp(gwf,bnw);
+
+   dmcpbp.SeekBondPath(atom1,atom2);
+
+   writeCPXFile(cpxfilnam,infilnam,*(dmcpbp.cpn));
 
    /* At this point the computation has ended. Usually this means no errors ocurred. */
 

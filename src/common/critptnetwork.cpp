@@ -178,6 +178,7 @@ void critPtNetWork::init()
    stepSizeBCP=CPNW_MAXSTEPSIZEBCPSEARCH;
    stepSizeRCP=CPNW_MAXSTEPSIZERCPSEARCH;
    stepSizeCCP=CPNW_MAXSTEPSIZECCPSEARCH;
+   stepSizeBGP=CPNW_DEFAULTGRADIENTPATHS;
    iknowacps=iknowbcps=iknowrcps=iknowccps=false;
    iknowallcps=false;
    iknowbgps=iknowrgps=iknowcgps=false;
@@ -329,6 +330,10 @@ void critPtNetWork::setupACPs(ScalarFieldType ft) {
          exit(1);
          break;
    }
+   if ( RACP!=NULL ) {
+      displayWarningMessage("RACP already allocated! Nothing to do.");
+      return;
+   }
    alloc2DRealArray(string("RACP"),dACP,3,RACP,1.0e+50);
    alloc1DStringArray("lblACP",dACP,lblACP);
 }
@@ -357,6 +362,10 @@ void critPtNetWork::setupBCPs(ScalarFieldType ft) {
 #endif /* ( DEBUG ) */
    }
    if (iknowacps) {
+      if ( RBCP!=NULL ) {
+         displayWarningMessage("RBCP already allocated! Nothing to do.");
+         return;
+      }
       dBCP=(nACP*(nACP-1))/2;
       if ( dBCP<CPNW_MINARRAYSIZE ) {dBCP=CPNW_MINARRAYSIZE;}
       alloc2DRealArray(string("RBCP"),dBCP,3,RBCP,1.0e+50);
@@ -406,7 +415,7 @@ void critPtNetWork::setBondPaths()
    printProgressBar(0);
 #endif
    solreal hstep,rseed[3];
-   hstep=CPNW_DEFAULTGRADIENTPATHS;
+   hstep=stepSizeBGP;
    int arrsize=CPNW_ARRAYSIZEGRADPATH;
    int at1,at2;
    for (int i=0; i<nBCP; i++) {
@@ -3482,7 +3491,7 @@ void critPtNetWork::setRingPaths()
    printProgressBar(0);
 #endif
    solreal hstep; //,rseed[3];
-   hstep=CPNW_DEFAULTGRADIENTPATHS;
+   hstep=stepSizeBGP;
    int arrsize=CPNW_ARRAYSIZEGRADPATH;
    int currBcpPos,npts;
 #if DEBUG
@@ -3540,7 +3549,7 @@ void critPtNetWork::setCagePaths(void)
    printProgressBar(0);
 #endif
    solreal hstep; //,rseed[3];
-   hstep=CPNW_DEFAULTGRADIENTPATHS;
+   hstep=stepSizeBGP;
    int arrsize=CPNW_ARRAYSIZEGRADPATH;
    //int rcpIdx;
    int currRcpPos,npts;

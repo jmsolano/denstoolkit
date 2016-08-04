@@ -139,7 +139,7 @@ clean:
 distclean: clean
 	rm -f $(OBJDIR)/*.o
 
-COMMON_CMDL_OPTIONS = -a 2 4
+COMMON_CMDL_OPTIONS = -a 1 2
 
 runben: build
 	./dtkfindcicp benzene.wfn $(COMMON_CMDL_OPTIONS)
