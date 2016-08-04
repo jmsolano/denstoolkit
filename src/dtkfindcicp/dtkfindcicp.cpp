@@ -148,6 +148,46 @@ int main (int argc, char ** argv) {
 
    /* At this point the computation has ended. Usually this means no errors ocurred. */
 
+
+#if _HAVE_POVRAY_
+   int cameravdir=1;
+   dmcpbp.cpn->drawNuclei(true);
+   string cmdl;
+   povRayConfProp povconf;
+   dmcpbp.cpn->drawBondGradPaths(true);
+   dmcpbp.cpn->drawBonds(false);
+   string povfilnam="tmppov.pov";
+   string pngfilnam="tmppov.png";
+   dmcpbp.cpn->makePOVFile(povfilnam,povconf,cameravdir);
+   cout << "           PovRay file: " << povfilnam << endl;
+   cout << "Calling povray..." << endl;
+   cmdl=string(CMD_POVRAY);
+#if (defined(__CYGWIN__))
+   cmdl+=string(" /EXIT /RENDER");
+#endif
+   cmdl+=(string(" ")+povfilnam+string(" +ua -D +FN"));
+   //cout << cmdl << endl;
+   if (options.quiet) {cmdl+=string(" > /dev/null 2>&1");}
+   system(cmdl.c_str());
+#if (_HAVE_IMAGEMAGICK_)
+   cmdl="convert ";
+#elif(_HAVE_GRAPHICSMAGICK_)
+   cmdl="gm convert ";
+#endif
+#if (((_HAVE_IMAGEMAGICK_))||(_HAVE_GRAPHICSMAGICK_))
+   cmdl+=(string("-trim ")+pngfilnam+string(" ")+pngfilnam);
+   system(cmdl.c_str());
+#endif
+   cout << "Rendering done." << endl;
+   /*
+#if (defined(__APPLE__)||defined(__linux__)||defined(__CYGWIN__))
+   cmdl="rm ";
+   cmdl+=povfilnam;
+   system(cmdl.c_str());
+#endif
+   // */
+#endif /* _HAVE_POVRAY_ */
+
    setScrGreenBoldFont();
    printHappyEnding();
    printScrStarLine();

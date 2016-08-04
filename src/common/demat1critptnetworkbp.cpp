@@ -15,6 +15,10 @@ using std::cerr;
 #define DM1CPNWBP_DEFAULTSTEPSIZEBGP 0.025e0
 #endif
 
+#ifndef DM1CPNWBP_DEFAULTARRAYSIZEBGP
+#define DM1CPNWBP_DEFAULTARRAYSIZEBGP 300
+#endif
+
 /* ************************************************************************** */
 DeMat1CriticalPointNetworkBP::DeMat1CriticalPointNetworkBP(\
       GaussWaveFunction &usrwf,bondNetWork &usrbn) {
@@ -26,7 +30,8 @@ DeMat1CriticalPointNetworkBP::DeMat1CriticalPointNetworkBP(\
    wf=&usrwf;
    bn=&usrbn;
    cpn=new critPtNetWork(usrwf,usrbn);
-   imsetup=SafetyChecks();
+   imsetup=SetupCPN();
+   imsetup=imsetup&&SafetyChecks();
 }
 /* ************************************************************************** */
 DeMat1CriticalPointNetworkBP::~DeMat1CriticalPointNetworkBP() {
@@ -51,9 +56,6 @@ bool DeMat1CriticalPointNetworkBP::SafetyChecks(void) {
       displayErrorMessage("The wavefunction must have at least two atoms!");
       return false;
    }
-   cpn->setCriticalPoints(DENS);
-   cpn->setStepSizeBGP(DM1CPNWBP_DEFAULTSTEPSIZEBGP);
-   cpn->setBondPaths();
    return true;
 }
 /* ************************************************************************** */
@@ -62,11 +64,18 @@ void DeMat1CriticalPointNetworkBP::SeekBondPath(int ata,int atb) {
    solreal xbcp[3];
    cpn->seekSingleRhoBCP(at1,at2,xbcp);
    double hstep=DM1CPNWBP_DEFAULTSTEPSIZEBGP;
-   int arrsize=CPNW_ARRAYSIZEGRADPATH;
+   int arrsize=DM1CPNWBP_DEFAULTARRAYSIZEBGP;
    int npts=cpn->findSingleRhoBondGradientPathRK5(at1,at2,hstep,arrsize,cpn->RBGP[0],xbcp);
    cout << "npts: " << npts << endl;
 }
 /* ************************************************************************** */
+bool DeMat1CriticalPointNetworkBP::SetupCPN(void) {
+   cpn->setMaxGradPathNPts(DM1CPNWBP_DEFAULTARRAYSIZEBGP);
+   cpn->setStepSizeBGP(DM1CPNWBP_DEFAULTSTEPSIZEBGP);
+   cpn->setCriticalPoints(DENS);
+   cpn->setBondPaths();
+   return true;
+}
 /* ************************************************************************** */
 /* ************************************************************************** */
 /* ************************************************************************** */

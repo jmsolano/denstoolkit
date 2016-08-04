@@ -18,6 +18,7 @@ protected:
    void init(void);
    void destroy(void);
    bool SafetyChecks(void);
+   bool SetupCPN(void);
 /* ************************************************************************** */
 /* ************************************************************************** */
    class GaussWaveFunction *wf;

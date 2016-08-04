@@ -144,6 +144,9 @@ COMMON_CMDL_OPTIONS = -a 1 2
 runben: build
 	./dtkfindcicp benzene.wfn $(COMMON_CMDL_OPTIONS)
 
+runepi: build
+	./dtkfindcicp epi.wfn $(COMMON_CMDL_OPTIONS)
+
 runete: build
 	./dtkfindcicp ethane.wfn $(COMMON_CMDL_OPTIONS)
 

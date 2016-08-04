@@ -164,6 +164,7 @@ void critPtNetWork::init()
    conBCP=NULL;
    conRCP=conCCP=NULL;
    RACP=RBCP=RRCP=RCCP=NULL;
+   RGP=NULL;
    RBGP=NULL;
    RRGP=RCGP=NULL;
    lblACP=lblBCP=lblRCP=lblCCP=NULL;
@@ -174,6 +175,7 @@ void critPtNetWork::init()
    maxItBCP=CPNW_MAXITERATIONBCPSEARCH;
    maxItRCP=CPNW_MAXITERATIONRCPSEARCH;
    maxItCCP=CPNW_MAXITERATIONCCPSEARCH;
+   maxGradPathNPts=CPNW_ARRAYSIZEGRADPATH;
    stepSizeACP=CPNW_MAXSTEPSIZEACPRHOSEARCH;
    stepSizeBCP=CPNW_MAXSTEPSIZEBCPSEARCH;
    stepSizeRCP=CPNW_MAXSTEPSIZERCPSEARCH;
@@ -203,10 +205,11 @@ critPtNetWork::critPtNetWork(GaussWaveFunction &uwf,bondNetWork &ubn)
 critPtNetWork::~critPtNetWork()
 {
    dealloc4DRealArray(RCGP,dCCP,CPNW_MAXRCPSCONNECTEDTOCCP,\
-         CPNW_ARRAYSIZEGRADPATH);
+         maxGradPathNPts);
    dealloc4DRealArray(RRGP,dRCP,CPNW_MAXBCPSCONNECTEDTORCP,\
-         CPNW_ARRAYSIZEGRADPATH);
-   dealloc3DRealArray(RBGP,dBCP,CPNW_ARRAYSIZEGRADPATH);
+         maxGradPathNPts);
+   dealloc2DRealArray(RGP,maxGradPathNPts);
+   dealloc3DRealArray(RBGP,dBCP,maxGradPathNPts);
    dealloc2DRealArray(RACP,dACP);
    dealloc1DStringArray(lblACP);
    dealloc2DRealArray(RBCP,dBCP);
@@ -330,10 +333,14 @@ void critPtNetWork::setupACPs(ScalarFieldType ft) {
          exit(1);
          break;
    }
+   if ( RGP!=NULL ) {
+      displayWarningMessage("RGP already allocated! nothing to do.");
+   }
    if ( RACP!=NULL ) {
       displayWarningMessage("RACP already allocated! Nothing to do.");
       return;
    }
+   alloc2DRealArray(string("RGP"),maxGradPathNPts,3,RGP,1.0e+50);
    alloc2DRealArray(string("RACP"),dACP,3,RACP,1.0e+50);
    alloc1DStringArray("lblACP",dACP,lblACP);
 }
@@ -399,7 +406,7 @@ void critPtNetWork::setBCPs(ScalarFieldType ft) {
 }
 /* ************************************************************************************ */
 void critPtNetWork::setupBondPaths(void) {
-   alloc3DRealArray(string("RBGP"),dBCP,CPNW_ARRAYSIZEGRADPATH,3,RBGP);
+   alloc3DRealArray(string("RBGP"),dBCP,maxGradPathNPts,3,RBGP);
 }
 /* ************************************************************************************ */
 void critPtNetWork::setBondPaths()
@@ -416,13 +423,12 @@ void critPtNetWork::setBondPaths()
 #endif
    solreal hstep,rseed[3];
    hstep=stepSizeBGP;
-   int arrsize=CPNW_ARRAYSIZEGRADPATH;
    int at1,at2;
    for (int i=0; i<nBCP; i++) {
       for (int k=0; k<3; k++) {rseed[k]=RBCP[i][k];}
       at1=conBCP[i][0];
       at2=conBCP[i][1];
-      npts=findSingleRhoBondGradientPathRK5(at1,at2,hstep,arrsize,RBGP[i],rseed);
+      npts=findSingleRhoBondGradientPathRK5(at1,at2,hstep,maxGradPathNPts,RBGP[i],rseed);
       conBCP[i][2]=npts;
       if (npts>0) {nBGP++;}
 #if USEPROGRESSBAR
@@ -2722,7 +2728,7 @@ bool critPtNetWork::readFromFile(string inname)
    }
    iknowallcps=(iknowacps&&iknowbcps&&iknowrcps&&iknowccps);
    nBGP=cpxGetNOfBondPaths(cfil);
-   if (dBCP>0) {alloc3DRealArray(string("RBGP"),dBCP,CPNW_ARRAYSIZEGRADPATH,3,RBGP);}
+   if (dBCP>0) {alloc3DRealArray(string("RBGP"),dBCP,maxGradPathNPts,3,RBGP);}
    if (nBGP>=0&&conBCP!=NULL) {
       cpxGetNOfPtsPerBondPath(cfil,nBGP,conBCP);
       cpxGetBondPathData(cfil,nBGP,conBCP,RBGP);
@@ -2731,7 +2737,7 @@ bool critPtNetWork::readFromFile(string inname)
    nRGP=cpxGetNOfRingPaths(cfil);
    if (dRCP>0) {
       alloc4DRealArray(string("RRGP"),dRCP,CPNW_MAXBCPSCONNECTEDTORCP,\
-            CPNW_ARRAYSIZEGRADPATH,3,RRGP);
+            maxGradPathNPts,3,RRGP);
    }
    if ( nRGP>=0 && conRCP!=NULL ) {
       cpxGetNOfPtsPerRingPath(cfil,nRCP,conRCP);
@@ -2741,7 +2747,7 @@ bool critPtNetWork::readFromFile(string inname)
    nCGP=cpxGetNOfCagePaths(cfil);
    if (dCCP>0) {
       alloc4DRealArray(string("RCGP"),dCCP,CPNW_MAXRCPSCONNECTEDTOCCP,\
-            CPNW_ARRAYSIZEGRADPATH,3,RCGP);
+            maxGradPathNPts,3,RCGP);
    }
    if ( nCGP>=0 && conCCP!=NULL ) {
       cpxGetNOfPtsPerCagePath(cfil,nCCP,conCCP);
@@ -3153,7 +3159,7 @@ bool critPtNetWork::walkGradientPathRK5ToEndPoint(\
       }
       ++count;
    }
-   if ( count==CPNW_ARRAYSIZEGRADPATH ) {
+   if ( count==maxGradPathNPts ) {
       displayWarningMessage("End or array reached, need larger array?");
 #if DEBUG
       DISPLAYDEBUGINFOFILELINE;
@@ -3481,7 +3487,7 @@ void critPtNetWork::setRingPaths()
       return;
    }
    alloc4DRealArray(string("RRGP"),dRCP,CPNW_MAXBCPSCONNECTEDTORCP,\
-         CPNW_ARRAYSIZEGRADPATH,3,RRGP);
+         maxGradPathNPts,3,RRGP);
    correctRCPConnectivity();
    cout << "Calculating Ring Gradient Paths..." << endl;
 #if DEBUG
@@ -3492,7 +3498,6 @@ void critPtNetWork::setRingPaths()
 #endif
    solreal hstep; //,rseed[3];
    hstep=stepSizeBGP;
-   int arrsize=CPNW_ARRAYSIZEGRADPATH;
    int currBcpPos,npts;
 #if DEBUG
    int bcpIdx;
@@ -3509,7 +3514,7 @@ void critPtNetWork::setRingPaths()
 #endif
          //for (int k=0; k<3; k++) {rseed[k]=RBCP[bcpIdx][k];}
          npts=findSingleRhoRingGradientPathRK5(rcpIdx,\
-               currBcpPos,hstep,arrsize,RRGP[rcpIdx][currBcpPos]);
+               currBcpPos,hstep,maxGradPathNPts,RRGP[rcpIdx][currBcpPos]);
 #if DEBUG
          if ( npts<0 ) {
             displayWarningMessage("Catched -1");
@@ -3539,7 +3544,7 @@ void critPtNetWork::setCagePaths(void)
       return;
    }
    alloc4DRealArray(string("RCGP"),dCCP,CPNW_MAXRCPSCONNECTEDTOCCP,\
-         CPNW_ARRAYSIZEGRADPATH,3,RCGP);
+         maxGradPathNPts,3,RCGP);
    cout << "Calculating Cage Gradient Paths..." << endl;
 #if DEBUG
    cout << "nCCP: " << nCCP << endl;
@@ -3550,7 +3555,6 @@ void critPtNetWork::setCagePaths(void)
 #endif
    solreal hstep; //,rseed[3];
    hstep=stepSizeBGP;
-   int arrsize=CPNW_ARRAYSIZEGRADPATH;
    //int rcpIdx;
    int currRcpPos,npts;
    for (int ccpIdx=0; ccpIdx<nCCP; ccpIdx++) {
@@ -3565,7 +3569,7 @@ void critPtNetWork::setCagePaths(void)
 #endif
          //for (int k=0; k<3; k++) {rseed[k]=RCCP[ccpIdx][k];}
          npts=findSingleRhoCageGradientPathRK5(ccpIdx,\
-               currRcpPos,hstep,arrsize,RCGP[ccpIdx][currRcpPos]);
+               currRcpPos,hstep,maxGradPathNPts,RCGP[ccpIdx][currRcpPos]);
 #if DEBUG
          if ( npts<0 ) {
             displayWarningMessage("Catched -1");

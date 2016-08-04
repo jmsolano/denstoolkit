@@ -162,7 +162,7 @@ public:
    solreal centMolecVec[3];
    /** The array RGP is an auxiliary array, used for manipulating the order
     * of the points in a bond path searching procedure.  */
-   solreal RGP[CPNW_ARRAYSIZEGRADPATH][3];
+   solreal **RGP;
    string *lblACP, /*!< An array to store the labels of the ACPs.  */\
       *lblBCP, /*!< An array to store the labels of the BCPs. */\
       *lblRCP, /*!< An array to store the labels of the RCPs.  */\
@@ -184,6 +184,8 @@ public:
    void setMaxIterationsRCP(int ii) {maxItRCP=ii;}
    /** Self descriptive.  */
    void setMaxIterationsCCP(int ii) {maxItCCP=ii;}
+   /** Self descriptive  */
+   void setMaxGradPathNPts(int ii) {maxGradPathNPts=ii;}
    /** Self descriptive  */
    void setStepSizeBGP(solreal ss) {stepSizeBGP=ss;}
 /* ************************************************************************************ */
@@ -392,6 +394,7 @@ protected:
    class bondNetWork *bn;
    int dACP,dBCP,dRCP,dCCP;
    int maxItACP,maxItBCP,maxItRCP,maxItCCP;
+   int maxGradPathNPts;
    int normalbcp;
    bool iknowacps,iknowbcps,iknowrcps,iknowccps, iknowallcps;
    bool iknowbgps,iknowrgps,iknowcgps,iknowallgps;
