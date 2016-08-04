@@ -8,16 +8,23 @@ public:
    DeMat1CriticalPointNetworkBP(class GaussWaveFunction &usrwf,\
          class critPtNetWork &usrcp);
    ~DeMat1CriticalPointNetworkBP();
+   inline bool ImSetup(void) {return imsetup;}
+   void SetupBondPath(int ata,int atb);
 /* ************************************************************************** */
 protected:
 /* ************************************************************************** */
-   void init();
-   void destroy();
+   void init(void);
+   void destroy(void);
+   void SafetyChecks(void);
 /* ************************************************************************** */
-   DeMat1CriticalPointNetworkBP(void) {} //Prohibited the use of default constructor.
 /* ************************************************************************** */
    class GaussWaveFunction *wf;
    class critPtNetWork *cp;
+   int at1,at2;
+/* ************************************************************************** */
+private:
+   bool imsetup;
+   DeMat1CriticalPointNetworkBP(void) {} //Prohibited the use of default constructor.
 /* ************************************************************************** */
 };
 /* ************************************************************************** */

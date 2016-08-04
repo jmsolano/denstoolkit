@@ -100,11 +100,7 @@ using std::setprecision;
 #include "crtflnms.h"
 #include "custfmtmathfuncts.h"
 
-void writeCICPLogFile(string lnam,GaussWaveFunction &wf,critPtNetWork &cp);
-
-
-int main (int argc, char ** argv)
-{
+int main (int argc, char ** argv) {
    const clock_t begin_time = clock();
    const solreal begin_walltime = time(NULL);
    string infilnam,logfilnam,cpxfilnam,cicpfilnam;
@@ -115,7 +111,7 @@ int main (int argc, char ** argv)
    ScalarFieldType critpttype=DENS;
    
    getOptions(argc,argv,options); //This processes the options from the command line.
-   
+
    mkFileNames(argv,options,infilnam,logfilnam,cicpfilnam,cpxfilnam); //This creates the names used.
    printHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS); //Just to let the user know that the initial configuration is OK
    
@@ -129,6 +125,13 @@ int main (int argc, char ** argv)
       exit(1);
    }
    cout << "Done." << endl;
+
+   int atom1=0,atom2=1;
+   if ( options.atpos ) {
+      atom1=std::stoi(string(argv[options.atpos]));
+      atom2=std::stoi(string(argv[options.atpos+1]));
+      --atom1; --atom2;
+   }
    
    bondNetWork bnw;
    bnw.readFromFile(infilnam); //Loading the bond-network (if the wave function
@@ -136,31 +139,19 @@ int main (int argc, char ** argv)
    bnw.setUpBNW();             //To setup the bond network.
    
    critPtNetWork cpn(gwf,bnw);
-   
-   cpn.setCriticalPoints(DENS);
-   cpn.setBondPaths();
-   cpn.writeCPProps(logfilnam,infilnam);
-   writeCPXFile(cpxfilnam,infilnam,cpn);
-
-   /* Searching of CPs finished.  */
-
-   ofstream lfil;
-   lfil.open(logfilnam.c_str(),std::ofstream::app);
-   lfil << setprecision(3) << "CPU Time: " << endl
-        << solreal( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
-   lfil.close();
-   
-   //writeCICPLogFile(cicpfilnam,gwf,cpn);
+   //cpn.setCriticalPoints(DENS);
+   //cpn.setBondPaths();
+   //cpn.writeCPProps(logfilnam,infilnam);
+   //writeCPXFile(cpxfilnam,infilnam,cpn);
+   cpn.setupACPs(DENS);
+   cpn.setACPs(DENS);
+   cpn.setupBCPs(DENS);
+   cpn.setupBondPaths();
 
    DeMat1CriticalPointNetworkBP dmcpbp(gwf,cpn);
 
-   cout << endl << "Output written in files: " << logfilnam
-        << ", " << cpxfilnam
-        << ", and " << cicpfilnam << endl;
-   
-   
    /* At this point the computation has ended. Usually this means no errors ocurred. */
-   
+
    setScrGreenBoldFont();
    printHappyEnding();
    printScrStarLine();
@@ -176,37 +167,5 @@ int main (int argc, char ** argv)
    return 0;
 }
 
-
-void writeCICPLogFile(string lnam,GaussWaveFunction &wf,critPtNetWork &cp) {
-   ofstream lfil;
-   lfil.open(lnam.c_str(),ios::out);
-   int nbcp=cp.nBCP;
-   int acp1Idx,acp2Idx;
-   solreal RACP1[3],RACP2[3];
-   writeCommentedScrStarLine(lfil);
-   if ( nbcp==0 ) {
-      lfil << "No bond critical points found!" << endl;
-      lfil.close();
-      return;
-   }
-   solreal gamma,gg[3],gp[3],hh[3][3],hph[3][3],hp[3][3];
-   writeCommentedScrCharLine(lfil,'-');
-   for ( int i=0 ; i<nbcp ; ++i ) {
-      acp1Idx=cp.conBCP[i][0];
-      acp2Idx=cp.conBCP[i][1];
-      cout << cp.RBGP[i][0][0] << " " << cp.RBGP[i][0][1] << " " << cp.RBGP[i][0][2] << endl;
-      for ( int j=0 ; j<3 ; ++j ) {
-         RACP1[j]=cp.RACP[acp1Idx][j];
-         RACP2[j]=cp.RACP[acp2Idx][j];
-      }
-      lfil << "#Bond Critical Point Index: " << endl << i << endl;
-      wf.evalHessDensityMatrix1(RACP1,RACP2,gamma,gg,gp,hh,hph,hp);
-      lfil << "#Hessian of Density Matrix of Order 1 at CI:" << endl
-           << gamma << endl;
-      writeCommentedScrCharLine(lfil,'-');
-   }
-   writeCommentedScrStarLine(lfil);
-   lfil.close();
-}
 
 

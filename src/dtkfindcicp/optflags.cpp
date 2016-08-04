@@ -81,18 +81,8 @@ optFlags::optFlags()
    infname=0;
    outfname=0;
    zipdat=0;
-   mkpov=0;
-   kppov=0;
-   mkpng=0;
    quiet=1;
-   cptype=0;
-   drawnuc=0;
-   calcbgps=1;
-   calcrgps=0;
-   drawbgps=bgptubes=0;
-   camvdir=0;
-   mkdatmat=0;
-   mkextsearch=0;
+   atpos=0;
 }
 
 
@@ -123,55 +113,14 @@ void getOptions(int &argc, char** &argv, optFlags &flags)
    for (int i=1; i<argc; i++){
       if (argv[i][0] == '-'){
          switch (argv[i][1]){
-            case 'a':
-               flags.drawnuc=i;
-               break;
-            case 'c':
-               flags.camvdir=(++i);
-               if (i>=argc) {printErrorMsg(argv,'c');}
-               break;
-            case 'e' :
-               flags.mkextsearch=i;
-               break;
-            case 'g':
-               flags.drawbgps=i;
-               break;
-            case 'G':
-               flags.calcbgps=0;
-               break;
-            //case 'i':
-            //   flags.infname=(++i);
-            //   if (i>=argc) {printErrorMsg(argv,'i');}
-            //   break;
-            case 'k':
-               flags.kppov=i;
-               break;
-            case 'm':
-               flags.mkdatmat=i;
+            case 'a' :
+               flags.atpos=(++i);
+               ++i;
+               if (i>=argc) {printErrorMsg(argv,'a');}
                break;
             case 'o':
                flags.outfname=(++i);
                if (i>=argc) {printErrorMsg(argv,'o');}
-               break;
-            case 'p':
-               flags.mkpov=i;
-               flags.kppov=i;
-               break;
-            case 'P':
-               flags.mkpng=i;
-               break;
-            //case 'z':
-            //   flags.zipdat=i;
-            //   break;
-            case 'r' :
-               flags.calcrgps=i;
-               break;
-            case 't':
-               flags.cptype=(++i);
-               if (i>=argc) {printErrorMsg(argv,'t');}
-               break;
-            case 'T':
-               flags.bgptubes=i;
                break;
             case 'v':
                flags.quiet=0;
@@ -229,62 +178,22 @@ void printHelpMenu(int &argc, char** &argv)
    cout << "\nUsage:\n\n\t" << progname << " wf?name [option [value(s)]] ... [option [value(s)]]\n\n";
    setScrNormalFont();
    cout << "Where wf?name is the input wfx(wfn) name, and options can be:\n\n"
-        << "  -a        \tDraw transparent spheres around each nuclei in the wf? file." <<endl
+        << "  -a a1 a2  \tSelects atoms a1 and a2. The topological analysis of the\n"
+        << "            \t  density matrix of order 1 will be carried out upon\n"
+        << "            \t  the bond path that joins these two atoms (if it exists).\n"
         << "  -o outname\tSet the output file name (*.log)." << endl
         << "            \t  (If not given the program will create one out of" << endl
         << "            \t  the input name; if given, the pov file will" << endl
         << "            \t  use this name as well --but different extension--)." << endl;
-   cout << "  -m        \tSave the coordinates of atoms, critical points and gradient" << endl
-        << "            \t  paths (if calculated, see option -G) into *dat files." << endl;
-#if _HAVE_POVRAY_
-   cout << "  -p     \tCreate a pov file. No image will be generated." << endl;
-   cout << "  -P     \tCreate a png image using povray (calls povray)," << endl
-        << "         \t  deletes pov file." << endl;
-   cout << "  -c p   \tSet the camera vector direction for the povray scene." << endl
-        << "         \t  p is an integer which can take the values" << endl
-        << "         \t  001,010,100,101,110,111; the camera will be located" << endl
-        << "         \t  somewhere in the direction (x,y,z), where xyz is one of "<< endl
-        << "         \t  the above values." << endl;
-   cout << "  -g     \tDraw the gradient paths in the POV file." << endl
-        << "  -T     \tSet the style for the gradient paths to be tubes." << endl;
-   cout << "  -G     \tSkip the calculation of the bond gradient paths." << endl;
-   cout << "  -r     \tPerform the search of ring and cage gradient paths." << endl;
-   cout << "  -k     \tKeeps the pov file if option -P is used." << endl;
-#endif
-   cout << "  -t cpt \tSet the type of critical point to be searched. cpt can be "<< endl
-        << "         \t  one of the following fields (Density is the default):" << endl
-        << "         \t\td (Density)" << endl
-        << "         \t\tL (Localized Orbital Locator -LOL-)" << endl;
-   cout << "  -e     \tPerform an extended search of critical points. This" << endl
-        << "         \t  will take some more time, but it could find more CPs" << endl
-        << "         \t  than the simple search." << endl;
    cout << "  -v     \tVerbose mode (displays additional information (for example the " << endl
         << "         \t  output of povray, etc." <<endl;
-//#if (defined(__APPLE__)||defined(__linux__))
-//   cout << "  -z     \tCompress the cube file using gzip (which must be intalled" << endl
-//        << "         \t   in your system)." << endl;
-//#endif
    cout << "  -V        \tDisplay the version of this program." << endl;
    cout << "  -h\t\tDisplay the help menu.\n\n";
    //-------------------------------------------------------------------------------------
    cout << "  --help    \t\tSame as -h" << endl;
    cout << "  --version \t\tSame as -V" << endl;
    //-------------------------------------------------------------------------------------
-#if _HAVE_POVRAY_
    printScrStarLine();
-   centerString(string("Note that the following programs must be properly installed in your system:"));
-   centerString(string("povray"));
-#if _HAVE_IMAGEMAGICK_
-   centerString(string("imagemagick"));
-#endif
-#if _HAVE_GRAPHICSMAGICK_
-   centerString(string("graphicsmagick"));
-#endif
-#if (defined(__APPLE__)||defined(__linux__))
-   centerString(string("gzip"));
-#endif
-   printScrStarLine();
-#endif
 }//end printHelpMenu
 
 //**************************************************************************************************
@@ -293,8 +202,8 @@ void printErrorMsg(char** &argv,char lab)
    setScrRedBoldFont();
    cout << "\nError: the option \"" << lab << "\" ";
    switch (lab) {
-      case 'c':
-         cout << "should be followed by an integer." << endl;
+      case 'a' :
+         cout << "should be followed by two integers." << endl;
          break;
       case 'o':
          cout << "should be followed by a name." << endl;

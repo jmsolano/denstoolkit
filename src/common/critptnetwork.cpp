@@ -249,70 +249,14 @@ solreal critPtNetWork::IHV[nIHV][3]={
 /* ************************************************************************************ */
 void critPtNetWork::setCriticalPoints(ScalarFieldType ft)
 {
-   mycptype=ft;
    if (!bn->imstp()) {
       displayErrorMessage("Trying to use a non set up bond network object!");
       return;
    }
-   switch (ft) {
-      case DENS:
-         cout << "Scanning for Density Critical Points." << endl;
-         dACP=(bn->nNuc)*CPNW_MAXRHOACPSPERATOM;
-         break;
-      case LOLD:
-         cout << "Scanning for LOL Critical Points." << endl;
-         dACP=(bn->nNuc)*CPNW_MAXLOLACPSPERATOM;
-         stepSizeACP=CPNW_MAXSTEPSIZEACPLOLSEARCH;
-         break;
-      default:
-         displayWarningMessage("This field has not been implemented!");
-         exit(1);
-         break;
-   }
-   alloc2DRealArray(string("RACP"),dACP,3,RACP,1.0e+50);
-   alloc1DStringArray("lblACP",dACP,lblACP);
-   cout << "Looking for Attractor Critical Points..." << endl;
-   switch (ft) {
-      case DENS:
-         iknowacps=setRhoACPs();
-         break;
-      case LOLD:
-         iknowacps=setLOLACPs();
-         break;
-      default:
-         displayWarningMessage("This field has not been implemented!");
-         exit(1);
-         break;
-   }
-   if (iknowacps) {
-      dBCP=(nACP*(nACP-1))/2;
-      if ( dBCP<CPNW_MINARRAYSIZE ) {dBCP=CPNW_MINARRAYSIZE;}
-      alloc2DRealArray(string("RBCP"),dBCP,3,RBCP,1.0e+50);
-      alloc2DIntArray(string("conBCP"),dBCP,3,conBCP,-1);
-      alloc1DStringArray("lblBCP",dBCP,lblBCP);
-   } else {
-      displayErrorMessage("First look for ACPs...\n");
-#if DEBUG
-      DISPLAYDEBUGINFOFILELINE;
-#endif
-      return;
-   }
-   cout << "Looking for Bond Critical Points..." << endl;
-   switch (ft) {
-      case DENS:
-         iknowbcps=setRhoBCPs();
-         break;
-      case LOLD:
-         iknowbcps=setLOLBCPs();
-         break;
-      default:
-         displayWarningMessage("This field has not been implemented!");
-         //exit(1);
-         break;
-   }
-#if DEBUG
-   cout << "nBCP: " << nBCP << ", dBCP: " << dBCP << endl;
-#endif
+   setupACPs(ft);
+   setACPs(ft);
+   setupBCPs(ft);
+   setBCPs(ft);
    if (iknowbcps) {
       dRCP=(nBCP*(nBCP-1))/2;
       if ( dRCP<CPNW_MINARRAYSIZE ) {dRCP=CPNW_MINARRAYSIZE;}
@@ -368,16 +312,96 @@ void critPtNetWork::setCriticalPoints(ScalarFieldType ft)
    }
 }
 /* ************************************************************************************ */
+void critPtNetWork::setupACPs(ScalarFieldType ft) {
+   mycptype=ft;
+   switch (ft) {
+      case DENS:
+         cout << "Scanning for Density Critical Points." << endl;
+         dACP=(bn->nNuc)*CPNW_MAXRHOACPSPERATOM;
+         break;
+      case LOLD:
+         cout << "Scanning for LOL Critical Points." << endl;
+         dACP=(bn->nNuc)*CPNW_MAXLOLACPSPERATOM;
+         stepSizeACP=CPNW_MAXSTEPSIZEACPLOLSEARCH;
+         break;
+      default:
+         displayWarningMessage("This field has not been implemented!");
+         exit(1);
+         break;
+   }
+   alloc2DRealArray(string("RACP"),dACP,3,RACP,1.0e+50);
+   alloc1DStringArray("lblACP",dACP,lblACP);
+}
+/* ************************************************************************************ */
+void critPtNetWork::setACPs(ScalarFieldType ft) {
+   cout << "Looking for Attractor Critical Points..." << endl;
+   switch (ft) {
+      case DENS:
+         iknowacps=setRhoACPs();
+         break;
+      case LOLD:
+         iknowacps=setLOLACPs();
+         break;
+      default:
+         displayWarningMessage("This field has not been implemented!");
+         exit(1);
+         break;
+   }
+}
+/* ************************************************************************************ */
+void critPtNetWork::setupBCPs(ScalarFieldType ft) {
+   if ( mycptype!=ft ) {
+      displayWarningMessage("Change of field type is not allowed, using previous type!");
+#if DEBUG
+      DISPLAYDEBUGINFOFILELINE;
+#endif /* ( DEBUG ) */
+   }
+   if (iknowacps) {
+      dBCP=(nACP*(nACP-1))/2;
+      if ( dBCP<CPNW_MINARRAYSIZE ) {dBCP=CPNW_MINARRAYSIZE;}
+      alloc2DRealArray(string("RBCP"),dBCP,3,RBCP,1.0e+50);
+      alloc2DIntArray(string("conBCP"),dBCP,3,conBCP,-1);
+      alloc1DStringArray("lblBCP",dBCP,lblBCP);
+   } else {
+      displayErrorMessage("First look for ACPs...\n");
+#if DEBUG
+      DISPLAYDEBUGINFOFILELINE;
+#endif
+   }
+   return;
+}
+/* ************************************************************************************ */
+void critPtNetWork::setBCPs(ScalarFieldType ft) {
+   cout << "Looking for Bond Critical Points..." << endl;
+   switch (ft) {
+      case DENS:
+         iknowbcps=setRhoBCPs();
+         break;
+      case LOLD:
+         iknowbcps=setLOLBCPs();
+         break;
+      default:
+         displayWarningMessage("This field has not been implemented!");
+         break;
+   }
+#if DEBUG
+   cout << "nBCP: " << nBCP << ", dBCP: " << dBCP << endl;
+#endif
+}
+/* ************************************************************************************ */
+void critPtNetWork::setupBondPaths(void) {
+   alloc3DRealArray(string("RBGP"),dBCP,CPNW_ARRAYSIZEGRADPATH,3,RBGP);
+}
+/* ************************************************************************************ */
 void critPtNetWork::setBondPaths()
 {
    if (!iknowbcps) {
       displayErrorMessage("Please look first for the BCPs...\nNothing to be done!");
       return;
    }
+   setupBondPaths();
    int npts;
-   alloc3DRealArray(string("RBGP"),dBCP,CPNW_ARRAYSIZEGRADPATH,3,RBGP);
    cout << "Calculating Bond Gradient Paths..." << endl;
-   //cout << "nBCP: " << nBCP << endl;
 #if USEPROGRESSBAR
    printProgressBar(0);
 #endif
@@ -392,9 +416,6 @@ void critPtNetWork::setBondPaths()
       npts=findSingleRhoBondGradientPathRK5(at1,at2,hstep,arrsize,RBGP[i],rseed);
       conBCP[i][2]=npts;
       if (npts>0) {nBGP++;}
-      //for (int j=0; j<npts; j++) {
-      //   for (int k=0; k<3; k++) {RBGP[i][j][k]=RGP[j][k];}
-      //}
 #if USEPROGRESSBAR
       printProgressBar(int(100.0e0*solreal(i)/\
                solreal((nBCP>1) ? (nBCP-1) : 1 )));

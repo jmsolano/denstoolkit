@@ -81,11 +81,8 @@ class optFlags
 public: 
    optFlags();//default constructor, initialize all the flags to convenient (default) values.
    unsigned short int infname,outfname;
-   unsigned short int zipdat,mkpov,kppov,mkpng,quiet,cptype;
-   unsigned short int camvdir;
-   unsigned short int drawnuc;
-   unsigned short int calcbgps,calcrgps,drawbgps,bgptubes;
-   unsigned short int mkdatmat,mkextsearch;
+   unsigned short int zipdat,quiet;
+   unsigned short int atpos;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);
 void printHelpMenu(int &argc, char** &argv);//self-described

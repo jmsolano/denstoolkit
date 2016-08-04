@@ -139,36 +139,32 @@ clean:
 distclean: clean
 	rm -f $(OBJDIR)/*.o
 
+COMMON_CMDL_OPTIONS = -a 2 4
+
 runben: build
-	./dtkfindcicp benzene.wfn -P -g -T -k -m
+	./dtkfindcicp benzene.wfn $(COMMON_CMDL_OPTIONS)
 
 runete: build
-	./dtkfindcicp ethane.wfn -P -g -T -k
+	./dtkfindcicp ethane.wfn $(COMMON_CMDL_OPTIONS)
 
 runch4: build
-	./dtkfindcicp ch4.wfx -P -g -k -a
+	./dtkfindcicp ch4.wfx $(COMMON_CMDL_OPTIONS)
 
 runc60: build
-	./dtkfindcicp c60-321g.wfx -P -g -T -k
+	./dtkfindcicp c60-321g.wfx $(COMMON_CMDL_OPTIONS)
 
 runb2h6: build
-	./dtkfindcicp b2h6-mp2-cctvz-gopt.wfn -a -P -k -c 111 -g -e
+	./dtkfindcicp b2h6-mp2-cctvz-gopt.wfn $(COMMON_CMDL_OPTIONS)
 
 runcub: build
-	./dtkfindcicp cubano_sto3g.wfx  -a -r -P -k -c 111 -g -e
+	./dtkfindcicp cubano_sto3g.wfx $(COMMON_CMDL_OPTIONS)
 
 runcic: build
-	./dtkfindcicp ciclopropano_st3g.wfx  -a -P -k -c 111 -g -e -r
-
-runf2: build
-	./dtkfindcicp f2.ccsd.augccpvtz.wfn -a -t L -P -k -c 100 -g -e
+	./dtkfindcicp ciclopropano_st3g.wfx $(COMMON_CMDL_OPTIONS)
 
 runh2ocomp: build
-	./dtkfindcicp 4h2o-anion.wfn -P -g -k -a
-
-runli2: build
-	./dtkfindcicp li2.ccsd.augccpvtz.wfn -P -g -k -a -c 100
+	./dtkfindcicp 4h2o-anion.wfn $(COMMON_CMDL_OPTIONS)
 
 runch2: build
-	./dtkfindcicp ch2brcl_b3lyp_lanl2dz_combinededfs.wfx -P -g -k -a
+	./dtkfindcicp ch2brcl_b3lyp_lanl2dz_combinededfs.wfx $(COMMON_CMDL_OPTIONS)
 

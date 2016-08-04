@@ -9,6 +9,7 @@ using std::cerr;
 #include "demat1critptnetworkbp.h"
 #include "gausswavefunction.h"
 #include "critptnetwork.h"
+#include "solscrutils.h"
 
 /* ************************************************************************** */
 DeMat1CriticalPointNetworkBP::DeMat1CriticalPointNetworkBP(\
@@ -18,12 +19,10 @@ DeMat1CriticalPointNetworkBP::DeMat1CriticalPointNetworkBP(\
       cout << "Error: First load a Gaussian Wave Function!" << endl;
       return;
    }
-   if ( !usrcp.iKnowBGPs() ) {
-      cout << "Error: First seek for Bond Gradient Paths!" << endl;
-      return;
-   }
    wf=&usrwf;
    cp=&usrcp;
+   SafetyChecks();
+   imsetup=true;
 }
 /* ************************************************************************** */
 DeMat1CriticalPointNetworkBP::~DeMat1CriticalPointNetworkBP() {
@@ -33,13 +32,30 @@ DeMat1CriticalPointNetworkBP::~DeMat1CriticalPointNetworkBP() {
 void DeMat1CriticalPointNetworkBP::init() {
    wf=NULL;
    cp=NULL;
+   imsetup=false;
 }
 /* ************************************************************************** */
 void DeMat1CriticalPointNetworkBP::destroy(void) {
    wf=NULL;
    cp=NULL;
+   imsetup=false;
 }
 /* ************************************************************************** */
+void DeMat1CriticalPointNetworkBP::SafetyChecks(void) {
+   imsetup=false;
+   if ( wf->nNuc<2 ) {
+      displayErrorMessage("The wavefunction must have at least two atoms!");
+   }
+   if ( !cp->iKnowACPs() ) {
+      displayErrorMessage("Please find the ACPs before setting up "
+            "DeMat1CriticalPointNetworkBP object!");
+   }
+   imsetup=true;
+}
+/* ************************************************************************** */
+void DeMat1CriticalPointNetworkBP::SetupBondPath(int ata,int atb) {
+   at1=ata; at2=atb;
+}
 /* ************************************************************************** */
 /* ************************************************************************** */
 /* ************************************************************************** */

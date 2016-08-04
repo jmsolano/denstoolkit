@@ -194,6 +194,18 @@ public:
     */
    void setCriticalPoints(ScalarFieldType ft);
 /* ************************************************************************************ */
+   /** It allocates the arrays to work with ACPs. It is public because for non
+    * regular applications, only selected parts of the whole critical point search
+    * are needed. For instance, one would be interested in searching ONLY ACPs.  */
+   void setupACPs(ScalarFieldType ft);
+   /** This function searchs the ACPs. For regular calculations, use setCriticalPoints()  */
+   void setACPs(ScalarFieldType ft);
+   /** Basically, it allocates the arrays for working with BCPs. It needs to know
+    * ACPs.  */
+   void setupBCPs(ScalarFieldType ft);
+   /** This function search the BCPs. For regular calculations, use setCriticalPoints().  */
+   void setBCPs(ScalarFieldType ft);
+/* ************************************************************************************ */
    /** Displays the coordinates of the critical points of type 'cpt'.
     * @param cpt: This char parameter is used to request the critical
     * point type. It can take the values: 'a', 'b', 'r', and 'c'.
@@ -267,6 +279,12 @@ public:
 /* ************************************************************************************ */
    void displayStatus(bool lngdesc = false);
 /* ************************************************************************************ */
+   /** Basically, it allocates the necessary arrays for working with bond paths.
+    * It requires to know ACPs.  */
+   void setupBondPaths(void);
+   /** The main function to compute bond paths. It requires to know BPCs (and ACPs).
+    * This function calls setupBondPaths internally. Within regular calculations
+    * this function should be used.  */
    void setBondPaths(void);
 /* ************************************************************************************ */
    void setRingPaths(void);
