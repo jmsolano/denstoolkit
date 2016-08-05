@@ -2802,17 +2802,14 @@ int critPtNetWork::findSingleRhoBondGradientPathRK5(int at1,int at2,solreal hste
 {
    solreal rn[3],rho,g[3],h[3][3],eive[3][3],eival[3],dist,maggrad;
    seekSingleRhoBCP(at1,at2,ro);
-   //cout << "ro: " << ro[0] << " " << ro[1] << " " << ro[2] << endl;
    wf->evalHessian(ro[0],ro[1],ro[2],rho,g,h);
    eigen_decomposition3(h,eive,eival);
    maggrad=0.0e0;
    for (int i=0; i<3; i++) {maggrad+=(eive[i][2]*eive[i][2]);}
    maggrad=sqrt(maggrad);
-   //hstep=DEFAULTHGRADIENTPATHS;
    for (int i=0; i<3; i++) {rn[i]=ro[i]+hstep*eive[i][2]/maggrad;}
    wf->evalRhoGradRho(rn[0],rn[1],rn[2],rho,g);
    maggrad=sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]);
-   //cout << "maggrad: " << maggrad << endl;
    for (int i=0; i<3; i++) {
       arbgp[0][i]=ro[i];
       arbgp[1][i]=rn[i];
@@ -2853,7 +2850,6 @@ int critPtNetWork::findSingleRhoBondGradientPathRK5(int at1,int at2,solreal hste
             count--;
          }
       }
-      //cout << "rn(" << count << "): " << rn[0] << " " << rn[1] << " " << rn[2] << endl;
       count++;
       if (count==dima) {
          displayWarningMessage("You need a bigger array for storing the BGP coordinates!");
@@ -2861,19 +2857,16 @@ int critPtNetWork::findSingleRhoBondGradientPathRK5(int at1,int at2,solreal hste
       }
    }
    invertOrderBGPPoints(count,arbgp);
-   //cout << "Checkpoint... count: " << count  << endl;
    maggrad=0.0e0;
    for (int i=0; i<3; i++) {maggrad+=(eive[i][2]*eive[i][2]);}
    maggrad=sqrt(maggrad);
    for (int i=0; i<3; i++) {rn[i]=ro[i]-hstep*eive[i][2]/maggrad;}
    wf->evalRhoGradRho(rn[0],rn[1],rn[2],rho,g);
    maggrad=sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]);
-   //cout << "maggrad: " << maggrad << endl;
    for (int i=0; i<3; i++) {
       arbgp[count][i]=rn[i];
    }
    count++;
-   //int cbase=count;
    maxit+=count;
    iminacp=false;
    while ((!iminacp)&&(count<maxit)&&(maggrad>EPSGRADMAG)) {
@@ -2903,7 +2896,6 @@ int critPtNetWork::findSingleRhoBondGradientPathRK5(int at1,int at2,solreal hste
          return count-1;
       }
    }
-   //count++;
    if (count==dima) {
       displayWarningMessage("You need a bigger array for storing the BGP coordinates!");
       return count-1;
@@ -2923,9 +2915,14 @@ int critPtNetWork::findSingleRhoBondGradientPathRK5(int at1,int at2,solreal hste
       for (int i=0; i<3; i++) {arbgp[count][i]=wf->R[iacp2+i];}
       count++;
    }
-   //cout << "Checkpoint2... count: " << count  << endl;
+   dist=0.0e0;
+   for (int i=0; i<3; i++) {dist+=((arbgp[0][i]-wf->R[iacp1+i])\
+         *(arbgp[0][i]-wf->R[iacp1+i]));}
+   dist=sqrt(dist);
+   if ( dist>(2.0e0*stepSizeBGP) ) {
+      invertOrderBGPPoints(count,arbgp);
+   }
    return count;
-   //wf->displayAllFieldProperties(rn[0],rn[1],rn[2]);
 }
 /* ************************************************************************************ */
 int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\

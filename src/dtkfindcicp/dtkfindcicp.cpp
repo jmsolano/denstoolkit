@@ -141,8 +141,7 @@ int main (int argc, char ** argv) {
    //critPtNetWork cpn(gwf,bnw);
 
    DeMat1CriticalPointNetworkBP dmcpbp(gwf,bnw);
-
-   dmcpbp.SeekBondPath(atom1,atom2);
+   dmcpbp.ComputeCoreInteractionCPs();
 
    writeCPXFile(cpxfilnam,infilnam,*(dmcpbp.cpn));
 
