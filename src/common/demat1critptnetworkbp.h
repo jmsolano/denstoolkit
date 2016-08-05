@@ -10,6 +10,7 @@ public:
    ~DeMat1CriticalPointNetworkBP();
    inline bool ImSetup(void) {return imsetup;}
    void ComputeCoreInteractionCPs(void);
+   //void MapToUVCoordinatesM3x3(solreal (&e1)[3],solreal (&e2)[3],solreal (&huv)[2][2]);
    /* ************************************************************************** */
    class critPtNetWork *cpn;
    solreal *gCICP;
@@ -25,6 +26,8 @@ protected:
    void AllocAuxArrays(void);
    void ComputeSingleCICP(int idx);
    bool CPSafetyChecks(void);
+   void GetTangentialVectors(const int bcpIdx,solreal (&e1)[3],solreal (&e2)[3]);
+   int GetSignature(solreal (&v)[2]);
    /* ************************************************************************** */
    /* ************************************************************************** */
    class GaussWaveFunction *wf;

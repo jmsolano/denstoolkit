@@ -165,6 +165,15 @@ runcub: build
 runcic: build
 	./dtkfindcicp ciclopropano_st3g.wfx $(COMMON_CMDL_OPTIONS)
 
+runf2: build
+	./dtkfindcicp f2.ccsd.augccpvtz.wfn $(COMMON_CMDL_OPTIONS)
+
+runli2: build
+	./dtkfindcicp li2.ccsd.augccpvtz.wfn $(COMMON_CMDL_OPTIONS)
+
+runlih: build
+	./dtkfindcicp LiH-6311Gdp.wfx $(COMMON_CMDL_OPTIONS)
+
 runh2ocomp: build
 	./dtkfindcicp 4h2o-anion.wfn $(COMMON_CMDL_OPTIONS)
 

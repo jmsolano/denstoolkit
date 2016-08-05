@@ -11,6 +11,8 @@ using std::cerr;
 #include "critptnetwork.h"
 #include "solscrutils.h"
 #include "solmemhand.h"
+#include "solmath.h"
+#include "eig2-4.h"
 
 #ifndef DM1CPNWBP_DEFAULTSTEPSIZEBGP
 #define DM1CPNWBP_DEFAULTSTEPSIZEBGP 0.025e0
@@ -18,6 +20,10 @@ using std::cerr;
 
 #ifndef DM1CPNWBP_DEFAULTARRAYSIZEBGP
 #define DM1CPNWBP_DEFAULTARRAYSIZEBGP 300
+#endif
+
+#ifndef DM1CPNWBP_DEFAULTEPSDISTANCE
+#define DM1CPNWBP_DEFAULTEPSDISTANCE 1.0e-04
 #endif
 
 DeMat1CriticalPointNetworkBP::DeMat1CriticalPointNetworkBP(\
@@ -91,8 +97,8 @@ void DeMat1CriticalPointNetworkBP::ComputeCoreInteractionCPs(void) {
       displayErrorMessage("DeMat1CriticalPointNetworkBP's internal critPtNetWork is not ready!");
       return;
    }
-   //for ( int i=0 ; i<nCICP ; ++i ) { ComputeSingleCICP(i); }
-   ComputeSingleCICP(0);
+   for ( int i=0 ; i<nCICP ; ++i ) { ComputeSingleCICP(i); }
+   //ComputeSingleCICP(0);
 }
 bool DeMat1CriticalPointNetworkBP::CPSafetyChecks(void) {
    return cpn->iKnowBGPs();
@@ -106,23 +112,58 @@ void DeMat1CriticalPointNetworkBP::ComputeSingleCICP(int idx) {
       return;
    }
 #endif
-   solreal tmp;
-   int np=cpn->conBCP[idx][2];
-   int j=cpn->conBCP[idx][0];
-   for ( int i=0 ; i<3 ; ++i ) { cout << cpn->RACP[j][i] << " "; }
-   cout << endl;
-   for ( int i=0 ; i<np ; ++i ) {
-      tmp=((cpn->RBGP[idx][i][0])*(cpn->RBGP[idx][i][0]))+\
-          ((cpn->RBGP[idx][i][1])*(cpn->RBGP[idx][i][1]))+\
-          ((cpn->RBGP[idx][i][2])*(cpn->RBGP[idx][i][2]));
-      cout << cpn->RBGP[idx][i][0] << " " << cpn->RBGP[idx][i][1] << " "\
-           << cpn->RBGP[idx][i][2] << " " << sqrt(tmp) << endl;
+   int acp1Idx=cpn->conBCP[idx][0],acp2Idx=cpn->conBCP[idx][1];
+   solreal xx[3],xxp[3],gamm,gg[3],gp[3],hh[3][3],hph[3][3],hp[3][3];
+   for ( int i=0 ; i<3 ; ++i ) {
+      xx[i]=cpn->RACP[acp1Idx][i];
+      xxp[i]=cpn->RACP[acp2Idx][i];
    }
-   j=cpn->conBCP[idx][1];
-   for ( int i=0 ; i<3 ; ++i ) { cout << cpn->RACP[j][i] << " "; }
-   cout << endl;
+   wf->evalHessDensityMatrix1(xx,xxp,gamm,gg,gp,hh,hph,hp);
+   solreal e1[3],e2[3];
+   GetTangentialVectors(idx,e1,e2);
+   solreal huv[2][2],tmp;
+   huv[0][0]=huv[1][1]=huv[0][1]=0.0e0;
+   for ( int i=0 ; i<3 ; ++i ) {
+      tmp=0.0e0;
+      for ( int j=0 ; j<3 ; ++j ) { tmp+=(hh[i][j]*e1[j]); }
+      huv[0][0]+=tmp*e1[i];
+      tmp=0.0e0;
+      for ( int j=0 ; j<3 ; ++j ) { tmp+=hph[i][j]*e1[j]; }
+      huv[0][1]+=tmp*e2[i];
+      tmp=0.0e0;
+      for ( int j=0 ; j<3 ; ++j ) { tmp+=hp[i][j]*e2[j]; }
+      huv[1][1]+=tmp*e2[i];
+   }
+   huv[1][0]=huv[0][1];
+   solreal eivec[2][2],eival[2];
+   eigen_decomposition2(huv,eivec,eival);
+   cout << cpn->lblBCP[idx] << " " << eival[0] << " " << eival[1] << " (signature: "
+        << GetSignature(eival) << ")" << endl;
+}
+void DeMat1CriticalPointNetworkBP::GetTangentialVectors(const int bcpIdx,solreal (&e1)[3],\
+      solreal (&e2)[3]) {
+   int npbgp=cpn->conBCP[bcpIdx][2];
+   solreal xi[3],xip1[3];
+   for ( int i=0 ; i<3 ; ++i ) {
+      xi[i]=cpn->RBGP[bcpIdx][0][i];
+      xip1[i]=cpn->RBGP[bcpIdx][1][i];
+   }
+   for ( int i=0 ; i<3 ; ++i ) { e1[i]=xip1[i]-xi[i]; }
+   for ( int i=0 ; i<3 ; ++i ) {
+      xi[i]=cpn->RBGP[bcpIdx][npbgp-2][i];
+      xip1[i]=cpn->RBGP[bcpIdx][npbgp-1][i];
+   }
+   for ( int i=0 ; i<3 ; ++i ) { e2[i]=xip1[i]-xi[i]; }
+   normalizeV3(e1);
+   normalizeV3(e2);
 }
 
+int DeMat1CriticalPointNetworkBP::GetSignature(solreal (&v)[2]) {
+   int s=0;
+   for ( int i=0 ; i<2 ; ++i ) { v[i] >=0.0e0 ? ++s : --s; }
+   return s;
+}
 
 #endif  /* _DEMAT1CRITPTNETWORKBP_CPP_ */
+
 
