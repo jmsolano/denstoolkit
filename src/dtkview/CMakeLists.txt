@@ -78,7 +78,7 @@ set(CMAKE_AUTOMOC OFF)
 if(UNIX)
    if(APPLE)
       set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH}
-         /Users/jmsolano/binsol/Qt5/5.5/clang_64
+         /Users/jmsolano/.binsol/Qt5/5.5/clang_64
       )
    else(APPLE)
       set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH}

@@ -27,6 +27,7 @@ src/dtkbpdens/dtkbpdens
 src/dtkcube/dtkcube
 src/dtkdemat1/dtkdemat1
 src/dtkfindcp/dtkfindcp
+src/dtkfindcicp/dtkfindcicp
 src/dtkline/dtkline
 src/dtkmomd/dtkmomd
 src/dtkplane/dtkplane

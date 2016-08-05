@@ -100,7 +100,7 @@ $(OBJDIR)/bondnetwork.o: ../common/bondnetwork.cpp soldefines.h #$(OBJDIR)/solpo
 $(OBJDIR)/critptnetwork.o: ../common/critptnetwork.cpp soldefines.h 
 	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
 
-$(OBJDIR)/demat1critptnetwork.o: ../common/demat1critptnetwork.cpp soldefines.h 
+$(OBJDIR)/demat1critptnetworksl.o: ../common/demat1critptnetworksl.cpp soldefines.h 
 	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
 
 $(OBJDIR)/wfgrid2d.o: ../common/wfgrid2d.cpp soldefines.h
@@ -127,7 +127,7 @@ dtkdemat1: dtkdemat1.o optflags.o crtflnms.o $(OBJDIR)/solfileutils.o \
   $(OBJDIR)/bondnetwork.o $(OBJDIR)/wfgrid2d.o $(OBJDIR)/solpovtools.o \
   $(OBJDIR)/solmath.o $(OBJDIR)/eig2-4.o $(OBJDIR)/critptnetwork.o \
   $(OBJDIR)/solstringtools.o $(OBJDIR)/atomradiicust.o $(OBJDIR)/atomcolschjmol.o \
-  $(OBJDIR)/demat1critptnetwork.o
+  $(OBJDIR)/demat1critptnetworksl.o
 	$(GCC) $(CCFLAGS) $(OPTIM_CCFLAGS) $(INCSOLDEFS) -o $@ $+
 clean:
 	rm -f *.o dtkdemat1

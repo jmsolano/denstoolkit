@@ -162,7 +162,7 @@ public:
    solreal centMolecVec[3];
    /** The array RGP is an auxiliary array, used for manipulating the order
     * of the points in a bond path searching procedure.  */
-   solreal RGP[CPNW_ARRAYSIZEGRADPATH][3];
+   solreal **RGP;
    string *lblACP, /*!< An array to store the labels of the ACPs.  */\
       *lblBCP, /*!< An array to store the labels of the BCPs. */\
       *lblRCP, /*!< An array to store the labels of the RCPs.  */\
@@ -184,6 +184,10 @@ public:
    void setMaxIterationsRCP(int ii) {maxItRCP=ii;}
    /** Self descriptive.  */
    void setMaxIterationsCCP(int ii) {maxItCCP=ii;}
+   /** Self descriptive  */
+   void setMaxGradPathNPts(int ii) {maxGradPathNPts=ii;}
+   /** Self descriptive  */
+   void setStepSizeBGP(solreal ss) {stepSizeBGP=ss;}
 /* ************************************************************************************ */
    /** The main public function for searching all critical points.
     * Configuration, such as requesting extended search should be
@@ -193,6 +197,18 @@ public:
     * (DENS) and some of the LOL (LOLD) CPs are found.
     */
    void setCriticalPoints(ScalarFieldType ft);
+/* ************************************************************************************ */
+   /** It allocates the arrays to work with ACPs. It is public because for non
+    * regular applications, only selected parts of the whole critical point search
+    * are needed. For instance, one would be interested in searching ONLY ACPs.  */
+   void setupACPs(ScalarFieldType ft);
+   /** This function searchs the ACPs. For regular calculations, use setCriticalPoints()  */
+   void setACPs(ScalarFieldType ft);
+   /** Basically, it allocates the arrays for working with BCPs. It needs to know
+    * ACPs.  */
+   void setupBCPs(ScalarFieldType ft);
+   /** This function search the BCPs. For regular calculations, use setCriticalPoints().  */
+   void setBCPs(ScalarFieldType ft);
 /* ************************************************************************************ */
    /** Displays the coordinates of the critical points of type 'cpt'.
     * @param cpt: This char parameter is used to request the critical
@@ -267,6 +283,12 @@ public:
 /* ************************************************************************************ */
    void displayStatus(bool lngdesc = false);
 /* ************************************************************************************ */
+   /** Basically, it allocates the necessary arrays for working with bond paths.
+    * It requires to know ACPs.  */
+   void setupBondPaths(void);
+   /** The main function to compute bond paths. It requires to know BPCs (and ACPs).
+    * This function calls setupBondPaths internally. Within regular calculations
+    * this function should be used.  */
    void setBondPaths(void);
 /* ************************************************************************************ */
    void setRingPaths(void);
@@ -372,6 +394,7 @@ protected:
    class bondNetWork *bn;
    int dACP,dBCP,dRCP,dCCP;
    int maxItACP,maxItBCP,maxItRCP,maxItCCP;
+   int maxGradPathNPts;
    int normalbcp;
    bool iknowacps,iknowbcps,iknowrcps,iknowccps, iknowallcps;
    bool iknowbgps,iknowrgps,iknowcgps,iknowallgps;
@@ -379,6 +402,7 @@ protected:
    bool tubeBGPStyle;
    bool mkextsearch;
    solreal stepSizeACP,stepSizeBCP,stepSizeRCP,stepSizeCCP;
+   solreal stepSizeBGP;
    ScalarFieldType mycptype;
    solreal maxBondDist; /*!< The maximum distance between two ACPs related by a BCP  */
    solreal maxBCPACPDist; /*!< The maximum distance between a BCP and associated ACPs  */

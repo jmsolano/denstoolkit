@@ -41,8 +41,8 @@
  *
  */
 
-#ifndef _DEMAT1CRITPTNETWORK_H_
-#define _DEMAT1CRITPTNETWORK_H_
+#ifndef _DEMAT1CRITPTNETWORKSL_H_
+#define _DEMAT1CRITPTNETWORKSL_H_
 
 #include <cstdlib>
 #include <cstring>
@@ -99,14 +99,14 @@ using std::string;
  * and whose parametrization is (u,v). This indices are assumed to
  * be from zero to the number of nuclei contained in the 
  * wave function object, which is also required for instantiating 
- * the object DeMat1CriticalPointNetwork.
+ * the object DeMat1CriticalPointNetworkSL.
  * */
-class DeMat1CriticalPointNetwork {
+class DeMat1CriticalPointNetworkSL {
 /* ************************************************************************************ */
 public:
 /* ************************************************************************************ */
-   DeMat1CriticalPointNetwork(class GaussWaveFunction *usrwf,int at1,int at2);
-   ~DeMat1CriticalPointNetwork();
+   DeMat1CriticalPointNetworkSL(class GaussWaveFunction *usrwf,int at1,int at2);
+   ~DeMat1CriticalPointNetworkSL();
 /* ************************************************************************************ */
    int nACP,nSCP,nRCP;
    int asACP,asSCP,asRCP;
@@ -190,7 +190,7 @@ private:
 /* ************************************************************************************ */
    int ata,atb;
 /* ************************************************************************************ */
-   DeMat1CriticalPointNetwork();
+   DeMat1CriticalPointNetworkSL();
 /* ************************************************************************************ */
    class GaussWaveFunction* wf;
 /* ************************************************************************************ */
@@ -210,5 +210,5 @@ private:
 
 
 
-#endif  /* _DEMAT1CRITPTNETWORK_H_ */
+#endif  /* _DEMAT1CRITPTNETWORKSL_H_ */
 

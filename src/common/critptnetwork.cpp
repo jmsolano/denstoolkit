@@ -164,6 +164,7 @@ void critPtNetWork::init()
    conBCP=NULL;
    conRCP=conCCP=NULL;
    RACP=RBCP=RRCP=RCCP=NULL;
+   RGP=NULL;
    RBGP=NULL;
    RRGP=RCGP=NULL;
    lblACP=lblBCP=lblRCP=lblCCP=NULL;
@@ -174,10 +175,12 @@ void critPtNetWork::init()
    maxItBCP=CPNW_MAXITERATIONBCPSEARCH;
    maxItRCP=CPNW_MAXITERATIONRCPSEARCH;
    maxItCCP=CPNW_MAXITERATIONCCPSEARCH;
+   maxGradPathNPts=CPNW_ARRAYSIZEGRADPATH;
    stepSizeACP=CPNW_MAXSTEPSIZEACPRHOSEARCH;
    stepSizeBCP=CPNW_MAXSTEPSIZEBCPSEARCH;
    stepSizeRCP=CPNW_MAXSTEPSIZERCPSEARCH;
    stepSizeCCP=CPNW_MAXSTEPSIZECCPSEARCH;
+   stepSizeBGP=CPNW_DEFAULTGRADIENTPATHS;
    iknowacps=iknowbcps=iknowrcps=iknowccps=false;
    iknowallcps=false;
    iknowbgps=iknowrgps=iknowcgps=false;
@@ -202,10 +205,11 @@ critPtNetWork::critPtNetWork(GaussWaveFunction &uwf,bondNetWork &ubn)
 critPtNetWork::~critPtNetWork()
 {
    dealloc4DRealArray(RCGP,dCCP,CPNW_MAXRCPSCONNECTEDTOCCP,\
-         CPNW_ARRAYSIZEGRADPATH);
+         maxGradPathNPts);
    dealloc4DRealArray(RRGP,dRCP,CPNW_MAXBCPSCONNECTEDTORCP,\
-         CPNW_ARRAYSIZEGRADPATH);
-   dealloc3DRealArray(RBGP,dBCP,CPNW_ARRAYSIZEGRADPATH);
+         maxGradPathNPts);
+   dealloc2DRealArray(RGP,maxGradPathNPts);
+   dealloc3DRealArray(RBGP,dBCP,maxGradPathNPts);
    dealloc2DRealArray(RACP,dACP);
    dealloc1DStringArray(lblACP);
    dealloc2DRealArray(RBCP,dBCP);
@@ -249,70 +253,14 @@ solreal critPtNetWork::IHV[nIHV][3]={
 /* ************************************************************************************ */
 void critPtNetWork::setCriticalPoints(ScalarFieldType ft)
 {
-   mycptype=ft;
    if (!bn->imstp()) {
       displayErrorMessage("Trying to use a non set up bond network object!");
       return;
    }
-   switch (ft) {
-      case DENS:
-         cout << "Scanning for Density Critical Points." << endl;
-         dACP=(bn->nNuc)*CPNW_MAXRHOACPSPERATOM;
-         break;
-      case LOLD:
-         cout << "Scanning for LOL Critical Points." << endl;
-         dACP=(bn->nNuc)*CPNW_MAXLOLACPSPERATOM;
-         stepSizeACP=CPNW_MAXSTEPSIZEACPLOLSEARCH;
-         break;
-      default:
-         displayWarningMessage("This field has not been implemented!");
-         exit(1);
-         break;
-   }
-   alloc2DRealArray(string("RACP"),dACP,3,RACP,1.0e+50);
-   alloc1DStringArray("lblACP",dACP,lblACP);
-   cout << "Looking for Attractor Critical Points..." << endl;
-   switch (ft) {
-      case DENS:
-         iknowacps=setRhoACPs();
-         break;
-      case LOLD:
-         iknowacps=setLOLACPs();
-         break;
-      default:
-         displayWarningMessage("This field has not been implemented!");
-         exit(1);
-         break;
-   }
-   if (iknowacps) {
-      dBCP=(nACP*(nACP-1))/2;
-      if ( dBCP<CPNW_MINARRAYSIZE ) {dBCP=CPNW_MINARRAYSIZE;}
-      alloc2DRealArray(string("RBCP"),dBCP,3,RBCP,1.0e+50);
-      alloc2DIntArray(string("conBCP"),dBCP,3,conBCP,-1);
-      alloc1DStringArray("lblBCP",dBCP,lblBCP);
-   } else {
-      displayErrorMessage("First look for ACPs...\n");
-#if DEBUG
-      DISPLAYDEBUGINFOFILELINE;
-#endif
-      return;
-   }
-   cout << "Looking for Bond Critical Points..." << endl;
-   switch (ft) {
-      case DENS:
-         iknowbcps=setRhoBCPs();
-         break;
-      case LOLD:
-         iknowbcps=setLOLBCPs();
-         break;
-      default:
-         displayWarningMessage("This field has not been implemented!");
-         //exit(1);
-         break;
-   }
-#if DEBUG
-   cout << "nBCP: " << nBCP << ", dBCP: " << dBCP << endl;
-#endif
+   setupACPs(ft);
+   setACPs(ft);
+   setupBCPs(ft);
+   setBCPs(ft);
    if (iknowbcps) {
       dRCP=(nBCP*(nBCP-1))/2;
       if ( dRCP<CPNW_MINARRAYSIZE ) {dRCP=CPNW_MINARRAYSIZE;}
@@ -368,33 +316,121 @@ void critPtNetWork::setCriticalPoints(ScalarFieldType ft)
    }
 }
 /* ************************************************************************************ */
+void critPtNetWork::setupACPs(ScalarFieldType ft) {
+   mycptype=ft;
+   switch (ft) {
+      case DENS:
+         cout << "Scanning for Density Critical Points." << endl;
+         dACP=(bn->nNuc)*CPNW_MAXRHOACPSPERATOM;
+         break;
+      case LOLD:
+         cout << "Scanning for LOL Critical Points." << endl;
+         dACP=(bn->nNuc)*CPNW_MAXLOLACPSPERATOM;
+         stepSizeACP=CPNW_MAXSTEPSIZEACPLOLSEARCH;
+         break;
+      default:
+         displayWarningMessage("This field has not been implemented!");
+         exit(1);
+         break;
+   }
+   if ( RGP!=NULL ) {
+      displayWarningMessage("RGP already allocated! nothing to do.");
+   }
+   if ( RACP!=NULL ) {
+      displayWarningMessage("RACP already allocated! Nothing to do.");
+      return;
+   }
+   alloc2DRealArray(string("RGP"),maxGradPathNPts,3,RGP,1.0e+50);
+   alloc2DRealArray(string("RACP"),dACP,3,RACP,1.0e+50);
+   alloc1DStringArray("lblACP",dACP,lblACP);
+}
+/* ************************************************************************************ */
+void critPtNetWork::setACPs(ScalarFieldType ft) {
+   cout << "Looking for Attractor Critical Points..." << endl;
+   switch (ft) {
+      case DENS:
+         iknowacps=setRhoACPs();
+         break;
+      case LOLD:
+         iknowacps=setLOLACPs();
+         break;
+      default:
+         displayWarningMessage("This field has not been implemented!");
+         exit(1);
+         break;
+   }
+}
+/* ************************************************************************************ */
+void critPtNetWork::setupBCPs(ScalarFieldType ft) {
+   if ( mycptype!=ft ) {
+      displayWarningMessage("Change of field type is not allowed, using previous type!");
+#if DEBUG
+      DISPLAYDEBUGINFOFILELINE;
+#endif /* ( DEBUG ) */
+   }
+   if (iknowacps) {
+      if ( RBCP!=NULL ) {
+         displayWarningMessage("RBCP already allocated! Nothing to do.");
+         return;
+      }
+      dBCP=(nACP*(nACP-1))/2;
+      if ( dBCP<CPNW_MINARRAYSIZE ) {dBCP=CPNW_MINARRAYSIZE;}
+      alloc2DRealArray(string("RBCP"),dBCP,3,RBCP,1.0e+50);
+      alloc2DIntArray(string("conBCP"),dBCP,3,conBCP,-1);
+      alloc1DStringArray("lblBCP",dBCP,lblBCP);
+   } else {
+      displayErrorMessage("First look for ACPs...\n");
+#if DEBUG
+      DISPLAYDEBUGINFOFILELINE;
+#endif
+   }
+   return;
+}
+/* ************************************************************************************ */
+void critPtNetWork::setBCPs(ScalarFieldType ft) {
+   cout << "Looking for Bond Critical Points..." << endl;
+   switch (ft) {
+      case DENS:
+         iknowbcps=setRhoBCPs();
+         break;
+      case LOLD:
+         iknowbcps=setLOLBCPs();
+         break;
+      default:
+         displayWarningMessage("This field has not been implemented!");
+         break;
+   }
+#if DEBUG
+   cout << "nBCP: " << nBCP << ", dBCP: " << dBCP << endl;
+#endif
+}
+/* ************************************************************************************ */
+void critPtNetWork::setupBondPaths(void) {
+   alloc3DRealArray(string("RBGP"),dBCP,maxGradPathNPts,3,RBGP);
+}
+/* ************************************************************************************ */
 void critPtNetWork::setBondPaths()
 {
    if (!iknowbcps) {
       displayErrorMessage("Please look first for the BCPs...\nNothing to be done!");
       return;
    }
+   setupBondPaths();
    int npts;
-   alloc3DRealArray(string("RBGP"),dBCP,CPNW_ARRAYSIZEGRADPATH,3,RBGP);
    cout << "Calculating Bond Gradient Paths..." << endl;
-   //cout << "nBCP: " << nBCP << endl;
 #if USEPROGRESSBAR
    printProgressBar(0);
 #endif
    solreal hstep,rseed[3];
-   hstep=CPNW_DEFAULTGRADIENTPATHS;
-   int arrsize=CPNW_ARRAYSIZEGRADPATH;
+   hstep=stepSizeBGP;
    int at1,at2;
    for (int i=0; i<nBCP; i++) {
       for (int k=0; k<3; k++) {rseed[k]=RBCP[i][k];}
       at1=conBCP[i][0];
       at2=conBCP[i][1];
-      npts=findSingleRhoBondGradientPathRK5(at1,at2,hstep,arrsize,RBGP[i],rseed);
+      npts=findSingleRhoBondGradientPathRK5(at1,at2,hstep,maxGradPathNPts,RBGP[i],rseed);
       conBCP[i][2]=npts;
       if (npts>0) {nBGP++;}
-      //for (int j=0; j<npts; j++) {
-      //   for (int k=0; k<3; k++) {RBGP[i][j][k]=RGP[j][k];}
-      //}
 #if USEPROGRESSBAR
       printProgressBar(int(100.0e0*solreal(i)/\
                solreal((nBCP>1) ? (nBCP-1) : 1 )));
@@ -2692,7 +2728,7 @@ bool critPtNetWork::readFromFile(string inname)
    }
    iknowallcps=(iknowacps&&iknowbcps&&iknowrcps&&iknowccps);
    nBGP=cpxGetNOfBondPaths(cfil);
-   if (dBCP>0) {alloc3DRealArray(string("RBGP"),dBCP,CPNW_ARRAYSIZEGRADPATH,3,RBGP);}
+   if (dBCP>0) {alloc3DRealArray(string("RBGP"),dBCP,maxGradPathNPts,3,RBGP);}
    if (nBGP>=0&&conBCP!=NULL) {
       cpxGetNOfPtsPerBondPath(cfil,nBGP,conBCP);
       cpxGetBondPathData(cfil,nBGP,conBCP,RBGP);
@@ -2701,7 +2737,7 @@ bool critPtNetWork::readFromFile(string inname)
    nRGP=cpxGetNOfRingPaths(cfil);
    if (dRCP>0) {
       alloc4DRealArray(string("RRGP"),dRCP,CPNW_MAXBCPSCONNECTEDTORCP,\
-            CPNW_ARRAYSIZEGRADPATH,3,RRGP);
+            maxGradPathNPts,3,RRGP);
    }
    if ( nRGP>=0 && conRCP!=NULL ) {
       cpxGetNOfPtsPerRingPath(cfil,nRCP,conRCP);
@@ -2711,7 +2747,7 @@ bool critPtNetWork::readFromFile(string inname)
    nCGP=cpxGetNOfCagePaths(cfil);
    if (dCCP>0) {
       alloc4DRealArray(string("RCGP"),dCCP,CPNW_MAXRCPSCONNECTEDTOCCP,\
-            CPNW_ARRAYSIZEGRADPATH,3,RCGP);
+            maxGradPathNPts,3,RCGP);
    }
    if ( nCGP>=0 && conCCP!=NULL ) {
       cpxGetNOfPtsPerCagePath(cfil,nCCP,conCCP);
@@ -2766,17 +2802,14 @@ int critPtNetWork::findSingleRhoBondGradientPathRK5(int at1,int at2,solreal hste
 {
    solreal rn[3],rho,g[3],h[3][3],eive[3][3],eival[3],dist,maggrad;
    seekSingleRhoBCP(at1,at2,ro);
-   //cout << "ro: " << ro[0] << " " << ro[1] << " " << ro[2] << endl;
    wf->evalHessian(ro[0],ro[1],ro[2],rho,g,h);
    eigen_decomposition3(h,eive,eival);
    maggrad=0.0e0;
    for (int i=0; i<3; i++) {maggrad+=(eive[i][2]*eive[i][2]);}
    maggrad=sqrt(maggrad);
-   //hstep=DEFAULTHGRADIENTPATHS;
    for (int i=0; i<3; i++) {rn[i]=ro[i]+hstep*eive[i][2]/maggrad;}
    wf->evalRhoGradRho(rn[0],rn[1],rn[2],rho,g);
    maggrad=sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]);
-   //cout << "maggrad: " << maggrad << endl;
    for (int i=0; i<3; i++) {
       arbgp[0][i]=ro[i];
       arbgp[1][i]=rn[i];
@@ -2817,7 +2850,6 @@ int critPtNetWork::findSingleRhoBondGradientPathRK5(int at1,int at2,solreal hste
             count--;
          }
       }
-      //cout << "rn(" << count << "): " << rn[0] << " " << rn[1] << " " << rn[2] << endl;
       count++;
       if (count==dima) {
          displayWarningMessage("You need a bigger array for storing the BGP coordinates!");
@@ -2825,19 +2857,16 @@ int critPtNetWork::findSingleRhoBondGradientPathRK5(int at1,int at2,solreal hste
       }
    }
    invertOrderBGPPoints(count,arbgp);
-   //cout << "Checkpoint... count: " << count  << endl;
    maggrad=0.0e0;
    for (int i=0; i<3; i++) {maggrad+=(eive[i][2]*eive[i][2]);}
    maggrad=sqrt(maggrad);
    for (int i=0; i<3; i++) {rn[i]=ro[i]-hstep*eive[i][2]/maggrad;}
    wf->evalRhoGradRho(rn[0],rn[1],rn[2],rho,g);
    maggrad=sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]);
-   //cout << "maggrad: " << maggrad << endl;
    for (int i=0; i<3; i++) {
       arbgp[count][i]=rn[i];
    }
    count++;
-   //int cbase=count;
    maxit+=count;
    iminacp=false;
    while ((!iminacp)&&(count<maxit)&&(maggrad>EPSGRADMAG)) {
@@ -2867,7 +2896,6 @@ int critPtNetWork::findSingleRhoBondGradientPathRK5(int at1,int at2,solreal hste
          return count-1;
       }
    }
-   //count++;
    if (count==dima) {
       displayWarningMessage("You need a bigger array for storing the BGP coordinates!");
       return count-1;
@@ -2887,9 +2915,14 @@ int critPtNetWork::findSingleRhoBondGradientPathRK5(int at1,int at2,solreal hste
       for (int i=0; i<3; i++) {arbgp[count][i]=wf->R[iacp2+i];}
       count++;
    }
-   //cout << "Checkpoint2... count: " << count  << endl;
+   dist=0.0e0;
+   for (int i=0; i<3; i++) {dist+=((arbgp[0][i]-wf->R[iacp1+i])\
+         *(arbgp[0][i]-wf->R[iacp1+i]));}
+   dist=sqrt(dist);
+   if ( dist>(2.0e0*stepSizeBGP) ) {
+      invertOrderBGPPoints(count,arbgp);
+   }
    return count;
-   //wf->displayAllFieldProperties(rn[0],rn[1],rn[2]);
 }
 /* ************************************************************************************ */
 int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
@@ -3123,7 +3156,7 @@ bool critPtNetWork::walkGradientPathRK5ToEndPoint(\
       }
       ++count;
    }
-   if ( count==CPNW_ARRAYSIZEGRADPATH ) {
+   if ( count==maxGradPathNPts ) {
       displayWarningMessage("End or array reached, need larger array?");
 #if DEBUG
       DISPLAYDEBUGINFOFILELINE;
@@ -3451,7 +3484,7 @@ void critPtNetWork::setRingPaths()
       return;
    }
    alloc4DRealArray(string("RRGP"),dRCP,CPNW_MAXBCPSCONNECTEDTORCP,\
-         CPNW_ARRAYSIZEGRADPATH,3,RRGP);
+         maxGradPathNPts,3,RRGP);
    correctRCPConnectivity();
    cout << "Calculating Ring Gradient Paths..." << endl;
 #if DEBUG
@@ -3461,8 +3494,7 @@ void critPtNetWork::setRingPaths()
    printProgressBar(0);
 #endif
    solreal hstep; //,rseed[3];
-   hstep=CPNW_DEFAULTGRADIENTPATHS;
-   int arrsize=CPNW_ARRAYSIZEGRADPATH;
+   hstep=stepSizeBGP;
    int currBcpPos,npts;
 #if DEBUG
    int bcpIdx;
@@ -3479,7 +3511,7 @@ void critPtNetWork::setRingPaths()
 #endif
          //for (int k=0; k<3; k++) {rseed[k]=RBCP[bcpIdx][k];}
          npts=findSingleRhoRingGradientPathRK5(rcpIdx,\
-               currBcpPos,hstep,arrsize,RRGP[rcpIdx][currBcpPos]);
+               currBcpPos,hstep,maxGradPathNPts,RRGP[rcpIdx][currBcpPos]);
 #if DEBUG
          if ( npts<0 ) {
             displayWarningMessage("Catched -1");
@@ -3509,7 +3541,7 @@ void critPtNetWork::setCagePaths(void)
       return;
    }
    alloc4DRealArray(string("RCGP"),dCCP,CPNW_MAXRCPSCONNECTEDTOCCP,\
-         CPNW_ARRAYSIZEGRADPATH,3,RCGP);
+         maxGradPathNPts,3,RCGP);
    cout << "Calculating Cage Gradient Paths..." << endl;
 #if DEBUG
    cout << "nCCP: " << nCCP << endl;
@@ -3519,8 +3551,7 @@ void critPtNetWork::setCagePaths(void)
    printProgressBar(0);
 #endif
    solreal hstep; //,rseed[3];
-   hstep=CPNW_DEFAULTGRADIENTPATHS;
-   int arrsize=CPNW_ARRAYSIZEGRADPATH;
+   hstep=stepSizeBGP;
    //int rcpIdx;
    int currRcpPos,npts;
    for (int ccpIdx=0; ccpIdx<nCCP; ccpIdx++) {
@@ -3535,7 +3566,7 @@ void critPtNetWork::setCagePaths(void)
 #endif
          //for (int k=0; k<3; k++) {rseed[k]=RCCP[ccpIdx][k];}
          npts=findSingleRhoCageGradientPathRK5(ccpIdx,\
-               currRcpPos,hstep,arrsize,RCGP[ccpIdx][currRcpPos]);
+               currRcpPos,hstep,maxGradPathNPts,RCGP[ccpIdx][currRcpPos]);
 #if DEBUG
          if ( npts<0 ) {
             displayWarningMessage("Catched -1");
