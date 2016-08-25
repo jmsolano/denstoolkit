@@ -1,0 +1,195 @@
+\documentclass[11pt]{amsart}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+\usepackage{color}
+
+
+\newcommand{\vecx}{\boldsymbol{x}}
+\newcommand{\tnabla}{\tilde{\nabla}}
+\newcommand{\ds}{\partial_{s}}
+\newcommand{\us}{\hat{s}}
+\newcommand{\dt}{\partial_{t}}
+\newcommand{\ut}{\hat{t}}
+\newcommand{\dA}{\dot{A}}
+\newcommand{\dB}{\dot{B}}
+
+
+\title{Projection of Density Matrix of Order 1 onto a unit square}
+\author{J. M. Solano-Altamirano}
+\date{\today}                                           % Activate to display a given date or no date
+
+\begin{document}
+\begin{abstract}
+We present formulae for projecting the Density Matrix of Order 1 onto the unit square. We also
+develop expressions for first and second derivatives within the unit square.
+\end{abstract}
+\maketitle
+
+
+%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+\section{Straight line parametrisation}
+%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+%----------------------------------------------------------------
+\subsection{Projection}
+%----------------------------------------------------------------
+
+In order to project the Density Matrix of Order 1 (hereafter DM1) onto a unit square with
+coordinates $(s,t)$, \textit{i.e.}
+%
+\begin{equation}
+   \Gamma(s,t)=\Gamma\left(\vecx(s),\vecx'(t)\right)
+\end{equation}
+%
+we define the following parametrisation
+\begin{subequations}\label{eq:parametstraight}
+\begin{eqnarray}
+\vecx_{s} & \equiv & \vecx_1+(\vecx_2-\vecx_1)s,\\
+\vecx'_{t} & \equiv & \vecx'_1+(\vecx'_2-\vecx'_1)t.
+\end{eqnarray}
+\end{subequations}
+
+Here $s\in[0,1]$, and $t\in[0,1]$; $\vecx_1$, $\vecx_2$, $\vecx'_1$, and $\vecx'_2$ are
+four reference points within the real space. Usually these points are selected in such a manner
+that they correspond to the coordinates of two nuclei, or two Attractor Critical Points.
+
+Parametrisation (\ref{eq:parametstraight}) only works for a straight line, however, we will begin
+with this in order to better understand how to obtain derivatives of the projected DM1.
+
+
+%----------------------------------------------------------------
+\subsection{Derivatives within the unit square}
+%----------------------------------------------------------------
+
+Let us define a gradient upon the unit square as
+\begin{equation}
+   \tnabla\Gamma=\ds\Gamma\us+\dt\Gamma\ut.
+\end{equation}
+
+The first derivatives w.r.t. $s$ and $t$ are obtained through the chain rule
+(Einstein summation convention is applied):
+%
+\begin{subequations}
+\begin{eqnarray}
+   \partial_s\Gamma
+   &=&\frac{\partial x^i}{\partial s}\frac{\partial\Gamma}{\partial x^i}
+   =(x^i_2-x^i_1)\partial_i\Gamma(x^i,x'^j)
+   =c_{\dA\dB}(x^i_2-x^i_1)\phi_{\dB}(\vecx')\partial_i\phi_{\dA}(\vecx)\\
+   \partial_t\Gamma
+   &=&\frac{\partial x'^j}{\partial t}\frac{\partial\Gamma}{\partial x'^j}
+   =(x'^j_2-x'^j_1)\partial_j\Gamma(x^i,x'^j)
+   =c_{\dA\dB}(x'^j_2-x'^j_1)\phi_{\dA}(\vecx)\partial'_j\phi_{\dB}(\vecx').
+\end{eqnarray}
+\end{subequations}
+%
+
+Similarly, second derivatives can be obtained, which yields:
+%
+\begin{subequations}
+\begin{eqnarray}
+   \partial_s^2\Gamma &=& (x^j_2-x^j_1)(x^i_2-x^i_1)\partial_i\partial_j\Gamma,\\
+   \partial_t^2\Gamma &=& (x'^j_2-x'^j_1)(x'^i_2-x'^i_1)\partial_i'\partial_j'\Gamma,\\
+   \partial_s\partial_t\Gamma &=& (x'^j_2-x'^j_1)(x^i_2-x^i_1)\partial_i\partial_j'\Gamma,\\
+   \partial_t\partial_s\Gamma &=& (x^j_2-x^j_1)(x'^i_2-x'^i_1)\partial_i'\partial_j\Gamma.
+\end{eqnarray}
+\end{subequations}
+%
+Note that
+%
+\begin{equation}
+   \partial_t\partial_s\Gamma=\partial_s\partial_t\Gamma
+\end{equation}
+%
+And in terms of primitives, second derivatives are
+%
+\begin{subequations}
+\begin{eqnarray}
+   \partial_i\partial_j\Gamma&=&c_{\dA\dB}\phi_{\dB}(\vecx')
+      \partial_i\partial_j\phi_{\dA}(\vecx)\\
+   \partial_i'\partial_j'\Gamma&=&c_{\dA\dB}\phi_{\dA}(\vecx)
+      \partial_i'\partial_j'\phi_{\dB}(\vecx'),\\
+      \partial_i\partial_j'\Gamma&=&c_{\dA\dB}\partial_i\phi_{\dA}(\vecx)
+      \partial_j'\phi_{\dB}(\vecx')
+\end{eqnarray}
+\end{subequations}
+%
+
+%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+\section{Generic curve parametrisation}
+%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+%----------------------------------------------------------------
+\subsection{Projection}
+%----------------------------------------------------------------
+
+When we want to parametrise a generic curve, $c$, we also can map the 
+curve in three-dimensional space to a square, and even to a unit square. The projection becomes
+slightly more complicated, unless we know an analytic expression for
+obtaining the curve $c$ as a function of a parameter $s$, but we
+still have a relatively easy procedure.
+
+For definiteness and simplicity, here we parametrise a curve in three-dimensional space
+comprised by a finite set of points (see Fig. \ref{fig:arbcurveparam}), and we will map
+the curve $c$ onto a line, $s$ of length $|c|$, \textit{i.e.}, the line $s$ has the same
+length as the curve in three dimensional space.
+
+\begin{figure}\label{fig:arbcurveparam}
+\centering
+\includegraphics[width=0.75\textwidth]{plots/CurveParam01.pdf}
+\caption{Parametrisation of an arbitrary curve (compised by a finite
+set of points).}
+\end{figure}
+
+At each of the points $c_i$ we know the corresponding three-dimensional coordinates,
+therefore a function, $f$, takes the following values
+\begin{equation}
+   f(\vecx_i)=f(c_i)=f(s_i).
+\end{equation}
+
+First derivatives may be evaluated as follows:
+%
+\begin{equation}
+\left.\frac{\partial f}{\partial c}\right|_i=
+\left(\left.\frac{\partial x^j}{\partial c}\right|_i\right)
+\frac{\partial f}{\partial x^j}
+\end{equation}
+%
+
+For determining the first derivatives at each of the known points, we can use a finite-difference
+approach, hence (we assume we know $N$ points of the curve $c$)
+%
+\begin{equation}
+\left.\frac{\partial x^j}{\partial c}\right|_i=\left\{
+\begin{array}{ll}
+   \frac{\left(x^j_{i+1}-x^j_i\right)}{|\vecx_{i+1}-\vecx_i|} & i = 0,\dots,N-1 \\ \\
+   -\frac{\left(x^j_{N}-x^j_(N-1)\right)}{|\vecx_{N}-\vecx_{N-1}|} & i = N
+\end{array}
+\right.
+\end{equation}
+%
+
+In the first implementation of this algorithm in DensToolKit, we will use the difference between
+the length of the bond path, $b$  and the line that joins the two ACPs, $ACP_1$ and $ACP_2$, associated to the corresponding BCP as a validation parameter, and we will accept as valid the above approximation whenever we have
+$b<1.25|\vecx_{ACP_1}-\vecx_{ACP_2}|$.
+
+%----------------------------------------------------------------
+\subsubsection{Numerical second derivatives, variable steps}
+%----------------------------------------------------------------
+
+Second derivatives may be numerically obtained by using the definition of the
+first derivative, \textit{i.e.}
+%
+\begin{eqnarray}%\label{eq:}
+  f''(x) & = &\frac{f'(x+h)-f'(x)}{h}\nonumber\\
+  & = &\frac{1}{h}\left\{ \frac{f(x+h+g)-f(x+h)}{g}-\frac{f(x+h)-f(x)}{h} \right\}\nonumber\\
+  & = & \frac{hf(x+h+g)-(h+g)f(x+h)+gf(x)}{gh^2}.
+\end{eqnarray}
+%
+
+
+\end{document}  

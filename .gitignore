@@ -27,7 +27,7 @@ src/dtkbpdens/dtkbpdens
 src/dtkcube/dtkcube
 src/dtkdemat1/dtkdemat1
 src/dtkfindcp/dtkfindcp
-src/dtkfindcicp/dtkfindcicp
+src/dtkcharcicp/dtkcharcicp
 src/dtkline/dtkline
 src/dtkmomd/dtkmomd
 src/dtkplane/dtkplane
@@ -65,6 +65,7 @@ arts/*
 src/dtkview/build/*
 wishlist/*
 src/devdoc/html/*
+src/dtkcharcicp/jasowfns/*
 
 #specific files
 namefiglet.txt

@@ -1,0 +1,34 @@
+\documentclass{article}
+\input /Users/jmsolano/.libsol/tmp.inputs
+\usepackage{pst-infixplot,pst-math}
+\pagestyle{empty}
+\begin{document}
+\input pst-eps
+\TeXtoEPS
+\SpecialCoor
+\psset{xunit=1cm,yunit=1cm}
+\begin{pspicture}(-4,-3)(4,3)
+  \psset{linewidth=2pt}
+  \rput[lb]{0}(-4.0,-1.8){\includegraphics[width=7.6cm]{CurveParam00}}
+  %\rput[mc]{0}(0,0){\includegraphics[width=7.0cm]{graphabstbase}}
+  \rput[tr]{0}(3.2,-0.6){{\LARGE 0}}
+  \rput[tr]{0}(3.2,2.6){{\LARGE $|c|$}}
+  \rput[mc]{0}(-2.4,1.8){{\LARGE$c$}}
+  \rput[mc]{0}(3.8,1.0){{\LARGE$s$}}
+  \rput[mc]{0}(-2.8,-1.6){{\LARGE$x$}}
+  \rput[mc]{0}(1.2,-0.8){{\LARGE$y$}}
+  \rput[mc]{0}(-2.4,2.8){{\LARGE$z$}}
+  \rput[mc]{25}(-1.2,2.2){$\vec{x}_b-\vec{x}_a$}
+  \rput[mc]{55}(-1.0,0.4){$\vec{x}_b$}
+  \rput[mc]{-35}(-2.5,0.2){$\vec{x}_a$}
+  %
+  %\rput[mc]{0}(-0.10,-0.5){\begin{tabular}[t]{@{}c{}}Inviscid\\liquid\end{tabular}}
+  \psgrid(0,0)(-4,-3)(4,3)
+  %
+  %\rput[bc]{0}(-6.3,2){\psframebox*{\huge $R_I$}}
+  %\pscurve[linewidth=1pt]{->}(-6.5,2.6)(-5.6,4.2)(-4.2,3)
+  %
+  \end{pspicture}
+\endTeXtoEPS
+\end{document}
+
