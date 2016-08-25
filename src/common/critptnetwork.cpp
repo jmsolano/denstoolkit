@@ -1983,7 +1983,7 @@ void critPtNetWork::findTwoClosestAtomsToBCP(const int bcpIdx,int &at1Idx,int&at
       return;
    }
 #endif /* ( DEBUG ) */
-   if ( bcpIdx<nBCP ) {
+   if ( bcpIdx>=nBCP || bcpIdx<0 ) {
       displayErrorMessage("Requesting a non-existing BCP!");
       at1Idx=at2Idx=0;
       return;

@@ -9,6 +9,7 @@ using std::cerr;
 #include "demat1critptnetworkbp.h"
 #include "gausswavefunction.h"
 #include "critptnetwork.h"
+#include "bondnetwork.h"
 #include "solscrutils.h"
 #include "solmemhand.h"
 #include "solmath.h"
@@ -50,8 +51,8 @@ DeMat1CriticalPointNetworkBP::~DeMat1CriticalPointNetworkBP() {
 void DeMat1CriticalPointNetworkBP::init() {
    wf=NULL;
    cpn=NULL;
-   eivalCICP2D=eivalCICP6D=NULL;
-   sigCICP2D=sigCICP6D=NULL;
+   eivalNN6D=eivalCICP2D=eivalCICP6D=NULL;
+   sigNN6D=sigCICP2D=sigCICP6D=NULL;
    imsetup=false;
    nCICP=0;
 }
@@ -61,8 +62,10 @@ void DeMat1CriticalPointNetworkBP::destroy(void) {
    if ( cpn!=NULL ) { delete cpn; cpn=NULL; }
    dealloc2DRealArray(eivalCICP2D,nCICP);
    dealloc2DRealArray(eivalCICP6D,nCICP);
+   dealloc2DRealArray(eivalNN6D,nCICP);
    dealloc1DIntArray(sigCICP2D);
    dealloc1DIntArray(sigCICP6D);
+   dealloc1DIntArray(sigNN6D);
    imsetup=false;
 }
 bool DeMat1CriticalPointNetworkBP::InitSafetyChecks(void) {
@@ -90,8 +93,10 @@ bool DeMat1CriticalPointNetworkBP::AllocAuxArrays(void) {
    nCICP=cpn->nBGP;
    res=res&&alloc2DRealArray(string("eivalCICP2D"),nCICP,2,eivalCICP2D);
    res=res&&alloc2DRealArray(string("eivalCICP6D"),nCICP,6,eivalCICP6D);
+   res=res&&alloc2DRealArray(string("eivalNN6D"),nCICP,6,eivalNN6D);
    res=res&&alloc1DIntArray(string("sigCICP2D"),nCICP,sigCICP2D);
    res=res&&alloc1DIntArray(string("sigCICP6D"),nCICP,sigCICP6D);
+   res=res&&alloc1DIntArray(string("sigNN6D"),nCICP,sigNN6D);
    return res;
 }
 void DeMat1CriticalPointNetworkBP::ComputeCoreInteractionCPs2D(void) {
@@ -165,7 +170,7 @@ void DeMat1CriticalPointNetworkBP::ComputeSingleCICP2D(int idx) {
    for ( int i=0 ; i<2 ; ++i ) { eivalCICP2D[idx][i]=eival[i]; }
 #if DEBUG
    for ( int i=0 ; i<2 ; ++i ) { cout << " " << eival[i]; }
-   cout << " (signature: "
+   cout << " (signature cicp: "
         << sigCICP2D[idx] << ")" << endl;
 #endif /* ( DEBUG ) */
 }
@@ -178,6 +183,7 @@ void DeMat1CriticalPointNetworkBP::ComputeSingleCICP6D(int idx) {
       return;
    }
 #endif
+   /* acp-acp (cicp) determination  */
    int acp1Idx=cpn->conBCP[idx][0],acp2Idx=cpn->conBCP[idx][1];
    solreal xx[3],xxp[3],gamm,gg[3],gp[3],hh[3][3],hph[3][3],hp[3][3];
    for ( int i=0 ; i<3 ; ++i ) {
@@ -186,6 +192,35 @@ void DeMat1CriticalPointNetworkBP::ComputeSingleCICP6D(int idx) {
    }
    wf->evalHessDensityMatrix1(xx,xxp,gamm,gg,gp,hh,hph,hp);
    solreal hess[6][6],eivec[6][6],eival[6];
+   assignHessian6D(hh,hph,hp,hess);
+   eigen_decomposition6(hess,eivec,eival);
+   sigCICP6D[idx]=GetSignature(eival);
+   for ( int i=0 ; i<6 ; ++i ) { eivalCICP6D[idx][i]=eival[i]; }
+   /* nuc-nuc correlation determination  */
+   cpn->findTwoClosestAtomsToBCP(idx,acp1Idx,acp2Idx);
+   for ( int i=0 ; i<3 ; ++i ) {
+      xx[i]=bn->R[acp1Idx][i];
+      xxp[i]=bn->R[acp2Idx][i];
+   }
+   wf->evalHessDensityMatrix1(xx,xxp,gamm,gg,gp,hh,hph,hp);
+   assignHessian6D(hh,hph,hp,hess);
+   eigen_decomposition6(hess,eivec,eival);
+   sigNN6D[idx]=GetSignature(eival);
+   for ( int i=0 ; i<6 ; ++i ) { eivalNN6D[idx][i]=eival[i]; }
+#if DEBUG
+   cout << cpn->lblBCP[idx] << " (eival cicp): ";
+   for ( int i=0 ; i<6 ; ++i ) { cout << " " << eivalCICP6D[idx][i]; }
+   cout << " (signature cicp: "
+        << sigCICP6D[idx] << ")" << endl;
+   cout << "(eival nuc-nuc [" << bn->atLbl[acp1Idx] << "," 
+        << bn->atLbl[acp2Idx] << "] ): ";
+   for ( int i=0 ; i<6 ; ++i ) { cout << " " << eivalNN6D[idx][i]; }
+   cout << " (signature nuc-nuc: "
+        << sigNN6D[idx] << ")" << endl;
+#endif /* ( DEBUG ) */
+}
+void DeMat1CriticalPointNetworkBP::assignHessian6D(solreal (&hh)[3][3],\
+      solreal (&hph)[3][3],solreal (&hp)[3][3],solreal (&hess)[6][6]) {
    /* ************************************************************************** */
    hess[0][0]=hh[0][0]; hess[0][1]=hh[0][1]; hess[0][2]=hh[0][2]; hess[0][3]=hph[0][0]; hess[0][4]=hph[0][1]; hess[0][5]=hph[0][2];
    hess[1][0]=hh[1][0]; hess[1][1]=hh[1][1]; hess[1][2]=hh[1][2]; hess[1][3]=hph[1][0]; hess[1][4]=hph[1][1]; hess[1][5]=hph[1][2];
@@ -195,15 +230,6 @@ void DeMat1CriticalPointNetworkBP::ComputeSingleCICP6D(int idx) {
    hess[4][0]=hph[0][1]; hess[4][1]=hph[1][1]; hess[4][2]=hph[2][1]; hess[4][3]=hp[1][0]; hess[4][4]=hp[1][1]; hess[4][5]=hp[1][2];
    hess[5][0]=hph[0][2]; hess[5][1]=hph[1][2]; hess[5][2]=hph[2][2]; hess[5][3]=hp[2][0]; hess[5][4]=hp[2][1]; hess[5][5]=hp[2][2];
    /* ************************************************************************** */
-   eigen_decomposition6(hess,eivec,eival);
-   cout << cpn->lblBCP[idx];
-   sigCICP6D[idx]=GetSignature(eival);
-   for ( int i=0 ; i<6 ; ++i ) { eivalCICP6D[idx][i]=eival[i]; }
-#if DEBUG
-   for ( int i=0 ; i<6 ; ++i ) { cout << " " << eival[i]; }
-   cout << " (signature: "
-        << sigCICP6D[idx] << ")" << endl;
-#endif /* ( DEBUG ) */
 }
 void DeMat1CriticalPointNetworkBP::GetTangentialVectors(const int bcpIdx,solreal (&e1)[3],\
       solreal (&e2)[3]) {
@@ -231,6 +257,16 @@ int DeMat1CriticalPointNetworkBP::GetSignature(solreal (&v)[6]) {
    int s=0;
    for ( int i=0 ; i<6 ; ++i ) { v[i] >=0.0e0 ? ++s : --s; }
    return s;
+}
+bool DeMat1CriticalPointNetworkBP::differentSignaturesCICPvsNN(void) {
+   bool res=false;
+   for ( int i=0 ; i<nCICP ; ++i ) {
+      if ( sigNN6D[i]!=sigCICP6D[i] ) {
+         res=true;
+         break;
+      }
+   }
+   return res;
 }
 
 #endif  /* _DEMAT1CRITPTNETWORKBP_CPP_ */

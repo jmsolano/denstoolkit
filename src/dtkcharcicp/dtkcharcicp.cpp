@@ -100,6 +100,9 @@ using std::setprecision;
 #include "crtflnms.h"
 #include "custfmtmathfuncts.h"
 
+void WriteLogFile(string fname,DeMat1CriticalPointNetworkBP &dcpn,bondNetWork &bn,\
+      string &wfnam);
+
 int main (int argc, char ** argv) {
    const clock_t begin_time = clock();
    const solreal begin_walltime = time(NULL);
@@ -141,52 +144,17 @@ int main (int argc, char ** argv) {
    //critPtNetWork cpn(gwf,bnw);
 
    DeMat1CriticalPointNetworkBP dmcpbp(gwf,bnw);
-   dmcpbp.ComputeCoreInteractionCPs6D();
+   cout << "Computing CICP eigenvalues and signatures..." << endl;
    dmcpbp.ComputeCoreInteractionCPs2D();
+   dmcpbp.ComputeCoreInteractionCPs6D();
+   cout << "Output saved into file " << cicpfilnam << endl;
+   WriteLogFile(cicpfilnam,dmcpbp,bnw,infilnam);
 
+   cout << "Saving cps information to " << cpxfilnam << endl;
    writeCPXFile(cpxfilnam,infilnam,*(dmcpbp.cpn));
 
    /* At this point the computation has ended. Usually this means no errors ocurred. */
 
-
-   /*
-#if _HAVE_POVRAY_
-   int cameravdir=1;
-   dmcpbp.cpn->drawNuclei(true);
-   string cmdl;
-   povRayConfProp povconf;
-   dmcpbp.cpn->drawBondGradPaths(true);
-   dmcpbp.cpn->drawBonds(false);
-   string povfilnam="tmppov.pov";
-   string pngfilnam="tmppov.png";
-   dmcpbp.cpn->makePOVFile(povfilnam,povconf,cameravdir);
-   cout << "           PovRay file: " << povfilnam << endl;
-   cout << "Calling povray..." << endl;
-   cmdl=string(CMD_POVRAY);
-#if (defined(__CYGWIN__))
-   cmdl+=string(" /EXIT /RENDER");
-#endif
-   cmdl+=(string(" ")+povfilnam+string(" +ua -D +FN"));
-   //cout << cmdl << endl;
-   if (options.quiet) {cmdl+=string(" > /dev/null 2>&1");}
-   system(cmdl.c_str());
-#if (_HAVE_IMAGEMAGICK_)
-   cmdl="convert ";
-#elif(_HAVE_GRAPHICSMAGICK_)
-   cmdl="gm convert ";
-#endif
-#if (((_HAVE_IMAGEMAGICK_))||(_HAVE_GRAPHICSMAGICK_))
-   cmdl+=(string("-trim ")+pngfilnam+string(" ")+pngfilnam);
-   system(cmdl.c_str());
-#endif
-   cout << "Rendering done." << endl;
-#if (defined(__APPLE__)||defined(__linux__)||defined(__CYGWIN__))
-   cmdl="rm ";
-   cmdl+=povfilnam;
-   system(cmdl.c_str());
-#endif
-#endif // _HAVE_POVRAY_
-   // */
 
    setScrGreenBoldFont();
    printHappyEnding();
@@ -203,5 +171,87 @@ int main (int argc, char ** argv) {
    return 0;
 }
 
+void WriteLogFile(string fname,DeMat1CriticalPointNetworkBP &dcpn,bondNetWork &bn,\
+      string &wfnam) {
+   ofstream ofil(fname.c_str());
+   if ( !ofil.good() ) {
+      displayErrorMessage(string("File ")+fname+string("could not be opened!"));
+      ofil.close();
+      return;
+   }
+   /* ************************************************************************** */
+   writeCommentedScrStarLine(ofil);
+   centerCommentedString(string("Data obtained from file: ")+wfnam,ofil);
+   if ( dcpn.differentSignaturesCICPvsNN() ) {
+      centerCommentedString("Found DIFFERENT SIGNATURES [CICP] vs [Nuc-Nuc]!",ofil);
+   } else {
+      centerCommentedString("Found SAME SIGNATURES [CICP] vs [Nuc-Nuc]!",ofil);
+   }
+   writeCommentedScrStarLine(ofil);
+   centerCommentedString("CICP (ACP-ACP) eigenvalues 6D",ofil);
+   writeCommentedScrStarLine(ofil);
+   int n=dcpn.nCICP;
+   for ( int i=0 ; i<n ; ++i ) {
+      ofil << dcpn.cpn->lblBCP[i] << ": ";
+      for ( int j=0 ; j<6 ; ++j ) {
+         ofil << dcpn.eivalCICP6D[i][j] << " ";
+      }
+      ofil << endl;
+   }
+   /* ************************************************************************** */
+   writeCommentedScrStarLine(ofil);
+   centerCommentedString("CICP signatures 6D",ofil);
+   writeCommentedScrStarLine(ofil);
+   for ( int i=0 ; i<n ; ++i ) {
+      ofil << dcpn.cpn->lblBCP[i] << ": ";
+      ofil << dcpn.sigCICP6D[i] << " ";
+      ofil << endl;
+   }
+   /* ************************************************************************** */
+   writeCommentedScrStarLine(ofil);
+   centerCommentedString("Nuc-Nuc eigenvalues 6D",ofil);
+   writeCommentedScrStarLine(ofil);
+   int a1,a2;
+   for ( int i=0 ; i<n ; ++i ) {
+      dcpn.cpn->findTwoClosestAtomsToBCP(i,a1,a2);
+      ofil << bn.atLbl[a1] << '-' << bn.atLbl[a2] << ": ";
+      for ( int j=0 ; j<6 ; ++j ) {
+         ofil << dcpn.eivalNN6D[i][j] << " ";
+      }
+      ofil << endl;
+   }
+   /* ************************************************************************** */
+   writeCommentedScrStarLine(ofil);
+   centerCommentedString("Nuc-Nuc signatures 6D",ofil);
+   writeCommentedScrStarLine(ofil);
+   for ( int i=0 ; i<n ; ++i ) {
+      dcpn.cpn->findTwoClosestAtomsToBCP(i,a1,a2);
+      ofil << bn.atLbl[a1] << '-' << bn.atLbl[a2] << ": ";
+      ofil << dcpn.sigCICP6D[i] << endl;
+   }
+   /* ************************************************************************** */
+   writeCommentedScrStarLine(ofil);
+   centerCommentedString("CICP (ACP-ACP) eigenvalues 2D",ofil);
+   writeCommentedScrStarLine(ofil);
+   n=dcpn.nCICP;
+   for ( int i=0 ; i<n ; ++i ) {
+      ofil << dcpn.cpn->lblBCP[i] << ": ";
+      for ( int j=0 ; j<2 ; ++j ) {
+         ofil << dcpn.eivalCICP2D[i][j] << " ";
+      }
+      ofil << endl;
+   }
+   /* ************************************************************************** */
+   writeCommentedScrStarLine(ofil);
+   centerCommentedString("CICP signatures 2D",ofil);
+   writeCommentedScrStarLine(ofil);
+   for ( int i=0 ; i<n ; ++i ) {
+      ofil << dcpn.cpn->lblBCP[i] << ": ";
+      ofil << dcpn.sigCICP2D[i] << " ";
+      ofil << endl;
+   }
+   writeCommentedScrStarLine(ofil);
+   ofil.close();
+}
 
 

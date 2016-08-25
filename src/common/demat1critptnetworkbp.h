@@ -11,13 +11,16 @@ public:
    inline bool ImSetup(void) {return imsetup;}
    void ComputeCoreInteractionCPs2D(void);
    void ComputeCoreInteractionCPs6D(void);
+   bool differentSignaturesCICPvsNN(void);
    //void MapToUVCoordinatesM3x3(solreal (&e1)[3],solreal (&e2)[3],solreal (&huv)[2][2]);
    /* ************************************************************************** */
    class critPtNetWork *cpn;
-   solreal **eivalCICP2D; /*!< Contains the eigenvalues of 2D CICPs (projected gamma)  */
-   solreal **eivalCICP6D; /*!< Contains the eigenvalues of 6D CICPs (projected gamma)  */
-   int *sigCICP2D; /*!< Contains the information of 2D signatures (projected gamma)  */
-   int *sigCICP6D; /*!< Contains the information of 6D signatures.  */
+   solreal **eivalCICP2D; /*!< Contains the eigenvalues of 2D CICPs (projected gamma, ACP-ACP connection)  */
+   solreal **eivalCICP6D; /*!< Contains the eigenvalues of 6D CICPs (ACP-ACP connection) */
+   solreal **eivalNN6D; /*!< Contains the eigenvalues of 6D Nuc-Nuc correlations  */
+   int *sigCICP2D; /*!< Contains the information of 2D cicp signatures (projected gamma)  */
+   int *sigCICP6D; /*!< Contains the information of 6D cicp signatures.  */
+   int *sigNN6D; /*!< Contains the information of 6D nuc-nuc signatures.  */
    int nCICP;
    /* ************************************************************************** */
 protected:
@@ -39,9 +42,11 @@ protected:
    class bondNetWork *bn;
    int at1,at2;
    /* ************************************************************************** */
-private:
+protected:
    bool imsetup;
    DeMat1CriticalPointNetworkBP(void) {} //Prohibited the use of default constructor.
+   void assignHessian6D(solreal (&hh)[3][3],solreal (&hph)[3][3],solreal (&hp)[3][3],\
+         solreal (&hess)[6][6]);
    /* ************************************************************************** */
 };
 /* ************************************************************************** */

@@ -90,7 +90,7 @@ void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn,string &l_fn,\
       setScrNormalFont();
       exit(1);
    }
-   string plbl="RhoCICPs";
+   string plbl="CICPFeatures";
    l_fn=i_fn.substr(0,(i_fn.length()-3));
    c_fn=l_fn;
    ci_fn=l_fn;
