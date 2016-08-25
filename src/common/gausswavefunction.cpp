@@ -4574,31 +4574,36 @@ void GaussWaveFunction::evalHessDensityMatrix1(solreal (&xx)[3],solreal (&xxp)[3
    solreal trho=0.0000000e0,chib,chibp;
    solreal sumdiphiax,sumdiphiay,sumdiphiaz;
    solreal sumhxx,sumhyy,sumhzz,sumhxy,sumhxz,sumhyz;
+   solreal sumxpy,sumxpz,sumypz;
    sumhxx=sumhyy=sumhzz=sumhxy=sumhxz=sumhyz=0.00000e0;
+   sumxpy=sumxpz=sumypz=0.0e0;
    for (int i=0; i<nPri; i++) {
       chib=chibp=0.0000000e0;
       sumdiphiax=sumdiphiay=sumdiphiaz=0.0000000e0;
       for (int j=0; j<nPri; j++) {
          cc=cab[indp++];
-         chibp+=(hyz[j]*cc);
-         chib+=(chi[j]*cc);
-         sumdiphiax+=(gx[j]*cc);
-         sumdiphiay+=(gy[j]*cc);
-         sumdiphiaz+=(gz[j]*cc);
+         chibp+=(hyz[j]*cc); //double-checked
+         chib+=(chi[j]*cc); //double-checked
+         sumdiphiax+=(gx[j]*cc); //double-checked
+         sumdiphiay+=(gy[j]*cc); //double-checked
+         sumdiphiaz+=(gz[j]*cc); //double-checked
       }
-      trho+=(chibp*chi[i]);
-      nabx+=(chibp*gx[i]);
-      naby+=(chibp*gy[i]);
-      nabz+=(chibp*gz[i]);
-      nabxp+=(chib*hxx[i]);
-      nabyp+=(chib*hyy[i]);
-      nabzp+=(chib*hzz[i]);
-      sumhxx+=(sumdiphiax*hxx[i]);
-      sumhyy+=(sumdiphiay*hyy[i]);
-      sumhzz+=(sumdiphiaz*hzz[i]);
-      sumhxy+=(sumdiphiax*hyy[i]);
-      sumhxz+=(sumdiphiax*hzz[i]);
-      sumhyz+=(sumdiphiay*hzz[i]);
+      trho+=(chibp*chi[i]); //double-checked
+      nabx+=(chibp*gx[i]); //double-checked
+      naby+=(chibp*gy[i]); //double-checked
+      nabz+=(chibp*gz[i]); //double-checked
+      nabxp+=(chib*hxx[i]); //double-checked
+      nabyp+=(chib*hyy[i]); //double-checked
+      nabzp+=(chib*hzz[i]); //double-checked
+      sumhxx+=(sumdiphiax*hxx[i]); //double-checked
+      sumhyy+=(sumdiphiay*hyy[i]); //double-checked
+      sumhzz+=(sumdiphiaz*hzz[i]); //double-checked
+      sumhxy+=(sumdiphiax*hyy[i]); //double-checked
+      sumhxz+=(sumdiphiax*hzz[i]); //double-checked
+      sumhyz+=(sumdiphiay*hzz[i]); //double-checked
+      sumxpy+=(sumdiphiay*hxx[i]); //double-checked
+      sumxpz+=(sumdiphiaz*hxx[i]); //double-checked
+      sumypz+=(sumdiphiaz*hyy[i]); //double-checked
    }
    gg[0]=nabx;
    gg[1]=naby;
@@ -4608,8 +4613,8 @@ void GaussWaveFunction::evalHessDensityMatrix1(solreal (&xx)[3],solreal (&xxp)[3
    gp[2]=nabzp;
    gamm=trho;
    hph[0][0]=sumhxx; hph[0][1]=sumhxy; hph[0][2]=sumhxz;
-   hph[1][0]=sumhxy; hph[1][1]=sumhyy; hph[1][2]=sumhyz;
-   hph[2][0]=sumhxz; hph[2][1]=sumhyz; hph[2][2]=sumhzz;
+   hph[1][0]=sumxpy; hph[1][1]=sumhyy; hph[1][2]=sumhyz;
+   hph[2][0]=sumxpz; hph[2][1]=sumypz; hph[2][2]=sumhzz;
    for ( int i=0 ; i<nPri ; i++ ) {gx[i]=hyz[i];} //gx is now chi(xp)
    indp=0;
    indr=0;
