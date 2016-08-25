@@ -108,7 +108,7 @@ int main (int argc, char ** argv) {
    optFlags options;
    ifstream ifile;
    ofstream ofile;
-   ScalarFieldType critpttype=DENS;
+   //ScalarFieldType critpttype=DENS;
    
    getOptions(argc,argv,options); //This processes the options from the command line.
 
@@ -142,12 +142,14 @@ int main (int argc, char ** argv) {
 
    DeMat1CriticalPointNetworkBP dmcpbp(gwf,bnw);
    dmcpbp.ComputeCoreInteractionCPs6D();
+   dmcpbp.ComputeCoreInteractionCPs2D();
 
    writeCPXFile(cpxfilnam,infilnam,*(dmcpbp.cpn));
 
    /* At this point the computation has ended. Usually this means no errors ocurred. */
 
 
+   /*
 #if _HAVE_POVRAY_
    int cameravdir=1;
    dmcpbp.cpn->drawNuclei(true);
@@ -178,14 +180,13 @@ int main (int argc, char ** argv) {
    system(cmdl.c_str());
 #endif
    cout << "Rendering done." << endl;
-   /*
 #if (defined(__APPLE__)||defined(__linux__)||defined(__CYGWIN__))
    cmdl="rm ";
    cmdl+=povfilnam;
    system(cmdl.c_str());
 #endif
+#endif // _HAVE_POVRAY_
    // */
-#endif /* _HAVE_POVRAY_ */
 
    setScrGreenBoldFont();
    printHappyEnding();

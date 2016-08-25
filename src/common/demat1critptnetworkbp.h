@@ -14,8 +14,10 @@ public:
    //void MapToUVCoordinatesM3x3(solreal (&e1)[3],solreal (&e2)[3],solreal (&huv)[2][2]);
    /* ************************************************************************** */
    class critPtNetWork *cpn;
-   solreal *gCICP;
-   solreal **hCICP;
+   solreal **eivalCICP2D; /*!< Contains the eigenvalues of 2D CICPs (projected gamma)  */
+   solreal **eivalCICP6D; /*!< Contains the eigenvalues of 6D CICPs (projected gamma)  */
+   int *sigCICP2D; /*!< Contains the information of 2D signatures (projected gamma)  */
+   int *sigCICP6D; /*!< Contains the information of 6D signatures.  */
    int nCICP;
    /* ************************************************************************** */
 protected:
@@ -24,7 +26,7 @@ protected:
    void destroy(void);
    bool InitSafetyChecks(void);
    bool SetupCPN(void);
-   void AllocAuxArrays(void);
+   bool AllocAuxArrays(void);
    void ComputeSingleCICP2D(int idx);
    void ComputeSingleCICP6D(int idx);
    bool CPSafetyChecks(void);
