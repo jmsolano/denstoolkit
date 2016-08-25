@@ -1973,6 +1973,26 @@ void critPtNetWork::findTwoClosestAtoms(solreal (&xo)[3],int &idx1st,int &idx2nd
    return;
 }
 /* ************************************************************************************ */
+void critPtNetWork::findTwoClosestAtomsToBCP(const int bcpIdx,int &at1Idx,int&at2Idx) {
+   if ( wf->nNuc<2 ) {at1Idx=0; at2Idx=0; return;}
+#if DEBUG
+   if ( !iknowbcps ) {
+      displayErrorMessage("First look for BCPs!");
+      DISPLAYDEBUGINFOFILELINE;
+      at1Idx=at2Idx=0;
+      return;
+   }
+#endif /* ( DEBUG ) */
+   if ( bcpIdx<nBCP ) {
+      displayErrorMessage("Requesting a non-existing BCP!");
+      at1Idx=at2Idx=0;
+      return;
+   }
+   solreal xo[3];
+   for ( int i=0 ; i<3 ; ++i ) { xo[i]=RBCP[bcpIdx][i]; }
+   return findTwoClosestAtoms(xo,at1Idx,at2Idx);
+}
+/* ************************************************************************************ */
 void critPtNetWork::findTwoClosestACPs(solreal (&xo)[3],int &idx1st,int &idx2nd)
 {
    if ( nACP<2 ) {idx1st=0; idx2nd=0; return;}
