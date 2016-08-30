@@ -215,7 +215,7 @@ runtest: build
           $(LCL_BINDIR)/dtkbpdens cyclopropane.wfx -P -p M -n 145 -l -L; \
           rm -f cyclopropane.wfx
 	cd $(LCL_OUTDIR); cp $(LCL_WFDIR)/benzene.wfn.; \
-          $(LCL_BINDIR)/dtkcharcicp cubano_sto3g.wfx; \
+          $(LCL_BINDIR)/dtkcharcicp benzene.wfn; \
           rm -f benzene.wfn
 
 develdocs: devdochtmldir
