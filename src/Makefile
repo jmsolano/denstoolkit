@@ -114,7 +114,8 @@ all: $(DTKALLDIRS) $(DTKALLFILES) bindir outdir objdir build
 
 build: $(LCL_BINDIR)/dtkpoint $(LCL_BINDIR)/dtkline $(LCL_BINDIR)/dtkplane \
        $(LCL_BINDIR)/dtkcube $(LCL_BINDIR)/dtkfindcp $(LCL_BINDIR)/dtkmomd \
-       $(LCL_BINDIR)/dtkqdmol $(LCL_BINDIR)/dtkdemat1 $(LCL_BINDIR)/dtkbpdens
+       $(LCL_BINDIR)/dtkqdmol $(LCL_BINDIR)/dtkdemat1 $(LCL_BINDIR)/dtkbpdens \
+		 $(LCL_BINDIR)/dtkcharcicp
 
 $(LCL_BINDIR)/dtkpoint: $(DTKPOINTFILES) $(DTKCOMMONFILES)
 	@cd $(DTKPOINTDIR); make $(MKFLAGS); mv dtkpoint $(LCL_BINDIR)/; cd $(LCL_SRCDIR)
