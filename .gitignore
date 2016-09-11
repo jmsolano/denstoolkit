@@ -33,6 +33,7 @@ src/dtkmomd/dtkmomd
 src/dtkplane/dtkplane
 src/dtkpoint/dtkpoint
 src/dtkqdmol/dtkqdmol
+src/dtkintegobondpath/dtkintegobondpath
 
 #Trash and system files
 *~
