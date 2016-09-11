@@ -44,10 +44,12 @@ DTKQDMOLDIR     = $(LCL_SRCDIR)/dtkqdmol
 DTKDEMAT1DIR    = $(LCL_SRCDIR)/dtkdemat1
 DTKBPDENSDIR    = $(LCL_SRCDIR)/dtkbpdens
 DTKCHARCICPDIR  = $(LCL_SRCDIR)/dtkcharcicp
+DTKINTOVBPDIR   = $(LCL_SRCDIR)/dtkintegobondpath
 
 DTKALLDIRS      = $(DTKCOMMONDIR) $(DTKPOINTDIR) $(DTKLINEDIR) $(DTKPLANEDIR) \
                   $(DTKCUBEDIR) $(DTKFINDCPDIR) $(DTKMOMDDIR) $(DTKQDMOLDIR) \
-                  $(DTKDEMAT1DIR) $(DTKBPDENSDIR) $(DTKCHARCICPDIR)
+                  $(DTKDEMAT1DIR) $(DTKBPDENSDIR) $(DTKCHARCICPDIR) \
+						$(DTKINTOVBPDIR)
 
 DTKCOMMONFILES    = $(DTKCOMMONDIR)/bondnetwork.cpp $(DTKCOMMONDIR)/bondnetwork.h \
                   $(DTKCOMMONDIR)/critptnetwork.cpp $(DTKCOMMONDIR)/critptnetwork.h \
@@ -66,7 +68,8 @@ DTKCOMMONFILES    = $(DTKCOMMONDIR)/bondnetwork.cpp $(DTKCOMMONDIR)/bondnetwork.
                   $(DTKCOMMONDIR)/wfgrid1d.cpp $(DTKCOMMONDIR)/wfgrid1d.h \
                   $(DTKCOMMONDIR)/wfgrid2d.cpp $(DTKCOMMONDIR)/wfgrid2d.h \
                   $(DTKCOMMONDIR)/wfgrid3d.cpp $(DTKCOMMONDIR)/wfgrid3d.h \
-                  $(DTKCOMMONDIR)/iofuncts-cpx.cpp $(DTKCOMMONDIR)/iofuncts-cpx.h
+                  $(DTKCOMMONDIR)/iofuncts-cpx.cpp $(DTKCOMMONDIR)/iofuncts-cpx.h \
+						$(DTKCOMMONDIR)/integrateoverbondpath.cpp $(DTKCOMMONDIR)/integrateoverbondpath.h
 DTKPOINTFILES     = $(DTKPOINTDIR)/dtkpoint.cpp $(DTKPOINTDIR)/optflags.h \
                   $(DTKPOINTDIR)/optflags.cpp $(DTKPOINTDIR)/crtflnms.h \
                   $(DTKPOINTDIR)/crtflnms.cpp $(DTKPOINTDIR)/soldefines.h
@@ -98,10 +101,14 @@ DTKBPDENSFILES    = $(DTKBPDENSDIR)/dtkbpdens.cpp $(DTKBPDENSDIR)/optflags.h \
 DTKCHARCICPFILES  = $(DTKCHARCICPDIR)/dtkcharcicp.cpp $(DTKCHARCICPDIR)/optflags.h \
                   $(DTKCHARCICPDIR)/optflags.cpp $(DTKCHARCICPDIR)/crtflnms.h \
                   $(DTKCHARCICPDIR)/crtflnms.cpp $(DTKCHARCICPDIR)/soldefines.h
+DTKINTOVBPFILES  = $(DTKINTOVBPDIR)/dtkintegobondpath.cpp $(DTKINTOVBPDIR)/optflags.h \
+                  $(DTKINTOVBPDIR)/optflags.cpp $(DTKINTOVBPDIR)/crtflnms.h \
+                  $(DTKINTOVBPDIR)/crtflnms.cpp $(DTKINTOVBPDIR)/soldefines.h
 
 DTKALLFILES     = $(DTKCOMMONFILES) $(DTKPOINTFILES) $(DTKLINEFILES) $(DTKPLANEFILES) \
                   $(DTKCUBEFILES) $(DTKFINDCPFILES) $(DTKMOMDFILES) $(DTKQDMOLFILES) \
-                  $(DTKDEMAT1FILES) $(DTKBPDENSFILES) $(DTKCHARCICPFILES)
+                  $(DTKDEMAT1FILES) $(DTKBPDENSFILES) $(DTKCHARCICPFILES) \
+						$(DTKINTOVBPFILES)
 
 ifeq ($(SETDTKNPROC),1)
       MKFLAGS   = DTKUSEOPENMP=0
@@ -115,7 +122,7 @@ all: $(DTKALLDIRS) $(DTKALLFILES) bindir outdir objdir build
 build: $(LCL_BINDIR)/dtkpoint $(LCL_BINDIR)/dtkline $(LCL_BINDIR)/dtkplane \
        $(LCL_BINDIR)/dtkcube $(LCL_BINDIR)/dtkfindcp $(LCL_BINDIR)/dtkmomd \
        $(LCL_BINDIR)/dtkqdmol $(LCL_BINDIR)/dtkdemat1 $(LCL_BINDIR)/dtkbpdens \
-		 $(LCL_BINDIR)/dtkcharcicp
+		 $(LCL_BINDIR)/dtkcharcicp $(LCL_BINDIR)/dtkintegobondpath
 
 $(LCL_BINDIR)/dtkpoint: $(DTKPOINTFILES) $(DTKCOMMONFILES)
 	@cd $(DTKPOINTDIR); make $(MKFLAGS); mv dtkpoint $(LCL_BINDIR)/; cd $(LCL_SRCDIR)
@@ -148,6 +155,9 @@ $(LCL_BINDIR)/dtkbpdens: $(DTKBPDENSFILES) $(DTKCOMMONFILES)
 $(LCL_BINDIR)/dtkcharcicp: $(DTKCHARCICPFILES) $(DTKCOMMONFILES)
 	@cd $(DTKCHARCICPDIR); make $(MKFLAGS); mv dtkcharcicp $(LCL_BINDIR)/; cd $(LCL_SRCDIR)
 
+$(LCL_BINDIR)/dtkintegobondpath: $(DTKINTOVBPFILES) $(DTKCOMMONFILES)
+	@cd $(DTKINTOVBPDIR); make $(MKFLAGS); mv dtkintegobondpath $(LCL_BINDIR)/; cd $(LCL_SRCDIR)
+
 clean: 
 	@if test -d $(DTKPOINTDIR); then (cd $(DTKPOINTDIR); make clean; cd $(LCL_SRCDIR)) fi 
 	@if test -d $(DTKLINEDIR); then (cd $(DTKLINEDIR); make clean; cd $(LCL_SRCDIR)) fi 
@@ -159,6 +169,7 @@ clean:
 	@if test -d $(DTKDEMAT1DIR); then (cd $(DTKDEMAT1DIR); make clean; cd $(LCL_SRCDIR)) fi 
 	@if test -d $(DTKBPDENSDIR); then (cd $(DTKBPDENSDIR); make clean; cd $(LCL_SRCDIR)) fi 
 	@if test -d $(DTKCHARCICPDIR); then (cd $(DTKCHARCICPDIR); make clean; cd $(LCL_SRCDIR)) fi 
+	@if test -d $(DTKINTOVBPDIR); then (cd $(DTKINTOVBPDIR); make clean; cd $(LCL_SRCDIR)) fi 
 	rm -f $(LCL_OBJDIR)/*.o
 	rm -f $(LCL_BINDIR)/dtk*
 
@@ -216,6 +227,9 @@ runtest: build
           rm -f cyclopropane.wfx
 	cd $(LCL_OUTDIR); cp $(LCL_WFDIR)/benzene.wfn .; \
           $(LCL_BINDIR)/dtkcharcicp benzene.wfn -v; \
+          rm -f benzene.wfn
+	cd $(LCL_OUTDIR); cp $(LCL_WFDIR)/benzene.wfn .; \
+          $(LCL_BINDIR)/dtkintegobondpath benzene.wfn; \
           rm -f benzene.wfn
 
 develdocs: devdochtmldir
