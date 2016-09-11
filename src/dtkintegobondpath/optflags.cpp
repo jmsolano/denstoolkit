@@ -77,23 +77,15 @@ using std::string;
 
 //**************************************************************************************************
 
-optFlags::optFlags()
-{
+optFlags::optFlags() {
    infname=0;
    outfname=0;
-   prop2plot=0;
-   setn1=0;
-   setats=0;
-   zipdat=0;
-   mkplt=0;
-   kpgnp=1;
 }
 
 
 //**************************************************************************************************
 
-void getOptions(int &argc, char** &argv, optFlags &flags)
-{
+void getOptions(int &argc, char** &argv, optFlags &flags) {
    string progname;
    progname=":-)  ";
    progname+=argv[0];
@@ -117,31 +109,9 @@ void getOptions(int &argc, char** &argv, optFlags &flags)
    for (int i=1; i<argc; i++){
       if (argv[i][0] == '-'){
          switch (argv[i][1]){
-            case 'a':
-               if ((i+2)>=argc) {printErrorMsg(argv,'a');}
-               flags.setats=(++i);
-               i++;
-               break;
-            case 'k':
-               flags.kpgnp=i;
-               break;
-            case 'n':
-               if (i>=argc) {printErrorMsg(argv,'n');}
-               flags.setn1=(++i);
-               break;
             case 'o':
                flags.outfname=(++i);
                if (i>=argc) {printErrorMsg(argv,'o');}
-               break;
-            case 'p':
-               flags.prop2plot=(++i);
-               if (i>=argc) {printErrorMsg(argv,'p');}
-               break;
-            case 'P':
-               flags.mkplt=i;
-               break;
-            case 'z':
-               flags.zipdat=i;
                break;
             case 'h':
                printHelpMenu(argc,argv);
@@ -170,8 +140,7 @@ void getOptions(int &argc, char** &argv, optFlags &flags)
 
 //**************************************************************************************************
 
-void printHelpMenu(int &argc, char** &argv)
-{
+void printHelpMenu(int &argc, char** &argv) {
    string progname=argv[0];
    size_t pos=progname.find("./");
    if (pos!=string::npos) {progname.erase(pos,2);}
@@ -182,10 +151,14 @@ void printHelpMenu(int &argc, char** &argv)
    cout << endl;
    centerString((string(":-) ")+progname+string(" (-:")));
    cout << endl;
-   centerString("This program creates a dat file and a gnp file. The information for");
-   centerString("the calculation is obtained from a wfx(wfn) file, which is");
-   centerString("given as the input for the program.");
-   centerString("(See below for the sintax.)");
+   centerString("This program computes a line integral of several scalar fields.");
+   centerString("The fields are some of the regular scalar fields implemented");
+   centerString("in this version of DensToolKit.");
+   centerString("The program will save the information, both total integral");
+   centerString("upon all bond paths, i.e. the sum of all individual integrals");
+   centerString("over the bond paths.");
+   centerString("It also saves the individual information of all integrals.");
+   centerString("This information is saved into a *.log file.");
    cout << endl;
    centerString((string("Compilation date: ")+string(__DATE__)));
    cout << endl;
@@ -198,46 +171,17 @@ void printHelpMenu(int &argc, char** &argv)
    cout << "\nUsage:\n\n\t" << progname << " wf?name [option [value(s)]] ... [option [value(s)]]\n\n";
    setScrNormalFont();
    cout << "Where wf?name is the input wfx(wfn) name, and options can be:\n\n"
-        << "  -a a1 a2  \tDefine the atoms  (a1,a2) used to define the line." << endl
-        << "            \t  If this option is not activated, the program will " << endl
-        << "            \t  define the line using the first atom and the vector" << endl
-        << "            \t  (1,1,1)." << endl
-        << "  -n  dim   \tSet the number of points for the dat file" << endl
         << "  -o outname\tSet the output file name." << endl
         << "            \t  (If not given the program will create one out of" << endl
         << "            \t  the input name; if given, the gnp file and the pdf will" << endl
         << "            \t  use this name as well --but different extension--)." << endl;
-   cout << "  -p prop\tChoose the property to be computed. prop is a character," << endl
-        << "         \t  which can be (d is the default value): " << endl
-        << "         \t\td (Density)" << endl
-        << "         \t\tg (Magnitude of the Gradient of the Density)" << endl
-        << "         \t\tl (Laplacian of density)" << endl
-        << "         \t\tK (Kinetic Energy Density K)" << endl
-        << "         \t\tG (Kinetic Energy Density G)" << endl
-        << "         \t\tE (Electron Localization Function -ELF-)" << endl
-        << "         \t\tL (Localized Orbital Locator -LOL-)" << endl
-        << "         \t\tM (Magnitude of the Gradient of LOL)" << endl
-        << "         \t\tP (Magnitude of the Localized Electrons Detector -LED-)" << endl
-        << "         \t\tr (Region of Slower Electrons -RoSE-)" << endl
-        << "         \t\ts (Reduced Density Gradient -s-)" << endl
-        << "         \t\tS (Shannon Entropy Density)" << endl;
-   cout << "         \t\tu (Scalar Custom Field)" << endl;
-   cout << "         \t\tV (Molecular Electrostatic Potential)" << endl;
-#if _HAVE_GNUPLOT_
-   cout << "  -P     \tCreate a plot using gnuplot." << endl
-        << "  -k     \tKeeps the *.gnp file to be used later by gnuplot." << endl;
-   
-#endif
-#if (defined(__APPLE__)||defined(__linux__))
-   cout << "  -z     \tCompress the cube file using gzip (which must be intalled" << endl
-        << "         \t   in your system)." << endl;
-#endif
    cout << "  -V        \tDisplays the version of this program." << endl;
    cout << "  -h     \tDisplay the help menu.\n\n";
    //-------------------------------------------------------------------------------------
    cout << "  --help    \t\tSame as -h" << endl;
    cout << "  --version \t\tSame as -V" << endl;
    //-------------------------------------------------------------------------------------
+/*
 #if _HAVE_GNUPLOT_
    printScrStarLine();
    centerString(string("Note that the following programs must be properly installed in your system:"));
@@ -248,11 +192,11 @@ void printHelpMenu(int &argc, char** &argv)
 #endif
    printScrStarLine();
 #endif
+*/
 }//end printHelpMenu
 
 //**************************************************************************************************
-void printErrorMsg(char** &argv,char lab)
-{
+void printErrorMsg(char** &argv,char lab) {
    setScrRedBoldFont();
    cout << "\nError: the option \"" << lab << "\" ";
    switch (lab) {
@@ -276,8 +220,7 @@ void printErrorMsg(char** &argv,char lab)
    return;
 }
 //**************************************************************************************************
-void processDoubleDashOptions(int &argc,char** &argv,optFlags &flags,int pos)
-{
+void processDoubleDashOptions(int &argc,char** &argv,optFlags &flags,int pos) {
    string progname=argv[0];
    size_t progpos=progname.find("./");
    if (progpos!=string::npos) {progname.erase(progpos,2);}

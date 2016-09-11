@@ -61,6 +61,8 @@ using std::ofstream;
 using std::exit;
 #include <string>
 using std::string;
+#include <vector>
+using std::vector;
 #include <iomanip>
 using std::setprecision;
 #include <ctime>
@@ -69,6 +71,7 @@ using std::setprecision;
 #include "../common/critptnetwork.h"
 #include "../common/fldtypesdef.h"
 #include "../common/integrateoverbondpath.h"
+#include "../common/solfileutils.h"
 #include "optflags.h"
 #include "crtflnms.h"
 
@@ -110,7 +113,7 @@ int main (int argc, char ** argv) {
 
    /* Setups the critical point network object  */
    critPtNetWork cpn(gwf,bnw);
-   solreal stepSize=INTEGBP_BONDPATHSTEPSIZE*0.1e0; //defined in soldefines.h
+   solreal stepSize=INTEGBP_BONDPATHSTEPSIZE; //defined in soldefines.h
    cpn.setStepSizeBGP(stepSize);
    int numPtsBGPArray=INTEGBP_NUMBEROFPOINTSBGPARRAY*4;
    cpn.setMaxGradPathNPts(numPtsBGPArray);
@@ -118,8 +121,37 @@ int main (int argc, char ** argv) {
    cpn.setBondPaths();
 
    /* Setups the IntegrateOverBondPath object  */
-   IntegrateOverBondPath integ(cpn);
-   
+   vector<IntegrateOverBondPath*> integ;
+   integ.push_back(new IntegrateOverBondPath(gwf,cpn,DENS));
+   integ.push_back(new IntegrateOverBondPath(gwf,cpn,KEDK));
+   integ.push_back(new IntegrateOverBondPath(gwf,cpn,KEDG));
+   //integ.push_back(new IntegrateOverBondPath(gwf,cpn,MEPD));
+   integ.push_back(new IntegrateOverBondPath(gwf,cpn,REDG));
+   integ.push_back(new IntegrateOverBondPath(gwf,cpn,EDFTA));
+   for ( size_t i=0 ; i<integ.size() ; ++i ) {
+      cout << "Computing " << integ[i]->GetFieldTypeLabelShort() << " integrals, (" << i << " out of " << 
+        integ.size() << ")..." << endl;
+      integ[i]->ComputeAllIntegralsOverBondPaths();
+   }
+   for ( size_t i=0 ; i<integ.size() ; ++i ) {
+      cout << "Total integral (" << integ[i]->GetFieldTypeLabelShort() 
+           << "): " << integ[i]->GetBondPathIntegral() << endl;
+   }
+
+   /* Writes the integrals to a file  */
+   ofstream ofil(logfilnam.c_str());
+   for ( size_t i=0 ; i<integ.size() ; ++i ) {
+      writeCommentedScrStarLine(ofil);
+      integ[i]->WriteIntegralValuesToFile(ofil);
+   }
+   ofil.close();
+
+   /* Cleans the integral vector  */
+   for ( size_t i=0 ; i<integ.size() ; ++i ) {
+      delete integ[i];
+      integ[i]=NULL;
+   }
+
    /* At this point the computation has ended. Usually this means no
     * errors ocurred. */
    

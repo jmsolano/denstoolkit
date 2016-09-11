@@ -64,7 +64,7 @@ typedef double solreal;
 #define CURRENTVERSION "1.2.0"
 #define PROGRAMCONTRIBUTORS "JMSA/JMHP"
 
-#define INTEGBP_BONDPATHSTEPSIZE 0.01
+#define INTEGBP_BONDPATHSTEPSIZE 0.005
 #define INTEGBP_NUMBEROFPOINTSBGPARRAY 400
 
 #define DISPLAYDEBUGINFOFILELINE (std::cout << __FILE__ << ", line: " << __LINE__ << std::endl)

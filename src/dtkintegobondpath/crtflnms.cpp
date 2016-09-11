@@ -91,19 +91,8 @@ void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn, string &o_log_fn
       setScrNormalFont();
       exit(1);
    }
-   o_log_fn=i_fn.substr(0,(i_fn.length()-3));
-   o_log_fn.append("log");
-   char prop;
-   if (opts.prop2plot) {
-      prop=argv[opts.prop2plot][0];
-   } else {
-      prop='d';
-   }
-   pos=o_log_fn.find_last_of('.');
-   if (pos!=string::npos) {
-      string plbl=getFieldTypeKeyShort(prop);
-      o_log_fn.insert(pos,plbl);
-   }
+   o_log_fn=i_fn.substr(0,(i_fn.length()-4));
+   o_log_fn.append("BondPathIntegrals.log");
    if (opts.outfname) {
       o_log_fn=argv[opts.outfname];
       o_log_fn.append(".log");

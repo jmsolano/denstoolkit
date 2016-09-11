@@ -65,6 +65,7 @@ enum ScalarFieldType {
    MLED,/* MagLEDVector  */\
    REDG,/* Reduced Density Grandient  */\
    ROSE, /* Region of Slow Electrons  */
+   EDFTA, /* DFT Exchange and Corrrelation Energy ($(-3/4)(3\rho/\pi)^{1/3}$)  */
    SCFD, /* Scalar Custom Field Density */\
    VCFD /* Vector Custom Field Density */
 };
@@ -124,6 +125,9 @@ inline char convertScalarFieldType2Char(ScalarFieldType fftt)
       case VCFD :
          res='U';
          break;
+      case EDFTA :
+         res= 'a';
+         break;
       case NONE :
       default :
          res='0';
@@ -177,6 +181,9 @@ inline string getFieldTypeKeyShort(const char prop)
          break;
       case 'K':
          plbl="KinEnerDensK";
+         break;
+      case 'a' :
+         plbl="ExDFTa";
          break;
       case 'u' :
          plbl="ScalarCustFld";
@@ -240,6 +247,9 @@ inline string getFieldTypeKeyLong(const char prop)
       case 'K':
          plbl="Kinetic Energy Density K";
          break;
+      case 'a' :
+         plbl="Exchange And Correlation Energy DFTa";
+         break;
       case 'u':
          plbl="Scalar Custom Field";
          break;
@@ -298,6 +308,9 @@ inline string gnuplotFieldTitle(const char p2p)
          break;
       case 'K':
          plbl=string("{/Bold K}");
+         break;
+      case 'a' :
+         plbl="E_{x}(DFT a)";
          break;
       case 'u' :
          plbl=string("S.C.F.");
