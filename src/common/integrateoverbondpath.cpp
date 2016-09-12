@@ -76,10 +76,9 @@ void IntegrateOverBondPath::GetIntermediateCoordinatesAndDistanceBetweenPoints(i
       x3mx0[i]=x3[i]-x0[i];
    }
    h=magV3(x3mx0)*oo3;
-   normalizeV3(x3mx0);
    for ( int i=0 ; i<3 ; ++i ) {
-      x1[i]=x0[i]+(h*x3mx0[i]);
-      x2[i]=x1[i]+(h*x3mx0[i]);
+      x1[i]=x0[i]+oo3*x3mx0[i];
+      x2[i]=x1[i]+oo3*x3mx0[i];
    }
 }
 void IntegrateOverBondPath::ComputeScalarFunctionValuesAtIntermediatePoints(\
