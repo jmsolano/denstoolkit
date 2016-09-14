@@ -179,7 +179,7 @@ install: build
 	@echo "\033[32m\nInstalled programs:\n"
 	@if test -e $(INSTALL_PATH)/dtkpoint; then (dtkpoint -V; dtkline -V; \
 		dtkplane -V; dtkcube -V; dtkfindcp -V; dtkmomd -V; dtkdemat1 -V; \
-		dtkqdmol -V; dtkbpdens -V; dtkcharcicp -V; \
+		dtkqdmol -V; dtkbpdens -V; dtkcharcicp -V; dtkintegobondpath -V; \
           cd $(INSTALL_PATH); ls -1 dtk*2*) fi
 	@echo "\033[0m"
 
