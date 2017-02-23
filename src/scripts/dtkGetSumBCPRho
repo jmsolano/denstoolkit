@@ -1,0 +1,81 @@
+#!/bin/bash
+
+usage()
+{
+echo -e "\n    usage: \033[1m$0\033[0m [\033[0;4moption(s)\033[0m \
+[\033[4margument(s)\033[0m]] \033[4mwavefunctionname\033[0m \033[4minput.cpx\033[0m"
+cat << END_USAGE_TEXT
+
+This script uses the information contained in the input.cpx file to extract
+all BCP coordinates of the molecule whose wavefunction is wavefunctionname.
+Once the BCP coordinates are extracted from input.cpx, the script uses these
+coordinates to call dtkpoint with a list of coordinates.
+
+The result is a display of all values of Rho at the BCPs on the screen.
+
+The options can be:
+
+   -h               Display the help menu.
+
+END_USAGE_TEXT
+}
+
+get_bcp_coordinates_first_line () {
+   the_file_name=$1
+   the_line=$(grep -n "<BCPCar" $the_file_name | sed -e 's/\([0-9]*\):<\(.*\)/\1/')
+   echo "$(( $the_line + 1 ))"
+}
+get_bcp_coordinates_last_line () {
+   the_file_name=$1
+   the_line=$(grep -n "</BCPCar" $the_file_name | sed -e 's/\([0-9]*\):<\(.*\)/\1/')
+   echo "$(( $the_line - 1 ))"
+}
+
+get_sum_of_rho_values() {
+   the_file_name=$1
+   awk '{ sum += $1 } END { print sum }' $the_file_name
+}
+
+if [ $# -lt 2 ]; then
+   if [ "$1" == "-h" ]; then
+      usage
+      exit 0
+   fi
+   echo "Error: input filenames missing (Try -h for more information.)."
+   exit 2
+fi
+
+inNameWFN=$1
+inNameCPX=$2
+
+while getopts ":h" opt; do
+  case $opt in
+    h)
+      usage
+      exit 0
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      ;;
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      exit 1
+      ;;
+  esac
+done
+
+firstLine=$(get_bcp_coordinates_first_line $inNameCPX)
+lastLine=$(get_bcp_coordinates_last_line $inNameCPX)
+
+logFileName=${RANDOM}${RANDOM}.tmp
+rhoValuesFileName=${RANDOM}${RANDOM}.tmp
+
+sed -n "$firstLine,$lastLine"p $inNameCPX > $logFileName
+dtkpoint $inNameWFN -i $logFileName | grep -e " Rho:" | tr -s ' ' \
+   | sed -e 's/^ Rho:\(.*\)/\1/' -e 's/ //g' > $rhoValuesFileName
+
+get_sum_of_rho_values $rhoValuesFileName
+
+rm $logFileName $rhoValuesFileName
+
+
