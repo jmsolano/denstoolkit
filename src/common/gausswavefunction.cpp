@@ -508,6 +508,7 @@ void GaussWaveFunction::displayAllFieldProperties(solreal x,solreal y,solreal z)
    cout << "        |LED|: " << setw(20) << sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]) << endl;
    cout << "  RedDensGrad: " << setw(20) << evalReducedDensityGradient(xx[0],xx[1],xx[2]) << endl;
    cout << "         RoSE: " << setw(20) << evalRoSE(xx[0],xx[1],xx[2]) << endl;
+	cout << "    Pot E. D.: " << setw(20) << evalPotencialEnergyDensity(x,y,z) << endl;
    if ( usescustfld ) {
       cout << "Cust. S. Field: " << setw(20) << evalCustomScalarField(xx[0],xx[1],xx[2]) << endl;
    }
@@ -578,6 +579,7 @@ void GaussWaveFunction::writeAllFieldProperties(solreal x,solreal y,solreal z,of
    ofil << "  |LED|:       " << setw(20) << sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]) << endl;
    ofil << "  RedDensGrad: " << setw(20) << evalReducedDensityGradient(x,y,z) << endl;
    ofil << "  RoSE:        " << setw(20) << evalRoSE(x,y,z) << endl;
+	ofil << "  Pot E. D.:   " << setw(20) << evalPotencialEnergyDensity(x,y,z) << endl;
    if ( usescustfld ) {
       ofil << "Cust. S. Field: " << setw(20) << evalCustomScalarField(xx[0],xx[1],xx[2]) << endl;
    }
@@ -5200,6 +5202,13 @@ solreal GaussWaveFunction::evalRoSE(solreal x,solreal y,solreal z)
    tau*=0.5e0; //tau=G
    solreal tau0=cc*pow(rho,fivo3);
    return ((tau0-tau)/(tau0+tau));
+}
+solreal GaussWaveFunction::evalPotencialEnergyDensity(solreal x, solreal y, solreal z)
+{
+	solreal lapRho, G;
+	lapRho = evalLapRho(x,y,z);
+	G      = evalKineticEnergyG(x,y,z); 
+	return (0.25*lapRho - 2.0 * G);
 }
 /* *************************************************************************************** */
 /* *************************************************************************************** */

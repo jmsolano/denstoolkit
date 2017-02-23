@@ -630,6 +630,9 @@ public:
    /* ************************************************************************************ */
    void useVectorCustomField(bool ucf) {usevcustfld=ucf;}
    /* ************************************************************************************ */
+   /** This function returns the Potencial Energy Density at the point (x,y,z)  */
+	solreal evalPotencialEnergyDensity(solreal x, solreal y, solreal z);
+   /* ************************************************************************************ */
 protected:
    static int prTy[MAXPRIMTYPEDEFINED*3];
    /* ************************************************************************************ */
