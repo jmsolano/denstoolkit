@@ -100,7 +100,8 @@ void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn, string &o_fn)
    }
    pos=o_fn.find_last_of('.');
    if (pos!=string::npos) {
-      string plbl;
+      string plbl=getFieldTypeKeyShort(prop);
+		/*
       switch (prop) {
          case 'a':
             plbl="AllProp";
@@ -136,6 +137,7 @@ void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn, string &o_fn)
             plbl="";
             break;
       }
+		*/
       o_fn.insert(pos,plbl);
    }
    if (opts.outfname) {
