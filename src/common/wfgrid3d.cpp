@@ -575,6 +575,9 @@ void waveFunctionGrid3D::makeCube(string &onam,GaussWaveFunction &wf,ScalarField
       case SCFD :
          writeCubeScalarCustFld(ofil,wf);
          break;
+		case POED : 
+			writeCubePotencialEnergyDensity(ofil,wf);
+			break;
       default:
          cout << "Error: Field type not known!\n Cube incomplete!" << endl;
          break;
@@ -586,6 +589,32 @@ void waveFunctionGrid3D::makeCube(string &onam,GaussWaveFunction &wf,ScalarField
    ofil.close();
    return;
 }
+void waveFunctionGrid3D::writeCubePotencialEnergyDensity(ofstream &ofil,GaussWaveFunction &wf)
+{
+   solreal xx,yy,zz;
+   xx=xin[0];
+   yy=xin[1];
+   zz=xin[2];
+   for (int i=0; i<npts[0]; i++) {
+      yy=xin[1];
+      for (int j=0; j<npts[1]; j++) {
+         zz=xin[2];
+         for (int k=0; k<npts[2]; k++) {
+            prop1d[k]=wf.evalPotencialEnergyDensity(xx,yy,zz);
+            //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
+            zz+=dx[2][2];
+         }
+         writeCubeProp(ofil,npts[2],prop1d);
+         yy+=dx[1][1];
+      }
+      xx+=dx[0][0];
+#if USEPROGRESSBAR
+      printProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+#endif
+   }
+   return;
+}
+/* ******************************************************************************* */
 /* ********************************************************************************** */
 /* ********************************************************************************** */
 /* ********************************************************************************** */
