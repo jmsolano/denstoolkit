@@ -241,6 +241,7 @@ void printHelpMenu(int &argc, char** &argv)
    cout << "         \t\tu (Scalar Custom Field)" << endl;
    cout << "         \t\tU (Vector Custom Field)" << endl;
    cout << "         \t\tV (Molecular Electrostatic Potential)" << endl;
+   cout << "         \t\tv (Potencial Energy Density)" << endl;
 #if _HAVE_GNUPLOT_
    cout << "  -P     \tCreate a plot using gnuplot." << endl
         << "  -c     \tShow contour lines in the plot." << endl

@@ -233,6 +233,9 @@ int main (int argc, char ** argv)
       case 'V':
          grid.makeTsv(outfilnam,gwf,MEPD);
          break;
+		case 'v':
+         grid.makeTsv(outfilnam,gwf,POED);
+         break;
       default:
          setScrRedBoldFont();
          cout << "Error: The property \"" << prop << "\" does not exist!" << endl;
