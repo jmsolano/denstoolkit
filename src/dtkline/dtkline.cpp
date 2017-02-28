@@ -222,7 +222,7 @@ int main (int argc, char ** argv)
          grid.makeDat(outfilnam,gwf,MEPD);
          break;
 		case 'v':
-         grid.makeDat(outfilnam,gwf,POED);
+         grid.makeDat(outfilnam,gwf,VPED);
 			break;
       default:
          setScrRedBoldFont();

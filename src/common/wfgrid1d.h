@@ -155,7 +155,7 @@ public:
    /* ******************************************************************************* */
    bool writeLineDatScalarCustFld(ofstream &ofil,GaussWaveFunction &wf);
 	/* ******************************************************************************* */
-   bool writeLineDatPotEnerDens(ofstream &ofil,GaussWaveFunction &wf);
+   bool writeLineDatVirialPotentialEnergyDensisty(ofstream &ofil,GaussWaveFunction &wf);
 	/* ******************************************************************************* */
    /* ******************************************************************************* */
 private:
