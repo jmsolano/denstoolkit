@@ -200,7 +200,7 @@ int main (int argc, char ** argv)
          grid.makeCube(outfilnam,gwf,MEPD);
          break;
 		case 'v':
-         grid.makeCube(outfilnam,gwf,POED);
+         grid.makeCube(outfilnam,gwf,VPED);
          break;
       default:
          setScrRedBoldFont();
