@@ -469,9 +469,9 @@ void waveFunctionGrid2D::makeTsv(string &onam,GaussWaveFunction &wf,ScalarFieldT
       case VCFD :
          writePlaneTsvVectorCustFld(ofil,wf);
          break;
-		case VPED :
-			writePlaneTsvVirialPotentialEnergyDensity(ofil,wf);
-			break;
+      case VPED :
+         writePlaneTsvVirialPotentialEnergyDensity(ofil,wf);
+         break;
       default:
          cout << "Error: Field type not known!\n dat file incomplete!" << endl;
          break;

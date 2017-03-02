@@ -221,9 +221,9 @@ int main (int argc, char ** argv)
       case 'V':
          grid.makeDat(outfilnam,gwf,MEPD);
          break;
-		case 'v':
+      case 'v':
          grid.makeDat(outfilnam,gwf,VPED);
-			break;
+         break;
       default:
          setScrRedBoldFont();
          cout << "Error: The property \"" << prop << "\" does not exist!" << endl;

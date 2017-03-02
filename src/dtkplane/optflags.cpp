@@ -217,8 +217,8 @@ void printHelpMenu(int &argc, char** &argv)
         << "            \t  Note: if the *.wfn (*.wfx) file has only one or two atoms" << endl
         << "            \t  this option must not be used. The program will define" << endl
         << "            \t  a plane which includes that(those) one(two) atom(s)." << endl
-        << "  -n  dim   \tSet the number of points for the tsv file per direction" << endl
-		  << "            \t  to be nx x ny." << endl
+        << "  -n  dim   \tSet the number of points for the tsv file per direction." << endl
+        << "            \t  The tsv will have the dimensions dim x dim." << endl
         << "  -o outname\tSet the output file name." << endl
         << "            \t  (If not given the program will create one out of" << endl
         << "            \t  the input name; if given, the tsv, gnp and pdf files will" << endl

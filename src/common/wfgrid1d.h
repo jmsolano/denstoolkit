@@ -154,9 +154,9 @@ public:
    bool writeLineDatRoSE(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
    bool writeLineDatScalarCustFld(ofstream &ofil,GaussWaveFunction &wf);
-	/* ******************************************************************************* */
-   bool writeLineDatVirialPotentialEnergyDensisty(ofstream &ofil,GaussWaveFunction &wf);
-	/* ******************************************************************************* */
+   /* ******************************************************************************* */
+   bool writeLineDatVirialPotentialEnergyDensity(ofstream &ofil,GaussWaveFunction &wf);
+   /* ******************************************************************************* */
    /* ******************************************************************************* */
 private:
    bool imsetup;
