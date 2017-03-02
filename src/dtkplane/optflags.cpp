@@ -218,6 +218,7 @@ void printHelpMenu(int &argc, char** &argv)
         << "            \t  this option must not be used. The program will define" << endl
         << "            \t  a plane which includes that(those) one(two) atom(s)." << endl
         << "  -n  dim   \tSet the number of points for the tsv file per direction" << endl
+		  << "            \t  to be nx x ny." << endl
         << "  -o outname\tSet the output file name." << endl
         << "            \t  (If not given the program will create one out of" << endl
         << "            \t  the input name; if given, the tsv, gnp and pdf files will" << endl
@@ -241,7 +242,7 @@ void printHelpMenu(int &argc, char** &argv)
    cout << "         \t\tu (Scalar Custom Field)" << endl;
    cout << "         \t\tU (Vector Custom Field)" << endl;
    cout << "         \t\tV (Molecular Electrostatic Potential)" << endl;
-   cout << "         \t\tv (Virial Potencial Energy Density)" << endl;
+   cout << "         \t\tv (Virial Potential Energy Density)" << endl;
 #if _HAVE_GNUPLOT_
    cout << "  -P     \tCreate a plot using gnuplot." << endl
         << "  -c     \tShow contour lines in the plot." << endl

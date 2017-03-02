@@ -68,6 +68,7 @@
 #include "crtflnms.h"
 #include "../common/solfileutils.h"
 #include "../common/solscrutils.h"
+#include "../common/fldtypesdef.h"
 
 void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn, string &o_fn)
 {

@@ -470,7 +470,7 @@ void waveFunctionGrid2D::makeTsv(string &onam,GaussWaveFunction &wf,ScalarFieldT
          writePlaneTsvVectorCustFld(ofil,wf);
          break;
 		case VPED :
-			writePlaneTsvVirialPotencialEnergyDensity(ofil,wf);
+			writePlaneTsvVirialPotentialEnergyDensity(ofil,wf);
 			break;
       default:
          cout << "Error: Field type not known!\n dat file incomplete!" << endl;
@@ -1016,7 +1016,7 @@ bool waveFunctionGrid2D::writePlaneTsvVectorCustFld(ofstream &ofil,GaussWaveFunc
    return false;
 }
 /* ************************************************************************************ */
-bool waveFunctionGrid2D::writePlaneTsvVirialPotencialEnergyDensity(ofstream &ofil,GaussWaveFunction &wf)
+bool waveFunctionGrid2D::writePlaneTsvVirialPotentialEnergyDensity(ofstream &ofil,GaussWaveFunction &wf)
 {
    ofil << scientific << setprecision (10);
    solreal e1,e2,xx[3];
