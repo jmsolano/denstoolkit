@@ -68,6 +68,7 @@
 #include "crtflnms.h"
 #include "../common/solfileutils.h"
 #include "../common/solscrutils.h"
+#include "../common/fldtypesdef.h"
 
 void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn, string &o_fn)
 {
@@ -100,42 +101,7 @@ void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn, string &o_fn)
    }
    pos=o_fn.find_last_of('.');
    if (pos!=string::npos) {
-      string plbl;
-      switch (prop) {
-         case 'a':
-            plbl="AllProp";
-            break;
-         case 'd':
-            plbl="Rho";
-            break;
-         case 'g':
-            plbl="MagGradRho";
-            break;
-         case 'l':
-            plbl="LapRho";
-            break;
-         case 'E':
-            plbl="ELF";
-            break;
-         case 'L':
-            plbl="LOL";
-            break;
-         case 'M':
-            plbl="MagGradLOL";
-            break;
-         case 'S':
-            plbl="ShannEnt";
-            break;
-         case 'G':
-            plbl="KinEnerDensG";
-            break;
-         case 'K':
-            plbl="KinEnerDensK";
-            break;
-         default:
-            plbl="";
-            break;
-      }
+      string plbl="AllProp";
       o_fn.insert(pos,plbl);
    }
    if (opts.outfname) {

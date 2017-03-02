@@ -168,6 +168,8 @@ public:
    /* *************************************************************************** */
    bool writePlaneTsvVectorCustFld(ofstream &ofil,GaussWaveFunction &wf);
    /* *************************************************************************** */
+   bool writePlaneTsvVirialPotentialEnergyDensity(ofstream &ofil,GaussWaveFunction &wf);
+   /* *************************************************************************** */
    /* *************************************************************************** */
    void makeTsv(string &onam,GaussWaveFunction &wf,ScalarFieldType ft);
    /* *************************************************************************** */

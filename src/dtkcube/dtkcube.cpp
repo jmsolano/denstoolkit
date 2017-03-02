@@ -199,6 +199,9 @@ int main (int argc, char ** argv)
       case 'V':
          grid.makeCube(outfilnam,gwf,MEPD);
          break;
+      case 'v':
+         grid.makeCube(outfilnam,gwf,VPED);
+         break;
       default:
          setScrRedBoldFont();
          cout << "Error: The property \"" << prop << "\" does not exist!" << endl;

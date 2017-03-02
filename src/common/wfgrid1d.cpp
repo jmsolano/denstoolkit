@@ -713,6 +713,44 @@ bool waveFunctionGrid1D::writeLineDatScalarCustFld(ofstream &ofil,GaussWaveFunct
    return true;
 }
 /* ********************************************************************************** */
+bool waveFunctionGrid1D::writeLineDatVirialPotentialEnergyDensity(ofstream &ofil,GaussWaveFunction &wf)
+{
+   if (!imsetup) {
+      cout << "Error: the grid has not been set up!" << endl;
+      cout << "No output will be written." << endl;
+      for (int j=0; j<4; j++) {
+         for (int i=0; i<4; i++) {
+            ofil << solreal(i) << " " << 2.0e0*solreal(i) << " " << 3.2e0*solreal(i) << endl;
+         }
+         ofil << endl;
+      }
+#if DEBUG
+      cout << "From: " << __FILE__ << " at line " << __LINE__ << endl;
+#endif
+      return false;
+   }
+   solreal delta[3],xx[3];
+   for (int i=0; i<3; i++) {
+      delta[i]=(Cb[i]-Ca[i]);
+      xx[i]=Ca[i];
+   }
+   for (int i=0; i<3; i++) {delta[i]/=solreal(npts-1);}
+   for (int i=0; i<npts; i++) {
+      prop1d[i]=wf.evalVirialPotentialEnergyDensity(xx[0],xx[1],xx[2]);
+      for (int j=0; j<3; j++) {xx[j]+=delta[j];}
+#if USEPROGRESSBAR
+      printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+#endif
+   }
+   //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
+   solreal e2=-1.0e0*maxdim;
+   for (int i=0; i<npts; i++) {
+      ofil << e2 << " " << prop1d[i] << endl;
+      e2+=dx*maxdim;
+   }
+   return true;
+}
+/* ********************************************************************************** */
 void waveFunctionGrid1D::makeDat(string &onam,GaussWaveFunction &wf,ScalarFieldType ft)
 {
    if (!wf.imldd) {
@@ -769,6 +807,9 @@ void waveFunctionGrid1D::makeDat(string &onam,GaussWaveFunction &wf,ScalarFieldT
          break;
       case SCFD :
          writeLineDatScalarCustFld(ofil,wf);
+         break;
+      case VPED :
+         writeLineDatVirialPotentialEnergyDensity(ofil,wf);
          break;
       default:
          cout << "Error: Field type not known!\n dat file incomplete!" << endl;

@@ -630,6 +630,12 @@ public:
    /* ************************************************************************************ */
    void useVectorCustomField(bool ucf) {usevcustfld=ucf;}
    /* ************************************************************************************ */
+   /** This function returns the Potential Energy Density at the point (x,y,z)
+    * This field is taken from: "Hydrogen bond strengths revealed by topological
+    * analyses of experimentally observed electron densities",
+    * E. Espinosa, E. Molins, C. Lecomte, Chemical Physics Letters, 285 (1998), 170-173. */
+   solreal evalVirialPotentialEnergyDensity(solreal x, solreal y, solreal z);
+   /* ************************************************************************************ */
 protected:
    static int prTy[MAXPRIMTYPEDEFINED*3];
    /* ************************************************************************************ */

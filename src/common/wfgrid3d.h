@@ -145,6 +145,8 @@ public:
    /* ******************************************************************************* */
    void writeCubeScalarCustFld(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
+   void writeCubeVirialPotentialEnergyDensity(ofstream &ofil,GaussWaveFunction &wf);
+   /* ******************************************************************************* */
 private:
    bool imsetup;
    int npts[3];
