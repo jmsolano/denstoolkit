@@ -132,5 +132,5 @@ runben: build
 	./dtkintegobondpath benceno_sto3g.wfx
 
 runch4: build
-	./dtkintegobondpath ch4.wfx
+	./dtkintegobondpath ch4.wfx -e 4.5
 

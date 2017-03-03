@@ -129,13 +129,27 @@ solreal IntegrateOverBondPath::theFunction(solreal (&x)[3]) {
    }
    return 0.0e0;
 }
-void IntegrateOverBondPath::WriteIntegralValuesToFile(ofstream &ofil) {
+void IntegrateOverBondPath::WriteIntegralValuesToFile(ofstream &ofil,solreal globalEnergy) {
+   bool haveGE=false;
+   solreal factor=1.0e0;
+   if ( globalEnergy!=0.0e0 ) {
+      haveGE=true;
+      factor=globalEnergy/GetBondPathIntegral();
+   }
    writeCommentedScrStarLine(ofil);
    centerCommentedString(GetFieldTypeLabelLong(),ofil);
    writeCommentedScrStarLine(ofil);
-   ofil << "Total integral: " << GetBondPathIntegral() << endl;
+   ofil << "Total integral: " << GetBondPathIntegral();
+   if ( haveGE ) {
+      ofil << " " << globalEnergy << endl;
+   }
+   ofil << endl;
    for ( int i=0 ; i<nbgp ; ++i ) {
-      ofil << cp->lblBCP[i] << " bond path integral: " << GetBondPathIntegral(i) << endl;
+      ofil << cp->lblBCP[i] << " bond path integral: " << GetBondPathIntegral(i);
+      if ( haveGE ) {
+         ofil << " " << (GetBondPathIntegral(i)*factor);
+      }
+      ofil << endl;
    }
 }
 

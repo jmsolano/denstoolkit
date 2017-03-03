@@ -80,6 +80,7 @@ using std::string;
 optFlags::optFlags() {
    infname=0;
    outfname=0;
+   globalenergy=0;
 }
 
 
@@ -109,6 +110,10 @@ void getOptions(int &argc, char** &argv, optFlags &flags) {
    for (int i=1; i<argc; i++){
       if (argv[i][0] == '-'){
          switch (argv[i][1]){
+            case 'e' :
+               flags.globalenergy=(++i);
+               if (i>=argc) {printErrorMsg(argv,'e');}
+               break;
             case 'o':
                flags.outfname=(++i);
                if (i>=argc) {printErrorMsg(argv,'o');}
@@ -175,6 +180,9 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  (If not given the program will create one out of" << endl
         << "            \t  the input name; if given, the gnp file and the pdf will" << endl
         << "            \t  use this name as well --but different extension--)." << endl;
+   cout << "  -e globEn \tSet the global energy to be globEn. If this is given," << endl
+        << "            \t  then all contributions (path integrals) will contain" << endl
+        << "            \t  extra columns with entries proportional to globEn." << endl;
    cout << "  -V        \tDisplays the version of this program." << endl;
    cout << "  -h     \tDisplay the help menu.\n\n";
    //-------------------------------------------------------------------------------------
@@ -200,11 +208,8 @@ void printErrorMsg(char** &argv,char lab) {
    setScrRedBoldFont();
    cout << "\nError: the option \"" << lab << "\" ";
    switch (lab) {
-      case 'p':
-         cout << "should be followed by a character." << endl;
-         break;
-      case 'n':
-         cout << "should be followed by an integer." << endl;
+      case 'e' :
+         cout << "should be followed by a real number." << endl;
          break;
       case 'o':
          cout << "should be followed by a name." << endl;

@@ -13,7 +13,7 @@ public:
    ~IntegrateOverBondPath();
    void ComputeAllIntegralsOverBondPaths(void);
    solreal GetBondPathIntegral();
-   void WriteIntegralValuesToFile(ofstream &ofil);
+   void WriteIntegralValuesToFile(ofstream &ofil,solreal globalEnergy=0.0e0);
    inline solreal GetBondPathIntegral(int idx) {return integralValue[idx];}
    inline string GetFieldTypeLabelShort() {return getFieldTypeKeyShort(myCharFieldType);}
    inline string GetFieldTypeLabelLong() {return getFieldTypeKeyLong(myCharFieldType);}

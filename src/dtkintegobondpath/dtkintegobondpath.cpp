@@ -139,10 +139,15 @@ int main (int argc, char ** argv) {
    }
 
    /* Writes the integrals to a file  */
+   solreal globalEnergy=0.0e0;
+   if ( options.globalenergy ) {
+      globalEnergy=std::stod(string(argv[options.globalenergy]));
+   } 
+   cout << "globalEnergy: " << globalEnergy << endl;
    ofstream ofil(logfilnam.c_str());
    for ( size_t i=0 ; i<integ.size() ; ++i ) {
       writeCommentedScrStarLine(ofil);
-      integ[i]->WriteIntegralValuesToFile(ofil);
+      integ[i]->WriteIntegralValuesToFile(ofil,globalEnergy);
    }
    ofil.close();
 

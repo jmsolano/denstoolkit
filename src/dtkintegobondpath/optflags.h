@@ -80,7 +80,7 @@ class optFlags
 {
 public: 
    optFlags();//default constructor, initialize all the flags to convenient (default) values.
-   unsigned short int infname,outfname;
+   unsigned short int infname,outfname,globalenergy;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);
 void printHelpMenu(int &argc, char** &argv);//self-described
