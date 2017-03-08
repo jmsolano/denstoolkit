@@ -3,22 +3,169 @@
 Adding a new field:
 =======================================================================
 Implement the respective functions to include the new field in
-   ---> dtkpoint (print(write)AllFieldProperties, etc)
-   ---> dtkline (wfgrid1d)
-   ---> dtkplane (wfgrid2d)
-   ---> dtkcube (wfgrid3d)
+   ---> dtkline   (wfgrid1d)
+   ---> dtkplane  (wfgrid2d)
+   ---> dtkcube   (wfgrid3d)
    ---> dtkbpdens (evalFieldProperty, etc)
 
 Make the proper changes in the correspoding files:
-   ---> fldtypesdef.h
-   ---> crtflnms
+   ---> fldtypesdef.h (tags/keys)
    ---> optflags (help menu)
-   ---> soldefines.h (new version)
    ---> dtkmanual: available fields, help menus
+
+More detailed instructions are described below.
 =======================================================================
 Adding the GPL License. See:
 $TOP/src/scripts/dtkaddGPLv3 -h
 =======================================================================
+Steps for adding a new field in all DTK :
+
+   1.- For implementing your field, add a new method at the end of file 
+         "   src/common/gausswavefunction.cpp "
+       with all you need to compute it. Usually, it should look as:
+       
+       solreal GaussWaveFunction::evalNameOfNewField(solreal x, solreal y, solreal z)
+       {
+         result=unicorn*pegasus;
+                   .
+                   .
+                   .
+         return result;
+        }
+
+      =======================================================================
+       Subsequently define your new method at the end of 
+       file "src/common/gausswavefunction.h". If there are references
+       (papers, books, etc.) insert them along with the description of
+       the field as a doxygen comment.
+
+   2.- Define the tags/keys in this file (these are used by dtkline,
+          (dtkplane, and dtkcube to produce plots and comments).
+         "src/common/fldtypesdef.h"
+      in the list
+         * enum ScalarFieldType {}
+            + Add the key for internally identifying the field
+      Also modify the following methods (use previously defined/implemented
+               methods as guidelines):
+         * inline char convertScalarFieldType2Char
+            + Add the key for identifying/selecting the field with a character
+         * inline string getFieldTypeKeyShort
+            + Add a short name for the field
+         * inline string getFieldTypeKeyLong
+            + Add a long name (more descriptive) for the field
+         * string gnuplotFieldTitle
+            + Add a name that will be used by gnuplot as title or label of the field.
+
+   3.- To add your field to dtkpoint, modify in "src/common/gausswavefunction.cpp"
+          the following methods:
+         * displayAllFieldProperties
+         * writeAllFieldProperties
+       Again, use previously defined fields as guidelines.
+       
+   4.- For adding your field to dtkline, you need to modify "src/dtkline/dtkline.cpp".
+          Modify the switch structure after the line
+         * cout << "Evaluating and writing property..." << endl;
+        Add a case as follows:
+         * case '*':
+         *   grid.makeDat(outfilnam,gwf,UKEY);
+         *   break;
+        Here '*' is the character used to identify the new field (it is the one added
+          to "src/common/fldtypesdef.h" ---step 2), and 'UKEY' is the enum key added in step 2.
+      =======================================================================
+       In the file 
+          "src/dtkline/optflags.cpp"
+       add the key, at the end of the biggest swicth structure,
+         for your field to be displayed at the help menu.
+
+      =======================================================================
+       In "src/common/wfgrid1d.cpp"
+       Register and implement a new method to handle the new field. The code should
+         look as the previously defined methods (essentially you can copy/paste one of
+         those methods, and then modify them accordingly).
+         * bool waveFunctionGrid1D::writeLineDatNameOfNewField(ofstream &ofil,GaussWaveFunction &wf)
+            {
+              /*After copy/paste, modify the line */
+              prop1d[i]=wf.evalImplementedField(xx[0],xx[1],xx[2]);
+              /* to be */
+              prop1d[i]=wf.evalNameOfNewField(xx[0],xx[1],xx[2]);
+             }
+       In the method
+         * void waveFunctionGrid1D::makeDat
+       within the biggest switch structure, add at the end a new case for your field:
+          * case UKEY : 
+         *   writeLineDatNameOfNewField(ofil,wf);
+         *   break;
+       
+      =======================================================================
+       Then define your new method at the end of "src/common/wfgrid1d.h"
+
+   5.- For adding your field to dtkplane modify "src/dtkplane/dtkplane.cpp"
+       after the line
+         * cout << "Evaluating and writing property..." << endl;
+        In the next swicth structure, and at the end of it, add a new case for your field
+           (again, use previously defined fields as a template)
+         * case 'X':
+         *   grid.makeTsv(outfilnam,gwf,UKEY);
+         *   break;
+       in the filetags/keys 
+          *src/dtkplane/optflags.cpp
+       add the key 'UKEY', at the end of biggest swicth, of your field. This will
+       display the new field description in the help menu.
+
+      =======================================================================
+       In "src/common/wfgrid2d.cpp"
+       you need to add a new method such as the previously defined methods:
+          * bool waveFunctionGrid2D::writePlaneTsvNameOfNewField(ofstream &ofil,GaussWaveFunction &wf)
+            {
+              /*After copy/paste, modify the line */
+              prop1d[j]=wf.evalNameOfOldField(xx[0],xx[1],xx[2]);
+              /* to be */
+              prop1d[j]=wf.evalNameOfNewField(xx[0],xx[1],xx[2]);
+             }
+       In the method
+         * void waveFunctionGrid2D::makeTsv
+       in the biggest switch structure add at the end a new case for your field:
+         * case UKEY : 
+         *   writePlaneTsvNameOfNewField(ofil,wf);
+         *   break;
+       
+      =======================================================================
+       Do not forget to add the definition of your new method at the end of the file
+         "src/common/wfgrid2d.h"
+   
+   
+   6.- To add your field to dtkcube modify the file
+         "src/dtkcube/dtkcube.cpp"
+         after line 
+         * cout << "Evaluating and writing property..." << endl;
+         In the next swicth structure at the end add a similar case for your field 
+         * case 'X':
+         *   grid.makeCube(outfilnam,gwf,UKEY);
+         *   break;
+       In the file "src/dtkcube/optflags.cpp"
+       add the key at the end of biggest swicth of your field.  
+       This will display the new field description in the help menu.
+      =======================================================================
+       In the file "src/common/wfgrid3d.cpp"
+         add a new method, similar to the previously defined fields. The result
+         should look as follows:
+          * void waveFunctionGrid3D::writeCubeNameOfNewField(ofstream &ofil,GaussWaveFunction &wf)
+            {
+              /*After copy/paste, modify the line */
+              prop1d[j]=wf.evalNameOfOldField(xx[0],xx[1],xx[2]);
+              /* to be */
+              prop1d[k]=wf.evalNameOfNewField(xx[0],xx[1],xx[2]);
+             }
+       In the method
+         * void waveFunctionGrid3D::makeCube
+       in the biggest switch structure add at the end a new case for your field:
+         * case UKEY : 
+         *   writeCubeNameOfNewField(ofil,wf);
+         *   break;
+       
+      =======================================================================
+       Define your new method in the corresponding header "src/common/wfgrid3d.h"
+
 =======================================================================
 =======================================================================
 =======================================================================
