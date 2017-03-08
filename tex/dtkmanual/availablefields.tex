@@ -696,13 +696,17 @@ in its expansion is
 %
 
 %----------------------------------------------------------------------------------------------
-\section{Virial Potential Energy Densisty}
+\section{Virial Potential Energy Density}
 %----------------------------------------------------------------------------------------------
-Derive from the local form of virial theorem wich relates the Laplacian function of the electron
-density ($\nabla^2\rho$) to local electronic kinetic energy density ($G(r)$) like this 
+This field derives from the local form of the virial theorem, wich relates the
+Laplacian of the electron density function,
+$\nabla^2\rho$, to the local electronic kinetic energy density $G(r)$. This fiels was
+taken from Ref. \cite{bib:espinosa1998}, and it is given by:
 \begin{equation}
 	V(\boldsymbol{r})= \frac{1}{4} \nabla^2\rho(\boldsymbol{r})-2G(\boldsymbol{r})	
 \end{equation}
 
-Usually using for measurement the strength of hidrogen bonds
+Usually, this field is used for measuring hydrogen bonds stength.
+No optimizations beyond those already implemented in $G(r)$ and $\nabla^2\rho$
+were added.
 
