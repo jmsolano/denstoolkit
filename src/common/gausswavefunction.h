@@ -636,6 +636,16 @@ public:
     * E. Espinosa, E. Molins, C. Lecomte, Chemical Physics Letters, 285 (1998), 170-173. */
    solreal evalVirialPotentialEnergyDensity(solreal x, solreal y, solreal z);
    /* ************************************************************************************ */
+   /**The funtion evalNCIs returning values of Reduced Density Gradient 
+    * applying NCI conditions.    
+    */
+   solreal evalNCIs(solreal x, solreal y, solreal z, cutoff);
+   /* ************************************************************************************ */
+   /**The funtion evalNCILambda returning a value of the second eingevalues of the Hessian  
+    * applying NCI conditions.   
+    */
+   solreal evalNCILambda(solreal x, solreal y, solreal z);
+   /* ************************************************************************************ */
 protected:
    static int prTy[MAXPRIMTYPEDEFINED*3];
    /* ************************************************************************************ */
