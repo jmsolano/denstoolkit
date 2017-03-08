@@ -713,7 +713,7 @@ bool waveFunctionGrid1D::writeLineDatScalarCustFld(ofstream &ofil,GaussWaveFunct
    return true;
 }
 /* ********************************************************************************** */
-bool waveFunctionGrid1D::writeLineDatVirialPotentialEnergyDensisty(ofstream &ofil,GaussWaveFunction &wf)
+bool waveFunctionGrid1D::writeLineDatVirialPotentialEnergyDensity(ofstream &ofil,GaussWaveFunction &wf)
 {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
@@ -808,9 +808,9 @@ void waveFunctionGrid1D::makeDat(string &onam,GaussWaveFunction &wf,ScalarFieldT
       case SCFD :
          writeLineDatScalarCustFld(ofil,wf);
          break;
-		case VPED :
-			writeLineDatVirialPotentialEnergyDensisty(ofil,wf);
-			break;
+      case VPED :
+         writeLineDatVirialPotentialEnergyDensity(ofil,wf);
+         break;
       default:
          cout << "Error: Field type not known!\n dat file incomplete!" << endl;
          break;

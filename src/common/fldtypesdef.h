@@ -65,7 +65,7 @@ enum ScalarFieldType {
    MLED,/* MagLEDVector  */\
    REDG,/* Reduced Density Grandient  */\
    ROSE,/* Region of Slow Electrons  */\
-	VPED,/* Potential Energy Density*/\
+   VPED,/* Potential Energy Density*/\
    EDFTA, /* DFT Exchange and Corrrelation Energy ($(-3/4)(3\rho/\pi)^{1/3}$)  */
    SCFD, /* Scalar Custom Field Density */\
    VCFD /* Vector Custom Field Density */
@@ -126,12 +126,12 @@ inline char convertScalarFieldType2Char(ScalarFieldType fftt)
       case VCFD :
          res='U';
          break;
-		case EDFTA :
+      case EDFTA :
          res= 'a';
          break;
-		case VPED :
-			res= 'v';
-			break;
+      case VPED :
+         res= 'v';
+         break;
       case NONE :
       default :
          res='0';
@@ -198,9 +198,9 @@ inline string getFieldTypeKeyShort(const char prop)
       case 'V':
          plbl="MEP";
          break;
-		case 'v':
-			plbl="V.P.E.D.";
-			break;
+      case 'v':
+         plbl="V.P.E.D.";
+         break;
       default:
          plbl="Unknown";
          break;
@@ -266,9 +266,9 @@ inline string getFieldTypeKeyLong(const char prop)
       case 'V':
          plbl="Molecular Electrostatic Potential";
          break;
-		case 'v':
-			plbl="Virial Potential Energy Density";
-			break;
+      case 'v':
+         plbl="Virial Potential Energy Density";
+         break;
       default:
          plbl="Unknown Field Type!";
          break;
@@ -331,9 +331,9 @@ inline string gnuplotFieldTitle(const char p2p)
       case 'V':
          plbl=string("M.E.P.");
          break;
-		case 'v':
-			plbl=string("V.P.E.D.");
-			break;
+      case 'v':
+         plbl=string("V.P.E.D.");
+         break;
       default:
          plbl="Unknown";
          break;

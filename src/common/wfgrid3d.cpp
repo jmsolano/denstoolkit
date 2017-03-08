@@ -575,9 +575,9 @@ void waveFunctionGrid3D::makeCube(string &onam,GaussWaveFunction &wf,ScalarField
       case SCFD :
          writeCubeScalarCustFld(ofil,wf);
          break;
-		case VPED : 
-			writeCubeVirialPotentialEnergyDensity(ofil,wf);
-			break;
+      case VPED :
+         writeCubeVirialPotentialEnergyDensity(ofil,wf);
+         break;
       default:
          cout << "Error: Field type not known!\n Cube incomplete!" << endl;
          break;

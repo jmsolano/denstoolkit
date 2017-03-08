@@ -199,7 +199,7 @@ int main (int argc, char ** argv)
       case 'V':
          grid.makeCube(outfilnam,gwf,MEPD);
          break;
-		case 'v':
+      case 'v':
          grid.makeCube(outfilnam,gwf,VPED);
          break;
       default:
