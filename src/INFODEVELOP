@@ -133,7 +133,6 @@ Steps for adding a new field in all DTK :
        Do not forget to add the definition of your new method at the end of the file
          "src/common/wfgrid2d.h"
    
-   
    6.- To add your field to dtkcube modify the file
          "src/dtkcube/dtkcube.cpp"
          after line 
