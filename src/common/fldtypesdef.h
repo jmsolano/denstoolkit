@@ -63,10 +63,12 @@ enum ScalarFieldType {
    MEPD,/* Molecular Electrostatic Potential Density  */\
    LEDV,/* LEDVector  */\
    MLED,/* MagLEDVector  */\
-   REDG,/* Reduced Density Grandient  */\
+   REDG,/* Reduced Density Gradient  */\
    ROSE,/* Region of Slow Electrons  */\
-   VPED,/* Potential Energy Density*/\
-   EDFTA, /* DFT Exchange and Corrrelation Energy ($(-3/4)(3\rho/\pi)^{1/3}$)  */
+   VPED,/* Potential Energy Density */\
+   NCIS,/* Non Covalent Interactions (NCI) to Reduced Density Gradient */\
+   NCIL,/* Non Covalent Interactions (NCI) to Rho */\
+   EDFTA, /* DFT Exchange and Corrrelation Energy ($(-3/4)(3\rho/\pi)^{1/3}$) */\
    SCFD, /* Scalar Custom Field Density */\
    VCFD /* Vector Custom Field Density */
 };
@@ -131,6 +133,12 @@ inline char convertScalarFieldType2Char(ScalarFieldType fftt)
          break;
       case VPED :
          res= 'v';
+         break;
+      case NCIS :
+         res= 'z';
+         break;
+      case NCIL :
+         res= 'Z';
          break;
       case NONE :
       default :
@@ -201,6 +209,12 @@ inline string getFieldTypeKeyShort(const char prop)
       case 'v':
          plbl="V.P.E.D.";
          break;
+      case 'z':
+         plbl="NCIRedDensGrad";
+         break;
+      case 'Z':
+         plbl="NCIRho";
+         break;
       default:
          plbl="Unknown";
          break;
@@ -269,6 +283,12 @@ inline string getFieldTypeKeyLong(const char prop)
       case 'v':
          plbl="Virial Potential Energy Density";
          break;
+      case 'Z':
+         plbl="Non Covalent Interactions, part of Reduced Density Gradient";
+         break;
+      case 'z':
+         plbl="Non Covalent Interactions, part of Density";
+         break;
       default:
          plbl="Unknown Field Type!";
          break;
@@ -333,6 +353,12 @@ inline string gnuplotFieldTitle(const char p2p)
          break;
       case 'v':
          plbl=string("V.P.E.D.");
+         break;
+      case 'Z':
+         plbl=string("NCI part of s");
+         break;
+      case 'z':
+         plbl=string("NCI part of Rho");
          break;
       default:
          plbl="Unknown";
