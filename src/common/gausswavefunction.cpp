@@ -5212,7 +5212,7 @@ solreal GaussWaveFunction::evalVirialPotentialEnergyDensity(solreal x, solreal y
    return (0.25e0*lapRho-2.0e0*G);
 }
 /* *************************************************************************************** */
-solreal GaussWaveFunction::evalNCIs(solreal x, solreal y, solreal z, solreal cutoff=2.0)
+solreal GaussWaveFunction::evalNCIs(solreal x, solreal y, solreal z, solreal cutoff)
 {
    solreal s;
    s = evalReducedDensityGradient(x,y,z);
