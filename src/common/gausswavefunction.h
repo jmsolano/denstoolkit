@@ -639,7 +639,7 @@ public:
    /**The funtion evalNCIs returning values of Reduced Density Gradient 
     * applying NCI conditions.    
     */
-   solreal evalNCIs(solreal x, solreal y, solreal z, cutoff);
+   solreal evalNCIs(solreal x, solreal y, solreal z,solreal cutoff);
    /* ************************************************************************************ */
    /**The funtion evalNCILambda returning a value of the second eingevalues of the Hessian  
     * applying NCI conditions.   
