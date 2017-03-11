@@ -5214,9 +5214,15 @@ solreal GaussWaveFunction::evalVirialPotentialEnergyDensity(solreal x, solreal y
 /* *************************************************************************************** */
 solreal GaussWaveFunction::evalNCIs(solreal x, solreal y, solreal z, solreal cutoff)
 {
-   solreal s;
-   s = evalReducedDensityGradient(x,y,z);
-   s = s<=cutoff ?  s : 100.0;
+   solreal s,rho;
+
+   rho = evalDensity(x,y,z);
+   
+   if(rho <= 0.05){
+      s = evalReducedDensityGradient(x,y,z);
+      s = s<=cutoff ?  s : 100.0;
+   }else{s=100.0;}
+
    return s;
 }
 /* *************************************************************************************** */
@@ -5225,7 +5231,7 @@ solreal GaussWaveFunction::evalNCILambda(solreal x, solreal y, solreal z)
    solreal rho;
    rho = evalDensity(x, y, z);
 
-   if(rho <= 0.05){
+   if(rho < 0.05){
       solreal hess[3][3];
       solreal eingvectors[3][3], eingvalues[3];
 
