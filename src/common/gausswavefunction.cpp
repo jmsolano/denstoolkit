@@ -5220,7 +5220,7 @@ solreal GaussWaveFunction::evalNCIs(solreal x, solreal y, solreal z, solreal cut
    
    if(rho <= 0.05e0){
       s = evalReducedDensityGradient(x,y,z);
-      s = s<=cutoff ?  s : 100.0e0;
+      s = (s<=cutoff ?  s : 100.0e0);
    }else{s=100.0e0;}
 
    return s;
@@ -5238,7 +5238,7 @@ solreal GaussWaveFunction::evalNCILambda(solreal x, solreal y, solreal z)
       evalHessian(x,y,z,hess);
       eigen_decomposition3(hess, eingvectors, eingvalues);
       
-      rho = eingvalues[1]<0.0e0 ? -1.0e0*rho : rho;
+      rho = (eingvalues[1]<0.0e0 ? -1.0e0*rho : rho);
    }else{ rho=100.0e0;}
 
    return rho;

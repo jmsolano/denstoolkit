@@ -284,10 +284,10 @@ inline string getFieldTypeKeyLong(const char prop)
          plbl="Virial Potential Energy Density";
          break;
       case 'Z':
-         plbl="Non Covalent Interactions, part of Reduced Density Gradient";
+         plbl="Non Covalent Interactions - Reduced Density Gradient";
          break;
       case 'z':
-         plbl="Non Covalent Interactions, part of Density";
+         plbl="Non Covalent Interactions - Density";
          break;
       default:
          plbl="Unknown Field Type!";
@@ -355,10 +355,10 @@ inline string gnuplotFieldTitle(const char p2p)
          plbl=string("V.P.E.D.");
          break;
       case 'Z':
-         plbl=string("NCI part of s");
+         plbl=string("NCI -- s");
          break;
       case 'z':
-         plbl=string("NCI part of Rho");
+         plbl=string("NCI -- Rho");
          break;
       default:
          plbl="Unknown";
