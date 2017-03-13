@@ -636,14 +636,17 @@ public:
     * E. Espinosa, E. Molins, C. Lecomte, Chemical Physics Letters, 285 (1998), 170-173. */
    solreal evalVirialPotentialEnergyDensity(solreal x,solreal y,solreal z);
    /* ************************************************************************************ */
-   /**The funtion evalNCIs returs values of Reduced Density Gradient 
-    * applying NCI conditions.    
-    */
+   /**The funtion evalNCIs returns values of Reduced Density Gradient 
+    * applying NCI conditions.
+    * See J. Contreras-Garcia, E. R. Johnson, S. Keinan, R. Chaudret, J-P. Piquemal,
+    * D. N. Beratan, and W. Yang. J. Chem. Theory Comput. 2011, 7, pp 625-632
+    * for more details */
    solreal evalNCIs(solreal x,solreal y,solreal z,solreal cutoff=2.0e0);
    /* ************************************************************************************ */
-   /**The funtion evalNCILambda returns the value of the middle Hessian eigenvalue,
-    * applying NCI conditions.   
-    */
+   /**Returns rho*sigma (if rho<0.05e0), where sigma is the second Hessian eigenvalue sign
+    * See J. Contreras-Garcia, E. R. Johnson, S. Keinan, R. Chaudret, J-P. Piquemal,
+    * D. N. Beratan, and W. Yang. J. Chem. Theory Comput. 2011, 7, pp 625-632
+    * for more details */
    solreal evalNCILambda(solreal x,solreal y,solreal z);
    /* ************************************************************************************ */
 protected:
