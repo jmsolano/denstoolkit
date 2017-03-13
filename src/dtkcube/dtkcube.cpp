@@ -202,6 +202,12 @@ int main (int argc, char ** argv)
       case 'v':
          grid.makeCube(outfilnam,gwf,VPED);
          break;
+      case 'Z':
+         grid.makeCube(outfilnam,gwf,NCIS);
+         break;
+      case 'z':
+         grid.makeCube(outfilnam,gwf,NCIL);
+         break;
       default:
          setScrRedBoldFont();
          cout << "Error: The property \"" << prop << "\" does not exist!" << endl;

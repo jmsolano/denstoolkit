@@ -5203,12 +5203,45 @@ solreal GaussWaveFunction::evalRoSE(solreal x,solreal y,solreal z)
    solreal tau0=cc*pow(rho,fivo3);
    return ((tau0-tau)/(tau0+tau));
 }
+/* *************************************************************************************** */
 solreal GaussWaveFunction::evalVirialPotentialEnergyDensity(solreal x, solreal y, solreal z)
 {
    solreal lapRho,G;
    lapRho=evalLapRho(x,y,z);
    G=evalKineticEnergyG(x,y,z);
    return (0.25e0*lapRho-2.0e0*G);
+}
+/* *************************************************************************************** */
+solreal GaussWaveFunction::evalNCIs(solreal x, solreal y, solreal z, solreal cutoff)
+{
+   solreal s,rho;
+
+   rho = evalDensity(x,y,z);
+   
+   if(rho <= 0.05e0){
+      s = evalReducedDensityGradient(x,y,z);
+      s = (s<=cutoff ?  s : 100.0e0);
+   }else{s=100.0e0;}
+
+   return s;
+}
+/* *************************************************************************************** */
+solreal GaussWaveFunction::evalNCILambda(solreal x, solreal y, solreal z)
+{
+   solreal rho;
+   rho = evalDensity(x, y, z);
+
+   if(rho < 0.05e0){
+      solreal hess[3][3];
+      solreal eingvectors[3][3], eingvalues[3];
+
+      evalHessian(x,y,z,hess);
+      eigen_decomposition3(hess, eingvectors, eingvalues);
+      
+      rho = (eingvalues[1]<0.0e0 ? -1.0e0*rho : rho);
+   }else{ rho=100.0e0;}
+
+   return rho;
 }
 /* *************************************************************************************** */
 /* *************************************************************************************** */

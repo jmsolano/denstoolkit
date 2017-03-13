@@ -147,6 +147,10 @@ public:
    /* ******************************************************************************* */
    void writeCubeVirialPotentialEnergyDensity(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
+   void writeCubeNCIRedDensGrad(ofstream &ofil,GaussWaveFunction &wf);
+   /* ******************************************************************************* */
+   void writeCubeNCIRho(ofstream &ofil,GaussWaveFunction &wf);
+   /* ******************************************************************************* */
 private:
    bool imsetup;
    int npts[3];

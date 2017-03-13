@@ -243,6 +243,8 @@ void printHelpMenu(int &argc, char** &argv)
    cout << "         \t\tV (Molecular Electrostatic Potential)" << endl;
    cout << "         \t\tu (Scalar Custom Field)" << endl;
    cout << "         \t\tv (Virial Potential Energy Density)" << endl;
+   cout << "         \t\tZ (Non Covalent Interactions(NCI) -- s)" << endl;
+   cout << "         \t\tz (Non Covalent Interactions(NCI) -- Rho)" << endl;
 #if (defined(__APPLE__)||defined(__linux__))
    cout << "  -z     \tCompress the cube file using gzip (which must be installed" << endl
         << "         \t   in your system)." << endl;
