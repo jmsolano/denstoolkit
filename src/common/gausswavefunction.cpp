@@ -5231,14 +5231,14 @@ solreal GaussWaveFunction::evalNCILambda(solreal x, solreal y, solreal z)
    solreal rho;
    rho = evalDensity(x, y, z);
 
-   if(rho < 0.05e0){
+   if(rho <= 0.05e0){
       solreal hess[3][3];
       solreal eingvectors[3][3], eingvalues[3];
 
       evalHessian(x,y,z,hess);
       eigen_decomposition3(hess, eingvectors, eingvalues);
       
-      rho = (eingvalues[1]<0.0e0 ? -1.0e0*rho : rho);
+      rho = (eingvalues[1]=>0.0e0 ? rho : (-1.0e0 * rho);
    }else{ rho=100.0e0;}
 
    return rho;
