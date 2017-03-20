@@ -5238,7 +5238,7 @@ solreal GaussWaveFunction::evalNCILambda(solreal x, solreal y, solreal z)
       evalHessian(x,y,z,hess);
       eigen_decomposition3(hess, eingvectors, eingvalues);
       
-      rho = (eingvalues[1]=>0.0e0 ? rho : (-1.0e0 * rho);
+      rho = (eingvalues[1]=>0.0e0 ? (100.0e0 * rho):(-100.0e0 * rho);
    }else{ rho=100.0e0;}
 
    return rho;
