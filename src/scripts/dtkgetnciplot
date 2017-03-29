@@ -148,6 +148,8 @@ then
             break;;
       esac
    done
+else
+   compute_both_cubes "$wavefunctionFileName" "$cubeArgsString"
 fi
 #
 #Names of VMD script files
