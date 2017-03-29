@@ -1,5 +1,5 @@
 #!/bin/bash
-
+thisScriptName=$0
 usage()
 {
 echo -e "\n    usage: \033[1m$1 [option [value(s)]] ... [option [value(s)]]\033[0m"
@@ -82,7 +82,7 @@ compute_cubes() {
 
 if [ $# -lt 1 ]
 then
-   echo -e "\033[1m\033[31mError:\033[0m input filename missing (Try -h for more information.)."
+   echo -e "\033[1m\033[31mError:\033[0m Invalid syntax! (Try $thisScriptName -h for more information.)."
    exit 2
 fi
 
@@ -120,8 +120,8 @@ done
 
 if [ -z "$wavefunctionFileName" ]
 then
-   echo -e "\033[1m\033[31mError:\033[0m Need the name of wavefuntion file" 
-   echo -e "       Example \"$0 -w wf?name\""
+   echo -e "\033[1m\033[31mError:\033[0m Wavefuntion file name missing" 
+   echo -e "\tTry \n\t\t$thisScriptName -h\n\tfor more information."
    exit 2
 fi
 
