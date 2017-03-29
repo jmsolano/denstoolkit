@@ -1,0 +1,175 @@
+#!/bin/bash
+
+usage()
+{
+echo -e "\n    usage: \033[1m$1 [option [value(s)]] ... [option [value(s)]]\033[0m"
+cat << END_USAGE_TEXT
+
+This script help to compute NCI field and make a cube with NCIplot
+specifications and generate a file would be read with VMD program.
+
+Options 
+  -h           Display the help menu.
+  -w wf?name   Wavefunctions name
+  -l        	Write cpu time, input/output information etc. on a log file
+  -n  dim   	Set the number of points per direction for the cube
+            	  to be dim x dim x dim.
+  -s        	Use a smart cuboid for the grid. The number of points for the
+            	  largest direction will be 80.
+  -S ln     	Use a smart cuboid for the grid. ln is the number of points
+            	  the largest axis will have. The remaining axes will have
+            	  a number of points proportional to its length.
+
+END_USAGE_TEXT
+}
+vmd_script()
+{
+NameRho=$1; NameRedGra=$2;
+ValueRedGra=$3; ValueRho=$4;
+cat << VMD_SCRIPT
+!/usr/local/bin/vmd
+
+#VMD script written by save_state Revision: 1.41 $
+#VMD version: 1.8.6
+set viewplist
+set fixedlist
+# Display settings
+display projection Orthographic
+display nearclip set 0.000000
+# load new molecule
+mol new $NameRedGra type cube first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile $NameRho type cube first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+#
+# representation of the atoms
+mol delrep 0 top
+mol representation CPK 1.000000 0.300000 118.000000 131.000000
+mol color Name
+mol selection {all}
+mol material Opaque
+mol addrep top
+#
+# add representation of the surface
+mol representation Isosurface $ValueRedGra 1 0 0 1 1
+mol color Volume 0
+mol selection {all}
+mol material Opaque
+mol addrep top
+mol selupdate 1 top 0
+mol colupdate 1 top 0
+mol scaleminmax top 1 -$ValueRho $ValueRho
+mol smoothrep top 1 0
+mol drawframes top 1 {now}
+color scale method BGR
+set colorcmds {{color Name {C} gray}}
+#some more
+
+VMD_SCRIPT
+}
+vmd_for_VdW()
+{
+   ValueRedGra="0.700000"
+   ValueRho="0.020000"
+   vmd_script $1 $2 $ValueRedGra $ValueRho 
+}
+vmd_for_HB()
+{
+   ValueRedGra="0.500000"
+   ValueRho="0.060000"
+   vmd_script $1 $2 $ValueRedGra $ValueRho 
+}
+compute_both_cubes()
+{
+echo "##############################"; echo;
+echo -e "\tStart NCI compute" ; echo;
+echo "##############################"
+echo $LaucherNCIRed
+$LaucherNCIRed
+echo $LaucherNCIRho
+$LaucherNCIRho
+}
+
+if [ $# -lt 1 ]
+then
+   echo -e "\033[1m\033[31mError:\033[0m input filename missing (Try -h for more information.)."
+   exit 2
+fi
+
+LaucherNCIRed="dtkcube "
+LaucherNCIRho="dtkcube "
+OutputName=
+while getopts ":hw:ln:sS:" opt; do
+  case $opt in
+    h)
+      usage $0
+      exit 0
+      ;;
+    w)
+      LaucherNCIRed="$LaucherNCIRed $OPTARG -p Z " 
+      LaucherNCIRho="$LaucherNCIRho $OPTARG -p z "
+      OutputName="${OPTARG%.wf?}"
+      ;;
+    l)
+      LaucherNCIRed="$LaucherNCIRed -l"
+      LaucherNCIRho="$LaucherNCIRho -l"
+      ;;
+    n)
+      LaucherNCIRed="$LaucherNCIRed -n $OPTARG"
+      LaucherNCIRho="$LaucherNCIRho -n $OPTARG"
+      ;;
+    s)
+      LaucherNCIRed="$LaucherNCIRed -s"
+      LaucherNCIRho="$LaucherNCIRho -s"
+      ;;
+    S)
+      LaucherNCIRed="$LaucherNCIRed -S $OPTARG"
+      LaucherNCIRho="$LaucherNCIRho -S $OPTARG"
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      ;;
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      exit 1
+      ;;
+  esac
+done
+
+if [ -z "$OutputName" ]
+then
+   echo -e "\033[1m\033[31mError:\033[0m Need the name of wavefuntion file" 
+   echo -e "       Example \"$0 -w wf?name\""
+   exit 2
+fi
+
+#This final extension was acquired from scr/common/fldtypesdef.h file of the function getFieldTypeKeyShort
+OutputCubeRed=$OutputName"NCIRedDensGrad.cub"
+OutputCubeRho=$OutputName"NCIRho.cub"
+
+if [ -f "$OutputCubeRed" -a -f "$OutputCubeRho" ]
+then
+   echo -e "You have both .cub \n Do you want compute both again?"
+   select answer in "Yes=1" "No=2"
+   do
+      case $answer in 
+         Yes=1 ) compute_both_cubes 
+               break;;
+         No=2 )  echo;
+               echo " No compute"
+               echo;
+               break;;
+      esac
+   done
+fi
+
+#Names of output files for VMD
+OutputVMD_HB=$OutputName"_HB.vmd"
+OutputVMD_VdW=$OutputName"_VdW.vmd"
+echo -e "Making VMD files"
+echo -e "\t $OutputVMD_VdW"
+echo -e "\t $OutputVMD_HB"
+
+#Creation of vmd file for view Hidrogen Bonds
+vmd_for_HB $OutputCubeRho $OutputCubeRed > $OutputVMD_HB
+#Creation of vmd file for view VanderWalls interactions 
+vmd_for_VdW $OutputCubeRho $OutputCubeRed > $OutputVMD_VdW
+
