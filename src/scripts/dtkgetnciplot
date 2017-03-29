@@ -68,14 +68,16 @@ set colorcmds {{color Name {C} gray}}
 END_VMD_SCRIPT
 }
 #computes the cube files.
-compute_both_cubes() {
+compute_cubes() {
    the_wf_file_name="$1"
    the_cube_args="$2"
    echo "####################################"
    echo -e "\tStarting NCI cube evaluation"
    echo "####################################"
-   dtkcube $1 $2 -p z
-   dtkcube $1 $2 -p Z
+   #computes NCI--Rho
+   dtkcube $the_wf_file_name $the_cube_args -p z
+   #computes NCI--RedGrad
+   dtkcube $the_wf_file_name $the_cube_args -p Z
 }
 
 if [ $# -lt 1 ]
@@ -128,10 +130,6 @@ baseFileName=${wavefunctionFileName%.wf?}
 cubeRedGradFileName="${baseFileName}NCIRedDensGrad.cub"
 cubeRhoFileName="${baseFileName}NCIRho.cub"
 
-echo "$wavefunctionFileName $baseFileName $cubeRedGradFileName $cubeRhoFileName"
-echo "dtkcube $cubeArgsString"
-
-
 #Checks whether cubes are present.
 if [ -f "$cubeRedGradFileName" -a -f "$cubeRhoFileName" ]
 then
@@ -141,7 +139,7 @@ then
    do
       case $answer in 
          Yes=1 )
-            compute_both_cubes "$wavefunctionFileName" "$cubeArgsString"
+            compute_cubes "$wavefunctionFileName" "$cubeArgsString"
             break;;
          No=2 )
             echo -e "Skipping cube calculation...\n"
@@ -149,7 +147,7 @@ then
       esac
    done
 else
-   compute_both_cubes "$wavefunctionFileName" "$cubeArgsString"
+   compute_cubes "$wavefunctionFileName" "$cubeArgsString"
 fi
 #
 #Names of VMD script files
