@@ -5212,10 +5212,12 @@ solreal GaussWaveFunction::evalVirialPotentialEnergyDensity(solreal x, solreal y
    return (0.25e0*lapRho-2.0e0*G);
 }
 /* *************************************************************************************** */
+#define RHO_MIN_NCI 5.0e-4
+#define RHO_MAX_NCI 6.5e-2
 solreal GaussWaveFunction::evalNCIs(solreal x,solreal y,solreal z,solreal cutoff)
 {
    solreal s,rho=evalDensity(x,y,z);
-   if (rho <= 0.05e0) {
+   if (RHO_MIN_NCI<rho && rho <= RHO_MAX_NCI) {
       s=evalReducedDensityGradient(x,y,z);
       s=(s<=cutoff ?  s : 100.0e0);
    } else {
@@ -5227,7 +5229,7 @@ solreal GaussWaveFunction::evalNCIs(solreal x,solreal y,solreal z,solreal cutoff
 solreal GaussWaveFunction::evalNCILambda(solreal x,solreal y,solreal z)
 {
    solreal rho=evalDensity(x,y,z);
-   if (rho < 0.05e0) {
+   if (RHO_MIN_NCI<rho && rho <= RHO_MAX_NCI) {
       solreal hess[3][3];
       solreal eingvectors[3][3],eingvalues[3];
       evalHessian(x,y,z,hess);
