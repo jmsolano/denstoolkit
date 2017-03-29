@@ -22,12 +22,14 @@ Options
 
 END_USAGE_TEXT
 }
-vmd_script()
+print_vmd_script()
 {
-NameRho=$1; NameRedGra=$2;
-ValueRedGra=$3; ValueRho=$4;
-cat << VMD_SCRIPT
-!/usr/local/bin/vmd
+   the_rho_file_name=$1
+   the_red_grad_file_name=$2
+   the_red_grad_value=$3
+   the_rho_value=$4
+cat << END_VMD_SCRIPT
+#!/usr/local/bin/vmd
 
 #VMD script written by save_state Revision: 1.41 $
 #VMD version: 1.8.6
@@ -37,8 +39,8 @@ set fixedlist
 display projection Orthographic
 display nearclip set 0.000000
 # load new molecule
-mol new $NameRedGra type cube first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
-mol addfile $NameRho type cube first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol new $the_red_grad_file_name type cube first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile $the_rho_file_name type cube first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
 #
 # representation of the atoms
 mol delrep 0 top
@@ -49,43 +51,31 @@ mol material Opaque
 mol addrep top
 #
 # add representation of the surface
-mol representation Isosurface $ValueRedGra 1 0 0 1 1
+mol representation Isosurface $the_red_grad_value 1 0 0 1 1
 mol color Volume 0
 mol selection {all}
 mol material Opaque
 mol addrep top
 mol selupdate 1 top 0
 mol colupdate 1 top 0
-mol scaleminmax top 1 -$ValueRho $ValueRho
+mol scaleminmax top 1 -$the_rho_value $the_rho_value
 mol smoothrep top 1 0
 mol drawframes top 1 {now}
 color scale method BGR
 set colorcmds {{color Name {C} gray}}
 #some more
 
-VMD_SCRIPT
+END_VMD_SCRIPT
 }
-vmd_for_VdW()
-{
-   ValueRedGra="0.700000"
-   ValueRho="0.020000"
-   vmd_script $1 $2 $ValueRedGra $ValueRho 
-}
-vmd_for_HB()
-{
-   ValueRedGra="0.500000"
-   ValueRho="0.060000"
-   vmd_script $1 $2 $ValueRedGra $ValueRho 
-}
-compute_both_cubes()
-{
-echo "##############################"; echo;
-echo -e "\tStart NCI compute" ; echo;
-echo "##############################"
-echo $LaucherNCIRed
-$LaucherNCIRed
-echo $LaucherNCIRho
-$LaucherNCIRho
+#computes the cube files.
+compute_both_cubes() {
+   the_wf_file_name="$1"
+   the_cube_args="$2"
+   echo "####################################"
+   echo -e "\tStarting NCI cube evaluation"
+   echo "####################################"
+   dtkcube $1 $2 -p z
+   dtkcube $1 $2 -p Z
 }
 
 if [ $# -lt 1 ]
@@ -94,9 +84,7 @@ then
    exit 2
 fi
 
-LaucherNCIRed="dtkcube "
-LaucherNCIRho="dtkcube "
-OutputName=
+cubeArgsString=""
 while getopts ":hw:ln:sS:" opt; do
   case $opt in
     h)
@@ -104,25 +92,19 @@ while getopts ":hw:ln:sS:" opt; do
       exit 0
       ;;
     w)
-      LaucherNCIRed="$LaucherNCIRed $OPTARG -p Z " 
-      LaucherNCIRho="$LaucherNCIRho $OPTARG -p z "
-      OutputName="${OPTARG%.wf?}"
+      wavefunctionFileName="$OPTARG"
       ;;
     l)
-      LaucherNCIRed="$LaucherNCIRed -l"
-      LaucherNCIRho="$LaucherNCIRho -l"
+      cubeArgsString="$cubeArgsString -l"
       ;;
     n)
-      LaucherNCIRed="$LaucherNCIRed -n $OPTARG"
-      LaucherNCIRho="$LaucherNCIRho -n $OPTARG"
+      cubeArgsString="$cubeArgsString -n $OPTARG"
       ;;
     s)
-      LaucherNCIRed="$LaucherNCIRed -s"
-      LaucherNCIRho="$LaucherNCIRho -s"
+       cubeArgsString="$cubeArgsString -s"
       ;;
     S)
-      LaucherNCIRed="$LaucherNCIRed -S $OPTARG"
-      LaucherNCIRho="$LaucherNCIRho -S $OPTARG"
+      cubeArgsString="$cubeArgsString -S $OPTARG"
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -134,7 +116,7 @@ while getopts ":hw:ln:sS:" opt; do
   esac
 done
 
-if [ -z "$OutputName" ]
+if [ -z "$wavefunctionFileName" ]
 then
    echo -e "\033[1m\033[31mError:\033[0m Need the name of wavefuntion file" 
    echo -e "       Example \"$0 -w wf?name\""
@@ -142,34 +124,41 @@ then
 fi
 
 #This final extension was acquired from scr/common/fldtypesdef.h file of the function getFieldTypeKeyShort
-OutputCubeRed=$OutputName"NCIRedDensGrad.cub"
-OutputCubeRho=$OutputName"NCIRho.cub"
+baseFileName=${wavefunctionFileName%.wf?}
+cubeRedGradFileName="${baseFileName}NCIRedDensGrad.cub"
+cubeRhoFileName="${baseFileName}NCIRho.cub"
 
-if [ -f "$OutputCubeRed" -a -f "$OutputCubeRho" ]
+echo "$wavefunctionFileName $baseFileName $cubeRedGradFileName $cubeRhoFileName"
+echo "dtkcube $cubeArgsString"
+
+
+#Checks whether cubes are present.
+if [ -f "$cubeRedGradFileName" -a -f "$cubeRhoFileName" ]
 then
-   echo -e "You have both .cub \n Do you want compute both again?"
+   echo -e "The needed cube files are already present ($cubeRedGradFileName and $cubeRhoFileName)"
+   echo "Do you wish to compute them again?"
    select answer in "Yes=1" "No=2"
    do
       case $answer in 
-         Yes=1 ) compute_both_cubes 
-               break;;
-         No=2 )  echo;
-               echo " No compute"
-               echo;
-               break;;
+         Yes=1 )
+            compute_both_cubes "$wavefunctionFileName" "$cubeArgsString"
+            break;;
+         No=2 )
+            echo -e "Skipping cube calculation...\n"
+            break;;
       esac
    done
 fi
+#
+#Names of VMD script files
+outputVMDHBFileName="${baseFileName}HB.vmd"
+outputVMDVdWFileName="${baseFileName}VdW.vmd"
+#Asks and saves the current directory (VMD sometimes needs absolute paths)
+currentWD=$(pwd)
+#
+#Makes the VMD scripts.
+echo -e "Making VMD scripts..."
+print_vmd_script "$currentWD/$cubeRhoFileName" "$currentWD/$cubeRedGradFileName" 0.700000 0.020000 > "$currentWD/$outputVMDVdWFileName"
+print_vmd_script "$currentWD/$cubeRhoFileName" "$currentWD/$cubeRedGradFileName" 0.500000 0.060000 > "$currentWD/$outputVMDHBFileName"
 
-#Names of output files for VMD
-OutputVMD_HB=$OutputName"_HB.vmd"
-OutputVMD_VdW=$OutputName"_VdW.vmd"
-echo -e "Making VMD files"
-echo -e "\t $OutputVMD_VdW"
-echo -e "\t $OutputVMD_HB"
-
-#Creation of vmd file for view Hidrogen Bonds
-vmd_for_HB $OutputCubeRho $OutputCubeRed > $OutputVMD_HB
-#Creation of vmd file for view VanderWalls interactions 
-vmd_for_VdW $OutputCubeRho $OutputCubeRed > $OutputVMD_VdW
 
