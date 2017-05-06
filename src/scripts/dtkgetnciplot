@@ -85,14 +85,26 @@ convert_cube_data_to_column(){
    let number_of_atoms=$(sed -n '3p' "$cube_file"| awk '{print $1;}')+6
    awk '{if (NR>'$number_of_atoms'){print $0;}}' $cube_file | awk '$1=$1'|tr [:space:] "\n"
 }
+#make the plot using gnuplot
+making_plot_with_gnuplot(){
+   file_name=$1
+   gnuplot -persist <<-EOFMarker
+      set title "Rho vs GradRed"
+      set xrange [-0.075:0.075]
+      set yrange [0.0:2.2]
+      plot "$1" title"NCI"  w p pt 7 lc rgb "red"
+EOFMarker
+}
 #making plot of GrdRedRho vs Rho
 plot_RedGradRho_vs_Rho() {
    data_cube_GradRedRho="$1"
    data_cube_Rho="$2"
+   data_plot_NCI="${3}DataPlot.dat"
    convert_cube_data_to_column $data_cube_Rho > ._TMP_DATA_OF_RHO
    convert_cube_data_to_column $data_cube_GradRedRho > ._TMP_DATA_OF_GRADREDRHO
-   paste ._TMP_DATA_OF_RHO ._TMP_DATA_OF_GRADREDRHO > RhovsGradRedRho.dat
+   paste ._TMP_DATA_OF_GRADREDRHO ._TMP_DATA_OF_RHO > $data_plot_NCI 
    rm ._TMP_DATA_OF_RHO; rm ._TMP_DATA_OF_GRADREDRHO
+   making_plot_with_gnuplot $data_plot_NCI
 }
 
 if [ $# -lt 1 ]
@@ -176,5 +188,5 @@ echo -e "Making VMD scripts..."
 print_vmd_script "$currentWD/$cubeRhoFileName" "$currentWD/$cubeRedGradFileName" 0.700000 0.020000 > "$currentWD/$outputVMDVdWFileName"
 print_vmd_script "$currentWD/$cubeRhoFileName" "$currentWD/$cubeRedGradFileName" 0.500000 0.060000 > "$currentWD/$outputVMDHBFileName"
 
-plot_RedGradRho_vs_Rho "$currentWD/$cubeRedGradFileName" "$currentWD/$cubeRhoFileName" 
+plot_RedGradRho_vs_Rho "$currentWD/$cubeRedGradFileName" "$currentWD/$cubeRhoFileName" "$currentWD/$baseFileName"
 
