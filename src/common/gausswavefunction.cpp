@@ -5212,35 +5212,32 @@ solreal GaussWaveFunction::evalVirialPotentialEnergyDensity(solreal x, solreal y
    return (0.25e0*lapRho-2.0e0*G);
 }
 /* *************************************************************************************** */
-solreal GaussWaveFunction::evalNCIs(solreal x, solreal y, solreal z, solreal cutoff)
+#define RHO_MIN_NCI 5.0e-4
+#define RHO_MAX_NCI 6.5e-2
+solreal GaussWaveFunction::evalNCIs(solreal x,solreal y,solreal z,solreal cutoff)
 {
-   solreal s,rho;
-
-   rho = evalDensity(x,y,z);
-   
-   if(rho <= 0.05e0){
-      s = evalReducedDensityGradient(x,y,z);
-      s = (s<=cutoff ?  s : 100.0e0);
-   }else{s=100.0e0;}
-
+   solreal s,rho=evalDensity(x,y,z);
+   if (RHO_MIN_NCI<rho && rho <= RHO_MAX_NCI) {
+      s=evalReducedDensityGradient(x,y,z);
+      s=(s<=cutoff ?  s : 100.0e0);
+   } else {
+      s=100.0e0;
+   }
    return s;
 }
 /* *************************************************************************************** */
-solreal GaussWaveFunction::evalNCILambda(solreal x, solreal y, solreal z)
+solreal GaussWaveFunction::evalNCILambda(solreal x,solreal y,solreal z)
 {
-   solreal rho;
-   rho = evalDensity(x, y, z);
-
-   if(rho <= 0.05e0){
+   solreal rho=evalDensity(x,y,z);
+   if (RHO_MIN_NCI<rho && rho <= RHO_MAX_NCI) {
       solreal hess[3][3];
-      solreal eingvectors[3][3], eingvalues[3];
-
+      solreal eingvectors[3][3],eingvalues[3];
       evalHessian(x,y,z,hess);
-      eigen_decomposition3(hess, eingvectors, eingvalues);
-      
-      rho = (eingvalues[1]=>0.0e0 ? (100.0e0 * rho):(-100.0e0 * rho);
-   }else{ rho=100.0e0;}
-
+      eigen_decomposition3(hess,eingvectors,eingvalues);
+      rho=(eingvalues[1]<0.0e0 ? (-rho) : rho);
+   } else{
+      rho=100.0e0;
+   }
    return rho;
 }
 /* *************************************************************************************** */

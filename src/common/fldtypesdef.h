@@ -66,8 +66,8 @@ enum ScalarFieldType {
    REDG,/* Reduced Density Gradient  */\
    ROSE,/* Region of Slow Electrons  */\
    VPED,/* Potential Energy Density */\
-   NCIS,/* Non Covalent Interactions (NCI) to Reduced Density Gradient */\
-   NCIL,/* Non Covalent Interactions (NCI) to Rho */\
+   NCIS,/* Non Covalent Interactions (NCI) -- Reduced Density Gradient */\
+   NCIL,/* Non Covalent Interactions (NCI) -- Rho */\
    EDFTA, /* DFT Exchange and Corrrelation Energy ($(-3/4)(3\rho/\pi)^{1/3}$) */\
    SCFD, /* Scalar Custom Field Density */\
    VCFD /* Vector Custom Field Density */
