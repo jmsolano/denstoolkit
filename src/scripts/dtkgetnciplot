@@ -79,6 +79,21 @@ compute_cubes() {
    #computes NCI--RedGrad
    dtkcube $the_wf_file_name $the_cube_args -p Z
 }
+#make all values of cube a column
+convert_cube_data_to_column(){
+   cube_file="$1"
+   let number_of_atoms=$(sed -n '3p' "$cube_file"| awk '{print $1;}')+6
+   awk '{if (NR>'$number_of_atoms'){print $0;}}' $cube_file | awk '$1=$1'|tr [:space:] "\n"
+}
+#making plot of GrdRedRho vs Rho
+plot_RedGradRho_vs_Rho() {
+   data_cube_GradRedRho="$1"
+   data_cube_Rho="$2"
+   convert_cube_data_to_column $data_cube_Rho > ._TMP_DATA_OF_RHO
+   convert_cube_data_to_column $data_cube_GradRedRho > ._TMP_DATA_OF_GRADREDRHO
+   paste ._TMP_DATA_OF_RHO ._TMP_DATA_OF_GRADREDRHO > RhovsGradRedRho.dat
+   rm ._TMP_DATA_OF_RHO; rm ._TMP_DATA_OF_GRADREDRHO
+}
 
 if [ $# -lt 1 ]
 then
@@ -147,7 +162,7 @@ then
       esac
    done
 else
-   compute_cubes "$wavefunctionFileName" "$cubeArgsString"
+   compute_cubes $wavefunctionFileName $cubeArgsString
 fi
 #
 #Names of VMD script files
@@ -161,4 +176,5 @@ echo -e "Making VMD scripts..."
 print_vmd_script "$currentWD/$cubeRhoFileName" "$currentWD/$cubeRedGradFileName" 0.700000 0.020000 > "$currentWD/$outputVMDVdWFileName"
 print_vmd_script "$currentWD/$cubeRhoFileName" "$currentWD/$cubeRedGradFileName" 0.500000 0.060000 > "$currentWD/$outputVMDHBFileName"
 
+plot_RedGradRho_vs_Rho "$currentWD/$cubeRedGradFileName" "$currentWD/$cubeRhoFileName" 
 
