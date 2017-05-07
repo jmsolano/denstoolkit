@@ -79,32 +79,38 @@ compute_cubes() {
    #computes NCI--RedGrad
    dtkcube $the_wf_file_name $the_cube_args -p Z
 }
-#make all values of cube a column
-convert_cube_data_to_column(){
+#Prints all values of a cube as a single column
+cube_to_column(){
    cube_file="$1"
    let number_of_atoms=$(sed -n '3p' "$cube_file"| awk '{print $1;}')+6
    awk '{if (NR>'$number_of_atoms'){print $0;}}' $cube_file | awk '$1=$1'|tr [:space:] "\n"
 }
-#make the plot using gnuplot
-making_plot_with_gnuplot(){
-   file_name=$1
-   gnuplot -persist <<-EOFMarker
-      set title "Rho vs GradRed"
+#Makes a plot using gnuplot
+make_plot(){
+   dat_file_name=$1
+   pdf_file_name=${dat_file_name%dat}pdf
+   gnuplot <<-EOFMarker
+      set xlabel '{/Symbol r}'
+      set ylabel 's' offset character 2,0
       set xrange [-0.075:0.075]
       set yrange [0.0:2.2]
-      plot "$1" title"NCI"  w p pt 7 lc rgb "red"
+      set term postscript eps enhanced color linewidth 2 fontscale 1.5
+      set output '|epstopdf --filter --outfile="$pdf_file_name"'
+      plot "$dat_file_name" w p pt 7 ps 0.5 lc rgb "red" title "NCI" 
 EOFMarker
 }
-#making plot of GrdRedRho vs Rho
-plot_RedGradRho_vs_Rho() {
+#Makes a plot of GrdRedRho vs Rho
+plot_redgradrho_vs_rho() {
    data_cube_GradRedRho="$1"
    data_cube_Rho="$2"
-   data_plot_NCI="${3}DataPlot.dat"
-   convert_cube_data_to_column $data_cube_Rho > ._TMP_DATA_OF_RHO
-   convert_cube_data_to_column $data_cube_GradRedRho > ._TMP_DATA_OF_GRADREDRHO
-   paste ._TMP_DATA_OF_GRADREDRHO ._TMP_DATA_OF_RHO > $data_plot_NCI 
-   rm ._TMP_DATA_OF_RHO; rm ._TMP_DATA_OF_GRADREDRHO
-   making_plot_with_gnuplot $data_plot_NCI
+   data_plot_NCI="${3}NCISvsRho.dat"
+   tmp_dat_rho_file=${RANDOM}${RANDOM}
+   tmp_dat_s_file=${RANDOM}${RANDOM}
+   cube_to_column $data_cube_Rho > $tmp_dat_rho_file
+   cube_to_column $data_cube_GradRedRho > $tmp_dat_s_file
+   paste $tmp_dat_s_file $tmp_dat_rho_file > $data_plot_NCI 
+   rm $tmp_dat_rho_file; rm $tmp_dat_s_file
+   make_plot $data_plot_NCI
 }
 
 if [ $# -lt 1 ]
@@ -174,7 +180,7 @@ then
       esac
    done
 else
-   compute_cubes $wavefunctionFileName $cubeArgsString
+   compute_cubes "$wavefunctionFileName" "$cubeArgsString"
 fi
 #
 #Names of VMD script files
@@ -188,5 +194,6 @@ echo -e "Making VMD scripts..."
 print_vmd_script "$currentWD/$cubeRhoFileName" "$currentWD/$cubeRedGradFileName" 0.700000 0.020000 > "$currentWD/$outputVMDVdWFileName"
 print_vmd_script "$currentWD/$cubeRhoFileName" "$currentWD/$cubeRedGradFileName" 0.500000 0.060000 > "$currentWD/$outputVMDHBFileName"
 
-plot_RedGradRho_vs_Rho "$currentWD/$cubeRedGradFileName" "$currentWD/$cubeRhoFileName" "$currentWD/$baseFileName"
+echo -e "Making s vs rho plot..."
+plot_redgradrho_vs_rho "$currentWD/$cubeRedGradFileName" "$currentWD/$cubeRhoFileName" "$currentWD/$baseFileName"
 
