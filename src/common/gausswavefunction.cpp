@@ -108,6 +108,14 @@
 #define EPSFORMEPVALUE (1.0e-8)
 #endif
 
+#ifndef NCIRHOMIN
+#define NCIRHOMIN 5.0e-4
+#endif
+
+#ifndef NCIRHOMAX
+#define NCIRHOMAX 6.5e-2
+#endif
+
 using std::setw;
 
 /* ************************************************************************************** */
@@ -5212,12 +5220,10 @@ solreal GaussWaveFunction::evalVirialPotentialEnergyDensity(solreal x, solreal y
    return (0.25e0*lapRho-2.0e0*G);
 }
 /* *************************************************************************************** */
-#define RHO_MIN_NCI 5.0e-4
-#define RHO_MAX_NCI 6.5e-2
 solreal GaussWaveFunction::evalNCIs(solreal x,solreal y,solreal z,solreal cutoff)
 {
    solreal s,rho=evalDensity(x,y,z);
-   if (RHO_MIN_NCI<rho && rho <= RHO_MAX_NCI) {
+   if (NCIRHOMIN<rho && rho <= NCIRHOMAX) {
       s=evalReducedDensityGradient(x,y,z);
       s=(s<=cutoff ?  s : 100.0e0);
    } else {
@@ -5229,7 +5235,7 @@ solreal GaussWaveFunction::evalNCIs(solreal x,solreal y,solreal z,solreal cutoff
 solreal GaussWaveFunction::evalNCILambda(solreal x,solreal y,solreal z)
 {
    solreal rho=evalDensity(x,y,z);
-   if (RHO_MIN_NCI<rho && rho <= RHO_MAX_NCI) {
+   if (NCIRHOMIN<rho && rho <= NCIRHOMAX) {
       solreal hess[3][3];
       solreal eingvectors[3][3],eingvalues[3];
       evalHessian(x,y,z,hess);
