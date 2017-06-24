@@ -257,7 +257,7 @@ void printHelpMenu(int &argc, char** &argv)
    cout << "  --configure-nci rMin rMax sMax \tSet the parameters rhoMin, rhoMax," << endl
         << "             \t\t  and redGradMax to be rMin, rMax, and sMax, respectively." << endl
         << "             \t\t  This option only affects NCI cubes (see properties z and" << endl
-        << "             \t\t  in \"-p\" option. Default values: rhoMin=" << NCIRHOMIN << "," << endl
+        << "             \t\t  Z in \"-p\" option. Default values: rhoMin=" << NCIRHOMIN << "," << endl
         << "             \t\t  rhoMax= " << NCIRHOMAX << ", and redGradMax= " <<  NCISMAX << endl;
    cout << "  --help    \t\tSame as -h" << endl;
    cout << "  --version \t\tSame as -V" << endl;
