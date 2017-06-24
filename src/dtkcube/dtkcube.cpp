@@ -141,6 +141,20 @@ int main (int argc, char ** argv)
    cout << "Total number of points that will be computed: " 
         << (grid.getNPts(0)*grid.getNPts(1)*grid.getNPts(2)) << endl;
    
+   /* Special configurations  */
+   if ( options.configspecialnci ) {
+      solreal ttt=std::stod(string(argv[options.configspecialnci]));
+      gwf.setNCIRhoMin(ttt);
+      ttt=std::stod(string(argv[options.configspecialnci+1]));
+      gwf.setNCISMax(ttt);
+      ttt=std::stod(string(argv[options.configspecialnci+2]));
+      gwf.setNCISMax(ttt);
+   }
+#if DEBUG
+      cout << "nciRhoMin: " << gwf.nciRhoMin << endl;
+      cout << "nciRhoMax: " << gwf.nciRhoMax << endl;
+      cout << "nciSMax: " << gwf.nciSMax << endl;
+#endif
    /* Setting the property to be computed */
    
    char prop;

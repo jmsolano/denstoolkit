@@ -80,6 +80,18 @@
 #ifndef _GAUSSWAVEFUNCTION_CPP_
 #define _GAUSSWAVEFUNCTION_CPP_
 
+#include <cstdlib>
+using std::exit;
+#include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
+using std::ios;
+#include <iomanip>
+using std::setprecision;
+using std::setw;
+#include <cmath>
+
 #include "gausswavefunction.h"
 #include "solscrutils.h"
 #include "solmemhand.h"
@@ -108,15 +120,6 @@
 #define EPSFORMEPVALUE (1.0e-8)
 #endif
 
-#ifndef NCIRHOMIN
-#define NCIRHOMIN 5.0e-4
-#endif
-
-#ifndef NCIRHOMAX
-#define NCIRHOMAX 6.5e-2
-#endif
-
-using std::setw;
 
 /* ************************************************************************************** */
 /* ************************************************************************************** */
@@ -152,6 +155,9 @@ GaussWaveFunction::GaussWaveFunction()
    hxy=hxz=hyz=NULL;
    totener=0.00e0;
    virial=0.0e0;
+   nciRhoMin=NCIRHOMIN;
+   nciRhoMax=NCIRHOMAX;
+   nciSMax=NCISMAX;
    imldd=ihaveEDF=false;
    usescustfld=usevcustfld=false;
 }
@@ -5220,12 +5226,12 @@ solreal GaussWaveFunction::evalVirialPotentialEnergyDensity(solreal x, solreal y
    return (0.25e0*lapRho-2.0e0*G);
 }
 /* *************************************************************************************** */
-solreal GaussWaveFunction::evalNCIs(solreal x,solreal y,solreal z,solreal cutoff)
+solreal GaussWaveFunction::evalNCIs(solreal x,solreal y,solreal z)
 {
    solreal s,rho=evalDensity(x,y,z);
-   if (NCIRHOMIN<rho && rho <= NCIRHOMAX) {
+   if (nciRhoMin<rho && rho <= nciRhoMax) {
       s=evalReducedDensityGradient(x,y,z);
-      s=(s<=cutoff ?  s : 100.0e0);
+      s=(s<=nciSMax ?  s : 100.0e0);
    } else {
       s=100.0e0;
    }
@@ -5235,7 +5241,7 @@ solreal GaussWaveFunction::evalNCIs(solreal x,solreal y,solreal z,solreal cutoff
 solreal GaussWaveFunction::evalNCILambda(solreal x,solreal y,solreal z)
 {
    solreal rho=evalDensity(x,y,z);
-   if (NCIRHOMIN<rho && rho <= NCIRHOMAX) {
+   if (nciRhoMin<rho && rho <= nciRhoMax) {
       solreal hess[3][3];
       solreal eingvectors[3][3],eingvalues[3];
       evalHessian(x,y,z,hess);

@@ -83,6 +83,7 @@ public:
    unsigned short int infname,outfname,prop2plot,setn1,setn3;
    unsigned short int setsmcub,setsmcub1;
    unsigned short int zipcube,wrtlog;
+   unsigned short int configspecialnci;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);
 void printHelpMenu(int &argc, char** &argv);//self-described

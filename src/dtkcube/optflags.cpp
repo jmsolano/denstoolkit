@@ -86,6 +86,7 @@ using namespace std;
 using std::ifstream;
 #include <string>
 using std::string;
+#include "../common/gausswavefunction.h"
 
 //**************************************************************************************************
 
@@ -100,6 +101,7 @@ optFlags::optFlags()
    setsmcub1=0;
    zipcube=0;
    wrtlog=0;
+   configspecialnci=0;
 }
 
 
@@ -252,6 +254,11 @@ void printHelpMenu(int &argc, char** &argv)
    cout << "  -V        \tDisplays the version of this program." << endl;
    cout << "  -h\t\tDisplay the help menu.\n\n";
    //-------------------------------------------------------------------------------------
+   cout << "  --configure-nci rMin rMax sMax \tSet the parameters rhoMin, rhoMax," << endl
+        << "             \t\t  and redGradMax to be rMin, rMax, and sMax, respectively." << endl
+        << "             \t\t  This option only affects NCI cubes (see properties z and" << endl
+        << "             \t\t  in \"-p\" option. Default values: rhoMin=" << NCIRHOMIN << "," << endl
+        << "             \t\t  rhoMax= " << NCIRHOMAX << ", and redGradMax= " <<  NCISMAX << endl;
    cout << "  --help    \t\tSame as -h" << endl;
    cout << "  --version \t\tSame as -V" << endl;
    //-------------------------------------------------------------------------------------
@@ -302,6 +309,12 @@ void processDoubleDashOptions(int &argc,char** &argv,optFlags &flags,int pos)
    } else if (str==string("help")) {
       printHelpMenu(argc,argv);
       exit(0);
+   } else if ( str==string("configure-nci") ) {
+      flags.configspecialnci=(pos+1);
+      if ((pos+1)>=(argc+3)) {
+         displayErrorMessage(string("configure-nci must be followed by 3 real numbers!"));
+         exit(1);
+      }
    } else {
       setScrRedBoldFont();
       cout << "Error: Unrecognized option '" << argv[pos] << "'" << endl;

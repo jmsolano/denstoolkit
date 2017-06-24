@@ -132,3 +132,6 @@ distclean: clean
 
 runben: dtkcube benceno_sto3g.wfx
 	./dtkcube benceno_sto3g.wfx -n 50 -l -p u
+
+runch4: dtkcube ch4.wfx
+	./dtkcube ch4.wfx -n 50 -l -p z --configure-nci 1.0e-4 0.8e0 1.8e0

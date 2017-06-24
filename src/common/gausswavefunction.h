@@ -154,27 +154,30 @@ typedef double solreal;
 #define SIGNF(a) ((a)>=0?(1):(-1))
 #endif
 
-#include <iostream>
-using std::cout;
-using std::cin;
-using std::endl;
-using std::ios;
 #include <fstream>
-using std::fstream;
 using std::ifstream;
 using std::ofstream;
-#include <cstdlib>
-using std::exit;
-#include <cmath>
 #include <string>
-using namespace std;
-#include <iomanip>
-using std::setprecision;
+using std::string;
 #include <complex>
 using std::complex;
+
 #if PARALLELISEDTK
 #include <omp.h>
 #endif
+
+#ifndef NCIRHOMAX
+#define NCIRHOMAX 6.5e-2
+#endif
+
+#ifndef NCIRHOMIN
+#define NCIRHOMIN 5.0e-4
+#endif
+
+#ifndef NCISMAX
+#define NCISMAX 2.0e0
+#endif
+
 
 class GaussWaveFunction {
 public:
@@ -189,6 +192,7 @@ public:
    solreal *R, *atCharge, *primExp, *MOCoeff, *occN, *MOEner,*EDFCoeff;
    solreal *cab,*chi,*gx,*gy,*gz,*hxx,*hyy,*hzz,*hxy,*hxz,*hyz;
    solreal totener,virial;
+   solreal nciRhoMin,nciRhoMax,nciSMax;
    bool imldd,ihaveEDF;
    /* *********************************************************************************** */
    /**
@@ -196,6 +200,15 @@ public:
       (0 for x, 1 for y and 1 for z coordinates.)
     */
    solreal getR(const int nucnum,const int cart);
+   /* *********************************************************************************** */
+   /** Sets the s cutoff for NCI  */
+   void setNCISMax(solreal sm) {nciSMax=sm;}
+   /* *********************************************************************************** */
+   /** Sets the rho lower cutoff for NCI  */
+   void setNCIRhoMin(solreal rr) {nciRhoMin=rr;}
+   /* *********************************************************************************** */
+   /** Sets the rho upper cutoff for NCI  */
+   void setNCIRhoMax(solreal rr) {nciRhoMax=rr;}
    /* *********************************************************************************** */
    /** This function returns three angular exponents of the type pt (primitive type). */
    void getAng(int pt,int (&tt)[3]);
@@ -638,12 +651,14 @@ public:
    /* ************************************************************************************ */
    /**The funtion evalNCIs returns values of Reduced Density Gradient 
     * applying NCI conditions.
+    * To set the cutoffs, use setNCISMax, setNCIRhoMin, and setNCIRhoMax
     * See J. Contreras-Garcia, E. R. Johnson, S. Keinan, R. Chaudret, J-P. Piquemal,
     * D. N. Beratan, and W. Yang. J. Chem. Theory Comput. 2011, 7, pp 625-632
     * for more details */
-   solreal evalNCIs(solreal x,solreal y,solreal z,solreal cutoff=2.0e0);
+   solreal evalNCIs(solreal x,solreal y,solreal z);
    /* ************************************************************************************ */
-   /**Returns rho*sigma (if rho<0.05e0), where sigma is the second Hessian eigenvalue sign
+   /**Returns rho*sigma (if nciRhoMin<rho<nciRhoMax), where sigma is the second Hessian eigenvalue sign
+    * To set the cutoffs (nciRhoMin and nciRhoMax)), use setNCISMax, setNCIRhoMin, and setNCIRhoMax
     * See J. Contreras-Garcia, E. R. Johnson, S. Keinan, R. Chaudret, J-P. Piquemal,
     * D. N. Beratan, and W. Yang. J. Chem. Theory Comput. 2011, 7, pp 625-632
     * for more details */
