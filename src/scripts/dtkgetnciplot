@@ -76,14 +76,17 @@ compute_cubes() {
    the_wf_file_name="$1"
    the_cube_args="$2"
    the_limits_of_compute_cubes="$3"
-   echo "$the_limits_of_compute_cubes"
    echo "####################################"
    echo -e "\tStarting NCI cube evaluation"
    echo "####################################"
    #computes NCI--Rho
-   dtkcube $the_wf_file_name $the_cube_args -p z $the_limits_of_compute_cubes
+   launcher1="dtkcube $the_wf_file_name $the_cube_args -p z $the_limits_of_compute_cubes"
+   echo $launcher1
+   $launcher1
    #computes NCI--RedGrad
-   dtkcube $the_wf_file_name $the_cube_args -p Z $the_limits_of_compute_cubes
+   launcher2="dtkcube $the_wf_file_name $the_cube_args -p Z $the_limits_of_compute_cubes"
+   echo $launcher2
+   $launcher2
 }
 #Prints all values of a cube as a single column
 cube_to_column(){
@@ -115,7 +118,7 @@ EOFMarker
 plot_redgradrho_vs_rho() {
    data_cube_GradRedRho="$1"
    data_cube_Rho="$2"
-   data_plot_NCI="${3}NCISvsRho.dat"
+   data_plot_NCI="${3}NCI-PlotSvsRho.dat"
    tmp_dat_rho_file=${RANDOM}${RANDOM}
    tmp_dat_s_file=${RANDOM}${RANDOM}
    cube_to_column $data_cube_Rho > $tmp_dat_rho_file
@@ -133,7 +136,7 @@ fi
 
 cubeArgsString=""
 # Default values for limits of cubes to be will compute
-minRho="0.02"
+minRho="0.0005"
 maxRho="0.2"
 maxGrdRedRho="2.0"
 while getopts ":hw:ln:sS:r:R:G:" opt; do
@@ -211,7 +214,7 @@ else
 fi
 #
 #Names of VMD script files
-outputVMDFileName="${baseFileName}VdW.vmd"
+outputVMDFileName="${baseFileName}.vmd"
 #Asks and saves the current directory (VMD sometimes needs absolute paths)
 currentWD=$(pwd)
 #
