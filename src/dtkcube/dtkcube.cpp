@@ -146,7 +146,7 @@ int main (int argc, char ** argv)
       solreal ttt=std::stod(string(argv[options.configspecialnci]));
       gwf.setNCIRhoMin(ttt);
       ttt=std::stod(string(argv[options.configspecialnci+1]));
-      gwf.setNCISMax(ttt);
+      gwf.setNCIRhoMax(ttt);
       ttt=std::stod(string(argv[options.configspecialnci+2]));
       gwf.setNCISMax(ttt);
    }
