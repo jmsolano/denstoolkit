@@ -5,12 +5,15 @@ usage()
 echo -e "\n    usage: \033[1m$1 [option [value(s)]] ... [option [value(s)]]\033[0m"
 cat << END_USAGE_TEXT
 
-This script help to compute NCI field and make a cube with NCIplot
-specifications and generate a file would be read with VMD program.
+This script computes the NCI field and makes two cubes, and one plot
+(s vs rho), which can be used to refine the cubes (by selecting
+appropriate cutoffs for rho and s). The script also generates
+VMD scripts that automatically loads and visualizes the 
+NCI index.
 
 Options 
   -h           Display the help menu.
-  -w wf?name   Wavefunctions name
+  -w wf?name   Wavefunction name
   -l        	Write cpu time, input/output information etc. on a log file
   -n  dim   	Set the number of points per direction for the cube
             	  to be dim x dim x dim.
@@ -19,9 +22,9 @@ Options
   -S ln     	Use a smart cuboid for the grid. ln is the number of points
             	  the largest axis will have. The remaining axes will have
             	  a number of points proportional to its length.
-  -r num       Lower limit of rho 
-  -R num       High  limit of rho 
-  -G num       High  limit of GrdRedRho
+  -r rmin      Set the lower rho cutoff to be rmin
+  -R rmax      Set the upper rho cutoff to be rmax
+  -G smax      Set the upper reduced density gradient (s) cutoff to be smax
 
 
 END_USAGE_TEXT
@@ -99,16 +102,21 @@ make_plot(){
    dat_file_name=$1
    pdf_file_name=${dat_file_name%dat}pdf
    gnuplot <<-EOFMarker
-      set xlabel '{/Symbol r}'
+      set xlabel '{/Symbol r}' offset character 0,0.75
       set ylabel 's' offset character 2,0
       set xrange [-0.2:0.2]
       set yrange [0.0:2.0]
-      set tics font ",8"
+      set tics font ",12" scale 2.0
       set xtics 0.05
-      set ytics 0.1
-      set grid ytics
-      set grid xtics mxtics 
+      set ytics 0.2
       set mxtics 5
+      set mytics 2
+      set grid ytics mytics
+      set grid xtics mxtics 
+      set tmargin at screen 0.95
+      set bmargin at screen 0.13
+      set lmargin at screen 0.11
+      set rmargin at screen 0.96
       set term postscript eps enhanced color linewidth 2 fontscale 1.5
       set output '|epstopdf --filter --outfile="$pdf_file_name"'
       plot "$dat_file_name" w p pt 7 ps 0.5 lc rgb "red" title "NCI" 
@@ -116,13 +124,13 @@ EOFMarker
 }
 #Makes a plot of GrdRedRho vs Rho
 plot_redgradrho_vs_rho() {
-   data_cube_GradRedRho="$1"
+   data_cube_RedDensGrad="$1"
    data_cube_Rho="$2"
-   data_plot_NCI="${3}NCI-PlotSvsRho.dat"
+   data_plot_NCI="${3}NCISvsRho.dat"
    tmp_dat_rho_file=${RANDOM}${RANDOM}
    tmp_dat_s_file=${RANDOM}${RANDOM}
    cube_to_column $data_cube_Rho > $tmp_dat_rho_file
-   cube_to_column $data_cube_GradRedRho > $tmp_dat_s_file
+   cube_to_column $data_cube_RedDensGrad > $tmp_dat_s_file
    paste $tmp_dat_s_file $tmp_dat_rho_file > $data_plot_NCI 
    rm $tmp_dat_rho_file; rm $tmp_dat_s_file
    make_plot $data_plot_NCI
@@ -136,9 +144,9 @@ fi
 
 cubeArgsString=""
 # Default values for limits of cubes to be will compute
-minRho="0.0005"
-maxRho="0.2"
-maxGrdRedRho="2.0"
+rhoMin="0.0005"
+rhoMax="0.2"
+redDensGradMax="2.0"
 while getopts ":hw:ln:sS:r:R:G:" opt; do
   case $opt in
     h)
@@ -161,13 +169,13 @@ while getopts ":hw:ln:sS:r:R:G:" opt; do
       cubeArgsString="$cubeArgsString -S $OPTARG"
       ;;
     r)
-      minRho="$OPTARG"
+      rhoMin="$OPTARG"
       ;;
     R)
-      maxRho="$OPTARG"
+      rhoMax="$OPTARG"
       ;;
     G)
-      maxGrdRedRho="$OPTARG"
+      redDensGradMax="$OPTARG"
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -186,7 +194,7 @@ then
    exit 2
 fi
 
-cutoffArgString="--configure-nci $minRho $maxRho $maxGrdRedRho"
+cutoffArgString="--configure-nci $rhoMin $rhoMax $redDensGradMax"
 
 #This final extension was acquired from scr/common/fldtypesdef.h file of the function getFieldTypeKeyShort
 baseFileName=${wavefunctionFileName%.wf?}
