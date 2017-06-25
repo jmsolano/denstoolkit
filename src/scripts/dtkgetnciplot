@@ -19,6 +19,10 @@ Options
   -S ln     	Use a smart cuboid for the grid. ln is the number of points
             	  the largest axis will have. The remaining axes will have
             	  a number of points proportional to its length.
+  -r num       Lower limit of rho 
+  -R num       High  limit of rho 
+  -G num       High  limit of GrdRedRho
+
 
 END_USAGE_TEXT
 }
@@ -71,13 +75,15 @@ END_VMD_SCRIPT
 compute_cubes() {
    the_wf_file_name="$1"
    the_cube_args="$2"
+   the_limits_of_compute_cubes="$3"
+   echo "$the_limits_of_compute_cubes"
    echo "####################################"
    echo -e "\tStarting NCI cube evaluation"
    echo "####################################"
    #computes NCI--Rho
-   dtkcube $the_wf_file_name $the_cube_args -p z
+   dtkcube $the_wf_file_name $the_cube_args -p z $the_limits_of_compute_cubes
    #computes NCI--RedGrad
-   dtkcube $the_wf_file_name $the_cube_args -p Z
+   dtkcube $the_wf_file_name $the_cube_args -p Z $the_limits_of_compute_cubes
 }
 #Prints all values of a cube as a single column
 cube_to_column(){
@@ -92,8 +98,14 @@ make_plot(){
    gnuplot <<-EOFMarker
       set xlabel '{/Symbol r}'
       set ylabel 's' offset character 2,0
-      set xrange [-0.075:0.075]
-      set yrange [0.0:2.2]
+      set xrange [-0.2:0.2]
+      set yrange [0.0:2.0]
+      set tics font ",8"
+      set xtics 0.05
+      set ytics 0.1
+      set grid ytics
+      set grid xtics mxtics 
+      set mxtics 5
       set term postscript eps enhanced color linewidth 2 fontscale 1.5
       set output '|epstopdf --filter --outfile="$pdf_file_name"'
       plot "$dat_file_name" w p pt 7 ps 0.5 lc rgb "red" title "NCI" 
@@ -120,7 +132,11 @@ then
 fi
 
 cubeArgsString=""
-while getopts ":hw:ln:sS:" opt; do
+# Default values for limits of cubes to be will compute
+minRho="0.02"
+maxRho="0.2"
+maxGrdRedRho="2.0"
+while getopts ":hw:ln:sS:r:R:G:" opt; do
   case $opt in
     h)
       usage $0
@@ -141,6 +157,15 @@ while getopts ":hw:ln:sS:" opt; do
     S)
       cubeArgsString="$cubeArgsString -S $OPTARG"
       ;;
+    r)
+      minRho="$OPTARG"
+      ;;
+    R)
+      maxRho="$OPTARG"
+      ;;
+    G)
+      maxGrdRedRho="$OPTARG"
+      ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
       ;;
@@ -158,6 +183,8 @@ then
    exit 2
 fi
 
+cutoffArgString="--configure-nci $minRho $maxRho $maxGrdRedRho"
+
 #This final extension was acquired from scr/common/fldtypesdef.h file of the function getFieldTypeKeyShort
 baseFileName=${wavefunctionFileName%.wf?}
 cubeRedGradFileName="${baseFileName}NCIRedDensGrad.cub"
@@ -172,7 +199,7 @@ then
    do
       case $answer in 
          Yes=1 )
-            compute_cubes "$wavefunctionFileName" "$cubeArgsString"
+            compute_cubes "$wavefunctionFileName" "$cubeArgsString" "$cutoffArgString"
             break;;
          No=2 )
             echo -e "Skipping cube calculation...\n"
@@ -180,19 +207,17 @@ then
       esac
    done
 else
-   compute_cubes "$wavefunctionFileName" "$cubeArgsString"
+   compute_cubes "$wavefunctionFileName" "$cubeArgsString" "$cutoffArgString"
 fi
 #
 #Names of VMD script files
-outputVMDHBFileName="${baseFileName}HB.vmd"
-outputVMDVdWFileName="${baseFileName}VdW.vmd"
+outputVMDFileName="${baseFileName}VdW.vmd"
 #Asks and saves the current directory (VMD sometimes needs absolute paths)
 currentWD=$(pwd)
 #
 #Makes the VMD scripts.
 echo -e "Making VMD scripts..."
-print_vmd_script "$currentWD/$cubeRhoFileName" "$currentWD/$cubeRedGradFileName" 0.700000 0.020000 > "$currentWD/$outputVMDVdWFileName"
-print_vmd_script "$currentWD/$cubeRhoFileName" "$currentWD/$cubeRedGradFileName" 0.500000 0.060000 > "$currentWD/$outputVMDHBFileName"
+print_vmd_script "$currentWD/$cubeRhoFileName" "$currentWD/$cubeRedGradFileName" 0.500000 5.000000 > "$currentWD/$outputVMDFileName"
 
 echo -e "Making s vs rho plot..."
 plot_redgradrho_vs_rho "$currentWD/$cubeRedGradFileName" "$currentWD/$cubeRhoFileName" "$currentWD/$baseFileName"
