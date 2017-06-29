@@ -1,0 +1,4 @@
+Bugfix: Bond paths are not drawn when only bond paths are computed
+i.e., if ring paths are not requested to dtkfindcp, the bond paths
+are not displayed in DensToolKitViewer.
+
