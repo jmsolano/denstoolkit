@@ -93,6 +93,7 @@ optFlags::optFlags()
    camvdir=0;
    mkdatmat=0;
    mkextsearch=0;
+   forcebcpconn=0;
 }
 
 
@@ -267,6 +268,11 @@ void printHelpMenu(int &argc, char** &argv)
    cout << "  -V        \tDisplay the version of this program." << endl;
    cout << "  -h\t\tDisplay the help menu.\n\n";
    //-------------------------------------------------------------------------------------
+   cout << "  --force-bcp-connectivity bcp acp1 acp2 \tTry to force the connectivity" << endl
+        << "            \t\t  of the bcp to be acp1 and acp2. Needed to correct some" << endl
+        << "            \t\t  cases wherein bond paths are not properly drawn." << endl
+        << "            \t\t  The option will try to force the bond path to be" << endl
+        << "            \t\t  connected between acp1-bcp-acp2." << endl;
    cout << "  --help    \t\tSame as -h" << endl;
    cout << "  --version \t\tSame as -V" << endl;
    //-------------------------------------------------------------------------------------
@@ -323,6 +329,12 @@ void processDoubleDashOptions(int &argc,char** &argv,optFlags &flags,int pos)
    } else if (str==string("help")) {
       printHelpMenu(argc,argv);
       exit(0);
+   } else if ( str==string("force-bcp-connectivity") ) {
+      if ((pos+1)>=(argc+3)) {
+         displayErrorMessage(string("force-bcp-connectivity must be followed by 3 integers!"));
+         exit(1);
+      }
+      flags.forcebcpconn=(pos+1);
    } else {
       setScrRedBoldFont();
       cout << "Error: Unrecognized option '" << argv[pos] << "'" << endl;

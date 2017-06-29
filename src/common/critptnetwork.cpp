@@ -3397,6 +3397,34 @@ void critPtNetWork::addRCP2ConCCP(const int ccpIdx,const int rcpIdx)
    }
 }
 /* ************************************************************************************ */
+void critPtNetWork::forceBCPConnectivity(int bcpIdx,int acpIdx1,int acpIdx2)
+{
+#if DEBUG
+   if ( conBCP==NULL ) {
+      displayErrorMessage("conBCP is not allocated!");
+      cout << __FILE__ << ", line: " << __LINE__ << endl;
+   }
+#endif
+   if ( bcpIdx>=nBCP ) {
+      displayWarningMessage(string("The BCP of index ")+getStringFromInt(bcpIdx)+string(" does not exist!"));
+      displayWarningMessage("Nothingo to do...");
+      return;
+   }
+   if ( acpIdx1>=nACP ) {
+      displayWarningMessage(string("The ACP of index ")+getStringFromInt(acpIdx1)+string(" does not exist!"));
+      displayWarningMessage("Nothingo to do...");
+      return;
+   }
+   if ( acpIdx2>=nACP ) {
+      displayWarningMessage(string("The ACP of index ")+getStringFromInt(acpIdx2)+string(" does not exist!"));
+      displayWarningMessage("Nothingo to do...");
+      return;
+   }
+   conBCP[bcpIdx][0]=acpIdx1;
+   conBCP[bcpIdx][1]=acpIdx2;
+   lblBCP[bcpIdx]=lblACP[acpIdx1]+"-"+lblACP[acpIdx2];
+}
+/* ************************************************************************************ */
 void critPtNetWork::correctRCPConnectivity(void)
 {
    findMaxBondDist();

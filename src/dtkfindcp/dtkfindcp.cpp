@@ -99,6 +99,8 @@ using std::setprecision;
 #include "crtflnms.h"
 #include "custfmtmathfuncts.h"
 
+void setForcedBCPConnectivity(char **argv,optFlags &option,critPtNetWork &cp);
+
 int main (int argc, char ** argv)
 {
    const clock_t begin_time = clock();
@@ -160,6 +162,9 @@ int main (int argc, char ** argv)
    switch (critpttype) {
       case DENS:
          cpn.setCriticalPoints(DENS);
+         if ( options.forcebcpconn ) {
+            setForcedBCPConnectivity(argv,options,cpn);
+         }
          if (options.calcbgps) {cpn.setBondPaths();}
          break;
       case LOLD:
@@ -280,4 +285,18 @@ int main (int argc, char ** argv)
    setScrNormalFont();
    return 0;
 }
+
+void setForcedBCPConnectivity(char **argv,optFlags &option,critPtNetWork &cp) {
+   if ( !option.forcebcpconn ) {
+      return;
+   }
+   int bcpIdx=std::stoi(string(argv[option.forcebcpconn]));
+   int acpIdx1=std::stoi(string(argv[option.forcebcpconn+1]));
+   int acpIdx2=std::stoi(string(argv[option.forcebcpconn+2]));
+   --bcpIdx; --acpIdx1; --acpIdx2;
+   cout << "Trying forced connectivity. BCP: " << bcpIdx
+      << ", ACP1: " << acpIdx1 << ", ACP2: " << acpIdx2 << endl;
+   cp.forceBCPConnectivity(bcpIdx,acpIdx1,acpIdx2);
+}
+
 

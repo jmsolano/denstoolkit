@@ -86,6 +86,7 @@ public:
    unsigned short int drawnuc;
    unsigned short int calcbgps,calcrgps,drawbgps,bgptubes;
    unsigned short int mkdatmat,mkextsearch;
+   unsigned short int forcebcpconn;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);
 void printHelpMenu(int &argc, char** &argv);//self-described

@@ -169,3 +169,6 @@ runli2: build
 runch2: build
 	./dtkfindcp ch2brcl_b3lyp_lanl2dz_combinededfs.wfx -P -g -k -a
 
+runaaa: build
+	./dtkfindcp A.mp2.wfx -P -k -e -a -g
+

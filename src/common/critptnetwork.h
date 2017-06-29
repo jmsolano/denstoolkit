@@ -329,6 +329,8 @@ public:
          solreal (&xe)[3],solreal (&xm)[3],solreal &dm,solreal hstep,int dima,\
          solreal** (&arrgp),int &npia,solreal maxlen,bool uphilldir);
 /* ************************************************************************************ */
+   void forceBCPConnectivity(int bcpIdx,int acpIdx1,int acpIdx2);
+/* ************************************************************************************ */
    void correctRCPConnectivity(void);
 /* ************************************************************************************ */
    void removeFromConRCP(const int rcpIdx,const int pos2rem);
