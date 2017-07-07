@@ -94,6 +94,7 @@ optFlags::optFlags()
    mkdatmat=0;
    mkextsearch=0;
    forcebcpconn=0;
+   customseedtwoacps=0;
 }
 
 
@@ -273,6 +274,8 @@ void printHelpMenu(int &argc, char** &argv)
         << "            \t\t  cases wherein bond paths are not properly drawn." << endl
         << "            \t\t  The option will try to force the bond path to be" << endl
         << "            \t\t  connected between acp1-bcp-acp2." << endl;
+   cout << "  --add-seed-twoacps acp1 acp2 \t Perform a critical point search around" << endl
+        << "            \t\t  the middle point between acp1 and acp2." << endl;
    cout << "  --help    \t\tSame as -h" << endl;
    cout << "  --version \t\tSame as -V" << endl;
    //-------------------------------------------------------------------------------------
@@ -329,6 +332,12 @@ void processDoubleDashOptions(int &argc,char** &argv,optFlags &flags,int pos)
    } else if (str==string("help")) {
       printHelpMenu(argc,argv);
       exit(0);
+   } else if ( str==string("add-seed-twoacps") ) {
+     if ( (pos+1)>=(argc+2) ) {
+        displayErrorMessage(string("add-seed-twoacps must be followed by 2 integers!"));
+        exit(1);
+     }
+     flags.customseedtwoacps=(pos+1);
    } else if ( str==string("force-bcp-connectivity") ) {
       if ((pos+1)>=(argc+3)) {
          displayErrorMessage(string("force-bcp-connectivity must be followed by 3 integers!"));

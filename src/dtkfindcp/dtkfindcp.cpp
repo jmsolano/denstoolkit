@@ -173,6 +173,11 @@ int main (int argc, char ** argv)
       default:
          break;
    }
+   if ( options.customseedtwoacps ) {
+      int acp1=std::stoi(string(argv[options.customseedtwoacps]))-1;
+      int acp2=std::stoi(string(argv[options.customseedtwoacps+1]))-1;
+      cpn.customSearchTwoACPs(acp1,acp2);
+   }
    if ( options.mkextsearch ) {
       cpn.extendedSearchCPs();
    }

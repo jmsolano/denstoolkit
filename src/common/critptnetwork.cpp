@@ -1339,6 +1339,73 @@ void critPtNetWork::extendedSearchCPs(void)
    }
 }
 /* ************************************************************************************ */
+void critPtNetWork::customSearchTwoACPs(int acpIdx1,int acpIdx2)
+{
+   cout << "Looking around a custom seed (two acps)..." << endl;
+   string str1=string("This acp does not exist! There are ");
+   str1+=getStringFromInt(nACP);
+   str1+=" ACPs in this molecule.";
+   string str2="Requested acp: ";
+   string str3=". Nothing to do...";
+   if ( acpIdx1>=nACP ) {
+      displayWarningMessage(str1);
+      displayWarningMessage(str2+getStringFromInt(acpIdx1+1)+str3);
+      return;
+   }
+   if ( acpIdx2>=nACP ) {
+      displayWarningMessage(str1);
+      displayWarningMessage(str2+getStringFromInt(acpIdx2+1)+str3);
+      return;
+   }
+   solreal xs[3];
+   for ( int i=0 ; i<3 ; ++i ) {
+      xs[i]=0.5e0*(RACP[acpIdx1][i]+RACP[acpIdx2][i]);
+   }
+   customSearchCPs(xs);
+}
+/* ************************************************************************************ */
+void critPtNetWork::customSearchCPs(solreal (&xs)[3])
+{
+   solreal dx;
+   dx=bn->maxBondDist*0.05e0;
+   string lbl="";
+   int initacp=nACP,initbcp=nBCP,initrcp=nRCP,initccp=nCCP;
+   cout << "Looking for ACPs..." << endl;
+   lbl="custACP";
+   seekRhoACPsAroundAPoint(xs,dx,lbl,nIHV);
+   cout << "Looking for BCPs..." << endl;
+   lbl="custBCP";
+   seekRhoBCPsAroundAPoint(xs,dx,lbl,nIHV);
+   cout << "Looking for RCPs..." << endl;
+   lbl="custRCP";
+   seekRhoRCPsAroundAPoint(xs,dx,lbl,nIHV);
+   cout << "Looking for CCPs..." << endl;
+   lbl="custCCP";
+   seekRhoCCPsAroundAPoint(xs,dx,lbl,nIHV);
+   for (int i=0; i<nRCP; i++) {removeRedundInLabel(lblRCP[i]);}
+   for (int i=0; i<nCCP; i++) {removeRedundInLabel(lblCCP[i]);}
+   bool foundnewcps=false;
+   if ( initacp<nACP ) {
+      cout << "Found " << (nACP-initacp) << " new ACPs." << endl;
+      foundnewcps=true;
+   }
+   if ( initbcp<nBCP ) {
+      cout << "Found " << (nBCP-initbcp) << " new BCPs." << endl;
+      foundnewcps=true;
+   }
+   if ( initrcp<nRCP ) {
+      cout << "Found " << (nRCP-initrcp) << " new RCPs." << endl;
+      foundnewcps=true;
+   }
+   if ( initccp<nCCP ) {
+      cout << "Found " << (nCCP-initccp) << " new CCPs." << endl;
+      foundnewcps=true;
+   }
+   if ( foundnewcps ) {
+      printBetweenStarLines(string("nACP-nBCP+nRCP-nCCP = "+\
+               getStringFromInt(nACP-nBCP+nRCP-nCCP)));
+   }
+}
 /* ************************************************************************************ */
 /* ************************************************************************************ */
 /* ************************************************************************************ */
