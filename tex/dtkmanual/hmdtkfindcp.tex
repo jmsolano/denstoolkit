@@ -35,6 +35,11 @@ Where wf?name is the input wfx(wfn) name, and options can be:
   -V        	Display the version of this program.
   -h		Display the help menu.
 
+  --force-bcp-connectivity bcp acp1 acp2 	Try to force the connectivity
+            		  of the bcp to be acp1 and acp2. Needed to correct some
+            		  cases wherein bond paths are not properly drawn.
+            		  The option will try to force the bond path to be
+            		  connected between acp1-bcp-acp2.
   --help    		Same as -h
   --version 		Same as -V
 ********************************************************************************

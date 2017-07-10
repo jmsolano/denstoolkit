@@ -11,7 +11,8 @@ Where wf?name is the input wfx(wfn) name, and options can be:
             	  Note: if the *.wfn (*.wfx) file has only one or two atoms
             	  this option must not be used. The program will define
             	  a plane which includes that(those) one(two) atom(s).
-  -n  dim   	Set the number of points for the tsv file per direction
+  -n  dim   	Set the number of points for the tsv file per direction.
+            	  The tsv will have the dimensions dim x dim.
   -o outname	Set the output file name.
             	  (If not given the program will create one out of
             	  the input name; if given, the tsv, gnp and pdf files will
@@ -35,6 +36,7 @@ Where wf?name is the input wfx(wfn) name, and options can be:
          		u (Scalar Custom Field)
          		U (Vector Custom Field)
          		V (Molecular Electrostatic Potential)
+         		v (Virial Potential Energy Density)
   -P     	Create a plot using gnuplot.
   -c     	Show contour lines in the plot.
   -k     	Keeps the *.gnp file to be used later by gnuplot.

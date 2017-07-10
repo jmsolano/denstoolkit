@@ -6,7 +6,7 @@ all: helpmenus codecps
 DTKBINS= dtkbpdens dtkdemat1 dtkfindcp dtkmomd dtkpoint dtkqdmol \
 			dtkcube dtkline dtkplane 
 
-DTKSCRIPTS= dtkeps2pdf dtkpov2png
+DTKSCRIPTS= dtkeps2pdf dtkpov2png dtkgetnciplot
 
 DTKCODES= $(TOP_DIR)/src/common/custfld-wfnclass.cpp
 

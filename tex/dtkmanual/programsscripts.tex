@@ -732,7 +732,7 @@ This script has only one option for setting the output name.\\
 This script has two options, one for setting the output name, and one another to set the width of the final \texttt{png} image. The height of the image will be calculated from the width, always using a ration 4:3. Hence, it is recommended that the width is a multiple of 12.
 
 \rule{\textwidth}{1pt}
-{\center\texttt{dtkfindcp} help menu.\\}
+{\center\texttt{dtkpov2png} help menu.\\}
 \rule{\textwidth}{1pt}
 \begin{footnotesize}
 \begin{verbatim}
@@ -761,7 +761,7 @@ for more information about this fabulous programs.
 \textbf{Tip:} Use a small value of width when testing the view, and use the final resolution once you have chosen the final visualization options.
 
 %----------------------------------------------------------------------------------------------
-\section{dtkgetnciplot}
+\section{dtkgetnciplot}\label{sec:dtkgetnciplotdesc}
 %----------------------------------------------------------------------------------------------
 This script generates cubes (Electron Density times the second Hessian eigenvalue, $\Lambda$,
 and the reduced density gradient, $s$, both with
@@ -771,33 +771,7 @@ a cutoff) and a graph of Non Covalent Interactions, NCI (see \cite{bib:contreras
 {\center\texttt{dtkgetnciplot} help menu.\\}
 \rule{\textwidth}{1pt}
 \begin{footnotesize}
-\begin{verbatim}
-
-    usage: /usr/local/bin/dtkgetnciplot [option [value(s)]] ... [option [value(s)]]
-
-This script computes the NCI field and makes two cubes, and one plot
-(s vs rho), which can be used to refine the cubes (by selecting
-appropriate cutoffs for rho and s). The script also generates
-VMD scripts that automatically loads and visualizes the 
-NCI index.
-
-Options 
-  -h           Display the help menu.
-  -w wf?name   Wavefunction name
-  -l        	Write cpu time, input/output information etc. on a log file
-  -n  dim   	Set the number of points per direction for the cube
-            	  to be dim x dim x dim.
-  -s        	Use a smart cuboid for the grid. The number of points for the
-            	  largest direction will be 80.
-  -S ln     	Use a smart cuboid for the grid. ln is the number of points
-            	  the largest axis will have. The remaining axes will have
-            	  a number of points proportional to its length.
-  -r rmin      Set the lower rho cutoff to be rmin
-  -R rmax      Set the upper rho cutoff to be rmax
-  -G smax      Set the upper reduced density gradient (s) cutoff to be smax
-
-
-\end{verbatim}
+\VerbatimInput{hmdtkgetnciplot.tex}
 \end{footnotesize}
 \rule{\textwidth}{1pt}
 

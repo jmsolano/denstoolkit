@@ -618,17 +618,21 @@ public:
    solreal totalNuclearCharge(void);
    /* ************************************************************************************ */
    /** This function evaluates the Localized Electrons Detector vector (led) at the
-    * point x.  */
+    * point x. For the definition, see H. J. Boh\'orquez, C. F. Matta, and R. J. Boyd,
+    * Int. Jour. Quantum Chem., 110 (2010) 2418--2425. The field is defined as
+    * \f$\tilde{\boldsymbol P}=\frac{\nabla\rho}{2\rho}\f$.  */
    void evalLED(solreal const (&x)[3],solreal (&led)[3]);
    /* ************************************************************************************ */
-   /** This function returns the magnitude of the vector LED.  */
+   /** This function returns the magnitude of the vector LED.
+    * See the dtk-manual for more details.  */
    solreal evalMagLED(solreal x,solreal y,solreal z);
    /* ************************************************************************************ */
-   /** This function returns the Reduced Density Gradient at the point (x,y,z)  */
+   /** This function returns the Reduced Density Gradient at the point (x,y,z).
+    * See the dtk-manual for more details. */
    solreal evalReducedDensityGradient(solreal x,solreal y,solreal z);
    /* ************************************************************************************ */
    /** This function computes the Region of Slow Electron index at the point
-    * (x,y,z).  */
+    * (x,y,z). See the dtk-manual for more details. */
    solreal evalRoSE(solreal x,solreal y,solreal z);
    /* ************************************************************************************ */
    /** This function is left to the final user for implementing its own custom 

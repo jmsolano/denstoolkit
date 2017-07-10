@@ -32,10 +32,18 @@ Where wf?name is the input wfx(wfn) name, and options can be:
          		S (Shannon Entropy Density)
          		V (Molecular Electrostatic Potential)
          		u (Scalar Custom Field)
+         		v (Virial Potential Energy Density)
+         		Z (Non Covalent Interactions(NCI) -- s)
+         		z (Non Covalent Interactions(NCI) -- Rho)
   -z     	Compress the cube file using gzip (which must be installed
          	   in your system).
   -V        	Displays the version of this program.
   -h		Display the help menu.
 
+  --configure-nci rMin rMax sMax 	Set the parameters rhoMin, rhoMax,
+             		  and redGradMax to be rMin, rMax, and sMax, respectively.
+             		  This option only affects NCI cubes (see properties z and
+             		  Z in "-p" option. Default values: rhoMin=0.0005,
+             		  rhoMax= 0.065, and redGradMax= 2
   --help    		Same as -h
   --version 		Same as -V

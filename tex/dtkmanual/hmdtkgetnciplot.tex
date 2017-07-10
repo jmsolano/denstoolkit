@@ -1,0 +1,23 @@
+
+    usage: dtkgetnciplot [option [value(s)]] ... [option [value(s)]]
+
+This script computes the NCI field and makes two cubes, and one plot
+(s vs rho), which can be used to refine the cubes (by selecting
+appropriate cutoffs for rho and s). The script also generates
+VMD scripts that automatically loads and visualizes the 
+NCI index.
+
+Options 
+  -h           Display the help menu.
+  -w wf?name   Wavefunction name
+  -l        	Write cpu time, input/output information etc. on a log file
+  -n  dim   	Set the number of points per direction for the cube
+            	  to be dim x dim x dim.
+  -s        	Use a smart cuboid for the grid. The number of points for the
+            	  largest direction will be 80.
+  -S ln     	Use a smart cuboid for the grid. ln is the number of points
+            	  the largest axis will have. The remaining axes will have
+            	  a number of points proportional to its length.
+  -r rmin      Set the lower rho cutoff to be rmin
+  -R rmax      Set the upper rho cutoff to be rmax
+  -G smax      Set the upper reduced density gradient (s) cutoff to be smax

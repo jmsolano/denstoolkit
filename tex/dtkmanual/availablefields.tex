@@ -165,7 +165,7 @@ the electron density can be written as follows:
 Computationally, we can reduce the number of computations by using the following algorithm
 %
 \begin{equation}
-   \rho(\boldsymbol{r})=\sum_{\dA}\left\{\phi_{\dA}\left[c_{\dA\dA}\phi_{\dA}+\frac{1}{2}\sum_{\dB>\dA}c_{\dA\dB}\phi_{\dB}\right]\right\}.
+   \rho(\boldsymbol{r})=\sum_{\dA}\left\{\phi_{\dA}\left[c_{\dA\dA}\phi_{\dA}+2\sum_{\dB>\dA}c_{\dA\dB}\phi_{\dB}\right]\right\}.
 \end{equation}
 %
 This is the algorithm implemented in \DTK{} whenever the function allows it, and is twice as efficient as the direct computation posed by Eq. (\ref{eq:rhodeflong}).
@@ -393,7 +393,7 @@ If pseudopotentials are used, the Laplacian is then
 
 The definition of the Kinetic energy density $G$ we implemented in \DTK{} is (in terms of the density matrix $c_{\dA\dB}$)
 %
-\begin{equation}
+\begin{equation}\label{eq:KinetEnergyGDef}
    G=\frac{1}{2}c_{\dA\dB}\nabla\phi_{\dA}^*\cdot\nabla\phi_{\dB}=\frac{1}{2}\partial_k\phi_{\dA}\left(c_{\dA\dB}\partial_k\phi_{\dB}\right).
 \end{equation}
 %
@@ -710,8 +710,71 @@ Usually, this field is used for measuring hydrogen bonds stength.
 No optimizations beyond those already implemented in $G(r)$ and $\nabla^2\rho$
 were added.
 
+%----------------------------------------------------------------------------------------------
+\section{Magnitude of the Localized Electron Detector (LED)}
+%----------------------------------------------------------------------------------------------
+This field stems from two fundamental fields, namely $\rho$ and $\nabla\rho$, thus
+it is directly evaluated using these fields. By definition, LED (denoted as $\tilde{\boldsymbol P}$) is the vector
+\cite{bib:bohorquez2010a}:
+%
+\begin{equation}\label{eq:LEDDef}
+-\tilde{\boldsymbol P}=\frac{\hslash\nabla\rho}{2\rho}.
+\end{equation}
+%
+Since \DTK{} uses atomic units, in Eq. (\ref{eq:LEDDef}) is actually equal to one.
+Furthermore, in \dtkversion, we have no convention to save vector fields on cubes,
+thus we only provide the magnitude of $\tilde{\boldsymbol P}$, \textit{i.e.}:
+%
+\begin{equation}\label{eq:MagLEDDef}
+|\tilde{\boldsymbol P}|=\frac{|\nabla\rho|}{2\rho}.
+\end{equation}
+%
+
+There is one remark here, since \texttt{dtkplane} can draw vector fields,
+in this program we do provide the actual vector $\tilde{\boldsymbol P}=(1/2)\nabla\rho/\rho$.
+Other programs only provide the magnitude shown in Eq. (\ref{eq:MagLEDDef}).
+
+%----------------------------------------------------------------------------------------------
+\section{Region of Slow Electrons (RoSE)}
+%----------------------------------------------------------------------------------------------
+This field is implemented in \DTK{} directly as defined in the original reference \cite{jacobsen2013}:
+%
+\begin{equation}%\label{eq:}
+  \nu_{\pm}=\frac{\tau_0-\tau}{\tau_0+\tau},
+\end{equation}
+%
+where
+%
+\begin{equation}%\label{eq:}
+  \tau_0=\frac{3}{10}\left( 3\pi^2 \right)^{2/3}\rho^{5/3},
+\end{equation}
+%
+and
+%
+\begin{equation}%\label{eq:}
+  \tau=\frac{1}{2}\sum_i\left<\nabla_i\psi^*\cdot\nabla_i\psi\right>.
+\end{equation}
+%
+\textit{I.e.}, $\tau$ is the kinetic energy density $G$ defined in Eq. (\ref{eq:KinetEnergyGDef}).
+Consequently, this field is computed using the implementations for $G$ and $\rho$.
 
 %----------------------------------------------------------------------------------------------
 \section{Reduced Gradient of Density}
 %----------------------------------------------------------------------------------------------
-\textcolor{red}{\large Building this section}
+Since the field is derived from the ED ($\rho$) and its gradient, in \DTK{} we
+compute it with no special implementation. According to Johnson \textit{et al.} \cite{bib:johnson2010}, the
+reduced density gradient is defined as
+%
+\begin{equation}%\label{eq:}
+  s=\frac{1}{2(3\pi^2)^{1/3}}\frac{|\nabla\rho|}{\rho^{4/3}}.
+\end{equation}
+%
+
+This field is used to characterize Non Covalent Interactions (NCI). In computational terms, the
+NCI is a correlation between $\rho$ and $s$. However, in practice,
+the NCI requires a bit of human intervention for determining appropriate cutoffs.
+To this end, in \DTK, we provide the script \texttt{dtkgetnciplot} to determine
+the cutoffs (see Section \ref{sec:dtkgetnciplotdesc}, and Ref. \cite{bib:contreras2011}
+for further details), as well as to generate VMD templates to visualize the NCI
+index.
+

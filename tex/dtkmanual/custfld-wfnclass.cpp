@@ -3,7 +3,7 @@
  *
  *                  D  E  N  S  T  O  O  L  K  I  T
  *
- *                         VERSION: 1.1.2
+ *                         VERSION: 1.2.0
  *
  *             Contributors: Juan Manuel Solano-Altamirano
  *                           Julio Manuel Hernandez-Perez
@@ -50,7 +50,7 @@
 /* In this file, solreal is a mask for a double, i.e., a solreal is a double.
  * This name is used in order to keep compatibility with future implementations
  * requiring floats rather than doubles (old GPUs).  */
-solreal gaussWaveFunc::evalCustomScalarField(solreal x,solreal y,solreal z)
+solreal GaussWaveFunction::evalCustomScalarField(solreal x,solreal y,solreal z)
 {
    /* 
     * solreal rho=evalDensity(x,y,z) //Electron density [ED]
@@ -81,7 +81,7 @@ solreal gaussWaveFunc::evalCustomScalarField(solreal x,solreal y,solreal z)
    return (rho*rho);
 }
 /* ************************************************************************************ */
-void gaussWaveFunc::evalCustomVectorField(solreal x,solreal y,solreal z,\
+void GaussWaveFunction::evalCustomVectorField(solreal x,solreal y,solreal z,\
       solreal (&v)[3])
 {
    /* 
