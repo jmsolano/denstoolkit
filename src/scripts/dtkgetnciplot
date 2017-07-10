@@ -222,13 +222,13 @@ else
 fi
 #
 #Names of VMD script files
-outputVMDFileName="${baseFileName}.vmd"
+outputVMDFileName="${baseFileName}NCI.vmd"
 #Asks and saves the current directory (VMD sometimes needs absolute paths)
 currentWD=$(pwd)
 #
 #Makes the VMD scripts.
 echo -e "Making VMD scripts..."
-print_vmd_script "$currentWD/$cubeRhoFileName" "$currentWD/$cubeRedGradFileName" 0.500000 0.050000 > "$currentWD/$outputVMDFileName"
+print_vmd_script "$cubeRhoFileName" "$cubeRedGradFileName" 0.500000 0.050000 > "$outputVMDFileName"
 
 echo -e "Making s vs rho plot..."
 plot_redgradrho_vs_rho "$currentWD/$cubeRedGradFileName" "$currentWD/$cubeRhoFileName" "$currentWD/$baseFileName"

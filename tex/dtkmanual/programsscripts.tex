@@ -760,4 +760,104 @@ for more information about this fabulous programs.
 
 \textbf{Tip:} Use a small value of width when testing the view, and use the final resolution once you have chosen the final visualization options.
 
+%----------------------------------------------------------------------------------------------
+\section{dtkgetnciplot}
+%----------------------------------------------------------------------------------------------
+This script will provide a simple way to get cubes and graph of the No-Covalent Interacctions(NCI) field.
+
+\rule{\textwidth}{1pt}
+{\center\texttt{dtkgetnciplot} help menu.\\}
+\rule{\textwidth}{1pt}
+\begin{footnotesize}
+\begin{verbatim}
+
+    usage: /usr/local/bin/dtkgetnciplot [option [value(s)]] ... [option [value(s)]]
+
+This script computes the NCI field and makes two cubes, and one plot
+(s vs rho), which can be used to refine the cubes (by selecting
+appropriate cutoffs for rho and s). The script also generates
+VMD scripts that automatically loads and visualizes the 
+NCI index.
+
+Options 
+  -h           Display the help menu.
+  -w wf?name   Wavefunction name
+  -l        	Write cpu time, input/output information etc. on a log file
+  -n  dim   	Set the number of points per direction for the cube
+            	  to be dim x dim x dim.
+  -s        	Use a smart cuboid for the grid. The number of points for the
+            	  largest direction will be 80.
+  -S ln     	Use a smart cuboid for the grid. ln is the number of points
+            	  the largest axis will have. The remaining axes will have
+            	  a number of points proportional to its length.
+  -r rmin      Set the lower rho cutoff to be rmin
+  -R rmax      Set the upper rho cutoff to be rmax
+  -G smax      Set the upper reduced density gradient (s) cutoff to be smax
+
+
+\end{verbatim}
+\end{footnotesize}
+\rule{\textwidth}{1pt}
+
+An example of how use this script is 
+
+\rule{\textwidth}{1pt}
+\begin{footnotesize}
+\begin{verbatim}
+   $ dtkgetnciplot -w dimer-formicAcid.wfx
+\end{verbatim}
+\end{footnotesize}
+\rule{\textwidth}{1pt}
+
+This instruction will always generate the following files \\
+\begin{tabular}{r ||l}
+\hline 
+\textbf{File name}  & \textbf{Description}   \\ \hline
+ & \\
+{\it dimer-formicAcid}NCIRedDensGrad.cub& Cube file of Reduced Gradient of Density. \\
+ & \\
+{\it dimer-formicAcid}NCIRho.cub& Cube file of the Density multiplication by the sign \\ 
+                                 & of second eingevalue of Hessian. \\
+ & \\
+{\it dimer-formicAcid}NCI.vmd& VMD file with presets for visualizate NCI on VMD program. \\
+ & \\
+{\it dimer-formicAcid}NCISvsRho.dat& List of datas in two columns of Density cube (column 1)\\
+                                    & and Reduced Gradient of Density cube (column 2) \\
+ & \\
+{\it dimer-formicAcid}NCISvsRho.pdf& Pdf file of graph Density vs  Reduced Gradient of Density \\ 
+ & \\\hline
+\end{tabular}
+
+\vspace{5mm}
+
+The VMD and pdf files will see like this 
+%
+\begin{figure}[hb!]
+\centering
+\subfigure[$\rho vs \ S$]{\includegraphics[width=0.45\textwidth]{NCISvsRho}\label{fig:formicAcidPlotNCI}}\quad
+\subfigure[VMD visualisation]{\includegraphics[width=0.45\textwidth]{NCIvmd}\label{fig:formicAcidVMDNCI}}
+\caption{Output of dtkgetnciplot}\label{fig:dtkgetnciplot}
+\end{figure}
+%
+
+The script provides an options for make a cutoff of both fields and increase, for smart way, the number of points of cage for recalculate the cubes.
+
+\rule{\textwidth}{1pt}
+\begin{footnotesize}
+\begin{verbatim}
+   dtkgetnciplot -w dimer-formicAcid.wfx -S 250 -r 0.0 -R 0.06 -G 0.6
+\end{verbatim}
+\end{footnotesize}
+\rule{\textwidth}{1pt}
+
+With this options the VMD and pdf files will now see like this
+%
+\begin{figure}[hb!]
+\centering
+\subfigure[$\rho vs \ S$]{\includegraphics[width=0.45\textwidth]{NCISvsRho-Cutoff}\label{fig:formicAcidPlotNCIcutoff}}\quad
+\subfigure[VMD visualisation]{\includegraphics[width=0.45\textwidth]{NCIvmd-Cutoff}\label{fig:formicAcidVMDNCIcutoff}}
+\caption{Output of dtkgetnciplot using cutoffs}\label{fig:dtkgetnciplotCutoff}
+\end{figure}
+%
+
 
