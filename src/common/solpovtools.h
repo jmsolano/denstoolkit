@@ -57,6 +57,8 @@ using namespace std;
 #include <fstream>
 using std::ifstream;
 using std::ofstream;
+#include <string>
+using std::string;
 
 #ifndef SPTSIZEINDENT
 #define SPTSIZEINDENT 2
@@ -157,12 +159,16 @@ bool writePOVTransparentSphere(ofstream &ofil,int nt,
                     solreal xx, solreal yy, solreal zz, solreal rr,
                     solreal cr, solreal cg, solreal cb,solreal trc);
 //**********************************************************************************************
+bool writePOVTransparentSphere(ofstream &ofil,int nt,
+                    solreal xx, solreal yy, solreal zz, solreal rr,
+                    solreal cr, solreal cg, solreal cb,string trnsmStr);
+//**********************************************************************************************
 bool writePOVTriangle(ofstream &ofil,int nt);
 //**********************************************************************************************
 bool writePOVCylinder(ofstream &ofil,int nt, 
                       solreal xa, solreal ya, solreal za, 
                       solreal xb, solreal yb, solreal zb, solreal rr,
-                      solreal cr, solreal cg, solreal cb);
+                      solreal cr, solreal cg, solreal cb,string pigmentStr=string(""));
 //**********************************************************************************************
 bool writePOVCylinder(ofstream &ofil,int nt,
                       solreal xa, solreal ya, solreal za,

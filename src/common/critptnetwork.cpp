@@ -2313,6 +2313,8 @@ bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
    pof << "#declare ColorABGradPath=rgb <0.0,0.2,1.0>;" << endl;
    pof << "#declare ColorARGradPath=rgb <0.0,0.8,0.0>;" << endl;
    pof << "#declare ColorACGradPath=rgb <1.0,0.5,0.0>;" << endl;
+   pof << "#declare TransmitAtomSphere=0.7;" << endl;
+   pof << "#declare TransmitStdBondCylinder=0.7;" << endl;
    pof << "#default { finish { specular 0.3 roughness 0.03 phong .1 } }" << endl;
    writeScrCharLine(pof,'/');
    pof << "//For the colors, instead of rgb <...>, you may want to try Red, Yellow, ..." << endl;
@@ -2607,6 +2609,7 @@ bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
 /* ************************************************************************************* */
 void critPtNetWork::putBonds(ofstream &pof)
 {
+   string pigmstr="transmit TransmitStdBondCylinder";
    pof << "union{" << endl;
    int k=0,atni,atnk;
    solreal startpt[3],frak1;
@@ -2626,13 +2629,13 @@ void critPtNetWork::putBonds(ofstream &pof)
                   startpt[0],startpt[1],startpt[2],
                   bn->drawStickSize*CPNW_ATOMCRITICALPOINTSIZEFACTOR,
                   getAtomicRColorReal(atni),getAtomicGColorReal(atni),
-                  getAtomicBColorReal(atni));
+                  getAtomicBColorReal(atni),pigmstr);
             writePOVCylinder(pof,1,
                   startpt[0],startpt[1],startpt[2],
                   bn->R[k][0],bn->R[k][1],bn->R[k][2],
                   bn->drawStickSize*CPNW_ATOMCRITICALPOINTSIZEFACTOR,
                   getAtomicRColorReal(atnk),getAtomicGColorReal(atnk),
-                  getAtomicBColorReal(atnk));
+                  getAtomicBColorReal(atnk),pigmstr);
          }
       }
       writePOVSphere(pof,0,bn->R[i][0],bn->R[i][1],bn->R[i][2],
@@ -2648,12 +2651,13 @@ void critPtNetWork::putNuclei(ofstream & pof)
 {
    int atomn;
    solreal atrad;
+   string transmStr="TransmitAtomSphere";
    for (int i=0; i<bn->nNuc; i++) {
       atomn=bn->atNum[i];
       atrad=bn->drawAtSize;
       writePOVTransparentSphere(pof,0,bn->R[i][0],bn->R[i][1],bn->R[i][2],atrad,
             getAtomicRColorReal(atomn),getAtomicGColorReal(atomn),
-            getAtomicBColorReal(atomn),0.7);
+            getAtomicBColorReal(atomn),transmStr);
    }
    return;
 }
