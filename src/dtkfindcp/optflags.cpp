@@ -94,6 +94,7 @@ optFlags::optFlags()
    mkdatmat=0;
    mkextsearch=0;
    forcebcpconn=0;
+   forceseveralbcpconn=0;
    customseedtwoacps=0;
 }
 
@@ -270,10 +271,15 @@ void printHelpMenu(int &argc, char** &argv)
    cout << "  -h\t\tDisplay the help menu.\n\n";
    //-------------------------------------------------------------------------------------
    cout << "  --force-bcp-connectivity bcp acp1 acp2 \tTry to force the connectivity" << endl
-        << "            \t\t  of the bcp to be acp1 and acp2. Needed to correct some" << endl
+        << "            \t\t  of the bcp to be acpA and acpB. Needed to correct some" << endl
         << "            \t\t  cases wherein bond paths are not properly drawn." << endl
         << "            \t\t  The option will try to force the bond path to be" << endl
-        << "            \t\t  connected between acp1-bcp-acp2." << endl;
+        << "            \t\t  connected between acpA-bcp-acpB." << endl;
+   cout << "  --force-bcp-connectivities n bcp1 acp1A acp1B bcp2 acp2A acp2B" << endl
+        << "            \t\t  Try to connect more than one bcp (see --force-bcp-connectivity)" << endl
+        << "            \t\t  n is the number of bcp that will be tested for connection." << endl
+        << "            \t\t  Connectibities will be tried to be acpiA-bcpi-acpiB," << endl
+        << "            \t\t  here i is the number 1, 2, ..., n." << endl;
    cout << "  --add-seed-twoacps acp1 acp2 \t Perform a critical point search around" << endl
         << "            \t\t  the middle point between acp1 and acp2." << endl;
    cout << "  --help    \t\tSame as -h" << endl;
@@ -344,6 +350,10 @@ void processDoubleDashOptions(int &argc,char** &argv,optFlags &flags,int pos)
          exit(1);
       }
       flags.forcebcpconn=(pos+1);
+   } else if ( str==string("force-bcp-connectivities") ) {
+      displayWarningMessage("In this version, the user is responsible of providing\n"
+            "the correct number of arguments.");
+      flags.forceseveralbcpconn=(pos+1);
    } else {
       setScrRedBoldFont();
       cout << "Error: Unrecognized option '" << argv[pos] << "'" << endl;

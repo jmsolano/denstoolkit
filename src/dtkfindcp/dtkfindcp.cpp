@@ -100,6 +100,7 @@ using std::setprecision;
 #include "custfmtmathfuncts.h"
 
 void setForcedBCPConnectivity(char **argv,optFlags &option,critPtNetWork &cp);
+void setForcedBCPConnectivities(char **argv,optFlags &option,critPtNetWork &cp);
 
 int main (int argc, char ** argv)
 {
@@ -164,6 +165,9 @@ int main (int argc, char ** argv)
          cpn.setCriticalPoints(DENS);
          if ( options.forcebcpconn ) {
             setForcedBCPConnectivity(argv,options,cpn);
+         }
+         if ( options.forceseveralbcpconn ) {
+            setForcedBCPConnectivities(argv,options,cpn);
          }
          if (options.calcbgps) {cpn.setBondPaths();}
          break;
@@ -302,6 +306,23 @@ void setForcedBCPConnectivity(char **argv,optFlags &option,critPtNetWork &cp) {
    cout << "Trying forced connectivity. BCP: " << bcpIdx
       << ", ACP1: " << acpIdx1 << ", ACP2: " << acpIdx2 << endl;
    cp.forceBCPConnectivity(bcpIdx,acpIdx1,acpIdx2);
+}
+void setForcedBCPConnectivities(char **argv,optFlags &option,critPtNetWork &cp) {
+   if ( !option.forceseveralbcpconn ) {
+      return;
+   }
+   int pos=option.forceseveralbcpconn;
+   int n=std::stoi(string(argv[pos++]));
+   int bcpIdx,acpIdx1,acpIdx2;
+   for ( int i=0 ; i<n ; ++i ) {
+      bcpIdx=std::stoi(string(argv[pos++]));
+      acpIdx1=std::stoi(string(argv[pos++]));
+      acpIdx2=std::stoi(string(argv[pos++]));
+      --bcpIdx; --acpIdx1; --acpIdx2;
+      cout << "Trying forced connectivity. BCP: " << bcpIdx
+         << ", ACP1: " << acpIdx1 << ", ACP2: " << acpIdx2 << endl;
+      cp.forceBCPConnectivity(bcpIdx,acpIdx1,acpIdx2);
+   }
 }
 
 
