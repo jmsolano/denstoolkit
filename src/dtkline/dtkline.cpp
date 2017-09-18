@@ -195,10 +195,10 @@ int main (int argc, char ** argv)
          grid.makeDat(outfilnam,gwf,MLED);
          break;
       case 'r' :
-         grid.makeDat(outfilnam,gwf,REDG);
+         grid.makeDat(outfilnam,gwf,ROSE);
          break;
       case 's' :
-         grid.makeDat(outfilnam,gwf,ROSE);
+         grid.makeDat(outfilnam,gwf,REDG);
          break;
       case 'S':
          grid.makeDat(outfilnam,gwf,SENT);
