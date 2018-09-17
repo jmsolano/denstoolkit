@@ -89,7 +89,7 @@ void printErrorMsg(char** &argv,char lab);
 void printHelpMenu(int &argc, char** &argv);//self-described
 void getOptions(int &argc, char** &argv, optFlags &flags);//this function will assign the values to
                                                            //all the flags. Implementation is in optsflags.cpp
-void processDoubleDashOptions(int &argc,char** &argv,optFlags &flags,int pos);
+void processDoubleDashOptions(int &argc,char** &argv,optFlags &flags,int &pos);
 #endif //_OPTSFLAGS_H
 
 

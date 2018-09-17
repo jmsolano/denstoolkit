@@ -296,7 +296,7 @@ void printErrorMsg(char** &argv,char lab)
    return;
 }
 //**************************************************************************************************
-void processDoubleDashOptions(int &argc,char** &argv,optFlags &flags,int pos)
+void processDoubleDashOptions(int &argc,char** &argv,optFlags &flags,int &pos)
 {
    string progname=argv[0];
    size_t progpos=progname.find("./");
@@ -311,6 +311,7 @@ void processDoubleDashOptions(int &argc,char** &argv,optFlags &flags,int pos)
       exit(0);
    } else if ( str==string("configure-nci") ) {
       flags.configspecialnci=(pos+1);
+      pos+=3;
       if ((pos+1)>=(argc+3)) {
          displayErrorMessage(string("configure-nci must be followed by 3 real numbers!"));
          exit(1);
