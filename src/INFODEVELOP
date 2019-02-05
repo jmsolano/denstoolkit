@@ -1,5 +1,12 @@
 
 =======================================================================
+Setting up a new release (bump version)
+=======================================================================
+Just run bump_version.sh
+This will add the new version (which will be asked interactively),
+and push a new branch (with a tag).
+
+=======================================================================
 Adding a new field:
 =======================================================================
 Implement the respective functions to include the new field in
