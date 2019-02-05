@@ -36,7 +36,7 @@ For building the binaries, type:
 
 ~~~~~~~~~~
 $cd denstoolkit/src
-$git checkout version-1.3.1
+$git checkout version-1.3.0
 $make
 $sudo make install
 ~~~~~~~~~~
