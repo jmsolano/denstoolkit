@@ -2,9 +2,15 @@
 =======================================================================
 Setting up a new release (bump version)
 =======================================================================
+Check the current version (or tag) with
+$git tag
+
+Change the readme file; add the new tag (vX.Y.Z), which must
+coincide with the release tag used in the bump process
+(see below).
 Just run bump_version.sh
 This will add the new version (which will be asked interactively),
-and push a new branch (with a tag).
+and push a new branch (with a tag of the form vX.Y.Z).
 
 =======================================================================
 Adding a new field:
