@@ -43,8 +43,6 @@ DTKMOMDDIR      = $(LCL_SRCDIR)/dtkmomd
 DTKQDMOLDIR     = $(LCL_SRCDIR)/dtkqdmol
 DTKDEMAT1DIR    = $(LCL_SRCDIR)/dtkdemat1
 DTKBPDENSDIR    = $(LCL_SRCDIR)/dtkbpdens
-DTKCHARCICPDIR  = $(LCL_SRCDIR)/dtkcharcicp
-DTKINTOVBPDIR   = $(LCL_SRCDIR)/dtkintegobondpath
 
 DTKALLDIRS      = $(DTKCOMMONDIR) $(DTKPOINTDIR) $(DTKLINEDIR) $(DTKPLANEDIR) \
                   $(DTKCUBEDIR) $(DTKFINDCPDIR) $(DTKMOMDDIR) $(DTKQDMOLDIR) \
@@ -98,13 +96,6 @@ DTKDEMAT1FILES    = $(DTKDEMAT1DIR)/dtkdemat1.cpp $(DTKDEMAT1DIR)/optflags.h \
 DTKBPDENSFILES    = $(DTKBPDENSDIR)/dtkbpdens.cpp $(DTKBPDENSDIR)/optflags.h \
                   $(DTKBPDENSDIR)/optflags.cpp $(DTKBPDENSDIR)/crtflnms.h \
                   $(DTKBPDENSDIR)/crtflnms.cpp $(DTKBPDENSDIR)/soldefines.h
-DTKCHARCICPFILES  = $(DTKCHARCICPDIR)/dtkcharcicp.cpp $(DTKCHARCICPDIR)/optflags.h \
-                  $(DTKCHARCICPDIR)/optflags.cpp $(DTKCHARCICPDIR)/crtflnms.h \
-                  $(DTKCHARCICPDIR)/crtflnms.cpp $(DTKCHARCICPDIR)/soldefines.h
-DTKINTOVBPFILES  = $(DTKINTOVBPDIR)/dtkintegobondpath.cpp $(DTKINTOVBPDIR)/optflags.h \
-                  $(DTKINTOVBPDIR)/optflags.cpp $(DTKINTOVBPDIR)/crtflnms.h \
-                  $(DTKINTOVBPDIR)/crtflnms.cpp $(DTKINTOVBPDIR)/soldefines.h
-
 DTKALLFILES     = $(DTKCOMMONFILES) $(DTKPOINTFILES) $(DTKLINEFILES) $(DTKPLANEFILES) \
                   $(DTKCUBEFILES) $(DTKFINDCPFILES) $(DTKMOMDFILES) $(DTKQDMOLFILES) \
                   $(DTKDEMAT1FILES) $(DTKBPDENSFILES) $(DTKCHARCICPFILES) \
@@ -121,8 +112,7 @@ all: $(DTKALLDIRS) $(DTKALLFILES) bindir outdir objdir build
 
 build: $(LCL_BINDIR)/dtkpoint $(LCL_BINDIR)/dtkline $(LCL_BINDIR)/dtkplane \
        $(LCL_BINDIR)/dtkcube $(LCL_BINDIR)/dtkfindcp $(LCL_BINDIR)/dtkmomd \
-       $(LCL_BINDIR)/dtkqdmol $(LCL_BINDIR)/dtkdemat1 $(LCL_BINDIR)/dtkbpdens \
-		 $(LCL_BINDIR)/dtkcharcicp $(LCL_BINDIR)/dtkintegobondpath
+       $(LCL_BINDIR)/dtkqdmol $(LCL_BINDIR)/dtkdemat1 $(LCL_BINDIR)/dtkbpdens
 
 $(LCL_BINDIR)/dtkpoint: $(DTKPOINTFILES) $(DTKCOMMONFILES)
 	@cd $(DTKPOINTDIR); make $(MKFLAGS); mv dtkpoint $(LCL_BINDIR)/; cd $(LCL_SRCDIR)
@@ -152,12 +142,6 @@ $(LCL_BINDIR)/dtkdemat1: $(DTKDEMAT1FILES) $(DTKCOMMONFILES)
 $(LCL_BINDIR)/dtkbpdens: $(DTKBPDENSFILES) $(DTKCOMMONFILES)
 	@cd $(DTKBPDENSDIR); make $(MKFLAGS); mv dtkbpdens $(LCL_BINDIR)/; cd $(LCL_SRCDIR)
 
-$(LCL_BINDIR)/dtkcharcicp: $(DTKCHARCICPFILES) $(DTKCOMMONFILES)
-	@cd $(DTKCHARCICPDIR); make $(MKFLAGS); mv dtkcharcicp $(LCL_BINDIR)/; cd $(LCL_SRCDIR)
-
-$(LCL_BINDIR)/dtkintegobondpath: $(DTKINTOVBPFILES) $(DTKCOMMONFILES)
-	@cd $(DTKINTOVBPDIR); make $(MKFLAGS); mv dtkintegobondpath $(LCL_BINDIR)/; cd $(LCL_SRCDIR)
-
 clean: 
 	@if test -d $(DTKPOINTDIR); then (cd $(DTKPOINTDIR); make clean; cd $(LCL_SRCDIR)) fi 
 	@if test -d $(DTKLINEDIR); then (cd $(DTKLINEDIR); make clean; cd $(LCL_SRCDIR)) fi 
@@ -179,7 +163,7 @@ install: build
 	@echo "\033[32m\nInstalled programs:\n"
 	@if test -e $(INSTALL_PATH)/dtkpoint; then (dtkpoint -V; dtkline -V; \
 		dtkplane -V; dtkcube -V; dtkfindcp -V; dtkmomd -V; dtkdemat1 -V; \
-		dtkqdmol -V; dtkbpdens -V; dtkcharcicp -V; dtkintegobondpath -V; \
+		dtkqdmol -V; dtkbpdens -V; \
           cd $(INSTALL_PATH); ls -1 dtk*2*) fi
 	@echo "\033[0m"
 
@@ -195,7 +179,6 @@ distclean: clean cleandeveldocs
 	rm -f $(INSTALL_PATH)/dtkqdmol
 	rm -f $(INSTALL_PATH)/dtkdemat1
 	rm -f $(INSTALL_PATH)/dtkbpdens
-	rm -f $(INSTALL_PATH)/dtkcharcicp
 	rm -f $(INSTALL_PATH)/dtkeps2pdf
 	rm -f $(INSTALL_PATH)/dtkpov2png
 
@@ -225,12 +208,6 @@ runtest: build
           $(LCL_BINDIR)/dtkbpdens cyclopropane.wfx -P -p M -n 160 -s 0.02e0 -l; \
           $(LCL_BINDIR)/dtkbpdens cyclopropane.wfx -P -p M -n 145 -l -L; \
           rm -f cyclopropane.wfx
-	cd $(LCL_OUTDIR); cp $(LCL_WFDIR)/benzene.wfn .; \
-          $(LCL_BINDIR)/dtkcharcicp benzene.wfn -v; \
-          rm -f benzene.wfn
-	cd $(LCL_OUTDIR); cp $(LCL_WFDIR)/benzene.wfn .; \
-          $(LCL_BINDIR)/dtkintegobondpath benzene.wfn; \
-          rm -f benzene.wfn
 
 develdocs: devdochtmldir
 	@cd $(LCL_DVDCDIR); doxygen Doxyfile

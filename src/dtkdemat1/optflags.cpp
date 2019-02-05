@@ -268,7 +268,6 @@ void printHelpMenu(int &argc, char** &argv)
         << "            \t  use this name as well --but different extension--)." << endl;
    cout << "  -s step   \tSet the stepsize for the bond path to be 'step'." << endl
         << "            \t  Default value: " << DEFAULTBONDPATHSTEPMD1 << endl;
-   cout << "  -T        \tPerform the Topological analysis (find critical points)." << endl;
 #if _HAVE_GNUPLOT_
    cout << endl;
    cout << "  -P        \tCreate a plot using gnuplot." << endl
