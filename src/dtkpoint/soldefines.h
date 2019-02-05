@@ -3,7 +3,7 @@
  *
  *                  D  E  N  S  T  O  O  L  K  I  T
  *
- *                         VERSION: 1.3.0
+ *                         VERSION: 1.3.1
  *
  *             Contributors: Juan Manuel Solano-Altamirano
  *                           Julio Manuel Hernandez-Perez
@@ -61,7 +61,7 @@ typedef double solreal;
 #endif
 
 #define USEPROGRESSBAR 1
-#define CURRENTVERSION "1.3.0"
+#define CURRENTVERSION "1.3.1"
 #define PROGRAMCONTRIBUTORS "JMSA/JMHP"
 #define EPSFORELFVALUE (2.871e-05)
 
