@@ -1,3 +1,159 @@
+Version 1.3.0:
+ - Added instructions to src/INFODEVELOP and updtd README.md (tag)
+ - Merge branch 'develop' into dev-rel
+ - Added prepare release instructions to INFODEVELOP
+ - BeforeRelease
+ - Bugfix: parsing configure-nci for dtkcube works OK now.
+ - Modified VanderWaals radius for S (fix bisulfides hydrongen bond issues)
+ - Fixed false assignation (ROSE/REDG) in dtkline.
+ - Improved povray (BCPs, dtkfindcp).
+ - Added option to force several bcp connections.
+ - Added s, LED, and RoSE description to dtk-manual.
+ - reworded dtk-manual (describing dtkgetnciplot).
+ - Merged in Frodox14/denstoolkitdevfork/impNCIs (pull request #11)
+ - Merge branch 'develop' into dev-addseed
+ - Added to dtk-manual a manual for dtkgetnciplot
+ - Changed the name of VMD file in NCI script and omit the complete path
+ - Notice for include in the manual a reduced gradient of density field
+ - Added cubaneCPs.pdf (needed for generating dtk-manual)
+ - Added option to search CPs at a point (betwee two acps) to dtkfindcp
+ - Added TODO in dtkview
+ - Added bcp force connectivity option to dtkfindcp.
+ - Merge branch 'develop' into ref
+ - Merged in Frodox14/denstoolkitdevfork/develop (pull request #10)
+ - Refactored dtkgetnciplot: Uniform style naming and code conventions.
+ - Fix bug of values for vmd
+ - Merged in Frodox14/denstoolkitdevfork/impNCIs (pull request #9)
+ - Refactor script for NCI
+ - Fix bug in NCI special parameters
+ - Modified script of NCI, now you can select the region that will be visualized
+ - Improved configure-nci help menu (dtkcube)
+ - NCI parameters can be parsed to dtkcube, which passes them to the gausswavefunction object.
+ - Moved defines to begining of file (NCI), and refactor.
+ - refactor dtkgetnciplot (syntax, style, gen pdf).
+ - Added a subrutine for create NCI plot
+ - Added rutine for make a file to graph Density vs Reduced Density Gradient from cube files
+ - Merge branch 'develop' into impNCIs
+ - Improved error messages.
+ - Small improvements on dtkgetnciplot (refactor)
+ - Bugfix: cubes computed if not present.
+ - Refactored dtkgetnciplot
+ - Merged in Frodox14/denstoolkitdevfork/develop (pull request #7)
+ - Added macros for minimum and maximum values of rho in the field NCI
+ - Added script for make visualization of NCI in VMD
+ - Merge remote-tracking branch 'upstream/develop' into develop
+ - Added a new factor to field NCI for make compatible the cube output with instructions of NCIPlot and vmd.
+ - Correction of NCI field for change of sign of rho values
+ - Improved description of NCI fields.
+ - Refactor: adjusting to previousl coding style.
+ - Merged in Frodox14/denstoolkitdevfork/develop (pull request #5)
+ - Made grammatial and style corrections for pull request
+ - Refactored, NCI functions, with previous style
+ - Added correction to the NCI field
+ - Added NCI field to dtkcube
+ - Fixed problems with declaration values of the function "evalNCIs"
+ - Fixed declaration problem
+ - Added tag/keys for NCI field
+ - Added functions "evalNCIs" and "evalNCILambda" for calculating NCI field, the first returning values of Reduced Density Gradient and the second returning values of Rho
+ - Added Luis Alfredo to CONTRIBUTORS list.
+ - Rewording and spelling check on availablefields.tex.
+ - Merge branch 'develop' into developAlfredo
+ - Merge remote-tracking branch 'upstream/develop' into developAlfredo
+ - Merge branch 'developAlfredo' of https://bitbucket.org/Frodox14/denstoolkitdevbb into developAlfredo
+ - Added instructions for implement new scalar fields
+ - Added instructions for implement new scalar fields
+ - Add documentation of new field "Virial Potential Energy Densisty" in dtk-manual
+ - dtkintegobondpath now computes proportional energies.
+ - Merge branch 'developAlfredo' into develop
+ - Refactor pull Luis Alfredo's pull request.
+ - Fix orthographic errors for Virial Potential Energy Density
+ - Refactoring program dtkplane, scalar field Virial Potential Energy
+ - Refactoring program dtkplane
+ - Refactoring program dtkline
+ - Add all tags/keys of the new scalar field (Virial Potential Energy Density) in the fldtypesdef.h file
+ - Add new scalar field Virial Potential Energy Density(V.P.E.D.), only how evaluate at some point and add in the method displayAllFieldProperties and white AllFieldProperties
+ - Fix how make the files names on dtkpoint
+ - Add the scalar field "Potencial Energy Density" to the program dtkcube
+ - Add the scalar field "Potencial Energy Density" to the program dtkplane
+ - Add the scalar field "Potencial Energy Density" to the program dtkline
+ - Add all tags of the new scalar field (Potencial Energy Density) in the fldtypesdef.h file
+ - Add new scalar field Potencial Energy Density, only add how evaluate at some point and display and write in the method AllProperties
+ - Added dtkGetSumBCPRho to evaluate the sum of rho at all bcps.
+ - Fixed Makefile (added dtkintegobondpath post-installation test)
+ - Slight improve on GetIntermediateCoordinatesAndDistanceBetweenPoints.
+ - Setup general Makefile
+ - first release of dtkintegobondpath program.
+ - Setup skeleton for integrateoverbondpath class and dtkintegobondpath.
+ - Fixed Makefile (correct copy of wfn file into test directory)
+ - Fixed Makefile (runtest includes a test for dtkcharcicp)
+ - Fixed Makefile (really include dtkcharcicp)
+ - Added dtkcharcicp to global Makefile
+ - First working version of dtkcharcicp.
+ - Merge branch 'develop' into dev-charcicp
+ - Added findTwoClosestAtomsToBCP function to critPtNetwork class.
+ - Signatures and eigenvalues of hessian (2d and 6d) are saved now.
+ - Added description (dtkcharcicp) in ChangeLog
+ - Added files for tracking
+ - Fixed HessDensityMatrix1 (dxpdy!=dxdyp)
+ - Implemented eig6. Not tested!
+ - Merge branch 'develop'
+ - Untracked dtkfindcicp files.
+ - First finished implementation of demat1critptnetworkbp class
+ - critptnetwork now produces BGPs oriented to the order of conBCP
+ - critptnetwork now accepts increasing the size of the BGP arrays.
+ - Configured critptnetwork to accept changes in step for BGPs.
+ - Modified critptnetwork class to split processes related to ACPs, BCPs, and BGPs searches.
+ - Implmented basic skeleton for class DeAat1CritPtNetworkBP (inc Makefile)
+ - Renamed demat1critptnetwork to demat1critptnetworksl
+ - Added instructions for compiling DensToolKitViewer under Fedora 21.
+ - Partial commit.
+ - Merge branch 'master' into impfindcicp
+ - Updated checkdependencies (check all before exiting)
+ - Merge branch 'master' into impfindcicp
+ - Changed install instructions ("--bare" removed)
+ - Added log and other output files.
+ - Clone of dtkfindcp to dtkfindcicp
+ - Merge branch 'develop'
+ - Changed g++-mp-4.8 to g++-mp-4.9 (for OSX)
+ - Merge branch 'develop'
+ - Added soltimer
+ - Merge branch 'develop'
+ - private to protected in gausswavefunction.h
+ - Merge branch 'develop'
+ - using fast-math
+ - Merge branch 'develop'
+ - Refactor: wavefunctionclass --> gausswavefunction
+ - Merge branch 'develop'
+ - Removed unused variables, and resolved compiler warnings.
+ - Merge branch 'develop'
+ - Fixed dtkbpdens/Makefile (added -std=c++11)
+ - Merge branch 'develop'
+ - Optimized momentum density (after c++11)
+ - After adding c++11 into makefiles.
+ - Compiler set to use std=c++11
+ - After optimization of evalDensity, evalRhoGradRho, evalHessian(x,r,g,h) Merge branch 'develop'
+ - Optimized rho, rhogradrho, rhogradrhohessrho
+ - Merge branch 'develop'
+ - Improved Doxygen documentation. Requires Graphviz dot
+ - Improved Doxygen documentation. Requires Graphviz dot
+ - Added credits to VizMol.
+ - Added invitation to contribute.
+ - Added download address for DensToolKitViewer.app
+ - Added contributors list to README.md
+ - Added contributor list.
+ - Compilation error fix: removed a spurious solreal declaration.
+ - Added 2nd, 3rd, and 4th derivatives for primitives of type pt<57.
+ - Extended support for PrimType<57 (First derivatives)
+ - Extended support for evalDensity and evalDensityMatrix1 to PrimType<=56
+ - Added information about DTKViewer in main Readme.md
+ - Up-dated toolbar buttons.
+ - Added View CP Labels checkbox, and menu action.
+ - Added Transparency checkbox and menu action.
+ - Added 'view atoms', and 'view regular bonds' options to dtkview.
+ - Added dtkmanual info in README.md
+ - Improved dtkview instructions
+ - Improved git-cloning instructions.
+
 Version 1.2.0:
  - Added version in dtkviewer->dtkaboutdialog
  - Merge branch 'master' of https://bitbucket.org/jmsolano/denstoolkitdevbb
