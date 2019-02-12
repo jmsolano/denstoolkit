@@ -47,6 +47,8 @@
 #include <cstdlib>
 #include <cstring>
 using std::string;
+#include <fstream>
+using std::ofstream;
 
 #ifndef DEMAT1MAXITERATIONACPSEARCH
 #define DEMAT1MAXITERATIONACPSEARCH 30
@@ -168,12 +170,14 @@ public:
    bool imNew(solreal (&x)[2],int dim,solreal ** (&arr),size_t &pos);
 /* ************************************************************************************ */
    void displayACPsInfo(void);
-/* ************************************************************************************ */
    void displaySCPsInfo(void);
-/* ************************************************************************************ */
    void displayRCPsInfo(void);
-/* ************************************************************************************ */
    void displayCPsInfo(void);
+/* ************************************************************************************ */
+   void writeACPsInfo(ofstream &ofil);
+   void writeSCPsInfo(ofstream &ofil);
+   void writeRCPsInfo(ofstream &ofil);
+   void writeCPsInfo(ofstream &ofil);
 /* ************************************************************************************ */
    void setGammaCriticalPoints(void);
 /* ************************************************************************************ */

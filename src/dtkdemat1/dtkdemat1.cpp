@@ -553,6 +553,15 @@ int main (int argc, char ** argv) {
    o1dfile.close();
    o1sfile.close();
    
+   /* Finding critical points (if requested)  */
+
+   DeMat1CriticalPointNetworkSL cp(&gwf,at1,at2);
+   if ( options.findcps ) {
+      printBetweenStarLines("Searching Critical Points");
+      cp.setGammaCriticalPoints();
+      printScrStarLine();
+   }
+
    /* Display the information of min/max of MD1 */
    
    cout << scientific << setprecision(12) << endl;
@@ -598,6 +607,10 @@ int main (int argc, char ** argv) {
    printV3Comp("x2(diag,max): ",xd2max);
    cout << "(p1: " << p1dmax << ")\n(p2: " << p2dmax << ")" << endl;
    cout << "MD1(diag,max): " << md1dmax << endl;
+   if ( options.findcps ) {
+      printScrCharLine('-');
+      cp.displayCPsInfo();
+   }
    printScrCharLine('-');
    cout << "The value of MD1 at the point e --aka cicp-- is:" << endl;
    cout << "MD1(cicp): " << gwf.evalDensityMatrix1(\
@@ -608,6 +621,7 @@ int main (int argc, char ** argv) {
    printScrCharLine('-');
    cout << endl;
    
+
    /* Writing the information of MD1 (min/max) to the log file */
    
    ofstream logfil;
@@ -651,23 +665,20 @@ int main (int argc, char ** argv) {
    writeV3Comp(logfil,"#x2(diag,max):\n",xd2max);
    logfil << "#(p1):\n" << p1dmax << "\n#(p2):\n" << p2dmax << endl;
    logfil << "#MD1(diag,max):\n" << md1dmax << endl;
+   /* Writing the information of MD1 (min/max) to the log file */
+   if ( options.findcps ) {
+      writeCommentedScrCharLine(logfil,'-');
+      cp.writeCPsInfo(logfil);
+   }
+   /* Writing the value of gamma at cicp  */
    writeCommentedScrCharLine(logfil,'-');
    logfil << "#The value of MD1 at the point e --aka cicp-- is:" << endl;
-   logfil << "#MD1(CICP): " << gwf.evalDensityMatrix1(\
+   logfil << "#MD1(CICP): " << endl << gwf.evalDensityMatrix1(\
          bnw.R[at1][0],bnw.R[at1][1],bnw.R[at1][2],\
          bnw.R[at2][0],bnw.R[at2][1],bnw.R[at2][2]) << endl;
    writeCommentedScrCharLine(logfil,'-');
+
    logfil.close();
-
-   /* Finding critical points (if requested)  */
-
-   DeMat1CriticalPointNetworkSL cp(&gwf,at1,at2);
-   if ( options.findcps ) {
-      printBetweenStarLines("Searching Critical Points");
-      cp.setGammaCriticalPoints();
-      cp.displayCPsInfo();
-      printScrStarLine();
-   }
    
    /* Writing the gnuplot script */
    

@@ -757,7 +757,6 @@ void DeMat1CriticalPointNetworkSL::displayACPsInfo(void)
            << ").\tx:" << RACP[i][0] << " " << RACP[i][1]
            << "; g: " << gg[0] << " " << gg[1] << endl;
    }
-   
 }
 /* ************************************************************************************ */
 void DeMat1CriticalPointNetworkSL::displaySCPsInfo(void)
@@ -796,6 +795,60 @@ void DeMat1CriticalPointNetworkSL::displayCPsInfo(void)
    displaySCPsInfo();
    displayRCPsInfo();
    cout << "nACP-nSCP+nRCP: " << (nACP-nSCP+nRCP) << endl;
+}
+/* ************************************************************************************ */
+void DeMat1CriticalPointNetworkSL::writeACPsInfo(ofstream &ofil)
+{
+   if ( nACP==0 ) {
+      ofil << "No ACPs found!" << endl;
+      return;
+   }
+   solreal gg[2],gamm;
+   for ( int i=0 ; i<nACP ; i++ ) {
+      evalUVGrad(RACP[i][0],RACP[i][1],gamm,gg);
+      ofil << "ACP(" << std::setw(3) << std::setfill('0') << i
+           << ").\tx:" << RACP[i][0] << " " << RACP[i][1]
+           << "; g: " << gg[0] << " " << gg[1] << endl;
+   }
+}
+/* ************************************************************************************ */
+void DeMat1CriticalPointNetworkSL::writeSCPsInfo(ofstream &ofil)
+{
+   if ( nSCP==0 ) {
+      ofil << "No SCPs found!" << endl;
+      return;
+   }
+   solreal gg[2],gamm;
+   for ( int i=0 ; i<nSCP ; i++ ) {
+      evalUVGrad(RSCP[i][0],RSCP[i][1],gamm,gg);
+      ofil << "SCP(" << std::setw(3) << std::setfill('0') << i
+           << ").\tx:" << RSCP[i][0] << " " << RSCP[i][1]
+           << "; g: " << gg[0] << " " << gg[1] << endl;
+   }
+}
+/* ************************************************************************************ */
+void DeMat1CriticalPointNetworkSL::writeRCPsInfo(ofstream &ofil)
+{
+   if ( nRCP==0 ) {
+      ofil << "No RCPs found!" << endl;
+      return;
+   }
+   solreal gg[2],gamm;
+   for ( int i=0 ; i<nRCP ; i++ ) {
+      evalUVGrad(RRCP[i][0],RRCP[i][1],gamm,gg);
+      ofil << "RCP(" << std::setw(3) << std::setfill('0') << i
+           << ").\tx:" << RRCP[i][0] << " " << RRCP[i][1]
+           << "; g: " << gg[0] << " " << gg[1] << endl;
+   }
+}
+/* ************************************************************************************ */
+void DeMat1CriticalPointNetworkSL::writeCPsInfo(ofstream &ofil)
+{
+   ofil << "#Topological information:" << endl;
+   writeACPsInfo(ofil);
+   writeSCPsInfo(ofil);
+   writeRCPsInfo(ofil);
+   ofil << "nACP-nSCP+nRCP: " << (nACP-nSCP+nRCP) << endl;
 }
 /* ************************************************************************************ */
 void DeMat1CriticalPointNetworkSL::setGammaCriticalPoints(void)
