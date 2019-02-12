@@ -21,6 +21,8 @@ cachegrind.*
 *.out
 *.bkp
 *.user
+*.synctex
+*.vmd
 
 #binaries
 src/dtkbpdens/dtkbpdens

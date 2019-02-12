@@ -86,8 +86,7 @@ void computeUVProjection(solreal (&x1)[3],solreal (&x2)[3],\
       solreal (&g)[3],solreal (&gp)[3],solreal (&uv)[2]);
 
 
-int main (int argc, char ** argv)
-{
+int main (int argc, char ** argv) {
    const clock_t begin_time = clock();
    const solreal begin_walltime = time(NULL);
    string infilnam,outfilnam,o1dfilnam,o1sfilnam,gnpnam,lognam;
@@ -600,6 +599,13 @@ int main (int argc, char ** argv)
    cout << "(p1: " << p1dmax << ")\n(p2: " << p2dmax << ")" << endl;
    cout << "MD1(diag,max): " << md1dmax << endl;
    printScrCharLine('-');
+   cout << "The value of MD1 at the point e --aka cicp-- is:" << endl;
+   cout << "MD1(cicp): " << gwf.evalDensityMatrix1(\
+         bnw.R[at1][0],bnw.R[at1][1],bnw.R[at1][2],\
+         bnw.R[at2][0],bnw.R[at2][1],bnw.R[at2][2]) << endl;
+   printScrCharLine('-');
+   cout << "Logfile: " << lognam << endl;
+   printScrCharLine('-');
    cout << endl;
    
    /* Writing the information of MD1 (min/max) to the log file */
@@ -645,6 +651,11 @@ int main (int argc, char ** argv)
    writeV3Comp(logfil,"#x2(diag,max):\n",xd2max);
    logfil << "#(p1):\n" << p1dmax << "\n#(p2):\n" << p2dmax << endl;
    logfil << "#MD1(diag,max):\n" << md1dmax << endl;
+   writeCommentedScrCharLine(logfil,'-');
+   logfil << "#The value of MD1 at the point e --aka cicp-- is:" << endl;
+   logfil << "#MD1(CICP): " << gwf.evalDensityMatrix1(\
+         bnw.R[at1][0],bnw.R[at1][1],bnw.R[at1][2],\
+         bnw.R[at2][0],bnw.R[at2][1],bnw.R[at2][2]) << endl;
    writeCommentedScrCharLine(logfil,'-');
    logfil.close();
 
