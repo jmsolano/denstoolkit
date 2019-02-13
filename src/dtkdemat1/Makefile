@@ -49,7 +49,7 @@ CCFLAGS += -std=c++11
 
 OBJDIR        := ../objs
 INCSOLDEFS    := -include soldefines.h
-PARTDEPS      := crtflnms.h crtflnms.cpp optflags.h optflags.cpp
+PARTDEPS      := crtflnms.h crtflnms.cpp optflags.h optflags.cpp helperplots.h helperplots.cpp
 
 # Target rules
 all: build
@@ -63,6 +63,9 @@ $(OBJDIR)/solscrutils.o: ../common/solscrutils.cpp ../common/solscrutils.h solde
 	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
 
 $(OBJDIR)/solstringtools.o: ../common/solstringtools.cpp ../common/solstringtools.h soldefines.h
+	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
+
+$(OBJDIR)/solgnuplottools.o: ../common/solgnuplottools.cpp ../common/solgnuplottools.h soldefines.h
 	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
 
 $(OBJDIR)/solfileutils.o: ../common/solfileutils.cpp soldefines.h
@@ -115,19 +118,22 @@ $(OBJDIR)/atomcolschjmol.o: ../common/atomcolschjmol.cpp ../common/atomcolschjmo
 optflags.o: optflags.cpp soldefines.h
 	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
 
+helperplots.o: helperplots.cpp soldefines.h
+	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
+
 crtflnms.o: crtflnms.cpp soldefines.h
 	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
 
 dtkdemat1.o: dtkdemat1.cpp soldefines.h $(PARTDEPS)
 	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
 
-dtkdemat1: dtkdemat1.o optflags.o crtflnms.o $(OBJDIR)/solfileutils.o \
+dtkdemat1: dtkdemat1.o optflags.o crtflnms.o helperplots.o $(OBJDIR)/solfileutils.o \
   $(OBJDIR)/iofuncts-wfx.o $(OBJDIR)/iofuncts-wfn.o $(OBJDIR)/iofuncts-cpx.o \
   $(OBJDIR)/gausswavefunction.o $(OBJDIR)/solscrutils.o $(OBJDIR)/solmemhand.o \
   $(OBJDIR)/bondnetwork.o $(OBJDIR)/wfgrid2d.o $(OBJDIR)/solpovtools.o \
   $(OBJDIR)/solmath.o $(OBJDIR)/eig2-4.o $(OBJDIR)/critptnetwork.o \
   $(OBJDIR)/solstringtools.o $(OBJDIR)/atomradiicust.o $(OBJDIR)/atomcolschjmol.o \
-  $(OBJDIR)/demat1critptnetworksl.o
+  $(OBJDIR)/solgnuplottools.o $(OBJDIR)/demat1critptnetworksl.o
 	$(GCC) $(CCFLAGS) $(OPTIM_CCFLAGS) $(INCSOLDEFS) -o $@ $+
 clean:
 	rm -f *.o dtkdemat1
@@ -150,10 +156,13 @@ runlih: build
 runhf: build
 	./dtkdemat1  hf.wfn -P -l -c -L -n 50 -p G -T #-C -0.04 0.004 0.06
 
-runch4a: build
-	./dtkdemat1  ch4.wfx -P -l -c -L -n 40 -p G #-C -0.04 0.004 0.06
-
 runch4: build
+	./dtkdemat1  ch4.wfx -P -k -l -c -L -n 30 -p G #-C -0.04 0.004 0.06
+
+runch4a: build
+	./dtkdemat1  ch4.wfx -P -l -c -L -n 40 #-C -0.04 0.004 0.06
+
+runch4b: build
 	./dtkdemat1  ch4.wfx -P -l -c -L -n 40 -p G -T #-C -0.04 0.004 0.06
 
 runf2: build

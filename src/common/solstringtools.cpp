@@ -173,6 +173,15 @@ string getFirstChunk(const string &line,char delim)
    return res;
 }
 /* ******************************************************************************************* */
+string generateStrRandSeq(const int len)
+{
+   const int dm1=61;
+   const char alphanum[]="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+   srand (clock());
+   string s="";
+   for (int i=0; i<len; ++i) {s+=alphanum[rand()%(dm1)];}
+   return s;
+}
 /* ******************************************************************************************* */
 /* ******************************************************************************************* */
 /* ******************************************************************************************* */

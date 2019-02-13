@@ -173,7 +173,50 @@ void mkLogLinPlotFromMultiYDat(string datnam)
    mkLogLogPlotFromMultiYDat(datnam,false,true);
 }
 /* **************************************************************************************** */
+void renderGnpFile(string gnpname,bool rmGnpFile)
+{
+#if (defined(__CYGWIN__))
+   string cmdline="wgnuplot ";
+#else
+   string cmdline="gnuplot ";
+#endif
+   cmdline+=gnpname;
+   cout << "Calling gnuplot; cmd: '" << cmdline << "'" << endl;
+   system(cmdline.c_str());
+   if ( rmGnpFile ) {
+      cmdline="rm "+gnpname;
+      system(cmdline.c_str());
+   }
+}
 /* **************************************************************************************** */
+void gnuplottools_eps2pdf(const string &epsname)
+{
+   string tmpepsname=generateStrRandSeq(16);
+   string cmdline;
+#if ( _HAVE_EPSTOOL_)
+   tmpepsname+=".eps";
+   cmdline="epstool --copy -b ";
+   cmdline+=epsname;
+   cmdline+=" ";
+   cmdline+=tmpepsname;
+   cmdline+=" > /dev/null 2>&1";
+   system(cmdline.c_str());
+#endif
+   //_HAVE_EPSTOOL_
+#if (_HAVE_EPSTOPDF_)
+   string pdfname=epsname;
+   replaceExtensionOfFileName(pdfname,"pdf");
+   cmdline="epstopdf --outfile=";
+   cmdline+=pdfname;
+   cmdline+=" ";
+   cmdline+=tmpepsname;
+   cmdline+=" > /dev/null 2>&1";
+   system(cmdline.c_str());
+   cmdline="rm "+tmpepsname;
+   system(cmdline.c_str());
+#endif
+   // _HAVE_EPSTOPDF_
+}
 /* **************************************************************************************** */
 /* **************************************************************************************** */
 /* **************************************************************************************** */

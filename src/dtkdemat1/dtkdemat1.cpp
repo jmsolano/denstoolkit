@@ -76,27 +76,43 @@ using std::setprecision;
 #include "../common/critptnetwork.h"
 #include "../common/demat1critptnetworksl.h"
 #include "../common/solstringtools.h"
+#include "../common/solgnuplottools.h"
 #include "optflags.h"
 #include "crtflnms.h"
+#include "helperplots.h"
 
 
-/* Function for evaluating the projection of $\nabla\gamma(x,x')$, $\nabla'\gamma(x,x')$
+/* computeUVProjection evaluates the projection of $\nabla\gamma(x,x')$, $\nabla'\gamma(x,x')$
  * upon the coordinates (u,v)  */
 void computeUVProjection(solreal (&x1)[3],solreal (&x2)[3],\
       solreal (&g)[3],solreal (&gp)[3],solreal (&uv)[2]);
-
-
+/*
+void generateMainDiagPlot(optFlags &options,const string &datname,\
+      bondNetWork &bn,int idx1,int idx2,solreal minval2plot,solreal maxval2plot,\
+      solreal linelength,solreal frange);
+void generateSecDiagPlot(optFlags &options,const string &datname,\
+      bondNetWork &bn,int idx1,int idx2,solreal minval2plot,solreal maxval2plot,\
+      solreal linelength,solreal frange);
+void generate3DPlot(optFlags &options,const string &tsvname,solreal minval2plot,\
+      solreal maxval2plot,solreal linelength,int nptsinline);
+void generateHeatMap(optFlags &options,char *argv[],const string &tsvname,\
+      bondNetWork &bn,DeMat1CriticalPointNetworkSL &cp,solreal **(xx),int nptx,solreal minval2plot,\
+      solreal maxval2plot,solreal linelength,solreal md1lmin,solreal md1dmax,int idx1,int idx2);
+void generateVectorField(optFlags &options,char *argv[],const string &tsvname,\
+      bondNetWork &bn,DeMat1CriticalPointNetworkSL &cp,solreal **(xx),int nptx,solreal minval2plot,\
+      solreal maxval2plot,solreal maggradmin,solreal maggradmax,solreal linelength,solreal md1lmin,solreal md1dmax,int idx1,int idx2);
+// */
 int main (int argc, char ** argv) {
    const clock_t begin_time = clock();
    const solreal begin_walltime = time(NULL);
-   string infilnam,outfilnam,o1dfilnam,o1sfilnam,gnpnam,lognam;
+   string infilnam,outfilnam,o1dfilnam,o1sfilnam,basegnpnam,lognam;
    string progname;
    optFlags options;
    ifstream ifile;
    ofstream ofile,o1dfile,o1sfile;
    
    getOptions(argc,argv,options); //This processes the options from the command line.
-   mkFileNames(argv,options,infilnam,outfilnam,o1dfilnam,o1sfilnam,gnpnam,lognam); //This creates the names used.
+   mkFileNames(argv,options,infilnam,outfilnam,o1dfilnam,o1sfilnam,basegnpnam,lognam); //This creates the names used.
    printHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS); //Just to let the user know that the initial configuration is OK
    
    /* Loading the wave function */
@@ -167,9 +183,9 @@ int main (int argc, char ** argv) {
    /* Setting the final file names. */
    
    string lbls="-"+gwf.atLbl[at1]+"-"+gwf.atLbl[at2];
-   size_t pos=gnpnam.find_last_of('.');
+   size_t pos=basegnpnam.find_last_of('.');
    if (pos!=string::npos) {
-      gnpnam.insert(pos,lbls);
+      basegnpnam.insert(pos,lbls);
       outfilnam.insert(pos,lbls);
       lognam.insert(pos,lbls);
       o1dfilnam.insert(pos,lbls);
@@ -268,7 +284,7 @@ int main (int argc, char ** argv) {
    
    p1=0.0e0;
    p2=0.0e0;
-   solreal gamma,gg[3],gp[3],proj[2],magproj;
+   solreal gg[3],gp[3],proj[2],magproj;
    
 #if USEPROGRESSBAR
    printProgressBar(0);
@@ -670,7 +686,7 @@ int main (int argc, char ** argv) {
       writeCommentedScrCharLine(logfil,'-');
       cp.writeCPsInfo(logfil);
    }
-   /* Writing the value of gamma at cicp  */
+   /* Writes the value of gamma at cicp  */
    writeCommentedScrCharLine(logfil,'-');
    logfil << "#The value of MD1 at the point e --aka cicp-- is:" << endl;
    logfil << "#MD1(CICP): " << endl << gwf.evalDensityMatrix1(\
@@ -680,7 +696,7 @@ int main (int argc, char ** argv) {
 
    logfil.close();
    
-   /* Writing the gnuplot script */
+   /* Makes the plots */
    
    string line,tmpnam;
    solreal minval,maxval;
@@ -702,66 +718,233 @@ int main (int argc, char ** argv) {
 #endif /* ( DEBUG ) */
    if ((fabs(md1lmin-md1min)>range)&&(range<1.0e-02)) {
       range=2.0e0*fabs(md1lmin-md1min);
-      //minval=round(90*md1min)/100.0e0;
       minval=round(110*gmd1min)/100.0e0;
       maxval=round(110*(md1min+range))/100.0e0;
    }
-   //if ( minval<0.0e0 ) {
-      //maxval=minval+2.0e0*fabs(minval);
-   //}
 #if DEBUG
    cout << "minval: " << minval << endl;
    cout << "maxval: " << maxval << endl;
 #endif /* ( DEBUG ) */
-   ofstream gfil;
-   gfil.open(gnpnam.c_str(),ios::out);
-   gfil << "namedatfile='" << outfilnam << "'" << endl;
-   //gfil << "set title 'Press any key on this window to quit.'" << endl;
-   gfil << "minval2plot=" << minval << endl;
-   gfil << "maxval2plot=" << maxval << endl;
-   gfil << "dimparam=" << lenline << endl;
+   generate3DPlot(options,outfilnam,minval,maxval,lenline,nbgppts);
+   generateMainDiagPlot(options,o1dfilnam,bnw,at1,at2,minval,maxval,lenline,range);
+   generateSecDiagPlot(options,o1sfilnam,bnw,at1,at2,minval,maxval,lenline,range);
+   generateHeatMap(options,argv,outfilnam,bnw,cp,rbgp,minval,maxval,\
+         lenline,md1lmin,md1dmax,at1,at2);
+   generateVectorField(options,argv,outfilnam,bnw,cp,rbgp,minval,maxval,ggradmagmin,ggradmagmax,\
+         lenline,md1lmin,md1dmax,at1,at2);
+   
+#if (defined(__APPLE__)||defined(__linux__)||defined(__CYGWIN__))
+   if (options.zipdat) {
+      cout << "gzipping tsv..." << endl;
+      line="gzip -9f "+outfilnam;
+      system(line.c_str());
+   }
+#endif
+   
+   /* Freeing memory space */
+   
+   dealloc2DRealArray(rbgp,dimarr);
+   
+   /* At this point the computation has ended. Usually this means that no errors ocurred. */
+   
+   setScrGreenBoldFont();
+   printHappyEnding();
+   printScrStarLine();
+   cout << setprecision(3) << "CPU Time: "
+        << solreal( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
+   solreal end_walltime=time(NULL);
+   cout << "Wall-clock time: " << solreal (end_walltime-begin_walltime) << "s" << endl;
+#if DEBUG
+   cout << "Debuggin mode (under construction...)" << endl;
+#endif
+   printScrStarLine();
+   setScrNormalFont();
+   return 0;
+}
+
+
+void computeUVProjection(solreal (&x1)[3],solreal (&x2)[3],\
+      solreal (&g)[3],solreal (&gp)[3],solreal (&uv)[2])
+{
+   solreal tmp1=0.0e0,tmp2=0.0e0;
+   for ( int i=0 ; i<3 ; i++ ) {
+      tmp1+=((x2[i]-x1[i])*g[i]);
+      tmp2+=((x2[i]-x1[i])*gp[i]);
+   }
+   uv[0]=tmp1;
+   uv[1]=tmp2;
+}
+/*
+void generateMainDiagPlot(optFlags &options,const string &datname,\
+      bondNetWork &bn,int idx1,int idx2,solreal minval2plot,solreal maxval2plot,\
+      solreal linelength,solreal frange)
+{
+   string gnpname=datname;
+   replaceExtensionOfFileName(gnpname,string("gnp"));
+   string pdfname=gnpname;
+   replaceExtensionOfFileName(pdfname,string("pdf"));
+   string epsname=gnpname;
+   replaceExtensionOfFileName(epsname,string("eps"));
+   //----------------------------------------------------
+   ofstream gfil(gnpname.c_str(),ios::out);
+   gfil << "namedatfile='" << datname << "'" << endl;
+   gfil << "minval2plot=" << minval2plot << endl;
+   gfil << "maxval2plot=" << maxval2plot << endl;
+   gfil << "dimparam=" << linelength << endl;
+   gfil << "set xrange[0:dimparam]" << endl;
+   gfil << "set yrange [minval2plot:maxval2plot]" << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set arrow 1 from " << 0.15e0*(linelength) << "," << (minval2plot+0.15*frange)
+   << " to " << 0.25e0*linelength << "," << (minval2plot+0.10*frange) << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set arrow 2 from " << 0.85e0*(linelength) << "," << (minval2plot+0.15*frange)
+        << " to " << 0.75e0*linelength << "," << (minval2plot+0.10*frange) << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set arrow 3 nohead lt 2 lc rgb 'black' lw 1 from " << (0.25*linelength) << ",minval2plot "
+        << "to " << (0.25*linelength) << ",maxval2plot" << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set arrow 4 nohead lt 2 lc rgb 'black' lw 1 from " << (0.75*linelength) << ",minval2plot "
+        << "to " << (0.75*linelength) << ",maxval2plot" << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set label 1 '" << getEnhancedEpsAtLbl(bn.atLbl[(options.uponsl? idx2 : idx1)]) << "' at "
+   << 0.15e0*(linelength) << "," << (minval2plot+frange*0.15e0) << " front offset character -2,0.00" << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set label 2 '" << getEnhancedEpsAtLbl(bn.atLbl[(options.uponsl? idx1 : idx2)]) << "' at "
+   << 0.85e0*(linelength) << "," << (minval2plot+frange*0.15e0) << " front offset character 0.3,0.00" << endl;
+   gfil << "set title '" << getEnhancedEpsTitle(datname) << "'" << endl;
+   gfil << "set terminal postscript eps enhanced color fontscale 1.75 lw 2 dashlength 4" << endl;
+   gfil << "set output '" << epsname << "'" << endl;
+   gfil << "plot '" << datname << "' w lines lw 2 notitle"  << endl;
+   gfil.close();
+   bool rmgnp=!(options.kpgnp);
+   renderGnpFile(gnpname,rmgnp);
+   gnuplottools_eps2pdf(epsname);
+}
+void generateSecDiagPlot(optFlags &options,const string &datname,\
+      bondNetWork &bn,int idx1,int idx2,solreal minval2plot,solreal maxval2plot,\
+      solreal linelength,solreal frange)
+{
+   string gnpname=datname;
+   replaceExtensionOfFileName(gnpname,string("gnp"));
+   string pdfname=gnpname;
+   replaceExtensionOfFileName(pdfname,string("pdf"));
+   string epsname=gnpname;
+   replaceExtensionOfFileName(epsname,string("eps"));
+   //----------------------------------------------------
+   ofstream gfil(gnpname.c_str(),ios::out);
+   gfil << "namedatfile='" << datname << "'" << endl;
+   gfil << "minval2plot=" << minval2plot << endl;
+   gfil << "maxval2plot=" << maxval2plot << endl;
+   gfil << "dimparam=" << linelength << endl;
+   gfil << "set xrange[0:dimparam]" << endl;
+   gfil << "set yrange [minval2plot:maxval2plot]" << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set arrow 1 from " << 0.15e0*(linelength) << "," << (minval2plot+0.15*frange)
+   << " to " << 0.25e0*linelength << "," << (minval2plot+0.10*frange) << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set arrow 2 from " << 0.85e0*(linelength) << "," << (minval2plot+0.15*frange)
+        << " to " << 0.75e0*linelength << "," << (minval2plot+0.10*frange) << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set arrow 3 nohead lt 2 lc rgb 'black' lw 1 from " << (0.25*linelength) << ",minval2plot "
+        << "to " << (0.25*linelength) << ",maxval2plot" << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set arrow 4 nohead lt 2 lc rgb 'black' lw 1 from " << (0.75*linelength) << ",minval2plot "
+        << "to " << (0.75*linelength) << ",maxval2plot" << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set label 1 '" << getEnhancedEpsAtLbl(bn.atLbl[(options.uponsl? idx2 : idx1)]) << "' at "
+   << 0.15e0*(linelength) << "," << (minval2plot+frange*0.15e0) << " front offset character -2,0.00" << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set label 2 '" << getEnhancedEpsAtLbl(bn.atLbl[(options.uponsl? idx1 : idx2)]) << "' at "
+   << 0.85e0*(linelength) << "," << (minval2plot+frange*0.15e0) << " front offset character 0.3,0.00" << endl;
+   gfil << "set title '" << getEnhancedEpsTitle(datname) << "'" << endl;
+   gfil << "set terminal postscript eps enhanced color fontscale 1.75 lw 2 dashlength 4" << endl;
+   gfil << "set output '" << epsname << "'" << endl;
+   gfil << "plot '" << datname << "' w lines lw 2 notitle"  << endl;
+   gfil.close();
+   bool rmgnp=!(options.kpgnp);
+   renderGnpFile(gnpname,rmgnp);
+   gnuplottools_eps2pdf(epsname);
+}
+
+void generate3DPlot(optFlags &options,const string &tsvname,\
+      solreal minval2plot,solreal maxval2plot,solreal linelength,int nptsinline)
+{
+   string gnpname=tsvname;
+   insertAtEndOfFileName(gnpname,string("-3D"));
+   replaceExtensionOfFileName(gnpname,string("gnp"));
+   string pdfname=gnpname;
+   replaceExtensionOfFileName(pdfname,string("pdf"));
+   string epsname=gnpname;
+   replaceExtensionOfFileName(epsname,string("eps"));
+   //----------------------------------------------------
+   ofstream gfil(gnpname.c_str(),ios::out);
+   gfil << "namedatfile='" << tsvname << "'" << endl;
+   gfil << "minval2plot=" << minval2plot << endl;
+   gfil << "maxval2plot=" << maxval2plot << endl;
+   gfil << "dimparam=" << linelength << endl;
    gfil << "set isosample 300, 300" << endl;
    gfil << "set cntrparam cubicspline" << endl;
    gfil << "set zrange [minval2plot:maxval2plot]" << endl;
    gfil << "set cbrange [minval2plot:maxval2plot]" << endl;
    gfil << "unset contour" << endl;
-   //gfil << "set pm3d interpolate 2,2" << endl;
    gfil << "set pm3d depthorder hidden3d 1" << endl;
    gfil << "set palette rgbformulae 33,13,10" << endl;
    gfil << "set style line 1 linecolor rgb \"#444444\"" << endl;
-   line=gnpnam;
-   string eps3dnam=line.substr(0,(line.length()-4));
-   string pdf3dnam=eps3dnam;
-   eps3dnam.append("-3D.eps");
-   pdf3dnam.append("-3D.pdf");
    gfil << "unset title" << endl;
    gfil << "set xyplane 0" << endl;
    gfil << "set terminal postscript eps enhanced color fontscale 1.75 lw 2 dashlength 4" << endl;
-#if (defined(__APPLE__)||defined(__linux__))
-   gfil << "set output '|epstopdf --filter --outfile=" << pdf3dnam << "'" << endl;
-#endif
-#if (defined(__CYGWIN__))
-   gfil << "set output '" << eps3dnam << "'" << endl;
-#endif
+   gfil << "#set output '|epstopdf --filter --outfile=" << pdfname << "'" << endl;
+   gfil << "set output '" << epsname << "'" << endl;
    gfil << "splot namedatfile ";
-   if ((nbgppts>80&&nbgppts<=120)) {gfil << "every 2:2 ";}
-   if ((nbgppts>120&&nbgppts<=160)) {gfil << "every 3:3 ";}
-   if ((nbgppts>160&&nbgppts<240)) {gfil << "every 4:4 ";}
-   if ((nbgppts>240&&nbgppts<300)) {gfil << "every 5:5 ";}
+   if ((nptsinline>80&&nptsinline<=120)) {gfil << "every 2:2 ";}
+   if ((nptsinline>120&&nptsinline<=160)) {gfil << "every 3:3 ";}
+   if ((nptsinline>160&&nptsinline<240)) {gfil << "every 4:4 ";}
+   if ((nptsinline>240&&nptsinline<300)) {gfil << "every 5:5 ";}
    gfil << "using 1:2:($3>maxval2plot? maxval2plot:($3<minval2plot ? minval2plot : $3)) "
-   << "with pm3d title '" << getEnhancedEpsTitle(outfilnam) << "'" << endl;
-   string extepsnam=line.substr(0,(line.length()-4));
-   extepsnam.append("-2Dext.eps");
+   << "with pm3d title '" << getEnhancedEpsTitle(tsvname) << "'" << endl;
+   gfil.close();
+   bool rmgnp=!(options.kpgnp);
+   renderGnpFile(gnpname,rmgnp);
+   gnuplottools_eps2pdf(epsname);
+}
+void generateHeatMap(optFlags &options,char *argv[],const string &tsvname,bondNetWork &bn,DeMat1CriticalPointNetworkSL &cp,
+      solreal **xx,int nptx,solreal minval2plot,\
+      solreal maxval2plot,solreal linelength,solreal md1lmin,solreal md1dmax,int idx1,int idx2)
+{
+   string gnpname=tsvname;
+   insertAtEndOfFileName(gnpname,string("-2D"));
+   replaceExtensionOfFileName(gnpname,string("gnp"));
+   string pdfname=gnpname;
+   replaceExtensionOfFileName(pdfname,string("pdf"));
+   string epsname=gnpname;
+   replaceExtensionOfFileName(epsname,string("eps"));
+   //----------------------------------------------------
+   ofstream gfil;
+   gfil.open(gnpname.c_str(),ios::out);
+   gfil << "namedatfile='" << tsvname << "'" << endl;
+   gfil << "minval2plot=" << minval2plot << endl;
+   gfil << "maxval2plot=" << maxval2plot << endl;
+   gfil << "dimparam=" << linelength << endl;
+   gfil << "set isosample 300, 300" << endl;
+   gfil << "set cntrparam cubicspline" << endl;
+   gfil << "set zrange [minval2plot:maxval2plot]" << endl;
+   gfil << "set cbrange [minval2plot:maxval2plot]" << endl;
+   gfil << "unset contour" << endl;
+   gfil << "set pm3d depthorder hidden3d 1" << endl;
+   gfil << "set palette rgbformulae 33,13,10" << endl;
+   gfil << "set style line 1 linecolor rgb \"#444444\"" << endl;
+   gfil << "set terminal postscript eps enhanced color fontscale 1.75 lw 2 dashlength 4" << endl;
    gfil << "unset key" << endl;
    gfil << "set contour base" << endl;
    int noconts=DEFAULTNUMBEROFCONTOURLINES;
-   solreal dcont=(maxval-minval)/solreal(noconts),contval=md1lmin+0.25e0*dcont;
+   solreal dcont=(maxval2plot-minval2plot)/solreal(noconts);
+   solreal contval=md1lmin+0.25e0*dcont;
    gfil << "set cntrparam cubicspline" << endl;
    gfil << "set cntrparam levels ";
    if ( !(options.setinccont) ) {
       gfil << "discrete " << contval;
       gfil << ", " << (md1dmax-0.5*dcont);
-      contval=minval+dcont;
+      contval=minval2plot+dcont;
       for (int i=1; i<noconts; i++) {gfil << ", " << contval; contval+=dcont;}
       gfil << endl;
    } else {
@@ -774,54 +957,16 @@ int main (int argc, char ** argv) {
    gfil << "unset table" << endl;
    gfil << "set xrange[0:dimparam]" << endl;
    gfil << "set yrange [minval2plot:maxval2plot]" << endl;
-   string eps1d1nam=o1dfilnam.substr(0,(o1dfilnam.length()-3));
-   string pdf1d1nam=eps1d1nam;
-   eps1d1nam.append("eps");
-   pdf1d1nam.append("pdf");
-   string eps1s1nam=o1sfilnam.substr(0,(o1sfilnam.length()-3));
-   string pdf1s1nam=eps1s1nam;
-   eps1s1nam.append("eps");
-   pdf1s1nam.append("pdf");
-   if (!options.showatlbls) {gfil << "#";}
-   gfil << "set arrow 1 from " << 0.15e0*(lenline) << "," << (minval+0.15*range)
-   << " to " << 0.25e0*lenline << "," << (minval+0.10*range) << endl;
-   if (!options.showatlbls) {gfil << "#";}
-   gfil << "set arrow 2 from " << 0.85e0*(lenline) << "," << (minval+0.15*range)
-        << " to " << 0.75e0*lenline << "," << (minval+0.10*range) << endl;
-   if (!options.showatlbls) {gfil << "#";}
-   gfil << "set arrow 3 nohead lt 2 lc rgb 'black' lw 1 from " << (0.25*lenline) << ",minval2plot "
-        << "to " << (0.25*lenline) << ",maxval2plot" << endl;
-   if (!options.showatlbls) {gfil << "#";}
-   gfil << "set arrow 4 nohead lt 2 lc rgb 'black' lw 1 from " << (0.75*lenline) << ",minval2plot "
-        << "to " << (0.75*lenline) << ",maxval2plot" << endl;
-   if (!options.showatlbls) {gfil << "#";}
-   gfil << "set label 1 '" << getEnhancedEpsAtLbl(bnw.atLbl[(options.uponsl? at2 : at1)]) << "' at "
-   << 0.15e0*(lenline) << "," << (minval+range*0.15e0) << " front offset character -2,0.00" << endl;
-   if (!options.showatlbls) {gfil << "#";}
-   gfil << "set label 2 '" << getEnhancedEpsAtLbl(bnw.atLbl[(options.uponsl? at1 : at2)]) << "' at "
-   << 0.85e0*(lenline) << "," << (minval+range*0.15e0) << " front offset character 0.3,0.00" << endl;
-//gfil << "set xtics add ('" << getEnhancedEpsAtLbl(bnw.atLbl[at1]) << "' 0)" << endl;
-   //gfil << "set label 1 '" << getEnhancedEpsAtLbl(bnw.atLbl[at1]) << "' at "
-   //<< 0.04e0*(lenline) << "," << 0.05*(lenline) << endl;
-   //if (!options.showatlbls) {gfil << "#";}
-   //gfil << "set xtics add ('" << getEnhancedEpsAtLbl(bnw.atLbl[at2]) << "' "
-   //<< lenline << ")" << endl;
-   gfil << "set title '" << getEnhancedEpsTitle(o1dfilnam) << "'" << endl;
-   gfil << "set output '" << eps1d1nam << "'" << endl;
-   gfil << "plot '" << o1dfilnam << "' w lines lw 2 notitle"  << endl;
-   gfil << "set title '" << getEnhancedEpsTitle(o1sfilnam) << "'" << endl;
-   gfil << "set output '" << eps1s1nam << "'" << endl;
-   gfil << "plot '" << o1sfilnam << "' w lines lw 2 notitle"  << endl;
    gfil << "unset title" << endl;
    gfil << "set yrange[0:dimparam]" << endl;
    gfil << "set tmargin at screen 0.98\nset bmargin at screen 0.01\nset lmargin at screen 0.02" << endl;
    gfil << "set size ratio 1" << endl;
    gfil << "set notics" << endl;
    gfil << "set cbtics #deactivate if you do not want tics on the colorbox scale" << endl;
-   if (!((rbgp[0][0]==bnw.R[at1][0])&&(rbgp[0][1]==bnw.R[at1][1])&&(rbgp[0][2]==bnw.R[at1][2]))) {
-      int tmpaaa=at1;
-      at1=at2;
-      at2=tmpaaa;
+   if (!((xx[0][0]==bn.R[idx1][0])&&(xx[0][1]==bn.R[idx1][1])&&(xx[0][2]==bn.R[idx1][2]))) {
+      int tmpaaa=idx1;
+      idx1=idx2;
+      idx2=tmpaaa;
    }
    if (!options.showatlbls) {gfil << "#";}
    gfil << "set style fill solid 1.0 border lt -1" << endl;
@@ -866,45 +1011,172 @@ int main (int argc, char ** argv) {
    }
 
    if (!options.showatlbls) {gfil << "#";}
-   gfil << "set arrow 1 nohead lt 2 lc rgb 'black' lw 1 from " << (0.25*lenline) << 
-           ",0 to " << (0.25*lenline) << ",dimparam front" << endl;
+   gfil << "set arrow 1 nohead lt 2 lc rgb 'black' lw 1 from " << (0.25*linelength) << 
+           ",0 to " << (0.25*linelength) << ",dimparam front" << endl;
    if (!options.showatlbls) {gfil << "#";}
-   gfil << "set arrow 2 nohead lt 2 lc rgb 'black' lw 1 from " << (0.75*lenline) << 
-           ",0 to " << (0.75*lenline) << ",dimparam front" << endl;
+   gfil << "set arrow 2 nohead lt 2 lc rgb 'black' lw 1 from " << (0.75*linelength) << 
+           ",0 to " << (0.75*linelength) << ",dimparam front" << endl;
    if (!options.showatlbls) {gfil << "#";}
-   gfil << "set arrow 3 nohead lt 2 lc rgb 'black' lw 1 from 0," << (0.25*lenline) << 
-           " to dimparam," << (0.25*lenline) << " front" << endl;
+   gfil << "set arrow 3 nohead lt 2 lc rgb 'black' lw 1 from 0," << (0.25*linelength) << 
+           " to dimparam," << (0.25*linelength) << " front" << endl;
    if (!options.showatlbls) {gfil << "#";}
-   gfil << "set arrow 4 nohead lt 2 lc rgb 'black' lw 1 from 0," << (0.75*lenline) << 
-           " to dimparam," << (0.75*lenline) << " front" << endl;
+   gfil << "set arrow 4 nohead lt 2 lc rgb 'black' lw 1 from 0," << (0.75*linelength) << 
+           " to dimparam," << (0.75*linelength) << " front" << endl;
    if (!options.showatlbls) {gfil << "#";}
-   gfil << "set label 1 '" << getEnhancedEpsAtLbl(bnw.atLbl[(options.uponsl? at2 : at1)]) << "' at "
-      << 0.25e0*(lenline) << "," << 0.25*(lenline) << " front offset character -2.2,-1" << endl;
+   gfil << "set label 1 '" << getEnhancedEpsAtLbl(bn.atLbl[(options.uponsl? idx2 : idx1)]) << "' at "
+      << 0.25e0*(linelength) << "," << 0.25*(linelength) << " front offset character -2.2,-1" << endl;
    if (!options.showatlbls) {gfil << "#";}
-   gfil << "set label 2 '" << getEnhancedEpsAtLbl(bnw.atLbl[(options.uponsl? at1 : at2)]) << "' at "
-   << 0.75e0*(lenline) << "," << 0.75*(lenline) << " front offset character 0.5,0.8" << endl;
-gfil << "set output '" << extepsnam << "'" << endl;
+   gfil << "set label 2 '" << getEnhancedEpsAtLbl(bn.atLbl[(options.uponsl? idx1 : idx2)]) << "' at "
+   << 0.75e0*(linelength) << "," << 0.75*(linelength) << " front offset character 0.5,0.8" << endl;
+gfil << "set output '" << epsname << "'" << endl;
    gfil << "plot namedatfile with image notitle";
    if (!options.showcont) {gfil << "#";}
    gfil << ",'contourtemp.dat' w l lt -1 lw 1 notitle #Activate this line to show contours" << endl;
-   string gradeps=gnpnam.substr(0,gnpnam.length()-4);
-   string gradepsext=gradeps;
-   string gradpdf=gradeps;
-   gradeps.append("-2DV.eps");
-   gradepsext.append("-2DVext.eps");
-   gradpdf.append("-2DV.pdf");
+   gfil.close();
+   bool rmgnp=!(options.kpgnp);
+   renderGnpFile(gnpname,rmgnp);
+   gnuplottools_eps2pdf(epsname);
+}
+void generateVectorField(optFlags &options,char *argv[],const string &tsvname,bondNetWork &bn,DeMat1CriticalPointNetworkSL &cp,
+      solreal **xx,int nptx,solreal minval2plot,\
+      solreal maxval2plot,solreal maggradmin,solreal maggradmax,solreal linelength,solreal md1lmin,solreal md1dmax,int idx1,int idx2)
+{
+   char prop='D';
+   if ( options.prop2plot ) {prop=argv[options.prop2plot][0];}
+   string gnpname=tsvname;
+   insertAtEndOfFileName(gnpname,string("-2DV"));
+   replaceExtensionOfFileName(gnpname,string("gnp"));
+   string pdfname=gnpname;
+   replaceExtensionOfFileName(pdfname,string("pdf"));
+   string epsname=gnpname;
+   replaceExtensionOfFileName(epsname,string("eps"));
+   //----------------------------------------------------
+   ofstream gfil;
+   gfil.open(gnpname.c_str(),ios::out);
+   gfil << "namedatfile='" << tsvname << "'" << endl;
+   gfil << "minval2plot=" << minval2plot << endl;
+   gfil << "maxval2plot=" << maxval2plot << endl;
+   gfil << "dimparam=" << linelength << endl;
+   gfil << "set isosample 300, 300" << endl;
+   gfil << "set cntrparam cubicspline" << endl;
+   gfil << "set zrange [minval2plot:maxval2plot]" << endl;
+   gfil << "set cbrange [minval2plot:maxval2plot]" << endl;
+   gfil << "unset contour" << endl;
+   gfil << "set pm3d depthorder hidden3d 1" << endl;
+   gfil << "set palette rgbformulae 33,13,10" << endl;
+   gfil << "set style line 1 linecolor rgb \"#444444\"" << endl;
+   gfil << "set terminal postscript eps enhanced color fontscale 1.75 lw 2 dashlength 4" << endl;
+   gfil << "unset key" << endl;
+   gfil << "set contour base" << endl;
+   int noconts=DEFAULTNUMBEROFCONTOURLINES;
+   solreal dcont=(maxval2plot-minval2plot)/solreal(noconts);
+   solreal contval=md1lmin+0.25e0*dcont;
+   gfil << "set cntrparam cubicspline" << endl;
+   gfil << "set cntrparam levels ";
+   if ( !(options.setinccont) ) {
+      gfil << "discrete " << contval;
+      gfil << ", " << (md1dmax-0.5*dcont);
+      contval=minval2plot+dcont;
+      for (int i=1; i<noconts; i++) {gfil << ", " << contval; contval+=dcont;}
+      gfil << endl;
+   } else {
+      gfil << "incremental " << argv[options.setinccont] << ","
+           << argv[options.setinccont+1] << "," << argv[options.setinccont+2] << endl;
+   }
+   gfil << "unset surface" << endl;
+   gfil << "set table 'contourtemp.dat'" << endl;
+   gfil << "splot namedatfile" << endl;
+   gfil << "unset table" << endl;
+   gfil << "set xrange[0:dimparam]" << endl;
+   gfil << "set yrange [minval2plot:maxval2plot]" << endl;
+   gfil << "unset title" << endl;
+   gfil << "set yrange[0:dimparam]" << endl;
+   gfil << "set tmargin at screen 0.98\nset bmargin at screen 0.01\nset lmargin at screen 0.02" << endl;
+   gfil << "set size ratio 1" << endl;
+   gfil << "set notics" << endl;
+   gfil << "set cbtics #deactivate if you do not want tics on the colorbox scale" << endl;
+   if (!((xx[0][0]==bn.R[idx1][0])&&(xx[0][1]==bn.R[idx1][1])&&(xx[0][2]==bn.R[idx1][2]))) {
+      int tmpaaa=idx1;
+      idx1=idx2;
+      idx2=tmpaaa;
+   }
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set style fill solid 1.0 border lt -1" << endl;
+   gfil << "set object 1 circle at 0.25*dimparam,0.25*dimparam front size dimparam*0.012 fc rgb 'black'" << endl;
+   gfil << "set object 2 circle at 0.75*dimparam,0.75*dimparam front size dimparam*0.012 fc rgb 'black'" << endl;
+   if ( options.findcps ) {
+      gfil << "set style fill solid 1.0 border lt -1" << endl;
+      int nobjs=3;
+      for ( int i=0 ; i<cp.nACP ; i++ ) {
+         gfil << "set object " << getStringFromInt(i+nobjs) 
+            << " circle at (" << (0.25e0+0.5e0*cp.RACP[i][0]) << "*dimparam),("
+            << (0.25e0+0.5e0*cp.RACP[i][1]) << "*dimparam) front size dimparam*0.008 "
+            << "fc rgb 'white'" << endl;
+         gfil << "set label " << getStringFromInt(i+nobjs) << " '"
+                 << cp.lblACP[i] << "' at (" << (0.25e0+0.5e0*cp.RACP[i][0]) << "*dimparam),("
+                << (0.25e0+0.5e0*cp.RACP[i][1]) << "*dimparam) front center";
+         gfil << " offset character " << (i==0? "-2" : "-1");
+         gfil << ",0 font \",8\""<< endl;
+      }
+      nobjs+=cp.nACP;
+      for ( int i=0 ; i<cp.nSCP ; i++ ) {
+         gfil << "set object " << getStringFromInt(i+nobjs) 
+            << " circle at (" << (0.25e0+0.5e0*cp.RSCP[i][0]) << "*dimparam),("
+            << (0.25e0+0.5e0*cp.RSCP[i][1]) << "*dimparam) front size dimparam*0.008 "
+            << "fc rgb 'blue'" << endl;
+         gfil << "set label " << getStringFromInt(i+nobjs) << " '"
+                 << cp.lblSCP[i] << "' at (" << (0.25e0+0.5e0*cp.RSCP[i][0]) << "*dimparam),("
+                << (0.25e0+0.5e0*cp.RSCP[i][1]) << "*dimparam) front center";
+         gfil << " offset character -1,0 font \",8\""<< endl;
+      }
+      nobjs+=cp.nSCP;
+      for ( int i=0 ; i<cp.nRCP ; i++ ) {
+         gfil << "set object " << getStringFromInt(i+nobjs) 
+            << " circle at (" << (0.25e0+0.5e0*cp.RRCP[i][0]) << "*dimparam),("
+            << (0.25e0+0.5e0*cp.RRCP[i][1]) << "*dimparam) front size (dimparam*0.008) "
+            << "fc rgb 'green'" << endl;
+         gfil << "set label " << getStringFromInt(i+nobjs) << " '"
+                 << cp.lblRCP[i] << "' at (" << (0.25e0+0.5e0*cp.RRCP[i][0]) << "*dimparam),("
+                << (0.25e0+0.5e0*cp.RRCP[i][1]) << "*dimparam) front center";
+         gfil << " offset character -1,0 font \",8\""<< endl;
+      }
+   }
+
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set arrow 1 nohead lt 2 lc rgb 'black' lw 1 from " << (0.25*linelength) << 
+           ",0 to " << (0.25*linelength) << ",dimparam front" << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set arrow 2 nohead lt 2 lc rgb 'black' lw 1 from " << (0.75*linelength) << 
+           ",0 to " << (0.75*linelength) << ",dimparam front" << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set arrow 3 nohead lt 2 lc rgb 'black' lw 1 from 0," << (0.25*linelength) << 
+           " to dimparam," << (0.25*linelength) << " front" << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set arrow 4 nohead lt 2 lc rgb 'black' lw 1 from 0," << (0.75*linelength) << 
+           " to dimparam," << (0.75*linelength) << " front" << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set label 1 '" << getEnhancedEpsAtLbl(bn.atLbl[(options.uponsl? idx2 : idx1)]) << "' at "
+      << 0.25e0*(linelength) << "," << 0.25*(linelength) << " front offset character -2.2,-1" << endl;
+   if (!options.showatlbls) {gfil << "#";}
+   gfil << "set label 2 '" << getEnhancedEpsAtLbl(bn.atLbl[(options.uponsl? idx1 : idx2)]) << "' at "
+   << 0.75e0*(linelength) << "," << 0.75*(linelength) << " front offset character 0.5,0.8" << endl;
+gfil << "set output '" << epsname << "'" << endl;
+   gfil << "plot namedatfile with image notitle";
+   if (!options.showcont) {gfil << "#";}
+   gfil << ",'contourtemp.dat' w l lt -1 lw 1 notitle #Activate this line to show contours" << endl;
+   //
    if ( prop=='G' ) {
 #if DEBUG
-      cout << "ggradmagmin: " << ggradmagmin << ", ggradmagmax: " << ggradmagmax << endl;
+      cout << "maggradmin: " << maggradmin << ", maggradmax: " << maggradmax << endl;
 #endif
-      minval=round(90*sqrt(ggradmagmin))/100.0e0;
-      if ( (10.0e0*maxval)<(sqrt(ggradmagmax)) ) {
-         maxval*=10.0e0;
+      minval2plot=round(90*sqrt(maggradmin))/100.0e0;
+      if ( (10.0e0*maxval2plot)<(sqrt(maggradmax)) ) {
+         maxval2plot*=10.0e0;
       } else {
-         maxval=round(100*sqrt(ggradmagmax))/100.0e0;
+         maxval2plot=round(100*sqrt(maggradmax))/100.0e0;
       }
-      gfil << "minval2plot=" << minval << endl;
-      gfil << "maxval2plot=" << maxval << endl;
+      gfil << "minval2plot=" << minval2plot << endl;
+      gfil << "maxval2plot=" << maxval2plot << endl;
       gfil << "set zrange [minval2plot:maxval2plot]" << endl;
       gfil << "set cbrange [minval2plot:maxval2plot]" << endl;
       gfil << "VMXS=dimparam/40.0 #Maximum lenght of the vectors" << endl;
@@ -932,134 +1204,17 @@ gfil << "set output '" << extepsnam << "'" << endl;
             ++nobjs;
          }
       }
-      gfil << "set output '" << gradepsext << "'" << endl;
+      gfil << "set output '" << epsname << "'" << endl;
       gfil << "plot namedatfile u 1:2:(sqrt($4*$4+$5*$5)>VMXS? VMXS*$4/sqrt($4*$4+$5*$5) : $4):(sqrt($4*$4+$5*$5)>VMXS ? VMXS*$5/sqrt($4*$4+$5*$5) : $5):(sqrt($4*$4+$5*$5)) "
          << "with vectors head size 0.1,20,60 filled lc palette";
       if (!options.showcont) {gfil << "#";}
       gfil << ",'contourtemp.dat' w l lt -1 lw 1 notitle #Activate this line to show contours" << endl;
    }
-   string epsnam=gnpnam.substr(0,(gnpnam.length()-4));
-   epsnam.append("-2D.eps");
-   string pdfnam=gnpnam.substr(0,(gnpnam.length()-4));
-   pdfnam.append("-2D.pdf");
-   gfil << "system('rm -f contourtemp.dat')" << endl;
-   gfil << "#" << endl;
-   writeScrCharLine(gfil,'#');
-   gfil << "#                 END OF GNUPLOT COMMANDS" << endl;
-   writeScrCharLine(gfil,'#');
-   gfil << "#If you want to reconstruct the plots using this file, type:" << endl
-      << "#gnuplot " << gnpnam << endl
-   << "#epstool --copy -b " << extepsnam << " " << epsnam << endl
-   << "#epstopdf --outfile=" << pdfnam << " " << epsnam << endl;
    gfil.close();
-#if _HAVE_GNUPLOT_
-   if (options.mkplt) {
-      cout << "Calling gnuplot..." << endl;
-#if (defined(__APPLE__)||defined(__linux__))
-      line="gnuplot "+gnpnam;
-#endif
-#if (defined(__CYGWIN__))
-      line="wgnuplot "+gnpnam;
-#endif
-      system(line.c_str());
-#if _HAVE_EPSTOOL_
-      line="epstool --copy -b "+extepsnam+" "+epsnam;
-      if (options.quiet) {line+=" > /dev/null 2>&1";}
-      system(line.c_str());
-      line="epstool --copy -b "+gradepsext+" "+gradeps;
-      if (options.quiet) {line+=" > /dev/null 2>&1";}
-      system(line.c_str());
-#if _HAVE_EPSTOPDF_
-      line="epstopdf --outfile="+pdfnam+" "+epsnam;
-      if (options.quiet) {line+=" > /dev/null 2>&1";}
-      system(line.c_str());
-      line="rm -f "+epsnam;
-      system(line.c_str());
-      line="epstopdf --outfile="+gradpdf+" "+gradeps;
-      if (options.quiet) {line+=" > /dev/null 2>&1";}
-      system(line.c_str());
-      line="rm -f "+gradeps;
-      system(line.c_str());
-      line="rm -f "+gradepsext;
-      system(line.c_str());
-      line="epstopdf --outfile="+pdf1d1nam+" "+eps1d1nam;
-      system(line.c_str());
-      line="rm -f "+eps1d1nam;
-      system(line.c_str());
-      line="epstopdf --outfile="+pdf1s1nam+" "+eps1s1nam;
-      system(line.c_str());
-      line="rm -f "+eps1s1nam;
-      system(line.c_str());
-#if (defined(__CYGWIN__))
-      line="epstopdf --outfile="+pdf3dnam+" "+eps3dnam;
-      if (options.quiet) {line+=" > /dev/null 2>&1";}
-      system(line.c_str());
-      line="rm -f "+eps3dnam;
-      system(line.c_str());
-#endif
-//(defined(__CYGWIN__))
-#endif
-//_HAVE_EPSTOPDF_
-      line="rm -f "+extepsnam+" "+epsnam;
-      if (options.quiet) {line+=" > /dev/null 2>&1";}
-      system(line.c_str());
-#endif
-//_HAVE_EPSTOOL_
-   }
-#endif
-//_HAVE_GNUPLOT_
-   
-#if (defined(__APPLE__)||defined(__linux__)||defined(__CYGWIN__))
-   if (options.zipdat) {
-      cout << "gzipping tsv..." << endl;
-      line="gzip -9f "+outfilnam;
-      system(line.c_str());
-   }
-#endif
-   
-   /* Freeing memory space */
-   
-   /*
-    cout << "R[a1]: " << bnw.R[at1][0] << " " << bnw.R[at1][1] << " " << bnw.R[at1][2] << endl;
-    cout << "R[a2]: " << bnw.R[at2][0] << " " << bnw.R[at2][1] << " " << bnw.R[at2][2] << endl;
-    
-    for (int i=0; i<nbgppts; i++) {
-    cout << rbgp[i][0] << " " << rbgp[i][1] << " " << rbgp[i][2] << endl;
-    }
-    
-    cout << "R[a1]: " << bnw.R[at1][0] << " " << bnw.R[at1][1] << " " << bnw.R[at1][2] << endl;
-    cout << "R[a2]: " << bnw.R[at2][0] << " " << bnw.R[at2][1] << " " << bnw.R[at2][2] << endl;
-    // */
-   
-   dealloc2DRealArray(rbgp,dimarr);
-   
-   /* At this point the computation has ended. Usually this means that no errors ocurred. */
-   
-   setScrGreenBoldFont();
-   printHappyEnding();
-   printScrStarLine();
-   cout << setprecision(3) << "CPU Time: "
-        << solreal( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
-   solreal end_walltime=time(NULL);
-   cout << "Wall-clock time: " << solreal (end_walltime-begin_walltime) << "s" << endl;
-#if DEBUG
-   cout << "Debuggin mode (under construction...)" << endl;
-#endif
-   printScrStarLine();
-   setScrNormalFont();
-   return 0;
+   bool rmgnp=!(options.kpgnp);
+   renderGnpFile(gnpname,rmgnp);
+   gnuplottools_eps2pdf(epsname);
 }
 
-
-void computeUVProjection(solreal (&x1)[3],solreal (&x2)[3],\
-      solreal (&g)[3],solreal (&gp)[3],solreal (&uv)[2])
-{
-   solreal tmp1=0.0e0,tmp2=0.0e0;
-   for ( int i=0 ; i<3 ; i++ ) {
-      tmp1+=((x2[i]-x1[i])*g[i]);
-      tmp2+=((x2[i]-x1[i])*gp[i]);
-   }
-   uv[0]=tmp1;
-   uv[1]=tmp2;
-}
+// */
 

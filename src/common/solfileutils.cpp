@@ -563,7 +563,17 @@ int countColumnsInFile(string fnam)
    return numtabs;
 }
 /* ******************************************************************************************* */
+void replaceExtensionOfFileName(string &orig,const string thenewext)
+{
+   size_t pos=orig.find_last_of('.')+1;
+   orig=orig.substr(0,pos)+thenewext;
+}
 /* ******************************************************************************************* */
+void insertAtEndOfFileName(string &orig,const string str2insrt)
+{
+   size_t pos=orig.find_last_of('.');
+   orig.insert(pos,str2insrt);
+}
 /* ******************************************************************************************* */
 /* ******************************************************************************************* */
 /* ******************************************************************************************* */
