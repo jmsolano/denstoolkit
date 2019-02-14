@@ -12,7 +12,7 @@ using std::cerr;
 #include "../common/solfileutils.h"
 
 
-void generateMainDiagPlot(optFlags &options,const string &datname,\
+void HelperPlot::generateMainDiagPlot(optFlags &options,const string &datname,\
       bondNetWork &bn,int idx1,int idx2,solreal minval2plot,solreal maxval2plot,\
       solreal linelength,solreal frange)
 {
@@ -51,13 +51,13 @@ void generateMainDiagPlot(optFlags &options,const string &datname,\
    gfil << "set title '" << getEnhancedEpsTitle(datname) << "'" << endl;
    gfil << "set terminal postscript eps enhanced color fontscale 1.75 lw 2 dashlength 4" << endl;
    gfil << "set output '" << epsname << "'" << endl;
-   gfil << "plot '" << datname << "' w lines lw 2 notitle"  << endl;
+   gfil << "plot '" << datname << "' w lines lw 2 lc 'black' notitle"  << endl;
    gfil.close();
    bool rmgnp=!(options.kpgnp);
    renderGnpFile(gnpname,rmgnp);
    gnuplottools_eps2pdf(epsname);
 }
-void generateSecDiagPlot(optFlags &options,const string &datname,\
+void HelperPlot::generateSecDiagPlot(optFlags &options,const string &datname,\
       bondNetWork &bn,int idx1,int idx2,solreal minval2plot,solreal maxval2plot,\
       solreal linelength,solreal frange)
 {
@@ -96,14 +96,14 @@ void generateSecDiagPlot(optFlags &options,const string &datname,\
    gfil << "set title '" << getEnhancedEpsTitle(datname) << "'" << endl;
    gfil << "set terminal postscript eps enhanced color fontscale 1.75 lw 2 dashlength 4" << endl;
    gfil << "set output '" << epsname << "'" << endl;
-   gfil << "plot '" << datname << "' w lines lw 2 notitle"  << endl;
+   gfil << "plot '" << datname << "' w lines lw 2 lc 'black' notitle"  << endl;
    gfil.close();
    bool rmgnp=!(options.kpgnp);
    renderGnpFile(gnpname,rmgnp);
    gnuplottools_eps2pdf(epsname);
 }
 
-void generate3DPlot(optFlags &options,const string &tsvname,\
+void HelperPlot::generate3DPlot(optFlags &options,const string &tsvname,\
       solreal minval2plot,solreal maxval2plot,solreal linelength,int nptsinline)
 {
    string gnpname=tsvname;
@@ -133,19 +133,22 @@ void generate3DPlot(optFlags &options,const string &tsvname,\
    gfil << "#set output '|epstopdf --filter --outfile=" << pdfname << "'" << endl;
    gfil << "set output '" << epsname << "'" << endl;
    gfil << "splot namedatfile ";
-   if ((nptsinline>80&&nptsinline<=120)) {gfil << "every 2:2 ";}
-   if ((nptsinline>120&&nptsinline<=160)) {gfil << "every 3:3 ";}
-   if ((nptsinline>160&&nptsinline<240)) {gfil << "every 4:4 ";}
-   if ((nptsinline>240&&nptsinline<300)) {gfil << "every 5:5 ";}
+   int theevery=2;
+   if ((nptsinline>80&&nptsinline<=120)) {theevery=2;}
+   if ((nptsinline>120&&nptsinline<=160)) {theevery=3;}
+   if ((nptsinline>160&&nptsinline<=240)) {theevery=4;}
+   if ((nptsinline>240&&nptsinline<=300)) {theevery=5;}
+   if ( nptsinline>300 ) { theevery=int(nptsinline/60); }
+   gfil << "every " << theevery << ":" << theevery << " ";
    gfil << "using 1:2:($3>maxval2plot? maxval2plot:($3<minval2plot ? minval2plot : $3)) "
-   << "with pm3d title '" << getEnhancedEpsTitle(tsvname) << "'" << endl;
+   << "with pm3d ls 1 title '" << getEnhancedEpsTitle(tsvname) << "'" << endl;
    gfil.close();
    bool rmgnp=!(options.kpgnp);
    renderGnpFile(gnpname,rmgnp);
    gnuplottools_eps2pdf(epsname);
 }
-void generateHeatMap(optFlags &options,char *argv[],const string &tsvname,bondNetWork &bn,DeMat1CriticalPointNetworkSL &cp,
-      solreal **xx,solreal minval2plot,\
+void HelperPlot::generateHeatMap(optFlags &options,char *argv[],const string &tsvname,bondNetWork &bn,DeMat1CriticalPointNetworkSL &cp,
+      solreal **xx,int nptsinline,solreal minval2plot,\
       solreal maxval2plot,solreal linelength,solreal md1lmin,solreal md1dmax,int idx1,int idx2)
 {
    string gnpname=tsvname;
@@ -265,8 +268,16 @@ void generateHeatMap(optFlags &options,char *argv[],const string &tsvname,bondNe
    if (!options.showatlbls) {gfil << "#";}
    gfil << "set label 2 '" << getEnhancedEpsAtLbl(bn.atLbl[(options.uponsl? idx1 : idx2)]) << "' at "
    << 0.75e0*(linelength) << "," << 0.75*(linelength) << " front offset character 0.5,0.8" << endl;
-gfil << "set output '" << epsname << "'" << endl;
-   gfil << "plot namedatfile with image notitle";
+   gfil << "set output '" << epsname << "'" << endl;
+   gfil << "plot namedatfile ";
+   int theevery=2;
+   if ((nptsinline>80&&nptsinline<=120)) {theevery=2;}
+   if ((nptsinline>120&&nptsinline<=160)) {theevery=3;}
+   if ((nptsinline>160&&nptsinline<=240)) {theevery=4;}
+   if ((nptsinline>240&&nptsinline<=300)) {theevery=5;}
+   if ( nptsinline>300 ) { theevery=int(nptsinline/60); }
+   gfil << "every " << theevery << ":" << theevery << " ";
+   gfil << " with image notitle";
    if (!options.showcont) {gfil << "#";}
    gfil << ",'contourtemp.dat' w l lt -1 lw 1 notitle #Activate this line to show contours" << endl;
    gfil.close();
@@ -274,8 +285,8 @@ gfil << "set output '" << epsname << "'" << endl;
    renderGnpFile(gnpname,rmgnp);
    gnuplottools_eps2pdf(epsname);
 }
-void generateVectorField(optFlags &options,char *argv[],const string &tsvname,bondNetWork &bn,DeMat1CriticalPointNetworkSL &cp,
-      solreal **xx,solreal minval2plot,\
+void HelperPlot::generateVectorField(optFlags &options,char *argv[],const string &tsvname,bondNetWork &bn,DeMat1CriticalPointNetworkSL &cp,
+      solreal **xx,int nptsinline,solreal minval2plot,\
       solreal maxval2plot,solreal maggradmin,solreal maggradmax,solreal linelength,solreal md1lmin,solreal md1dmax,int idx1,int idx2)
 {
    char prop='D';
@@ -397,8 +408,16 @@ void generateVectorField(optFlags &options,char *argv[],const string &tsvname,bo
    if (!options.showatlbls) {gfil << "#";}
    gfil << "set label 2 '" << getEnhancedEpsAtLbl(bn.atLbl[(options.uponsl? idx1 : idx2)]) << "' at "
    << 0.75e0*(linelength) << "," << 0.75*(linelength) << " front offset character 0.5,0.8" << endl;
-gfil << "set output '" << epsname << "'" << endl;
-   gfil << "plot namedatfile with image notitle";
+   gfil << "set output '" << epsname << "'" << endl;
+   gfil << "plot namedatfile ";
+   int theevery=2;
+   if ((nptsinline>80&&nptsinline<=120)) {theevery=2;}
+   if ((nptsinline>120&&nptsinline<=160)) {theevery=3;}
+   if ((nptsinline>160&&nptsinline<=240)) {theevery=4;}
+   if ((nptsinline>240&&nptsinline<=300)) {theevery=5;}
+   if ( nptsinline>300 ) { theevery=int(nptsinline/40); }
+   gfil << "every " << theevery << ":" << theevery << " ";
+   gfil << "with image notitle";
    if (!options.showcont) {gfil << "#";}
    gfil << ",'contourtemp.dat' w l lt -1 lw 1 notitle #Activate this line to show contours" << endl;
    //
@@ -442,7 +461,9 @@ gfil << "set output '" << epsname << "'" << endl;
          }
       }
       gfil << "set output '" << epsname << "'" << endl;
-      gfil << "plot namedatfile u 1:2:(sqrt($4*$4+$5*$5)>VMXS? VMXS*$4/sqrt($4*$4+$5*$5) : $4):(sqrt($4*$4+$5*$5)>VMXS ? VMXS*$5/sqrt($4*$4+$5*$5) : $5):(sqrt($4*$4+$5*$5)) "
+      gfil << "plot namedatfile ";
+      gfil << "every " << theevery << ":" << theevery << " ";
+      gfil << "u 1:2:(sqrt($4*$4+$5*$5)>VMXS? VMXS*$4/sqrt($4*$4+$5*$5) : $4):(sqrt($4*$4+$5*$5)>VMXS ? VMXS*$5/sqrt($4*$4+$5*$5) : $5):(sqrt($4*$4+$5*$5)) "
          << "with vectors head size 0.1,20,60 filled lc palette";
       if (!options.showcont) {gfil << "#";}
       gfil << ",'contourtemp.dat' w l lt -1 lw 1 notitle #Activate this line to show contours" << endl;
