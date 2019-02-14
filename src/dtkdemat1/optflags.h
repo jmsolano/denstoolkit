@@ -83,6 +83,7 @@ public:
    unsigned short int uponbp,uponsl,prop2plot;
    unsigned short int zipdat,mkplt,kpgnp,quiet,showcont,showatlbls;
    unsigned short int setinccont,findcps;
+   bool centredats;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);
 void printHelpMenu(int &argc, char** &argv);//self-described

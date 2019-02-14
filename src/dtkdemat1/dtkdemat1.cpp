@@ -103,9 +103,7 @@ int main (int argc, char ** argv) {
    printHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS); //Just to let the user know that the initial configuration is OK
    
    /* Loading the wave function */
-   
    cout << endl << "Loading wave function from file: " << infilnam << "... ";
-   
    GaussWaveFunction gwf;
    if (!(gwf.readFromFile(infilnam))) { //Loading the wave function
       setScrRedBoldFont();
@@ -114,7 +112,6 @@ int main (int argc, char ** argv) {
       exit(1);
    }
    cout << "Done." << endl;
-   
    if (gwf.nNuc==1) {
       displayWarningMessage("This file contains only one atom... There are no bond paths...");
       cout << "Nothing to do!" << endl;
@@ -123,7 +120,6 @@ int main (int argc, char ** argv) {
    }
    
    /* Setting the atoms for defining the line/bond path */
-   
    int at1,at2;
    at1=0;
    at2=1;
@@ -143,17 +139,13 @@ int main (int argc, char ** argv) {
    if ( options.prop2plot ) {prop=argv[options.prop2plot][0];}
    
    /* Setting the bond network of the molecule */
-   
    bondNetWork bnw;
    bnw.readFromFile(infilnam); //Loading the bond-network (if the wave function
                                //was read, there souldn't be problems here.
    bnw.setUpBNW();             //To setup the bond network.
    
    /* Defining the main critical point network object. */
-   
    critPtNetWork cpn(gwf,bnw);
-   
-   
    
    int dimarr=200;
    if (options.setn1) {
@@ -168,7 +160,6 @@ int main (int argc, char ** argv) {
    }
    
    /* Setting the final file names. */
-   
    string lbls="-"+gwf.atLbl[at1]+"-"+gwf.atLbl[at2];
    size_t pos=basegnpnam.find_last_of('.');
    if (pos!=string::npos) {
@@ -269,8 +260,13 @@ int main (int argc, char ** argv) {
    if (options.uponsl) {cout << "upon the straight line that joins the selected atoms..." << endl;}
    cout << "Progress: " << endl;
    
-   p1=0.0e0;
-   p2=0.0e0;
+   if ( options.centredats ) {
+      p1=-0.5e0*lenline;
+      p2=-0.5e0*lenline;
+   } else {
+      p1=0.0e0;
+      p2=0.0e0;
+   }
    solreal gg[3],gp[3],proj[2],magproj;
    
 #if USEPROGRESSBAR
@@ -282,7 +278,7 @@ int main (int argc, char ** argv) {
          for (int k=0; k<3; k++) {x1[k]=rbgp[i][k];}
          if ((rbgp[i][0]==robcp[0])&&(rbgp[i][1]==robcp[1])&&(rbgp[i][2]==robcp[2])) {pbcp=p1;}
          for (int k=0; k<3; k++) {x2[k]=rbgp[0][k];}
-         p2=0.0e0;
+         if (options.centredats) { p2=-0.5e0*lenline; } else { p2=0.0e0; }
          if ( prop=='G' ) {
             gwf.evalGradDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2],md1tmp,gg,gp);
          } else {
@@ -422,7 +418,7 @@ int main (int argc, char ** argv) {
       for (int i=0; i<nbgppts; i++) {
          for (int k=0; k<3; k++) {x1[k]=rbgp[i][k];}
          for (int k=0; k<3; k++) {x2[k]=rbgp[0][k];}
-         p2=0.0e0;
+         if (options.centredats) { p2=-0.5e0*lenline; } else { p2=0.0e0; }
          if ( prop=='G' ) {
             gwf.evalGradDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2],md1tmp,gg,gp);
          } else {
@@ -713,7 +709,7 @@ int main (int argc, char ** argv) {
    cout << "maxval: " << maxval << endl;
 #endif /* ( DEBUG ) */
    HelperPlot::generate3DPlot(options,outfilnam,minval,maxval,lenline,nbgppts);
-   HelperPlot::generateMainDiagPlot(options,o1dfilnam,bnw,at1,at2,minval,maxval,lenline,range);
+   HelperPlot::generateMainDiagPlot(options,o1dfilnam,bnw,at1,at2,0.0e0,(maxval-minval),lenline,range);
    HelperPlot::generateSecDiagPlot(options,o1sfilnam,bnw,at1,at2,minval,maxval,lenline,range);
    HelperPlot::generateHeatMap(options,argv,outfilnam,bnw,cp,rbgp,nbgppts,minval,maxval,\
          lenline,md1lmin,md1dmax,at1,at2);

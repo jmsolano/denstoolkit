@@ -157,7 +157,7 @@ runhf: build
 	./dtkdemat1  hf.wfn -P -l -c -L -n 50 -p G -T #-C -0.04 0.004 0.06
 
 runch4: build
-	./dtkdemat1  ch4.wfx -P -k -l -c -L -n 30 -p G #-C -0.04 0.004 0.06
+	./dtkdemat1  ch4.wfx -P -k -l -c -L -n 30 -p G -t -T #-C -0.04 0.004 0.06
 
 runch4a: build
 	./dtkdemat1  ch4.wfx -P -l -c -L -n 40 #-C -0.04 0.004 0.06

@@ -106,8 +106,8 @@ optFlags::optFlags()
    quiet=1;
    showcont=0;
    showatlbls=0;
-   setinccont=0;
-   findcps=0;
+   setinccont=findcps=0;
+   centredats=false;
 }
 
 
@@ -172,6 +172,9 @@ void getOptions(int &argc, char** &argv, optFlags &flags)
             case 's':
                flags.setstep=(++i);
                if (i>=argc) {printErrorMsg(argv,'s');}
+               break;
+            case 't' :
+               flags.centredats=true;
                break;
             case 'o':
                flags.outfname=(++i);
@@ -251,6 +254,18 @@ void printHelpMenu(int &argc, char** &argv)
         << "            \t  set a1=1, a2=2." << endl
         << "            \t  Note: if the *.wfn (*.wfx) file has only one atom" << endl
         << "            \t  the program will exit and no output will be generated." << endl;
+#if _HAVE_GNUPLOT_
+   cout << endl;
+   cout << "  -P        \tCreate a plot using gnuplot." << endl
+        << "  -c        \tShow contour lines in the plot." << endl;
+   cout << "  -C s i e  \tSet the contour values (incremental style)." << endl
+        << "            \t  s, i, and e are real numbers. s is the first" << endl
+        << "            \t  contour value, i is the increment, and " << endl
+        << "            \t  e is the last contour value." << endl;
+   cout << "  -k     \tKeeps the *.gnp files to be used later by gnuplot." << endl;
+   cout << "  -l     \tShow labels of atoms (those set in option -a) in the plot." << endl
+        << endl;
+#endif
    cout << "  -L        \tCalculate MD1 upon the straight line that joins the atoms" << endl
         << "            \t  instead of upon the bond path." << endl;
    cout << "  -n  dim   \tSet the number of points for the tsv file per direction." << endl
@@ -268,18 +283,9 @@ void printHelpMenu(int &argc, char** &argv)
         << "            \t  use this name as well --but different extension--)." << endl;
    cout << "  -s step   \tSet the stepsize for the bond path to be 'step'." << endl
         << "            \t  Default value: " << DEFAULTBONDPATHSTEPMD1 << endl;
+   cout << "  -t        \tTranslate the plot to the geometrical center of the" << endl
+        << "            \t  requested atoms." << endl;
    cout << "  -T        \tPerform the Topological analysis (find critical points)." << endl;
-#if _HAVE_GNUPLOT_
-   cout << endl;
-   cout << "  -P        \tCreate a plot using gnuplot." << endl
-        << "  -c        \tShow contour lines in the plot." << endl;
-   cout << "  -C s i e  \tSet the contour values (incremental style)." << endl
-        << "            \t  s, i, and e are real numbers. s is the first" << endl
-        << "            \t  contour value, i is the increment, and " << endl
-        << "            \t  e is the last contour value." << endl;
-   //cout << "  -k     \tKeeps the *.gnp file to be used later by gnuplot." << endl;
-   cout << "  -l     \tShow labels of atoms (those set in option -a) in the plot." << endl;
-#endif
    cout << endl;
    cout << "  -v     \tVerbose (display extra information, usually output from third-" << endl
         << "         \t  party sofware such as gnuplot, etc.)" << endl;
