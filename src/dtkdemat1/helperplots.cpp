@@ -220,7 +220,8 @@ void HelperPlot::generateHeatMap(optFlags &options,char *argv[],const string &ts
            << argv[options.setinccont+1] << "," << argv[options.setinccont+2] << endl;
    }
    gfil << "unset surface" << endl;
-   gfil << "set table 'contourtemp.dat'" << endl;
+   string contourtempname=generateStrRandSeq(32);
+   gfil << "set table '" << contourtempname << "'" << endl;
    gfil << "splot namedatfile" << endl;
    gfil << "unset table" << endl;
    gfil << "unset title" << endl;
@@ -324,11 +325,13 @@ void HelperPlot::generateHeatMap(optFlags &options,char *argv[],const string &ts
    gfil << "every " << theevery << ":" << theevery << " ";
    gfil << " with image notitle";
    if (!options.showcont) {gfil << "#";}
-   gfil << ",'contourtemp.dat' w l lt -1 lw 1 notitle #Activate this line to show contours" << endl;
+   gfil << ",'" << contourtempname << "' w l lt -1 lw 1 notitle #Activate this line to show contours" << endl;
    gfil.close();
    bool rmgnp=!(options.kpgnp);
    renderGnpFile(gnpname,rmgnp);
    gnuplottools_eps2pdf(epsname);
+   contourtempname=string("rm -f ")+contourtempname;
+   system(contourtempname.c_str());
 }
 void HelperPlot::generateVectorField(optFlags &options,char *argv[],const string &tsvname,bondNetWork &bn,DeMat1CriticalPointNetworkSL &cp,
       solreal **xx,int nptsinline,solreal minval2plot,\
@@ -377,7 +380,8 @@ void HelperPlot::generateVectorField(optFlags &options,char *argv[],const string
            << argv[options.setinccont+1] << "," << argv[options.setinccont+2] << endl;
    }
    gfil << "unset surface" << endl;
-   gfil << "set table 'contourtemp.dat'" << endl;
+   string contourtempname=generateStrRandSeq(32);
+   gfil << "set table '" << contourtempname << "'" << endl;
    gfil << "splot namedatfile" << endl;
    gfil << "unset table" << endl;
    gfil << "unset title" << endl;
@@ -479,7 +483,7 @@ void HelperPlot::generateVectorField(optFlags &options,char *argv[],const string
    gfil << "every " << theevery << ":" << theevery << " ";
    gfil << "with image notitle";
    if (!options.showcont) {gfil << "#";}
-   gfil << ",'contourtemp.dat' w l lt -1 lw 1 notitle #Activate this line to show contours" << endl;
+   gfil << ",'" << contourtempname << "' w l lt -1 lw 1 notitle #Activate this line to show contours" << endl;
    //
    if ( prop=='G' ) {
 #if DEBUG
@@ -526,12 +530,14 @@ void HelperPlot::generateVectorField(optFlags &options,char *argv[],const string
       gfil << "u 1:2:(sqrt($4*$4+$5*$5)>VMXS? VMXS*$4/sqrt($4*$4+$5*$5) : $4):(sqrt($4*$4+$5*$5)>VMXS ? VMXS*$5/sqrt($4*$4+$5*$5) : $5):(sqrt($4*$4+$5*$5)) "
          << "with vectors head size 0.1,20,60 filled lc palette";
       if (!options.showcont) {gfil << "#";}
-      gfil << ",'contourtemp.dat' w l lt -1 lw 1 notitle #Activate this line to show contours" << endl;
+      gfil << ",'" << contourtempname << "' w l lt -1 lw 1 notitle #Activate this line to show contours" << endl;
    }
    gfil.close();
    bool rmgnp=!(options.kpgnp);
    renderGnpFile(gnpname,rmgnp);
    gnuplottools_eps2pdf(epsname);
+   contourtempname=string("rm -f ")+contourtempname;
+   system(contourtempname.c_str());
 }
 
 #endif  /* _HELPERPLOTS_CPP_ */
