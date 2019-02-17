@@ -713,8 +713,10 @@ int main (int argc, char ** argv) {
    HelperPlot::generateSecDiagPlot(options,o1sfilnam,bnw,at1,at2,minval,maxval,lenline,range);
    HelperPlot::generateHeatMap(options,argv,outfilnam,bnw,cp,rbgp,nbgppts,minval,maxval,\
          lenline,md1lmin,md1dmax,at1,at2);
-   HelperPlot::generateVectorField(options,argv,outfilnam,bnw,cp,rbgp,nbgppts,minval,maxval,ggradmagmin,ggradmagmax,\
-         lenline,md1lmin,md1dmax,at1,at2);
+   if ( prop=='G' ) {
+      HelperPlot::generateVectorField(options,argv,outfilnam,bnw,cp,rbgp,nbgppts,minval,maxval,ggradmagmin,ggradmagmax,\
+            lenline,md1lmin,md1dmax,at1,at2);
+   }
    
 #if (defined(__APPLE__)||defined(__linux__)||defined(__CYGWIN__))
    if (options.zipdat) {
