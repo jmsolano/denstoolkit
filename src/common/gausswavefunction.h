@@ -668,6 +668,7 @@ public:
     * for more details */
    solreal evalNCILambda(solreal x,solreal y,solreal z);
    /* ************************************************************************************ */
+   int getPrTy(int idx) {return prTy[idx];}
 protected:
    static int prTy[MAXPRIMTYPEDEFINED*3];
    /* ************************************************************************************ */
