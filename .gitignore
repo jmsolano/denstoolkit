@@ -69,6 +69,9 @@ src/dtkview/build/*
 wishlist/*
 src/devdoc/html/*
 src/dtkcharcicp/jasowfns/*
+densityprogs
+src/dtkcube/RefG09
+src/dtkcube/refCheckden
 
 #specific files
 namefiglet.txt
