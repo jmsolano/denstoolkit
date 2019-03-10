@@ -72,8 +72,9 @@
 #ifndef _OPTSFLAGS_CPP
 #define _OPTSFLAGS_CPP
 
+#include "figname.h"
 #include "optflags.h"
-#include "../common/solscrutils.h"
+#include "solscrutils.h"
 
 #include <iostream>
 using std::cout;
@@ -207,9 +208,7 @@ void printHelpMenu(int &argc, char** &argv)
    size_t pos=progname.find("./");
    if (pos!=string::npos) {progname.erase(pos,2);}
    printScrStarLine();
-#if _SOL_USE_FIGLET_NAME_
    printFigletName();
-#endif
    cout << endl;
    centerString((string(":-) ")+progname+string(" (-:")));
    cout << endl;

@@ -5261,7 +5261,7 @@ solreal GaussWaveFunction::evalNCILambda(solreal x,solreal y,solreal z)
 /* *************************************************************************************** */
 /* *************************************************************************************** */
 /* The following line includes the implementation of the custom scalar and vector fields.  */
-#include "custfld-wfnclass.cpp"
+#include "custfld-wfnclass.cxx"
 /* *************************************************************************************** */
 #endif//_GAUSSWAVEFUNCTION_CPP_
 

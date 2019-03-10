@@ -11,127 +11,118 @@ OS_ARCH = $(shell uname -m | sed -e "s/i386/i686/")
 # Flags to detect either a Linux system (linux) or Mac OSX (darwin)
 DARWIN = $(strip $(findstring DARWIN, $(OSUPPER)))
 
-#GCC             ?= g++
-#GCC             ?= g++-mp-4.9
-#GCC             ?= llvm-g++-4.2
-
-# Extra user flags
-OPTIM_CCFLAGS   ?= -O2 -funroll-loops -falign-loops=8 -ffast-math
-WARNING_CCFLAGS ?=  -W -Wall -pedantic -Wno-long-long
-
 # OS-specific build flags
-ifneq ($(DARWIN),) 
-      GCC       := g++-mp-4.9
-      CCFLAGS   := -arch $(OS_ARCH) 
+ifneq ($(DARWIN),)
+    CXXFLAGS   := -arch $(OS_ARCH)
 else
-      GCC       := g++
   ifeq ($(OS_SIZE),32)
-      CCFLAGS   := -m32
+    CXXFLAGS   := -m32
   else
-      CCFLAGS   := -m64
+    CXXFLAGS   := -m64
   endif
 endif
 
-# Debug build flags
-ifeq ($(DEBUGVERSION),1)
-      CCFLAGS   += -DDEBUG=1
-else
-      CCFLAGS   += -DDEBUG=0
-endif
+SETDTKNPROC := 1
 
 # Use OpenMP
 DTKUSEOPENMP := 0
 ifneq ($(DTKUSEOPENMP),0)
-      CCFLAGS   += -DPARALLELISEDTK=$(DTKUSEOPENMP) -fopenmp
+      CXXFLAGS   += -DPARALLELISEDTK=$(DTKUSEOPENMP) -fopenmp
 else
-      CCFLAGS   += -DPARALLELISEDTK=0
+      CXXFLAGS   += -DPARALLELISEDTK=0
 endif
 
-CCFLAGS  += -std=c++11
+MYMAKEFLAGS := 
 
-# profiling
-ifeq ($(PROFILINGMODE),1)
-      CCFLAGS   += -g
+# COMPILERS OPTIONS
+ifneq ($(DARWIN),)
+  CXX          := g++-mp-4.9
+else
+  CXX          := g++
 endif
 
-OBJDIR        := ../objs
-INCSOLDEFS    := -include soldefines.h
-PARTDEPS      := crtflnms.h crtflnms.cpp optflags.h optflags.cpp
+CXXFLAGS       += -std=c++11 -fPIC -Wall -pedantic
+OPTIMFLAGS      = -O2 -funroll-loops -falign-loops=8 -ffast-math
 
-# Target rules
-all: build
+ARCHIVE      := ar
+ARCHFLAG     := -rc
 
-build: dtkcube
+# Debug build flags
+DEBUGVERSION := 0
+ifeq ($(DEBUGVERSION),1)
+  CXXFLAGS     += -DDEBUG=1 -ggdb -W -Wno-long-long
+  MYMAKEFLAGS += DEBUGVERSION=1
+else
+   ifeq ($(PROFILEVERSION),1)
+      CXXFLAGS     += -DDEBUG=1 -g -pg -Wall -pedantic $(OPTIMFLAGS)
+      MYMAKEFLAGS += PROFILEVERSION=1
+   else
+      CXXFLAGS     += -DDEBUG=0 -Wall -pedantic $(OPTIMFLAGS)
+   endif
+endif
 
-$(OBJDIR)/solmemhand.o: ../common/solmemhand.cpp soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
+INCDEFS        :=  -include ../common/globaldefs.h -include localdefs.h
 
-$(OBJDIR)/solscrutils.o: ../common/solscrutils.cpp soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
+# FILES
+CPPOBJS=$(patsubst %.cpp,%.o,$(wildcard *.cpp))
+CCOBJS=$(patsubst %.cc,%.o,$(wildcard *.cc))
+OBJS= $(CPPOBJS) $(CCOBJS)
+HEADERS=$(wildcard *.h)
+SOURCES=$(wildcard *.cpp *.cc)
+LIBOBJS=$(shell echo $(OBJS))
+COMMONSTATICLIBNAME=$(shell cd ../..; pwd | sed -e 's;\(.*\)/\(.*\);\2;')
+COMMONHEADERS=$(shell ls ../common/*.h)
+COMMONSOURCES=$(shell ls ../common/*.cpp)
+STATICLIB=$(TOP)/../common/lib$(COMMONSTATICLIBNAME).a
+STATICOBJS=$(shell for i in $$(ls ../common/*cpp);do echo $${i%cpp}o;done)
+TESTEXECS=$(patsubst %.cc,%.x,$(wildcard *.cc))
 
-$(OBJDIR)/solstringtools.o: ../common/solstringtools.cpp ../common/solstringtools.h soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
+# -L: FOLDER LIBRARY
+	LFLAGS+=#-L$(TOP)/../common/
+	LFLAGS+=#-L.
 
-$(OBJDIR)/solfileutils.o: ../common/solfileutils.cpp soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
+# -l: LIBRARY
+	lLIBS+=-l$(COMMONSTATICLIBNAME)
 
-$(OBJDIR)/atomradiicust.o: ../common/atomradiicust.cpp ../common/atomradiicust.h soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
+# -I: INCLUDES
+	IFLAGS+=-I. $(INCDEFS) -I$(TOP)/../common/
 
-$(OBJDIR)/iofuncts-wfx.o: ../common/iofuncts-wfx.cpp ../common/solmemhand.cpp soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
+TARGET=target
 
-$(OBJDIR)/iofuncts-wfn.o: ../common/iofuncts-wfn.cpp ../common/solmemhand.cpp soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
+$(TARGET): $(OBJS) $(TESTEXECS) $(STATICLIB)
 
-$(OBJDIR)/solmath.o: ../common/solmath.cpp soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
+$(CPPOBJS): %.o: %.cpp %.h
+	@echo "\033[32m   Compiling $@\\033[m"
+	$(CXX) $(CXXFLAGS) -c $< -o $@  $(IFLAGS) 
 
-$(OBJDIR)/eig2-4.o: ../common/eig2-4.cpp soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
+$(CCOBJS): %.o: %.cc $(COMMONHEADERS) $(HEADERS)
+	@echo "\033[32m   Compiling $@\\033[m"
+	$(CXX) $(CXXFLAGS) -c $<  -o $@  $(IFLAGS) 
 
-$(OBJDIR)/solpovtools.o: ../common/solpovtools.cpp soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
+$(TESTEXECS): %.x: %.o $(STATICLIB) $(CCOBJS) $(CPPOBJS) $(SOURCES) $(HEADERS) $(COMMONHEADERS) $(COMMONSOURCES)
+	@echo "\033[32m   Linking $@\\033[m"
+	$(CXX) $(LFLAGS) $(OPTIMFLAGS) $< $(CPPOBJS) $(STATICOBJS) -o $@
 
-$(OBJDIR)/gausswavefunction.o: ../common/gausswavefunction.cpp soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
+$(STATICLIB): $(COMMONHEADERS) $(COMMONSOURCES)
+	@echo "\033[32mBuilding lib$(COMMONSTATICLIBNAME).a\\033[m"
+	@cd $(TOP)/../common/;make $(MYMAKEFLAGS)
 
-$(OBJDIR)/bondnetwork.o: ../common/bondnetwork.cpp soldefines.h #$(OBJDIR)/solpovtools.o
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
-
-$(OBJDIR)/solcubetools.o: ../common/solcubetools.cpp soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
-
-$(OBJDIR)/wfgrid3d.o: ../common/wfgrid3d.cpp soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
-
-$(OBJDIR)/atomcolschjmol.o: ../common/atomcolschjmol.cpp ../common/atomcolschjmol.h soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
-
-optflags.o: optflags.cpp soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
-
-crtflnms.o: crtflnms.cpp soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
-
-dtkcube.o: dtkcube.cpp soldefines.h $(PARTDEPS)
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
-
-dtkcube: dtkcube.o optflags.o crtflnms.o $(OBJDIR)/solfileutils.o \
-  $(OBJDIR)/iofuncts-wfx.o $(OBJDIR)/iofuncts-wfn.o $(OBJDIR)/eig2-4.o \
-  $(OBJDIR)/gausswavefunction.o $(OBJDIR)/solscrutils.o $(OBJDIR)/solmemhand.o \
-  $(OBJDIR)/wfgrid3d.o $(OBJDIR)/solcubetools.o $(OBJDIR)/bondnetwork.o \
-  $(OBJDIR)/solpovtools.o $(OBJDIR)/solstringtools.o $(OBJDIR)/atomradiicust.o \
-  $(OBJDIR)/atomcolschjmol.o $(OBJDIR)/solmath.o
-	$(GCC) $(CCFLAGS) $(OPTIM_CCFLAGS) $(INCSOLDEFS) -o $@ $+
+.PHONY: clean
 clean:
-	rm -f *.o dtkcube
+	$(info CLEANING ALL)
+	@$(RM) -f $(TARGET) $(OBJS) $(TESTEXECS) 2>/dev/null || true
 
-distclean: clean
-	rm -f $(OBJDIR)/*.o
+fullclean: clean
+	@cd ../common/;make clean
 
-runben: dtkcube benceno_sto3g.wfx
-	./dtkcube benceno_sto3g.wfx -n 50 -l -p u
 
-runch4: dtkcube ch4.wfx
-	./dtkcube ch4.wfx -n 50 -l -p z --configure-nci 1.0e-4 0.8e0 1.8e0
+list:
+	@echo $(OBJS)
+	@echo $(HEADERS)
+
+listobjs:
+	@echo $(LIBOBJS)
+
+liststatic:
+	@echo $(STATICOBJS)
+

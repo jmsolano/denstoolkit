@@ -42,8 +42,8 @@
  */
 
 
-#ifndef _SOLDEFINES_H_
-#define _SOLDEFINES_H_
+#ifndef _GLOBALDEFS_H_
+#define _GLOBALDEFS_H_
 
 
 #ifndef _HAVE_DEF_SOLREAL_TYPE_
@@ -60,14 +60,6 @@ typedef double solreal;
 #define PARALLELISEDTK 0
 #endif
 
-#define USEPROGRESSBAR 1
-#define CURRENTVERSION "1.2.0"
-#define PROGRAMCONTRIBUTORS "JMSA/JMHP"
-#define EPSFORELFVALUE (2.871e-05)
-#define DEFAULTPOINTSPERDIRECTION (80)
-
-#define DISPLAYDEBUGINFOFILELINE (std::cout << __FILE__ << ", line: " << __LINE__ << std::endl)
-
 #if DEBUG
 #define _SOL_USE_SAFE_CHECKS_ 1
 #else
@@ -75,18 +67,30 @@ typedef double solreal;
 #endif
 
 #define _HAVE_GNUPLOT_ 1
+#define _HAVE_EPSTOPDF_ 1
+#define _HAVE_EPSTOOL_ 1
+
 #define _HAVE_GRAPHICSMAGICK_ 1
 #define _HAVE_IMAGEMAGICK_ 0
+
 #define _HAVE_POVRAY_ 1
+#ifndef CMD_POVRAY
+#define CMD_POVRAY "povray"
+#endif
 #define CHOOSEPOVVERSION36 1
 
+#define _SOL_USE_FIGLET_NAME_ 1
+#define USEPROGRESSBAR 1
+#define CURRENTVERSION "1.2.0"
+#define EPSFORELFVALUE (2.871e-05)
+#define PROGRAMCONTRIBUTORS "JMSA/JMHP"
+#define _HAVE_FIGLET_NAME_ 1
 #define _SOL_USE_FIGLET_NAME_ 1
 
 #define _MAX_MEM_ALLOWANCE_ (1024*1024*1024)
 
-#ifndef CMD_POVRAY
-#define CMD_POVRAY "povray"
+#ifndef DISPLAYDEBUGINFOFILELINE
+#define DISPLAYDEBUGINFOFILELINE (std::cout << __FILE__ << ", line: " << __LINE__ << std::endl)
 #endif
 
-#endif /* defined(_SOLDEFINES_H_) */
-
+#endif /* _GLOBALDEFS_H_ */

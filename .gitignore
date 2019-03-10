@@ -23,6 +23,8 @@ cachegrind.*
 *.user
 *.synctex
 *.vmd
+*.x
+*.sh
 
 #binaries
 src/dtkbpdens/dtkbpdens
@@ -72,6 +74,7 @@ src/dtkcharcicp/jasowfns/*
 densityprogs
 src/dtkcube/RefG09
 src/dtkcube/refCheckden
+src/*/refSelf
 
 #specific files
 namefiglet.txt
@@ -87,4 +90,5 @@ src/scripts/dtkrmGPLv3
 src/firstrelease
 AFTER_PUB
 src/devdoc/Dev*.html
+src/common/*.a
 

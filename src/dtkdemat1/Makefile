@@ -11,160 +11,118 @@ OS_ARCH = $(shell uname -m | sed -e "s/i386/i686/")
 # Flags to detect either a Linux system (linux) or Mac OSX (darwin)
 DARWIN = $(strip $(findstring DARWIN, $(OSUPPER)))
 
-#GCC             ?= g++
-
-# Extra user flags
-OPTIM_CCFLAGS   ?= -O2 -funroll-loops -falign-loops=8 -ffast-math
-WARNING_CCFLAGS ?=  -W -Wall -pedantic -Wno-long-long
-
 # OS-specific build flags
-ifneq ($(DARWIN),) 
-      GCC       := g++-mp-4.9
-      CCFLAGS   := -arch $(OS_ARCH) 
+ifneq ($(DARWIN),)
+    CXXFLAGS   := -arch $(OS_ARCH)
 else
-      GCC       := g++
   ifeq ($(OS_SIZE),32)
-      CCFLAGS   := -m32
+    CXXFLAGS   := -m32
   else
-      CCFLAGS   := -m64
+    CXXFLAGS   := -m64
   endif
 endif
 
-# Debug build flags
-ifeq ($(DEBUGVERSION),1)
-      CCFLAGS   += -DDEBUG=1
-else
-      CCFLAGS   += -DDEBUG=0
-endif
+SETDTKNPROC := 1
 
 # Use OpenMP
 DTKUSEOPENMP := 0
 ifneq ($(DTKUSEOPENMP),0)
-      CCFLAGS   += -DPARALLELISEDTK=$(DTKUSEOPENMP) -fopenmp
+      CXXFLAGS   += -DPARALLELISEDTK=$(DTKUSEOPENMP) -fopenmp
 else
-      CCFLAGS   += -DPARALLELISEDTK=0
+      CXXFLAGS   += -DPARALLELISEDTK=0
 endif
 
-CCFLAGS += -std=c++11
+MYMAKEFLAGS := 
 
-OBJDIR        := ../objs
-INCSOLDEFS    := -include soldefines.h
-PARTDEPS      := crtflnms.h crtflnms.cpp optflags.h optflags.cpp helperplots.h helperplots.cpp
+# COMPILERS OPTIONS
+ifneq ($(DARWIN),)
+  CXX          := g++-mp-4.9
+else
+  CXX          := g++
+endif
 
-# Target rules
-all: build
+CXXFLAGS       += -std=c++11 -fPIC -Wall -pedantic
+OPTIMFLAGS      = -O2 -funroll-loops -falign-loops=8 -ffast-math
 
-build: dtkdemat1
+ARCHIVE      := ar
+ARCHFLAG     := -rc
 
-$(OBJDIR)/solmemhand.o: ../common/solmemhand.cpp ../common/solmemhand.h soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
+# Debug build flags
+DEBUGVERSION := 0
+ifeq ($(DEBUGVERSION),1)
+  CXXFLAGS     += -DDEBUG=1 -ggdb -W -Wno-long-long
+  MYMAKEFLAGS += DEBUGVERSION=1
+else
+   ifeq ($(PROFILEVERSION),1)
+      CXXFLAGS     += -DDEBUG=1 -g -pg -Wall -pedantic $(OPTIMFLAGS)
+      MYMAKEFLAGS += PROFILEVERSION=1
+   else
+      CXXFLAGS     += -DDEBUG=0 -Wall -pedantic $(OPTIMFLAGS)
+   endif
+endif
 
-$(OBJDIR)/solscrutils.o: ../common/solscrutils.cpp ../common/solscrutils.h soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
+INCDEFS        :=  -include ../common/globaldefs.h -include localdefs.h
 
-$(OBJDIR)/solstringtools.o: ../common/solstringtools.cpp ../common/solstringtools.h soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
+# FILES
+CPPOBJS=$(patsubst %.cpp,%.o,$(wildcard *.cpp))
+CCOBJS=$(patsubst %.cc,%.o,$(wildcard *.cc))
+OBJS= $(CPPOBJS) $(CCOBJS)
+HEADERS=$(wildcard *.h)
+SOURCES=$(wildcard *.cpp *.cc)
+LIBOBJS=$(shell echo $(OBJS))
+COMMONSTATICLIBNAME=$(shell cd ../..; pwd | sed -e 's;\(.*\)/\(.*\);\2;')
+COMMONHEADERS=$(shell ls ../common/*.h)
+COMMONSOURCES=$(shell ls ../common/*.cpp)
+STATICLIB=$(TOP)/../common/lib$(COMMONSTATICLIBNAME).a
+STATICOBJS=$(shell for i in $$(ls ../common/*cpp);do echo $${i%cpp}o;done)
+TESTEXECS=$(patsubst %.cc,%.x,$(wildcard *.cc))
 
-$(OBJDIR)/solgnuplottools.o: ../common/solgnuplottools.cpp ../common/solgnuplottools.h soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
+# -L: FOLDER LIBRARY
+	LFLAGS+=#-L$(TOP)/../common/
+	LFLAGS+=#-L.
 
-$(OBJDIR)/solfileutils.o: ../common/solfileutils.cpp soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
+# -l: LIBRARY
+	lLIBS+=-l$(COMMONSTATICLIBNAME)
 
-$(OBJDIR)/iofuncts-wfx.o: ../common/iofuncts-wfx.cpp ../common/iofuncts-wfx.h\
-	                       ../common/solmemhand.cpp ../common/solmemhand.h soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
+# -I: INCLUDES
+	IFLAGS+=-I. $(INCDEFS) -I$(TOP)/../common/
 
-$(OBJDIR)/iofuncts-cpx.o: ../common/iofuncts-cpx.cpp ../common/iofuncts-cpx.h \
-	                       ../common/solmemhand.cpp ../common/solmemhand.h \
-                          soldefines.h ../common/fldtypesdef.h ../common/solscrutils.h \
-                          ../common/solstringtools.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
+TARGET=target
 
-$(OBJDIR)/iofuncts-wfn.o: ../common/iofuncts-wfn.cpp ../common/iofuncts-wfn.h \
-	                       ../common/solmemhand.cpp ../common/solmemhand.h soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
+$(TARGET): $(OBJS) $(TESTEXECS) $(STATICLIB)
 
-$(OBJDIR)/solmath.o: ../common/solmath.cpp ../common/solmath.h soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
+$(CPPOBJS): %.o: %.cpp %.h
+	@echo "\033[32m   Compiling $@\\033[m"
+	$(CXX) $(CXXFLAGS) -c $< -o $@  $(IFLAGS) 
 
-$(OBJDIR)/eig2-4.o: ../common/eig2-4.cpp soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
+$(CCOBJS): %.o: %.cc $(COMMONHEADERS) $(HEADERS)
+	@echo "\033[32m   Compiling $@\\033[m"
+	$(CXX) $(CXXFLAGS) -c $<  -o $@  $(IFLAGS) 
 
-$(OBJDIR)/gausswavefunction.o: ../common/gausswavefunction.cpp ../common/gausswavefunction.h soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
+$(TESTEXECS): %.x: %.o $(STATICLIB) $(CCOBJS) $(CPPOBJS) $(SOURCES) $(HEADERS) $(COMMONHEADERS) $(COMMONSOURCES)
+	@echo "\033[32m   Linking $@\\033[m"
+	$(CXX) $(LFLAGS) $(OPTIMFLAGS) $< $(CPPOBJS) $(STATICOBJS) -o $@
 
-$(OBJDIR)/solpovtools.o: ../common/solpovtools.cpp soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
+$(STATICLIB): $(COMMONHEADERS) $(COMMONSOURCES)
+	@echo "\033[32mBuilding lib$(COMMONSTATICLIBNAME).a\\033[m"
+	@cd $(TOP)/../common/;make $(MYMAKEFLAGS)
 
-$(OBJDIR)/bondnetwork.o: ../common/bondnetwork.cpp soldefines.h #$(OBJDIR)/solpovtools.o
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
-
-$(OBJDIR)/critptnetwork.o: ../common/critptnetwork.cpp soldefines.h 
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
-
-$(OBJDIR)/demat1critptnetworksl.o: ../common/demat1critptnetworksl.cpp soldefines.h 
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
-
-$(OBJDIR)/wfgrid2d.o: ../common/wfgrid2d.cpp soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
-
-$(OBJDIR)/atomradiicust.o: ../common/atomradiicust.cpp ../common/atomradiicust.h soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
-
-$(OBJDIR)/atomcolschjmol.o: ../common/atomcolschjmol.cpp ../common/atomcolschjmol.h soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) $(OPTIM_CCFLAGS) -o $@ -c $<
-
-optflags.o: optflags.cpp soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
-
-helperplots.o: helperplots.cpp soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
-
-crtflnms.o: crtflnms.cpp soldefines.h
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
-
-dtkdemat1.o: dtkdemat1.cpp soldefines.h $(PARTDEPS)
-	$(GCC) $(CCFLAGS) $(WARNING_CCFLAGS) $(INCSOLDEFS) -o $@ -c $<
-
-dtkdemat1: dtkdemat1.o optflags.o crtflnms.o helperplots.o $(OBJDIR)/solfileutils.o \
-  $(OBJDIR)/iofuncts-wfx.o $(OBJDIR)/iofuncts-wfn.o $(OBJDIR)/iofuncts-cpx.o \
-  $(OBJDIR)/gausswavefunction.o $(OBJDIR)/solscrutils.o $(OBJDIR)/solmemhand.o \
-  $(OBJDIR)/bondnetwork.o $(OBJDIR)/wfgrid2d.o $(OBJDIR)/solpovtools.o \
-  $(OBJDIR)/solmath.o $(OBJDIR)/eig2-4.o $(OBJDIR)/critptnetwork.o \
-  $(OBJDIR)/solstringtools.o $(OBJDIR)/atomradiicust.o $(OBJDIR)/atomcolschjmol.o \
-  $(OBJDIR)/solgnuplottools.o $(OBJDIR)/demat1critptnetworksl.o
-	$(GCC) $(CCFLAGS) $(OPTIM_CCFLAGS) $(INCSOLDEFS) -o $@ $+
+.PHONY: clean
 clean:
-	rm -f *.o dtkdemat1
+	$(info CLEANING ALL)
+	@$(RM) -f $(TARGET) $(OBJS) $(TESTEXECS) 2>/dev/null || true
 
-distclean: clean
-	rm -f $(OBJDIR)/*.o
+fullclean: clean
+	@cd ../common/;make clean
 
-runben: build
-	./dtkdemat1  benzene.wfn -P -l -c -L -n 50 -p G
 
-rtestost: build
-	./dtkdemat1 testosterona_sto3g.wfx -a 33 45 -P -l -c
+list:
+	@echo $(OBJS)
+	@echo $(HEADERS)
 
-runli2: build
-	./dtkdemat1  li2.ccsd.augccpvtz.wfn -P -l -c -L -n 50 -p G -T #-C -0.04 0.004 0.06
+listobjs:
+	@echo $(LIBOBJS)
 
-runlih: build
-	./dtkdemat1  LiH-6311Gdp.wfx -P -l -c -L -n 50 -p G -T #-C -0.04 0.004 0.06
-
-runhf: build
-	./dtkdemat1  hf.wfn -P -l -c -L -n 50 -p G -T #-C -0.04 0.004 0.06
-
-runch4: build
-	./dtkdemat1  ch4.wfx -P -k -l -c -L -n 30 -p G -t -T #-C -0.04 0.004 0.06
-
-runch4a: build
-	./dtkdemat1  ch4.wfx -P -l -c -L -n 40 #-C -0.04 0.004 0.06
-
-runch4b: build
-	./dtkdemat1  ch4.wfx -P -l -c -L -n 40 -p G -T #-C -0.04 0.004 0.06
-
-runf2: build
-	./dtkdemat1  f2.g09.wfn -P -l -c -L -n 40 -p G -a 1 2
+liststatic:
+	@echo $(STATICOBJS)
 

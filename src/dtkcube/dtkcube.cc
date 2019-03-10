@@ -92,7 +92,7 @@ int main (int argc, char ** argv)
    getOptions(argc,argv,options); //This processes the options from the command line.
    mkFileNames(argv,options,infilnam,outfilnam,logfilnam); //This creates the names used.
    printHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS); //Just to let the user know that the initial configuration is OK
-   
+
    cout << endl << "Loading wave function from file: " << infilnam << endl;
    
    GaussWaveFunction gwf;

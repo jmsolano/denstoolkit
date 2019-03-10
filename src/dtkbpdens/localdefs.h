@@ -42,19 +42,11 @@
  */
 
 
+#ifndef _SOLDEFINES_H_
+#define _SOLDEFINES_H_
 
-#ifndef _FIGNAME_H_
-#define _FIGNAME_H_
 
-#ifndef _HAVE_FIGLET_NAME_
-#define _HAVE_FIGLET_NAME_ 1
-#endif
+#define DEFAULTPOINTSPERDIRECTION (300)
+#define DEFAULTBONDPATHSTEPMD1 (0.03e0)
 
-#include <cstdlib>
-#include <string>
-using std::string;
-
-void printFigletName(void);
-
-#endif  /* _FIGNAME_H_ */
-
+#endif /* defined(_SOLDEFINES_H_) */

@@ -45,7 +45,7 @@
 
 #ifndef _CUSTFLD_WFNCLASS_CPP_
 #define _CUSTFLD_WFNCLASS_CPP_
-
+#include "gausswavefunction.h"
 /* ************************************************************************************ */
 /* In this file, solreal is a mask for a double, i.e., a solreal is a double.
  * This name is used in order to keep compatibility with future implementations
