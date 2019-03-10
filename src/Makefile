@@ -1,5 +1,5 @@
 
-SETDTKNPROC=1
+SETDTKNPROC=4
 
 TOP      = $(shell pwd)
 
@@ -29,7 +29,8 @@ INSTALL_PATH := /usr/local/bin
 
 # Use OpenMP
 DTKUSEOPENMP := 0
-ifneq ($(DTKUSEOPENMP),0)
+ifneq ($(SETDTKNPROC),1)
+      DTKUSEOPENMP=$(SETDTKNPROC)
       CXXFLAGS   += -DPARALLELISEDTK=$(DTKUSEOPENMP) -fopenmp
 else
       CXXFLAGS   += -DPARALLELISEDTK=0

@@ -26,8 +26,10 @@ SETDTKNPROC := 1
 
 # Use OpenMP
 DTKUSEOPENMP := 0
-ifneq ($(DTKUSEOPENMP),0)
+ifneq ($(SETDTKNPROC),1)
+      DTKUSEOPENMP=$(SETDTKNPROC)
       CXXFLAGS   += -DPARALLELISEDTK=$(DTKUSEOPENMP) -fopenmp
+      LFLAGS     += -fopenmp
 else
       CXXFLAGS   += -DPARALLELISEDTK=0
 endif
