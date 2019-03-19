@@ -191,6 +191,7 @@ public:
    int *primType, *primCent,*myPN;
    solreal *R, *atCharge, *primExp, *MOCoeff, *occN, *MOEner,*EDFCoeff;
    solreal *cab,*chi,*gx,*gy,*gz,*hxx,*hyy,*hzz,*hxy,*hxz,*hyz;
+   solreal *prefMEP;
    solreal totener,virial;
    solreal nciRhoMin,nciRhoMax,nciSMax;
    bool imldd,ihaveEDF;
@@ -300,6 +301,7 @@ public:
       uses for calculating numerical properties (rho, grad(rho), hess(rho), etc.).
     */
    bool allocAuxArrays(void);
+   bool allocAuxMEPArray(void);
    /* *********************************************************************************** */
    /** This function counts the number of primitives associated with each one
       of the nuclear centers.
@@ -605,6 +607,8 @@ public:
                        solreal (&Rlmn)[7][7][7]);
    /* ************************************************************************************ */
    solreal evalVAB(solreal (&xx)[3],int (&aa)[3],int (&ab)[3],solreal &alpa,solreal &alpb,
+                          solreal (&ra)[3],solreal (&rb)[3]);
+   solreal evalVABCore(solreal s00,solreal (&xx)[3],int idxA,int idxB,int (&aa)[3],int (&ab)[3],solreal &alpa,solreal &alpb,
                           solreal (&ra)[3],solreal (&rb)[3]);
    /* ************************************************************************************ */
    solreal evalOverlapIntegralAB(int (&aa)[3],int (&ab)[3],solreal &alpa,solreal &alpb,

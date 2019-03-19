@@ -149,6 +149,7 @@ GaussWaveFunction::GaussWaveFunction()
    occN=NULL;
    MOEner=NULL;
    cab=NULL;
+   prefMEP=NULL;
    chi=NULL;
    gx=gy=gz=NULL;
    hxx=hyy=hzz=NULL;
@@ -189,6 +190,7 @@ GaussWaveFunction::~GaussWaveFunction()
    dealloc1DRealArray(primExp);
    dealloc1DRealArray(chi);
    dealloc1DRealArray(cab);
+   dealloc1DRealArray(prefMEP);
    dealloc1DRealArray(MOCoeff);
    dealloc1DRealArray(occN);
    dealloc1DRealArray(MOEner);
@@ -284,6 +286,7 @@ bool GaussWaveFunction::readFromFileWFN(string inname)
    calcCab();
    tif.close();
    imldd=testSupport();
+   allocAuxMEPArray();
    return true;
 }
 /* ************************************************************************************** */
@@ -358,6 +361,7 @@ bool GaussWaveFunction::readFromFileWFX(string inname)
    calcCab();
    tif.close();
    imldd=testSupport();
+   allocAuxMEPArray();
    return true;
 }
 /* ************************************************************************************** */
@@ -1320,6 +1324,59 @@ bool GaussWaveFunction::allocAuxArrays(void)
    if (!allgood) {
       cout << "Something wrong in allocating hyz..." << endl;
       return allgood;
+   }
+   return allgood;
+}
+bool GaussWaveFunction::allocAuxMEPArray(void)
+{
+   if ( !imldd ) {
+      displayErrorMessage("First load the gausswave function!");
+      return false;
+   }
+   bool allgood;
+   if ( ihaveEDF ) {
+      allgood=alloc1DRealArray(string("prefMEP"),(totPri*totPri),prefMEP,0.0e0);
+   } else {
+      allgood=alloc1DRealArray(string("prefMEP"),(nPri*nPri),prefMEP);
+   }
+   int indr;
+   solreal ra[3],rb[3],alpa,alpb,alpp,ooalpp,sum,S00;
+   for ( int i=0 ; i<nPri ; ++i ) {
+      indr=3*primCent[i];
+      ra[0]=R[indr];
+      ra[1]=R[indr+1];
+      ra[2]=R[indr+2];
+      alpa=primExp[i];
+      for (int j=0; j<nPri; j++) {
+         indr=3*primCent[j];
+         rb[0]=R[indr];
+         rb[1]=R[indr+1];
+         rb[2]=R[indr+2];
+         alpb=primExp[j];
+         alpp=alpa+alpb;
+         ooalpp=1.0e0/alpp;
+         sum=0.e00;
+         for (int k=0; k<3; k++) {
+            S00=ra[k]-rb[k];
+            sum+=S00*S00;
+         }
+         sum*=(alpa*alpb*ooalpp);
+         S00=exp(-sum);
+         prefMEP[i*nPri+j]=((S00>EPSFORMEPVALUE)?(6.2831853071795864769*S00*ooalpp):(0.0e0));
+      }
+   }
+   if ( ihaveEDF ) {
+      for ( int i=nPri ; i<totPri ; ++i ) {
+         indr=3*primCent[i];
+         ra[0]=R[indr];
+         ra[1]=R[indr+1];
+         ra[2]=R[indr+2];
+         alpp=primExp[i];
+         alpa=0.5e0*alpp;
+         ooalpp=1.0e0/alpp;
+         S00=6.2831853071795864769*ooalpp;
+         prefMEP[i*(nPri+1)]=( (S00>EPSFORMEPVALUE) ? S00 : 0.0e0 );
+      }
    }
    return allgood;
 }
@@ -4947,6 +5004,29 @@ solreal GaussWaveFunction::evalVAB(solreal (&xx)[3],int (&aa)[3],int (&ab)[3],so
    static const solreal twopi=6.2831853071795864769;
    return (twopi*ooalpp*S00*ctmp);
 }
+solreal GaussWaveFunction::evalVABCore(solreal S00,solreal (&xx)[3],int idxA,int idxB,int (&aa)[3],int (&ab)[3],solreal &alpa,solreal &alpb,
+                               solreal (&xa)[3],solreal (&xb)[3])
+{
+   solreal alpp=alpa+alpb;
+   solreal xp[3],cp[3],ctmp=0.0e0,ooalpp=1.0e0/alpp;
+   for (int i=0; i<3; i++) {
+      xp[i]=ooalpp*(alpa*xa[i]+alpb*xb[i]);
+      cp[i]=xp[i]-xx[i];
+   }
+   solreal Eabk[3][7],Rijk[7][7][7];
+   int maxl[3];
+   evalHermiteCoefs(aa,ab,alpp,xa,xb,xp,maxl,Eabk);
+   evalRlmnIntegs(maxl,alpp,cp,Rijk);
+   ctmp=0.0e0;
+   for (int i=0; i<=maxl[0]; i++) {
+      for (int j=0; j<=maxl[1]; j++) {
+         for (int k=0; k<=maxl[2]; k++) {
+            ctmp+=(Eabk[0][i]*Eabk[1][j]*Eabk[2][k]*Rijk[i][j][k]);
+         }
+      }
+   }
+   return (S00*ctmp);
+}
 /* *************************************************************************************** */
 #if PARALLELISEDTK
 solreal GaussWaveFunction::evalMolElecPot(solreal x,solreal y,solreal z)
@@ -5033,7 +5113,7 @@ solreal GaussWaveFunction::evalMolElecPot(solreal x,solreal y,solreal z)
       return 0.0e0;
    }
    int indr,inda,indp;
-   solreal xx[3],ra[3],rb[3],alpa,alpb,mepaa,mepab,mepelec,cc;
+   solreal xx[3],ra[3],rb[3],alpa,alpb,mepaa,mepab,mepelec,cc,S00;
    int aa[3],ab[3];
    xx[0]=x; xx[1]=y; xx[2]=z;
    mepaa=mepab=mepelec=0.000000e0;
@@ -5049,9 +5129,14 @@ solreal GaussWaveFunction::evalMolElecPot(solreal x,solreal y,solreal z)
       aa[2]=prTy[inda+2];
       alpa=primExp[i];
       indp=i*(nPri+1);
+      S00=prefMEP[indp];
       cc=cab[indp++];
-      mepaa+=(cc*evalVAB(xx,aa,aa,alpa,alpa,ra,ra));
+      if ( S00>0.0e0 ) {
+         mepaa+=(cc*evalVABCore(S00,xx,i,i,aa,aa,alpa,alpa,ra,ra));
+      }
       for (int j=(i+1); j<nPri; j++) {
+         S00=prefMEP[indp];
+         if ( S00<EPSFORMEPVALUE ) { ++indp; continue; }
          cc=cab[indp++];
          indr=3*primCent[j];
          rb[0]=R[indr];
@@ -5062,7 +5147,7 @@ solreal GaussWaveFunction::evalMolElecPot(solreal x,solreal y,solreal z)
          ab[1]=prTy[inda+1];
          ab[2]=prTy[inda+2];
          alpb=primExp[j];
-         mepab+=(cc*evalVAB(xx,aa,ab,alpa,alpb,ra,rb));
+         mepab+=(cc*evalVABCore(S00,xx,i,j,aa,ab,alpa,alpb,ra,rb));
       }
    }
    if ( ihaveEDF ) {
@@ -5076,8 +5161,11 @@ solreal GaussWaveFunction::evalMolElecPot(solreal x,solreal y,solreal z)
          aa[1]=prTy[inda+1];
          aa[2]=prTy[inda+2];
          alpa=0.5e0*primExp[i];
-         cc=EDFCoeff[i-nPri];
-         mepaa+=(cc*evalVAB(xx,aa,aa,alpa,alpa,ra,ra));
+         S00=prefMEP[i*(nPri+1)];
+         if ( S00>0.0e0 ) {
+            cc=EDFCoeff[i-nPri];
+            mepaa+=(cc*evalVABCore(S00,xx,i,i,aa,aa,alpa,alpa,ra,ra));
+         }
       }
    }
    mepelec=mepaa+2.0e0*mepab;
