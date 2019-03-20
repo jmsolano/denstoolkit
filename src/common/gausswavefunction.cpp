@@ -5004,7 +5004,7 @@ solreal GaussWaveFunction::evalVAB(solreal (&xx)[3],int (&aa)[3],int (&ab)[3],so
    static const solreal twopi=6.2831853071795864769;
    return (twopi*ooalpp*S00*ctmp);
 }
-solreal GaussWaveFunction::evalVABCore(solreal S00,solreal (&xx)[3],int idxA,int idxB,int (&aa)[3],int (&ab)[3],solreal &alpa,solreal &alpb,
+solreal GaussWaveFunction::evalVABCore(solreal &S00,solreal (&xx)[3],int idxA,int idxB,int (&aa)[3],int (&ab)[3],solreal &alpa,solreal &alpb,
                                solreal (&xa)[3],solreal (&xb)[3])
 {
    solreal alpp=alpa+alpb;
@@ -5047,12 +5047,12 @@ solreal GaussWaveFunction::evalMolElecPot(solreal x,solreal y,solreal z)
       return 0.0e0;
    }
    int indr,inda,indp;
-   solreal xx[3],ra[3],rb[3],alpa,alpb,mepaa,mepab,mepelec,cc;
+   solreal xx[3],ra[3],rb[3],alpa,alpb,mepaa,mepab,mepelec,cc,S00;
    int aa[3],ab[3],i,j;
    xx[0]=x; xx[1]=y; xx[2]=z;
    mepaa=mepab=mepelec=0.000000e0;
    inda=indp=0;
-#pragma omp parallel for private(indr,inda,ra,rb,aa,ab,alpa,alpb,indp,cc) \
+#pragma omp parallel for private(indr,inda,ra,rb,aa,ab,alpa,alpb,indp,cc,S00) \
 firstprivate(j) lastprivate(i) shared(xx) reduction(+: mepaa,mepab)
    for (i=0; i<nPri; i++) {
       indr=3*primCent[i];
@@ -5066,6 +5066,8 @@ firstprivate(j) lastprivate(i) shared(xx) reduction(+: mepaa,mepab)
       alpa=primExp[i];
       indp=i*(nPri);
       for (j=(i+1); j<nPri; j++) {
+         S00=prefMEP[indp+j];
+         if ( S00<EPSFORMEPVALUE ) { continue; }
          cc=cab[indp+j];
          indr=3*primCent[j];
          rb[0]=R[indr];
@@ -5076,9 +5078,30 @@ firstprivate(j) lastprivate(i) shared(xx) reduction(+: mepaa,mepab)
          ab[1]=prTy[inda+1];
          ab[2]=prTy[inda+2];
          alpb=primExp[j];
-         mepab+=(cc*evalVAB(xx,aa,ab,alpa,alpb,ra,rb));
+         mepab+=(cc*evalVABCore(S00,xx,i,j,aa,ab,alpa,alpb,ra,rb));
       }
-      mepaa+=(cab[indp+i]*evalVAB(xx,aa,aa,alpa,alpa,ra,ra));
+      S00=prefMEP[indp+i];
+      if ( S00>0.0e0 ) {
+         mepaa+=(cab[indp+i]*evalVABCore(S00,xx,i,i,aa,aa,alpa,alpa,ra,ra));
+      }
+   }
+   if ( ihaveEDF ) {
+      for ( int i=nPri ; i<totPri ; ++i ) {
+         indr=3*primCent[i];
+         ra[0]=R[indr];
+         ra[1]=R[indr+1];
+         ra[2]=R[indr+2];
+         inda=3*primType[i];
+         aa[0]=prTy[inda];
+         aa[1]=prTy[inda+1];
+         aa[2]=prTy[inda+2];
+         alpa=0.5e0*primExp[i];
+         S00=prefMEP[i*(nPri+1)];
+         if ( S00>0.0e0 ) {
+            cc=EDFCoeff[i-nPri];
+            mepaa+=(cc*evalVABCore(S00,xx,i,i,aa,aa,alpa,alpa,ra,ra));
+         }
+      }
    }
    mepelec=mepaa+2.0e0*mepab;
    mepab=0.0e0;

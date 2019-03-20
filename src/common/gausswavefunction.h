@@ -608,7 +608,7 @@ public:
    /* ************************************************************************************ */
    solreal evalVAB(solreal (&xx)[3],int (&aa)[3],int (&ab)[3],solreal &alpa,solreal &alpb,
                           solreal (&ra)[3],solreal (&rb)[3]);
-   solreal evalVABCore(solreal s00,solreal (&xx)[3],int idxA,int idxB,int (&aa)[3],int (&ab)[3],solreal &alpa,solreal &alpb,
+   solreal evalVABCore(solreal &s00,solreal (&xx)[3],int idxA,int idxB,int (&aa)[3],int (&ab)[3],solreal &alpa,solreal &alpb,
                           solreal (&ra)[3],solreal (&rb)[3]);
    /* ************************************************************************************ */
    solreal evalOverlapIntegralAB(int (&aa)[3],int (&ab)[3],solreal &alpa,solreal &alpb,
