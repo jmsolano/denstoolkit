@@ -1463,37 +1463,37 @@ void GaussWaveFunction::evalDkAngCases(int &pty,solreal alp,solreal x, solreal y
          any=cc*y*z;
          anz=(3.00000e0+cc)*z*z;
          break;
-      case 13:
+      case 16:
          cc*=(y*y);
          anx=(y*y+cc*x*x);
          any=(2.00000e0+cc)*x*y;
          anz=cc*x*z;
          break; 
-      case 14:
+      case 13:
          cc*=(x*x);
          anx=(2.00000e0+cc)*x*y;
          any=x*x+cc*y*y;
          anz=cc*y*z;
          break;
-      case 15:
+      case 14:
          cc*=(x*x);
          anx=(2.00000e0+cc)*x*z;
          any=cc*y*z;
          anz=(x*x+cc*z*z);
          break;
-      case 16:
+      case 17:
          cc*=(z*z);
          anx=z*z+cc*x*x;
          any=cc*x*y;
          anz=(2.00000e0+cc)*x*z;
          break;
-      case 17:
+      case 18:
          cc*=(z*z);
          anx=cc*x*y;
          any=z*z+cc*y*y;
          anz=(2.00000e0+cc)*y*z;
          break;
-      case 18:
+      case 15:
          cc*=(y*y);
          anx=cc*x*z;
          any=(2.00000e0+cc)*y*z;
@@ -1976,22 +1976,22 @@ solreal GaussWaveFunction::evalLapAngCases(int &pty,solreal alp,solreal x,solrea
       case 12:
          return ((6.00000e0+(9.00000e0*ta+fr)*z*z)*z);
          break;
-      case 13:
+      case 16:
          return ((2.00000e0+(9.00000e0*ta+fr)*y*y)*x);
          break;
-      case 14:
+      case 13:
          return ((2.00000e0+(9.00000e0*ta+fr)*x*x)*y);
          break;
-      case 15:
+      case 14:
          return ((2.00000e0+(9.00000e0*ta+fr)*x*x)*z);
          break;
-      case 16:
+      case 17:
          return ((2.00000e0+(9.00000e0*ta+fr)*z*z)*x);
          break;
-      case 17:
+      case 18:
          return ((2.00000e0+(9.00000e0*ta+fr)*z*z)*y);
          break;
-      case 18:
+      case 15:
          return ((2.00000e0+(9.00000e0*ta+fr)*y*y)*z);
          break;
       case 19:
