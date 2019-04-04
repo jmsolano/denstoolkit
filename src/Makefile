@@ -1,5 +1,5 @@
 
-SETDTKNPROC=4
+SETDTKNPROC=1
 
 TOP      = $(shell pwd)
 

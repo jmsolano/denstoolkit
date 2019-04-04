@@ -165,7 +165,7 @@ int main (int argc, char ** argv)
    
    
    
-   int dimarr=200;
+   int dimarr=300;
    if (options.setn1) {
       sscanf(argv[options.setn1],"%d",&dimarr);
       if (dimarr<=0) {

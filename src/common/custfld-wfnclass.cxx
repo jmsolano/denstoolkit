@@ -77,8 +77,11 @@ solreal GaussWaveFunction::evalCustomScalarField(solreal x,solreal y,solreal z)
     *
     * for other fields, you can choose one or more of the above enlisted fields.
     * */
-   solreal rho=evalDensity(x,y,z);
-   return (rho*rho);
+   solreal eve[3][3],eva[3],h[3][3];
+   evalHessian(x,y,z,h);
+   eigen_decomposition3(h,eve,eva);
+   solreal ellip=(eva[0]/eva[1])-1.0e0;
+   return ellip;
 }
 /* ************************************************************************************ */
 void GaussWaveFunction::evalCustomVectorField(solreal x,solreal y,solreal z,\
