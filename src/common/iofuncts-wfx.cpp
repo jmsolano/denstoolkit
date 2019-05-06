@@ -361,7 +361,9 @@ void getAtLabelsFromFileWFX(ifstream &ifil,const int nn,string* &al)
 void getAtChargesFromFileWFX(ifstream &ifil,const int nn,solreal* &ach)
 {
    if (!ach) {alloc1DRealArray(string("ach"),nn,ach);}
-   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Nuclear Charges")));
+   //Reading atomic charges has a conflict with wfx having pseudopotentials.
+   //ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Nuclear Charges")));
+   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Atomic Numbers")));
    for (int i=0; i<nn; i++) {ifil >> ach[i];}
    return;
 }
