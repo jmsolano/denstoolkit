@@ -2132,7 +2132,7 @@ solreal GaussWaveFunction::evalLapRho(solreal x, solreal y, solreal z)
          xmr=x-R[indr];
          ymr=y-R[indr+1];
          zmr=z-R[indr+2];
-         rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+         rr=((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
          ppt=primType[i];
          alp=primExp[i];
          cc=exp(-alp*rr);
