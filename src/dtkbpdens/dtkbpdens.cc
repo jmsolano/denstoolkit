@@ -108,7 +108,8 @@ int main (int argc, char ** argv)
    
    if (!(prop=='d'||prop=='g'||prop=='l'||prop=='E'||prop=='L'||prop=='M'\
          ||prop=='S'||prop=='G'||prop=='K'||prop=='V'\
-         ||prop=='P'||prop=='r'||prop=='s'||prop=='u')) {
+         ||prop=='P'||prop=='r'||prop=='s'||prop=='u'\
+         ||prop=='e')) {
       displayErrorMessage("Non valid field type");
       cout << "\nTry: \n\t" << argv[0] << " -h\n" << endl << "to view the help menu.\n\n";
       exit(1);
@@ -466,6 +467,9 @@ solreal evalFieldProperty(char prop,solreal (&x)[3],GaussWaveFunction &wf)
          break;
       case 'l':
          res=wf.evalLapRho(x[0],x[1],x[2]);
+         break;
+      case 'e':
+         res=wf.evalEllipticity(x[0],x[1],x[2]);
          break;
       case 'E':
          res=wf.evalELF(x[0],x[1],x[2]);

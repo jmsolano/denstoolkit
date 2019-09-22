@@ -496,6 +496,7 @@ void GaussWaveFunction::displayAllFieldProperties(solreal x,solreal y,solreal z)
                              << setw(20) << eivec[2][1] << endl;
    cout << "               " << setw(20) << eivec[0][2] << setw(20) << eivec[1][2]
                              << setw(20) << eivec[2][2] << endl;
+   cout << "  Ellipticity: " << setw(20) << ((eival[0]/eival[1])-1.0e0) << endl;
    cout << "       LapRho: " << setw(20) << (hess[0][0]+hess[1][1]+hess[2][2]) << endl;
    evalHessLOL(xx,lol,g,hess);//(x,lol,gl,hl)
    eigen_decomposition3(hess, eivec, eival);
@@ -567,6 +568,7 @@ void GaussWaveFunction::writeAllFieldProperties(solreal x,solreal y,solreal z,of
                              << setw(20) << eivec[2][1] << endl;
    ofil << "               " << setw(20) << eivec[0][2] << setw(20) << eivec[1][2]
                              << setw(20) << eivec[2][2] << endl;
+   ofil << "  Ellipticity: " << setw(20) << ((eival[0]/eival[1])-1.0e0) << endl;
    ofil << "  LapRho:      " << setw(20) << (hess[0][0]+hess[1][1]+hess[2][2]) << endl;
    evalHessLOL(xx,lol,g,hess);//(x,lol,gl,hl)
    eigen_decomposition3(hess, eivec, eival);
@@ -3512,6 +3514,15 @@ solreal GaussWaveFunction::evalKineticEnergyK(solreal x, solreal y, solreal z)
    return (-0.50000e0*lap);
 }
 #endif
+/* ************************************************************************************** */
+solreal GaussWaveFunction::evalEllipticity(solreal x,solreal y,solreal z)
+{
+   solreal eve[3][3],eva[3],h[3][3];
+   evalHessian(x,y,z,h);
+   eigen_decomposition3(h,eve,eva);
+   solreal ellip=(eva[0]/eva[1])-1.0e0;
+   return ellip;
+}
 /* ************************************************************************************** */
 void GaussWaveFunction::evald4SingCartA(int &ang,solreal &t,solreal &f,solreal &x,solreal &x2,
                                   solreal &d0,solreal &d1,solreal &d2,solreal &d3,solreal &d4)

@@ -157,6 +157,8 @@ public:
    /* ******************************************************************************* */
    bool writeLineDatVirialPotentialEnergyDensity(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
+   bool writeLineDatEllipticity(ofstream &ofil,GaussWaveFunction &wf);
+   /* ******************************************************************************* */
    /* ******************************************************************************* */
 private:
    bool imsetup;

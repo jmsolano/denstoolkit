@@ -10,17 +10,39 @@ and push a new branch (with a tag).
 Adding a new field:
 =======================================================================
 Implement the respective functions to include the new field in
+   ---> fldtypesdef.h: Add the new field and its tags, fields, etc.
+        More detailed instructions are described below,
+        near the end of this file.
+   ---> Do not forget to add the new field to the functions
+           --->  GaussWaveFunction::displayAllFieldProperties
+           --->  GaussWaveFunction::writeAllFieldProperties
    ---> dtkline   (wfgrid1d)
+           ---> Create a new function bool writeLinneDatFIELDNAME(...)
+           ---> Edit the functions makeDat (add the new switch case)
+           ---> optflags (help menu)
+                   ---> Add the new field to the optflags.* class and to the switch structure
+                    of dtkline.cpp
    ---> dtkplane  (wfgrid2d)
+           ---> Add a function bool writePlaneTsvFIELDNAME(...)
+           ---> Add the new field to: waveFunctionGrid2D::makeTsv
+           ---> optflags (help menu)
+                   ---> Add the new field to two case constructs (to choose the field)
+                        and to set the plot ranges.
    ---> dtkcube   (wfgrid3d)
-   ---> dtkbpdens (evalFieldProperty, etc)
+           ---> Add a function bool writeCubeFIELDNAME(...)
+           ---> Add the new field to: waveFunctionGrid3D::makeCube
+           ---> optflags (help menu)
+                   ---> Add the new field to the case construct (to choose the field)
+   ---> dtkbpdens (, etc)
+           ---> Check for non valid field types (dtkbpdens.cc)
+           ---> evalFieldProperty(...)
+           ---> optflags (help menu)
+                   ---> Add the new field to the case construct (to choose the field)
 
 Make the proper changes in the correspoding files:
-   ---> fldtypesdef.h (tags/keys)
-   ---> optflags (help menu)
+   ---> optflags (help menus)
    ---> dtkmanual: available fields, help menus
 
-More detailed instructions are described below.
 =======================================================================
 Adding the GPL License. See:
 $TOP/src/scripts/dtkaddGPLv3 -h

@@ -188,6 +188,9 @@ int main (int argc, char ** argv)
       case 'l':
          grid.makeDat(outfilnam,gwf,LAPD);
          break;
+      case 'e':
+         grid.makeDat(outfilnam,gwf,ELLPY);
+         break;
       case 'E':
          grid.makeDat(outfilnam,gwf,ELFD);
          break;

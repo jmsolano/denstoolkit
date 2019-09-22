@@ -180,6 +180,9 @@ int main (int argc, char ** argv)
          grid.makeCube(outfilnam,gwf,LAPD);
          cout << endl;
          break;
+      case 'e':
+         grid.makeCube(outfilnam,gwf,ELLPY);
+         break;
       case 'E':
          grid.makeCube(outfilnam,gwf,ELFD);
          break;

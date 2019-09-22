@@ -194,6 +194,9 @@ int main (int argc, char ** argv)
       case 'G':
          grid.makeTsv(outfilnam,gwf,KEDG);
          break;
+      case 'e':
+         grid.makeTsv(outfilnam,gwf,ELLPY);
+         break;
       case 'E':
          grid.makeTsv(outfilnam,gwf,ELFD);
          break;
@@ -317,6 +320,10 @@ void makeGnuplotFile(optFlags &opts, string &gnpn,string &outn,char p2p,
       case 'l':
          minzrange=-2.0e0;
          maxzrange=2.0e0;
+         break;
+      case 'e':
+         minzrange=0.0e0;
+         maxzrange=1.0e0;
          break;
       case 'E':
          minzrange=0.0e0;

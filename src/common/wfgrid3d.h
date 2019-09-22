@@ -145,6 +145,8 @@ public:
    /* ******************************************************************************* */
    void writeCubeScalarCustFld(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
+   void writeCubeEllipticity(ofstream &ofil,GaussWaveFunction &wf);
+   /* ******************************************************************************* */
    void writeCubeVirialPotentialEnergyDensity(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
    void writeCubeNCIRedDensGrad(ofstream &ofil,GaussWaveFunction &wf);

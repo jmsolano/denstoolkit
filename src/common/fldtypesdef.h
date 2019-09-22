@@ -69,6 +69,7 @@ enum ScalarFieldType {
    NCIS,/* Non Covalent Interactions (NCI) -- Reduced Density Gradient */\
    NCIL,/* Non Covalent Interactions (NCI) -- Rho */\
    EDFTA, /* DFT Exchange and Corrrelation Energy ($(-3/4)(3\rho/\pi)^{1/3}$) */\
+   ELLPY, /*!< Ellipticity  */
    SCFD, /* Scalar Custom Field Density */\
    VCFD /* Vector Custom Field Density */
 };
@@ -161,6 +162,9 @@ inline string getFieldTypeKeyShort(const char prop)
       case 'l':
          plbl="LapRho";
          break;
+      case 'e':
+         plbl="Ellipticity";
+         break;
       case 'E':
          plbl="ELF";
          break;
@@ -235,6 +239,9 @@ inline string getFieldTypeKeyLong(const char prop)
       case 'l':
          plbl="Laplacian of Electron Density";
          break;
+      case 'e':
+         plbl="Ellipticity";
+         break;
       case 'E':
          plbl="Electron Localization Function --ELF--";
          break;
@@ -308,6 +315,9 @@ inline string gnuplotFieldTitle(const char p2p)
          break;
       case 'l':
          plbl=string("{/Symbol \\321}^2{/Symbol r}");
+         break;
+      case 'e':
+         plbl=string("{/Symbol e}");
          break;
       case 'E':
          plbl=string("ELF");

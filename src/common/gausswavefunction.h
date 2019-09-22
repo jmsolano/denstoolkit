@@ -436,6 +436,12 @@ public:
     (\phi_{\dot{A}}\nabla^2\phi_{\dot{B}}+\phi_{\dot{B}}\nabla^2\phi_{\dot{A}})\f$
     */
    solreal evalKineticEnergyK(solreal x,solreal y,solreal z);
+   /** Returns the ellipticity at the point (x,y,z). The ellipticity is defined as
+    * \f$\varepsilon(\vec x)=\frac{\lambda_1}{\lambda_2}-1\f$. Here \f$\lambda_1\ (\lambda_2)\f$
+    * is the first (second) Hessian eigenvalue. See 
+    * Chem. Phys. Lett., 143 (1988) 450 - 458 for an example of how to use
+    * ellipticyt profiles. */
+   solreal evalEllipticity(solreal x,solreal y,solreal z);
    /* *********************************************************************************** */
    /**
       This function seeks for a Bond Critical Point. The integers ii and jj are used to set

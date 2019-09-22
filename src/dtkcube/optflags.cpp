@@ -235,6 +235,7 @@ void printHelpMenu(int &argc, char** &argv)
         << "         \t\tl (Laplacian of density)" << endl
         << "         \t\tK (Kinetic Energy Density K)" << endl
         << "         \t\tG (Kinetic Energy Density G)" << endl
+        << "         \t\te (Ellipticity)" << endl
         << "         \t\tE (Electron Localization Function -ELF-)" << endl
         << "         \t\tL (Localized Orbital Locator -LOL-)" << endl
         << "         \t\tM (Magnitude of the gradient of LOL)" << endl
