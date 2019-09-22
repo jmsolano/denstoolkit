@@ -778,3 +778,17 @@ the cutoffs (see Section \ref{sec:dtkgetnciplotdesc}, and Ref. \cite{bib:contrer
 for further details), as well as to generate VMD templates to visualize the NCI
 index.
 
+%----------------------------------------------------------------------------------------------
+\section{Ellipticity}
+%----------------------------------------------------------------------------------------------
+This is a field derived from the Hessian eigenvalues, therefore it is implemented
+by calling the Hessian calculation. The ellipticity, denoted in this manual as
+$\varepsilon$, is defined as:
+\begin{equation}
+   \varepsilon=\frac{\lambda_1}{\lambda_2}-1.
+\end{equation}
+Here $\lambda_i$ are the Hessian eigenvalues, in ascending order.
+
+The ellipticity field is used mainly to generate ellipticity profiles. See 
+\cite{bib:cheeseman1988} for how to interpret this profiles. Additional
+examples of the above can be found in \cite{bib:tafipolsky2002}.
