@@ -35,6 +35,7 @@ print_vmd_script()
    the_red_grad_file_name=$2
    the_red_grad_value=$3
    the_rho_value=$4
+   the_tga_file_name="$5"
 cat << END_VMD_SCRIPT
 #!/usr/local/bin/vmd
 
@@ -45,13 +46,16 @@ set fixedlist
 # Display settings
 display projection Orthographic
 display nearclip set 0.000000
+display depthcue Off
+color Display Background white
+axes location Off
 # load new molecule
 mol new $the_red_grad_file_name type cube first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
 mol addfile $the_rho_file_name type cube first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
 #
 # representation of the atoms
 mol delrep 0 top
-mol representation CPK 1.000000 0.300000 118.000000 131.000000
+mol representation CPK 1.000000 0.600000 118.000000 131.000000
 mol color Name
 mol selection {all}
 mol material Opaque
@@ -68,9 +72,12 @@ mol colupdate 1 top 0
 mol scaleminmax top 1 -$the_rho_value $the_rho_value
 mol smoothrep top 1 0
 mol drawframes top 1 {now}
-color scale method BGR
+color scale method RGB
 set colorcmds {{color Name {C} gray}}
 #some more
+
+render TachyonInternal $the_tga_file_name
+quit
 
 END_VMD_SCRIPT
 }
@@ -223,12 +230,13 @@ fi
 #
 #Names of VMD script files
 outputVMDFileName="${baseFileName}NCI.vmd"
+outputTGAFileName="${baseFileName}NCI.tga"
 #Asks and saves the current directory (VMD sometimes needs absolute paths)
 currentWD=$(pwd)
 #
 #Makes the VMD scripts.
 echo -e "Making VMD scripts..."
-print_vmd_script "$cubeRhoFileName" "$cubeRedGradFileName" 0.500000 0.050000 > "$outputVMDFileName"
+print_vmd_script "$cubeRhoFileName" "$cubeRedGradFileName" 0.500000 0.050000 "$outputTGAFileName" > "$outputVMDFileName"
 
 echo -e "Making s vs rho plot..."
 plot_redgradrho_vs_rho "$currentWD/$cubeRedGradFileName" "$currentWD/$cubeRhoFileName" "$currentWD/$baseFileName"
