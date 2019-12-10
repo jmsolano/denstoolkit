@@ -74,6 +74,7 @@ using std::setprecision;
 #include "../common/gausswavefunction.h"
 #include "../common/bondnetwork.h"
 #include "../common/wfgrid3d.h"
+#include "../common/solvmdtools.h"
 #include "optflags.h"
 #include "crtflnms.h"
 
@@ -263,6 +264,10 @@ int main (int argc, char ** argv)
       solreal tmp_walltime=time(NULL);
       lfil << solreal (tmp_walltime-begin_walltime) << endl;
       lfil.close();
+   }
+
+   if ( options.genvmdscript ) {
+      VMDTools::writeSimpleVMDScript(outfilnam,prop,options.quietrender);
    }
    
    setScrGreenBoldFont();

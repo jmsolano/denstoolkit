@@ -102,6 +102,7 @@ optFlags::optFlags()
    zipcube=0;
    wrtlog=0;
    configspecialnci=0;
+   genvmdscript=quietrender=false;
 }
 
 
@@ -151,6 +152,12 @@ void getOptions(int &argc, char** &argv, optFlags &flags)
             case 'p':
                flags.prop2plot=(++i);
                if (i>=argc) {printErrorMsg(argv,'p');}
+               break;
+            case 'P':
+               flags.genvmdscript=true;
+               break;
+            case 'q':
+               flags.quietrender=true;
                break;
             case 's':
                flags.setsmcub=(i);
@@ -248,6 +255,10 @@ void printHelpMenu(int &argc, char** &argv)
    cout << "         \t\tv (Virial Potential Energy Density)" << endl;
    cout << "         \t\tZ (Non Covalent Interactions(NCI) -- s)" << endl;
    cout << "         \t\tz (Non Covalent Interactions(NCI) -- Rho)" << endl;
+   cout << "  -P     \tGenerates a VMD script to render the field. Notice: this requires VMD and the internal" << endl
+        << "         \t  Tachyon render (usually it is included automatically in VMD) to be installed" << endl
+        << "         \t  in your system. The VMD script should run with 'vmd -e filename.vmd'" << endl;
+   cout << "  -q     \tMakes the vmd script to close VMD automatically, after rendering the field." << endl;
 #if (defined(__APPLE__)||defined(__linux__))
    cout << "  -z     \tCompress the cube file using gzip (which must be installed" << endl
         << "         \t   in your system)." << endl;

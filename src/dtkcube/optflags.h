@@ -84,6 +84,7 @@ public:
    unsigned short int setsmcub,setsmcub1;
    unsigned short int zipcube,wrtlog;
    unsigned short int configspecialnci;
+   bool genvmdscript,quietrender;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);
 void printHelpMenu(int &argc, char** &argv);//self-described

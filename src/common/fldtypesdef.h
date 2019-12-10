@@ -47,7 +47,7 @@
 #define _FLDTYPESDEF_H_
 #include <string>
 using std::string;
-//**********************************************************************************************
+/* ************************************************************************** */
 enum ScalarFieldType {
    NONE,\
    DENS,/* Electron density (Rho)  */\
@@ -73,7 +73,7 @@ enum ScalarFieldType {
    SCFD, /* Scalar Custom Field Density */\
    VCFD /* Vector Custom Field Density */
 };
-//**********************************************************************************************
+/* ************************************************************************** */
 inline char convertScalarFieldType2Char(ScalarFieldType fftt)
 {
    char res='d';
@@ -148,7 +148,7 @@ inline char convertScalarFieldType2Char(ScalarFieldType fftt)
    }
    return res;
 }
-//**********************************************************************************************
+/* ************************************************************************** */
 inline string getFieldTypeKeyShort(const char prop)
 {
    string plbl="";
@@ -225,7 +225,7 @@ inline string getFieldTypeKeyShort(const char prop)
    }
    return plbl;
 }
-//**********************************************************************************************
+/* ************************************************************************** */
 inline string getFieldTypeKeyLong(const char prop)
 {
    string plbl="";
@@ -302,7 +302,7 @@ inline string getFieldTypeKeyLong(const char prop)
    }
    return plbl;
 }
-//**********************************************************************************************
+/* ************************************************************************** */
 inline string gnuplotFieldTitle(const char p2p)
 {
    string plbl;
@@ -376,6 +376,22 @@ inline string gnuplotFieldTitle(const char p2p)
    }
    return plbl;
 }
-//**********************************************************************************************
+/* ************************************************************************** */
+inline double getDefaultIsolvalueForCube(const char p2p)
+{
+   double isoval=0.01e0;
+   switch ( p2p ) {
+      case 'd':
+         isoval=0.01e0;
+         break;
+      case 's':
+         isoval=0.2e0;
+         break;
+      default :
+         break;
+   }
+   return isoval;
+}
+/* ************************************************************************** */
 #endif//_FLDTYPESDEF_H_
 
