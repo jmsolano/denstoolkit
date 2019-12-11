@@ -12,19 +12,20 @@ VMD scripts that automatically loads and visualizes the
 NCI index.
 
 Options 
-  -h           Display the help menu.
-  -w wf?name   Wavefunction name
-  -l        	Write cpu time, input/output information etc. on a log file
-  -n  dim   	Set the number of points per direction for the cube
+  -h           Displays the help menu.
+  -w wf?name   Sets the wavefunction name to be 'wf?name' (wfxname/wfnname)
+  -l        	Writes cpu time, input/output information etc. on a log file
+  -n  dim   	Sets the number of points per direction for the cube
             	  to be dim x dim x dim.
-  -s        	Use a smart cuboid for the grid. The number of points for the
+  -s        	Uses a smart cuboid for the grid. The number of points for the
             	  largest direction will be 80.
-  -S ln     	Use a smart cuboid for the grid. ln is the number of points
+  -S ln     	Uses a smart cuboid for the grid. ln is the number of points
             	  the largest axis will have. The remaining axes will have
             	  a number of points proportional to its length.
-  -r rmin      Set the lower rho cutoff to be rmin
-  -R rmax      Set the upper rho cutoff to be rmax
-  -G smax      Set the upper reduced density gradient (s) cutoff to be smax
+  -r rmin      Sets the lower rho cutoff to be rmin
+  -R rmax      Sets the upper rho cutoff to be rmax
+  -G smax      Sets the upper reduced density gradient (s) cutoff to be smax
+  -q           Adds 'quiet' to the vmd script (closes vmd after rendering)
 
 
 END_USAGE_TEXT
@@ -77,7 +78,6 @@ set colorcmds {{color Name {C} gray}}
 #some more
 
 render TachyonInternal $the_tga_file_name
-quit
 
 END_VMD_SCRIPT
 }
@@ -154,7 +154,8 @@ cubeArgsString=""
 rhoMin="0.0005"
 rhoMax="0.2"
 redDensGradMax="2.0"
-while getopts ":hw:ln:sS:r:R:G:" opt; do
+quietVMDRendering=false
+while getopts ":hw:ln:sS:r:R:G:q" opt; do
   case $opt in
     h)
       usage $0
@@ -183,6 +184,9 @@ while getopts ":hw:ln:sS:r:R:G:" opt; do
       ;;
     G)
       redDensGradMax="$OPTARG"
+      ;;
+    q)
+      quietVMDRendering=true
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -237,6 +241,9 @@ currentWD=$(pwd)
 #Makes the VMD scripts.
 echo -e "Making VMD scripts..."
 print_vmd_script "$cubeRhoFileName" "$cubeRedGradFileName" 0.500000 0.050000 "$outputTGAFileName" > "$outputVMDFileName"
+if [ "$quietVMDRendering" = true ]; then
+   echo "quit" >> "$outputVMDFileName"
+fi
 
 echo -e "Making s vs rho plot..."
 plot_redgradrho_vs_rho "$currentWD/$cubeRedGradFileName" "$currentWD/$cubeRhoFileName" "$currentWD/$baseFileName"
