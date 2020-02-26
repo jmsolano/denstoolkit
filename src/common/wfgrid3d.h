@@ -109,6 +109,9 @@ public:
    /* ******************************************************************************* */
    void setUpSmartCuboidGrid(GaussWaveFunction &wf,bondNetWork &bn,const int nmx);
    /* ******************************************************************************* */
+   void setUpCenteredGrid(GaussWaveFunction &wf,bondNetWork &bn,\
+         const int at1,const int at2,const double len,const int nmx);
+   /* ******************************************************************************* */
    void setNPts(int nx,int ny,int nz);
    /* ******************************************************************************* */
    void setNPts(int nn);

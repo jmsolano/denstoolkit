@@ -82,6 +82,7 @@ public:
    optFlags();//default constructor, initialize all the flags to convenient (default) values.
    unsigned short int infname,outfname,prop2plot,setn1,setn3;
    unsigned short int setsmcub,setsmcub1;
+   unsigned short int setcentredcub;
    unsigned short int zipcube,wrtlog;
    unsigned short int configspecialnci;
    bool genvmdscript,quietrender;

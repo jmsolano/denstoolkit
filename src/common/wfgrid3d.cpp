@@ -124,6 +124,25 @@ void waveFunctionGrid3D::setUpSmartCuboidGrid(GaussWaveFunction &wf,bondNetWork 
    return;
 }
 /* ********************************************************************************** */
+void waveFunctionGrid3D::setUpCenteredGrid(GaussWaveFunction &wf,bondNetWork &bn,\
+      const int at1,const int at2,const double len,const int nmx)
+{
+   if (!(bn.imstp())) {
+      cout << "Error: Trying to use a non set-up bondNetWork object!\n";
+      cout << "The grid could not be set up." << endl;
+      return;
+   }
+   double x0[3];
+   for ( int i=0 ; i<3 ; ++i ) { x0[i]=0.5e0*(bn.R[at1-1][i]+bn.R[at2-1][i]); }
+   for (int i=0; i<3; i++) {
+      xin[i]=x0[i]-0.5*len;
+      dx[i][i]=len/solreal(npts[i]-1);
+   }
+   alloc1DRealArray("prop1d",npts[2],prop1d);
+   imsetup=true;
+   return;
+}
+/* ********************************************************************************** */
 void waveFunctionGrid3D::setNPts(int nx,int ny,int nz)
 {
    npts[0]=nx;

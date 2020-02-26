@@ -127,12 +127,20 @@ int main (int argc, char ** argv)
    } else if (options.setsmcub1) {
       sscanf(argv[options.setsmcub1],"%d",&nn); //uses nn for determining the number of points
                      //of the largest axis. The rest will have proportional number to their length
+   } else if ( options.setcentredcub ) {
+      nn=DEFAULTNUMPTSCENTREDCUBE;
+      grid.setNPts(nn);
    } else {
       grid.setNPts(nn);
    }
    
    if ((options.setsmcub)||(options.setsmcub1)) {
       grid.setUpSmartCuboidGrid(gwf,bnw,nn);
+   } else if ( options.setcentredcub ) {
+     int at1,at2;
+     sscanf(argv[options.setcentredcub],"%d",&at1);
+     sscanf(argv[options.setcentredcub+1],"%d",&at2);
+     grid.setUpCenteredGrid(gwf,bnw,at1,at2,DEFAULTLENGTHCENTREDCUBE,nn);
    } else {
       grid.setUpSimpleGrid(gwf,bnw);
    }

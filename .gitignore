@@ -25,6 +25,7 @@ cachegrind.*
 *.vmd
 *.x
 *.sh
+*.tga
 
 #binaries
 src/dtkbpdens/dtkbpdens

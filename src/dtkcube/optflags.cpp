@@ -99,6 +99,7 @@ optFlags::optFlags()
    setn3=0;
    setsmcub=0;
    setsmcub1=0;
+   setcentredcub=0;
    zipcube=0;
    wrtlog=0;
    configspecialnci=0;
@@ -133,6 +134,11 @@ void getOptions(int &argc, char** &argv, optFlags &flags)
    for (int i=1; i<argc; i++){
       if (argv[i][0] == '-'){
          switch (argv[i][1]){
+            case 'c' :
+               if ((i+2)>=argc) {printErrorMsg(argv,'c');}
+               flags.setcentredcub=(++i);
+               ++i;
+               break;
             case 'l':
                flags.wrtlog=i;
                break;
@@ -223,19 +229,20 @@ void printHelpMenu(int &argc, char** &argv)
    setScrBoldFont();
    cout << "\nUsage:\n\n\t" << progname << " wf?name [option [value(s)]] ... [option [value(s)]]\n\n";
    setScrNormalFont();
-   cout << "Where wf?name is the input wfx(wfn) name, and options can be:\n\n"
-        << "  -l        \tWrite cpu time, input/output information etc. on a log file" << endl
-        << "  -n  dim   \tSet the number of points per direction for the cube" << endl
-        << "            \t  to be dim x dim x dim." << endl
-        << "  -N nx ny nz\tSet the individual points per direction for the cube" << endl
-        << "            \t  to be nx x ny x nz." << endl
-        << "  -o outname\tSet the output file name." << endl
-        << "  -s        \tUse a smart cuboid for the grid. The number of points for the" <<endl
+   cout << "Where wf?name is the input wfx(wfn) name, and options can be:\n\n";
+   cout << "  -l        \tWrites cpu time, input/output information etc. on a log file" << endl;
+   cout << "  -n  dim   \tSets the number of points per direction for the cube" << endl
+        << "            \t  to be dim x dim x dim." << endl;
+   cout << "  -N nx ny nz\tSets the individual points per direction for the cube" << endl
+        << "            \t  to be nx x ny x nz." << endl;
+   cout << "  -o outname\tSets the output file name." << endl;
+   cout << "  -s        \tUses a smart cuboid for the grid. The number of points for the" <<endl
         << "            \t  largest direction will be " << DEFAULTPOINTSPERDIRECTION << "." << endl;
-   cout << "  -S ln     \tUse a smart cuboid for the grid. ln is the number of points" << endl
+   cout << "  -S ln     \tUses a smart cuboid for the grid. ln is the number of points" << endl
         << "            \t  the largest axis will have. The remaining axes will have" << endl
-        << "            \t  a number of points proportional to its length." << endl
-        << "  -p prop\tChoose the property to be computed. prop is a character," << endl 
+        << "            \t  a number of points proportional to its length." << endl;
+   cout << "  -c a1 a2  \tUses a cube centred at the midpoint of the atoms a1 and a2." << endl;
+   cout << "  -p prop\tChooses the property to be computed. prop is a character," << endl 
         << "         \t  which can be (d is the default value): " << endl
         << "         \t\td (Density)" << endl
         << "         \t\tg (Magnitude of the Gradient of the Density)" << endl
@@ -260,7 +267,7 @@ void printHelpMenu(int &argc, char** &argv)
         << "         \t  in your system. The VMD script should run with 'vmd -e filename.vmd'" << endl;
    cout << "  -q     \tMakes the vmd script to close VMD automatically, after rendering the field." << endl;
 #if (defined(__APPLE__)||defined(__linux__))
-   cout << "  -z     \tCompress the cube file using gzip (which must be installed" << endl
+   cout << "  -z     \tCompresses the cube file using gzip (which must be installed" << endl
         << "         \t   in your system)." << endl;
 #endif
    cout << "  -V        \tDisplays the version of this program." << endl;
@@ -282,6 +289,9 @@ void printErrorMsg(char** &argv,char lab)
    setScrRedBoldFont();
    cout << "\nError: the option \"" << lab << "\" ";
    switch (lab) {
+      case 'c' :
+         cout << "should be followed by two integers." << endl;
+         break;
       case 'p':
          cout << "should be followed by a character." << endl;
          break;
