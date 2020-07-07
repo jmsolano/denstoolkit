@@ -115,7 +115,7 @@ private:
    // +++++++++++++++++++ TOOLBARS ++++++++++++++++++++
    // When adding new toolbars, do not forget to delete
    // them within ~DTKMainWindow().
-   QToolBar *fileToolBar;
+   //QToolBar *fileToolBar;
    // +++++++++++++++++++++++++++++++++++++++++++++++++
    void createMenus(void);
    void createActions(void);

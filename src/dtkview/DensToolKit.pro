@@ -6,7 +6,7 @@
 
 QT       += core gui opengl
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 5): QT += widgets
 
 TARGET = DensToolKit
 TEMPLATE = app
@@ -22,6 +22,7 @@ SOURCES += main.cpp\
     ../common/solpovtools.cpp \
     ../common/solmemhand.cpp \
     ../common/atomradiicust.cpp \
+    ../common/figname.cpp \
     ../common/solscrutils.cpp \
     ../common/atomcolschjmol.cpp \
     ../common/solstringtools.cpp \
@@ -40,7 +41,6 @@ HEADERS  += dtkmainwindow.h \
     ../common/iofuncts-cpx.h \
     ../common/iofuncts-wfn.h \
     ../common/iofuncts-wfx.h \
-    soldefines.h \
     ../common/solpovtools.h \
     ../common/solmemhand.h \
     ../common/atomradiicust.h \
@@ -52,9 +52,11 @@ HEADERS  += dtkmainwindow.h \
     ../common/eig2-4.h \
     ../common/solmath.h \
     ../common/solfileutils.h \
+    ../common/figname.h \
     dtkglbondnetwork.h \
     dtkglutils.h \
     dtkglcriticalpointnetwork.h
+    //localdefs.h \
 
 FORMS    += dtkmainwindow.ui
 
@@ -65,7 +67,7 @@ macx:  {
    LIBS += -framework GLUT
 }
 
-QMAKE_CXXFLAGS += -include soldefines.h
+//QMAKE_CXXFLAGS += -include localdefs.h
 
 DISTFILES +=
 

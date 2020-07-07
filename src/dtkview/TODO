@@ -2,3 +2,11 @@ Bugfix: Bond paths are not drawn when only bond paths are computed
 i.e., if ring paths are not requested to dtkfindcp, the bond paths
 are not displayed in DensToolKitViewer.
 
+Correct the names of QGLWidget/QOpenGLWidget:
+When compiling in mac, you may obtain the following message:
+To correct this, vim moc_dtkglwidget.cpp and use:
+%s/QGL/QOpenGL
+Recompile
+
+
+

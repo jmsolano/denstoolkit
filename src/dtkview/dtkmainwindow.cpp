@@ -59,6 +59,7 @@ DTKMainWindow::DTKMainWindow(QWidget *parent) :
    createActions();
    createMenus();
    setupMainToolbar();
+   ui->menuBar->setNativeMenuBar(true);
 }
 
 void DTKMainWindow::updateStatusBar()
@@ -96,7 +97,7 @@ DTKMainWindow::~DTKMainWindow()
    delete viewMenu;
    delete helpMenu;
 
-   delete fileToolBar;
+   //delete fileToolBar;
 
    delete ui;
 }
@@ -136,64 +137,65 @@ void DTKMainWindow::createActions()
 {
     loadMoleculeAction = new QAction(QIcon(":/images/open.png"),tr("&Open Molecule..."), this);
     loadMoleculeAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_O));
+    loadMoleculeAction->setShortcutContext(Qt::ApplicationShortcut);
     connect(loadMoleculeAction,SIGNAL(triggered()),this,SLOT(loadMolecule()));
 
     loadTestMoleculeAction = new QAction(tr("Open &Test Molecule"), this);
-    loadTestMoleculeAction->setShortcut(QKeySequence(Qt::CTRL+Qt::ShiftModifier+Qt::Key_T));
+    //loadTestMoleculeAction->setShortcut(QKeySequence(Qt::CTRL+Qt::ShiftModifier+Qt::Key_T));
     connect(loadTestMoleculeAction,SIGNAL(triggered()),this,SLOT(loadTestMolecule()));
 
     clearViewPortAction = new QAction(QIcon(":/images/square.png"),tr("&Clear Molecules"), this);
-    clearViewPortAction->setShortcut(QKeySequence(Qt::CTRL+Qt::ShiftModifier+Qt::Key_C));
+    //clearViewPortAction->setShortcut(QKeySequence(Qt::CTRL+Qt::ShiftModifier+Qt::Key_C));
     connect(clearViewPortAction,SIGNAL(triggered()),this,SLOT(clearViewPort()));
 
     exportViewPortImageAction = new QAction(QIcon(":/images/save.png"),tr("&Export Image..."), this);
-    exportViewPortImageAction->setShortcut(QKeySequence(Qt::CTRL+Qt::ShiftModifier+Qt::Key_E));
+    //exportViewPortImageAction->setShortcut(QKeySequence(Qt::CTRL+Qt::ShiftModifier+Qt::Key_E));
     connect(exportViewPortImageAction,SIGNAL(triggered()),this,SLOT(exportViewPortImage()));
 
     viewAtomLabelsAction = new QAction(QIcon(":/images/showatlbls.png"),tr("View Atom &Labels"), this);
-    viewAtomLabelsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_L));
+    //viewAtomLabelsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_L));
     viewAtomLabelsAction->setCheckable(true);
     viewAtomLabelsAction->setChecked(ui->viewAtLblsCheckBox->isChecked());
     connect(viewAtomLabelsAction,SIGNAL(triggered()),this,SLOT(setViewAtomLabels()));
 
     viewBondGradientPathsAction = new QAction(QIcon(":/images/viewbgps.png"),tr("Draw &Bond Gradient Paths"), this);
-    viewBondGradientPathsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_1));
+    //viewBondGradientPathsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_1));
     viewBondGradientPathsAction->setCheckable(true);
     viewBondGradientPathsAction->setChecked(ui->viewBGPsCheckBox->isChecked());
     connect(viewBondGradientPathsAction,SIGNAL(triggered()),this,SLOT(setViewBondGradientPaths()));
 
     viewRingGradientPathsAction = new QAction(QIcon(":/images/viewrgps.png"),tr("Draw &Ring Gradient Paths"), this);
-    viewRingGradientPathsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_2));
+    //viewRingGradientPathsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_2));
     viewRingGradientPathsAction->setCheckable(true);
     viewRingGradientPathsAction->setChecked(ui->viewRGPsCheckBox->isChecked());
     connect(viewRingGradientPathsAction,SIGNAL(triggered()),this,SLOT(setViewRingGradientPaths()));
 
     viewCageGradientPathsAction = new QAction(QIcon(":/images/viewcgps.png"),tr("Draw &Cage Gradient Paths"), this);
-    viewCageGradientPathsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_3));
+    //viewCageGradientPathsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_3));
     viewCageGradientPathsAction->setCheckable(true);
     viewCageGradientPathsAction->setChecked(ui->viewCGPsCheckBox->isChecked());
     connect(viewCageGradientPathsAction,SIGNAL(triggered()),this,SLOT(setViewCageGradientPaths()));
 
     viewCPLabelsAction = new QAction(QIcon(":/images/drawcplbls.png"),tr("View C&P Labels"), this);
-    viewCPLabelsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::ShiftModifier+Qt::Key_L));
+    //viewCPLabelsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::ShiftModifier+Qt::Key_L));
     viewCPLabelsAction->setCheckable(true);
     viewCPLabelsAction->setChecked(ui->viewCPLabelsCheckBox->isChecked());
     connect(viewCPLabelsAction,SIGNAL(triggered()),this,SLOT(setViewCPLabels()));
 
     setTransparentAtomsAndLinksAction = new QAction(QIcon(":/images/toggletransp.png"),tr("Set &Transparent"), this);
-    setTransparentAtomsAndLinksAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_T));
+    //setTransparentAtomsAndLinksAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_T));
     setTransparentAtomsAndLinksAction->setCheckable(true);
     setTransparentAtomsAndLinksAction->setChecked(ui->setTransparentCheckBox->isChecked());
     connect(setTransparentAtomsAndLinksAction,SIGNAL(triggered()),this,SLOT(setTransparentAtomsAndLinks()));
 
     viewRegularBondsAction = new QAction(QIcon(":/images/drawlinks.png"),tr("View R&egular Bonds"), this);
-    viewRegularBondsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_B));
+    //viewRegularBondsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_B));
     viewRegularBondsAction->setCheckable(true);
     viewRegularBondsAction->setChecked(ui->viewAtLblsCheckBox->isChecked());
     connect(viewRegularBondsAction,SIGNAL(triggered()),this,SLOT(setViewRegularBonds()));
 
     viewAtomsAction = new QAction(QIcon(":/images/drawatoms.png"),tr("View &Atoms"), this);
-    viewAtomsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_A));
+    //viewAtomsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_A));
     viewAtomsAction->setCheckable(true);
     viewAtomsAction->setChecked(ui->viewAtomsCheckBox->isChecked());
     connect(viewAtomsAction,SIGNAL(triggered()),this,SLOT(setViewAtoms()));

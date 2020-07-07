@@ -17,9 +17,10 @@ set(the_usr_moc_hdrs
    ../common/critptnetwork.h 
    ../common/gausswavefunction.h 
    ../common/eig2-4.h 
+   ../common/figname.h
    ../common/solmath.h 
    ../common/solfileutils.h 
-   soldefines.h 
+   localdefs.h 
    dtkmainwindow.h
    dtkglwidget.h
    dtkglbondnetwork.h 
@@ -66,6 +67,7 @@ set(the_usr_srcs
    ../common/eig2-4.cpp 
    ../common/solmath.cpp 
    ../common/solfileutils.cpp 
+   ../common/figname.cpp
    dtkglbondnetwork.cpp 
    dtkglutils.cpp
    dtkglcriticalpointnetwork.cpp
@@ -142,7 +144,7 @@ SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
 #  CMake's way of creating an executable
 add_executable( ${the_usr_bin_name} MACOSX_BUNDLE WIN32
   ${the_usr_srcs}
-  #${the_gen_moc_hdrs} 
+  ${the_gen_moc_hdrs} 
   ${the_gen_uis}
   ${the_gen_rcs}
 )
@@ -208,7 +210,7 @@ qt5_use_modules(${the_usr_bin_name} ${the_usr_qt5_modules})
 #   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 #   )
 
-ADD_DEFINITIONS(-include soldefines.h)
+ADD_DEFINITIONS(-include localdefs.h)
 
 if (CMAKE_COMPILER_IS_GNUCXX)
    set(CMAKE_CXX_FLAGS "-Wall -O2 -m64 -funroll-loops -falign-loops=16")
