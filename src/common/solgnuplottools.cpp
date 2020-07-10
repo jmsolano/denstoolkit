@@ -188,6 +188,7 @@ void renderGnpFile(string gnpname,bool rmGnpFile)
 /* **************************************************************************************** */
 void gnuplottools_eps2pdf(const string &epsname)
 {
+   cout << "Trimming eps (epstool)..." << endl;
    string tmpepsname=generateStrRandSeq(16);
    string cmdline;
 #if ( _HAVE_EPSTOOL_)
@@ -201,6 +202,7 @@ void gnuplottools_eps2pdf(const string &epsname)
 #endif
    //_HAVE_EPSTOOL_
 #if (_HAVE_EPSTOPDF_)
+   cout << "Converting eps to pdf (epstopdf)..." << endl;
    string pdfname=epsname;
    replaceExtensionOfFileName(pdfname,"pdf");
    cmdline="epstopdf --outfile=";

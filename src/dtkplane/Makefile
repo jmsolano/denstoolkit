@@ -114,6 +114,17 @@ clean:
 	$(info CLEANING ALL)
 	@$(RM) -f $(TARGET) $(OBJS) $(TESTEXECS) 2>/dev/null || true
 
+.PHONY: help
+help: ## Shows this help
+	@echo '=================================================================================='
+	@echo 'usage: make [target] ...'
+	@echo '=================================================================================='
+	@echo ''
+	@echo 'targets:'
+	@egrep -e '^(.+)\:\ .*##\ (.+)' ${MAKEFILE_LIST} | sed 's/:.*##/#/' | column -t -c 2 -s '#'
+	@echo ''
+	@echo '=================================================================================='
+
 fullclean: clean
 	@cd ../common/;make clean
 

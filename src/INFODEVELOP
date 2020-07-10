@@ -196,6 +196,15 @@ Steps for adding a new field in all DTK :
 
 =======================================================================
 =======================================================================
+Adding a new dtk program
+=======================================================================
+Optionally: You can copy a previous dtkprogram to easy the implmentation.
+Add the directory to the theListDirs.sh script.
+Add the install line to Makefile:install target.
+Add the numerical test bash file (numericalTest.sh) and its
+  corresponding tests.
+Add the performance test bash file (performanceTest.sh) and its
+  corresponding tests.
 =======================================================================
 =======================================================================
 =======================================================================
