@@ -254,8 +254,8 @@ int main (int argc, char ** argv) {
    if (options.mkplt) {
       HelpersPlot::makeGnuplotFile(options,gnpnam,outfilnam,prop,dd,bnw,at1,at2,at3,grid);
    }
-   if (!(options.kpgnp)) {
-      cout << "Cleaning temporary files..." << endl;
+#endif /* _HAVE_GNUPLOT_ */
+
 #if (defined(__APPLE__)||defined(__linux__))
    if (options.zipdat) {
       string cmdl;
