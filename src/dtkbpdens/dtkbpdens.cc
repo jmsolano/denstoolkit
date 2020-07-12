@@ -178,7 +178,7 @@ int main (int argc, char ** argv) {
    solreal **rbgp=NULL;
    alloc2DRealArray(string("rbgp"),dimarr,3,rbgp);
    
-   int nbgppts;
+   int nbgppts=1;
    solreal dl=DEFAULTBONDPATHSTEPMD1;
    solreal robcp[3];
    solreal x1[3],x2[3],dx[3];
