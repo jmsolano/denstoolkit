@@ -72,14 +72,12 @@ using std::setprecision;
 #include "../common/critptnetwork.h"
 #include "../common/solstringtools.h"
 #include "../common/fldtypesdef.h"
+#include "solgnuplottools.h"
 #include "optflags.h"
 #include "crtflnms.h"
+#include "helpersplot.h"
 
-solreal evalFieldProperty(char prop,solreal (&x)[3],GaussWaveFunction &wf);
-
-
-int main (int argc, char ** argv)
-{
+int main (int argc, char ** argv) {
    const clock_t begin_time = clock();
    const solreal begin_walltime = time(NULL);
    string infilnam,outfilnam,gnpnam,lognam;
@@ -92,16 +90,12 @@ int main (int argc, char ** argv)
    mkFileNames(argv,options,infilnam,outfilnam,gnpnam,lognam); //This creates the names used.
    printHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS); //Just to let the user know that the initial configuration is OK
    
-   /* Stablish the field property to be evaluated. */
+   /* Stablishes the field property to be evaluated. */
    
-   char prop;
-   if (options.prop2plot) {
-      prop=argv[options.prop2plot][0];
-   } else {
-      prop='d';
-   }
-   
-   /* Checking for non valid property fields */
+   char prop='d';
+   if (options.prop2plot) { prop=argv[options.prop2plot][0]; }
+
+   /* Checks for non valid property fields */
    
    if (!(prop=='d'||prop=='g'||prop=='l'||prop=='E'||prop=='L'||prop=='M'\
          ||prop=='S'||prop=='G'||prop=='K'||prop=='V'\
@@ -112,7 +106,7 @@ int main (int argc, char ** argv)
       exit(1);
    }
    
-   /* Loading the wave function */
+   /* Loads the wave function */
    
    cout << endl << "Loading wave function from file: " << infilnam << "... ";
    
@@ -132,11 +126,9 @@ int main (int argc, char ** argv)
       exit(0);
    }
    
-   /* Setting the atoms for defining the line/bond path */
+   /* Sets the atoms for defining the line/bond path */
    
-   int at1,at2;
-   at1=0;
-   at2=1;
+   int at1=0,at2=1;
    if (options.setats) {
       sscanf(argv[options.setats],"%d",&at1);
       at1--;
@@ -149,19 +141,16 @@ int main (int argc, char ** argv)
       exit(1);
    }
    
-   
-   /* Setting the bond network of the molecule */
+   /* Sets the bond network of the molecule */
    
    bondNetWork bnw;
    bnw.readFromFile(infilnam); //Loading the bond-network (if the wave function
                                //was read, there souldn't be problems here.
    bnw.setUpBNW();             //To setup the bond network.
    
-   /* Defining the main critical point network object. */
+   /* Defines the main critical point network object. */
    
    critPtNetWork cpn(gwf,bnw);
-   
-   
    
    int dimarr=300;
    if (options.setn1) {
@@ -175,7 +164,7 @@ int main (int argc, char ** argv)
       }
    }
    
-   /* Setting the final file names. */
+   /* Sets the final file names. */
    
    string lbls="-"+gwf.atLbl[at1]+"-"+gwf.atLbl[at2];
    size_t pos=gnpnam.find_last_of('.');
@@ -185,7 +174,7 @@ int main (int argc, char ** argv)
       lognam.insert(pos,lbls);
    }
    
-   /* Declaring an array to store the coordinates of the bond path points. */
+   /* Declares an array to store the coordinates of the bond path points. */
    solreal **rbgp=NULL;
    alloc2DRealArray(string("rbgp"),dimarr,3,rbgp);
    
@@ -201,7 +190,7 @@ int main (int argc, char ** argv)
    /* ==================================================================== */
    
    if (options.uponbp) {
-      /* Compute the gradient path */
+      /* Computes the gradient path */
       nbgppts=cpn.findSingleRhoBondGradientPathRK5(at1,at2,dl,dimarr,rbgp,robcp);
       //cout << "npts: " << nbgppts << endl;
       for (int i=0; i<3; i++) {x1[i]=rbgp[0][i];}
@@ -235,7 +224,7 @@ int main (int argc, char ** argv)
       cout << "The line that joins the atoms consists of " << nbgppts << " points." << endl;
    }
    
-   /* Open the dat file */
+   /* Opens the dat file */
    
    ofile.open(outfilnam.c_str(),ios::out);
    ofile << scientific << setprecision(12);
@@ -256,7 +245,7 @@ int main (int argc, char ** argv)
       if ((rbgp[0][0]==robcp[0])&&(rbgp[0][1]==robcp[1])&&(rbgp[0][2]==robcp[2])) {pbcp=pp;}
    }
    for (int k=0; k<3; k++) {xx[k]=rbgp[0][k];}
-   tmpval=evalFieldProperty(prop,xx,gwf);
+   tmpval=HelpersPlot::EvalFieldProperty(prop,xx,gwf);
    if (tmpval<minval) {minval=tmpval; pmin=pp; for(int k=0; k<3; k++) {xmin[k]=xx[k];}}
    if (tmpval>maxval) {maxval=tmpval; pmax=pp; for(int k=0; k<3; k++) {xmax[k]=xx[k];}}
    ofile << pp << " ";
@@ -269,7 +258,7 @@ int main (int argc, char ** argv)
          xt[k]-=xx[k]; dist+=(xt[k]*xt[k]);
       }
       pp+=sqrt(dist);
-      tmpval=evalFieldProperty(prop,xx,gwf);
+      tmpval=HelpersPlot::EvalFieldProperty(prop,xx,gwf);
       ofile << pp << " ";
       for (int k=0; k<3; k++) {ofile << xx[k] << " ";}
       ofile << tmpval << endl;
@@ -287,10 +276,10 @@ int main (int argc, char ** argv)
    cout << endl;
 #endif
    
-   /* Close the dat file */
+   /* Closes the dat file */
    ofile.close();
    
-   /* Display the information of min/max of prop */
+   /* Displays the information of min/max of prop */
    
    cout << scientific << setprecision(12) << endl;
    printScrCharLine('-');
@@ -312,10 +301,10 @@ int main (int argc, char ** argv)
    }
    printScrCharLine('-');
    
-   /* Writing the information of the field property to the log file */
-   
+   /* Writes the information of the field property to the log file */
+
    ofstream logfil;
-   
+
    logfil.open(lognam.c_str(),ios::out);
    writeCommentedHappyStart(argv,logfil,CURRENTVERSION,PROGRAMCONTRIBUTORS);
    logfil << scientific << setprecision(12);
@@ -339,89 +328,11 @@ int main (int argc, char ** argv)
    }
    
    logfil.close();
+
+   /* Writes the gnuplot script */
    
-   /* Writing the gnuplot script */
-   
-   ofstream gfil;
-   string line;
-   gfil.open(gnpnam.c_str(),ios::out);
-   
-   if (maxval>1000.e0) {maxval=1000.0e0;}
-   
-   gfil << "set datafile missing \"inf\"" << endl;
-   gfil << "namedatfile='" << outfilnam << "'" << endl;
-   gfil << "xmin2plot=0.0" << endl;
-   gfil << "xmax2plot=" << lenline << endl;
-   gfil << "ymin2plot=" << (0.0e0<minval ? 0.0e0 : minval) << endl;
-   gfil << "ymax2plot=" << maxval*1.05e0 << endl;
-   gfil << "set xrange [xmin2plot:xmax2plot]" << endl;
-   gfil << "set yrange [ymin2plot:ymax2plot]" << endl;
-   if (!options.showatlbls) {gfil << "#";}
-   solreal tmpdist=0.0e0;
-   for ( int i=0 ; i<3 ; i++ ) {tmpdist+=((bnw.R[at1][i]-rbgp[0][i])*(bnw.R[at1][i]-rbgp[0][i]));}
-   tmpdist=sqrt(tmpdist);
-   int tmpa1=at1,tmpa2=at2;
-   if ( tmpdist>0.1 ) {tmpa1=at2; tmpa2=at1;}
-   gfil << "set label 1 '" << getEnhancedEpsAtLbl(bnw.atLbl[tmpa1]) << "' at "
-   << 0.05e0*(lenline) << "," << 0.1e0*(maxval) << " front offset character 0,0.75" << endl;
-   if (!options.showatlbls) {gfil << "#";}
-   gfil << "set label 2 '" << getEnhancedEpsAtLbl(bnw.atLbl[tmpa2]) << "' at "
-   << 0.95e0*(lenline) << "," << 0.1e0*(maxval) << " front offset character -2,0.75" << endl;
-   gfil << "set arrow 1 from " << 0.05e0*(lenline) << "," << 0.1e0*(maxval) << " to "
-        << "0.0,ymin2plot" << endl;
-   gfil << "set arrow 2 from " << 0.95e0*(lenline) << "," << 0.1e0*(maxval) << " to "
-        << lenline << ",ymin2plot" << endl;
-   if (options.uponbp) {
-      if (!options.showatlbls) {gfil << "#";}
-      gfil << "set label 3 'BCP' at "
-      << pbcp << "," << 0.05e0*(maxval) << " rotate by 90 front" << endl;
-      if (!options.showatlbls) {gfil << "#";}
-      gfil << "set xtics add ('' " << pbcp << ")" << endl;
-   }
-   gfil << "set title '" << getEnhancedEpsTitle(outfilnam) << "'" << endl;
-   gfil << "set terminal postscript eps enhanced color fontscale 1.75 lw 2 dashlength 4" << endl;
-   string epsnam=gnpnam.substr(0,(gnpnam.length()-3));
-   string pdfnam=epsnam;
-   epsnam.append("eps");
-   pdfnam.append("pdf");
-   gfil << "set output '" << epsnam << "'" << endl;
-   gfil << "plot namedatfile using 1:5 with lines lw 2 title '"
-        << gnuplotFieldTitle(prop) << "'" << endl;
-   gfil << "#" << endl;
-   writeScrCharLine(gfil,'#');
-   gfil << "#                 END OF GNUPLOT COMMANDS" << endl;
-   writeScrCharLine(gfil,'#');
-   gfil << "#If you want to reconstruct the plots using this file, type:" << endl
-   << "#gnuplot " << gnpnam << endl
-   << "#epstopdf --outfile=" << pdfnam << " " << epsnam << endl;
-   gfil.close();
-   
-#if _HAVE_GNUPLOT_
-   if (options.mkplt) {
-      cout << "Preparing the plot..." << endl;
-#if (defined(__APPLE__)||defined(__linux__))
-      line="gnuplot "+gnpnam;
-#endif
-#if (defined(__CYGWIN__))
-      line="wgnuplot "+gnpnam;
-#endif
-      if (options.quiet) {line+=" > /dev/null 2>&1";}
-      system(line.c_str());
-#if _HAVE_EPSTOPDF_
-      line= "epstopdf "+epsnam+" --outfile="+pdfnam;
-      if (options.quiet) {line+=" > /dev/null 2>&1";}
-      system(line.c_str());
-      line= "rm -f "+epsnam;
-      if (options.quiet) {line+=" > /dev/null 2>&1";}
-      system(line.c_str());
-#endif
-      if (!(options.kpgnp)) {
-         line="rm -f "+gnpnam;
-         if (options.quiet) {line+=" > /dev/null 2>&1";}
-         system(line.c_str());
-      }
-   }
-#endif
+   HelpersPlot::MakeGnuplotFile(options,gnpnam,outfilnam,prop,bnw,lenline,minval,maxval,\
+         at1,at2,pbcp,rbgp);
    
 #if (defined(__APPLE__)||defined(__linux__)||defined(__CYGWIN__))
    if (options.zipdat) {
@@ -451,66 +362,5 @@ int main (int argc, char ** argv)
    setScrNormalFont();
    return 0;
 }
-
-solreal evalFieldProperty(char prop,solreal (&x)[3],GaussWaveFunction &wf)
-{
-   solreal res;
-   switch (prop) {
-      case 'd':
-         res=wf.evalDensity(x[0],x[1],x[2]);
-         break;
-      case 'g':
-         res=wf.evalMagGradRho(x[0],x[1],x[2]);
-         break;
-      case 'l':
-         res=wf.evalLapRho(x[0],x[1],x[2]);
-         break;
-      case 'e':
-         res=wf.evalEllipticity(x[0],x[1],x[2]);
-         break;
-      case 'E':
-         res=wf.evalELF(x[0],x[1],x[2]);
-         break;
-      case 'L':
-         res=wf.evalLOL(x[0],x[1],x[2]);
-         break;
-      case 'M':
-         res=wf.evalMagGradLOL(x[0],x[1],x[2]);
-         break;
-      case 'P' :
-         res=wf.evalMagLED(x[0],x[1],x[2]);
-         break;
-      case 'r' :
-         res=wf.evalRoSE(x[0],x[1],x[2]);
-         break;
-      case 's' :
-         res=wf.evalReducedDensityGradient(x[0],x[1],x[2]);
-         break;
-      case 'S':
-         res=wf.evalShannonEntropy(x[0],x[1],x[2]);
-         break;
-      case 'G':
-         res=wf.evalKineticEnergyG(x[0],x[1],x[2]);
-         break;
-      case 'K':
-         res=wf.evalKineticEnergyK(x[0],x[1],x[2]);
-         break;
-      case 'u' :
-         res=wf.evalCustomScalarField(x[0],x[1],x[2]);
-         break;
-      case 'V':
-         res=wf.evalMolElecPot(x[0],x[1],x[2]);
-         break;
-      default:
-#if DEBUG
-         cout << "Unknown field type! Returning zero..." << endl;
-         DISPLAYDEBUGINFOFILELINE;
-#endif
-         res=0.0e0;
-         break;
-   }
-   return res;
-}
-
 
 
