@@ -45,10 +45,10 @@ src/dtkintegobondpath/dtkintegobondpath
 .DS_Store
 
 #Directories
-bin/*
-bib/*
-pres/*
-taring/*
+bin
+bib
+pres
+taring
 mathematica/*
 discuss/*
 benchmarks/*
@@ -68,14 +68,18 @@ tex/dtkmanual/tmp/*
 tex/ejemplos/*
 wavefiles/*
 arts/*
-src/dtkview/build/*
+src/dtkview/build
 wishlist/*
 src/devdoc/html/*
 src/dtkcharcicp/jasowfns/*
 densityprogs
 src/dtkcube/RefG09
 src/dtkcube/refCheckden
-src/*/refSelf
+src/*/ref*
+src/oldTest
+src/testMEP
+src/dtkview/oldbuid
+src/dtk*/tmp
 
 #specific files
 namefiglet.txt
@@ -88,8 +92,14 @@ src/scripts/dtkaddFDL
 src/scripts/dtkrmFDL
 src/scripts/dtkaddGPLv3
 src/scripts/dtkrmGPLv3
+src/scripts/solcube2dat
+src/scripts/*wf?
 src/firstrelease
 AFTER_PUB
 src/devdoc/Dev*.html
 src/common/*.a
+src/NOTES
+src/dtkcube/LCLREADME
+src/dtkview/DensToolKit.pro.*
+tex/dtkmanual/TODO
 
