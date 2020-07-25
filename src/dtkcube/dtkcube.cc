@@ -63,9 +63,9 @@ using namespace std;
 using std::setprecision;
 #include <ctime>
 
-#include "../common/solscrutils.h"
-#include "../common/solfileutils.h"
-#include "../common/solmemhand.h"
+#include "../common/screenutils.h"
+#include "../common/fileutils.h"
+#include "../common/mymemory.h"
 #include "../common/iofuncts-wfx.h"
 #include "../common/iofuncts-wfn.h"
 #include "../common/gausswavefunction.h"
@@ -77,8 +77,7 @@ using std::setprecision;
 
 
 
-int main (int argc, char ** argv)
-{
+int main (int argc, char ** argv) {
    const clock_t begin_time = clock();
    const solreal begin_walltime = time(NULL);
    string infilnam,outfilnam,logfilnam;
@@ -89,15 +88,15 @@ int main (int argc, char ** argv)
    
    getOptions(argc,argv,options); //This processes the options from the command line.
    mkFileNames(argv,options,infilnam,outfilnam,logfilnam); //This creates the names used.
-   printHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS); //Just to let the user know that the initial configuration is OK
+   ScreenUtils::PrintHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS); //Just to let the user know that the initial configuration is OK
 
    cout << endl << "Loading wave function from file: " << infilnam << endl;
    
    GaussWaveFunction gwf;
    if (!(gwf.readFromFile(infilnam))) { //Loading the wave function
-      setScrRedBoldFont();
+      ScreenUtils::SetScrRedBoldFont();
       cout << "Error: the wave function could not be loaded!\n";
-      setScrNormalFont();
+      ScreenUtils::SetScrNormalFont();
       exit(1);
    }
    
@@ -232,9 +231,9 @@ int main (int argc, char ** argv)
          grid.makeCube(outfilnam,gwf,NCIL);
          break;
       default:
-         setScrRedBoldFont();
+         ScreenUtils::SetScrRedBoldFont();
          cout << "Error: The property \"" << prop << "\" does not exist!" << endl;
-         setScrNormalFont();
+         ScreenUtils::SetScrNormalFont();
          exit(1);
          break;
    }
@@ -255,7 +254,7 @@ int main (int argc, char ** argv)
    if (options.wrtlog) {
       ofstream lfil;
       lfil.open(logfilnam.c_str(),ios::out);
-      writeCommentedHappyStart(argv,lfil,CURRENTVERSION,PROGRAMCONTRIBUTORS);
+      FileUtils::WriteHappyStart(argv,lfil,CURRENTVERSION,PROGRAMCONTRIBUTORS);
       lfil << "#Wave function file name: " << endl << infilnam << endl;
       lfil << "#Number of primitives: "  << endl << gwf.nPri << endl;
       lfil << "#Grid dimensions:" << endl
@@ -275,17 +274,17 @@ int main (int argc, char ** argv)
       VMDTools::writeSimpleVMDScript(outfilnam,prop,options.quietrender);
    }
    
-   setScrGreenBoldFont();
-   printHappyEnding();
-   printScrStarLine();
+   ScreenUtils::PrintHappyEnding();
+   ScreenUtils::SetScrGreenBoldFont();
+   ScreenUtils::PrintScrStarLine();
    cout << setprecision(3) << "CPU Time: " << solreal( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
    solreal end_walltime=time(NULL);
    cout << "Wall-clock time: " << solreal (end_walltime-begin_walltime) << "s" << endl;
 #if DEBUG
    cout << "Debugging mode (under construction)..." << endl;
 #endif
-   printScrStarLine();
-   setScrNormalFont();
+   ScreenUtils::PrintScrStarLine();
+   ScreenUtils::SetScrNormalFont();
    return 0;
 }
 

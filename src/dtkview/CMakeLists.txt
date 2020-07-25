@@ -8,18 +8,25 @@ set(the_usr_moc_hdrs
    ../common/iofuncts-cpx.h 
    ../common/iofuncts-wfn.h 
    ../common/iofuncts-wfx.h 
-   ../common/solpovtools.h 
-   ../common/solmemhand.h 
+   #../common/solpovtools.h 
+   ../common/povraytools.h 
+   #../common/solmemhand.h 
+   ../common/mymemory.h 
    ../common/atomradiicust.h 
-   ../common/solscrutils.h 
+   #../common/solscrutils.h 
+   ../common/screenutils.h 
    ../common/atomcolschjmol.h 
-   ../common/solstringtools.h 
+   #../common/solstringtools.h 
+   ../common/stringtools.h 
    ../common/critptnetwork.h 
    ../common/gausswavefunction.h 
-   ../common/eig2-4.h 
+   #../common/eig2-4.h 
+   ../common/eigendecompositionjama.h 
    ../common/figname.h
-   ../common/solmath.h 
-   ../common/solfileutils.h 
+   #../common/solmath.h 
+   ../common/mymath.h 
+   #../common/solfileutils.h 
+   ../common/fileutils.h 
    localdefs.h 
    dtkmainwindow.h
    dtkglwidget.h
@@ -56,17 +63,24 @@ set(the_usr_srcs
    ../common/iofuncts-cpx.cpp 
    ../common/iofuncts-wfn.cpp 
    ../common/iofuncts-wfx.cpp 
-   ../common/solpovtools.cpp 
-   ../common/solmemhand.cpp 
+   #../common/solpovtools.cpp 
+   ../common/povraytools.cpp 
+   #../common/solmemhand.cpp 
+   ../common/mymemory.cpp 
    ../common/atomradiicust.cpp 
-   ../common/solscrutils.cpp 
+   #../common/solscrutils.cpp 
+   ../common/screenutils.cpp 
    ../common/atomcolschjmol.cpp 
-   ../common/solstringtools.cpp 
+   #../common/solstringtools.cpp 
+   ../common/stringtools.cpp 
    ../common/critptnetwork.cpp 
    ../common/gausswavefunction.cpp 
-   ../common/eig2-4.cpp 
-   ../common/solmath.cpp 
-   ../common/solfileutils.cpp 
+   #../common/eig2-4.cpp 
+   ../common/eigendecompositionjama.cpp 
+   #../common/solmath.cpp 
+   ../common/mymath.cpp 
+   #../common/solfileutils.cpp 
+   ../common/fileutils.cpp 
    ../common/figname.cpp
    dtkglbondnetwork.cpp 
    dtkglutils.cpp

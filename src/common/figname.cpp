@@ -44,9 +44,9 @@ using std::cout;
 using std::endl;
 using std::cerr;
 #include "figname.h"
-#include "solscrutils.h"
+#include "screenutils.h"
 
-void printFigletName(void){
+void FigletName::PrintFigletName(void){
    static const int FN_NROWS=5;
    static const string figname[FN_NROWS]={
       "|____/ \\___|_| |_|___/|_|\\___/ \\___/|_|_|\\_\\_|\\__|",\
@@ -55,6 +55,6 @@ void printFigletName(void){
       "|  _ \\  ___ _ __  __|_   _|__   ___ | | |/ (_) |_ ",\
       " ____                _____           _ _  ___ _   "
    };
-   for (int i=0; i<FN_NROWS; i++) {centerString(figname[FN_NROWS-i-1]);}
+   for (int i=0; i<FN_NROWS; i++) {ScreenUtils::CenterString(figname[FN_NROWS-i-1]);}
 }
 

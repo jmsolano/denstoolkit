@@ -48,7 +48,7 @@
 #endif
 
 #include "bondnetwork.h"
-#include "solpovtools.h"
+#include "povraytools.h"
 #include "iofuncts-wfn.h"
 #include "iofuncts-wfx.h"
 #include "atomradiicust.h"
@@ -85,12 +85,12 @@ bondNetWork::bondNetWork()
 bondNetWork::~bondNetWork()
 //**********************************************************************************************
 {
-   dealloc2DRealArray(R,nNuc);
-   dealloc2DIntArray(bNet,nNuc);
-   dealloc1DStringArray(atLbl);
-   dealloc1DStringArray(title);
-   dealloc1DIntArray(atNum);
-   dealloc2DRealArray(bondDist,nNuc);
+   MyMemory::Dealloc2DRealArray(R,nNuc);
+   MyMemory::Dealloc2DIntArray(bNet,nNuc);
+   MyMemory::Dealloc1DStringArray(atLbl);
+   MyMemory::Dealloc1DStringArray(title);
+   MyMemory::Dealloc1DIntArray(atNum);
+   MyMemory::Dealloc2DRealArray(bondDist,nNuc);
    isSTP=false;
 }
 //**********************************************************************************************
@@ -112,9 +112,9 @@ bool bondNetWork::readFromFileWFX(string inname)
    }
    getTitleFromFileWFX(tif,nTit,title);
    getNofNucleiFromFileWFX(tif,nNuc);
-   alloc1DStringArray("atLbl",nNuc,atLbl);
-   alloc2DRealArray(string("R"),nNuc,3,R);
-   alloc1DIntArray(string("atNum"),nNuc,atNum);
+   MyMemory::Alloc1DStringArray("atLbl",nNuc,atLbl);
+   MyMemory::Alloc2DRealArray(string("R"),nNuc,3,R);
+   MyMemory::Alloc1DIntArray(string("atNum"),nNuc,atNum);
    getAtLabelsFromFileWFX(tif,nNuc,atLbl);
    getNucCartCoordsFromFileWFX(tif,nNuc,R);
    getAtNumbersFromFileWFX(tif,nNuc,atNum);
@@ -140,16 +140,16 @@ bool bondNetWork::readFromFileWFN(string inname)
    processFirstDataStringinWFNFile(tif,title,orDe,nmo,npr,nNuc);
    solreal *atch,*tmprad;
    processCentersWFN(tif,nNuc,atLbl,tmprad,atch);
-   alloc2DRealArray(string("R-readwfn-"),nNuc,3,R);
-   alloc1DIntArray(string("atNum"),nNuc,atNum);
+   MyMemory::Alloc2DRealArray(string("R-readwfn-"),nNuc,3,R);
+   MyMemory::Alloc1DIntArray(string("atNum"),nNuc,atNum);
    for (int i=0; i<nNuc; i++) {
       atNum[i]=floor(atch[i])-1;
       R[i][0]=tmprad[3*i];
       R[i][1]=tmprad[3*i+1];
       R[i][2]=tmprad[3*i+2];
    }
-   dealloc1DRealArray(atch);
-   dealloc1DRealArray(tmprad);
+   MyMemory::Dealloc1DRealArray(atch);
+   MyMemory::Dealloc1DRealArray(tmprad);
    tif.close();
    return true;
 }
@@ -194,11 +194,11 @@ bool bondNetWork::setUpBNW(void)
 //**********************************************************************************************
 bool bondNetWork::lookForBonds(void)
 {
-   if (!(alloc2DRealArray(string("bondDist"),nNuc,MAXBONDINGATOMS,bondDist))) {
+   if (!(MyMemory::Alloc2DRealArray(string("bondDist"),nNuc,MAXBONDINGATOMS,bondDist))) {
       cout << "Unknonw error from " << __FILE__ << ", line: " << __LINE__ << endl;
       return false;
    }
-   if (!(alloc2DIntArray(string("bNet"),nNuc,MAXBONDINGATOMS,bNet))) {
+   if (!(MyMemory::Alloc2DIntArray(string("bNet"),nNuc,MAXBONDINGATOMS,bNet))) {
       cout << "Unknonw error from " << __FILE__ << ", line: " << __LINE__ << endl;
       return false;
    }
@@ -249,7 +249,7 @@ void bondNetWork::seekRMaxMin(void)
    return;
 }
 //**********************************************************************************************
-bool bondNetWork::makePOVFile(string pnam,povRayConfProp &pvp)
+bool bondNetWork::makePOVFile(string pnam,POVRayConfiguration &pvp)
 {
    ofstream pof;
    pof.open(pnam.c_str(),ios::out);
@@ -260,7 +260,7 @@ bool bondNetWork::makePOVFile(string pnam,povRayConfProp &pvp)
 #endif
       return false;
    }
-   //povRayConfProp pvp;
+   //POVRayConfiguration pvp;
    if (!isSTP) {setUpBNW();}
    if (!ballAndStickMode) {drawAtSize*=AUTOMATICBALLANDSTICKRATIO;}
    centerMolecule();
@@ -275,16 +275,16 @@ bool bondNetWork::makePOVFile(string pnam,povRayConfProp &pvp)
 #if CHOOSEPOVVERSION36
    pof << "#version 3.6;" << endl;
 #endif
-   pvp.writeHeader(pof);
+   pvp.WriteHeader(pof);
    pof << endl;
    if (spaceFillingMode) {
-      pof << indTabsStr(pvp.currIndLev) << "merge{" << endl;
+      pof << HelpersPOVRay::IndTabsStr(pvp.currIndLev) << "merge{" << endl;
       pvp.currIndLev++;
    }
    putNuclei(pof);
    if (spaceFillingMode) {
       pvp.currIndLev--;
-      pof << indTabsStr(pvp.currIndLev) << "}" << endl;
+      pof << HelpersPOVRay::IndTabsStr(pvp.currIndLev) << "}" << endl;
    }
    if (ballAndStickMode||wireMode) {
       putBonds(pof);
@@ -305,9 +305,9 @@ void bondNetWork::putNuclei(ofstream & pof)
       } else {
          atrad=drawAtSize;
       }
-      //writePOVSphere(pof,0,R[i][0],R[i][1],R[i][2],atrad,
+      //HelpersPOVRay::WriteSphere(pof,0,R[i][0],R[i][1],R[i][2],atrad,
       //               atomicColor[atomn][0],atomicColor[atomn][1],atomicColor[atomn][2]);
-      writePOVSphere(pof,0,R[i][0],R[i][1],R[i][2],atrad,
+      HelpersPOVRay::WriteSphere(pof,0,R[i][0],R[i][1],R[i][2],atrad,
                      getAtomicRColorReal(atomn),getAtomicGColorReal(atomn),
                      getAtomicBColorReal(atomn));
    }
@@ -330,12 +330,12 @@ void bondNetWork::putBonds(ofstream &pof)
             startpt[l]=R[i][l]*(1.0e0-frak1)+R[k][l]*frak1;
          }
          if (k>0) {
-            writePOVCylinder(pof,1,
+            HelpersPOVRay::WriteCylinder(pof,1,
                              R[i][0],R[i][1],R[i][2],
                              startpt[0],startpt[1],startpt[2],drawStickSize,
                              getAtomicRColorReal(atni),getAtomicGColorReal(atni),
                              getAtomicBColorReal(atni));
-            writePOVCylinder(pof,1,
+            HelpersPOVRay::WriteCylinder(pof,1,
                              startpt[0],startpt[1],startpt[2],
                              R[k][0],R[k][1],R[k][2],drawStickSize,
                              getAtomicRColorReal(atnk),getAtomicGColorReal(atnk),

@@ -64,12 +64,12 @@ using namespace std;
 using std::setprecision;
 #include <ctime>
 
-#include "../common/solscrutils.h"
-#include "../common/solfileutils.h"
-#include "../common/solmemhand.h"
+#include "../common/screenutils.h"
+#include "../common/fileutils.h"
+#include "../common/mymemory.h"
 #include "../common/iofuncts-wfx.h"
 #include "../common/iofuncts-wfn.h"
-#include "../common/solmath.h"
+#include "../common/mymath.h"
 #include "../common/gausswavefunction.h"
 //#include "../common/bondnetwork.h"
 #include "../common/solcubetools.h"
@@ -125,7 +125,7 @@ int main (int argc, char ** argv)
                   break;
                default:
                   cout << endl;
-                  displayErrorMessage("Invalid value for option -1...");
+                  ScreenUtils::DisplayErrorMessage("Invalid value for option -1...");
                   cout << "\nTry:\n\t" << argv[0] << " -h " << endl;
                   cout << "\nto view the help menu.\n\n";
                   exit(1);
@@ -139,7 +139,7 @@ int main (int argc, char ** argv)
             extralbl=string(argv[options.evdim+1]);
             if (!(extralbl==string("xy")||extralbl==string("xz")||extralbl==string("yz"))) {
                cout << endl;
-               displayErrorMessage("Invalid value for option -2...");
+               ScreenUtils::DisplayErrorMessage("Invalid value for option -2...");
                cout << "\nTry:\n\t" << argv[0] << " -h " << endl;
                cout << "\nto view the help menu.\n\n";
                exit(1);
@@ -161,15 +161,15 @@ int main (int argc, char ** argv)
    if ( options.setfld ) {field=argv[options.setfld][0];}
    if (options.setn1) {sscanf (argv[options.setn1],"%d",&npts);}
    mkFileNames(argv,options,infilnam,outfilnam,gnpnam,dim,extralbl); //This creates the names used.
-   printHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS); //Just to let the user know that the initial configuration is OK
+   ScreenUtils::PrintHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS); //Just to let the user know that the initial configuration is OK
    
    cout << endl << "Loading wave function from file: " << infilnam << "... ";
    
    GaussWaveFunction gwf;
    if (!(gwf.readFromFile(infilnam))) { //Loading the wave function
-      setScrRedBoldFont();
+      ScreenUtils::SetScrRedBoldFont();
       cout << "Error: the wave function could not be loaded!\n";
-      setScrNormalFont();
+      ScreenUtils::SetScrNormalFont();
       exit(1);
    }
    cout << "Done." << endl;
@@ -222,7 +222,7 @@ int main (int argc, char ** argv)
    if (dim==3) {
       makeCubeFile(options,outfilnam,gwf,npts,field,strfield);
       if (options.mkplt) {
-         displayWarningMessage("Plotting can only be performed with options -1 or -2.");
+         ScreenUtils::DisplayWarningMessage("Plotting can only be performed with options -1 or -2.");
       }
    }
    
@@ -230,9 +230,9 @@ int main (int argc, char ** argv)
    
    /* At this point the computation has ended. Usually this means no errors ocurred. */
    
-   setScrGreenBoldFont();
-   printHappyEnding();
-   printScrStarLine();
+   ScreenUtils::PrintHappyEnding();
+   ScreenUtils::SetScrGreenBoldFont();
+   ScreenUtils::PrintScrStarLine();
    cout << setprecision(3) << "CPU Time: "
         << solreal( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
    solreal end_walltime=time(NULL);
@@ -240,8 +240,8 @@ int main (int argc, char ** argv)
 #if DEBUG
    cout << "Debuggin mode (under construction...)" << endl;
 #endif
-   printScrStarLine();
-   setScrNormalFont();
+   ScreenUtils::PrintScrStarLine();
+   ScreenUtils::SetScrNormalFont();
    return 0;
 }
 
@@ -410,9 +410,9 @@ void makePlaneGnuplotFile(optFlags &opts, string &gnpn,string &outn,solreal dimp
    pdfname=outn.substr(0,(outn.length()-3));
    pdfname.append("eps");
    gfil << "#" << endl;
-   writeScrCharLine(gfil,'#');
+   FileUtils::WriteScrCharLine(gfil,'#');
    gfil << "#                 END OF GNUPLOT COMMANDS" << endl;
-   writeScrCharLine(gfil,'#');
+   FileUtils::WriteScrCharLine(gfil,'#');
    gfil << "#If you want to reconstruct the plot using this file, type:" << endl
    << "#gnuplot " << gnpn << endl
    << "#epstool --copy -b " << extepsname << " " << epsname << endl
@@ -463,7 +463,7 @@ void makeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunction &wf,int the
       int npts,char thefield)
 {
 #if USEPROGRESSBAR
-   printProgressBar(0);
+   ScreenUtils::PrintProgressBar(0);
 #endif
    ofstream ofile;
    ofile.open(datnam.c_str(),ios::out);
@@ -480,7 +480,7 @@ void makeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunction &wf,int the
                   ofile << px << " " << wf.evalFTDensity(px,py,pz) << endl;
                   px+=dx;
 #if USEPROGRESSBAR
-                  printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+                  ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
                }
                break;
@@ -489,7 +489,7 @@ void makeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunction &wf,int the
                   ofile << px << " " << wf.evalFTKineticEnergy(px,py,pz) << endl;
                   px+=dx;
 #if USEPROGRESSBAR
-                  printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+                  ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
                }
                break;
@@ -507,7 +507,7 @@ void makeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunction &wf,int the
                   ofile << py << " " << wf.evalFTDensity(px,py,pz) << endl;
                   py+=dy;
 #if USEPROGRESSBAR
-                  printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+                  ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
                }
                break;
@@ -516,7 +516,7 @@ void makeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunction &wf,int the
                   ofile << py << " " << wf.evalFTKineticEnergy(px,py,pz) << endl;
                   py+=dy;
 #if USEPROGRESSBAR
-                  printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+                  ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
                }
                break;
@@ -533,7 +533,7 @@ void makeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunction &wf,int the
                   ofile << pz << " " << wf.evalFTDensity(px,py,pz) << endl;
                   pz+=dz;
 #if USEPROGRESSBAR
-                  printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+                  ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
                }
                break;
@@ -542,7 +542,7 @@ void makeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunction &wf,int the
                   ofile << pz << " " << wf.evalFTKineticEnergy(px,py,pz) << endl;
                   pz+=dz;
 #if USEPROGRESSBAR
-                  printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+                  ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
                }
               break;
@@ -568,7 +568,7 @@ void makePlaneTsvFile(optFlags &opts,string &tsvnam,GaussWaveFunction &wf,int th
    dx=dy=dz=0.0e0;
    px=py=pz=0.0e0;
 #if USEPROGRESSBAR
-   printProgressBar(0);
+   ScreenUtils::PrintProgressBar(0);
 #endif
    switch (theplane) {
       case 1:
@@ -586,7 +586,7 @@ void makePlaneTsvFile(optFlags &opts,string &tsvnam,GaussWaveFunction &wf,int th
                   ofile << endl;
                   px+=dx;
 #if USEPROGRESSBAR
-                  printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+                  ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
                }
                break;
@@ -600,7 +600,7 @@ void makePlaneTsvFile(optFlags &opts,string &tsvnam,GaussWaveFunction &wf,int th
                   ofile << endl;
                   px+=dx;
 #if USEPROGRESSBAR
-                  printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+                  ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
                }
                break;
@@ -623,7 +623,7 @@ void makePlaneTsvFile(optFlags &opts,string &tsvnam,GaussWaveFunction &wf,int th
                   ofile << endl;
                   px+=dx;
 #if USEPROGRESSBAR
-                  printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+                  ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
                }
                break;
@@ -637,7 +637,7 @@ void makePlaneTsvFile(optFlags &opts,string &tsvnam,GaussWaveFunction &wf,int th
                   ofile << endl;
                   px+=dx;
 #if USEPROGRESSBAR
-                  printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+                  ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
                }
                break;
@@ -660,7 +660,7 @@ void makePlaneTsvFile(optFlags &opts,string &tsvnam,GaussWaveFunction &wf,int th
                   ofile << endl;
                   py+=dy;
 #if USEPROGRESSBAR
-                  printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+                  ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
                }
                break;
@@ -674,7 +674,7 @@ void makePlaneTsvFile(optFlags &opts,string &tsvnam,GaussWaveFunction &wf,int th
                   ofile << endl;
                   py+=dy;
 #if USEPROGRESSBAR
-                  printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+                  ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
                }
                break;
@@ -719,14 +719,14 @@ void makeCubeFile(optFlags &opts,string &cubnam,GaussWaveFunction &wf,int npts,\
    ofile.open(cubnam.c_str(),ios::out);
    writeCubeHeader(ofile,wf.title[0],comments,boxnpts,xin,delta,wf.nNuc,wf.atCharge,wf.R);
    solreal *prop1d;
-   alloc1DRealArray("prop1d",boxnpts[2],prop1d);
+   MyMemory::Alloc1DRealArray("prop1d",boxnpts[2],prop1d);
    cout << "The size of the grid will be " << boxnpts[0] << " x "
       << boxnpts[1] << " x " << boxnpts[2] << endl;
    cout << "The total number of points that will be computed is "
       << boxnpts[0]*boxnpts[1]*boxnpts[2] << endl;
    cout << "Evaluating and writing " << strfield << " on a cube..." << endl;
 #if USEPROGRESSBAR
-   printProgressBar(0);
+   ScreenUtils::PrintProgressBar(0);
 #endif
    switch ( thefield ) {
       case 'd' :
@@ -745,7 +745,7 @@ void makeCubeFile(optFlags &opts,string &cubnam,GaussWaveFunction &wf,int npts,\
             }
             px+=delta[0][0];
 #if USEPROGRESSBAR
-            printProgressBar(int(100.0e0*solreal(i)/solreal((boxnpts[0]-1))));
+            ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((boxnpts[0]-1))));
 #endif
          }
          cout << endl;
@@ -766,7 +766,7 @@ void makeCubeFile(optFlags &opts,string &cubnam,GaussWaveFunction &wf,int npts,\
             }
             px+=delta[0][0];
 #if USEPROGRESSBAR
-            printProgressBar(int(100.0e0*solreal(i)/solreal((boxnpts[0]-1))));
+            ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((boxnpts[0]-1))));
 #endif
          }
          cout << endl;
@@ -776,7 +776,7 @@ void makeCubeFile(optFlags &opts,string &cubnam,GaussWaveFunction &wf,int npts,\
    }
    //writeCubeProp(ofstream &ofil,int dim,solreal* (&prop));
    ofile.close();
-   dealloc1DRealArray(prop1d);
+   MyMemory::Dealloc1DRealArray(prop1d);
 }
 /* ************************************************************************************ */
 

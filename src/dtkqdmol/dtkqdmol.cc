@@ -63,13 +63,13 @@ using namespace std;
 using std::setprecision;
 #include <ctime>
 
-#include "../common/solscrutils.h"
-#include "../common/solfileutils.h"
-#include "../common/solstringtools.h"
-#include "../common/solmemhand.h"
+#include "../common/screenutils.h"
+#include "../common/fileutils.h"
+#include "../common/stringtools.h"
+#include "../common/mymemory.h"
 #include "../common/iofuncts-wfx.h"
 #include "../common/iofuncts-wfn.h"
-#include "../common/solmath.h"
+#include "../common/mymath.h"
 #include "../common/gausswavefunction.h"
 #include "../common/bondnetwork.h"
 #include "../common/atomcolschjmol.h"
@@ -89,16 +89,16 @@ int main (int argc, char ** argv)
    
    getOptions(argc,argv,options); //This processes the options from the command line.
    mkFileNames(argv,options,infilnam,gnpnam); //This creates the names used.
-   printHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS); //Just to let the user know that the initial configuration is OK
+   ScreenUtils::PrintHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS); //Just to let the user know that the initial configuration is OK
    
    cout << endl << "Loading wave function from file: " << infilnam << "... ";
    
    /*
    GaussWaveFunction gwf;
    if (!(gwf.readFromFile(infilnam))) { //Loading the wave function
-      setScrRedBoldFont();
+      ScreenUtils::SetScrRedBoldFont();
       cout << "Error: the wave function could not be loaded!\n";
-      setScrNormalFont();
+      ScreenUtils::SetScrNormalFont();
       exit(1);
    }
    cout << "Done." << endl;
@@ -131,9 +131,9 @@ int main (int argc, char ** argv)
    string line="wgnuplot ";
 #endif
    line+=gnpnam;
-   setScrBlueBoldFont();
+   ScreenUtils::SetScrBlueBoldFont();
    cout << line;
-   setScrNormalFont();
+   ScreenUtils::SetScrNormalFont();
    cout << endl << endl;
    
    if (options.rungnp) {
@@ -143,9 +143,9 @@ int main (int argc, char ** argv)
    
    /* At this point the computation has ended. Usually this means no errors ocurred. */
    
-   setScrGreenBoldFont();
-   printHappyEnding();
-   printScrStarLine();
+   ScreenUtils::SetScrGreenBoldFont();
+   ScreenUtils::PrintHappyEnding();
+   ScreenUtils::PrintScrStarLine();
    cout << setprecision(3) << "CPU Time: "
         << solreal( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
    solreal end_walltime=time(NULL);
@@ -153,8 +153,8 @@ int main (int argc, char ** argv)
 #if DEBUG
    cout << "Debuggin mode (under construction...)" << endl;
 #endif
-   printScrStarLine();
-   setScrNormalFont();
+   ScreenUtils::PrintScrStarLine();
+   ScreenUtils::SetScrNormalFont();
    return 0;
 }
 
@@ -165,8 +165,8 @@ void makeMolGnuplotFile(string &gname,bondNetWork &bn,bool putHs,const string te
    ofstream gfil;
    gfil.open(gname.c_str(),ios::out);
    string tit=bn.title[0];
-   removeSpacesLeftAndRight(tit);
-   gfil << "set title \"" << getEnhancedEpsTitle(tit) << "\\nPress any key on this window to quit...\"" << endl;
+   StringTools::RemoveSpacesLeftAndRight(tit);
+   gfil << "set title \"" << StringTools::GetEnhancedEpsTitle(tit) << "\\nPress any key on this window to quit...\"" << endl;
    
    gfil << "set hidden3d" << endl;
    gfil << "set border 4095" << endl;
@@ -186,9 +186,9 @@ void makeMolGnuplotFile(string &gname,bondNetWork &bn,bool putHs,const string te
    gfil << "set term windows enhanced font \"Sans,14\"" <<endl;
 #endif
    
-   writeScrCharLine(gfil,'#');
+   FileUtils::WriteScrCharLine(gfil,'#');
    gfil << "# Here are the labes of the atoms" << endl;
-   writeScrCharLine(gfil,'#');
+   FileUtils::WriteScrCharLine(gfil,'#');
    
    //gfil << "set label 1 at 0,0,0 'Press any key on this window to quit...' front" << endl;
    
@@ -196,16 +196,16 @@ void makeMolGnuplotFile(string &gname,bondNetWork &bn,bool putHs,const string te
    for (int i=0; i<bn.nNuc; ++i) {
       if ( (!putHs)&&(bn.atNum[effIdx]==0) ) { continue; }
       tit="set label ";
-      tit+=(getStringFromInt(effIdx+1)+string(" \""));
-      tit+=(getEnhancedEpsAtLbl(bn.atLbl[effIdx])+string("\" at "));
-      tit+=(getStringFromReal(bn.R[effIdx][0])+string(","));
-      tit+=(getStringFromReal(bn.R[effIdx][1])+string(","));
-      tit+=(getStringFromReal(bn.R[effIdx][2])+string(" "));
+      tit+=(StringTools::GetStringFromInt(effIdx+1)+string(" \""));
+      tit+=(StringTools::GetEnhancedEpsAtLbl(bn.atLbl[effIdx])+string("\" at "));
+      tit+=(StringTools::GetStringFromReal(bn.R[effIdx][0])+string(","));
+      tit+=(StringTools::GetStringFromReal(bn.R[effIdx][1])+string(","));
+      tit+=(StringTools::GetStringFromReal(bn.R[effIdx][2])+string(" "));
       tit+=string("front offset character 0.75,0");
       gfil << tit << endl;
       ++effIdx;
    }
-   writeScrCharLine(gfil,'#');
+   FileUtils::WriteScrCharLine(gfil,'#');
    
    gfil << "rgb(r,g,b) = int(r)*65536 + int(g)*256 + int(b)" << endl;
    gfil << "splot \"-\" using 1:2:3:(rgb($4,$5,$6)) with points "

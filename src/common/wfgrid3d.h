@@ -58,7 +58,7 @@ typedef double solreal;
 
 #include "gausswavefunction.h"
 #include "bondnetwork.h"
-#include "solmemhand.h"
+#include "mymemory.h"
 #include "fldtypesdef.h"
 
 #ifndef DEFAULTPOINTSPERDIRECTION

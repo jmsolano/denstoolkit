@@ -82,13 +82,13 @@ using namespace std;
 using std::setprecision;
 #include <ctime>
 
-#include "../common/solscrutils.h"
-#include "../common/solfileutils.h"
-#include "../common/solmemhand.h"
+#include "../common/screenutils.h"
+#include "../common/fileutils.h"
+#include "../common/mymemory.h"
 #include "../common/iofuncts-wfx.h"
 #include "../common/iofuncts-wfn.h"
 #include "../common/iofuncts-cpx.h"
-#include "../common/solmath.h"
+#include "../common/mymath.h"
 #include "../common/gausswavefunction.h"
 #include "../common/bondnetwork.h"
 #include "../common/critptnetwork.h"
@@ -113,15 +113,15 @@ int main (int argc, char ** argv) {
    getOptions(argc,argv,options); //This processes the options from the command line.
 
    mkFileNames(argv,options,infilnam,logfilnam,cicpfilnam,cpxfilnam); //This creates the names used.
-   printHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS); //Just to let the user know that the initial configuration is OK
+   ScreenUtils::PrintHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS); //Just to let the user know that the initial configuration is OK
    
    cout << endl << "Loading wave function from file: " << infilnam << "... ";
    
    GaussWaveFunction gwf;
    if (!(gwf.readFromFile(infilnam))) { //Loading the wave function
-      setScrRedBoldFont();
+      ScreenUtils::SetScrRedBoldFont();
       cout << "Error: the wave function could not be loaded!\n";
-      setScrNormalFont();
+      ScreenUtils::SetScrNormalFont();
       exit(1);
    }
    cout << "Done." << endl;
@@ -153,9 +153,9 @@ int main (int argc, char ** argv) {
    /* At this point the computation has ended. Usually this means no errors ocurred. */
 
 
-   setScrGreenBoldFont();
-   printHappyEnding();
-   printScrStarLine();
+   ScreenUtils::PrintHappyEnding();
+   ScreenUtils::SetScrGreenBoldFont();
+   ScreenUtils::PrintScrStarLine();
    cout << setprecision(3) << "CPU Time: "
         << solreal( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
    solreal end_walltime=time(NULL);
@@ -163,8 +163,8 @@ int main (int argc, char ** argv) {
 #if DEBUG
    cout << "Debuggin mode (under construction...)" << endl;
 #endif
-   printScrStarLine();
-   setScrNormalFont();
+   ScreenUtils::PrintScrStarLine();
+   ScreenUtils::SetScrNormalFont();
    return 0;
 }
 
@@ -172,21 +172,21 @@ void WriteLogFile(string fname,DeMat1CriticalPointNetworkBP &dcpn,bondNetWork &b
       string &wfnam) {
    ofstream ofil(fname.c_str());
    if ( !ofil.good() ) {
-      displayErrorMessage(string("File ")+fname+string("could not be opened!"));
+      ScreenUtils::DisplayErrorMessage(string("File ")+fname+string("could not be opened!"));
       ofil.close();
       return;
    }
    /* ************************************************************************** */
-   writeCommentedScrStarLine(ofil);
-   centerCommentedString(string("Data obtained from file: ")+wfnam,ofil);
+   FileUtils::WriteScrStarLine(ofil);
+   FileUtils::WriteCenteredString(ofil,string("Data obtained from file: ")+wfnam);
    if ( dcpn.differentSignaturesCICPvsNN() ) {
-      centerCommentedString("Found DIFFERENT SIGNATURES [CICP] vs [Nuc-Nuc]!",ofil);
+      FileUtils::WriteCenteredString(ofil,"Found DIFFERENT SIGNATURES [CICP] vs [Nuc-Nuc]!");
    } else {
-      centerCommentedString("Found SAME SIGNATURES [CICP] vs [Nuc-Nuc]!",ofil);
+      FileUtils::WriteCenteredString(ofil,"Found SAME SIGNATURES [CICP] vs [Nuc-Nuc]!");
    }
-   writeCommentedScrStarLine(ofil);
-   centerCommentedString("CICP (ACP-ACP) eigenvalues 6D",ofil);
-   writeCommentedScrStarLine(ofil);
+   FileUtils::WriteScrStarLine(ofil);
+   FileUtils::WriteCenteredString(ofil,"CICP (ACP-ACP) eigenvalues 6D");
+   FileUtils::WriteScrStarLine(ofil);
    int n=dcpn.nCICP;
    for ( int i=0 ; i<n ; ++i ) {
       ofil << dcpn.cpn->lblBCP[i] << ": ";
@@ -196,18 +196,18 @@ void WriteLogFile(string fname,DeMat1CriticalPointNetworkBP &dcpn,bondNetWork &b
       ofil << endl;
    }
    /* ************************************************************************** */
-   writeCommentedScrStarLine(ofil);
-   centerCommentedString("CICP signatures 6D",ofil);
-   writeCommentedScrStarLine(ofil);
+   FileUtils::WriteScrStarLine(ofil);
+   FileUtils::WriteCenteredString(ofil,"CICP signatures 6D");
+   FileUtils::WriteScrStarLine(ofil);
    for ( int i=0 ; i<n ; ++i ) {
       ofil << dcpn.cpn->lblBCP[i] << ": ";
       ofil << dcpn.sigCICP6D[i] << " ";
       ofil << endl;
    }
    /* ************************************************************************** */
-   writeCommentedScrStarLine(ofil);
-   centerCommentedString("Nuc-Nuc eigenvalues 6D",ofil);
-   writeCommentedScrStarLine(ofil);
+   FileUtils::WriteScrStarLine(ofil);
+   FileUtils::WriteCenteredString(ofil,"Nuc-Nuc eigenvalues 6D");
+   FileUtils::WriteScrStarLine(ofil);
    int a1,a2;
    for ( int i=0 ; i<n ; ++i ) {
       dcpn.cpn->findTwoClosestAtomsToBCP(i,a1,a2);
@@ -218,18 +218,18 @@ void WriteLogFile(string fname,DeMat1CriticalPointNetworkBP &dcpn,bondNetWork &b
       ofil << endl;
    }
    /* ************************************************************************** */
-   writeCommentedScrStarLine(ofil);
-   centerCommentedString("Nuc-Nuc signatures 6D",ofil);
-   writeCommentedScrStarLine(ofil);
+   FileUtils::WriteScrStarLine(ofil);
+   FileUtils::WriteCenteredString(ofil,"Nuc-Nuc signatures 6D");
+   FileUtils::WriteScrStarLine(ofil);
    for ( int i=0 ; i<n ; ++i ) {
       dcpn.cpn->findTwoClosestAtomsToBCP(i,a1,a2);
       ofil << bn.atLbl[a1] << '-' << bn.atLbl[a2] << ": ";
       ofil << dcpn.sigCICP6D[i] << endl;
    }
    /* ************************************************************************** */
-   writeCommentedScrStarLine(ofil);
-   centerCommentedString("CICP (ACP-ACP) eigenvalues 2D",ofil);
-   writeCommentedScrStarLine(ofil);
+   FileUtils::WriteScrStarLine(ofil);
+   FileUtils::WriteCenteredString(ofil,"CICP (ACP-ACP) eigenvalues 2D");
+   FileUtils::WriteScrStarLine(ofil);
    n=dcpn.nCICP;
    for ( int i=0 ; i<n ; ++i ) {
       ofil << dcpn.cpn->lblBCP[i] << ": ";
@@ -239,15 +239,15 @@ void WriteLogFile(string fname,DeMat1CriticalPointNetworkBP &dcpn,bondNetWork &b
       ofil << endl;
    }
    /* ************************************************************************** */
-   writeCommentedScrStarLine(ofil);
-   centerCommentedString("CICP signatures 2D",ofil);
-   writeCommentedScrStarLine(ofil);
+   FileUtils::WriteScrStarLine(ofil);
+   FileUtils::WriteCenteredString(ofil,"CICP signatures 2D");
+   FileUtils::WriteScrStarLine(ofil);
    for ( int i=0 ; i<n ; ++i ) {
       ofil << dcpn.cpn->lblBCP[i] << ": ";
       ofil << dcpn.sigCICP2D[i] << " ";
       ofil << endl;
    }
-   writeCommentedScrStarLine(ofil);
+   FileUtils::WriteScrStarLine(ofil);
    ofil.close();
 }
 

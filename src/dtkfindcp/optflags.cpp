@@ -55,9 +55,9 @@
 */
 #ifndef _OPTSFLAGS_CPP
 #define _OPTSFLAGS_CPP
-
+#include "figname.h"
 #include "optflags.h"
-#include "../common/solscrutils.h"
+#include "../common/screenutils.h"
 
 #include <iostream>
 using std::cout;
@@ -110,9 +110,9 @@ void getOptions(int &argc, char** &argv, optFlags &flags)
       progname.erase(pos,2);
    }
    if (argc<2) {
-      setScrRedBoldFont();
+      ScreenUtils::SetScrRedBoldFont();
       cout << "\nError: Not enough arguments." << endl;
-      setScrNormalFont();
+      ScreenUtils::SetScrNormalFont();
       cout << "\nTry: \n\t" << argv[0] << " -h\n" << endl << "to view the help menu.\n\n";
       exit(1);
    }
@@ -208,26 +208,26 @@ void printHelpMenu(int &argc, char** &argv)
    string progname=argv[0];
    size_t pos=progname.find("./");
    if (pos!=string::npos) {progname.erase(pos,2);}
-   printScrStarLine();
+   ScreenUtils::PrintScrStarLine();
 #if _SOL_USE_FIGLET_NAME_
-      printFigletName();
+      FigletName::PrintFigletName();
 #endif
    cout << endl;
-   centerString((string(":-) ")+progname+string(" (-:")));
+   ScreenUtils::CenterString((string(":-) ")+progname+string(" (-:")));
    cout << endl;
-   centerString("This program looks for the critical points of LOL or Electron Density. ");
-   centerString("It is spected as input a wfx (wfn) file.");
+   ScreenUtils::CenterString("This program looks for the critical points of LOL or Electron Density. ");
+   ScreenUtils::CenterString("It is spected as input a wfx (wfn) file.");
    cout << endl;
-   centerString((string("Compilation date: ")+string(__DATE__)));
+   ScreenUtils::CenterString((string("Compilation date: ")+string(__DATE__)));
    cout << endl;
-   centerString(string("Version: ")+string(CURRENTVERSION));
+   ScreenUtils::CenterString(string("Version: ")+string(CURRENTVERSION));
    cout << endl;
-   centerString((string(":-) Created by: ")+string(PROGRAMCONTRIBUTORS)+string(" (-:")));
+   ScreenUtils::CenterString((string(":-) Created by: ")+string(PROGRAMCONTRIBUTORS)+string(" (-:")));
    cout << endl;
-   printScrStarLine();
-   setScrBoldFont();
+   ScreenUtils::PrintScrStarLine();
+   ScreenUtils::SetScrBoldFont();
    cout << "\nUsage:\n\n\t" << progname << " wf?name [option [value(s)]] ... [option [value(s)]]\n\n";
-   setScrNormalFont();
+   ScreenUtils::SetScrNormalFont();
    cout << "Where wf?name is the input wfx(wfn) name, and options can be:\n\n"
         << "  -a        \tDraw transparent spheres around each nuclei in the wf? file." <<endl
         << "  -o outname\tSet the output file name (*.log)." << endl
@@ -283,26 +283,26 @@ void printHelpMenu(int &argc, char** &argv)
    cout << "  --version \t\tSame as -V" << endl;
    //-------------------------------------------------------------------------------------
 #if _HAVE_POVRAY_
-   printScrStarLine();
-   centerString(string("Note that the following programs must be properly installed in your system:"));
-   centerString(string("povray"));
+   ScreenUtils::PrintScrStarLine();
+   ScreenUtils::CenterString(string("Note that the following programs must be properly installed in your system:"));
+   ScreenUtils::CenterString(string("povray"));
 #if _HAVE_IMAGEMAGICK_
-   centerString(string("imagemagick"));
+   ScreenUtils::CenterString(string("imagemagick"));
 #endif
 #if _HAVE_GRAPHICSMAGICK_
-   centerString(string("graphicsmagick"));
+   ScreenUtils::CenterString(string("graphicsmagick"));
 #endif
 #if (defined(__APPLE__)||defined(__linux__))
-   centerString(string("gzip"));
+   ScreenUtils::CenterString(string("gzip"));
 #endif
-   printScrStarLine();
+   ScreenUtils::PrintScrStarLine();
 #endif
 }//end printHelpMenu
 
 //**************************************************************************************************
 void printErrorMsg(char** &argv,char lab)
 {
-   setScrRedBoldFont();
+   ScreenUtils::SetScrRedBoldFont();
    cout << "\nError: the option \"" << lab << "\" ";
    switch (lab) {
       case 'c':
@@ -315,7 +315,7 @@ void printErrorMsg(char** &argv,char lab)
          cout << "is triggering an unknown error." << endl;
          break;
    }
-   setScrNormalFont();
+   ScreenUtils::SetScrNormalFont();
    cout << "\nTry:\n\t" << argv[0] << " -h " << endl;
    cout << "\nto view the help menu.\n\n";
    exit(1);
@@ -337,24 +337,24 @@ void processDoubleDashOptions(int &argc,char** &argv,optFlags &flags,int pos)
       exit(0);
    } else if ( str==string("add-seed-twoacps") ) {
      if ( (pos+1)>=(argc+2) ) {
-        displayErrorMessage(string("add-seed-twoacps must be followed by 2 integers!"));
+        ScreenUtils::DisplayErrorMessage(string("add-seed-twoacps must be followed by 2 integers!"));
         exit(1);
      }
      flags.customseedtwoacps=(pos+1);
    } else if ( str==string("force-bcp-connectivity") ) {
       if ((pos+1)>=(argc+3)) {
-         displayErrorMessage(string("force-bcp-connectivity must be followed by 3 integers!"));
+         ScreenUtils::DisplayErrorMessage(string("force-bcp-connectivity must be followed by 3 integers!"));
          exit(1);
       }
       flags.forcebcpconn=(pos+1);
    } else if ( str==string("force-bcp-connectivities") ) {
-      displayWarningMessage("In this version, the user is responsible of providing\n"
+      ScreenUtils::DisplayWarningMessage("In this version, the user is responsible of providing\n"
             "the correct number of arguments.");
       flags.forceseveralbcpconn=(pos+1);
    } else {
-      setScrRedBoldFont();
+      ScreenUtils::SetScrRedBoldFont();
       cout << "Error: Unrecognized option '" << argv[pos] << "'" << endl;
-      setScrNormalFont();
+      ScreenUtils::SetScrNormalFont();
       exit(1);
    }
    return;

@@ -51,7 +51,9 @@
 #include <string>
 using std::string;
 
-void printFigletName(void);
+namespace FigletName {
+   void PrintFigletName(void);
+}
 
 #endif  /* _FIGNAME_H_ */
 

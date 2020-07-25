@@ -90,19 +90,19 @@ using std::setw;
 #include <cmath>
 
 #include "gausswavefunction.h"
-#include "solscrutils.h"
-#include "solmemhand.h"
+#include "screenutils.h"
+#include "mymemory.h"
 #include "iofuncts-wfn.h"
 #include "iofuncts-wfx.h"
-#include "eig2-4.h"
-#include "solmath.h"
+#include "eigendecompositionjama.h"
+#include "mymath.h"
 
 #ifndef DEBUG
 #define DEBUG 0
 #endif
 
 #if DEBUG
-#include "solstringtools.h"
+#include "stringtools.h"
 #endif
 
 #ifndef EPSFORELFVALUE
@@ -178,30 +178,30 @@ int GaussWaveFunction::prTy[]={
 GaussWaveFunction::~GaussWaveFunction()
 /* ************************************************************************************** */
 {
-   dealloc1DStringArray(title);
-   dealloc1DRealArray(R);
-   dealloc1DStringArray(atLbl);
-   dealloc1DRealArray(atCharge);
-   dealloc1DIntArray(primCent);
-   dealloc1DIntArray(primType);
-   dealloc1DRealArray(primExp);
-   dealloc1DRealArray(chi);
-   dealloc1DRealArray(cab);
-   dealloc1DRealArray(prefMEP);
-   dealloc1DRealArray(MOCoeff);
-   dealloc1DRealArray(occN);
-   dealloc1DRealArray(MOEner);
-   dealloc1DRealArray(gx);
-   dealloc1DRealArray(gy);
-   dealloc1DRealArray(gz);
-   dealloc1DRealArray(hxx);
-   dealloc1DRealArray(hyy);
-   dealloc1DRealArray(hzz);
-   dealloc1DRealArray(hxy);
-   dealloc1DRealArray(hxz);
-   dealloc1DRealArray(hyz);
+   MyMemory::Dealloc1DStringArray(title);
+   MyMemory::Dealloc1DRealArray(R);
+   MyMemory::Dealloc1DStringArray(atLbl);
+   MyMemory::Dealloc1DRealArray(atCharge);
+   MyMemory::Dealloc1DIntArray(primCent);
+   MyMemory::Dealloc1DIntArray(primType);
+   MyMemory::Dealloc1DRealArray(primExp);
+   MyMemory::Dealloc1DRealArray(chi);
+   MyMemory::Dealloc1DRealArray(cab);
+   MyMemory::Dealloc1DRealArray(prefMEP);
+   MyMemory::Dealloc1DRealArray(MOCoeff);
+   MyMemory::Dealloc1DRealArray(occN);
+   MyMemory::Dealloc1DRealArray(MOEner);
+   MyMemory::Dealloc1DRealArray(gx);
+   MyMemory::Dealloc1DRealArray(gy);
+   MyMemory::Dealloc1DRealArray(gz);
+   MyMemory::Dealloc1DRealArray(hxx);
+   MyMemory::Dealloc1DRealArray(hyy);
+   MyMemory::Dealloc1DRealArray(hzz);
+   MyMemory::Dealloc1DRealArray(hxy);
+   MyMemory::Dealloc1DRealArray(hxz);
+   MyMemory::Dealloc1DRealArray(hyz);
    if ( ihaveEDF ) {
-      dealloc1DRealArray(EDFCoeff);
+      MyMemory::Dealloc1DRealArray(EDFCoeff);
    }
    imldd=false;
 }
@@ -323,18 +323,18 @@ bool GaussWaveFunction::readFromFileWFX(string inname)
                      //it should be the number obtained wiht 
                      //countEDFCentersFromFileWFX.
       totPri+=EDFPri;
-      alloc1DRealArray("EDFCoeff",EDFPri,EDFCoeff);
+      MyMemory::Alloc1DRealArray("EDFCoeff",EDFPri,EDFCoeff);
    }
-   alloc1DStringArray("atLbl",nNuc,atLbl);
-   alloc1DIntArray("primType",totPri,primType);
-   alloc1DIntArray("primCent",totPri,primCent);
-   alloc1DRealArray("R",(3*nNuc),R);
-   alloc1DRealArray("atCharge",nNuc,atCharge);
-   alloc1DRealArray("primExp",totPri,primExp);
-   alloc1DRealArray("MOCoeff",(nMOr*nPri),MOCoeff);
-   alloc1DRealArray("occN",(nMOr+1),occN); //The entry occN[nMOr] will save the
+   MyMemory::Alloc1DStringArray("atLbl",nNuc,atLbl);
+   MyMemory::Alloc1DIntArray("primType",totPri,primType);
+   MyMemory::Alloc1DIntArray("primCent",totPri,primCent);
+   MyMemory::Alloc1DRealArray("R",(3*nNuc),R);
+   MyMemory::Alloc1DRealArray("atCharge",nNuc,atCharge);
+   MyMemory::Alloc1DRealArray("primExp",totPri,primExp);
+   MyMemory::Alloc1DRealArray("MOCoeff",(nMOr*nPri),MOCoeff);
+   MyMemory::Alloc1DRealArray("occN",(nMOr+1),occN); //The entry occN[nMOr] will save the
                     //number of core electrons when EDF information is present
-   alloc1DRealArray("MOEner",nMOr,MOEner);
+   MyMemory::Alloc1DRealArray("MOEner",nMOr,MOEner);
    allocAuxArrays();
    getAtLabelsFromFileWFX(tif,nNuc,atLbl);
    getNucCartCoordsFromFileWFX(tif,nNuc,R);
@@ -390,7 +390,7 @@ bool GaussWaveFunction::sanityChecks(void)
       if ( primType[i]>maxPrimType ) { maxPrimType=primType[i]; }
    }
    if ( maxPrimType>19 ) {
-      displayWarningMessage("Unfortunately, in current version ("
+      ScreenUtils::DisplayWarningMessage("Unfortunately, in current version ("
             CURRENTVERSION
             "),\nfunctions requiring computation of Boys Function"
             "\nterms are not implemented for"
@@ -401,7 +401,7 @@ bool GaussWaveFunction::sanityChecks(void)
 /* ************************************************************************************** */
 void GaussWaveFunction::countPrimsPerCenter(void)
 {
-   alloc1DIntArray(string("myPN"),nNuc,myPN);
+   MyMemory::Alloc1DIntArray(string("myPN"),nNuc,myPN);
    for (int i=0; i<nPri; i++) {myPN[primCent[i]]++;}
    return;
 }
@@ -473,7 +473,7 @@ void GaussWaveFunction::displayAllFieldProperties(solreal x,solreal y,solreal z)
    xx[2]=z;
    evalRhoGradRho(x,y,z,rho,g);
    evalHessian(xx[0],xx[1],xx[2],hess);
-   eigen_decomposition3(hess, eivec, eival);
+   EigenDecompositionJAMA::EigenDecomposition3(hess, eivec, eival);
    cout << scientific << setprecision(12);
    cout << "            R: " << setw(20) << x << setw(20) << y << setw(20) << z << endl;
    cout << "          Rho: " << setw(20) << rho << endl;
@@ -496,7 +496,7 @@ void GaussWaveFunction::displayAllFieldProperties(solreal x,solreal y,solreal z)
    cout << "  Ellipticity: " << setw(20) << ((eival[0]/eival[1])-1.0e0) << endl;
    cout << "       LapRho: " << setw(20) << (hess[0][0]+hess[1][1]+hess[2][2]) << endl;
    evalHessLOL(xx,lol,g,hess);//(x,lol,gl,hl)
-   eigen_decomposition3(hess, eivec, eival);
+   EigenDecompositionJAMA::EigenDecomposition3(hess, eivec, eival);
    cout << "          LOL: " << setw(20) << lol << endl;
    cout << "      gradLOL: " << setw(20) << g[0] << setw(20) << g[1] << setw(20) << g[2] << endl;
    cout << "    |gradLOL|: " << setw(20) << sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]) << endl;
@@ -545,7 +545,7 @@ void GaussWaveFunction::writeAllFieldProperties(solreal x,solreal y,solreal z,of
    xx[2]=z;
    evalRhoGradRho(x,y,z,rho,g);
    evalHessian(xx[0],xx[1],xx[2],hess);
-   eigen_decomposition3(hess, eivec, eival);
+   EigenDecompositionJAMA::EigenDecomposition3(hess, eivec, eival);
    ofil << scientific << setprecision(12);
    ofil << "  R:           " << setw(20) << x << setw(20) << y << setw(20) << z << endl;
    ofil << "  Rho:         " << setw(20) << rho << endl;
@@ -568,7 +568,7 @@ void GaussWaveFunction::writeAllFieldProperties(solreal x,solreal y,solreal z,of
    ofil << "  Ellipticity: " << setw(20) << ((eival[0]/eival[1])-1.0e0) << endl;
    ofil << "  LapRho:      " << setw(20) << (hess[0][0]+hess[1][1]+hess[2][2]) << endl;
    evalHessLOL(xx,lol,g,hess);//(x,lol,gl,hl)
-   eigen_decomposition3(hess, eivec, eival);
+   EigenDecompositionJAMA::EigenDecomposition3(hess, eivec, eival);
    ofil << "  LOL:         " << setw(20) << lol << endl;
    ofil << "  gradLOL:     " << setw(20) << g[0] << setw(20) << g[1] << setw(20) << g[2] << endl;
    ofil << "  |gradLOL|:   " << setw(20) << sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]) << endl;
@@ -830,7 +830,7 @@ void GaussWaveFunction::calcCab(void)
          exit(1);
       }
    }
-   alloc1DRealArray(string("cab"),(nPri*nPri),cab);
+   MyMemory::Alloc1DRealArray(string("cab"),(nPri*nPri),cab);
    for (int i=0; i<nPri; i++) {
       for (int j=0; j<nPri; j++) {
          cab[idx]=0.0000000e0;
@@ -1274,52 +1274,52 @@ void GaussWaveFunction::evalOptimizedVectorScalar(solreal x, solreal y, solreal 
 bool GaussWaveFunction::allocAuxArrays(void)
 {
    bool allgood;
-   allgood=alloc1DRealArray("chi",totPri,chi);
+   allgood=MyMemory::Alloc1DRealArray("chi",totPri,chi);
    if (!allgood) {
       cout << "Something wrong in allocating chi..." << endl;
       return allgood;
    }
-   allgood=alloc1DRealArray(string("gx"),totPri,gx);
+   allgood=MyMemory::Alloc1DRealArray(string("gx"),totPri,gx);
    if (!allgood) {
       cout << "Something wrong in allocating gx..." << endl;
       return allgood;
    }
-   allgood=alloc1DRealArray(string("gy"),totPri,gy);
+   allgood=MyMemory::Alloc1DRealArray(string("gy"),totPri,gy);
    if (!allgood) {
       cout << "Something wrong in allocating gy..." << endl;
       return allgood;
    }
-   allgood=alloc1DRealArray(string("gz"),totPri,gz);
+   allgood=MyMemory::Alloc1DRealArray(string("gz"),totPri,gz);
    if (!allgood) {
       cout << "Something wrong in allocating gz..." << endl;
       return allgood;
    }
-   allgood=alloc1DRealArray(string("hxx"),totPri,hxx);
+   allgood=MyMemory::Alloc1DRealArray(string("hxx"),totPri,hxx);
    if (!allgood) {
       cout << "Something wrong in allocating hxx..." << endl;
       return allgood;
    }
-   allgood=alloc1DRealArray(string("hyy"),totPri,hyy);
+   allgood=MyMemory::Alloc1DRealArray(string("hyy"),totPri,hyy);
    if (!allgood) {
       cout << "Something wrong in allocating hyy..." << endl;
       return allgood;
    }
-   allgood=alloc1DRealArray(string("hzz"),totPri,hzz);
+   allgood=MyMemory::Alloc1DRealArray(string("hzz"),totPri,hzz);
    if (!allgood) {
       cout << "Something wrong in allocating hzz..." << endl;
       return allgood;
    }
-   allgood=alloc1DRealArray(string("hxy"),totPri,hxy);
+   allgood=MyMemory::Alloc1DRealArray(string("hxy"),totPri,hxy);
    if (!allgood) {
       cout << "Something wrong in allocating hxy..." << endl;
       return allgood;
    }
-   allgood=alloc1DRealArray(string("hxz"),totPri,hxz);
+   allgood=MyMemory::Alloc1DRealArray(string("hxz"),totPri,hxz);
    if (!allgood) {
       cout << "Something wrong in allocating hxz..." << endl;
       return allgood;
    }
-   allgood=alloc1DRealArray(string("hyz"),totPri,hyz);
+   allgood=MyMemory::Alloc1DRealArray(string("hyz"),totPri,hyz);
    if (!allgood) {
       cout << "Something wrong in allocating hyz..." << endl;
       return allgood;
@@ -1329,14 +1329,14 @@ bool GaussWaveFunction::allocAuxArrays(void)
 bool GaussWaveFunction::allocAuxMEPArray(void)
 {
    if ( !imldd ) {
-      displayErrorMessage("First load the gausswave function!");
+      ScreenUtils::DisplayErrorMessage("First load the gausswave function!");
       return false;
    }
    bool allgood;
    if ( ihaveEDF ) {
-      allgood=alloc1DRealArray(string("prefMEP"),(totPri*totPri),prefMEP,0.0e0);
+      allgood=MyMemory::Alloc1DRealArray(string("prefMEP"),(totPri*totPri),prefMEP,0.0e0);
    } else {
-      allgood=alloc1DRealArray(string("prefMEP"),(nPri*nPri),prefMEP);
+      allgood=MyMemory::Alloc1DRealArray(string("prefMEP"),(nPri*nPri),prefMEP);
    }
    int indr;
    solreal ra[3],rb[3],alpa,alpb,alpp,ooalpp,sum,S00;
@@ -2578,7 +2578,7 @@ void GaussWaveFunction::getBondCPStep(solreal (&x)[3],solreal (&hh)[3],solreal (
    solreal rho;
    evalRhoGradRho(x[0],x[1],x[2],rho,g[0],g[1],g[2]);
    evalHessian(x[0],x[1],x[2],hess);
-   eigen_decomposition3(hess, eive, b);
+   EigenDecompositionJAMA::EigenDecomposition3(hess, eive, b);
    static solreal F[3];
    for (int i=0; i<3; i++) {
       F[i]=0.00000e0;
@@ -2595,7 +2595,7 @@ void GaussWaveFunction::getBondCPStep(solreal (&x)[3],solreal (&hh)[3],solreal (
    hess[2][0]=hess[0][2]=F[0];
    hess[2][1]=hess[1][2]=F[1];
    static solreal m3[3][3],vv[3];
-   eigen_decomposition3(hess, m3, vv);
+   EigenDecompositionJAMA::EigenDecomposition3(hess, m3, vv);
    solreal lp=vv[2];
    hh[2]=hh[1]=hh[0]=0.00000e0;
    for (int j=0; j<3; j++) {
@@ -2617,7 +2617,7 @@ void GaussWaveFunction::getRingCPStep(solreal (&x)[3],solreal (&hh)[3],solreal (
    solreal rho;
    evalRhoGradRho(x[0],x[1],x[2],rho,g[0],g[1],g[2]);
    evalHessian(x[0],x[1],x[2],hess);
-   eigen_decomposition3(hess, eive, b);
+   EigenDecompositionJAMA::EigenDecomposition3(hess, eive, b);
    static solreal F[3];
    for (int i=0; i<3; i++) {
       F[i]=0.00000e0;
@@ -2634,7 +2634,7 @@ void GaussWaveFunction::getRingCPStep(solreal (&x)[3],solreal (&hh)[3],solreal (
    hess[2][0]=hess[0][2]=F[1];
    hess[2][1]=hess[1][2]=F[2];
    static solreal m3[3][3],vv[3];
-   eigen_decomposition3(hess, m3, vv);
+   EigenDecompositionJAMA::EigenDecomposition3(hess, m3, vv);
    solreal ln=vv[0];
    hh[2]=hh[1]=hh[0]=0.00000e0;
    for (int j=0; j<3; j++) {
@@ -2718,7 +2718,7 @@ void GaussWaveFunction::getCageCPStep(solreal (&x)[3],solreal (&hh)[3],solreal (
    solreal rho;
    evalRhoGradRho(x[0],x[1],x[2],rho,g[0],g[1],g[2]);
    evalHessian(x[0],x[1],x[2],hess);
-   eigen_decomposition3(hess, eive, b);
+   EigenDecompositionJAMA::EigenDecomposition3(hess, eive, b);
    static solreal F[3];
    for (int i=0; i<3; i++) {
       F[i]=0.00000e0;
@@ -2741,7 +2741,7 @@ void GaussWaveFunction::getCageCPStep(solreal (&x)[3],solreal (&hh)[3],solreal (
    h4[0][3]=h4[3][0]=F[0];
    h4[1][3]=h4[3][1]=F[1];
    h4[2][3]=h4[3][2]=F[2];
-   eigen_decomposition4(h4, m4, v4);
+   EigenDecompositionJAMA::EigenDecomposition4(h4, m4, v4);
    solreal ln=v4[0];
    hh[2]=hh[1]=hh[0]=0.00000e0;
    for (int j=0; j<3; j++) {
@@ -3516,7 +3516,7 @@ solreal GaussWaveFunction::evalEllipticity(solreal x,solreal y,solreal z)
 {
    solreal eve[3][3],eva[3],h[3][3];
    evalHessian(x,y,z,h);
-   eigen_decomposition3(h,eve,eva);
+   EigenDecompositionJAMA::EigenDecomposition3(h,eve,eva);
    solreal ellip=(eva[0]/eva[1])-1.0e0;
    return ellip;
 }
@@ -3621,7 +3621,7 @@ void GaussWaveFunction::evald1SingCartA(int &ang,solreal &t,solreal x,\
          d1=x2*x2*(5.00000e0+t*x2);
          break;
       default :
-         displayWarningMessage("Non supported primitive type. Numerical errors"
+         ScreenUtils::DisplayWarningMessage("Non supported primitive type. Numerical errors"
                "are expected!");
          d0=d1=0.0e0;
          break;
@@ -3666,7 +3666,7 @@ void GaussWaveFunction::evald2SingCartA(int &ang,solreal &t,solreal x,\
          d2=x2*x*(20.0000e0+x2*(11.0000e0*t+fax2));
          break;
       default:
-         displayWarningMessage("Non supported primitive type. Numerical errors"
+         ScreenUtils::DisplayWarningMessage("Non supported primitive type. Numerical errors"
                "are expected!");
          d0=0.00000e0;
          d1=0.00000e0;
@@ -3718,7 +3718,7 @@ void GaussWaveFunction::evald3SingCartA(int &ang,solreal &t,solreal &f,solreal &
          d3=x2*(60.0000e0+x2*(75.0000e0*t+fax2*(18.0000e0+t*x2)));
          break;
       default:
-         displayWarningMessage("Non supported primitive type. Numerical errors"
+         ScreenUtils::DisplayWarningMessage("Non supported primitive type. Numerical errors"
                "are expected!");
          d0=0.00000e0;
          d1=0.00000e0;
@@ -5045,7 +5045,7 @@ solreal GaussWaveFunction::evalMolElecPot(solreal x,solreal y,solreal z)
    if ( maxPrimType>19 ) {
 #if DEBUG
       if (showmsg) {
-         displayErrorMessage(string("Non supported angular momenta of"
+         ScreenUtils::DisplayErrorMessage(string("Non supported angular momenta of"
             "primitives, requesting type: ")\
             +getStringFromInt(maxPrimType));
          showmsg=false;
@@ -5134,7 +5134,7 @@ solreal GaussWaveFunction::evalMolElecPot(solreal x,solreal y,solreal z)
    if ( maxPrimType>19 ) {
 #if DEBUG
       if (showmsg) {
-         displayErrorMessage(string("Non supported angular momenta of"
+         ScreenUtils::DisplayErrorMessage(string("Non supported angular momenta of"
             "primitives, requesting type: ")\
             +getStringFromInt(maxPrimType));
          showmsg=false;
@@ -5364,7 +5364,7 @@ solreal GaussWaveFunction::evalNCILambda(solreal x,solreal y,solreal z)
       solreal hess[3][3];
       solreal eingvectors[3][3],eingvalues[3];
       evalHessian(x,y,z,hess);
-      eigen_decomposition3(hess,eingvectors,eingvalues);
+      EigenDecompositionJAMA::EigenDecomposition3(hess,eingvectors,eingvalues);
       rho=(eingvalues[1]<0.0e0 ? (-rho) : rho);
    } else{
       rho=100.0e0;

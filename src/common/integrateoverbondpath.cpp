@@ -49,10 +49,10 @@ using std::cerr;
 #include "gausswavefunction.h"
 #include "critptnetwork.h"
 #include "integrateoverbondpath.h"
-#include "solscrutils.h"
-#include "solmemhand.h"
-#include "solmath.h"
-#include "solfileutils.h"
+#include "screenutils.h"
+#include "mymemory.h"
+#include "mymath.h"
+#include "fileutils.h"
 
 void IntegrateOverBondPath::init(void) {
    wf=NULL;
@@ -66,31 +66,31 @@ IntegrateOverBondPath::IntegrateOverBondPath(GaussWaveFunction &ugwf,critPtNetWo
    init();
    wf=&ugwf;
    if ( !ucpn.iKnowBCPs() ) {
-      displayErrorMessage("First seek the critical points!");
-      displayWarningMessage("critPtNetWork pointer is set to null!");
+      ScreenUtils::DisplayErrorMessage("First seek the critical points!");
+      ScreenUtils::DisplayWarningMessage("critPtNetWork pointer is set to null!");
       cout << __FILE__ << ", line: " << __LINE__ << endl;
       return;
    }
    if ( !ucpn.iKnowBGPs() ) {
-      displayErrorMessage("First compute the bond paths!");
-      displayWarningMessage("critPtNetWork pointer is set to null!");
+      ScreenUtils::DisplayErrorMessage("First compute the bond paths!");
+      ScreenUtils::DisplayWarningMessage("critPtNetWork pointer is set to null!");
       cout << __FILE__ << ", line: " << __LINE__ << endl;
       return;
    }
    cp=&ucpn;
    nbgp=cp->nBGP;
    if ( !AllocateAuxiliaryArrays() ) {
-      displayErrorMessage("AuxiliaryArrys could not be allocated!");
+      ScreenUtils::DisplayErrorMessage("AuxiliaryArrys could not be allocated!");
       cout << __FILE__ << ", line: " << __LINE__ << endl;
    }
    myFieldType=utp;
    myCharFieldType=convertScalarFieldType2Char(myFieldType);
 }
 bool IntegrateOverBondPath::AllocateAuxiliaryArrays(void) {
-   return alloc1DRealArray("integralValue",nbgp,integralValue);
+   return MyMemory::Alloc1DRealArray("integralValue",nbgp,integralValue);
 }
 IntegrateOverBondPath::~IntegrateOverBondPath() {
-   dealloc1DRealArray(integralValue);
+   MyMemory::Dealloc1DRealArray(integralValue);
    wf=NULL;
    cp=NULL;
 }
@@ -176,9 +176,9 @@ void IntegrateOverBondPath::WriteIntegralValuesToFile(ofstream &ofil,solreal glo
       haveGE=true;
       factor=globalEnergy/GetBondPathIntegral();
    }
-   writeCommentedScrStarLine(ofil);
-   centerCommentedString(GetFieldTypeLabelLong(),ofil);
-   writeCommentedScrStarLine(ofil);
+   FileUtils::WriteScrStarLine(ofil);
+   FileUtils::WriteCenteredString(ofil,GetFieldTypeLabelLong());
+   FileUtils::WriteScrStarLine(ofil);
    ofil << "Total integral: " << GetBondPathIntegral();
    if ( haveGE ) {
       ofil << " " << globalEnergy << endl;

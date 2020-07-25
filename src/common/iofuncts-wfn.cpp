@@ -49,7 +49,7 @@ using std::atof;
 #include <iostream>
 using std::cout;
 using std::endl;
-#include "solmemhand.h"
+#include "mymemory.h"
 #include <cmath>
 /* ********************************************************************************************* */
 /* ********************************************************************************************* */
@@ -65,7 +65,7 @@ void processFirstDataStringinWFNFile(ifstream &ifil,string* &tit,string &orbdesc
 {
    string line;
    ifil.seekg(ifil.beg);
-   alloc1DStringArray(string("tit"),1,tit);
+   MyMemory::Alloc1DStringArray(string("tit"),1,tit);
    getline(ifil,tit[0]);
    getline(ifil,line);
    while (line[0]==' ') {line.erase(0,1);}
@@ -114,9 +114,9 @@ void processFirstDataStringinWFNFile(ifstream &ifil,string* &tit,string &orbdesc
 /* ********************************************************************************************* */
 void processCentersWFN(ifstream &ifil,const int nnu,string* &atlbl,solreal* &rr,solreal* &atch)
 {
-   alloc1DStringArray("atlbl",nnu,atlbl);
-   alloc1DRealArray("rr",3*nnu,rr);
-   alloc1DRealArray("atch",nnu,atch);
+   MyMemory::Alloc1DStringArray("atlbl",nnu,atlbl);
+   MyMemory::Alloc1DRealArray("rr",3*nnu,rr);
+   MyMemory::Alloc1DRealArray("atch",nnu,atch);
    string line;
    int fipos,fepos;
    size_t pos;
@@ -150,9 +150,9 @@ void processCentersWFN(ifstream &ifil,const int nnu,string* &atlbl,solreal* &rr,
 /* ********************************************************************************************* */
 void processPrimitivesWFN(ifstream &ifil,const int npr,int* &pricen,int* &primty,solreal* &prexp)
 {
-   alloc1DIntArray("pricen",npr,pricen);
-   alloc1DIntArray("primty",npr,primty);
-   alloc1DRealArray("prexp",npr,prexp);
+   MyMemory::Alloc1DIntArray("pricen",npr,pricen);
+   MyMemory::Alloc1DIntArray("primty",npr,primty);
+   MyMemory::Alloc1DRealArray("prexp",npr,prexp);
    int count=0;
    int pos;
    /* Getting the primitive centers */
@@ -219,9 +219,9 @@ void processPrimitivesWFN(ifstream &ifil,const int npr,int* &pricen,int* &primty
 void processMolecularOrbitalPropsAndCoefs(ifstream &ifil,const int norb,const int npr
                                  ,solreal* &ocn,solreal* &moe,solreal* &moc)
 {
-   alloc1DRealArray("moc",(norb*npr),moc);
-   alloc1DRealArray("ocn",norb,ocn);
-   alloc1DRealArray("moe",norb,moe);
+   MyMemory::Alloc1DRealArray("moc",(norb*npr),moc);
+   MyMemory::Alloc1DRealArray("ocn",norb,ocn);
+   MyMemory::Alloc1DRealArray("moe",norb,moe);
    int pos;
    /* Getting the molecular orbital occupation number, energies, and coefficients */
    string line;

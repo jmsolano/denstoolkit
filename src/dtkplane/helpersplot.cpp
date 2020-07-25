@@ -4,8 +4,8 @@ using std::cout;
 using std::endl;
 using std::cerr;
 #include "helpersplot.h"
-#include "solfileutils.h"
-#include "solgnuplottools.h"
+#include "fileutils.h"
+#include "gnuplottools.h"
 
 
 //*******************************************************************************************
@@ -91,9 +91,9 @@ void HelpersPlot::makeGnuplotFile(optFlags &opts, string &gnpnam,string &tsvnam,
          maxzrange=0.6e0;
          break;
       default:
-         setScrRedBoldFont();
+         ScreenUtils::SetScrRedBoldFont();
          cout << "Error: The property \"" << p2p << "\" does not exist!" << endl;
-         setScrNormalFont();
+         ScreenUtils::SetScrNormalFont();
          exit(1);
          break;
    }
@@ -123,7 +123,7 @@ void HelpersPlot::makeGnuplotFile(optFlags &opts, string &gnpnam,string &tsvnam,
 
    string cntname="contourtemp.dat";
 #if ( defined(__APPLE__)||defined(__linux__) )
-   genRandomTmpFileName(cntname, 20);
+   FileUtils::GenerateRandomTmpFileName(cntname, 20);
 #endif
    gfil << "set table '" << cntname << "'" << endl;
    gfil << "splot '" << tsvnam << "'";
@@ -148,9 +148,9 @@ void HelpersPlot::makeGnuplotFile(optFlags &opts, string &gnpnam,string &tsvnam,
    
    /* Here the atoms' labels are set and written to the gnuplot input file. */
    
-   writeScrCharLine(gfil,'#');
+   FileUtils::WriteScrCharLine(gfil,'#');
    gfil << "# Here are the labes of the atoms" << endl;
-   writeScrCharLine(gfil,'#');
+   FileUtils::WriteScrCharLine(gfil,'#');
    
    string lbl;
    int at[3];
@@ -192,7 +192,7 @@ void HelpersPlot::makeGnuplotFile(optFlags &opts, string &gnpnam,string &tsvnam,
       }
       gfil << lbl << endl;
    }
-   writeScrCharLine(gfil,'#');
+   FileUtils::WriteScrCharLine(gfil,'#');
 
    /* Here is enabled the logarithmic scale in the case of G, d or g */
    gfil << "set terminal postscript eps enhanced color fontscale 1.75 lw 2 dashlength 4" << endl;
@@ -226,8 +226,8 @@ void HelpersPlot::makeGnuplotFile(optFlags &opts, string &gnpnam,string &tsvnam,
    gfil.close();
 
    if ( opts.mkplt ) {
-      renderGnpFile(gnpnam,(!opts.kpgnp));
-      gnuplottools_eps2pdf(epsnam);
+      GnuplotTools::RenderGnpFile(gnpnam,(!opts.kpgnp));
+      GnuplotTools::eps2pdf(epsnam);
    }
 
    cout << "Done." << endl;
@@ -235,9 +235,9 @@ void HelpersPlot::makeGnuplotFile(optFlags &opts, string &gnpnam,string &tsvnam,
 }
 void HelpersPlot::addGnuplotRenderingHelpEPS2PDF(ofstream &ofil,const string &gnpnam,\
       const string &epsnam) {
-   writeScrCharLine(ofil,'#');
+   FileUtils::WriteScrCharLine(ofil,'#');
    ofil << "#                 END OF GNUPLOT COMMANDS" << endl;
-   writeScrCharLine(ofil,'#');
+   FileUtils::WriteScrCharLine(ofil,'#');
    ofil << "#If you want to reconstruct the plot using this file, type:" << endl
         << "#gnuplot " << gnpnam << endl
         << "#dtkepstopdf " << epsnam << endl;

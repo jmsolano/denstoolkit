@@ -66,12 +66,12 @@ using namespace std;
 using std::setprecision;
 #include <ctime>
 
-#include "../common/solscrutils.h"
-#include "../common/solfileutils.h"
-#include "../common/solmemhand.h"
+#include "../common/screenutils.h"
+#include "../common/fileutils.h"
+#include "../common/mymemory.h"
 #include "../common/iofuncts-wfx.h"
 #include "../common/iofuncts-wfn.h"
-#include "../common/solmath.h"
+#include "../common/mymath.h"
 #include "../common/gausswavefunction.h"
 #include "../common/bondnetwork.h"
 #include "../common/wfgrid1d.h"
@@ -92,15 +92,15 @@ int main (int argc, char ** argv)
    
    getOptions(argc,argv,options); //This processes the options from the command line.
    mkFileNames(argv,options,infilnam,outfilnam,gnpnam); //This creates the names used.
-   printHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS); //Just to let the user know that the initial configuration is OK
+   ScreenUtils::PrintHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS); //Just to let the user know that the initial configuration is OK
    
    cout << endl << "Loading wave function from file: " << infilnam << "... ";
    
    GaussWaveFunction gwf;
    if (!(gwf.readFromFile(infilnam))) { //Loading the wave function
-      setScrRedBoldFont();
+      ScreenUtils::SetScrRedBoldFont();
       cout << "Error: the wave function could not be loaded!\n";
-      setScrNormalFont();
+      ScreenUtils::SetScrNormalFont();
       exit(1);
    }
    cout << "Done." << endl;
@@ -141,9 +141,9 @@ int main (int argc, char ** argv)
          sscanf(argv[options.setats],"%d",&at1);
          sscanf(argv[options.setats+1],"%d",&at2);
          if (at1<1||at2<1) {
-            setScrRedBoldFont();
+            ScreenUtils::SetScrRedBoldFont();
             cout << "Error: one of the given atoms do not exist!\n";
-            setScrNormalFont();
+            ScreenUtils::SetScrNormalFont();
             exit(1);
          }
          cout << "Using atoms " << at1 << "(" << bnw.atLbl[at1-1]
@@ -225,9 +225,9 @@ int main (int argc, char ** argv)
          grid.makeDat(outfilnam,gwf,VPED);
          break;
       default:
-         setScrRedBoldFont();
+         ScreenUtils::SetScrRedBoldFont();
          cout << "Error: The property \"" << prop << "\" does not exist!" << endl;
-         setScrNormalFont();
+         ScreenUtils::SetScrNormalFont();
          exit(1);
          break;
    }
@@ -271,9 +271,9 @@ int main (int argc, char ** argv)
    
    /* At this point the computation has ended. Usually this means no errors ocurred. */
    
-   setScrGreenBoldFont();
-   printHappyEnding();
-   printScrStarLine();
+   ScreenUtils::SetScrGreenBoldFont();
+   ScreenUtils::PrintHappyEnding();
+   ScreenUtils::PrintScrStarLine();
    cout << setprecision(3) << "CPU Time: "
         << solreal( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
    solreal end_walltime=time(NULL);
@@ -281,8 +281,8 @@ int main (int argc, char ** argv)
 #if DEBUG
    cout << "Debuggin mode (under construction...)" << endl;
 #endif
-   printScrStarLine();
-   setScrNormalFont();
+   ScreenUtils::PrintScrStarLine();
+   ScreenUtils::SetScrNormalFont();
    return 0;
 }
 

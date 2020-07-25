@@ -47,9 +47,9 @@ using std::cout;
 using std::endl;
 using std::cerr;
 #include "helperplots.h"
-#include "../common/solstringtools.h"
-#include "../common/solgnuplottools.h"
-#include "../common/solfileutils.h"
+#include "../common/stringtools.h"
+#include "../common/gnuplottools.h"
+#include "../common/fileutils.h"
 
 
 void HelperPlot::generateMainDiagPlot(optFlags &options,const string &datname,\
@@ -90,19 +90,19 @@ void HelperPlot::generateMainDiagPlot(optFlags &options,const string &datname,\
    ofil << "set arrow 4 nohead lt 2 lc rgb 'black' lw 1 from " << at2pos << ",minval2plot "
         << "to " << at2pos << ",maxval2plot" << endl;
    if (!options.showatlbls) {ofil << "#";}
-   ofil << "set label 1 '" << getEnhancedEpsAtLbl(bn.atLbl[(options.uponsl? idx2 : idx1)]) << "' at "
+   ofil << "set label 1 '" << StringTools::GetEnhancedEpsAtLbl(bn.atLbl[(options.uponsl? idx2 : idx1)]) << "' at "
    << (at1pos-lbloffset) << "," << (minval2plot+frange*0.15e0) << " front offset character -2,0.00" << endl;
    if (!options.showatlbls) {ofil << "#";}
-   ofil << "set label 2 '" << getEnhancedEpsAtLbl(bn.atLbl[(options.uponsl? idx1 : idx2)]) << "' at "
+   ofil << "set label 2 '" << StringTools::GetEnhancedEpsAtLbl(bn.atLbl[(options.uponsl? idx1 : idx2)]) << "' at "
    << (at2pos+lbloffset) << "," << (minval2plot+frange*0.15e0) << " front offset character 0.3,0.00" << endl;
-   ofil << "set title '" << getEnhancedEpsTitle(datname) << "'" << endl;
+   ofil << "set title '" << StringTools::GetEnhancedEpsTitle(datname) << "'" << endl;
    ofil << "set terminal postscript eps enhanced color fontscale 1.75 lw 2 dashlength 4" << endl;
    ofil << "set output '" << epsname << "'" << endl;
    ofil << "plot '" << datname << "' w lines lw 2 lc 'black' notitle"  << endl;
    ofil.close();
    bool rmgnp=!(options.kpgnp);
-   renderGnpFile(gnpname,rmgnp);
-   gnuplottools_eps2pdf(epsname);
+   GnuplotTools::RenderGnpFile(gnpname,rmgnp);
+   GnuplotTools::eps2pdf(epsname);
 }
 void HelperPlot::generateSecDiagPlot(optFlags &options,const string &datname,\
       bondNetWork &bn,int idx1,int idx2,solreal minval2plot,solreal maxval2plot,\
@@ -142,27 +142,27 @@ void HelperPlot::generateSecDiagPlot(optFlags &options,const string &datname,\
    ofil << "set arrow 4 nohead lt 2 lc rgb 'black' lw 1 from " << at2pos << ",minval2plot "
         << "to " << at2pos << ",maxval2plot" << endl;
    if (!options.showatlbls) {ofil << "#";}
-   ofil << "set label 1 '" << getEnhancedEpsAtLbl(bn.atLbl[(options.uponsl? idx2 : idx1)]) << "' at "
+   ofil << "set label 1 '" << StringTools::GetEnhancedEpsAtLbl(bn.atLbl[(options.uponsl? idx2 : idx1)]) << "' at "
    << (at1pos-lbloffset) << "," << (minval2plot+frange*0.15e0) << " front offset character -2,0.00" << endl;
    if (!options.showatlbls) {ofil << "#";}
-   ofil << "set label 2 '" << getEnhancedEpsAtLbl(bn.atLbl[(options.uponsl? idx1 : idx2)]) << "' at "
+   ofil << "set label 2 '" << StringTools::GetEnhancedEpsAtLbl(bn.atLbl[(options.uponsl? idx1 : idx2)]) << "' at "
    << (at2pos+lbloffset) << "," << (minval2plot+frange*0.15e0) << " front offset character 0.3,0.00" << endl;
-   ofil << "set title '" << getEnhancedEpsTitle(datname) << "'" << endl;
+   ofil << "set title '" << StringTools::GetEnhancedEpsTitle(datname) << "'" << endl;
    ofil << "set terminal postscript eps enhanced color fontscale 1.75 lw 2 dashlength 4" << endl;
    ofil << "set output '" << epsname << "'" << endl;
    ofil << "plot '" << datname << "' w lines lw 2 lc 'black' notitle"  << endl;
    ofil.close();
    bool rmgnp=!(options.kpgnp);
-   renderGnpFile(gnpname,rmgnp);
-   gnuplottools_eps2pdf(epsname);
+   GnuplotTools::RenderGnpFile(gnpname,rmgnp);
+   GnuplotTools::eps2pdf(epsname);
 }
 
 void HelperPlot::generate3DPlot(optFlags &options,const string &tsvname,\
       solreal minval2plot,solreal maxval2plot,solreal linelength,int nptsinline)
 {
    string gnpname=tsvname,epsname,pdfname;
-   insertAtEndOfFileName(gnpname,string("-3D"));
-   replaceExtensionOfFileName(gnpname,string("gnp"));
+   FileUtils::InsertAtEndOfFileName(gnpname,string("-3D"));
+   FileUtils::ReplaceExtensionOfFileName(gnpname,string("gnp"));
    generateEPSAndPDFNamesFromGNP(gnpname,epsname,pdfname);
    //----------------------------------------------------
    ofstream ofil(gnpname.c_str(),ios::out);
@@ -189,19 +189,19 @@ void HelperPlot::generate3DPlot(optFlags &options,const string &tsvname,\
    if ( nptsinline>300 ) { theevery=int(nptsinline/60); }
    ofil << "every " << theevery << ":" << theevery << " ";
    ofil << "using 1:2:($3>maxval2plot? maxval2plot:($3<minval2plot ? minval2plot : $3)) "
-   << "with pm3d ls 1 title '" << getEnhancedEpsTitle(tsvname) << "'" << endl;
+   << "with pm3d ls 1 title '" << StringTools::GetEnhancedEpsTitle(tsvname) << "'" << endl;
    ofil.close();
    bool rmgnp=!(options.kpgnp);
-   renderGnpFile(gnpname,rmgnp);
-   gnuplottools_eps2pdf(epsname);
+   GnuplotTools::RenderGnpFile(gnpname,rmgnp);
+   GnuplotTools::eps2pdf(epsname);
 }
 void HelperPlot::generateHeatMap(optFlags &options,char *argv[],const string &tsvname,bondNetWork &bn,DeMat1CriticalPointNetworkSL &cp,
       solreal **xx,int nptsinline,solreal minval2plot,\
       solreal maxval2plot,solreal linelength,solreal md1lmin,solreal md1dmax,int idx1,int idx2)
 {
    string gnpname=tsvname,epsname,pdfname;
-   insertAtEndOfFileName(gnpname,string("-2D"));
-   replaceExtensionOfFileName(gnpname,string("gnp"));
+   FileUtils::InsertAtEndOfFileName(gnpname,string("-2D"));
+   FileUtils::ReplaceExtensionOfFileName(gnpname,string("gnp"));
    generateEPSAndPDFNamesFromGNP(gnpname,epsname,pdfname);
    //----------------------------------------------------
    ofstream ofil;
@@ -234,7 +234,7 @@ void HelperPlot::generateHeatMap(optFlags &options,char *argv[],const string &ts
            << argv[options.setinccont+1] << "," << argv[options.setinccont+2] << endl;
    }
    ofil << "unset surface" << endl;
-   string contourtempname=generateStrRandSeq(32);
+   string contourtempname=StringTools::GenerateStrRandSeq(32);
    ofil << "contourtempname='" << contourtempname << "'" << endl;
    ofil << "set table contourtempname" << endl;
    ofil << "splot namedatfile" << endl;
@@ -276,11 +276,11 @@ void HelperPlot::generateHeatMap(optFlags &options,char *argv[],const string &ts
       ofil << "set style fill solid 1.0 border lt -1" << endl;
       int nobjs=3;
       for ( int i=0 ; i<cp.nACP ; i++ ) {
-         ofil << "set object " << getStringFromInt(i+nobjs)
+         ofil << "set object " << StringTools::GetStringFromInt(i+nobjs)
             << " circle at (" << (cpoffset+0.5e0*cp.RACP[i][0]) << "*dimparam),("
             << (cpoffset+0.5e0*cp.RACP[i][1]) << "*dimparam) front size dimparam*0.008 "
             << "fc rgb 'white'" << endl;
-         ofil << "set label " << getStringFromInt(i+nobjs) << " '"
+         ofil << "set label " << StringTools::GetStringFromInt(i+nobjs) << " '"
                  << cp.lblACP[i] << "' at (" << (cpoffset+0.5e0*cp.RACP[i][0]) << "*dimparam),("
                 << (cpoffset+0.5e0*cp.RACP[i][1]) << "*dimparam) front center";
          ofil << " offset character " << (i==0? "-2" : "-1");
@@ -288,22 +288,22 @@ void HelperPlot::generateHeatMap(optFlags &options,char *argv[],const string &ts
       }
       nobjs+=cp.nACP;
       for ( int i=0 ; i<cp.nSCP ; i++ ) {
-         ofil << "set object " << getStringFromInt(i+nobjs)
+         ofil << "set object " << StringTools::GetStringFromInt(i+nobjs)
             << " circle at (" << (cpoffset+0.5e0*cp.RSCP[i][0]) << "*dimparam),("
             << (cpoffset+0.5e0*cp.RSCP[i][1]) << "*dimparam) front size dimparam*0.008 "
             << "fc rgb 'blue'" << endl;
-         ofil << "set label " << getStringFromInt(i+nobjs) << " '"
+         ofil << "set label " << StringTools::GetStringFromInt(i+nobjs) << " '"
                  << cp.lblSCP[i] << "' at (" << (cpoffset+0.5e0*cp.RSCP[i][0]) << "*dimparam),("
                 << (cpoffset+0.5e0*cp.RSCP[i][1]) << "*dimparam) front center";
          ofil << " offset character -1,0 font \",8\""<< endl;
       }
       nobjs+=cp.nSCP;
       for ( int i=0 ; i<cp.nRCP ; i++ ) {
-         ofil << "set object " << getStringFromInt(i+nobjs)
+         ofil << "set object " << StringTools::GetStringFromInt(i+nobjs)
             << " circle at (" << (cpoffset+0.5e0*cp.RRCP[i][0]) << "*dimparam),("
             << (cpoffset+0.5e0*cp.RRCP[i][1]) << "*dimparam) front size (dimparam*0.008) "
             << "fc rgb 'green'" << endl;
-         ofil << "set label " << getStringFromInt(i+nobjs) << " '"
+         ofil << "set label " << StringTools::GetStringFromInt(i+nobjs) << " '"
                  << cp.lblRCP[i] << "' at (" << (cpoffset+0.5e0*cp.RRCP[i][0]) << "*dimparam),("
                 << (cpoffset+0.5e0*cp.RRCP[i][1]) << "*dimparam) front center";
          ofil << " offset character -1,0 font \",8\""<< endl;
@@ -324,10 +324,10 @@ void HelperPlot::generateHeatMap(optFlags &options,char *argv[],const string &ts
    ofil << "set arrow 4 nohead lt 2 lc rgb 'black' lw 1 from " << lowoffset << "*dimparam," << (at2relpos*linelength) <<
            " to dimparam*" << uppoffset << "," << (at2relpos*linelength) << " front" << endl;
    if (!options.showatlbls) {ofil << "#";}
-   ofil << "set label 1 '" << getEnhancedEpsAtLbl(bn.atLbl[(options.uponsl? idx2 : idx1)]) << "' at "
+   ofil << "set label 1 '" << StringTools::GetEnhancedEpsAtLbl(bn.atLbl[(options.uponsl? idx2 : idx1)]) << "' at "
       << at1relpos*(linelength) << "," << at1relpos*(linelength) << " front offset character -2.2,-1" << endl;
    if (!options.showatlbls) {ofil << "#";}
-   ofil << "set label 2 '" << getEnhancedEpsAtLbl(bn.atLbl[(options.uponsl? idx1 : idx2)]) << "' at "
+   ofil << "set label 2 '" << StringTools::GetEnhancedEpsAtLbl(bn.atLbl[(options.uponsl? idx1 : idx2)]) << "' at "
    << at2relpos*(linelength) << "," << at2relpos*(linelength) << " front offset character 0.5,0.8" << endl;
    ofil << "#set output '|epstopdf --filter --outfile=" << pdfname << "'" << endl;
    ofil << "set output '" << epsname << "'" << endl;
@@ -345,8 +345,8 @@ void HelperPlot::generateHeatMap(optFlags &options,char *argv[],const string &ts
    ofil << "\n\nsystem('rm -f '.contourtempname)" << endl;
    ofil.close();
    bool rmgnp=!(options.kpgnp);
-   renderGnpFile(gnpname,rmgnp);
-   gnuplottools_eps2pdf(epsname);
+   GnuplotTools::RenderGnpFile(gnpname,rmgnp);
+   GnuplotTools::eps2pdf(epsname);
    //contourtempname=string("rm -f ")+contourtempname;
    //system(contourtempname.c_str());
 }
@@ -357,8 +357,8 @@ void HelperPlot::generateVectorField(optFlags &options,char *argv[],const string
    char prop='D';
    if ( options.prop2plot ) {prop=argv[options.prop2plot][0];}
    string gnpname=tsvname,epsname,pdfname;
-   insertAtEndOfFileName(gnpname,string("-2DV"));
-   replaceExtensionOfFileName(gnpname,string("gnp"));
+   FileUtils::InsertAtEndOfFileName(gnpname,string("-2DV"));
+   FileUtils::ReplaceExtensionOfFileName(gnpname,string("gnp"));
    generateEPSAndPDFNamesFromGNP(gnpname,epsname,pdfname);
    //----------------------------------------------------
    ofstream ofil;
@@ -391,7 +391,7 @@ void HelperPlot::generateVectorField(optFlags &options,char *argv[],const string
            << argv[options.setinccont+1] << "," << argv[options.setinccont+2] << endl;
    }
    ofil << "unset surface" << endl;
-   string contourtempname=generateStrRandSeq(32);
+   string contourtempname=StringTools::GenerateStrRandSeq(32);
    ofil << "contourtempname='" << contourtempname << "'" << endl;
    ofil << "set table contourtempname" << endl;
    ofil << "splot namedatfile" << endl;
@@ -433,11 +433,11 @@ void HelperPlot::generateVectorField(optFlags &options,char *argv[],const string
       ofil << "set style fill solid 1.0 border lt -1" << endl;
       int nobjs=3;
       for ( int i=0 ; i<cp.nACP ; i++ ) {
-         ofil << "set object " << getStringFromInt(i+nobjs)
+         ofil << "set object " << StringTools::GetStringFromInt(i+nobjs)
             << " circle at (" << (cpoffset+0.5e0*cp.RACP[i][0]) << "*dimparam),("
             << (cpoffset+0.5e0*cp.RACP[i][1]) << "*dimparam) front size dimparam*0.008 "
             << "fc rgb 'white'" << endl;
-         ofil << "set label " << getStringFromInt(i+nobjs) << " '"
+         ofil << "set label " << StringTools::GetStringFromInt(i+nobjs) << " '"
                  << cp.lblACP[i] << "' at (" << (cpoffset+0.5e0*cp.RACP[i][0]) << "*dimparam),("
                 << (cpoffset+0.5e0*cp.RACP[i][1]) << "*dimparam) front center";
          ofil << " offset character " << (i==0? "-2" : "-1");
@@ -445,22 +445,22 @@ void HelperPlot::generateVectorField(optFlags &options,char *argv[],const string
       }
       nobjs+=cp.nACP;
       for ( int i=0 ; i<cp.nSCP ; i++ ) {
-         ofil << "set object " << getStringFromInt(i+nobjs)
+         ofil << "set object " << StringTools::GetStringFromInt(i+nobjs)
             << " circle at (" << (cpoffset+0.5e0*cp.RSCP[i][0]) << "*dimparam),("
             << (cpoffset+0.5e0*cp.RSCP[i][1]) << "*dimparam) front size dimparam*0.008 "
             << "fc rgb 'blue'" << endl;
-         ofil << "set label " << getStringFromInt(i+nobjs) << " '"
+         ofil << "set label " << StringTools::GetStringFromInt(i+nobjs) << " '"
                  << cp.lblSCP[i] << "' at (" << (cpoffset+0.5e0*cp.RSCP[i][0]) << "*dimparam),("
                 << (cpoffset+0.5e0*cp.RSCP[i][1]) << "*dimparam) front center";
          ofil << " offset character -1,0 font \",8\""<< endl;
       }
       nobjs+=cp.nSCP;
       for ( int i=0 ; i<cp.nRCP ; i++ ) {
-         ofil << "set object " << getStringFromInt(i+nobjs)
+         ofil << "set object " << StringTools::GetStringFromInt(i+nobjs)
             << " circle at (" << (cpoffset+0.5e0*cp.RRCP[i][0]) << "*dimparam),("
             << (cpoffset+0.5e0*cp.RRCP[i][1]) << "*dimparam) front size (dimparam*0.008) "
             << "fc rgb 'green'" << endl;
-         ofil << "set label " << getStringFromInt(i+nobjs) << " '"
+         ofil << "set label " << StringTools::GetStringFromInt(i+nobjs) << " '"
                  << cp.lblRCP[i] << "' at (" << (cpoffset+0.5e0*cp.RRCP[i][0]) << "*dimparam),("
                 << (cpoffset+0.5e0*cp.RRCP[i][1]) << "*dimparam) front center";
          ofil << " offset character -1,0 font \",8\""<< endl;
@@ -481,10 +481,10 @@ void HelperPlot::generateVectorField(optFlags &options,char *argv[],const string
    ofil << "set arrow 4 nohead lt 2 lc rgb 'black' lw 1 from " << lowoffset << "*dimparam," << (at2relpos*linelength) <<
            " to dimparam*" << uppoffset << "," << (at2relpos*linelength) << " front" << endl;
    if (!options.showatlbls) {ofil << "#";}
-   ofil << "set label 1 '" << getEnhancedEpsAtLbl(bn.atLbl[(options.uponsl? idx2 : idx1)]) << "' at "
+   ofil << "set label 1 '" << StringTools::GetEnhancedEpsAtLbl(bn.atLbl[(options.uponsl? idx2 : idx1)]) << "' at "
       << (at1relpos*linelength) << "," << (at1relpos*linelength) << " front offset character -2.2,-1" << endl;
    if (!options.showatlbls) {ofil << "#";}
-   ofil << "set label 2 '" << getEnhancedEpsAtLbl(bn.atLbl[(options.uponsl? idx1 : idx2)]) << "' at "
+   ofil << "set label 2 '" << StringTools::GetEnhancedEpsAtLbl(bn.atLbl[(options.uponsl? idx1 : idx2)]) << "' at "
    << (at2relpos*linelength) << "," << (at2relpos*linelength) << " front offset character 0.5,0.8" << endl;
    ofil << "set output '" << epsname << "'" << endl;
    ofil << "plot namedatfile ";
@@ -515,21 +515,21 @@ void HelperPlot::generateVectorField(optFlags &options,char *argv[],const string
       if ( options.findcps ) {
          int nobjs=3;
          for ( int i=0 ; i<cp.nACP ; i++ ) {
-            ofil << "set object " << getStringFromInt(i+nobjs)
+            ofil << "set object " << StringTools::GetStringFromInt(i+nobjs)
                  << " circle at (" << (cpoffset+0.5e0*cp.RACP[i][0]) << ")*dimparam,("
                  << (cpoffset+0.5e0*cp.RACP[i][1]) << ")*dimparam front size dimparam*0.008 "
                  << "fc rgb 'white'" << endl;
          }
          nobjs+=cp.nACP;
          for ( int i=0 ; i<cp.nSCP ; i++ ) {
-            ofil << "set object " << getStringFromInt(i+nobjs)
+            ofil << "set object " << StringTools::GetStringFromInt(i+nobjs)
                << " circle at (" << (cpoffset+0.5e0*cp.RSCP[i][0]) << ")*dimparam,("
                << (cpoffset+0.5e0*cp.RSCP[i][1]) << ")*dimparam front size dimparam*0.008 "
                << "fc rgb 'blue'" << endl;
          }
          nobjs+=cp.nSCP;
          for ( int i=0 ; i<cp.nRCP ; i++ ) {
-            ofil << "set object " << getStringFromInt(i+nobjs)
+            ofil << "set object " << StringTools::GetStringFromInt(i+nobjs)
                << " circle at (" << (cpoffset+0.5e0*cp.RRCP[i][0]) << ")*dimparam,("
                << (cpoffset+0.5e0*cp.RRCP[i][1]) << ")*dimparam front size dimparam*0.008 "
                << "fc rgb 'green'" << endl;
@@ -548,8 +548,8 @@ void HelperPlot::generateVectorField(optFlags &options,char *argv[],const string
    ofil << "\n\nsystem('rm -f '.contourtempname)" << endl;
    ofil.close();
    bool rmgnp=!(options.kpgnp);
-   renderGnpFile(gnpname,rmgnp);
-   gnuplottools_eps2pdf(epsname);
+   GnuplotTools::RenderGnpFile(gnpname,rmgnp);
+   GnuplotTools::eps2pdf(epsname);
 }
 void HelperPlot::addHeaderInfo2GNP(ofstream &ofil,solreal minval,solreal maxval,\
          solreal dimpar,string datortsv,string axis)
@@ -565,14 +565,14 @@ void HelperPlot::generateGNPEPSAndPDFNamesFromDATORTSV(const string &dnam,\
       string &gnam,string &enam,string &pnam)
 {
    gnam=enam=pnam=dnam;
-   replaceExtensionOfFileName(gnam,string("gnp"));
+   FileUtils::ReplaceExtensionOfFileName(gnam,string("gnp"));
    generateEPSAndPDFNamesFromGNP(gnam,enam,pnam);
 }
 void HelperPlot::generateEPSAndPDFNamesFromGNP(const string &gnam,string &enam,string &pnam)
 {
    enam=pnam=gnam;
-   replaceExtensionOfFileName(pnam,string("pdf"));
-   replaceExtensionOfFileName(enam,string("eps"));
+   FileUtils::ReplaceExtensionOfFileName(pnam,string("pdf"));
+   FileUtils::ReplaceExtensionOfFileName(enam,string("eps"));
 }
 #endif  /* _HELPERPLOTS_CPP_ */
 

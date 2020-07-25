@@ -56,9 +56,9 @@
 */
 #ifndef _OPTSFLAGS_CPP
 #define _OPTSFLAGS_CPP
-
+#include "figname.h"
 #include "optflags.h"
-#include "../common/solscrutils.h"
+#include "../common/screenutils.h"
 
 #include <iostream>
 using std::cout;
@@ -94,9 +94,9 @@ void getOptions(int &argc, char** &argv, optFlags &flags) {
       progname.erase(pos,2);
    }
    if (argc<2) {
-      setScrRedBoldFont();
+      ScreenUtils::SetScrRedBoldFont();
       cout << "\nError: Not enough arguments." << endl;
-      setScrNormalFont();
+      ScreenUtils::SetScrNormalFont();
       cout << "\nTry: \n\t" << argv[0] << " -h\n" << endl << "to view the help menu.\n\n";
       exit(1);
    }
@@ -146,32 +146,32 @@ void printHelpMenu(int &argc, char** &argv) {
    string progname=argv[0];
    size_t pos=progname.find("./");
    if (pos!=string::npos) {progname.erase(pos,2);}
-   printScrStarLine();
+   ScreenUtils::PrintScrStarLine();
 #if _SOL_USE_FIGLET_NAME_
-      printFigletName();
+      FigletName::PrintFigletName();
 #endif
    cout << endl;
-   centerString((string(":-) ")+progname+string(" (-:")));
+   ScreenUtils::CenterString((string(":-) ")+progname+string(" (-:")));
    cout << endl;
-   centerString("This program computes a line integral of several scalar fields.");
-   centerString("The fields are some of the regular scalar fields implemented");
-   centerString("in this version of DensToolKit.");
-   centerString("The program will save the information, both total integral");
-   centerString("upon all bond paths, i.e. the sum of all individual integrals");
-   centerString("over the bond paths.");
-   centerString("It also saves the individual information of all integrals.");
-   centerString("This information is saved into a *.log file.");
+   ScreenUtils::CenterString("This program computes a line integral of several scalar fields.");
+   ScreenUtils::CenterString("The fields are some of the regular scalar fields implemented");
+   ScreenUtils::CenterString("in this version of DensToolKit.");
+   ScreenUtils::CenterString("The program will save the information, both total integral");
+   ScreenUtils::CenterString("upon all bond paths, i.e. the sum of all individual integrals");
+   ScreenUtils::CenterString("over the bond paths.");
+   ScreenUtils::CenterString("It also saves the individual information of all integrals.");
+   ScreenUtils::CenterString("This information is saved into a *.log file.");
    cout << endl;
-   centerString((string("Compilation date: ")+string(__DATE__)));
+   ScreenUtils::CenterString((string("Compilation date: ")+string(__DATE__)));
    cout << endl;
-   centerString(string("Version: ")+string(CURRENTVERSION));
+   ScreenUtils::CenterString(string("Version: ")+string(CURRENTVERSION));
    cout << endl;
-   centerString((string(":-) Created by: ")+string(PROGRAMCONTRIBUTORS)+string(" (-:")));
+   ScreenUtils::CenterString((string(":-) Created by: ")+string(PROGRAMCONTRIBUTORS)+string(" (-:")));
    cout << endl;
-   printScrStarLine();
-   setScrBoldFont();
+   ScreenUtils::PrintScrStarLine();
+   ScreenUtils::SetScrBoldFont();
    cout << "\nUsage:\n\n\t" << progname << " wf?name [option [value(s)]] ... [option [value(s)]]\n\n";
-   setScrNormalFont();
+   ScreenUtils::SetScrNormalFont();
    cout << "Where wf?name is the input wfx(wfn) name, and options can be:\n\n"
         << "  -o outname\tSet the output file name." << endl
         << "            \t  (If not given the program will create one out of" << endl
@@ -188,21 +188,21 @@ void printHelpMenu(int &argc, char** &argv) {
    //-------------------------------------------------------------------------------------
 /*
 #if _HAVE_GNUPLOT_
-   printScrStarLine();
-   centerString(string("Note that the following programs must be properly installed in your system:"));
-   centerString(string("gnuplot"));
-   centerString(string("epstopdf"));
+   ScreenUtils::PrintScrStarLine();
+   ScreenUtils::CenterString(string("Note that the following programs must be properly installed in your system:"));
+   ScreenUtils::CenterString(string("gnuplot"));
+   ScreenUtils::CenterString(string("epstopdf"));
 #if (defined(__APPLE__)||defined(__linux__))
-   centerString(string("gzip"));
+   ScreenUtils::CenterString(string("gzip"));
 #endif
-   printScrStarLine();
+   ScreenUtils::PrintScrStarLine();
 #endif
 */
 }//end printHelpMenu
 
 //**************************************************************************************************
 void printErrorMsg(char** &argv,char lab) {
-   setScrRedBoldFont();
+   ScreenUtils::SetScrRedBoldFont();
    cout << "\nError: the option \"" << lab << "\" ";
    switch (lab) {
       case 'e' :
@@ -215,7 +215,7 @@ void printErrorMsg(char** &argv,char lab) {
          cout << "is triggering an unknown error." << endl;
          break;
    }
-   setScrNormalFont();
+   ScreenUtils::SetScrNormalFont();
    cout << "\nTry:\n\t" << argv[0] << " -h " << endl;
    cout << "\nto view the help menu.\n\n";
    exit(1);
@@ -235,9 +235,9 @@ void processDoubleDashOptions(int &argc,char** &argv,optFlags &flags,int pos) {
       printHelpMenu(argc,argv);
       exit(0);
    } else {
-      setScrRedBoldFont();
+      ScreenUtils::SetScrRedBoldFont();
       cout << "Error: Unrecognized option '" << argv[pos] << "'" << endl;
-      setScrNormalFont();
+      ScreenUtils::SetScrNormalFont();
       exit(1);
    }
    return;

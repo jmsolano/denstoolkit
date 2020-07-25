@@ -63,16 +63,16 @@ using namespace std;
 using std::setprecision;
 #include <ctime>
 
-#include "../common/solscrutils.h"
-#include "../common/solfileutils.h"
-#include "../common/solmemhand.h"
-#include "../common/solmath.h"
+#include "../common/screenutils.h"
+#include "../common/fileutils.h"
+#include "../common/mymemory.h"
+#include "../common/mymath.h"
 #include "../common/gausswavefunction.h"
 #include "../common/bondnetwork.h"
 #include "../common/critptnetwork.h"
-#include "../common/solstringtools.h"
+#include "../common/stringtools.h"
 #include "../common/fldtypesdef.h"
-#include "solgnuplottools.h"
+#include "gnuplottools.h"
 #include "optflags.h"
 #include "crtflnms.h"
 #include "helpersplot.h"
@@ -88,7 +88,7 @@ int main (int argc, char ** argv) {
    
    getOptions(argc,argv,options); //This processes the options from the command line.
    mkFileNames(argv,options,infilnam,outfilnam,gnpnam,lognam); //This creates the names used.
-   printHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS); //Just to let the user know that the initial configuration is OK
+   ScreenUtils::PrintHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS); //Just to let the user know that the initial configuration is OK
    
    /* Stablishes the field property to be evaluated. */
    
@@ -101,7 +101,7 @@ int main (int argc, char ** argv) {
          ||prop=='S'||prop=='G'||prop=='K'||prop=='V'\
          ||prop=='P'||prop=='r'||prop=='s'||prop=='u'\
          ||prop=='e')) {
-      displayErrorMessage("Non valid field type");
+      ScreenUtils::DisplayErrorMessage("Non valid field type");
       cout << "\nTry: \n\t" << argv[0] << " -h\n" << endl << "to view the help menu.\n\n";
       exit(1);
    }
@@ -112,15 +112,15 @@ int main (int argc, char ** argv) {
    
    GaussWaveFunction gwf;
    if (!(gwf.readFromFile(infilnam))) { //Loading the wave function
-      setScrRedBoldFont();
+      ScreenUtils::SetScrRedBoldFont();
       cout << "Error: the wave function could not be loaded!\n";
-      setScrNormalFont();
+      ScreenUtils::SetScrNormalFont();
       exit(1);
    }
    cout << "Done." << endl;
    
    if (gwf.nNuc==1) {
-      displayWarningMessage("This file contains only one atom... There are no bond paths...");
+      ScreenUtils::DisplayWarningMessage("This file contains only one atom... There are no bond paths...");
       cout << "Nothing to do!" << endl;
       gwf.~GaussWaveFunction();
       exit(0);
@@ -136,7 +136,7 @@ int main (int argc, char ** argv) {
       at2--;
    }
    if (at1>=gwf.nNuc||at2>=gwf.nNuc||at1<0||at2<0) {
-      displayErrorMessage("Requesting a non existent atom!");
+      ScreenUtils::DisplayErrorMessage("Requesting a non existent atom!");
       gwf.~GaussWaveFunction();
       exit(1);
    }
@@ -156,7 +156,7 @@ int main (int argc, char ** argv) {
    if (options.setn1) {
       sscanf(argv[options.setn1],"%d",&dimarr);
       if (dimarr<=0) {
-         displayErrorMessage("Please provide a positive number for the number of points!");
+         ScreenUtils::DisplayErrorMessage("Please provide a positive number for the number of points!");
          gwf.~GaussWaveFunction();
          bnw.~bondNetWork();
          cpn.~critPtNetWork();
@@ -176,7 +176,7 @@ int main (int argc, char ** argv) {
    
    /* Declares an array to store the coordinates of the bond path points. */
    solreal **rbgp=NULL;
-   alloc2DRealArray(string("rbgp"),dimarr,3,rbgp);
+   MyMemory::Alloc2DRealArray(string("rbgp"),dimarr,3,rbgp);
    
    int nbgppts=1;
    solreal dl=DEFAULTBONDPATHSTEPMD1;
@@ -235,7 +235,7 @@ int main (int argc, char ** argv) {
    if (options.uponsl) {cout << "the bond line:" << endl;}
 
 #if USEPROGRESSBAR
-   printProgressBar(0);
+   ScreenUtils::PrintProgressBar(0);
 #endif
    
    solreal xx[3],xt[3],tmpval,pp,pbcp,pmax,pmin,maxval=-1.0e+50,minval=1.0e+50,bcpval;
@@ -268,11 +268,11 @@ int main (int argc, char ** argv) {
       if (tmpval<minval) {minval=tmpval; pmin=pp; for(int k=0; k<3; k++) {xmin[k]=xx[k];}}
       if (tmpval>maxval) {maxval=tmpval; pmax=pp; for(int k=0; k<3; k++) {xmax[k]=xx[k];}}
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((nbgppts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((nbgppts-1))));
 #endif
    }
 #if USEPROGRESSBAR
-   printProgressBar(100);
+   ScreenUtils::PrintProgressBar(100);
    cout << endl;
 #endif
    
@@ -282,49 +282,49 @@ int main (int argc, char ** argv) {
    /* Displays the information of min/max of prop */
    
    cout << scientific << setprecision(12) << endl;
-   printScrCharLine('-');
+   ScreenUtils::PrintScrCharLine('-');
    cout << "The maximum value (within the evaluated line) is located at:" << endl;
-   printV3Comp("R(maxval): ",xmax);
+   ScreenUtils::PrintV3Comp("R(maxval): ",xmax);
    cout << "p(maxval): " << pmax << endl;
    cout << getFieldTypeKeyShort(prop) << "(max): " << maxval << endl;
-   printScrCharLine('-');
+   ScreenUtils::PrintScrCharLine('-');
    cout << "The minimum value (within the evaluated line) is located at:" << endl;
-   printV3Comp("R(minval): ",xmin);
+   ScreenUtils::PrintV3Comp("R(minval): ",xmin);
    cout << "p(minval): " << pmin << endl;
    cout << getFieldTypeKeyShort(prop) << "(min): " << minval << endl;
-   printScrCharLine('-');
+   ScreenUtils::PrintScrCharLine('-');
    if (options.uponbp) {
       cout << "The value at BCP is:" << endl;
-      printV3Comp("R(bcp): ",robcp);
+      ScreenUtils::PrintV3Comp("R(bcp): ",robcp);
       cout << "p(pcp): " << pbcp << endl;
       cout << getFieldTypeKeyShort(prop) << "(bcp): " << bcpval << endl;
    }
-   printScrCharLine('-');
+   ScreenUtils::PrintScrCharLine('-');
    
    /* Writes the information of the field property to the log file */
 
    ofstream logfil;
 
    logfil.open(lognam.c_str(),ios::out);
-   writeCommentedHappyStart(argv,logfil,CURRENTVERSION,PROGRAMCONTRIBUTORS);
+   FileUtils::WriteHappyStart(argv,logfil,CURRENTVERSION,PROGRAMCONTRIBUTORS);
    logfil << scientific << setprecision(12);
-   writeCommentedScrCharLine(logfil,'-');
+   FileUtils::WriteScrCharLine(logfil,'-');
    logfil << "#The maximum value (within the evaluated line) is located at:" << endl;
-   writeV3Comp(logfil,"#R(maxval):\n",xmax);
+   FileUtils::WriteV3Components(logfil,"#R(maxval):\n",xmax);
    logfil << "#p(maxval):\n" << pmax << endl;
    logfil << "#" << getFieldTypeKeyShort(prop) << "(max):\n" << maxval << endl;
-   writeCommentedScrCharLine(logfil,'-');
+   FileUtils::WriteScrCharLine(logfil,'-');
    logfil << "#The minimum value (within the evaluated line) is located at:" << endl;
-   writeV3Comp(logfil,"#R(minval):\n",xmin);
+   FileUtils::WriteV3Components(logfil,"#R(minval):\n",xmin);
    logfil << "#p(minval):\n" << pmin << endl;
    logfil << "#" << getFieldTypeKeyShort(prop) << "(min):\n" << minval << endl;
-   writeCommentedScrCharLine(logfil,'-');
+   FileUtils::WriteScrCharLine(logfil,'-');
    if (options.uponbp) {
       logfil << "#The value at BCP is:" << endl;
-      writeV3Comp(logfil,"R(bcp):\n",robcp);
+      FileUtils::WriteV3Components(logfil,"R(bcp):\n",robcp);
       logfil << "#p(pcp):\n" << pbcp << endl;
       logfil << getFieldTypeKeyShort(prop) << "(bcp):\n" << bcpval << endl;
-      writeCommentedScrCharLine(logfil,'-');
+      FileUtils::WriteScrCharLine(logfil,'-');
    }
    
    logfil.close();
@@ -344,13 +344,13 @@ int main (int argc, char ** argv) {
    }
 #endif/* defined(__APPLE__)||defined(__linux__) */
    
-   dealloc2DRealArray(rbgp,dimarr);
+   MyMemory::Dealloc2DRealArray(rbgp,dimarr);
    
    /* At this point the computation has ended. Usually this means that no errors ocurred. */
    
-   setScrGreenBoldFont();
-   printHappyEnding();
-   printScrStarLine();
+   ScreenUtils::PrintHappyEnding();
+   ScreenUtils::SetScrGreenBoldFont();
+   ScreenUtils::PrintScrStarLine();
    cout << setprecision(3) << "CPU Time: "
         << solreal( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
    solreal end_walltime=time(NULL);
@@ -358,8 +358,8 @@ int main (int argc, char ** argv) {
 #if DEBUG
    cout << "Debuggin mode (under construction...)" << endl;
 #endif
-   printScrStarLine();
-   setScrNormalFont();
+   ScreenUtils::PrintScrStarLine();
+   ScreenUtils::SetScrNormalFont();
    return 0;
 }
 

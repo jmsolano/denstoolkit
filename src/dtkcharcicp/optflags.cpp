@@ -57,7 +57,8 @@
 #define _OPTSFLAGS_CPP
 
 #include "optflags.h"
-#include "../common/solscrutils.h"
+#include "figname.h"
+#include "../common/screenutils.h"
 
 #include <iostream>
 using std::cout;
@@ -97,9 +98,9 @@ void getOptions(int &argc, char** &argv, optFlags &flags)
       progname.erase(pos,2);
    }
    if (argc<2) {
-      setScrRedBoldFont();
+      ScreenUtils::SetScrRedBoldFont();
       cout << "\nError: Not enough arguments." << endl;
-      setScrNormalFont();
+      ScreenUtils::SetScrNormalFont();
       cout << "\nTry: \n\t" << argv[0] << " -h\n" << endl << "to view the help menu.\n\n";
       exit(1);
    }
@@ -154,26 +155,24 @@ void printHelpMenu(int &argc, char** &argv)
    string progname=argv[0];
    size_t pos=progname.find("./");
    if (pos!=string::npos) {progname.erase(pos,2);}
-   printScrStarLine();
-#if _SOL_USE_FIGLET_NAME_
-      printFigletName();
-#endif
+   ScreenUtils::PrintScrStarLine();
+   FigletName::PrintFigletName();
    cout << endl;
-   centerString((string(":-) ")+progname+string(" (-:")));
+   ScreenUtils::CenterString((string(":-) ")+progname+string(" (-:")));
    cout << endl;
-   centerString("This program looks for the critical points of LOL or Electron Density. ");
-   centerString("It is spected as input a wfx (wfn) file.");
+   ScreenUtils::CenterString("This program looks for the critical points of LOL or Electron Density. ");
+   ScreenUtils::CenterString("It is spected as input a wfx (wfn) file.");
    cout << endl;
-   centerString((string("Compilation date: ")+string(__DATE__)));
+   ScreenUtils::CenterString((string("Compilation date: ")+string(__DATE__)));
    cout << endl;
-   centerString(string("Version: ")+string(CURRENTVERSION));
+   ScreenUtils::CenterString(string("Version: ")+string(CURRENTVERSION));
    cout << endl;
-   centerString((string(":-) Created by: ")+string(PROGRAMCONTRIBUTORS)+string(" (-:")));
+   ScreenUtils::CenterString((string(":-) Created by: ")+string(PROGRAMCONTRIBUTORS)+string(" (-:")));
    cout << endl;
-   printScrStarLine();
-   setScrBoldFont();
+   ScreenUtils::PrintScrStarLine();
+   ScreenUtils::SetScrBoldFont();
    cout << "\nUsage:\n\n\t" << progname << " wf?name [option [value(s)]] ... [option [value(s)]]\n\n";
-   setScrNormalFont();
+   ScreenUtils::SetScrNormalFont();
    cout << "Where wf?name is the input wfx(wfn) name, and options can be:\n\n"
         << "  -a a1 a2  \tSelects atoms a1 and a2. The topological analysis of the\n"
         << "            \t  density matrix of order 1 will be carried out upon\n"
@@ -190,13 +189,13 @@ void printHelpMenu(int &argc, char** &argv)
    cout << "  --help    \t\tSame as -h" << endl;
    cout << "  --version \t\tSame as -V" << endl;
    //-------------------------------------------------------------------------------------
-   printScrStarLine();
+   ScreenUtils::PrintScrStarLine();
 }//end printHelpMenu
 
 //**************************************************************************************************
 void printErrorMsg(char** &argv,char lab)
 {
-   setScrRedBoldFont();
+   ScreenUtils::SetScrRedBoldFont();
    cout << "\nError: the option \"" << lab << "\" ";
    switch (lab) {
       case 'a' :
@@ -209,7 +208,7 @@ void printErrorMsg(char** &argv,char lab)
          cout << "is triggering an unknown error." << endl;
          break;
    }
-   setScrNormalFont();
+   ScreenUtils::SetScrNormalFont();
    cout << "\nTry:\n\t" << argv[0] << " -h " << endl;
    cout << "\nto view the help menu.\n\n";
    exit(1);
@@ -230,9 +229,9 @@ void processDoubleDashOptions(int &argc,char** &argv,optFlags &flags,int pos)
       printHelpMenu(argc,argv);
       exit(0);
    } else {
-      setScrRedBoldFont();
+      ScreenUtils::SetScrRedBoldFont();
       cout << "Error: Unrecognized option '" << argv[pos] << "'" << endl;
-      setScrNormalFont();
+      ScreenUtils::SetScrNormalFont();
       exit(1);
    }
    return;

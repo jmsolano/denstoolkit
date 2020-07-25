@@ -52,8 +52,8 @@ using std::scientific;
 using std::setw;
 
 #include "iofuncts-cpx.h"
-#include "solscrutils.h"
-#include "solstringtools.h"
+#include "screenutils.h"
+#include "stringtools.h"
 
 /* ************************************************************************** */
 #define MAXCPXKEYSDEFINED 34
@@ -150,7 +150,7 @@ void writeTypeOfCriticalPoints(ofstream &ofil,critPtNetWork &cp)
       default:
          ofil << "Unknown";
 #if DEBUG
-         displayErrorMessage("Unknown Field Type!");
+         ScreenUtils::DisplayErrorMessage("Unknown Field Type!");
 #endif
          break;
    }
@@ -646,7 +646,7 @@ bool cpxGetPosBetweenKeyInFile(ifstream &ifil,int &aftik,int &befek,string key,b
       }
    }
    if (!iknowthiskey) {
-      displayErrorMessage("Not a CPX valid key!");
+      ScreenUtils::DisplayErrorMessage("Not a CPX valid key!");
       DISPLAYDEBUGINFOFILELINE;
       return -1;
    }
@@ -678,7 +678,7 @@ bool cpxGetPosBetweenKeyInFile(ifstream &ifil,int &aftik,int &befek,string key,b
       }
    }
    if (ifil.eof()) {
-      displayErrorMessage("End of file and no string found...");
+      ScreenUtils::DisplayErrorMessage("End of file and no string found...");
    } else {
       ifil.seekg(orpos);
    }
@@ -689,7 +689,7 @@ int cpxGetPosAfterOpenningKeyInFile(ifstream &ifil,string key,bool frombeg)
 {
    int ip,fp;
    if (!(cpxGetPosBetweenKeyInFile(ifil,ip,fp,key,frombeg))) {
-      displayErrorMessage("Key not found!");
+      ScreenUtils::DisplayErrorMessage("Key not found!");
 #if DEBUG
       DISPLAYDEBUGINFOFILELINE;
 #endif
@@ -702,7 +702,7 @@ int cpxGetPosBeforeClosingKeyInFile(ifstream &ifil,string key,bool frombeg)
 {
    int ip,fp;
    if (!(cpxGetPosBetweenKeyInFile(ifil,ip,fp,key,frombeg))) {
-      displayErrorMessage("Key not found!");
+      ScreenUtils::DisplayErrorMessage("Key not found!");
 #if DEBUG
       DISPLAYDEBUGINFOFILELINE;
 #endif
@@ -733,7 +733,7 @@ string cpxGetWFXFileName(ifstream &ifil)
    int pos=cpxGetPosAfterOpenningKeyInFile(ifil,"WaveFunctionFileName",false);
    ifil.seekg(pos);
    getline(ifil,wfxnam);
-   removeSpacesLeftAndRight(wfxnam);
+   StringTools::RemoveSpacesLeftAndRight(wfxnam);
    return wfxnam;
 }
 /* ************************************************************************** */
@@ -744,13 +744,13 @@ ScalarFieldType cpxGetCriticalPointFieldType(ifstream &ifil)
    ifil.seekg(pos);
    string line;
    getline(ifil,line);
-   removeSpacesLeftAndRight(line);
+   StringTools::RemoveSpacesLeftAndRight(line);
    if (line=="Electron Density") {
       sft=DENS;
    } else if (line=="LOL") {
       sft=LOLD;
    } else {
-      displayErrorMessage("Unknown Critical Points Field Type!");
+      ScreenUtils::DisplayErrorMessage("Unknown Critical Points Field Type!");
       DISPLAYDEBUGINFOFILELINE;
       sft=NONE;
    }
@@ -823,9 +823,9 @@ void cpxGetBCPConnectivityFromFile(ifstream &ifil,const int nn,int** (&ii))
    int itmp;
    for (int i=0; i<nn; i++) {
       ifil >> itmp;
-      if ((itmp-1)!=i) {displayWarningMessage("Disordered BCPs!");}
+      if ((itmp-1)!=i) {ScreenUtils::DisplayWarningMessage("Disordered BCPs!");}
       ifil >> itmp;
-      if (itmp!=2) {displayErrorMessage("Bad BCP connectivity!");}
+      if (itmp!=2) {ScreenUtils::DisplayErrorMessage("Bad BCP connectivity!");}
       ifil >> ii[i][0]; ii[i][0]--;
       ifil >> ii[i][1]; ii[i][1]--;
    }
@@ -882,7 +882,7 @@ void cpxGetBondPathData(ifstream &ifil,const int nn,int** (&ii),solreal*** (&rrr
    for (int k=0; k<nn; k++) {
       cpxSetPosOfFileAfterOpenningKey(ifil,"BondPathIndex",false);
       ifil >> ktmp;
-      if (ktmp!=k) {displayWarningMessage("Disordered bond paths!");}
+      if (ktmp!=k) {ScreenUtils::DisplayWarningMessage("Disordered bond paths!");}
       cpxSetPosOfFileAfterOpenningKey(ifil,"CoordinatesOfBondPathPoints",false);
       ktmp=ii[k][2];
       for (int j=0; j<ktmp; j++) {for (int l=0; l<3; l++) {ifil >> rrr[k][j][l];}}
@@ -896,7 +896,7 @@ void cpxGetRCPConnectivityFromFile(ifstream &ifil,const int nn,int*** (&cc))
    int nrgps;
    for (int i=0; i<nn; i++) {
       ifil >> nrgps;
-      if ((nrgps-1)!=i) {displayWarningMessage("Disordered RCPs!");}
+      if ((nrgps-1)!=i) {ScreenUtils::DisplayWarningMessage("Disordered RCPs!");}
       ifil >> nrgps;
       for ( int j=0 ; j<nrgps ; ++j ) {
          ifil >> cc[i][0][j];
@@ -932,7 +932,7 @@ void cpxGetRingPathData(ifstream &ifil,const int nn,int*** (&ii),solreal**** (&r
    for (int rcpIdx=0; rcpIdx<nn; ++rcpIdx) {
       cpxSetPosOfFileAfterOpenningKey(ifil,"RingPathIndex",false);
       ifil >> nnpts;
-      if (nnpts!=glblIdx) {displayWarningMessage("Disordered bond paths!");}
+      if (nnpts!=glblIdx) {ScreenUtils::DisplayWarningMessage("Disordered bond paths!");}
       ktmp=0;
       while ( ii[rcpIdx][0][ktmp]>=0 ) {
          nnpts=ii[rcpIdx][1][ktmp];
@@ -955,7 +955,7 @@ void cpxGetCCPConnectivityFromFile(ifstream &ifil,const int nn,int*** (&cc))
    int ncgps;
    for (int i=0; i<nn; i++) {
       ifil >> ncgps;
-      if ((ncgps-1)!=i) {displayWarningMessage("Disordered CCPs!");}
+      if ((ncgps-1)!=i) {ScreenUtils::DisplayWarningMessage("Disordered CCPs!");}
       ifil >> ncgps;
       for ( int j=0 ; j<ncgps ; ++j ) {
          ifil >> cc[i][0][j];
@@ -991,7 +991,7 @@ void cpxGetCagePathData(ifstream &ifil,const int nn,int*** (&ii),solreal**** (&r
    for (int ccpIdx=0; ccpIdx<nn; ++ccpIdx) {
       cpxSetPosOfFileAfterOpenningKey(ifil,"CagePathIndex",false);
       ifil >> nnpts;
-      if (nnpts!=glblIdx) {displayWarningMessage("Disordered bond paths!");}
+      if (nnpts!=glblIdx) {ScreenUtils::DisplayWarningMessage("Disordered bond paths!");}
       ktmp=0;
       while ( ii[ccpIdx][0][ktmp]>=0 ) {
          nnpts=ii[ccpIdx][1][ktmp];

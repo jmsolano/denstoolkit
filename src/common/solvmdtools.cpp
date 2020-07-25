@@ -46,18 +46,18 @@ using std::cerr;
 #include <fstream>
 using std::ofstream;
 #include "solvmdtools.h"
-#include "solfileutils.h"
-#include "solscrutils.h"
+#include "fileutils.h"
+#include "screenutils.h"
 
 void VMDTools::writeSimpleVMDScript(string cubename,const char prop2rend,bool addquiet) {
    string vmdname=cubename;
    string tganame=cubename;
-   replaceExtensionOfFileName(vmdname,"vmd");
-   replaceExtensionOfFileName(tganame,"tga");
+   FileUtils::ReplaceExtensionOfFileName(vmdname,"vmd");
+   FileUtils::ReplaceExtensionOfFileName(tganame,"tga");
    double isovalue=getDefaultIsolvalueForCube(prop2rend);
    ofstream ofil(vmdname.c_str());
    if ( !ofil.good() ) {
-      displayErrorMessage(string("Could not open the file '")+vmdname+string("'."));
+      ScreenUtils::DisplayErrorMessage(string("Could not open the file '")+vmdname+string("'."));
    }
    ofil << "#VMD file created with DensToolKit." << endl;
    ofil << "#If you want to keep VMD's display on, comment or remove the last line 'quit'." << endl;

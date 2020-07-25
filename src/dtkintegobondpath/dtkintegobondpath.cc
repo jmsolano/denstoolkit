@@ -70,7 +70,7 @@ using std::setprecision;
 #include "../common/critptnetwork.h"
 #include "../common/fldtypesdef.h"
 #include "../common/integrateoverbondpath.h"
-#include "../common/solfileutils.h"
+#include "../common/fileutils.h"
 #include "optflags.h"
 #include "crtflnms.h"
 
@@ -90,15 +90,15 @@ int main (int argc, char ** argv) {
    mkFileNames(argv,options,infilnam,logfilnam);
 
    /* Just to let the user know that the initial configuration is OK.  */
-   printHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS);
+   ScreenUtils::PrintHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS);
    
    /* Loading the wave function  */
    cout << endl << "Loading wave function from file: " << infilnam << "... ";
    GaussWaveFunction gwf;
    if (!(gwf.readFromFile(infilnam))) {
-      setScrRedBoldFont();
+      ScreenUtils::SetScrRedBoldFont();
       cout << "Error: the wave function could not be loaded!\n";
-      setScrNormalFont();
+      ScreenUtils::SetScrNormalFont();
       exit(1);
    }
    cout << "Done." << endl;
@@ -145,7 +145,7 @@ int main (int argc, char ** argv) {
    cout << "globalEnergy: " << globalEnergy << endl;
    ofstream ofil(logfilnam.c_str());
    for ( size_t i=0 ; i<integ.size() ; ++i ) {
-      writeCommentedScrStarLine(ofil);
+      FileUtils::WriteScrStarLine(ofil);
       integ[i]->WriteIntegralValuesToFile(ofil,globalEnergy);
    }
    ofil.close();
@@ -159,9 +159,9 @@ int main (int argc, char ** argv) {
    /* At this point the computation has ended. Usually this means no
     * errors ocurred. */
    
-   setScrGreenBoldFont();
-   printHappyEnding();
-   printScrStarLine();
+   ScreenUtils::SetScrGreenBoldFont();
+   ScreenUtils::PrintHappyEnding();
+   ScreenUtils::PrintScrStarLine();
    cout << setprecision(3) << "CPU Time: "
         << solreal( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
    solreal end_walltime=time(NULL);
@@ -169,8 +169,8 @@ int main (int argc, char ** argv) {
 #if DEBUG
    cout << "Debuggin mode (under construction...)" << endl;
 #endif
-   printScrStarLine();
-   setScrNormalFont();
+   ScreenUtils::PrintScrStarLine();
+   ScreenUtils::SetScrNormalFont();
    return 0;
 }
 

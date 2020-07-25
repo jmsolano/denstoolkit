@@ -64,16 +64,16 @@ using namespace std;
 using std::setprecision;
 #include <ctime>
 
-#include "../common/solscrutils.h"
-#include "../common/solfileutils.h"
-#include "../common/solmemhand.h"
-#include "../common/solmath.h"
+#include "../common/screenutils.h"
+#include "../common/fileutils.h"
+#include "../common/mymemory.h"
+#include "../common/mymath.h"
 #include "../common/gausswavefunction.h"
 #include "../common/bondnetwork.h"
 #include "../common/critptnetwork.h"
 #include "../common/demat1critptnetworksl.h"
-#include "../common/solstringtools.h"
-#include "../common/solgnuplottools.h"
+#include "../common/stringtools.h"
+#include "../common/gnuplottools.h"
 #include "optflags.h"
 #include "crtflnms.h"
 #include "helperplots.h"
@@ -97,20 +97,20 @@ int main (int argc, char ** argv) {
    
    getOptions(argc,argv,options); //This processes the options from the command line.
    mkFileNames(argv,options,infilnam,outfilnam,o1dfilnam,o1sfilnam,basegnpnam,lognam); //This creates the names used.
-   printHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS); //Just to let the user know that the initial configuration is OK
+   ScreenUtils::PrintHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS); //Just to let the user know that the initial configuration is OK
    
    /* Loading the wave function */
    cout << endl << "Loading wave function from file: " << infilnam << "... ";
    GaussWaveFunction gwf;
    if (!(gwf.readFromFile(infilnam))) { //Loading the wave function
-      setScrRedBoldFont();
+      ScreenUtils::SetScrRedBoldFont();
       cout << "Error: the wave function could not be loaded!\n";
-      setScrNormalFont();
+      ScreenUtils::SetScrNormalFont();
       exit(1);
    }
    cout << "Done." << endl;
    if (gwf.nNuc==1) {
-      displayWarningMessage("This file contains only one atom... There are no bond paths...");
+      ScreenUtils::DisplayWarningMessage("This file contains only one atom... There are no bond paths...");
       cout << "Nothing to do!" << endl;
       gwf.~GaussWaveFunction();
       exit(0);
@@ -127,7 +127,7 @@ int main (int argc, char ** argv) {
       at2--;
    }
    if (at1>=gwf.nNuc||at2>=gwf.nNuc||at1<0||at2<0) {
-      displayErrorMessage("Requesting a non existent atom!");
+      ScreenUtils::DisplayErrorMessage("Requesting a non existent atom!");
       gwf.~GaussWaveFunction();
       exit(1);
    }
@@ -148,7 +148,7 @@ int main (int argc, char ** argv) {
    if (options.setn1) {
       sscanf(argv[options.setn1],"%d",&dimarr);
       if (dimarr<=0) {
-         displayErrorMessage("Please provide a positive number for the number of points!");
+         ScreenUtils::DisplayErrorMessage("Please provide a positive number for the number of points!");
          gwf.~GaussWaveFunction();
          bnw.~bondNetWork();
          cpn.~critPtNetWork();
@@ -174,7 +174,7 @@ int main (int argc, char ** argv) {
    
    /* Declaring an array to store the coordinates of the bond path points. */
    solreal **rbgp=NULL;
-   alloc2DRealArray(string("rbgp"),dimarr,3,rbgp);
+   MyMemory::Alloc2DRealArray(string("rbgp"),dimarr,3,rbgp);
    
    int nbgppts;
    solreal dl=DEFAULTBONDPATHSTEPMD1;
@@ -267,7 +267,7 @@ int main (int argc, char ** argv) {
    solreal gg[3],gp[3],proj[2],magproj;
    
 #if USEPROGRESSBAR
-   printProgressBar(0);
+   ScreenUtils::PrintProgressBar(0);
 #endif
    /* Upon the bond path... */
    if (options.uponbp) {
@@ -406,7 +406,7 @@ int main (int argc, char ** argv) {
          }
          p1+=sqrt(dist);
 #if USEPROGRESSBAR
-         printProgressBar(int(100.0e0*solreal(i)/solreal((nbgppts-1))));
+         ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((nbgppts-1))));
 #endif
       }
    }
@@ -534,13 +534,13 @@ int main (int argc, char ** argv) {
          ofile << endl;
          p1+=dl;
 #if USEPROGRESSBAR
-         printProgressBar(int(100.0e0*solreal(i)/solreal((nbgppts-1))));
+         ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((nbgppts-1))));
 #endif
       }
    }
    
 #if USEPROGRESSBAR
-   printProgressBar(100);
+   ScreenUtils::PrintProgressBar(100);
    cout << endl;
 #endif
    
@@ -553,37 +553,37 @@ int main (int argc, char ** argv) {
 
    DeMat1CriticalPointNetworkSL cp(&gwf,at1,at2);
    if ( options.findcps ) {
-      printBetweenStarLines("Searching Critical Points");
+      ScreenUtils::PrintBetweenStarLines("Searching Critical Points");
       cp.setGammaCriticalPoints();
-      printScrStarLine();
+      ScreenUtils::PrintScrStarLine();
    }
 
    /* Display the information of min/max of MD1 */
    
    cout << scientific << setprecision(12) << endl;
-   printScrCharLine('-');
+   ScreenUtils::PrintScrCharLine('-');
    //cout << "md1max: " << md1max << ", md1min: " << md1min << endl << endl;
    cout << "The maximum value (within the evaluated line) is located at:" << endl;
-   printV3Comp("x1(max): ",x1max);
-   printV3Comp("x2(max): ",x2max);
+   ScreenUtils::PrintV3Comp("x1(max): ",x1max);
+   ScreenUtils::PrintV3Comp("x2(max): ",x2max);
    cout << "(p1: " << p1max << ")\n(p2: " << p2max << ")" << endl;
    cout << "MD1(max): " << gwf.evalDensityMatrix1(x1max[0],x1max[1],x1max[2],
                                              x2max[0],x2max[1],x2max[2]);
    cout << endl;
-   printScrCharLine('-');
+   ScreenUtils::PrintScrCharLine('-');
    cout << "The minimum value (within the evaluated line) is located at:" << endl;
-   printV3Comp("x1(min): ",x1min);
-   printV3Comp("x2(min): ",x2min);
+   ScreenUtils::PrintV3Comp("x1(min): ",x1min);
+   ScreenUtils::PrintV3Comp("x2(min): ",x2min);
    cout << "(p1: " << p1min << ")\n(p2: " << p2min << ")" << endl;
    cout << "MD1(min): " << gwf.evalDensityMatrix1(x1min[0],x1min[1],x1min[2],
                                              x2min[0],x2min[1],x2min[2]);
    cout << endl;
-   printScrCharLine('-');
+   ScreenUtils::PrintScrCharLine('-');
    solreal md1lmin;
    if (options.uponbp) {
       md1lmin=gwf.evalDensityMatrix1(robcp[0],robcp[1],robcp[2],robcp[0],robcp[1],robcp[2]);
       cout << "The bond critical point is located at:" << endl;
-      printV3Comp("R(BCP): ",robcp);
+      ScreenUtils::PrintV3Comp("R(BCP): ",robcp);
       cout << "p1(p2): " << pbcp << endl;
       cout << "MD1(BCP): " << md1lmin << endl;
    }
@@ -591,30 +591,30 @@ int main (int argc, char ** argv) {
       cout << "The minimum value of the density is located at" << endl;
       cout << "(considering only the evaluated points)" << endl;
       md1lmin= gwf.evalDensityMatrix1(xrmin[0],xrmin[1],xrmin[2],xrmin[0],xrmin[1],xrmin[2]);
-      printV3Comp("R(rho,min): ",xrmin);
+      ScreenUtils::PrintV3Comp("R(rho,min): ",xrmin);
       cout << "MD1(rho,min): " << md1lmin << endl;
    }
-   printScrCharLine('-');
+   ScreenUtils::PrintScrCharLine('-');
    solreal md1dmax;
    md1dmax=gwf.evalDensityMatrix1(xd1max[0],xd1max[1],xd1max[2],xd2max[0],xd2max[1],xd2max[2]);
    cout << "The maximum value of MD1 at the diagonal (90 degrees from the rho line)" << endl;
    cout << "is located at" << endl;
-   printV3Comp("x1(diag,max): ",xd1max);
-   printV3Comp("x2(diag,max): ",xd2max);
+   ScreenUtils::PrintV3Comp("x1(diag,max): ",xd1max);
+   ScreenUtils::PrintV3Comp("x2(diag,max): ",xd2max);
    cout << "(p1: " << p1dmax << ")\n(p2: " << p2dmax << ")" << endl;
    cout << "MD1(diag,max): " << md1dmax << endl;
    if ( options.findcps ) {
-      printScrCharLine('-');
+      ScreenUtils::PrintScrCharLine('-');
       cp.displayCPsInfo();
    }
-   printScrCharLine('-');
+   ScreenUtils::PrintScrCharLine('-');
    cout << "The value of MD1 at the point e --aka cicp-- is:" << endl;
    cout << "MD1(cicp): " << gwf.evalDensityMatrix1(\
          bnw.R[at1][0],bnw.R[at1][1],bnw.R[at1][2],\
          bnw.R[at2][0],bnw.R[at2][1],bnw.R[at2][2]) << endl;
-   printScrCharLine('-');
+   ScreenUtils::PrintScrCharLine('-');
    cout << "Logfile: " << lognam << endl;
-   printScrCharLine('-');
+   ScreenUtils::PrintScrCharLine('-');
    cout << endl;
    
 
@@ -623,56 +623,56 @@ int main (int argc, char ** argv) {
    ofstream logfil;
    
    logfil.open(lognam.c_str(),ios::out);
-   writeCommentedHappyStart(argv,logfil,CURRENTVERSION,PROGRAMCONTRIBUTORS);
+   FileUtils::WriteHappyStart(argv,logfil,CURRENTVERSION,PROGRAMCONTRIBUTORS);
    logfil << scientific << setprecision(12);
-   writeCommentedScrCharLine(logfil,'-');
+   FileUtils::WriteScrCharLine(logfil,'-');
    logfil << "#The maximum value (within the evaluated line) is located at:" << endl;
-   writeV3Comp(logfil,"#x1(max):\n",x1max);
-   writeV3Comp(logfil,"#x2(max):\n",x2max);
+   FileUtils::WriteV3Components(logfil,"#x1(max):\n",x1max);
+   FileUtils::WriteV3Components(logfil,"#x2(max):\n",x2max);
    logfil << "#(p1):\n" << p1max << "\n#(p2):\n" << p2max << endl;
    logfil << "#MD1(max):\n" << gwf.evalDensityMatrix1(x1max[0],x1max[1],x1max[2],
                                                     x2max[0],x2max[1],x2max[2]);
    logfil << endl;
-   writeCommentedScrCharLine(logfil,'-');
+   FileUtils::WriteScrCharLine(logfil,'-');
    logfil << "#The minimum value (within the evaluated line) is located at:" << endl;
-   writeV3Comp(logfil,"#x1(min):\n",x1min);
-   writeV3Comp(logfil,"#x2(min):\n",x2min);
+   FileUtils::WriteV3Components(logfil,"#x1(min):\n",x1min);
+   FileUtils::WriteV3Components(logfil,"#x2(min):\n",x2min);
    logfil << "#(p1):\n" << p1min << "\n#(p2):\n" << p2min << endl;
    logfil << "#MD1(min):\n" << gwf.evalDensityMatrix1(x1min[0],x1min[1],x1min[2],
                                                     x2min[0],x2min[1],x2min[2]);
    logfil << endl;
-   writeCommentedScrCharLine(logfil,'-');
+   FileUtils::WriteScrCharLine(logfil,'-');
    if (options.uponbp) {
       logfil << "#The bond critical point is located at:" << endl;
-      writeV3Comp(logfil,"#R(BCP):\n",robcp);
+      FileUtils::WriteV3Components(logfil,"#R(BCP):\n",robcp);
       logfil << "#p1(p2):\n" << pbcp << endl;
       logfil << "#MD1(BCP):\n" << md1lmin << endl;
    }
    if (options.uponsl) {
       logfil << "#The minimum value of the density is located at" << endl;
       logfil << "#(considering only the evaluated points)" << endl;
-      writeV3Comp(logfil,"#R(rho,min):\n",xrmin);
+      FileUtils::WriteV3Components(logfil,"#R(rho,min):\n",xrmin);
       logfil << "#MD1(rho,min):\n" << md1lmin << endl;
    }
-   writeCommentedScrCharLine(logfil,'-');
+   FileUtils::WriteScrCharLine(logfil,'-');
    logfil << "#The maximum value of MD1 at the diagonal (90 degrees from the rho line)" << endl;
    logfil << "#is located at" << endl;
-   writeV3Comp(logfil,"#x1(diag,max):\n",xd1max);
-   writeV3Comp(logfil,"#x2(diag,max):\n",xd2max);
+   FileUtils::WriteV3Components(logfil,"#x1(diag,max):\n",xd1max);
+   FileUtils::WriteV3Components(logfil,"#x2(diag,max):\n",xd2max);
    logfil << "#(p1):\n" << p1dmax << "\n#(p2):\n" << p2dmax << endl;
    logfil << "#MD1(diag,max):\n" << md1dmax << endl;
    /* Writing the information of MD1 (min/max) to the log file */
    if ( options.findcps ) {
-      writeCommentedScrCharLine(logfil,'-');
+      FileUtils::WriteScrCharLine(logfil,'-');
       cp.writeCPsInfo(logfil);
    }
    /* Writes the value of gamma at cicp  */
-   writeCommentedScrCharLine(logfil,'-');
+   FileUtils::WriteScrCharLine(logfil,'-');
    logfil << "#The value of MD1 at the point e --aka cicp-- is:" << endl;
    logfil << "#MD1(CICP): " << endl << gwf.evalDensityMatrix1(\
          bnw.R[at1][0],bnw.R[at1][1],bnw.R[at1][2],\
          bnw.R[at2][0],bnw.R[at2][1],bnw.R[at2][2]) << endl;
-   writeCommentedScrCharLine(logfil,'-');
+   FileUtils::WriteScrCharLine(logfil,'-');
 
    logfil.close();
    
@@ -683,7 +683,7 @@ int main (int argc, char ** argv) {
    solreal range=fabs(md1dmax-md1lmin);
 #if DEBUG
    if ( md1lmin<0.0e0 ) {
-      displayWarningMessage(string("md1lmin: "+getStringFromReal(md1lmin)));
+      ScreenUtils::DisplayWarningMessage(string("md1lmin: "+getStringFromReal(md1lmin)));
    }
    cout << "gmin: " << gmd1min << ", gmax: " << gmd1max << endl;
    cout << "md1dmax: " << md1dmax << endl;
@@ -725,13 +725,13 @@ int main (int argc, char ** argv) {
    
    /* Freeing memory space */
    
-   dealloc2DRealArray(rbgp,dimarr);
+   MyMemory::Dealloc2DRealArray(rbgp,dimarr);
    
    /* At this point the computation has ended. Usually this means that no errors ocurred. */
    
-   setScrGreenBoldFont();
-   printHappyEnding();
-   printScrStarLine();
+   ScreenUtils::PrintHappyEnding();
+   ScreenUtils::SetScrGreenBoldFont();
+   ScreenUtils::PrintScrStarLine();
    cout << setprecision(3) << "CPU Time: "
         << solreal( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
    solreal end_walltime=time(NULL);
@@ -739,8 +739,8 @@ int main (int argc, char ** argv) {
 #if DEBUG
    cout << "Debuggin mode (under construction...)" << endl;
 #endif
-   printScrStarLine();
-   setScrNormalFont();
+   ScreenUtils::PrintScrStarLine();
+   ScreenUtils::SetScrNormalFont();
    return 0;
 }
 

@@ -50,11 +50,11 @@ using std::cerr;
 #include <fstream>
 using std::ofstream;
 #include "circledots3d.h"
-#include "solscrutils.h"
-#include "solstringtools.h"
-#include "solmemhand.h"
-#include "solmath.h"
-#include "solfileutils.h"
+#include "screenutils.h"
+#include "stringtools.h"
+#include "mymemory.h"
+#include "mymath.h"
+#include "fileutils.h"
 
 
 /* ************************************************************************** */
@@ -67,7 +67,7 @@ CircleDots3D::CircleDots3D()
 /* ************************************************************************** */
 CircleDots3D::~CircleDots3D()
 {
-   dealloc2DRealArray(xx_,npts_);
+   MyMemory::Dealloc2DRealArray(xx_,npts_);
 }
 /* ************************************************************************** */
 void CircleDots3D::init()
@@ -85,14 +85,14 @@ solreal CircleDots3D::getCartCoord(const int i,const int j)
       return xx_[i][j];
    } else {
       if ( xx_==NULL ) {
-         displayErrorMessage("First setup this object");
+         ScreenUtils::DisplayErrorMessage("First setup this object");
 #if DEBUG
             DISPLAYDEBUGINFOFILELINE;
 #endif /* ( DEBUG ) */
          return 0.0e0;
       }
       if ( i>=npts_ ) {
-         displayErrorMessage(string("Only ")+getStringFromInt(i)\
+         ScreenUtils::DisplayErrorMessage(string("Only ")+StringTools::GetStringFromInt(i)\
                +string(" points in the circle!"));
 #if DEBUG
             DISPLAYDEBUGINFOFILELINE;
@@ -100,7 +100,7 @@ solreal CircleDots3D::getCartCoord(const int i,const int j)
             return 0.0e0;
       }
       if ( j>2 ) {
-         displayErrorMessage("Non valid cartesian index!");
+         ScreenUtils::DisplayErrorMessage("Non valid cartesian index!");
 #if DEBUG
             DISPLAYDEBUGINFOFILELINE;
 #endif /* ( DEBUG ) */
@@ -116,14 +116,14 @@ solreal CircleDots3D::getPhi(const int i)
       return xx_[i][3];
    } else {
       if ( xx_==NULL ) {
-         displayErrorMessage("First setup this object");
+         ScreenUtils::DisplayErrorMessage("First setup this object");
 #if DEBUG
             DISPLAYDEBUGINFOFILELINE;
 #endif /* ( DEBUG ) */
          return 0.0e0;
       }
       if ( i>=npts_ ) {
-         displayErrorMessage(string("Only ")+getStringFromInt(i)\
+         ScreenUtils::DisplayErrorMessage(string("Only ")+StringTools::GetStringFromInt(i)\
                +string(" points in the circle!"));
 #if DEBUG
             DISPLAYDEBUGINFOFILELINE;
@@ -138,7 +138,7 @@ void CircleDots3D::setE1(const solreal x,const solreal y,const solreal z)
 {
    ue1_[0]=x; ue1_[1]=y; ue1_[2]=z;
    if ( sqrt(ue1_[0]*ue1_[0]+ue1_[1]*ue1_[1]+ue1_[2]*ue1_[2])<=0.0e0 ) {
-      displayErrorMessage("Please provide a non-zero vector!");
+      ScreenUtils::DisplayErrorMessage("Please provide a non-zero vector!");
 #if DEBUG
       DISPLAYDEBUGINFOFILELINE;
 #endif /* ( DEBUG ) */
@@ -152,7 +152,7 @@ void CircleDots3D::setE2(const solreal x,const solreal y,const solreal z)
 {
    ue2_[0]=x; ue2_[1]=y; ue2_[2]=z;
    if ( sqrt(ue2_[0]*ue2_[0]+ue2_[1]*ue2_[1]+ue2_[2]*ue2_[2])<=0.0e0 ) {
-      displayErrorMessage("Please provide a non-zero vector!");
+      ScreenUtils::DisplayErrorMessage("Please provide a non-zero vector!");
 #if DEBUG
       DISPLAYDEBUGINFOFILELINE;
 #endif /* ( DEBUG ) */
@@ -174,7 +174,7 @@ void CircleDots3D::setE1AndE2(const solreal (&ee1)[3],const solreal (&ee2)[3])
 void CircleDots3D::computeUE3(void)
 {
    if ( !(havee1&&havee2) ) {
-      displayErrorMessage("First set e1 and e2!");
+      ScreenUtils::DisplayErrorMessage("First set e1 and e2!");
 #if DEBUG
          DISPLAYDEBUGINFOFILELINE;
 #endif /* ( DEBUG ) */
@@ -188,11 +188,11 @@ void CircleDots3D::setupCircle(void)
 {
    computeUE3();
    if ( !havee3 ) {
-      displayErrorMessage("First setup the e3 vector!");
+      ScreenUtils::DisplayErrorMessage("First setup the e3 vector!");
       return;
    }
    if ( npts_<=0 ) {
-      displayErrorMessage("First set the number of points for the discretized"
+      ScreenUtils::DisplayErrorMessage("First set the number of points for the discretized"
             "circle!");
       return;
    }
@@ -202,7 +202,7 @@ void CircleDots3D::setupCircle(void)
       crossProductV3(e3_,e1_,e2_); normalizeV3(e2_);
    }
    dphi_=twoPi/solreal(npts_-1);
-   alloc2DRealArray("xx_",npts_,4,xx_);
+   MyMemory::Alloc2DRealArray("xx_",npts_,4,xx_);
    solreal phi,cp,sp;
    for ( int i=0 ; i<npts_ ; ++i ) {
       phi=solreal(i)*dphi_;
@@ -219,20 +219,20 @@ void CircleDots3D::setupCircle(void)
 void CircleDots3D::displayCoordinates(void)
 {
    if ( !imsetup ) {
-      displayErrorMessage("The circle is not setup!");
+      ScreenUtils::DisplayErrorMessage("The circle is not setup!");
 #if DEBUG
       DISPLAYDEBUGINFOFILELINE;
 #endif /* ( DEBUG ) */
       return;
    }
    cout << std::scientific << std::setprecision(10);
-   printScrStarLine();
-   centerString("Coordinates of circle.");
-   printScrCharLine('-');
-   printV3Comp("e1: ",e1_);
-   printV3Comp("e2: ",e2_);
-   printV3Comp("e3: ",e3_);
-   printScrStarLine();
+   ScreenUtils::PrintScrStarLine();
+   ScreenUtils::CenterString("Coordinates of circle.");
+   ScreenUtils::PrintScrCharLine('-');
+   ScreenUtils::PrintV3Comp("e1: ",e1_);
+   ScreenUtils::PrintV3Comp("e2: ",e2_);
+   ScreenUtils::PrintV3Comp("e3: ",e3_);
+   ScreenUtils::PrintScrStarLine();
    int nnww=floor(log10(solreal(npts_-1)))+1;
    for ( int i=0 ; i<npts_ ; ++i ) {
       cout << "P[" << std::setw(nnww) << std::setfill('0') << i << "]: ";
@@ -240,26 +240,26 @@ void CircleDots3D::displayCoordinates(void)
       cout << endl;
    }
    cout << "width: " << nnww << endl;
-   printScrStarLine();
+   ScreenUtils::PrintScrStarLine();
 }
 /* ************************************************************************** */
 void CircleDots3D::writeCoordinates(const string &oname,bool wrtoo)
 {
    ofstream ofil(oname.c_str());
-   writeCommentedScrStarLine(ofil);
-   centerCommentedString("Coordinates of circle, centered at",ofil);
+   FileUtils::WriteScrStarLine(ofil);
+   FileUtils::WriteCenteredString(ofil,"Coordinates of circle, centered at");
    ofil << std::scientific << std::setprecision(12);
    ofil << "#\n# " << oo_[0] << " " << oo_[1] << " " << oo_[2] << "\n#" << endl;
    ofil << "#The circle will be draw in the plane spanned by: " << endl;
-   writeV3Comp(ofil,"#v1: ",ue1_);
-   writeV3Comp(ofil,"#v2: ",ue2_);
+   FileUtils::WriteV3Components(ofil,"#v1: ",ue1_);
+   FileUtils::WriteV3Components(ofil,"#v2: ",ue2_);
    ofil << "#Final unit vectors:" << endl;
-   writeV3Comp(ofil,"#e1: ",e1_);
-   writeV3Comp(ofil,"#e2: ",e2_);
-   writeV3Comp(ofil,"#e3: ",e3_);
+   FileUtils::WriteV3Components(ofil,"#e1: ",e1_);
+   FileUtils::WriteV3Components(ofil,"#e2: ",e2_);
+   FileUtils::WriteV3Components(ofil,"#e3: ",e3_);
    if ( wrtoo ) {
       ofil << "#The first point is the center of the circle." << endl;
-      writeV3Comp(ofil,oo_);
+      FileUtils::WriteV3Components(ofil,oo_);
    }
    for ( int i=0 ; i<npts_ ; ++i ) {
       for ( int j=0 ; j<3 ; ++j ) {ofil << xx_[i][j] << " ";}

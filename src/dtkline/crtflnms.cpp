@@ -63,9 +63,13 @@
 */
 #ifndef _CRTFLNMS_CPP
 #define _CRTFLNMS_CPP
+#include <cstdlib>
+#include <iostream>
+using std::cout;
+using std::endl;
 #include "crtflnms.h"
-#include "../common/solfileutils.h"
-#include "../common/solscrutils.h"
+#include "../common/fileutils.h"
+#include "../common/screenutils.h"
 #include "../common/fldtypesdef.h"
 
 void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn, string &o_fn,string &g_fn)
@@ -84,9 +88,9 @@ void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn, string &o_fn,str
        (i_fn.find("WFN")!=string::npos)||
        (i_fn.find("wfx")!=string::npos)||
        (i_fn.find("WFX")!=string::npos))) {
-      setScrRedBoldFont();
+      ScreenUtils::SetScrRedBoldFont();
       cout << "\nError: the file " << i_fn << " is not a valid wave function file." << endl << endl;
-      setScrNormalFont();
+      ScreenUtils::SetScrNormalFont();
       exit(1);
    }
    o_fn=i_fn.substr(0,(i_fn.length()-3));

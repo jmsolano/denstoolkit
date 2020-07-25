@@ -76,7 +76,7 @@ waveFunctionGrid3D::waveFunctionGrid3D()
 /* ********************************************************************************** */
 waveFunctionGrid3D::~waveFunctionGrid3D()
 {
-   dealloc1DRealArray(prop1d);
+   MyMemory::Dealloc1DRealArray(prop1d);
 }
 /* ********************************************************************************** */
 void waveFunctionGrid3D::setUpSimpleGrid(GaussWaveFunction &wf,bondNetWork &bn)
@@ -90,7 +90,7 @@ void waveFunctionGrid3D::setUpSimpleGrid(GaussWaveFunction &wf,bondNetWork &bn)
       xin[i]=bn.bbmin[i]-(EXTRASPACECUBEFACTOR*bn.maxBondDist);
       dx[i][i]=(bn.bbmax[i]-bn.bbmin[i]+(2.0e0*EXTRASPACECUBEFACTOR)*bn.maxBondDist)/solreal(npts[i]-1);
    }
-   alloc1DRealArray("prop1d",npts[2],prop1d);
+   MyMemory::Alloc1DRealArray("prop1d",npts[2],prop1d);
    imsetup=true;
    return;
 }
@@ -116,7 +116,7 @@ void waveFunctionGrid3D::setUpSmartCuboidGrid(GaussWaveFunction &wf,bondNetWork 
       xin[i]=bn.bbmin[i]-(EXTRASPACECUBEFACTOR*bn.maxBondDist);
       dx[i][i]=(bn.bbmax[i]-bn.bbmin[i]+xsp)/solreal(npts[i]-1);
    }
-   alloc1DRealArray("prop1d",npts[2],prop1d);
+   MyMemory::Alloc1DRealArray("prop1d",npts[2],prop1d);
    imsetup=true;
    return;
 }
@@ -135,7 +135,7 @@ void waveFunctionGrid3D::setUpCenteredGrid(GaussWaveFunction &wf,bondNetWork &bn
       xin[i]=x0[i]-0.5*len;
       dx[i][i]=len/solreal(npts[i]-1);
    }
-   alloc1DRealArray("prop1d",npts[2],prop1d);
+   MyMemory::Alloc1DRealArray("prop1d",npts[2],prop1d);
    imsetup=true;
    return;
 }
@@ -179,7 +179,7 @@ void waveFunctionGrid3D::writeCubeRho(ofstream &ofil,GaussWaveFunction &wf)
       }
       xx+=dx[0][0];
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
 #endif
    }
    return;
@@ -205,7 +205,7 @@ void waveFunctionGrid3D::writeCubeLapRho(ofstream &ofil,GaussWaveFunction &wf)
       }
       xx+=dx[0][0];
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
 #endif
    }
    return;
@@ -231,7 +231,7 @@ void waveFunctionGrid3D::writeCubeELF(ofstream &ofil,GaussWaveFunction &wf)
       }
       xx+=dx[0][0];
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
 #endif
    }
    return;
@@ -257,7 +257,7 @@ void waveFunctionGrid3D::writeCubeShannonEntropy(ofstream &ofil,GaussWaveFunctio
       }
       xx+=dx[0][0];
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
 #endif
    }
    return;
@@ -283,7 +283,7 @@ void waveFunctionGrid3D::writeCubeMagGradRho(ofstream &ofil,GaussWaveFunction &w
       }
       xx+=dx[0][0];
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
 #endif
    }
    return;
@@ -313,7 +313,7 @@ void waveFunctionGrid3D::writeCubeLOL(ofstream &ofil,GaussWaveFunction &wf)
       }
       xx+=dx[0][0];
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
 #endif
    }
    return;
@@ -339,7 +339,7 @@ void waveFunctionGrid3D::writeCubeKinetEnerDensG(ofstream &ofil,GaussWaveFunctio
       }
       xx+=dx[0][0];
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
 #endif
    }
    return;
@@ -365,7 +365,7 @@ void waveFunctionGrid3D::writeCubeKinetEnerDensK(ofstream &ofil,GaussWaveFunctio
       }
       xx+=dx[0][0];
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
 #endif
    }
    return;
@@ -397,7 +397,7 @@ void waveFunctionGrid3D::writeCubeMagGradLOL(ofstream &ofil,GaussWaveFunction &w
       }
       xl[0]+=dx[0][0];
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
 #endif
    }
    return;
@@ -423,7 +423,7 @@ void waveFunctionGrid3D::writeCubeMolElecPot(ofstream &ofil,GaussWaveFunction &w
       }
       xx+=dx[0][0];
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
 #endif
    }
    return;
@@ -449,7 +449,7 @@ void waveFunctionGrid3D::writeCubeMagLED(ofstream &ofil,GaussWaveFunction &wf)
       }
       xx+=dx[0][0];
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
 #endif
    }
    return;
@@ -475,7 +475,7 @@ void waveFunctionGrid3D::writeCubeRedDensGrad(ofstream &ofil,GaussWaveFunction &
       }
       xx+=dx[0][0];
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
 #endif
    }
    return;
@@ -501,7 +501,7 @@ void waveFunctionGrid3D::writeCubeRoSE(ofstream &ofil,GaussWaveFunction &wf)
       }
       xx+=dx[0][0];
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
 #endif
    }
    return;
@@ -527,7 +527,7 @@ void waveFunctionGrid3D::writeCubeScalarCustFld(ofstream &ofil,GaussWaveFunction
       }
       xx+=dx[0][0];
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
 #endif
    }
    return;
@@ -546,7 +546,7 @@ void waveFunctionGrid3D::makeCube(string &onam,GaussWaveFunction &wf,ScalarField
    ofil.open(onam.c_str());
    writeCubeHeader(ofil,wf.title[0],comments,npts,xin,dx,wf.nNuc,wf.atCharge,wf.R);
 #if USEPROGRESSBAR
-   printProgressBar(0);
+   ScreenUtils::PrintProgressBar(0);
 #endif
    switch (ft) {
       case DENS:
@@ -608,7 +608,7 @@ void waveFunctionGrid3D::makeCube(string &onam,GaussWaveFunction &wf,ScalarField
          break;
    }
 #if USEPROGRESSBAR
-   printProgressBar(100);
+   ScreenUtils::PrintProgressBar(100);
    cout << endl;
 #endif
    ofil.close();
@@ -635,7 +635,7 @@ void waveFunctionGrid3D::writeCubeEllipticity(ofstream &ofil,GaussWaveFunction &
       }
       xx+=dx[0][0];
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
 #endif
    }
    return;
@@ -661,7 +661,7 @@ void waveFunctionGrid3D::writeCubeVirialPotentialEnergyDensity(ofstream &ofil,Ga
       }
       xx+=dx[0][0];
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
 #endif
    }
    return;
@@ -687,7 +687,7 @@ void waveFunctionGrid3D::writeCubeNCIRedDensGrad(ofstream &ofil,GaussWaveFunctio
       }
       xx+=dx[0][0];
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
 #endif
    }
    return;
@@ -713,7 +713,7 @@ void waveFunctionGrid3D::writeCubeNCIRho(ofstream &ofil,GaussWaveFunction &wf)
       }
       xx+=dx[0][0];
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
 #endif
    }
    return;

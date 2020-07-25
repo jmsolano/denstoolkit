@@ -1,44 +1,4 @@
 /*
-                      This source code is part of
-  
-                    D  E  N  S  T  O  O  L  K  I  T
-  
-               Contributors: Juan Manuel Solano-Altamirano
-                             Julio Manuel Hernandez-Perez
-          Copyright (c) 2013-2020, Juan Manuel Solano-Altamirano
-                                   <jmsolanoalt@gmail.com>
-  
-   -------------------------------------------------------------------
-  
-   This program is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
-  
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-  
-   You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  
-   ---------------------------------------------------------------------
-  
-   If you want to redistribute modifications of the suite, please
-   consider to include your modifications in our official release.
-   We will be pleased to consider the inclusion of your code
-   within the official distribution. Please keep in mind that
-   scientific software is very special, and version control is 
-   crucial for tracing bugs. If in despite of this you distribute
-   your modified version, please do not call it DensToolKit.
-  
-   If you find DensToolKit useful, we humbly ask that you cite
-   the paper(s) on the package --- you can find them on the top
-   README file.
-*/
-
-/*
    solmath.cpp
 
    Created by Juan Manuel Solano Altamirano on 11/03/13.
@@ -49,77 +9,61 @@
  
  */
 
-#ifndef _SOLMATH_CPP_
-#define _SOLMATH_CPP_
+#ifndef _MYMATH_CPP_
+#define _MYMATH_CPP_
 
-#include "solmath.h"
+#include "mymath.h"
 #include <cmath>
 #include <iostream>
 
 #define MAXSAMPLESFORBOYSFUNCTION 13
 
+#ifndef DEBUG
+#define DEBUG 0
+#endif
+
 /* ************************************************************************** */
-int factorial(const int n)
-{
+int factorial(const int n) {
    return ((n == 1 || n == 0) ? 1 : factorial(n - 1) * n);
 }
 /* ************************************************************************** */
-int doubfact(const int n)
-{
+int doubfact(const int n) {
    return ((n == 0 || n == -1) ? 1 : doubfact(n - 2) * n);
 }
 /* ************************************************************************** */
-solreal magV3(solreal (&v)[3])
-{
-   solreal m=EPSTODIVIDE+(v[0]*v[0])+(v[1]*v[1])+(v[2]*v[2]);
+double magV3(double (&v)[3]) {
+   double m=EPSTODIVIDE+(v[0]*v[0])+(v[1]*v[1])+(v[2]*v[2]);
    return sqrt(m);
 }
 /* ************************************************************************** */
-void normalizeV3(solreal (&v)[3])
-{
-   solreal m=EPSTODIVIDE+(v[0]*v[0])+(v[1]*v[1])+(v[2]*v[2]);
+void normalizeV3(double (&v)[3]) {
+   double m=EPSTODIVIDE+(v[0]*v[0])+(v[1]*v[1])+(v[2]*v[2]);
    m=sqrt(m);
    for (int i=0; i<3; i++) {v[i]/=m;}
    return;
 }
 /* ************************************************************************** */
-void crossProductV3(solreal (&a)[3],solreal (&b)[3],solreal (&c)[3])
-{
+void crossProductV3(double (&a)[3],double (&b)[3],double (&c)[3]) {
    c[0]=a[1]*b[2]-a[2]*b[1];
    c[1]=a[2]*b[0]-a[0]*b[2];
    c[2]=a[0]*b[1]-a[1]*b[0];
    return;
 }
 /* ************************************************************************** */
-solreal dotProductV3(solreal (&a)[3],solreal (&b)[3])
-{
+double dotProductV3(double (&a)[3],double (&b)[3]) {
    return (a[0]*b[0]+a[1]*b[1]+a[2]*b[2]);
 }
 /* ************************************************************************** */
-/*
-inline void sort2intmin2max(int &a,int&b)
-{
-   if (a<=b) {
-      return;
-   } else {
-      int c=a;
-      a=b;
-      b=c;
-   }
-   return;
-}
-// */
 /* ************************************************************************** */
-solreal rfactorial(const int n)
-{
+double rfactorial(const int n) {
    static const int RFNMAX=121;
-   static solreal rf[RFNMAX];
+   static double rf[RFNMAX];
    static bool initme=true;
    if (initme) {
       std::cout << "Init rf array..." << std::endl;
       initme=false;
       rf[0]=1.0e0;
-      for (int i=1; i<RFNMAX; i++) {rf[i]=solreal(i)*rf[i-1];}
+      for (int i=1; i<RFNMAX; i++) {rf[i]=double(i)*rf[i-1];}
    }
 #if _SOL_USE_SAFE_CHECKS_
    if ((n<0)||(n>(RFNMAX-1))) {
@@ -130,28 +74,27 @@ solreal rfactorial(const int n)
    return rf[n];
 }
 /* ************************************************************************** */
-solreal BoysFunction(const int m,solreal x)
-{
-   static const solreal srpo2=0.88622692545275801365e0; //$\sqrt{\pi}/2$
-   solreal srx=sqrt(x);
-   solreal F0=srpo2*erf(srx)/srx;
+double BoysFunction(const int m,double x) {
+   static const double srpo2=0.88622692545275801365e0; //$\sqrt{\pi}/2$
+   double srx=sqrt(x);
+   double F0=srpo2*erf(srx)/srx;
    if (m==0) {return F0;}
-   solreal emx=exp(-x);
-   solreal oo2x=0.5e0/x;
+   double emx=exp(-x);
+   double oo2x=0.5e0/x;
    if (m==1) {return ((F0-emx)*oo2x);}
-   solreal oo2x2=oo2x*oo2x;
+   double oo2x2=oo2x*oo2x;
    if (m==2) {return (3.0e0*F0*oo2x2-emx*(oo2x+3.0e0*oo2x2));}
-   solreal oo2x3=oo2x*oo2x2;
+   double oo2x3=oo2x*oo2x2;
    if (m==3) {return (15.0e0*F0*oo2x3-emx*(oo2x+5.0e0*oo2x2+15.0e0*oo2x3));}
-   solreal oo2x4=oo2x2*oo2x2;
+   double oo2x4=oo2x2*oo2x2;
    //std::cout << "oo2x4: " << oo2x4 << std::endl;
    if (m==4) {return (105.0e0*F0*oo2x4-emx*(oo2x+7.0e0*oo2x2+35.0e0*oo2x3+105.0e0*oo2x4));}
-   solreal oo2x5=oo2x3*oo2x2;
+   double oo2x5=oo2x3*oo2x2;
    //std::cout << "oo2x5: " << oo2x5 << std::endl;
    if (m==5) {
       return (945.0e0*F0*oo2x5-emx*(oo2x+9.0e0*oo2x2+63.0e0*oo2x3+315.0e0*oo2x4+945.0e0*oo2x5));
    }
-   solreal oo2x6=oo2x3*oo2x3;
+   double oo2x6=oo2x3*oo2x3;
    //std::cout << "oo2x6: " << oo2x6 << std::endl;
    if (m==6) {
       return (10395.0e0*F0*oo2x6-emx*(oo2x+11.0e0*oo2x2+99.0e0*oo2x3+693.0e0*oo2x4
@@ -163,13 +106,12 @@ solreal BoysFunction(const int m,solreal x)
    return 0.0e0;
 }
 /* ************************************************************************** */
-solreal RecursiveBoysFunction(const int m,const solreal x)
-{
-   static const solreal srpo2=0.88622692545275801365e0; //$\sqrt{\pi}/2$
-   solreal srx=sqrt(x);
-   solreal res=srpo2*erf(srx)/srx;
+double RecursiveBoysFunction(const int m,const double x) {
+   static const double srpo2=0.88622692545275801365e0; //$\sqrt{\pi}/2$
+   double srx=sqrt(x);
+   double res=srpo2*erf(srx)/srx;
    if (m==0) {return res;}
-   solreal oo2x=0.5e0/x,ri=-1.0e0,emx=exp(-x);
+   double oo2x=0.5e0/x,ri=-1.0e0,emx=exp(-x);
    for (int i=1; i<=m; i++) {
       ri+=2.0e0;
       res*=ri;
@@ -180,11 +122,10 @@ solreal RecursiveBoysFunction(const int m,const solreal x)
 }
 
 /* ************************************************************************** */
-solreal TabBoysFunction(const int m,const solreal x)
-{
-   static const solreal x0[MAXSAMPLESFORBOYSFUNCTION]={0.0e0,0.1e0,0.2e0,0.3e0,0.4e0,0.5e0\
+double TabBoysFunction(const int m,const double x) {
+   static const double x0[MAXSAMPLESFORBOYSFUNCTION]={0.0e0,0.1e0,0.2e0,0.3e0,0.4e0,0.5e0\
    ,0.6e0,0.7e0,0.8e0,0.9e0,1.0e0,1.1e0,1.2e0};
-   static const solreal Fn[MAXSAMPLESFORBOYSFUNCTION][7][7]={
+   static const double Fn[MAXSAMPLESFORBOYSFUNCTION][7][7]={
       {
          {1.000000000000000,0.3333333333333333,0.1000000000000000,0.02380952380952381,
             0.004629629629629630,0.0007575757575757576,0.0001068376068376068},
@@ -400,7 +341,7 @@ solreal TabBoysFunction(const int m,const solreal x)
    }
 #endif
    int sampi;
-   solreal xastmx;
+   double xastmx;
    for (int i=0; i<=MAXSAMPLESFORBOYSFUNCTION; i++) {
       xastmx=x0[i]-x;
       if (fabs(xastmx)<0.05e0) {
@@ -409,7 +350,7 @@ solreal TabBoysFunction(const int m,const solreal x)
       }
    }
    std::cout << "sampi: " << sampi << std::endl;
-   solreal res=Fn[sampi][m][0],xn=xastmx;
+   double res=Fn[sampi][m][0],xn=xastmx;
    for (int i=1; i<7; i++) {
       res+=xn*Fn[sampi][m][i];
       xn*=xastmx;
@@ -417,8 +358,7 @@ solreal TabBoysFunction(const int m,const solreal x)
    return res;
 }
 /* ************************************************************************** */
-void BoysFunction(const solreal x,const int nmax,solreal (&fn)[7])
-{
+void BoysFunction(const double x,const int nmax,double (&fn)[7]) {
 #if DEBUG
    if (x<0.0e0||nmax<0||nmax>6) {
       std::cout << "Bad argument in Boys Function calling..." << std::endl;
@@ -432,12 +372,11 @@ void BoysFunction(const solreal x,const int nmax,solreal (&fn)[7])
    return;
 }
 /* ************************************************************************** */
-void BoysFunctionRec(const solreal x,const int nmax,solreal (&fn)[7])
-{
-   static const solreal srpo2=0.88622692545275801365e0; //$\sqrt{\pi}/2$
-   solreal srx=sqrt(x);
+void BoysFunctionRec(const double x,const int nmax,double (&fn)[7]) {
+   static const double srpo2=0.88622692545275801365e0; //$\sqrt{\pi}/2$
+   double srx=sqrt(x);
    fn[0]=srpo2*erf(srx)/srx;
-   solreal oo2x=0.5e0/x,ri=-1.0e0,emx=exp(-x);
+   double oo2x=0.5e0/x,ri=-1.0e0,emx=exp(-x);
    for (int i=1; i<=nmax; i++) {
       ri+=2.0e0;
       fn[i]=(fn[i-1]*ri-emx)*oo2x;
@@ -445,11 +384,10 @@ void BoysFunctionRec(const solreal x,const int nmax,solreal (&fn)[7])
    return;
 }
 /* ************************************************************************** */
-void BoysFunctionTab(const solreal x,const int nmax,solreal (&fn)[7])
-{
-   static const solreal x0[MAXSAMPLESFORBOYSFUNCTION]={0.0e0,0.1e0,0.2e0,0.3e0,0.4e0,0.5e0\
+void BoysFunctionTab(const double x,const int nmax,double (&fn)[7]) {
+   static const double x0[MAXSAMPLESFORBOYSFUNCTION]={0.0e0,0.1e0,0.2e0,0.3e0,0.4e0,0.5e0\
       ,0.6e0,0.7e0,0.8e0,0.9e0,1.0e0,1.1e0,1.2e0};
-   static const solreal Fn[MAXSAMPLESFORBOYSFUNCTION][7][7]={
+   static const double Fn[MAXSAMPLESFORBOYSFUNCTION][7][7]={
       {
          {1.000000000000000,0.3333333333333333,0.1000000000000000,0.02380952380952381,
             0.004629629629629630,0.0007575757575757576,0.0001068376068376068},
@@ -660,7 +598,7 @@ void BoysFunctionTab(const solreal x,const int nmax,solreal (&fn)[7])
       }
    };
    int sampi;
-   solreal xastmx;
+   double xastmx;
    for (int i=0; i<=MAXSAMPLESFORBOYSFUNCTION; i++) {
       xastmx=x0[i]-x;
       if (fabs(xastmx)<0.05e0) {
@@ -668,7 +606,7 @@ void BoysFunctionTab(const solreal x,const int nmax,solreal (&fn)[7])
          break;
       }
    }
-   solreal xn=xastmx;
+   double xn=xastmx;
    for (int i=0; i<=nmax; i++) {
       fn[i]=Fn[sampi][i][0];
       xn=xastmx;
@@ -680,17 +618,15 @@ void BoysFunctionTab(const solreal x,const int nmax,solreal (&fn)[7])
    return;
 }
 /* ************************************************************************** */
-solreal detM3x3(solreal (&oM)[3][3])
-{
-   solreal res=oM[0][0]*(oM[1][1]*oM[2][2]-oM[2][1]*oM[1][2]);
+double detM3x3(double (&oM)[3][3]) {
+   double res=oM[0][0]*(oM[1][1]*oM[2][2]-oM[2][1]*oM[1][2]);
    res+=(oM[0][1]*(oM[2][0]*oM[1][2]-oM[1][0]*oM[2][2]));
    res+=(oM[0][2]*(oM[1][0]*oM[2][1]-oM[2][0]*oM[1][1]));
    return res;
 }
 /* ************************************************************************** */
-void invertM3x3(solreal (&oM)[3][3],solreal (&rM)[3][3])
-{
-   solreal det=detM3x3(oM);
+void invertM3x3(double (&oM)[3][3],double (&rM)[3][3]) {
+   double det=detM3x3(oM);
    if ( det==0.0e0 ) {
       std::cout << "Warning: Det of the matrix == 0.0! Returning zero Matrix."\
                 << std::endl;
@@ -718,5 +654,5 @@ void invertM3x3(solreal (&oM)[3][3],solreal (&rM)[3][3])
 /* ************************************************************************** */
 /* ************************************************************************** */
 /* ************************************************************************** */
-#endif//_SOLMATH_CPP
+#endif//_MYMATH_CPP
 

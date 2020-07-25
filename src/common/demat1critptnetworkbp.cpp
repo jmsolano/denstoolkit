@@ -50,10 +50,10 @@ using std::cerr;
 #include "gausswavefunction.h"
 #include "critptnetwork.h"
 #include "bondnetwork.h"
-#include "solscrutils.h"
-#include "solmemhand.h"
-#include "solmath.h"
-#include "eig2-4.h"
+#include "screenutils.h"
+#include "mymemory.h"
+#include "mymath.h"
+#include "eigendecompositionjama.h"
 #include "eig6.h"
 
 #ifndef DM1CPNWBP_DEFAULTSTEPSIZEBGP
@@ -79,7 +79,7 @@ DeMat1CriticalPointNetworkBP::DeMat1CriticalPointNetworkBP(\
    bn=&usrbn;
    imsetup=InitSafetyChecks();
    if ( !imsetup ) {
-      displayErrorMessage("DeMat1CriticalPointNetworkBP object could not be setut!");
+      ScreenUtils::DisplayErrorMessage("DeMat1CriticalPointNetworkBP object could not be setut!");
       return;
    }
    cpn=new critPtNetWork(usrwf,usrbn);
@@ -100,17 +100,17 @@ void DeMat1CriticalPointNetworkBP::destroy(void) {
    wf=NULL;
    bn=NULL;
    if ( cpn!=NULL ) { delete cpn; cpn=NULL; }
-   dealloc2DRealArray(eivalCICP2D,nCICP);
-   dealloc2DRealArray(eivalCICP6D,nCICP);
-   dealloc2DRealArray(eivalNN6D,nCICP);
-   dealloc1DIntArray(sigCICP2D);
-   dealloc1DIntArray(sigCICP6D);
-   dealloc1DIntArray(sigNN6D);
+   MyMemory::Dealloc2DRealArray(eivalCICP2D,nCICP);
+   MyMemory::Dealloc2DRealArray(eivalCICP6D,nCICP);
+   MyMemory::Dealloc2DRealArray(eivalNN6D,nCICP);
+   MyMemory::Dealloc1DIntArray(sigCICP2D);
+   MyMemory::Dealloc1DIntArray(sigCICP6D);
+   MyMemory::Dealloc1DIntArray(sigNN6D);
    imsetup=false;
 }
 bool DeMat1CriticalPointNetworkBP::InitSafetyChecks(void) {
    if ( wf->nNuc<2 ) {
-      displayErrorMessage("The wavefunction must have at least two atoms!");
+      ScreenUtils::DisplayErrorMessage("The wavefunction must have at least two atoms!");
       return false;
    }
    return true;
@@ -127,28 +127,28 @@ bool DeMat1CriticalPointNetworkBP::SetupCPN(void) {
 bool DeMat1CriticalPointNetworkBP::AllocAuxArrays(void) {
    bool res;
    if ( !(res=cpn->iKnowBGPs()) ) {
-      displayErrorMessage("First setup the critPtNetWork object!");
+      ScreenUtils::DisplayErrorMessage("First setup the critPtNetWork object!");
       return res;
    }
    nCICP=cpn->nBGP;
-   res=res&&alloc2DRealArray(string("eivalCICP2D"),nCICP,2,eivalCICP2D);
-   res=res&&alloc2DRealArray(string("eivalCICP6D"),nCICP,6,eivalCICP6D);
-   res=res&&alloc2DRealArray(string("eivalNN6D"),nCICP,6,eivalNN6D);
-   res=res&&alloc1DIntArray(string("sigCICP2D"),nCICP,sigCICP2D);
-   res=res&&alloc1DIntArray(string("sigCICP6D"),nCICP,sigCICP6D);
-   res=res&&alloc1DIntArray(string("sigNN6D"),nCICP,sigNN6D);
+   res=res&&MyMemory::Alloc2DRealArray(string("eivalCICP2D"),nCICP,2,eivalCICP2D);
+   res=res&&MyMemory::Alloc2DRealArray(string("eivalCICP6D"),nCICP,6,eivalCICP6D);
+   res=res&&MyMemory::Alloc2DRealArray(string("eivalNN6D"),nCICP,6,eivalNN6D);
+   res=res&&MyMemory::Alloc1DIntArray(string("sigCICP2D"),nCICP,sigCICP2D);
+   res=res&&MyMemory::Alloc1DIntArray(string("sigCICP6D"),nCICP,sigCICP6D);
+   res=res&&MyMemory::Alloc1DIntArray(string("sigNN6D"),nCICP,sigNN6D);
    return res;
 }
 void DeMat1CriticalPointNetworkBP::ComputeCoreInteractionCPs2D(void) {
    if ( !imsetup ) {
-      displayErrorMessage("DeMat1CriticalPointNetworkBP object is not setup!");
+      ScreenUtils::DisplayErrorMessage("DeMat1CriticalPointNetworkBP object is not setup!");
 #if DEBUG
       DISPLAYDEBUGINFOFILELINE;
 #endif /* ( DEBUG ) */
       return;
    }
    if ( !CPSafetyChecks() ) {
-      displayErrorMessage("DeMat1CriticalPointNetworkBP's internal critPtNetWork is not ready!");
+      ScreenUtils::DisplayErrorMessage("DeMat1CriticalPointNetworkBP's internal critPtNetWork is not ready!");
       return;
    }
    for ( int i=0 ; i<nCICP ; ++i ) { ComputeSingleCICP2D(i); }
@@ -156,14 +156,14 @@ void DeMat1CriticalPointNetworkBP::ComputeCoreInteractionCPs2D(void) {
 }
 void DeMat1CriticalPointNetworkBP::ComputeCoreInteractionCPs6D(void) {
    if ( !imsetup ) {
-      displayErrorMessage("DeMat1CriticalPointNetworkBP object is not setup!");
+      ScreenUtils::DisplayErrorMessage("DeMat1CriticalPointNetworkBP object is not setup!");
 #if DEBUG
       DISPLAYDEBUGINFOFILELINE;
 #endif /* ( DEBUG ) */
       return;
    }
    if ( !CPSafetyChecks() ) {
-      displayErrorMessage("DeMat1CriticalPointNetworkBP's internal critPtNetWork is not ready!");
+      ScreenUtils::DisplayErrorMessage("DeMat1CriticalPointNetworkBP's internal critPtNetWork is not ready!");
       return;
    }
    for ( int i=0 ; i<nCICP ; ++i ) { ComputeSingleCICP6D(i); }
@@ -175,7 +175,7 @@ bool DeMat1CriticalPointNetworkBP::CPSafetyChecks(void) {
 void DeMat1CriticalPointNetworkBP::ComputeSingleCICP2D(int idx) {
 #if DEBUG
    if ( idx>=nCICP ) {
-      displayErrorMessage("Trying to compute non existent CICP!");
+      ScreenUtils::DisplayErrorMessage("Trying to compute non existent CICP!");
       cout << "nCICP: " << nCICP << endl;
       DISPLAYDEBUGINFOFILELINE;
       return;
@@ -205,7 +205,7 @@ void DeMat1CriticalPointNetworkBP::ComputeSingleCICP2D(int idx) {
    }
    huv[1][0]=huv[0][1];
    solreal eivec[2][2],eival[2];
-   eigen_decomposition2(huv,eivec,eival);
+   EigenDecompositionJAMA::EigenDecomposition2(huv,eivec,eival);
    sigCICP2D[idx]=GetSignature(eival);
    for ( int i=0 ; i<2 ; ++i ) { eivalCICP2D[idx][i]=eival[i]; }
 #if DEBUG
@@ -217,7 +217,7 @@ void DeMat1CriticalPointNetworkBP::ComputeSingleCICP2D(int idx) {
 void DeMat1CriticalPointNetworkBP::ComputeSingleCICP6D(int idx) {
 #if DEBUG
    if ( idx>=nCICP ) {
-      displayErrorMessage("Trying to compute non existent CICP!");
+      ScreenUtils::DisplayErrorMessage("Trying to compute non existent CICP!");
       cout << "nCICP: " << nCICP << endl;
       DISPLAYDEBUGINFOFILELINE;
       return;

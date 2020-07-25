@@ -4,10 +4,10 @@ using std::cout;
 using std::endl;
 using std::cerr;
 #include "helpersplot.h"
-#include "solgnuplottools.h"
-#include "solstringtools.h"
+#include "gnuplottools.h"
+#include "stringtools.h"
 #include "fldtypesdef.h"
-#include "solfileutils.h"
+#include "fileutils.h"
 
 
 void HelpersPlot::MakeGnuplotFile(optFlags &opts,string &gnpnam,string &datnam,char p2p,\
@@ -33,10 +33,10 @@ void HelpersPlot::MakeGnuplotFile(optFlags &opts,string &gnpnam,string &datnam,c
    int tmpa1=at1,tmpa2=at2;
    if ( tmpdist>0.1 ) {tmpa1=at2; tmpa2=at1;}
    if (!opts.showatlbls) {ofil << "#";}
-   ofil << "set label 1 '" << getEnhancedEpsAtLbl(bn.atLbl[tmpa1]) << "' at "
+   ofil << "set label 1 '" << StringTools::GetEnhancedEpsAtLbl(bn.atLbl[tmpa1]) << "' at "
    << 0.05e0*(lenline) << "," << 0.1e0*(maxval) << " front offset character 0,0.75" << endl;
    if (!opts.showatlbls) {ofil << "#";}
-   ofil << "set label 2 '" << getEnhancedEpsAtLbl(bn.atLbl[tmpa2]) << "' at "
+   ofil << "set label 2 '" << StringTools::GetEnhancedEpsAtLbl(bn.atLbl[tmpa2]) << "' at "
    << 0.95e0*(lenline) << "," << 0.1e0*(maxval) << " front offset character -2,0.75" << endl;
    if (!opts.showatlbls) {ofil << "#";}
    ofil << "set arrow 1 from " << 0.05e0*(lenline) << "," << 0.1e0*(maxval) << " to "
@@ -51,7 +51,7 @@ void HelpersPlot::MakeGnuplotFile(optFlags &opts,string &gnpnam,string &datnam,c
       if (!opts.showatlbls) {ofil << "#";}
       ofil << "set xtics add ('' " << pbcp << ")" << endl;
    }
-   ofil << "set title '" << getEnhancedEpsTitle(datnam) << "'" << endl;
+   ofil << "set title '" << StringTools::GetEnhancedEpsTitle(datnam) << "'" << endl;
    ofil << "set terminal postscript eps enhanced color fontscale 1.75 lw 2 dashlength 4" << endl;
    string epsnam=gnpnam.substr(0,(gnpnam.length()-3));
    string pdfnam=epsnam;
@@ -65,9 +65,9 @@ void HelpersPlot::MakeGnuplotFile(optFlags &opts,string &gnpnam,string &datnam,c
    ofil << "plot namedatfile using 1:5 with lines lw 2 title '"
         << gnuplotFieldTitle(p2p) << "'" << endl;
    ofil << "#" << endl;
-   writeScrCharLine(ofil,'#');
+   FileUtils::WriteScrCharLine(ofil,'#');
    ofil << "#                 END OF GNUPLOT COMMANDS" << endl;
-   writeScrCharLine(ofil,'#');
+   FileUtils::WriteScrCharLine(ofil,'#');
    ofil << "#If you want to reconstruct the plots using this file, type:" << endl
    << "#gnuplot " << gnpnam << endl;
 #if !(_HAVE_EPSTOPDF_)
@@ -75,7 +75,7 @@ void HelpersPlot::MakeGnuplotFile(optFlags &opts,string &gnpnam,string &datnam,c
 #endif
    ofil.close();
    if ( opts.mkplt ) {
-      renderGnpFile(gnpnam,(!opts.kpgnp));
+      GnuplotTools::RenderGnpFile(gnpnam,(!opts.kpgnp));
    }
 }
 solreal HelpersPlot::EvalFieldProperty(char prop,solreal (&x)[3],GaussWaveFunction &wf) {

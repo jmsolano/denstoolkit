@@ -71,7 +71,7 @@
 
 #include "figname.h"
 #include "optflags.h"
-#include "solscrutils.h"
+#include "screenutils.h"
 
 #include <iostream>
 using std::cout;
@@ -119,9 +119,9 @@ void getOptions(int &argc, char** &argv, optFlags &flags)
       progname.erase(pos,2);
    }
    if (argc<2) {
-      setScrRedBoldFont();
+      ScreenUtils::SetScrRedBoldFont();
       cout << "\nError: Not enough arguments." << endl;
-      setScrNormalFont();
+      ScreenUtils::SetScrNormalFont();
       cout << "\nTry: \n\t" << argv[0] << " -h\n" << endl << "to view the help menu.\n\n";
       exit(1);
    }
@@ -204,28 +204,28 @@ void printHelpMenu(int &argc, char** &argv)
    string progname=argv[0];
    size_t pos=progname.find("./");
    if (pos!=string::npos) {progname.erase(pos,2);}
-   printScrStarLine();
-   printFigletName();
+   ScreenUtils::PrintScrStarLine();
+   FigletName::PrintFigletName();
    cout << endl;
-   centerString((string(":-) ")+progname+string(" (-:")));
+   ScreenUtils::CenterString((string(":-) ")+progname+string(" (-:")));
    cout << endl;
-   centerString("This program computes a density field along");
-   centerString("the bond path between two atoms (optionally upon the regular straight");
-   centerString("line that joins those atoms). The output will be in a dat file.");
-   centerString("The information for the calculation is obtained from a wfx(wfn) file,");
-   centerString("which is given as the input for the program.");
-   centerString("(See below for the sintax.)");
+   ScreenUtils::CenterString("This program computes a density field along");
+   ScreenUtils::CenterString("the bond path between two atoms (optionally upon the regular straight");
+   ScreenUtils::CenterString("line that joins those atoms). The output will be in a dat file.");
+   ScreenUtils::CenterString("The information for the calculation is obtained from a wfx(wfn) file,");
+   ScreenUtils::CenterString("which is given as the input for the program.");
+   ScreenUtils::CenterString("(See below for the sintax.)");
    cout << endl;
-   centerString((string("Compilation date: ")+string(__DATE__)));
+   ScreenUtils::CenterString((string("Compilation date: ")+string(__DATE__)));
    cout << endl;
-   centerString(string("Version: ")+string(CURRENTVERSION));
+   ScreenUtils::CenterString(string("Version: ")+string(CURRENTVERSION));
    cout << endl;
-   centerString((string(":-) Created by: ")+string(PROGRAMCONTRIBUTORS)+string(" (-:")));
+   ScreenUtils::CenterString((string(":-) Created by: ")+string(PROGRAMCONTRIBUTORS)+string(" (-:")));
    cout << endl;
-   printScrStarLine();
-   setScrBoldFont();
+   ScreenUtils::PrintScrStarLine();
+   ScreenUtils::SetScrBoldFont();
    cout << "\nUsage:\n\n\t" << progname << " wf?name [option [value(s)]] ... [option [value(s)]]\n\n";
-   setScrNormalFont();
+   ScreenUtils::SetScrNormalFont();
    cout << "Where wf?name is the input wfx(wfn) name, and options can be:\n\n"
         << "  -a a1 a2  \tDefine the atoms  (a1,a2) used to define bond path/line." << endl
         << "            \t  If this option is not activated, the program will " << endl
@@ -283,31 +283,31 @@ void printHelpMenu(int &argc, char** &argv)
    cout << "  --help    \t\tSame as -h" << endl;
    cout << "  --version \t\tSame as -V" << endl;
    cout << endl;
-   printScrCharLine('-');
+   ScreenUtils::PrintScrCharLine('-');
    cout << "            \tThe format of the dat file is:" << endl;
    cout << "            \t      L  X  Y  Z  V" << endl;
    cout << "            \t  where L is the value of the parameter that maps the bond" << endl;
    cout << "            \t  path to a line; X, Y, and Z are the actual spatial coordinates" << endl;
    cout << "            \t  of each point in the bond path; and V is the value of the" << endl;
    cout << "            \t  chosen field at the point (X,Y,Z) ---see option -p." << endl;
-   printScrCharLine('-');
+   ScreenUtils::PrintScrCharLine('-');
    //-------------------------------------------------------------------------------------
 #if _HAVE_GNUPLOT_
-   printScrStarLine();
-   centerString(string("Note that the following programs must be properly installed in your system:"));
-   centerString(string("gnuplot"));
-   centerString(string("epstopdf"));
+   ScreenUtils::PrintScrStarLine();
+   ScreenUtils::CenterString(string("Note that the following programs must be properly installed in your system:"));
+   ScreenUtils::CenterString(string("gnuplot"));
+   ScreenUtils::CenterString(string("epstopdf"));
 #if (defined(__APPLE__)||defined(__linux__)||defined(__CYGWIN__))
-   centerString(string("gzip"));
+   ScreenUtils::CenterString(string("gzip"));
 #endif
-   printScrStarLine();
+   ScreenUtils::PrintScrStarLine();
 #endif
 }//end printHelpMenu
 
 //**************************************************************************************************
 void printErrorMsg(char** &argv,char lab)
 {
-   setScrRedBoldFont();
+   ScreenUtils::SetScrRedBoldFont();
    cout << "\nError: the option \"" << lab << "\" ";
    switch (lab) {
       case 'a':
@@ -329,7 +329,7 @@ void printErrorMsg(char** &argv,char lab)
          cout << "is triggering an unknown error." << endl;
          break;
    }
-   setScrNormalFont();
+   ScreenUtils::SetScrNormalFont();
    cout << "\nTry:\n\t" << argv[0] << " -h " << endl;
    cout << "\nto view the help menu.\n\n";
    exit(1);
@@ -350,9 +350,9 @@ void processDoubleDashOptions(int &argc,char** &argv,optFlags &flags,int pos)
       printHelpMenu(argc,argv);
       exit(0);
    } else {
-      setScrRedBoldFont();
+      ScreenUtils::SetScrRedBoldFont();
       cout << "Error: Unrecognized option '" << argv[pos] << "'" << endl;
-      setScrNormalFont();
+      ScreenUtils::SetScrNormalFont();
       exit(1);
    }
    return;

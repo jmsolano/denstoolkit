@@ -74,18 +74,14 @@ using namespace std;
 using std::setprecision;
 #include <ctime>
 
-#include "../common/solscrutils.h"
-#include "../common/solfileutils.h"
-//#include "../common/iofuncts-wfx.h"
-//#include "../common/iofuncts-wfn.h"
-#include "../common/solmath.h"
+#include "../common/screenutils.h"
+#include "../common/fileutils.h"
+#include "../common/mymath.h"
 #include "../common/gausswavefunction.h"
-//#include "../common/bondnetwork.h"
 #include "optflags.h"
 #include "crtflnms.h"
 
-int main (int argc, char ** argv)
-{
+int main (int argc, char ** argv) {
    const clock_t begin_time = clock();
    const solreal begin_walltime = time(NULL);
    string infilnam,outfilnam;
@@ -96,16 +92,16 @@ int main (int argc, char ** argv)
    
    getOptions(argc,argv,options); //This processes the options from the command line.
    mkFileNames(argv,options,infilnam,outfilnam); //This creates the names used.
-   printHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS);
+   ScreenUtils::PrintHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS);
    //Just to let the user know that the initial configuration is OK
    
    cout << endl << "Loading wave function from file: " << infilnam << "... ";
    
    GaussWaveFunction gwf;
    if (!(gwf.readFromFile(infilnam))) { //Loading the wave function
-      setScrRedBoldFont();
+      ScreenUtils::SetScrRedBoldFont();
       cout << "Error: the wave function could not be loaded!\n";
-      setScrNormalFont();
+      ScreenUtils::SetScrNormalFont();
       exit(1);
    }
    cout << "Done." << endl;
@@ -147,7 +143,7 @@ int main (int argc, char ** argv)
    /* Openning the output log-file.  */
    
    ofile.open(outfilnam.c_str(),ios::out);
-   writeCommentedHappyStart(argv,ofile,CURRENTVERSION,PROGRAMCONTRIBUTORS);
+   FileUtils::WriteHappyStart(argv,ofile,CURRENTVERSION,PROGRAMCONTRIBUTORS);
    ofile << endl << "       Wave function file: " << infilnam << endl;
    ofile << "                    Title: " << gwf.title[0] << endl;
    ofile << scientific << setprecision(12);
@@ -159,11 +155,11 @@ int main (int argc, char ** argv)
    solreal x,y,z;
    x=y=z=0.0e0;
    if ((!options.rcrds)&&(!options.setat)&&(!options.crdfil)) {
-      setScrYellowBoldFont();
+      ScreenUtils::SetScrYellowBoldFont();
       cout << endl;
       cout << "No coordinates have been given, calculating all properties at the origin." << endl;
       cout << endl;
-      setScrNormalFont();
+      ScreenUtils::SetScrNormalFont();
    }
    
    if (options.rcrds) {
@@ -176,13 +172,13 @@ int main (int argc, char ** argv)
    
    if (options.setat) {
       if (options.rcrds) {
-         displayWarningMessage("Overwriting command line coordinates...");
+         ScreenUtils::DisplayWarningMessage("Overwriting command line coordinates...");
       }
       int nat;
       sscanf(argv[options.setat],"%d",&nat);
       if (nat>gwf.nNuc) {
-         displayErrorMessage("You requested a non existent atom!");
-         displayWarningMessage("Setting R to be the zero vector.");
+         ScreenUtils::DisplayErrorMessage("You requested a non existent atom!");
+         ScreenUtils::DisplayWarningMessage("Setting R to be the zero vector.");
       } else {
          nat--;
          cout << "Setting R=R(" << gwf.atLbl[nat] << ")" << endl;
@@ -206,7 +202,7 @@ int main (int argc, char ** argv)
       cout << endl;
       ofile << endl;
       while (!rfile.eof()) {
-         discardComments(rfile);
+         FileUtils::DiscardComments(rfile);
          rfile >> x >> y >> z;
          gwf.displayAllFieldProperties(x,y,z);
          cout << endl;
@@ -228,9 +224,9 @@ int main (int argc, char ** argv)
    
    /* At this point the computation has ended. Usually this means no errors ocurred. */
    
-   setScrGreenBoldFont();
-   printHappyEnding();
-   printScrStarLine();
+   ScreenUtils::PrintHappyEnding();
+   ScreenUtils::SetScrGreenBoldFont();
+   ScreenUtils::PrintScrStarLine();
    cout << setprecision(3) << "CPU Time: "
         << solreal( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
    solreal end_walltime=time(NULL);
@@ -238,8 +234,8 @@ int main (int argc, char ** argv)
 #if DEBUG
    cout << "Debuggin mode (under construction...)" << endl;
 #endif
-   printScrStarLine();
-   setScrNormalFont();
+   ScreenUtils::PrintScrStarLine();
+   ScreenUtils::SetScrNormalFont();
    return 0;
 }
 

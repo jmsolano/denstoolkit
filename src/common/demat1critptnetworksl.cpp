@@ -48,10 +48,10 @@ using std::endl;
 #include <cmath>
 #include "demat1critptnetworksl.h"
 #include "gausswavefunction.h"
-#include "solmemhand.h"
-#include "solscrutils.h"
-#include "solstringtools.h"
-#include "eig2-4.h"
+#include "mymemory.h"
+#include "screenutils.h"
+#include "stringtools.h"
+#include "eigendecompositionjama.h"
 
 
 #ifndef MAXSIZECPARRAYS
@@ -105,12 +105,12 @@ void DeMat1CriticalPointNetworkSL::init()
    for ( int i=0 ; i<3 ; i++ ) {x1[i]=x2[i]=x2mx1[i]=x2pmx1p[i]=0.0e0;}
    lenline=0.0e0;
    asACP=asSCP=asRCP=MAXSIZECPARRAYS;
-   alloc2DRealArray("RACP",asACP,6,RACP,1.0e+50);
-   alloc2DRealArray("RSCP",asSCP,6,RSCP,1.0e+50);
-   alloc2DRealArray("RRCP",asRCP,6,RRCP,1.0e+50);
-   alloc1DStringArray("lblACP",asACP,lblACP);
-   alloc1DStringArray("lblSCP",asSCP,lblSCP);
-   alloc1DStringArray("lblRCP",asRCP,lblRCP);
+   MyMemory::Alloc2DRealArray("RACP",asACP,6,RACP,1.0e+50);
+   MyMemory::Alloc2DRealArray("RSCP",asSCP,6,RSCP,1.0e+50);
+   MyMemory::Alloc2DRealArray("RRCP",asRCP,6,RRCP,1.0e+50);
+   MyMemory::Alloc1DStringArray("lblACP",asACP,lblACP);
+   MyMemory::Alloc1DStringArray("lblSCP",asSCP,lblSCP);
+   MyMemory::Alloc1DStringArray("lblRCP",asRCP,lblRCP);
    computePolygonVertices();
    return;
 }
@@ -121,8 +121,8 @@ DeMat1CriticalPointNetworkSL::DeMat1CriticalPointNetworkSL(GaussWaveFunction *us
    init();
    wf=usrwf;
    if ( at1==at2 || at1<0 || at1>=(wf->nNuc) || at2<0 || at2>=(wf->nNuc) ) {
-      displayErrorMessage(string("Non valid atom indices! at1: "+getStringFromInt(at1)\
-               +", at2: "+getStringFromInt(at2)));
+      ScreenUtils::DisplayErrorMessage(string("Non valid atom indices! at1: "+StringTools::GetStringFromInt(at1)\
+               +", at2: "+StringTools::GetStringFromInt(at2)));
       wf=NULL;
       return;
    }
@@ -143,12 +143,12 @@ DeMat1CriticalPointNetworkSL::DeMat1CriticalPointNetworkSL(GaussWaveFunction *us
 DeMat1CriticalPointNetworkSL::~DeMat1CriticalPointNetworkSL()
 {
    wf=NULL;
-   dealloc2DRealArray(RACP,asACP);
-   dealloc2DRealArray(RSCP,asSCP);
-   dealloc2DRealArray(RRCP,asRCP);
-   dealloc1DStringArray(lblACP);
-   dealloc1DStringArray(lblSCP);
-   dealloc1DStringArray(lblRCP);
+   MyMemory::Dealloc2DRealArray(RACP,asACP);
+   MyMemory::Dealloc2DRealArray(RSCP,asSCP);
+   MyMemory::Dealloc2DRealArray(RRCP,asRCP);
+   MyMemory::Dealloc1DStringArray(lblACP);
+   MyMemory::Dealloc1DStringArray(lblSCP);
+   MyMemory::Dealloc1DStringArray(lblRCP);
 }
 /* ************************************************************************************ */
 solreal DeMat1CriticalPointNetworkSL::PolyV[nPolyV][2];
@@ -171,11 +171,11 @@ void DeMat1CriticalPointNetworkSL::getXCoordinatesFromUV(solreal uu,solreal vv,\
 {
 #if DEBUG
    if ( uu>1.0e0 || uu<0.0e0 ) {
-      displayErrorMessage("u out of range! u should be: 0<=u<=1");
+      ScreenUtils::DisplayErrorMessage("u out of range! u should be: 0<=u<=1");
       DISPLAYDEBUGINFOFILELINE;
    }
    if ( vv>1.0e0 || vv<0.0e0 ) {
-      displayErrorMessage("v out of range! v should be: 0<=v<=1");
+      ScreenUtils::DisplayErrorMessage("v out of range! v should be: 0<=v<=1");
       DISPLAYDEBUGINFOFILELINE;
    }
 #endif /* ( DEBUG ) */
@@ -248,7 +248,7 @@ void DeMat1CriticalPointNetworkSL::getACPStep(solreal (&g)[2],solreal (&hess)[2]
 
 {
    static solreal eive[2][2],b[2],F[2];
-   eigen_decomposition2(hess, eive, b);
+   EigenDecompositionJAMA::EigenDecomposition2(hess, eive, b);
    for (int i=0; i<2; i++) {
       F[i]=0.00000e0;
       for (int j=0; j<2; j++) {
@@ -266,11 +266,11 @@ void DeMat1CriticalPointNetworkSL::getACPStep(solreal (&g)[2],solreal (&hess)[2]
    h3[0][0]=b[0]; h3[1][1]=b[1];
    h3[0][2]=h3[2][0]=F[0];
    h3[1][2]=h3[2][1]=F[1];
-   eigen_decomposition3(h3, m3, v3);
+   EigenDecompositionJAMA::EigenDecomposition3(h3, m3, v3);
    solreal lp=v3[2];
 #if DEBUG
    if (lp<=0.0e0) {
-      displayWarningMessage(string("lp<=0!: "+getStringFromReal(lp)));
+      ScreenUtils::DisplayWarningMessage(string("lp<=0!: "+getStringFromReal(lp)));
       for ( int i=0 ; i<3 ; i++ ) {cout << v3[i] << " ";}
       cout << endl;
       printM2x2Comp("hess:\n",hess);
@@ -303,7 +303,7 @@ void DeMat1CriticalPointNetworkSL::getSCPStep(solreal (&g)[2],solreal (&hess)[2]
 
 {
    solreal eive[2][2],b[2],F[2];
-   eigen_decomposition2(hess, eive, b);
+   EigenDecompositionJAMA::EigenDecomposition2(hess, eive, b);
    for (int i=0; i<2; i++) {
       F[i]=0.00000e0;
       for (int j=0; j<2; j++) {
@@ -316,15 +316,15 @@ void DeMat1CriticalPointNetworkSL::getSCPStep(solreal (&g)[2],solreal (&hess)[2]
    solreal ln=0.5e0*(b[1]-sqrt(b[1]*b[1]+4.0e0*F[1]*F[1]));
 #if DEBUG
    if (lp<=0.0e0) {
-      displayWarningMessage(string("lp<=0!: "+getStringFromReal(lp)));
+      ScreenUtils::DisplayWarningMessage(string("lp<=0!: "+getStringFromReal(lp)));
       cout << endl;
    }
    if (ln>=0.0e0) {
-      displayWarningMessage(string("ln>=0!: "+getStringFromReal(ln)));
+      ScreenUtils::DisplayWarningMessage(string("ln>=0!: "+getStringFromReal(ln)));
       cout << endl;
    }
    if (b[0]==lp) {
-      displayWarningMessage(string("b[0]==lp!"));
+      ScreenUtils::DisplayWarningMessage(string("b[0]==lp!"));
       cout << endl;
    }
 #endif
@@ -356,7 +356,7 @@ void DeMat1CriticalPointNetworkSL::getRCPStep(solreal (&g)[2],solreal (&hess)[2]
 
 {
    static solreal eive[2][2],b[2],F[2];
-   eigen_decomposition2(hess, eive, b);
+   EigenDecompositionJAMA::EigenDecomposition2(hess, eive, b);
    for (int i=0; i<2; i++) {
       F[i]=0.00000e0;
       for (int j=0; j<2; j++) {
@@ -374,11 +374,11 @@ void DeMat1CriticalPointNetworkSL::getRCPStep(solreal (&g)[2],solreal (&hess)[2]
    h3[0][0]=b[0]; h3[1][1]=b[1];
    h3[0][2]=h3[2][0]=F[0];
    h3[1][2]=h3[2][1]=F[1];
-   eigen_decomposition3(h3, m3, v3);
+   EigenDecompositionJAMA::EigenDecomposition3(h3, m3, v3);
    solreal ln=v3[0];
 #if DEBUG
    if (ln<=0.0e0) {
-      displayWarningMessage(string("ln<=0!: "+getStringFromReal(ln)));
+      ScreenUtils::DisplayWarningMessage(string("ln<=0!: "+getStringFromReal(ln)));
       for ( int i=0 ; i<3 ; i++ ) {cout << v3[i] << " ";}
       cout << endl;
       printM2x2Comp("hess:\n",hess);
@@ -659,7 +659,7 @@ void DeMat1CriticalPointNetworkSL::seekGammaACPsAroundAPoint(solreal (&oo)[2],so
    string lbl;
    for ( int i=0 ; i<nPolyV ; i++ ) {
       for ( int j=0 ; j<2 ; j++ ) {xxx[j]=oo[j]+PolyV[i][j]*ddxx;}
-      lbl="ACP"+getStringFromInt(nACP+1);
+      lbl="ACP"+StringTools::GetStringFromInt(nACP+1);
       seekSingleGammaACP(xxx,gamm,ggg,lbl);
    }
    
@@ -671,7 +671,7 @@ void DeMat1CriticalPointNetworkSL::seekGammaSCPsAroundAPoint(solreal (&oo)[2],so
    string lbl;
    for ( int i=0 ; i<nPolyV ; i++ ) {
       for ( int j=0 ; j<2 ; j++ ) {xxx[j]=oo[j]+PolyV[i][j]*ddxx;}
-      lbl="SCP"+getStringFromInt(nSCP+1);
+      lbl="SCP"+StringTools::GetStringFromInt(nSCP+1);
       seekSingleGammaSCP(xxx,gamm,ggg,lbl);
    }
    
@@ -683,7 +683,7 @@ void DeMat1CriticalPointNetworkSL::seekGammaRCPsAroundAPoint(solreal (&oo)[2],so
    string lbl;
    for ( int i=0 ; i<nPolyV ; i++ ) {
       for ( int j=0 ; j<2 ; j++ ) {xxx[j]=oo[j]+PolyV[i][j]*ddxx;}
-      lbl="RCP"+getStringFromInt(nRCP+1);
+      lbl="RCP"+StringTools::GetStringFromInt(nRCP+1);
       seekSingleGammaRCP(xxx,gamm,ggg,lbl);
    }
    

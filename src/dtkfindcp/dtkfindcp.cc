@@ -82,13 +82,13 @@ using namespace std;
 using std::setprecision;
 #include <ctime>
 
-#include "../common/solscrutils.h"
-#include "../common/solfileutils.h"
-#include "../common/solmemhand.h"
+#include "../common/screenutils.h"
+#include "../common/fileutils.h"
+#include "../common/mymemory.h"
 #include "../common/iofuncts-wfx.h"
 #include "../common/iofuncts-wfn.h"
 #include "../common/iofuncts-cpx.h"
-#include "../common/solmath.h"
+#include "../common/mymath.h"
 #include "../common/gausswavefunction.h"
 #include "../common/bondnetwork.h"
 #include "../common/critptnetwork.h"
@@ -124,7 +124,7 @@ int main (int argc, char ** argv)
             options.calcbgps=0;
             break;
          default:
-            displayErrorMessage("This type of field is not implemented/known...");
+            ScreenUtils::DisplayErrorMessage("This type of field is not implemented/known...");
             exit(1);
             break;
       }
@@ -132,15 +132,15 @@ int main (int argc, char ** argv)
    
    mkFileNames(argv,options,infilnam,outfilnam,povfilnam,
                pngfilnam,cpxfilnam,critpttype); //This creates the names used.
-   printHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS); //Just to let the user know that the initial configuration is OK
+   ScreenUtils::PrintHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS); //Just to let the user know that the initial configuration is OK
    
    cout << endl << "Loading wave function from file: " << infilnam << "... ";
    
    GaussWaveFunction gwf;
    if (!(gwf.readFromFile(infilnam))) { //Loading the wave function
-      setScrRedBoldFont();
+      ScreenUtils::SetScrRedBoldFont();
       cout << "Error: the wave function could not be loaded!\n";
-      setScrNormalFont();
+      ScreenUtils::SetScrNormalFont();
       exit(1);
    }
    cout << "Done." << endl;
@@ -210,10 +210,10 @@ int main (int argc, char ** argv)
    }
    string cmdl;
    if (options.mkpov||options.mkpng) {
-      povRayConfProp povconf;
+      POVRayConfiguration povconf;
       if (options.drawbgps&&(!options.calcbgps)) {
-         displayWarningMessage("If you want to see gradient paths, you must not use option -G");
-         displayWarningMessage("Nothing to include in the pov file.");
+         ScreenUtils::DisplayWarningMessage("If you want to see gradient paths, you must not use option -G");
+         ScreenUtils::DisplayWarningMessage("Nothing to include in the pov file.");
       }
       if (options.drawbgps&&options.calcbgps) {
          cpn.drawBondGradPaths(true);
@@ -277,9 +277,9 @@ int main (int argc, char ** argv)
    
    /* At this point the computation has ended. Usually this means no errors ocurred. */
    
-   setScrGreenBoldFont();
-   printHappyEnding();
-   printScrStarLine();
+   ScreenUtils::PrintHappyEnding();
+   ScreenUtils::SetScrGreenBoldFont();
+   ScreenUtils::PrintScrStarLine();
    cout << setprecision(3) << "CPU Time: "
         << solreal( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
    solreal end_walltime=time(NULL);
@@ -287,8 +287,8 @@ int main (int argc, char ** argv)
 #if DEBUG
    cout << "Debuggin mode (under construction...)" << endl;
 #endif
-   printScrStarLine();
-   setScrNormalFont();
+   ScreenUtils::PrintScrStarLine();
+   ScreenUtils::SetScrNormalFont();
    return 0;
 }
 

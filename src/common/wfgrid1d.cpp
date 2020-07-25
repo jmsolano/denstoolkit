@@ -50,8 +50,8 @@
 #define _WFGRID1D_CPP_
 
 #include "wfgrid1d.h"
-#include "solmemhand.h"
-#include "solmath.h"
+#include "mymemory.h"
+#include "mymath.h"
 
 /* ********************************************************************************** */
 /* ********************************************************************************** */
@@ -71,7 +71,7 @@ waveFunctionGrid1D::waveFunctionGrid1D()
 /* ********************************************************************************** */
 waveFunctionGrid1D::~waveFunctionGrid1D()
 {
-   dealloc1DRealArray(prop1d);
+   MyMemory::Dealloc1DRealArray(prop1d);
 }
 /* ********************************************************************************** */
 void waveFunctionGrid1D::setNPts(int nn)
@@ -96,10 +96,10 @@ void waveFunctionGrid1D::setUpSimpleLine(bondNetWork &bn,int na,int nb)
       return;
    }
    if ((na>=bn.nNuc)||(nb>=bn.nNuc)) {
-      setScrRedBoldFont();
+      ScreenUtils::SetScrRedBoldFont();
       cout << "Error: The atom you requested does not exist!" << endl;
       cout << "The grid could not be set up." << endl;
-      setScrNormalFont();
+      ScreenUtils::SetScrNormalFont();
 #if DEBUG
       cout << "From: " << __FILE__ << " at line " << __LINE__ << endl;
 #endif
@@ -113,7 +113,7 @@ void waveFunctionGrid1D::setUpSimpleLine(bondNetWork &bn,int na,int nb)
    }
    setUpSimpleLine(bn,va,vb);
    dx=2.0e0/solreal(npts-1);
-   alloc1DRealArray("prop1d",npts,prop1d);
+   MyMemory::Alloc1DRealArray("prop1d",npts,prop1d);
    imsetup=true;
    return;
 }
@@ -175,7 +175,7 @@ bool waveFunctionGrid1D::writeLineDatRho(ofstream &ofil,GaussWaveFunction &wf)
       prop1d[i]=wf.evalDensity(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
@@ -212,7 +212,7 @@ void waveFunctionGrid1D::setUpSimpleLine(bondNetWork &bn,int na)
    }
    setUpSimpleLine(bn,va,vb);
    dx=2.0e0/solreal(npts-1);
-   alloc1DRealArray("prop1d",npts,prop1d);
+   MyMemory::Alloc1DRealArray("prop1d",npts,prop1d);
    imsetup=true;
    return;
 }
@@ -243,7 +243,7 @@ bool waveFunctionGrid1D::writeLineDatLapRho(ofstream &ofil,GaussWaveFunction &wf
       prop1d[i]=wf.evalLapRho(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
@@ -281,7 +281,7 @@ bool waveFunctionGrid1D::writeLineDatELF(ofstream &ofil,GaussWaveFunction &wf)
       prop1d[i]=wf.evalELF(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
@@ -319,7 +319,7 @@ bool waveFunctionGrid1D::writeLineDatLOL(ofstream &ofil,GaussWaveFunction &wf)
       prop1d[i]=wf.evalLOL(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
@@ -359,7 +359,7 @@ bool waveFunctionGrid1D::writeLineDatMagGradLOL(ofstream &ofil,GaussWaveFunction
       //prop1d[i]=wf.evalLOL(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
@@ -397,7 +397,7 @@ bool waveFunctionGrid1D::writeLineDatShannonEntropy(ofstream &ofil,GaussWaveFunc
       prop1d[i]=wf.evalShannonEntropy(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
@@ -435,7 +435,7 @@ bool waveFunctionGrid1D::writeLineDatMagGradRho(ofstream &ofil,GaussWaveFunction
       prop1d[i]=wf.evalMagGradRho(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
@@ -473,7 +473,7 @@ bool waveFunctionGrid1D::writeLineDatKinetEnerDensG(ofstream &ofil,GaussWaveFunc
       prop1d[i]=wf.evalKineticEnergyG(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
@@ -511,7 +511,7 @@ bool waveFunctionGrid1D::writeLineDatKinetEnerDensK(ofstream &ofil,GaussWaveFunc
       prop1d[i]=wf.evalKineticEnergyK(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
    }
    solreal e2=-1.0e0*maxdim;
@@ -548,7 +548,7 @@ bool waveFunctionGrid1D::writeLineDatMolElecPot(ofstream &ofil,GaussWaveFunction
       prop1d[i]=wf.evalMolElecPot(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
@@ -586,7 +586,7 @@ bool waveFunctionGrid1D::writeLineDatMagLED(ofstream &ofil,GaussWaveFunction &wf
       prop1d[i]=wf.evalMagLED(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
@@ -623,7 +623,7 @@ bool waveFunctionGrid1D::writeLineDatRedDensGrad(ofstream &ofil,GaussWaveFunctio
       prop1d[i]=wf.evalReducedDensityGradient(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
@@ -660,7 +660,7 @@ bool waveFunctionGrid1D::writeLineDatRoSE(ofstream &ofil,GaussWaveFunction &wf)
       prop1d[i]=wf.evalRoSE(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
@@ -698,7 +698,7 @@ bool waveFunctionGrid1D::writeLineDatScalarCustFld(ofstream &ofil,GaussWaveFunct
       prop1d[i]=wf.evalCustomScalarField(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
@@ -736,7 +736,7 @@ bool waveFunctionGrid1D::writeLineDatVirialPotentialEnergyDensity(ofstream &ofil
       prop1d[i]=wf.evalVirialPotentialEnergyDensity(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
@@ -774,7 +774,7 @@ bool waveFunctionGrid1D::writeLineDatEllipticity(ofstream &ofil,GaussWaveFunctio
       prop1d[i]=wf.evalEllipticity(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
@@ -798,7 +798,7 @@ void waveFunctionGrid1D::makeDat(string &onam,GaussWaveFunction &wf,ScalarFieldT
    ofstream ofil;
    ofil.open(onam.c_str());
 #if USEPROGRESSBAR
-   printProgressBar(0);
+   ScreenUtils::PrintProgressBar(0);
 #endif
    switch (ft) {
       case DENS:
@@ -854,7 +854,7 @@ void waveFunctionGrid1D::makeDat(string &onam,GaussWaveFunction &wf,ScalarFieldT
          break;
    }
 #if USEPROGRESSBAR
-   printProgressBar(100);
+   ScreenUtils::PrintProgressBar(100);
    cout << endl;
 #endif
    ofil.close();

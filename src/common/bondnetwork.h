@@ -74,9 +74,9 @@ using namespace std;
 #include <iomanip>
 using std::setprecision;
 
-#include "solscrutils.h"
-#include "solmemhand.h"
-#include "solpovtools.h"
+#include "screenutils.h"
+#include "mymemory.h"
+#include "povraytools.h"
 #define MAXBONDINGATOMS 8
 
 //**********************************************************************************************
@@ -124,7 +124,7 @@ public:
    //**********************************************************************************************
    void addBond(int i,int j,solreal dd);
    //**********************************************************************************************
-   bool makePOVFile(string pnam, povRayConfProp &pvp);
+   bool makePOVFile(string pnam, POVRayConfiguration &pvp);
    //**********************************************************************************************
    void seekRMaxMin(void);
    //**********************************************************************************************

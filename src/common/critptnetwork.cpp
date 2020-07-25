@@ -48,17 +48,17 @@ using std::cout;
 using std::endl;
 #include <cstdlib>
 
-#include "solscrutils.h"
-#include "solfileutils.h"
+#include "screenutils.h"
+#include "fileutils.h"
 #include "critptnetwork.h"
 #include "gausswavefunction.h"
 #include "bondnetwork.h"
-#include "eig2-4.h"
+#include "eigendecompositionjama.h"
 #include "iofuncts-cpx.h"
 #include "atomradiicust.h"
-#include "solstringtools.h"
-#include "solpovtools.h"
-#include "solmath.h"
+#include "stringtools.h"
+#include "povraytools.h"
+#include "mymath.h"
 // The first 94 atomic radii are given,
 //  the rest are set to be 0.80e0
 //
@@ -201,23 +201,23 @@ critPtNetWork::critPtNetWork(GaussWaveFunction &uwf,bondNetWork &ubn)
 /* ************************************************************************************ */
 critPtNetWork::~critPtNetWork()
 {
-   dealloc4DRealArray(RCGP,dCCP,CPNW_MAXRCPSCONNECTEDTOCCP,\
+   MyMemory::Dealloc4DRealArray(RCGP,dCCP,CPNW_MAXRCPSCONNECTEDTOCCP,\
          maxGradPathNPts);
-   dealloc4DRealArray(RRGP,dRCP,CPNW_MAXBCPSCONNECTEDTORCP,\
+   MyMemory::Dealloc4DRealArray(RRGP,dRCP,CPNW_MAXBCPSCONNECTEDTORCP,\
          maxGradPathNPts);
-   dealloc2DRealArray(RGP,maxGradPathNPts);
-   dealloc3DRealArray(RBGP,dBCP,maxGradPathNPts);
-   dealloc2DRealArray(RACP,dACP);
-   dealloc1DStringArray(lblACP);
-   dealloc2DRealArray(RBCP,dBCP);
-   dealloc1DStringArray(lblBCP);
-   dealloc2DIntArray(conBCP,dBCP);
-   dealloc2DRealArray(RRCP,dRCP);
-   dealloc1DStringArray(lblRCP);
-   dealloc3DIntArray(conRCP,dRCP,2);
-   dealloc3DIntArray(conCCP,dCCP,2);
-   dealloc2DRealArray(RCCP,dCCP);
-   dealloc1DStringArray(lblCCP);
+   MyMemory::Dealloc2DRealArray(RGP,maxGradPathNPts);
+   MyMemory::Dealloc3DRealArray(RBGP,dBCP,maxGradPathNPts);
+   MyMemory::Dealloc2DRealArray(RACP,dACP);
+   MyMemory::Dealloc1DStringArray(lblACP);
+   MyMemory::Dealloc2DRealArray(RBCP,dBCP);
+   MyMemory::Dealloc1DStringArray(lblBCP);
+   MyMemory::Dealloc2DIntArray(conBCP,dBCP);
+   MyMemory::Dealloc2DRealArray(RRCP,dRCP);
+   MyMemory::Dealloc1DStringArray(lblRCP);
+   MyMemory::Dealloc3DIntArray(conRCP,dRCP,2);
+   MyMemory::Dealloc3DIntArray(conCCP,dCCP,2);
+   MyMemory::Dealloc2DRealArray(RCCP,dCCP);
+   MyMemory::Dealloc1DStringArray(lblCCP);
    wf=NULL;
    bn=NULL;
 }
@@ -251,7 +251,7 @@ solreal critPtNetWork::IHV[nIHV][3]={
 void critPtNetWork::setCriticalPoints(ScalarFieldType ft)
 {
    if (!bn->imstp()) {
-      displayErrorMessage("Trying to use a non set up bond network object!");
+      ScreenUtils::DisplayErrorMessage("Trying to use a non set up bond network object!");
       return;
    }
    setupACPs(ft);
@@ -261,9 +261,9 @@ void critPtNetWork::setCriticalPoints(ScalarFieldType ft)
    if (iknowbcps) {
       dRCP=(nBCP*(nBCP-1))/2;
       if ( dRCP<CPNW_MINARRAYSIZE ) {dRCP=CPNW_MINARRAYSIZE;}
-      alloc2DRealArray(string("RRCP"),dRCP,3,RRCP,1.0e+50);
-      alloc1DStringArray("lblRCP",dRCP,lblRCP);
-      alloc3DIntArray("conRCP",dRCP,2,CPNW_MAXBCPSCONNECTEDTORCP,conRCP,-1);
+      MyMemory::Alloc2DRealArray(string("RRCP"),dRCP,3,RRCP,1.0e+50);
+      MyMemory::Alloc1DStringArray("lblRCP",dRCP,lblRCP);
+      MyMemory::Alloc3DIntArray("conRCP",dRCP,2,CPNW_MAXBCPSCONNECTEDTORCP,conRCP,-1);
    }
    cout << "Looking for Ring Critical Points..." << endl;
    switch (ft) {
@@ -274,7 +274,7 @@ void critPtNetWork::setCriticalPoints(ScalarFieldType ft)
          iknowrcps=setLOLRCPs();
          break;
       default:
-         displayWarningMessage("This field has not been implemented!");
+         ScreenUtils::DisplayWarningMessage("This field has not been implemented!");
          exit(1);
          break;
    }
@@ -284,9 +284,9 @@ void critPtNetWork::setCriticalPoints(ScalarFieldType ft)
    if (iknowrcps) {
       dCCP=(nRCP*(nRCP-1))/2;
       if ( dCCP<CPNW_MINARRAYSIZE ) {dCCP=CPNW_MINARRAYSIZE;}
-      alloc2DRealArray(string("RCCP"),dCCP,3,RCCP,1.0e+50);
-      alloc1DStringArray("lblCCP",dCCP,lblCCP);
-      alloc3DIntArray("conCCP",dCCP,2,CPNW_MAXRCPSCONNECTEDTOCCP,conCCP,-1);
+      MyMemory::Alloc2DRealArray(string("RCCP"),dCCP,3,RCCP,1.0e+50);
+      MyMemory::Alloc1DStringArray("lblCCP",dCCP,lblCCP);
+      MyMemory::Alloc3DIntArray("conCCP",dCCP,2,CPNW_MAXRCPSCONNECTEDTOCCP,conCCP,-1);
    }
    cout << "Looking for Cage Critical Points..." << endl;
    switch (ft) {
@@ -297,7 +297,7 @@ void critPtNetWork::setCriticalPoints(ScalarFieldType ft)
          iknowccps=setLOLCCPs();
          break;
       default:
-         displayWarningMessage("This field has not been implemented!");
+         ScreenUtils::DisplayWarningMessage("This field has not been implemented!");
          exit(1);
          break;
    }
@@ -307,9 +307,9 @@ void critPtNetWork::setCriticalPoints(ScalarFieldType ft)
    if ( mkextsearch ) {extendedSearchCPs();}
    iknowallcps=(iknowacps&&iknowbcps&&iknowrcps&&iknowccps);
    if (iknowallcps) {
-      printScrCharLine('*');
+      ScreenUtils::PrintScrCharLine('*');
       cout << "nACP-nBCP+nRCP-nCCP: " << (nACP-nBCP+nRCP-nCCP) << endl;
-      printScrCharLine('*');
+      ScreenUtils::PrintScrCharLine('*');
    }
 }
 /* ************************************************************************************ */
@@ -326,20 +326,20 @@ void critPtNetWork::setupACPs(ScalarFieldType ft) {
          stepSizeACP=CPNW_MAXSTEPSIZEACPLOLSEARCH;
          break;
       default:
-         displayWarningMessage("This field has not been implemented!");
+         ScreenUtils::DisplayWarningMessage("This field has not been implemented!");
          exit(1);
          break;
    }
    if ( RGP!=NULL ) {
-      displayWarningMessage("RGP already allocated! nothing to do.");
+      ScreenUtils::DisplayWarningMessage("RGP already allocated! nothing to do.");
    }
    if ( RACP!=NULL ) {
-      displayWarningMessage("RACP already allocated! Nothing to do.");
+      ScreenUtils::DisplayWarningMessage("RACP already allocated! Nothing to do.");
       return;
    }
-   alloc2DRealArray(string("RGP"),maxGradPathNPts,3,RGP,1.0e+50);
-   alloc2DRealArray(string("RACP"),dACP,3,RACP,1.0e+50);
-   alloc1DStringArray("lblACP",dACP,lblACP);
+   MyMemory::Alloc2DRealArray(string("RGP"),maxGradPathNPts,3,RGP,1.0e+50);
+   MyMemory::Alloc2DRealArray(string("RACP"),dACP,3,RACP,1.0e+50);
+   MyMemory::Alloc1DStringArray("lblACP",dACP,lblACP);
 }
 /* ************************************************************************************ */
 void critPtNetWork::setACPs(ScalarFieldType ft) {
@@ -352,7 +352,7 @@ void critPtNetWork::setACPs(ScalarFieldType ft) {
          iknowacps=setLOLACPs();
          break;
       default:
-         displayWarningMessage("This field has not been implemented!");
+         ScreenUtils::DisplayWarningMessage("This field has not been implemented!");
          exit(1);
          break;
    }
@@ -360,23 +360,23 @@ void critPtNetWork::setACPs(ScalarFieldType ft) {
 /* ************************************************************************************ */
 void critPtNetWork::setupBCPs(ScalarFieldType ft) {
    if ( mycptype!=ft ) {
-      displayWarningMessage("Change of field type is not allowed, using previous type!");
+      ScreenUtils::DisplayWarningMessage("Change of field type is not allowed, using previous type!");
 #if DEBUG
       DISPLAYDEBUGINFOFILELINE;
 #endif /* ( DEBUG ) */
    }
    if (iknowacps) {
       if ( RBCP!=NULL ) {
-         displayWarningMessage("RBCP already allocated! Nothing to do.");
+         ScreenUtils::DisplayWarningMessage("RBCP already allocated! Nothing to do.");
          return;
       }
       dBCP=(nACP*(nACP-1))/2;
       if ( dBCP<CPNW_MINARRAYSIZE ) {dBCP=CPNW_MINARRAYSIZE;}
-      alloc2DRealArray(string("RBCP"),dBCP,3,RBCP,1.0e+50);
-      alloc2DIntArray(string("conBCP"),dBCP,3,conBCP,-1);
-      alloc1DStringArray("lblBCP",dBCP,lblBCP);
+      MyMemory::Alloc2DRealArray(string("RBCP"),dBCP,3,RBCP,1.0e+50);
+      MyMemory::Alloc2DIntArray(string("conBCP"),dBCP,3,conBCP,-1);
+      MyMemory::Alloc1DStringArray("lblBCP",dBCP,lblBCP);
    } else {
-      displayErrorMessage("First look for ACPs...\n");
+      ScreenUtils::DisplayErrorMessage("First look for ACPs...\n");
 #if DEBUG
       DISPLAYDEBUGINFOFILELINE;
 #endif
@@ -394,7 +394,7 @@ void critPtNetWork::setBCPs(ScalarFieldType ft) {
          iknowbcps=setLOLBCPs();
          break;
       default:
-         displayWarningMessage("This field has not been implemented!");
+         ScreenUtils::DisplayWarningMessage("This field has not been implemented!");
          break;
    }
 #if DEBUG
@@ -403,20 +403,20 @@ void critPtNetWork::setBCPs(ScalarFieldType ft) {
 }
 /* ************************************************************************************ */
 void critPtNetWork::setupBondPaths(void) {
-   alloc3DRealArray(string("RBGP"),dBCP,maxGradPathNPts,3,RBGP);
+   MyMemory::Alloc3DRealArray(string("RBGP"),dBCP,maxGradPathNPts,3,RBGP);
 }
 /* ************************************************************************************ */
 void critPtNetWork::setBondPaths()
 {
    if (!iknowbcps) {
-      displayErrorMessage("Please look first for the BCPs...\nNothing to be done!");
+      ScreenUtils::DisplayErrorMessage("Please look first for the BCPs...\nNothing to be done!");
       return;
    }
    setupBondPaths();
    int npts;
    cout << "Calculating Bond Gradient Paths..." << endl;
 #if USEPROGRESSBAR
-   printProgressBar(0);
+   ScreenUtils::PrintProgressBar(0);
 #endif
    solreal hstep,rseed[3];
    hstep=stepSizeBGP;
@@ -429,15 +429,15 @@ void critPtNetWork::setBondPaths()
       conBCP[i][2]=npts;
       if (npts>0) {nBGP++;}
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/\
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/\
                solreal((nBCP>1) ? (nBCP-1) : 1 )));
 #endif
    }
 #if USEPROGRESSBAR
-   printProgressBar(100);
+   ScreenUtils::PrintProgressBar(100);
    cout << endl;
 #endif
-   if (nBGP!=nBCP) {displayWarningMessage("For some unknown reason nBGP!=nBCP...");}
+   if (nBGP!=nBCP) {ScreenUtils::DisplayWarningMessage("For some unknown reason nBGP!=nBCP...");}
    iknowbgps=true;
    iknowallgps=(iknowbgps&&iknowrgps&&iknowcgps);
    findMaxBondDist();
@@ -464,16 +464,16 @@ bool critPtNetWork::setRhoACPs()
       }
    }
    if ( tmpbool ) {
-      displayWarningMessage("Some ACPs presented |nabla rho|!= 0... Look for '+' in labels.");
+      ScreenUtils::DisplayWarningMessage("Some ACPs presented |nabla rho|!= 0... Look for '+' in labels.");
    }
    if ( nACP!=(bn->nNuc) ) {
-      displayWarningMessage("Number of regular ACPs is different from number of Nuclei!");
+      ScreenUtils::DisplayWarningMessage("Number of regular ACPs is different from number of Nuclei!");
    }
    int regnACP=nACP;
    cout << "Found " << regnACP << " regular ACPs (" << bn->nNuc << " nuc)" << endl;
    cout << "Looking between atom pairs..." << endl;
 #if USEPROGRESSBAR
-   printProgressBar(0);
+   ScreenUtils::PrintProgressBar(0);
 #endif
    solreal xs[3],rad;
    for ( int i=0 ; i<(bn->nNuc) ; i++ ) {
@@ -488,12 +488,12 @@ bool critPtNetWork::setRhoACPs()
          }
       }
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/\
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/\
                solreal((bn->nNuc > 1)? (bn->nNuc-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
-   printProgressBar(100);
+   ScreenUtils::PrintProgressBar(100);
    cout << endl;
 #endif
    if (regnACP==nACP) {
@@ -509,7 +509,7 @@ bool critPtNetWork::setRhoACPs()
 bool critPtNetWork::setRhoBCPs(void)
 {
 #if USEPROGRESSBAR
-   printProgressBar(0);
+   ScreenUtils::PrintProgressBar(0);
 #endif
    int ata,atb,k,sig;
    int mypos;
@@ -535,13 +535,13 @@ bool critPtNetWork::setRhoBCPs(void)
          ++k;
       }
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/\
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/\
                solreal((nACP>1)? (nACP-1) : 1)));
 #endif
    }
    normalbcp=nBCP;
 #if USEPROGRESSBAR
-   printProgressBar(100);
+   ScreenUtils::PrintProgressBar(100);
    cout << endl;
 #endif
    /* ------------------------------------------------------ */
@@ -549,22 +549,22 @@ bool critPtNetWork::setRhoBCPs(void)
    string ll;
    cout << "Including non-nuclear attractors..." << endl;
 #if USEPROGRESSBAR
-   printProgressBar(0);
+   ScreenUtils::PrintProgressBar(0);
 #endif
    for ( int i=(bn->nNuc) ; i<nACP ; i++ ) {
       seekRhoBCPWithExtraACP(i,(bn->maxBondDist));
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/\
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/\
                solreal((nACP>1)? (nACP-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
-   printProgressBar(100);
+   ScreenUtils::PrintProgressBar(100);
    cout << endl;
 #endif
    cout << "Looking for possible extra BCPs (Hydrogen bonds)..." << endl;
 #if USEPROGRESSBAR
-   printProgressBar(0);
+   ScreenUtils::PrintProgressBar(0);
 #endif
    solreal extbd=(bn->maxBondDist*CPNW_EXTENDEDBONDDISTFACTOR),dd=0.0e0;
    for (int i=0; i<nACP; i++) {
@@ -589,12 +589,12 @@ bool critPtNetWork::setRhoBCPs(void)
          }
       }
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/\
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/\
                solreal((nACP>1)? (nACP-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
-   printProgressBar(100);
+   ScreenUtils::PrintProgressBar(100);
    cout << endl;
 #endif
    if (normalbcp==nBCP) {
@@ -637,12 +637,12 @@ bool critPtNetWork::setRhoRCPs(void)
          }
       }
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/\
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/\
                solreal((nBCP>1)? (nBCP-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
-   printProgressBar(100);
+   ScreenUtils::PrintProgressBar(100);
    cout << endl;
 #endif
    //cout << "Checkpoint..." << endl;
@@ -650,7 +650,7 @@ bool critPtNetWork::setRhoRCPs(void)
       removeRedundInLabel(lblRCP[i]); //cout << "i: " << i << endl;
    }
    cout << nRCP << " RCPs found.\n";
-   //displayWarningMessage("setRhoRCPs(...) under construction.");
+   //ScreenUtils::DisplayWarningMessage("setRhoRCPs(...) under construction.");
    return true;
 }
 /* ************************************************************************************ */
@@ -660,7 +660,7 @@ bool critPtNetWork::setRhoCCPs(void)
    string lbl;
    int sig,mypos;
 #if USEPROGRESSBAR
-   printProgressBar(0);
+   ScreenUtils::PrintProgressBar(0);
 #endif
    for (int i=0; i<nRCP; i++) {
       for (int j=(i+1); j<nRCP; j++) {
@@ -679,12 +679,12 @@ bool critPtNetWork::setRhoCCPs(void)
          }
       }
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/\
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/\
                solreal((nRCP>0)? (nRCP) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
-   printProgressBar(100);
+   ScreenUtils::PrintProgressBar(100);
    cout << endl;
 #endif
    for (int i=0; i<nCCP; i++) {
@@ -692,7 +692,7 @@ bool critPtNetWork::setRhoCCPs(void)
       //cout << lblCCP[i] << endl;
    }
    cout << nCCP << " CCPs found.\n";
-   //displayWarningMessage("setRhoCCPs(...) under construction.");
+   //ScreenUtils::DisplayWarningMessage("setRhoCCPs(...) under construction.");
    return true;
 }
 /* ************************************************************************************ */
@@ -718,38 +718,38 @@ bool critPtNetWork::setLOLACPs()
 
    }
    if ( tmpbool ) {
-      displayWarningMessage("Some ACPs presented |nabla rho|!= 0... Look for '+' in labels.");
+      ScreenUtils::DisplayWarningMessage("Some ACPs presented |nabla rho|!= 0... Look for '+' in labels.");
    }
    if ( nACP!=(bn->nNuc) ) {
-      displayWarningMessage("Number of regular ACPs is different from number of Nuclei!");
+      ScreenUtils::DisplayWarningMessage("Number of regular ACPs is different from number of Nuclei!");
    }
    int regnACP=nACP;
    cout << "Found " << regnACP << " regular ACPs (" << bn->nNuc << " nuc)" << endl;
    cout << "Looking around nuclei..." << endl;
 #if USEPROGRESSBAR
-   printProgressBar(0);
+   ScreenUtils::PrintProgressBar(0);
 #endif
    solreal xs[3],rad;
    for ( int i=0 ; i<(bn->nNuc) ; i++ ) {
          for ( int k=0 ; k<3 ; k++ ) {xs[k]=(bn->R[i][k]);}
          rad=computeMagnitudeV3(xs);
-         lbl="NNLOLACP"+getStringFromInt(i);
+         lbl="NNLOLACP"+StringTools::GetStringFromInt(i);
          rad*=0.01e0;
          seekLOLACPsAroundAPoint(xs,rad,lbl,-1);
 #if USEPROGRESSBAR
-         printProgressBar(int(100.0e0*solreal(i)/\
+         ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/\
                   solreal((bn->nNuc > 1)? (bn->nNuc-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
-   printProgressBar(100);
+   ScreenUtils::PrintProgressBar(100);
    cout << endl;
 #endif
    /* -------------------------------------------------------------------------------  */
    //*
    cout << "Looking between atom pairs..." << endl;
 #if USEPROGRESSBAR
-   printProgressBar(0);
+   ScreenUtils::PrintProgressBar(0);
 #endif
    //solreal xs[3],rad;
    for ( int i=0 ; i<(bn->nNuc) ; i++ ) {
@@ -758,18 +758,18 @@ bool critPtNetWork::setLOLACPs()
          rad=computeMagnitudeV3(xs);
          if ( rad<=(2.0e0*bn->maxBondDist) ) {
             for ( int k=0 ; k<3 ; k++ ) {xs[k]=0.5e0*(bn->R[i][k]+bn->R[j][k]);}
-            lbl="NNLOLACP"+getStringFromInt((i+1));
+            lbl="NNLOLACP"+StringTools::GetStringFromInt((i+1));
             rad*=0.1e0;
             seekLOLACPsAroundAPoint(xs,rad,lbl,-1);
          }
       }
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/\
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/\
                solreal((bn->nNuc > 1)? (bn->nNuc-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
-   printProgressBar(100);
+   ScreenUtils::PrintProgressBar(100);
    cout << endl;
 #endif
    // */
@@ -786,7 +786,7 @@ bool critPtNetWork::setLOLACPs()
 bool critPtNetWork::setLOLBCPs(void)
 {
 #if USEPROGRESSBAR
-   printProgressBar(0);
+   ScreenUtils::PrintProgressBar(0);
 #endif
    int ata,atb,k,sig;
    int mypos;
@@ -812,13 +812,13 @@ bool critPtNetWork::setLOLBCPs(void)
          ++k;
       }
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/\
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/\
                solreal((nACP>1)? (nACP-1) : 1)));
 #endif
    }
    normalbcp=nBCP;
 #if USEPROGRESSBAR
-   printProgressBar(100);
+   ScreenUtils::PrintProgressBar(100);
    cout << endl;
 #endif
    /* ------------------------------------------------------ */
@@ -826,23 +826,23 @@ bool critPtNetWork::setLOLBCPs(void)
    string ll;
    cout << "Including non-nuclear attractors..." << endl;
 #if USEPROGRESSBAR
-   printProgressBar(0);
+   ScreenUtils::PrintProgressBar(0);
 #endif
    for ( int i=(bn->nNuc) ; i<nACP ; i++ ) {
       seekLOLBCPWithExtraACP(i,(bn->maxBondDist));
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/\
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/\
                solreal((nACP>1)? (nACP-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
-   printProgressBar(100);
+   ScreenUtils::PrintProgressBar(100);
    cout << endl;
 #endif
    /*
    cout << "Looking for possible extra BCPs (Hydrogen bonds)..." << endl;
 #if USEPROGRESSBAR
-   printProgressBar(0);
+   ScreenUtils::PrintProgressBar(0);
 #endif
    solreal extbd=(bn->maxBondDist*CPNW_EXTENDEDBONDDISTFACTOR),dd=0.0e0;
    for (int i=0; i<nACP; i++) {
@@ -867,11 +867,11 @@ bool critPtNetWork::setLOLBCPs(void)
          }
       }
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(i)/solreal((nACP-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((nACP-1))));
 #endif
    }
 #if USEPROGRESSBAR
-   printProgressBar(100);
+   ScreenUtils::PrintProgressBar(100);
    cout << endl;
 #endif
    if (normalbcp==nBCP) {
@@ -895,15 +895,15 @@ bool critPtNetWork::setLOLBCPs(void)
 /* ************************************************************************************* */
 bool critPtNetWork::setLOLRCPs(void)
 {
-   displayWarningMessage("No LOL RCP will be look for...");
-   displayWarningMessage("(critPtNetWork::setLOLRCPs(...) under construction.)");
+   ScreenUtils::DisplayWarningMessage("No LOL RCP will be look for...");
+   ScreenUtils::DisplayWarningMessage("(critPtNetWork::setLOLRCPs(...) under construction.)");
    return false;
 }
 /* ************************************************************************************* */
 bool critPtNetWork::setLOLCCPs(void)
 {
-   displayWarningMessage("No LOL CCP will be look for...");
-   displayWarningMessage("(critPtNetWork::setLOLCCPs(...) under construction.)");
+   ScreenUtils::DisplayWarningMessage("No LOL CCP will be look for...");
+   ScreenUtils::DisplayWarningMessage("(critPtNetWork::setLOLCCPs(...) under construction.)");
    return false;
 }
 /* ************************************************************************************ */
@@ -1187,15 +1187,15 @@ void critPtNetWork::seekLOLACPsOnASphere(int atIdx,int nDivR,int nDivT,int nDivP
       solreal radmin,solreal radmax)
 {
    static const solreal ppii=4.0e0*atan(1.0e0);
-   if ( atIdx<0 || atIdx>=bn->nNuc ) {displayErrorMessage("Requesting a non existent atom!");}
+   if ( atIdx<0 || atIdx>=bn->nNuc ) {ScreenUtils::DisplayErrorMessage("Requesting a non existent atom!");}
    if ( nDivR<=0 || nDivT<=0 || nDivP<=0 ) {
-      displayErrorMessage("number of points must be greater than zero!");
+      ScreenUtils::DisplayErrorMessage("number of points must be greater than zero!");
    }
    cout << "Looking for LOL ACPs around atom " << (atIdx+1) << "(" 
         << wf->atLbl[atIdx] << ")" << endl;
    solreal xx[3],lol,gl[3];
    int sig,nseeds,count;
-   string blbl="LOLACPSp"+getStringFromInt(atIdx+1)+"*",lbl;
+   string blbl="LOLACPSp"+StringTools::GetStringFromInt(atIdx+1)+"*",lbl;
    solreal cc[3],dr,dt,dp,currr,currt,currp;
    dr=(radmax-radmin)/solreal(nDivR-1);
    dt=ppii/solreal(nDivT-1);
@@ -1203,10 +1203,10 @@ void critPtNetWork::seekLOLACPsOnASphere(int atIdx,int nDivR,int nDivT,int nDivP
    nseeds=nDivR*nDivT*nDivP;
    count=0;
    int origacp=nACP,idxLbl=1;
-   lbl=blbl+getStringFromInt(idxLbl);
+   lbl=blbl+StringTools::GetStringFromInt(idxLbl);
    for ( int i=0 ; i<3 ; i++ ) {cc[i]=bn->R[atIdx][i];}
 #if USEPROGRESSBAR
-   printProgressBar(0);
+   ScreenUtils::PrintProgressBar(0);
 #endif
    for ( int ir=0 ; ir<nDivR ; ir++ ) {
       currr=radmin+solreal(ir)*dr;
@@ -1219,18 +1219,18 @@ void critPtNetWork::seekLOLACPsOnASphere(int atIdx,int nDivR,int nDivT,int nDivP
             xx[2]=cc[2]+currr*cos(currt);
             seekLOLACP(xx,lol,gl,sig);
             if ( computeMagnitudeV3(gl)<CPNW_EPSLOLACPGRADMAG ) {
-               if (addRhoACP(xx,sig,lbl)){lbl=blbl+getStringFromInt(++idxLbl);}
+               if (addRhoACP(xx,sig,lbl)){lbl=blbl+StringTools::GetStringFromInt(++idxLbl);}
             }
             ++count;
          }
       }
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(count)/\
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(count)/\
                solreal((nseeds>1) ? (nseeds-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
-   printProgressBar(100);
+   ScreenUtils::PrintProgressBar(100);
    cout << endl;
 #endif
    if ( origacp<nACP ) {cout << "Found " << (nACP-origacp) << " new ACPs!..." << endl;}
@@ -1246,7 +1246,7 @@ void critPtNetWork::extendedSearchCPs(void)
    cout << "Looking around extraBCPs..." << endl;
    for ( int i=normalbcp ; i<nBCP ; i++ ) {
 #if USEPROGRESSBAR
-   printProgressBar(0);
+   ScreenUtils::PrintProgressBar(0);
 #endif
       for ( int k=0 ; k<3 ; k++ ) {xs[k]=RBCP[i][k];}
       lbl="extACPb";
@@ -1257,18 +1257,18 @@ void critPtNetWork::extendedSearchCPs(void)
       seekRhoCCPsAroundAPoint(xs,dx,lbl,nIHV);
       ++count;
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(count)/\
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(count)/\
                solreal(((nBCP-normalbcp)>1)? (nBCP-normalbcp-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
-   printProgressBar(100);
+   ScreenUtils::PrintProgressBar(100);
    cout << endl;
 #endif
    count=0;
    cout << "Looking around RCPs..." << endl;
 #if USEPROGRESSBAR
-   printProgressBar(0);
+   ScreenUtils::PrintProgressBar(0);
 #endif
    for ( int i=0 ; i<nRCP ; i++ ) {
       for ( int k=0 ; k<3 ; k++ ) {xs[k]=RRCP[i][k];}
@@ -1280,18 +1280,18 @@ void critPtNetWork::extendedSearchCPs(void)
       seekRhoCCPsAroundAPoint(xs,dx,lbl,nIHV);
       ++count;
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(count)/\
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(count)/\
                solreal((nRCP>1)? (nRCP-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
-   printProgressBar(100);
+   ScreenUtils::PrintProgressBar(100);
    cout << endl;
 #endif
    count=0;
    cout << "Looking around CCPs..." << endl;
 #if USEPROGRESSBAR
-   printProgressBar(0);
+   ScreenUtils::PrintProgressBar(0);
 #endif
    for ( int i=0 ; i<nCCP ; i++ ) {
       for ( int k=0 ; k<3 ; k++ ) {xs[k]=RCCP[i][k];}
@@ -1303,12 +1303,12 @@ void critPtNetWork::extendedSearchCPs(void)
       seekRhoRCPsAroundAPoint(xs,dx,lbl,nIHV);
       ++count;
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(count)/\
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(count)/\
                solreal(((nBCP-normalbcp)>1)? (nBCP-normalbcp-1) : 1)));
 #endif
    }
 #if USEPROGRESSBAR
-   printProgressBar(100);
+   ScreenUtils::PrintProgressBar(100);
    cout << endl;
 #endif
    for (int i=0; i<nRCP; i++) {removeRedundInLabel(lblRCP[i]);}
@@ -1331,8 +1331,8 @@ void critPtNetWork::extendedSearchCPs(void)
       foundnewcps=true;
    }
    if ( foundnewcps ) {
-      printBetweenStarLines(string("nACP-nBCP+nRCP-nCCP = "+\
-               getStringFromInt(nACP-nBCP+nRCP-nCCP)));
+      ScreenUtils::PrintBetweenStarLines(string("nACP-nBCP+nRCP-nCCP = "+\
+               StringTools::GetStringFromInt(nACP-nBCP+nRCP-nCCP)));
    }
 }
 /* ************************************************************************************ */
@@ -1340,18 +1340,18 @@ void critPtNetWork::customSearchTwoACPs(int acpIdx1,int acpIdx2)
 {
    cout << "Looking around a custom seed (two acps)..." << endl;
    string str1=string("This acp does not exist! There are ");
-   str1+=getStringFromInt(nACP);
+   str1+=StringTools::GetStringFromInt(nACP);
    str1+=" ACPs in this molecule.";
    string str2="Requested acp: ";
    string str3=". Nothing to do...";
    if ( acpIdx1>=nACP ) {
-      displayWarningMessage(str1);
-      displayWarningMessage(str2+getStringFromInt(acpIdx1+1)+str3);
+      ScreenUtils::DisplayWarningMessage(str1);
+      ScreenUtils::DisplayWarningMessage(str2+StringTools::GetStringFromInt(acpIdx1+1)+str3);
       return;
    }
    if ( acpIdx2>=nACP ) {
-      displayWarningMessage(str1);
-      displayWarningMessage(str2+getStringFromInt(acpIdx2+1)+str3);
+      ScreenUtils::DisplayWarningMessage(str1);
+      ScreenUtils::DisplayWarningMessage(str2+StringTools::GetStringFromInt(acpIdx2+1)+str3);
       return;
    }
    solreal xs[3];
@@ -1399,8 +1399,8 @@ void critPtNetWork::customSearchCPs(solreal (&xs)[3])
       foundnewcps=true;
    }
    if ( foundnewcps ) {
-      printBetweenStarLines(string("nACP-nBCP+nRCP-nCCP = "+\
-               getStringFromInt(nACP-nBCP+nRCP-nCCP)));
+      ScreenUtils::PrintBetweenStarLines(string("nACP-nBCP+nRCP-nCCP = "+\
+               StringTools::GetStringFromInt(nACP-nBCP+nRCP-nCCP)));
    }
 }
 /* ************************************************************************************ */
@@ -1490,7 +1490,7 @@ void critPtNetWork::writeAllFieldProperties(solreal x,solreal y,solreal z,ofstre
 void critPtNetWork::getACPStep(solreal (&g)[3],solreal (&hess)[3][3],solreal (&hh)[3],int &sig)
 {
    solreal eive[3][3],b[3],F[3];
-   eigen_decomposition3(hess, eive, b);
+   EigenDecompositionJAMA::EigenDecomposition3(hess, eive, b);
    for (int i=0; i<3; i++) {
       F[i]=0.00000e0;
       for (int j=0; j<3; j++) {
@@ -1509,12 +1509,12 @@ void critPtNetWork::getACPStep(solreal (&g)[3],solreal (&hess)[3][3],solreal (&h
    h4[0][3]=h4[3][0]=F[0];
    h4[1][3]=h4[3][1]=F[1];
    h4[2][3]=h4[3][2]=F[2];
-   eigen_decomposition4(h4, m4, v4);
+   EigenDecompositionJAMA::EigenDecomposition4(h4, m4, v4);
    solreal lp=v4[3];
    if ( fabs(lp)<CPNW_EPSEIGENVALUECPSEARCH ) {lp=CPNW_EPSEIGENVALUECPSEARCH;}
 #if DEBUG
    if (lp<=0.0e0) {
-      displayWarningMessage(string("lp<=0!: "+getStringFromReal(lp)));
+      ScreenUtils::DisplayWarningMessage(string("lp<=0!: "+StringTools::GetStringFromReal(lp)));
       for ( int i=0 ; i<4 ; i++ ) {cout << v4[i] << " ";}
       cout << endl;
       printM3x3Comp("hess:\n",hess);
@@ -1538,7 +1538,7 @@ void critPtNetWork::getACPStep(solreal (&g)[3],solreal (&hess)[3][3],solreal (&h
 void critPtNetWork::getBCPStep(solreal (&g)[3],solreal (&hess)[3][3],solreal (&hh)[3],int &sig)
 {
    solreal eive[3][3],b[3];
-   eigen_decomposition3(hess, eive, b);
+   EigenDecompositionJAMA::EigenDecomposition3(hess, eive, b);
    solreal F[3];
    for (int i=0; i<3; i++) {
       F[i]=0.00000e0;
@@ -1556,7 +1556,7 @@ void critPtNetWork::getBCPStep(solreal (&g)[3],solreal (&hess)[3][3],solreal (&h
    h3[2][0]=h3[0][2]=F[0];
    h3[2][1]=h3[1][2]=F[1];
    solreal m3[3][3],vv[3];
-   eigen_decomposition3(h3, m3, vv);
+   EigenDecompositionJAMA::EigenDecomposition3(h3, m3, vv);
    solreal lp=vv[2];
    hh[2]=hh[1]=hh[0]=0.00000e0;
    for (int j=0; j<3; j++) {
@@ -1576,7 +1576,7 @@ void critPtNetWork::getBCPStep(solreal (&g)[3],solreal (&hess)[3][3],solreal (&h
 void critPtNetWork::getRCPStep(solreal (&g)[3],solreal (&hess)[3][3],solreal (&hh)[3],int &sig)
 {
    solreal eive[3][3],b[3];
-   eigen_decomposition3(hess, eive, b);
+   EigenDecompositionJAMA::EigenDecomposition3(hess, eive, b);
    solreal F[3];
    for (int i=0; i<3; i++) {
       F[i]=0.00000e0;
@@ -1594,7 +1594,7 @@ void critPtNetWork::getRCPStep(solreal (&g)[3],solreal (&hess)[3][3],solreal (&h
    h3[2][0]=h3[0][2]=F[1];
    h3[2][1]=h3[1][2]=F[2];
    solreal m3[3][3],vv[3];
-   eigen_decomposition3(h3, m3, vv);
+   EigenDecompositionJAMA::EigenDecomposition3(h3, m3, vv);
    solreal ln=vv[0];
    hh[2]=hh[1]=hh[0]=0.00000e0;
    for (int j=0; j<3; j++) {
@@ -1614,7 +1614,7 @@ void critPtNetWork::getRCPStep(solreal (&g)[3],solreal (&hess)[3][3],solreal (&h
 void critPtNetWork::getCCPStep(solreal (&g)[3],solreal (&hess)[3][3],solreal (&hh)[3],int &sig)
 {
    solreal eive[3][3],b[3];
-   eigen_decomposition3(hess, eive, b);
+   EigenDecompositionJAMA::EigenDecomposition3(hess, eive, b);
    solreal F[3];
    for (int i=0; i<3; i++) {
       F[i]=0.00000e0;
@@ -1634,7 +1634,7 @@ void critPtNetWork::getCCPStep(solreal (&g)[3],solreal (&hess)[3][3],solreal (&h
    h4[0][3]=h4[3][0]=F[0];
    h4[1][3]=h4[3][1]=F[1];
    h4[2][3]=h4[3][2]=F[2];
-   eigen_decomposition4(h4, m4, v4);
+   EigenDecompositionJAMA::EigenDecomposition4(h4, m4, v4);
    solreal ln=v4[0];
    hh[2]=hh[1]=hh[0]=0.00000e0;
    for (int j=0; j<3; j++) {
@@ -1659,8 +1659,8 @@ int critPtNetWork::computeSignature(solreal (&ev)[3])
       if ( ev[i]==0.0e0 ) {
          res=0;
 #if DEBUG
-         displayWarningMessage("Zero signature!");
-         printV3Comp("EigenValues: ",ev);
+         ScreenUtils::DisplayWarningMessage("Zero signature!");
+         ScreenUtils::PrintV3Comp("EigenValues: ",ev);
 #endif
          break;
       }
@@ -1879,7 +1879,7 @@ void critPtNetWork::seekLOLCCP(solreal (&x)[3],solreal &ll,solreal (&g)[3],int &
 int critPtNetWork::computeSignature(solreal (&hh)[3][3])
 {
    solreal eive[3][3],b[3];
-   eigen_decomposition3(hh, eive, b);
+   EigenDecompositionJAMA::EigenDecomposition3(hh, eive, b);
    return computeSignature(b);
 }
 /* ************************************************************************************ */
@@ -1961,20 +1961,20 @@ void critPtNetWork::displayXCPCoords(char cpt)
          break;
    }
    if (!cpknow) {
-      displayErrorMessage(string("First seek the "+cplbl+"s.\nNo "\
+      ScreenUtils::DisplayErrorMessage(string("First seek the "+cplbl+"s.\nNo "\
                +cplbl+" to display its coordinates."));
       return;
    }
    cout << scientific << setprecision(12);
-   printScrCharLine('+');
-   centerString(string("Coordinates of "+longcplbl+" Critical Points"));
-   printScrCharLine('-');
+   ScreenUtils::PrintScrCharLine('+');
+   ScreenUtils::CenterString(string("Coordinates of "+longcplbl+" Critical Points"));
+   ScreenUtils::PrintScrCharLine('-');
    for (int i=0; i<theNCP; i++) {
       cout << cplbl << "[" << (i+1) << "](" << lblArray[i] << "): ";
       for (int j=0; j<3; j++) {cout << RArray[i][j] << " ";}
       cout << endl;
    }
-   printScrCharLine('+');
+   ScreenUtils::PrintScrCharLine('+');
    cout.unsetf(ios::scientific);
    return;
 }
@@ -1990,15 +1990,15 @@ void critPtNetWork::displayAllCPCoords(void)
 void critPtNetWork::displayIHVCoords(void)
 {
    cout << scientific << setprecision(8);
-   printScrCharLine('+');
-   centerString("Coordinates of Icosahedron Vertices");
-   printScrCharLine('-');
+   ScreenUtils::PrintScrCharLine('+');
+   ScreenUtils::CenterString("Coordinates of Icosahedron Vertices");
+   ScreenUtils::PrintScrCharLine('-');
    for (int i=0; i<nIHV; i++) {
       cout << "V[" << (i+1) << "]: ";
       for (int j=0; j<3; j++) {cout << IHV[i][j] << " ";}
       cout << endl;
    }
-   printScrCharLine('+');
+   ScreenUtils::PrintScrCharLine('+');
    cout.unsetf(ios::scientific);
    return;
 }
@@ -2030,7 +2030,7 @@ void critPtNetWork::findTwoClosestAtoms(solreal (&xo)[3],int &idx1st,int &idx2nd
    idx2nd=ii2;
 #if DEBUG
    if ( idx1st==idx2nd ) {
-      displayWarningMessage("Identical atoms!");
+      ScreenUtils::DisplayWarningMessage("Identical atoms!");
       DISPLAYDEBUGINFOFILELINE;
    }
 #endif /* ( DEBUG ) */
@@ -2041,14 +2041,14 @@ void critPtNetWork::findTwoClosestAtomsToBCP(const int bcpIdx,int &at1Idx,int&at
    if ( wf->nNuc<2 ) {at1Idx=0; at2Idx=0; return;}
 #if DEBUG
    if ( !iknowbcps ) {
-      displayErrorMessage("First look for BCPs!");
+      ScreenUtils::DisplayErrorMessage("First look for BCPs!");
       DISPLAYDEBUGINFOFILELINE;
       at1Idx=at2Idx=0;
       return;
    }
 #endif /* ( DEBUG ) */
    if ( bcpIdx>=nBCP || bcpIdx<0 ) {
-      displayErrorMessage("Requesting a non-existing BCP!");
+      ScreenUtils::DisplayErrorMessage("Requesting a non-existing BCP!");
       at1Idx=at2Idx=0;
       return;
    }
@@ -2084,7 +2084,7 @@ void critPtNetWork::findTwoClosestACPs(solreal (&xo)[3],int &idx1st,int &idx2nd)
    idx2nd=ii2;
 #if DEBUG
    if ( idx1st==idx2nd ) {
-      displayWarningMessage("Identical ACPs!");
+      ScreenUtils::DisplayWarningMessage("Identical ACPs!");
       DISPLAYDEBUGINFOFILELINE;
    }
 #endif /* ( DEBUG ) */
@@ -2109,7 +2109,7 @@ void critPtNetWork::invertOrderBGPPoints(int dim,solreal** (&arr))
 {
 #if DEBUG
    if (arr==NULL) {
-      displayErrorMessage("The pointer for this array is null!!!");
+      ScreenUtils::DisplayErrorMessage("The pointer for this array is null!!!");
       DISPLAYDEBUGINFOFILELINE;
       return;
    }
@@ -2153,7 +2153,7 @@ void critPtNetWork::writeCPProps(string &ofnam,string &wfnnam)
    ofil << "nACP: " << nACP << "\nnBCP: " << nBCP
         << "\nnRCP: " << nRCP << "\nnCCP: " << nCCP << endl;
    ofil << "nACP-nBCP+nRCP-nCCP: " << (nACP-nBCP+nRCP-nCCP) << endl;
-   writeScrStarLine(ofil);
+   FileUtils::WriteScrStarLine(ofil,false);
    ofil << cptp << "Attractor Critical Points Information" << endl;
    for (int i=0; i<80; i++) {ofil << '*';}
    ofil << endl;
@@ -2251,7 +2251,7 @@ void critPtNetWork::writeCPProps(string &ofnam,string &wfnnam)
    return;
 }
 /* ************************************************************************************ */
-bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
+bool critPtNetWork::makePOVFile(string pnam,POVRayConfiguration &pvp,int campos)
 {
    ofstream pof;
    pof.open(pnam.c_str(),ios::out);
@@ -2267,7 +2267,7 @@ bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
    pof << "#version 3.6; //Unless you know what you are doing, do not modify this line..." << endl;
 #endif
    pof << "#include \"colors.inc\"" << endl;
-   writeScrCharLine(pof,'/');
+   FileUtils::WriteScrCharLine(pof,'/',false);
    pof << "//" << endl;
 #if DEBUG
    pof << "//Code generated by the class critPtNetWork." << endl;
@@ -2276,7 +2276,7 @@ bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
    pof << "//set your custom values." << endl;
    pof << "//You can reconstruct the image using the script dtkpov2png" << endl;
    pof << "//" << endl;
-   writeScrCharLine(pof,'/');
+   FileUtils::WriteScrCharLine(pof,'/',false);
    pof << "#declare GNUPlotAngle1=0;" << endl;
    pof << "#declare GNUPlotAngle2=0;" << endl;
    pof << "#declare YAngle=0;" << endl;
@@ -2313,17 +2313,17 @@ bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
    pof << "#declare TransmitAtomSphere=0.7;" << endl;
    pof << "#declare TransmitStdBondCylinder=0.7;" << endl;
    pof << "#default { finish { specular 0.3 roughness 0.03 phong .1 } }" << endl;
-   writeScrCharLine(pof,'/');
+   FileUtils::WriteScrCharLine(pof,'/',false);
    pof << "//For the colors, instead of rgb <...>, you may want to try Red, Yellow, ..." << endl;
    pof << "//  or any of the colors defined in \"colors.inc\"" << endl;
    pof << "//" << endl;
-   writeScrCharLine(pof,'/');
+   FileUtils::WriteScrCharLine(pof,'/',false);
    pof << "// END OF CUSTOM OPTIONS" << endl;
-   writeScrCharLine(pof ,'/');
+   FileUtils::WriteScrCharLine(pof ,'/',false);
    if (!(bn->imstp())) {bn->setUpBNW();}
    if (!(bn->ballAndStickMode)) {bn->drawAtSize*=AUTOMATICBALLANDSTICKRATIO;}
 #if DEBUG
-   displayWarningMessage("In this version, calling critPtNetWork::makePovFILE(...)\n\
+   ScreenUtils::DisplayWarningMessage("In this version, calling critPtNetWork::makePovFILE(...)\n\
          will overwrite the original coordinates of the critical points\n\
          and the coordinates on the bondnetwork object as well.");
 #endif
@@ -2357,7 +2357,7 @@ bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
          }
          break;
       default:
-         displayWarningMessage("Not a valid direction. Using 001.");
+         ScreenUtils::DisplayWarningMessage("Not a valid direction. Using 001.");
          pvp.locCam[2]=camdist;
          break;
    }
@@ -2375,50 +2375,50 @@ bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
    pvp.lightSource[1][0]=zsep;
    pvp.lightSource[1][1]=zsep;
    pvp.lightSource[1][2]=1.0e0;
-   pvp.addLightSource(zsep,-zsep,1.0e0);
-   pvp.addLightSource(-zsep,zsep,1.0e0);
-   pvp.addLightSource(-zsep,-zsep,1.0e0);
+   pvp.AddLightSource(zsep,-zsep,1.0e0);
+   pvp.AddLightSource(-zsep,zsep,1.0e0);
+   pvp.AddLightSource(-zsep,-zsep,1.0e0);
    for (int i=1; i<pvp.nLightSources; i++) {
       for (int j=0; j<3; j++) {pvp.lightSource[i][j]*=(bn->rView*4.0e0);}
    }
    for (int i=0; i<pvp.nLightSources; i++) {
-      pvp.writeLightSource(pof,i,0.5,"  rotate < GNUPlotAngle1, YAngle, GNUPlotAngle2 >\n");
+      pvp.WriteLightSource(pof,i,0.5,"  rotate < GNUPlotAngle1, YAngle, GNUPlotAngle2 >\n");
    }
    pof << "camera {" << endl;
    pof << "  up < 0, 1, 0 >" << endl;
    pof << "  right < -4/3, 0, 0 >" << endl;
    pof << "  location ";
-   writePoVVector(pof,pvp.locCam[0],pvp.locCam[1],pvp.locCam[2]);
+   HelpersPOVRay::WriteVector(pof,pvp.locCam[0],pvp.locCam[1],pvp.locCam[2]);
    pof << endl << "  look_at ";
-   writePoVVector(pof,pvp.lookAtCam[0],pvp.lookAtCam[1],pvp.lookAtCam[2]);
+   HelpersPOVRay::WriteVector(pof,pvp.lookAtCam[0],pvp.lookAtCam[1],pvp.lookAtCam[2]);
    pof << endl << "  rotate < GNUPlotAngle1, YAngle, GNUPlotAngle2 >";
    pof << endl << "}" << endl;
    if (bn->spaceFillingMode) {
-      pof << indTabsStr(pvp.currIndLev) << "merge{" << endl;
+      pof << HelpersPOVRay::IndTabsStr(pvp.currIndLev) << "merge{" << endl;
       pvp.currIndLev++;
    }
-   writeScrCharLine(pof,'/');
+   FileUtils::WriteScrCharLine(pof,'/',false);
    pof << "#if(DrawAtomTranspSpheres)" << endl;
    putNuclei(pof);
    pof << "#end\n//end if DrawAtomTranspSpheres" << endl;
-   writeScrCharLine(pof,'/');
+   FileUtils::WriteScrCharLine(pof,'/',false);
    pof << "#if(DrawStandardBonds)" << endl;
    putBonds(pof);
    pof << "#end\n//end if DrawStandardBonds" << endl;
-   writeScrCharLine(pof,'/');
+   FileUtils::WriteScrCharLine(pof,'/',false);
    if (iknowacps) {
       //int indacp;
       pof << "#if(DrawAttractorCriticalPoints)" << endl;
       //solreal acprad;
       for (int i=0; i<nACP; i++) {
          //acprad=bn->drawAtSize*CPNW_ATOMCRITICALPOINTSIZEFACTOR;
-         //writePOVSphere(pof,0,RACP[i][0],RACP[i][1],RACP[i][2],acprad,
+         //HelpersPOVRay::WriteSphere(pof,0,RACP[i][0],RACP[i][1],RACP[i][2],acprad,
                //               0.0e0,0.0e0,0.0e0);
-         writePOVSphere(pof,0,RACP[i][0],RACP[i][1],RACP[i][2],"RadiusACP",
+         HelpersPOVRay::WriteSphere(pof,0,RACP[i][0],RACP[i][1],RACP[i][2],"RadiusACP",
                "ColorACP");
       }
       pof << "#end\n//end if DrawAttractorCriticalPoints" << endl;
-      writeScrCharLine(pof,'/');
+      FileUtils::WriteScrCharLine(pof,'/',false);
    }
    if (iknowbcps) {
       //int indbcp;
@@ -2426,11 +2426,11 @@ bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
       //solreal bcprad;
       for (int i=0; i<nBCP; i++) {
          //bcprad=bn->drawAtSize*CPNW_ATOMCRITICALPOINTSIZEFACTOR;
-         writePOVSphere(pof,0,RBCP[i][0],RBCP[i][1],RBCP[i][2],"RadiusBCP",
+         HelpersPOVRay::WriteSphere(pof,0,RBCP[i][0],RBCP[i][1],RBCP[i][2],"RadiusBCP",
                "ColorBCP");
       }
       pof << "#end\n//end if DrawBondCriticalPoints" << endl;
-      writeScrCharLine(pof,'/');
+      FileUtils::WriteScrCharLine(pof,'/',false);
    }
    if (iknowrcps) {
       //int indrcp;
@@ -2438,11 +2438,11 @@ bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
       //solreal rcprad;
       for (int i=0; i<nRCP; i++) {
          //rcprad=bn->drawAtSize*CPNW_ATOMCRITICALPOINTSIZEFACTOR;
-         writePOVSphere(pof,0,RRCP[i][0],RRCP[i][1],RRCP[i][2],"RadiusRCP",
+         HelpersPOVRay::WriteSphere(pof,0,RRCP[i][0],RRCP[i][1],RRCP[i][2],"RadiusRCP",
                "ColorRCP");
       }
       pof << "#end\n//end if DrawRingCriticalPoints" << endl;
-      writeScrCharLine(pof,'/');
+      FileUtils::WriteScrCharLine(pof,'/',false);
    }
    if (iknowccps) {
       //int indccp;
@@ -2450,11 +2450,11 @@ bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
       //solreal ccprad;
       for (int i=0; i<nCCP; i++) {
          //ccprad=bn->drawAtSize*CPNW_ATOMCRITICALPOINTSIZEFACTOR;
-         writePOVSphere(pof,0,RCCP[i][0],RCCP[i][1],RCCP[i][2],"RadiusCCP",
+         HelpersPOVRay::WriteSphere(pof,0,RCCP[i][0],RCCP[i][1],RCCP[i][2],"RadiusCCP",
                "ColorCCP");
       }
       pof << "#end\n//end if DrawCageCriticalPoints" << endl;
-      writeScrCharLine(pof,'/');
+      FileUtils::WriteScrCharLine(pof,'/',false);
    }
    if (iknowbgps) {
       solreal gprad=0.06;
@@ -2463,10 +2463,10 @@ bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
       pof << "union {" << endl;
       for (int i=0; i<nBCP; i++) {
          npts=conBCP[i][2];
-         writePOVSphere(pof,1,RBGP[i][0][0],RBGP[i][0][1],RBGP[i][0][2], \
+         HelpersPOVRay::WriteSphere(pof,1,RBGP[i][0][0],RBGP[i][0][1],RBGP[i][0][2], \
                gprad,"ColorABGradPath");
          for (int j=1; j<npts; j++) {
-            writePOVSphere(pof,1,RBGP[i][j][0],RBGP[i][j][1],RBGP[i][j][2], \
+            HelpersPOVRay::WriteSphere(pof,1,RBGP[i][j][0],RBGP[i][j][1],RBGP[i][j][2], \
                   gprad,"ColorABGradPath");
          }
       }
@@ -2480,13 +2480,13 @@ bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
       pof << "union {" << endl;
       for (int i=0; i<nBCP; i++) {
          npts=conBCP[i][2];
-         writePOVSphere(pof,1,RBGP[i][0][0],RBGP[i][0][1],RBGP[i][0][2], \
+         HelpersPOVRay::WriteSphere(pof,1,RBGP[i][0][0],RBGP[i][0][1],RBGP[i][0][2], \
                gprad,"ColorABGradPath");
          for (int j=1; j<npts; j++) {
-            writePOVSphere(pof,1,RBGP[i][j][0],RBGP[i][j][1],RBGP[i][j][2], \
+            HelpersPOVRay::WriteSphere(pof,1,RBGP[i][j][0],RBGP[i][j][1],RBGP[i][j][2], \
                   gprad,"ColorABGradPath");
             //if (tubeBGPStyle) {
-            writePOVCylinder(pof,1,\
+            HelpersPOVRay::WriteCylinder(pof,1,\
                   RBGP[i][j][0],RBGP[i][j][1],RBGP[i][j][2], \
                   RBGP[i][j-1][0],RBGP[i][j-1][1],RBGP[i][j-1][2], \
                   gprad,"ColorABGradPath");
@@ -2505,15 +2505,15 @@ bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
          currBcpPos=0;
          while ( conRCP[rcpIdx][1][currBcpPos]>0 ) {
             npts=conRCP[rcpIdx][1][currBcpPos];
-            writePOVSphere(pof,1,RRGP[rcpIdx][currBcpPos][0][0],\
+            HelpersPOVRay::WriteSphere(pof,1,RRGP[rcpIdx][currBcpPos][0][0],\
                   RRGP[rcpIdx][currBcpPos][0][1],\
                   RRGP[rcpIdx][currBcpPos][0][2],gprad,"ColorARGradPath");
             for ( int j=1 ; j<npts ; ++j ) {
-               writePOVSphere(pof,1,RRGP[rcpIdx][currBcpPos][j][0],\
+               HelpersPOVRay::WriteSphere(pof,1,RRGP[rcpIdx][currBcpPos][j][0],\
                      RRGP[rcpIdx][currBcpPos][j][1],\
                      RRGP[rcpIdx][currBcpPos][j][2],gprad,"ColorARGradPath");
                if ( j%2 ==0 ) {
-               writePOVCylinder(pof,1,\
+               HelpersPOVRay::WriteCylinder(pof,1,\
                      RRGP[rcpIdx][currBcpPos][j][0],\
                      RRGP[rcpIdx][currBcpPos][j][1],\
                      RRGP[rcpIdx][currBcpPos][j][2],\
@@ -2536,7 +2536,7 @@ bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
          while ( conRCP[rcpIdx][1][currBcpPos]>0 ) {
             npts=conRCP[rcpIdx][1][currBcpPos];
             for ( int j=0 ; j<npts ; ++j ) {
-               writePOVSphere(pof,1,RRGP[rcpIdx][currBcpPos][j][0],\
+               HelpersPOVRay::WriteSphere(pof,1,RRGP[rcpIdx][currBcpPos][j][0],\
                      RRGP[rcpIdx][currBcpPos][j][1],\
                      RRGP[rcpIdx][currBcpPos][j][2],gprad,"ColorARGradPath");
             }
@@ -2556,17 +2556,17 @@ bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
          currRcpPos=0;
          while ( conCCP[ccpIdx][1][currRcpPos]>0 ) {
             npts=conCCP[ccpIdx][1][currRcpPos];
-            writePOVSphere(pof,1,RCGP[ccpIdx][currRcpPos][0][0],\
+            HelpersPOVRay::WriteSphere(pof,1,RCGP[ccpIdx][currRcpPos][0][0],\
                   RCGP[ccpIdx][currRcpPos][0][1],\
                   RCGP[ccpIdx][currRcpPos][0][2],gprad,"ColorACGradPath");
             for ( int j=1 ; j<npts ; ++j ) {
                if (j%3 != 1) {
-               writePOVSphere(pof,1,RCGP[ccpIdx][currRcpPos][j][0],\
+               HelpersPOVRay::WriteSphere(pof,1,RCGP[ccpIdx][currRcpPos][j][0],\
                      RCGP[ccpIdx][currRcpPos][j][1],\
                      RCGP[ccpIdx][currRcpPos][j][2],gprad,"ColorACGradPath");
                }
                if (j%3 ==0) {
-               writePOVCylinder(pof,1,\
+               HelpersPOVRay::WriteCylinder(pof,1,\
                      RCGP[ccpIdx][currRcpPos][j][0],\
                      RCGP[ccpIdx][currRcpPos][j][1],\
                      RCGP[ccpIdx][currRcpPos][j][2],\
@@ -2589,7 +2589,7 @@ bool critPtNetWork::makePOVFile(string pnam,povRayConfProp &pvp,int campos)
          while ( conCCP[ccpIdx][1][currRcpPos]>0 ) {
             npts=conCCP[ccpIdx][1][currRcpPos];
             for ( int j=0 ; j<npts ; ++j ) {
-               writePOVSphere(pof,1,RCGP[ccpIdx][currRcpPos][j][0],\
+               HelpersPOVRay::WriteSphere(pof,1,RCGP[ccpIdx][currRcpPos][j][0],\
                      RCGP[ccpIdx][currRcpPos][j][1],\
                      RCGP[ccpIdx][currRcpPos][j][2],gprad,"ColorACGradPath");
             }
@@ -2621,13 +2621,13 @@ void critPtNetWork::putBonds(ofstream &pof)
             startpt[l]=bn->R[i][l]*(1.0e0-frak1)+bn->R[k][l]*frak1;
          }
          if (k>0) {
-            writePOVCylinder(pof,1,
+            HelpersPOVRay::WriteCylinder(pof,1,
                   bn->R[i][0],bn->R[i][1],bn->R[i][2],
                   startpt[0],startpt[1],startpt[2],
                   bn->drawStickSize*CPNW_ATOMCRITICALPOINTSIZEFACTOR,
                   getAtomicRColorReal(atni),getAtomicGColorReal(atni),
                   getAtomicBColorReal(atni),pigmstr);
-            writePOVCylinder(pof,1,
+            HelpersPOVRay::WriteCylinder(pof,1,
                   startpt[0],startpt[1],startpt[2],
                   bn->R[k][0],bn->R[k][1],bn->R[k][2],
                   bn->drawStickSize*CPNW_ATOMCRITICALPOINTSIZEFACTOR,
@@ -2635,7 +2635,7 @@ void critPtNetWork::putBonds(ofstream &pof)
                   getAtomicBColorReal(atnk),pigmstr);
          }
       }
-      writePOVSphere(pof,0,bn->R[i][0],bn->R[i][1],bn->R[i][2],
+      HelpersPOVRay::WriteSphere(pof,0,bn->R[i][0],bn->R[i][1],bn->R[i][2],
             bn->drawStickSize*CPNW_ATOMCRITICALPOINTSIZEFACTOR,
             getAtomicRColorReal(atni),getAtomicGColorReal(atni),
             getAtomicBColorReal(atni));
@@ -2652,7 +2652,7 @@ void critPtNetWork::putNuclei(ofstream & pof)
    for (int i=0; i<bn->nNuc; i++) {
       atomn=bn->atNum[i];
       atrad=bn->drawAtSize;
-      writePOVTransparentSphere(pof,0,bn->R[i][0],bn->R[i][1],bn->R[i][2],atrad,
+      HelpersPOVRay::WriteTransparentSphere(pof,0,bn->R[i][0],bn->R[i][1],bn->R[i][2],atrad,
             getAtomicRColorReal(atomn),getAtomicGColorReal(atomn),
             getAtomicBColorReal(atomn),transmStr);
    }
@@ -2724,13 +2724,13 @@ bool critPtNetWork::readFromFile(string inname)
    string tmps;
    tmps=inname.substr(inname.length()-3,inname.length());
    if (tmps!="cpx") {
-      displayErrorMessage("Not a valid file!");
+      ScreenUtils::DisplayErrorMessage("Not a valid file!");
       return false;
    }
    ifstream cfil;
    cfil.open(inname.c_str(),ios::in);
    if (!(cfil.good())) {
-      displayErrorMessage("This file could not be opened...");
+      ScreenUtils::DisplayErrorMessage("This file could not be opened...");
       return false;
    }
    cout << "Loading Critical Points information from file:\n   '" << inname << "'..." << endl;
@@ -2744,16 +2744,16 @@ bool critPtNetWork::readFromFile(string inname)
          dACP=nACP*CPNW_MAXLOLACPSPERATOM;
          break;
       default:
-         displayWarningMessage("This field has not been implemented!");
+         ScreenUtils::DisplayWarningMessage("This field has not been implemented!");
          exit(1);
          break;
    }
    if (dACP<0) {
-      displayWarningMessage(string("ACPs are not given in file "+inname));
+      ScreenUtils::DisplayWarningMessage(string("ACPs are not given in file "+inname));
       iknowacps=false;
    } else {
-      alloc2DRealArray(string("RACP"),dACP,3,RACP,1.0e+50);
-      alloc1DStringArray("lblACP",dACP,lblACP);
+      MyMemory::Alloc2DRealArray(string("RACP"),dACP,3,RACP,1.0e+50);
+      MyMemory::Alloc1DStringArray("lblACP",dACP,lblACP);
       if (nACP>=0) {
          cpxGetACPCartCoordFromFile(cfil,nACP,RACP);
          cpxGetACPLabelsFromFile(cfil,nACP,lblACP);
@@ -2765,9 +2765,9 @@ bool critPtNetWork::readFromFile(string inname)
    if (iknowacps) {
       nBCP=cpxGetNOfBCPs(cfil);
       dBCP=(nACP*(nACP-1))/2;
-      alloc2DRealArray(string("RBCP"),dBCP,3,RBCP,1.0e+50);
-      alloc2DIntArray(string("conBCP"),dBCP,3,conBCP,-1);
-      alloc1DStringArray("lblBCP",dBCP,lblBCP);
+      MyMemory::Alloc2DRealArray(string("RBCP"),dBCP,3,RBCP,1.0e+50);
+      MyMemory::Alloc2DIntArray(string("conBCP"),dBCP,3,conBCP,-1);
+      MyMemory::Alloc1DStringArray("lblBCP",dBCP,lblBCP);
       if (nBCP>=0) {
          cpxGetBCPCartCoordFromFile(cfil,nBCP,RBCP);
          cpxGetBCPConnectivityFromFile(cfil,nBCP,conBCP);
@@ -2777,7 +2777,7 @@ bool critPtNetWork::readFromFile(string inname)
          iknowbcps=false;
       }
    } else {
-      displayErrorMessage("First look for ACPs...\nQuiting...");
+      ScreenUtils::DisplayErrorMessage("First look for ACPs...\nQuiting...");
 #if DEBUG
       DISPLAYDEBUGINFOFILELINE;
 #endif
@@ -2786,9 +2786,9 @@ bool critPtNetWork::readFromFile(string inname)
       nRCP=cpxGetNOfRCPs(cfil);
       dRCP=(nBCP*(nBCP-1))/2;
       if ( dRCP<CPNW_MINARRAYSIZE ) {dRCP=CPNW_MINARRAYSIZE;}
-      alloc2DRealArray(string("RRCP"),dRCP,3,RRCP,1.0e+50);
-      alloc1DStringArray("lblRCP",dRCP,lblRCP);
-      alloc3DIntArray("conRCP",dRCP,2,CPNW_MAXBCPSCONNECTEDTORCP,conRCP,-1);
+      MyMemory::Alloc2DRealArray(string("RRCP"),dRCP,3,RRCP,1.0e+50);
+      MyMemory::Alloc1DStringArray("lblRCP",dRCP,lblRCP);
+      MyMemory::Alloc3DIntArray("conRCP",dRCP,2,CPNW_MAXBCPSCONNECTEDTORCP,conRCP,-1);
       if (nRCP>=0) {
          cpxGetRCPCartCoordFromFile(cfil,nRCP,RRCP);
          cpxGetRCPLabelsFromFile(cfil,nRCP,lblRCP);
@@ -2802,9 +2802,9 @@ bool critPtNetWork::readFromFile(string inname)
       nCCP=cpxGetNOfCCPs(cfil);
       dCCP=(nRCP*(nRCP-1))/2;
       if ( dCCP<CPNW_MINARRAYSIZE ) {dCCP=CPNW_MINARRAYSIZE;}
-      alloc2DRealArray(string("RCCP"),dCCP,3,RCCP,1.0e+50);
-      alloc1DStringArray("lblCCP",dCCP,lblCCP);
-      alloc3DIntArray("conCCP",dCCP,2,CPNW_MAXRCPSCONNECTEDTOCCP,conCCP,-1);
+      MyMemory::Alloc2DRealArray(string("RCCP"),dCCP,3,RCCP,1.0e+50);
+      MyMemory::Alloc1DStringArray("lblCCP",dCCP,lblCCP);
+      MyMemory::Alloc3DIntArray("conCCP",dCCP,2,CPNW_MAXRCPSCONNECTEDTOCCP,conCCP,-1);
       if (nCCP>=0) {
          cpxGetCCPCartCoordFromFile(cfil,nCCP,RCCP);
          cpxGetCCPLabelsFromFile(cfil,nCCP,lblCCP);
@@ -2816,7 +2816,7 @@ bool critPtNetWork::readFromFile(string inname)
    }
    iknowallcps=(iknowacps&&iknowbcps&&iknowrcps&&iknowccps);
    nBGP=cpxGetNOfBondPaths(cfil);
-   if (dBCP>0) {alloc3DRealArray(string("RBGP"),dBCP,maxGradPathNPts,3,RBGP);}
+   if (dBCP>0) {MyMemory::Alloc3DRealArray(string("RBGP"),dBCP,maxGradPathNPts,3,RBGP);}
    if (nBGP>=0&&conBCP!=NULL) {
       cpxGetNOfPtsPerBondPath(cfil,nBGP,conBCP);
       cpxGetBondPathData(cfil,nBGP,conBCP,RBGP);
@@ -2824,7 +2824,7 @@ bool critPtNetWork::readFromFile(string inname)
    } else {iknowbgps=false;}
    nRGP=cpxGetNOfRingPaths(cfil);
    if (dRCP>0) {
-      alloc4DRealArray(string("RRGP"),dRCP,CPNW_MAXBCPSCONNECTEDTORCP,\
+      MyMemory::Alloc4DRealArray(string("RRGP"),dRCP,CPNW_MAXBCPSCONNECTEDTORCP,\
             maxGradPathNPts,3,RRGP);
    }
    if ( nRGP>=0 && conRCP!=NULL ) {
@@ -2834,7 +2834,7 @@ bool critPtNetWork::readFromFile(string inname)
    } else { iknowrgps=false; }
    nCGP=cpxGetNOfCagePaths(cfil);
    if (dCCP>0) {
-      alloc4DRealArray(string("RCGP"),dCCP,CPNW_MAXRCPSCONNECTEDTOCCP,\
+      MyMemory::Alloc4DRealArray(string("RCGP"),dCCP,CPNW_MAXRCPSCONNECTEDTOCCP,\
             maxGradPathNPts,3,RCGP);
    }
    if ( nCGP>=0 && conCCP!=NULL ) {
@@ -2850,38 +2850,38 @@ bool critPtNetWork::readFromFile(string inname)
 /* ************************************************************************************ */
 void critPtNetWork::displayStatus(bool lngdesc)
 {
-   printScrCharLine('+');
+   ScreenUtils::PrintScrCharLine('+');
    if (lngdesc) {
-      if (conBCP==NULL) {displayWarningMessage("conBCP is not allocated.");}
-      if (RACP==NULL) {displayWarningMessage("RACP is not allocated.");}
-      if (RBCP==NULL) {displayWarningMessage("RBCP is not allocated.");}
-      if (RRCP==NULL) {displayWarningMessage("RRCP is not allocated.");}
-      if (RCCP==NULL) {displayWarningMessage("RCCP is not allocated.");}
-      if (RBGP==NULL) {displayWarningMessage("RBGP is not allocated.");}
-      if (lblACP==NULL) {displayWarningMessage("lblACP is not allocated.");}
-      if (lblBCP==NULL) {displayWarningMessage("lblBCP is not allocated.");}
-      if (lblRCP==NULL) {displayWarningMessage("lblRCP is not allocated.");}
-      if (lblCCP==NULL) {displayWarningMessage("lblCCP is not allocated.");}
+      if (conBCP==NULL) {ScreenUtils::DisplayWarningMessage("conBCP is not allocated.");}
+      if (RACP==NULL) {ScreenUtils::DisplayWarningMessage("RACP is not allocated.");}
+      if (RBCP==NULL) {ScreenUtils::DisplayWarningMessage("RBCP is not allocated.");}
+      if (RRCP==NULL) {ScreenUtils::DisplayWarningMessage("RRCP is not allocated.");}
+      if (RCCP==NULL) {ScreenUtils::DisplayWarningMessage("RCCP is not allocated.");}
+      if (RBGP==NULL) {ScreenUtils::DisplayWarningMessage("RBGP is not allocated.");}
+      if (lblACP==NULL) {ScreenUtils::DisplayWarningMessage("lblACP is not allocated.");}
+      if (lblBCP==NULL) {ScreenUtils::DisplayWarningMessage("lblBCP is not allocated.");}
+      if (lblRCP==NULL) {ScreenUtils::DisplayWarningMessage("lblRCP is not allocated.");}
+      if (lblCCP==NULL) {ScreenUtils::DisplayWarningMessage("lblCCP is not allocated.");}
    }
-   printScrCharLine('-');
+   ScreenUtils::PrintScrCharLine('-');
    if (iknowacps) {cout << nACP << " ACPs found." << endl;}
-   else {displayWarningMessage("ACPs search needed...");}
+   else {ScreenUtils::DisplayWarningMessage("ACPs search needed...");}
    if (iknowbcps) {cout << nBCP << " BCPs found." << endl;}
-   else {displayWarningMessage("BCPs search needed...");}
+   else {ScreenUtils::DisplayWarningMessage("BCPs search needed...");}
    if (iknowrcps) {cout << nRCP << " RCPs found." << endl;}
-   else {displayWarningMessage("RCPs search needed...");}
+   else {ScreenUtils::DisplayWarningMessage("RCPs search needed...");}
    if (iknowccps) {cout << nCCP << " CCPs found." << endl;}
-   else {displayWarningMessage("CCPs search needed...");}
+   else {ScreenUtils::DisplayWarningMessage("CCPs search needed...");}
    if (iknowallcps) {
-      printScrCharLine('-');
+      ScreenUtils::PrintScrCharLine('-');
       cout << "nACP-nBCP+nRCP-nCCP: " << (nACP-nBCP+nRCP-nCCP) << endl;
-      printScrCharLine('-');
+      ScreenUtils::PrintScrCharLine('-');
    }
    if (iknowbgps) {
-      if (nBGP!=nBCP) {displayWarningMessage("For some unknown reason nBGP!=nBCP");}
+      if (nBGP!=nBCP) {ScreenUtils::DisplayWarningMessage("For some unknown reason nBGP!=nBCP");}
       else {cout << nBGP << " Bond Gradient Paths found." << endl;}
-   } else {displayWarningMessage("BGPs search needed...");}
-   printScrCharLine('+');
+   } else {ScreenUtils::DisplayWarningMessage("BGPs search needed...");}
+   ScreenUtils::PrintScrCharLine('+');
    return;
 }
 /* ************************************************************************************ */
@@ -2891,7 +2891,7 @@ int critPtNetWork::findSingleRhoBondGradientPathRK5(int at1,int at2,solreal hste
    solreal rn[3],rho,g[3],h[3][3],eive[3][3],eival[3],dist,maggrad;
    seekSingleRhoBCP(at1,at2,ro);
    wf->evalHessian(ro[0],ro[1],ro[2],rho,g,h);
-   eigen_decomposition3(h,eive,eival);
+   EigenDecompositionJAMA::EigenDecomposition3(h,eive,eival);
    maggrad=0.0e0;
    for (int i=0; i<3; i++) {maggrad+=(eive[i][2]*eive[i][2]);}
    maggrad=sqrt(maggrad);
@@ -2940,7 +2940,7 @@ int critPtNetWork::findSingleRhoBondGradientPathRK5(int at1,int at2,solreal hste
       }
       count++;
       if (count==dima) {
-         displayWarningMessage("You need a bigger array for storing the BGP coordinates!");
+         ScreenUtils::DisplayWarningMessage("You need a bigger array for storing the BGP coordinates!");
          return count-1;
       }
    }
@@ -2980,12 +2980,12 @@ int critPtNetWork::findSingleRhoBondGradientPathRK5(int at1,int at2,solreal hste
       //cout << "rn(" << count << "): " << rn[0] << " " << rn[1] << " " << rn[2] << endl;
       count++;
       if (count==dima) {
-         displayWarningMessage("You need a bigger array for storing the BGP coordinates!");
+         ScreenUtils::DisplayWarningMessage("You need a bigger array for storing the BGP coordinates!");
          return count-1;
       }
    }
    if (count==dima) {
-      displayWarningMessage("You need a bigger array for storing the BGP coordinates!");
+      ScreenUtils::DisplayWarningMessage("You need a bigger array for storing the BGP coordinates!");
       return count-1;
    }
    dist=0.0e0;
@@ -3020,15 +3020,15 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
    int bcpGlobIdx=conRCP[rcpIdx][0][bcpIdxInRRGP];
 #if DEBUG
    if ( bcpIdxInRRGP>CPNW_MAXBCPSCONNECTEDTORCP || bcpIdxInRRGP < 0 ) {
-      displayErrorMessage("Out of conRCP bounds!");
+      ScreenUtils::DisplayErrorMessage("Out of conRCP bounds!");
       DISPLAYDEBUGINFOFILELINE;
    }
    if ( rcpIdx>nRCP ) {
-      displayErrorMessage("rcpIdx>nRCP");
+      ScreenUtils::DisplayErrorMessage("rcpIdx>nRCP");
       DISPLAYDEBUGINFOFILELINE;
    }
    if ( bcpGlobIdx>nBCP || bcpGlobIdx<0 ) {
-      displayErrorMessage("Non existent bcp!");
+      ScreenUtils::DisplayErrorMessage("Non existent bcp!");
       DISPLAYDEBUGINFOFILELINE;
    }
 #endif
@@ -3057,10 +3057,10 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
    solreal hess[3][3],eivec[3][3],tmpv[3];
    wf->evalHessian(xb[0],xb[1],xb[2],magd,ux,hess);
    if ( magV3(ux)>CPNW_EPSRHOACPGRADMAG ) {
-      displayWarningMessage(string("Not at a BCP? (")+getStringFromReal(magV3(ux))\
+      ScreenUtils::DisplayWarningMessage(string("Not at a BCP? (")+StringTools::GetStringFromReal(magV3(ux))\
             +string(")"));
    }
-   eigen_decomposition3(hess,eivec,tmpv);
+   EigenDecompositionJAMA::EigenDecomposition3(hess,eivec,tmpv);
    for ( int i=0 ; i<3 ; ++i ) {
       ux[i]=eivec[i][0];
       uy[i]=eivec[i][1];
@@ -3150,15 +3150,15 @@ int critPtNetWork::findSingleRhoCageGradientPathRK5(int ccpIdx,\
    int rcpGlobIdx=conCCP[ccpIdx][0][rcpIdxInRCGP];
 #if DEBUG
    if ( rcpIdxInRCGP>CPNW_MAXRCPSCONNECTEDTOCCP || rcpIdxInRCGP < 0 ) {
-      displayErrorMessage("Out of conCCP bounds!");
+      ScreenUtils::DisplayErrorMessage("Out of conCCP bounds!");
       DISPLAYDEBUGINFOFILELINE;
    }
    if ( ccpIdx>nCCP ) {
-      displayErrorMessage("ccpIdx>nCCP");
+      ScreenUtils::DisplayErrorMessage("ccpIdx>nCCP");
       DISPLAYDEBUGINFOFILELINE;
    }
    if ( rcpGlobIdx>nRCP || rcpGlobIdx<0 ) {
-      displayErrorMessage("Non existent rcp!");
+      ScreenUtils::DisplayErrorMessage("Non existent rcp!");
       DISPLAYDEBUGINFOFILELINE;
    }
 #endif
@@ -3171,10 +3171,10 @@ int critPtNetWork::findSingleRhoCageGradientPathRK5(int ccpIdx,\
    solreal hess[3][3],eivec[3][3],tmpv[3],dir2min[3];
    wf->evalHessian(xr[0],xr[1],xr[2],magd,tmpv,hess); //here tmpv is gradRho
    if ( magV3(tmpv)>CPNW_EPSRHOACPGRADMAG ) {
-      displayWarningMessage(string("Not at an RCP? (")+\
-            getStringFromReal(magV3(tmpv))+string(")"));
+      ScreenUtils::DisplayWarningMessage(string("Not at an RCP? (")+\
+            StringTools::GetStringFromReal(magV3(tmpv))+string(")"));
    }
-   eigen_decomposition3(hess,eivec,tmpv);
+   EigenDecompositionJAMA::EigenDecomposition3(hess,eivec,tmpv);
    for ( int i=0 ; i<3 ; ++i ) {
       dir2min[i]=eivec[i][0];
       xn[i]=xr[i]+hstep*dir2min[i];
@@ -3191,7 +3191,7 @@ int critPtNetWork::findSingleRhoCageGradientPathRK5(int ccpIdx,\
    imatccp=walkGradientPathRK5ToEndPoint(xr,xn,xc,xm,magd,hstep,\
          dima,arrgp,count,maxalllen,false); //uphill=false
    if ( imatccp ) {return count;}
-   displayErrorMessage("Unknown error!");
+   ScreenUtils::DisplayErrorMessage("Unknown error!");
 #if DEBUG
    DISPLAYDEBUGINFOFILELINE;
    wf->displayAllFieldProperties(xn[0],xn[1],xn[2]);
@@ -3245,7 +3245,7 @@ bool critPtNetWork::walkGradientPathRK5ToEndPoint(\
       ++count;
    }
    if ( count==maxGradPathNPts ) {
-      displayWarningMessage("End or array reached, need larger array?");
+      ScreenUtils::DisplayWarningMessage("End or array reached, need larger array?");
 #if DEBUG
       DISPLAYDEBUGINFOFILELINE;
 #endif /* ( DEBUG ) */
@@ -3277,7 +3277,7 @@ bool critPtNetWork::seekSingleRhoBCP(int ata,int atb,solreal (&x)[3])
    //for (int n=0; n<3; n++) {magg+=(g[n]*g[n]);}
    //magg=sqrt(magg);
    if (!((rho>CPNW_MINRHOSIGNIFICATIVEVAL)&&(computeMagnitudeV3(g)<CPNW_EPSRHOACPGRADMAG))) {
-      displayErrorMessage(string("The chosen atoms ("+wf->atLbl[ata]\
+      ScreenUtils::DisplayErrorMessage(string("The chosen atoms ("+wf->atLbl[ata]\
                +","+wf->atLbl[atb]+") probably do not lead to a BCP!"));
 #if DEBUG
       wf->displayAllFieldProperties(x[0],x[1],x[2]);
@@ -3394,7 +3394,7 @@ void critPtNetWork::getNextPointInGradientPathRK5DownHill(solreal (&xn)[3],\
 void critPtNetWork::findMaxBondDist()
 {
    if ( !iknowbgps ) {
-      displayErrorMessage("First you need to find the Bond Gradient Paths!");
+      ScreenUtils::DisplayErrorMessage("First you need to find the Bond Gradient Paths!");
       return;
    }
    if ( wf->nNuc==1 ) { maxBondDist=0.0e0; return; }
@@ -3427,7 +3427,7 @@ void critPtNetWork::addBCP2ConRCP(const int rcpIdx,const int bcpIdx)
 {
 #if DEBUG
    if ( conRCP==NULL ) {
-      displayErrorMessage("conRCP is not allocated!");
+      ScreenUtils::DisplayErrorMessage("conRCP is not allocated!");
       DISPLAYDEBUGINFOFILELINE;
    }
 #endif /* ( DEBUG ) */
@@ -3437,7 +3437,7 @@ void critPtNetWork::addBCP2ConRCP(const int rcpIdx,const int bcpIdx)
       ++k;
    }
    if ( k==CPNW_MAXBCPSCONNECTEDTORCP ) {
-      displayWarningMessage("Perhaps you need a larger array for conRCP!");
+      ScreenUtils::DisplayWarningMessage("Perhaps you need a larger array for conRCP!");
 #if DEBUG
          DISPLAYDEBUGINFOFILELINE;
 #endif /* ( DEBUG ) */
@@ -3448,7 +3448,7 @@ void critPtNetWork::addRCP2ConCCP(const int ccpIdx,const int rcpIdx)
 {
 #if DEBUG
    if ( conCCP==NULL ) {
-      displayErrorMessage("conCCP is not allocated!");
+      ScreenUtils::DisplayErrorMessage("conCCP is not allocated!");
       DISPLAYDEBUGINFOFILELINE;
    }
 #endif /* ( DEBUG ) */
@@ -3458,7 +3458,7 @@ void critPtNetWork::addRCP2ConCCP(const int ccpIdx,const int rcpIdx)
       ++k;
    }
    if ( k==CPNW_MAXRCPSCONNECTEDTOCCP ) {
-      displayWarningMessage("Perhaps you need a larger array for conCCP!");
+      ScreenUtils::DisplayWarningMessage("Perhaps you need a larger array for conCCP!");
 #if DEBUG
          DISPLAYDEBUGINFOFILELINE;
 #endif /* ( DEBUG ) */
@@ -3469,23 +3469,23 @@ void critPtNetWork::forceBCPConnectivity(int bcpIdx,int acpIdx1,int acpIdx2)
 {
 #if DEBUG
    if ( conBCP==NULL ) {
-      displayErrorMessage("conBCP is not allocated!");
+      ScreenUtils::DisplayErrorMessage("conBCP is not allocated!");
       cout << __FILE__ << ", line: " << __LINE__ << endl;
    }
 #endif
    if ( bcpIdx>=nBCP ) {
-      displayWarningMessage(string("The BCP of index ")+getStringFromInt(bcpIdx)+string(" does not exist!"));
-      displayWarningMessage("Nothingo to do...");
+      ScreenUtils::DisplayWarningMessage(string("The BCP of index ")+StringTools::GetStringFromInt(bcpIdx)+string(" does not exist!"));
+      ScreenUtils::DisplayWarningMessage("Nothingo to do...");
       return;
    }
    if ( acpIdx1>=nACP ) {
-      displayWarningMessage(string("The ACP of index ")+getStringFromInt(acpIdx1)+string(" does not exist!"));
-      displayWarningMessage("Nothingo to do...");
+      ScreenUtils::DisplayWarningMessage(string("The ACP of index ")+StringTools::GetStringFromInt(acpIdx1)+string(" does not exist!"));
+      ScreenUtils::DisplayWarningMessage("Nothingo to do...");
       return;
    }
    if ( acpIdx2>=nACP ) {
-      displayWarningMessage(string("The ACP of index ")+getStringFromInt(acpIdx2)+string(" does not exist!"));
-      displayWarningMessage("Nothingo to do...");
+      ScreenUtils::DisplayWarningMessage(string("The ACP of index ")+StringTools::GetStringFromInt(acpIdx2)+string(" does not exist!"));
+      ScreenUtils::DisplayWarningMessage("Nothingo to do...");
       return;
    }
    conBCP[bcpIdx][0]=acpIdx1;
@@ -3566,7 +3566,7 @@ void critPtNetWork::addToConRCP(const int rcpIdx,const int bcpIdx)
       if ( conRCP[rcpIdx][0][mypos]==bcpIdx ) {return;}
       ++mypos;
       if ( mypos==CPNW_MAXBCPSCONNECTEDTORCP ) {
-         displayWarningMessage("End of array reached, need bigger array!");
+         ScreenUtils::DisplayWarningMessage("End of array reached, need bigger array!");
 #if DEBUG
          DISPLAYDEBUGINFOFILELINE;
 #endif /* ( DEBUG ) */
@@ -3583,7 +3583,7 @@ void critPtNetWork::addToConCCP(const int ccpIdx,const int rcpIdx)
       if ( conCCP[ccpIdx][0][mypos]==rcpIdx ) {return;}
       ++mypos;
       if ( mypos==CPNW_MAXRCPSCONNECTEDTOCCP ) {
-         displayWarningMessage("End of array reached, need bigger array!");
+         ScreenUtils::DisplayWarningMessage("End of array reached, need bigger array!");
 #if DEBUG
          DISPLAYDEBUGINFOFILELINE;
 #endif /* ( DEBUG ) */
@@ -3596,10 +3596,10 @@ void critPtNetWork::addToConCCP(const int ccpIdx,const int rcpIdx)
 void critPtNetWork::setRingPaths()
 {
    if (!iknowrcps) {
-      displayErrorMessage("Please look first for the RCPs...\nNothing to be done!");
+      ScreenUtils::DisplayErrorMessage("Please look first for the RCPs...\nNothing to be done!");
       return;
    }
-   alloc4DRealArray(string("RRGP"),dRCP,CPNW_MAXBCPSCONNECTEDTORCP,\
+   MyMemory::Alloc4DRealArray(string("RRGP"),dRCP,CPNW_MAXBCPSCONNECTEDTORCP,\
          maxGradPathNPts,3,RRGP);
    correctRCPConnectivity();
    cout << "Calculating Ring Gradient Paths..." << endl;
@@ -3607,7 +3607,7 @@ void critPtNetWork::setRingPaths()
    cout << "nRCP: " << nRCP << endl;
 #endif /* ( DEBUG ) */
 #if USEPROGRESSBAR
-   printProgressBar(0);
+   ScreenUtils::PrintProgressBar(0);
 #endif
    solreal hstep; //,rseed[3];
    hstep=stepSizeBGP;
@@ -3621,7 +3621,7 @@ void critPtNetWork::setRingPaths()
 #if DEBUG
          bcpIdx=conRCP[rcpIdx][0][currBcpPos];
          if ( bcpIdx>=nBCP || bcpIdx<0 ) {
-            displayErrorMessage("BCP out of bounds!");
+            ScreenUtils::DisplayErrorMessage("BCP out of bounds!");
             DISPLAYDEBUGINFOFILELINE;
          }
 #endif
@@ -3630,7 +3630,7 @@ void critPtNetWork::setRingPaths()
                currBcpPos,hstep,maxGradPathNPts,RRGP[rcpIdx][currBcpPos]);
 #if DEBUG
          if ( npts<0 ) {
-            displayWarningMessage("Catched -1");
+            ScreenUtils::DisplayWarningMessage("Catched -1");
             DISPLAYDEBUGINFOFILELINE;
          }
 #endif /* ( DEBUG ) */
@@ -3638,12 +3638,12 @@ void critPtNetWork::setRingPaths()
          ++currBcpPos;
       }
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(rcpIdx)/\
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(rcpIdx)/\
                solreal( (nRCP>1) ? (nRCP-1) : 1 )));
 #endif
    }
 #if USEPROGRESSBAR
-   printProgressBar(100);
+   ScreenUtils::PrintProgressBar(100);
    cout << endl;
 #endif
    iknowrgps=true;
@@ -3653,10 +3653,10 @@ void critPtNetWork::setRingPaths()
 void critPtNetWork::setCagePaths(void)
 {
   if (!iknowccps) {
-      displayErrorMessage("Please look first for the CCPs...\nNothing to be done!");
+      ScreenUtils::DisplayErrorMessage("Please look first for the CCPs...\nNothing to be done!");
       return;
    }
-   alloc4DRealArray(string("RCGP"),dCCP,CPNW_MAXRCPSCONNECTEDTOCCP,\
+   MyMemory::Alloc4DRealArray(string("RCGP"),dCCP,CPNW_MAXRCPSCONNECTEDTOCCP,\
          maxGradPathNPts,3,RCGP);
    cout << "Calculating Cage Gradient Paths..." << endl;
 #if DEBUG
@@ -3664,7 +3664,7 @@ void critPtNetWork::setCagePaths(void)
 #endif /* ( DEBUG ) */
    /* Remember this is just a trial function,  */
 #if USEPROGRESSBAR
-   printProgressBar(0);
+   ScreenUtils::PrintProgressBar(0);
 #endif
    solreal hstep; //,rseed[3];
    hstep=stepSizeBGP;
@@ -3676,7 +3676,7 @@ void critPtNetWork::setCagePaths(void)
          //rcpIdx=conCCP[ccpIdx][0][currRcpPos];
 #if DEBUG
          if ( ccpIdx>=nCCP || ccpIdx<0 ) {
-            displayErrorMessage("CCP out of bounds!");
+            ScreenUtils::DisplayErrorMessage("CCP out of bounds!");
             DISPLAYDEBUGINFOFILELINE;
          }
 #endif
@@ -3685,7 +3685,7 @@ void critPtNetWork::setCagePaths(void)
                currRcpPos,hstep,maxGradPathNPts,RCGP[ccpIdx][currRcpPos]);
 #if DEBUG
          if ( npts<0 ) {
-            displayWarningMessage("Catched -1");
+            ScreenUtils::DisplayWarningMessage("Catched -1");
             DISPLAYDEBUGINFOFILELINE;
          }
 #endif /* ( DEBUG ) */
@@ -3693,12 +3693,12 @@ void critPtNetWork::setCagePaths(void)
          ++currRcpPos;
       }
 #if USEPROGRESSBAR
-      printProgressBar(int(100.0e0*solreal(ccpIdx)/\
+      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(ccpIdx)/\
                solreal( (nCCP>1) ? (nCCP-1) : 1 )));
 #endif
    }
 #if USEPROGRESSBAR
-   printProgressBar(100);
+   ScreenUtils::PrintProgressBar(100);
    cout << endl;
 #endif
    iknowcgps=true;
@@ -3708,7 +3708,7 @@ void critPtNetWork::setCagePaths(void)
 int critPtNetWork::getNofRingPathsOfRCP(int rcpIdx)
 {
    if ( !iknowrgps ) {
-      displayWarningMessage("First seek for Ring Gradient Paths! Returning 0.");
+      ScreenUtils::DisplayWarningMessage("First seek for Ring Gradient Paths! Returning 0.");
 #if DEBUG
       DISPLAYDEBUGINFOFILELINE;
 #endif /* ( DEBUG ) */
@@ -3721,7 +3721,7 @@ int critPtNetWork::getNofRingPathsOfRCP(int rcpIdx)
 int critPtNetWork::getNofCagePathsOfCCP(int ccpIdx)
 {
    if ( !iknowcgps ) {
-      displayWarningMessage("First seek for Cage Gradient Paths! Returning 0.");
+      ScreenUtils::DisplayWarningMessage("First seek for Cage Gradient Paths! Returning 0.");
 #if DEBUG
       DISPLAYDEBUGINFOFILELINE;
 #endif /* ( DEBUG ) */
@@ -3735,7 +3735,7 @@ int critPtNetWork::getTotalNofRingPaths(void)
 {
 #if DEBUG
    if ( !iknowrgps ) {
-      displayWarningMessage("First seek for Ring Gradient Paths! Returning -1.");
+      ScreenUtils::DisplayWarningMessage("First seek for Ring Gradient Paths! Returning -1.");
       DISPLAYDEBUGINFOFILELINE;
       return -1;
    }
@@ -3749,7 +3749,7 @@ int critPtNetWork::getTotalNofCagePaths(void)
 {
 #if DEBUG
    if ( !iknowcgps ) {
-      displayWarningMessage("First seek for Cage Gradient Paths! Returning -1.");
+      ScreenUtils::DisplayWarningMessage("First seek for Cage Gradient Paths! Returning -1.");
       DISPLAYDEBUGINFOFILELINE;
       return -1;
    }
