@@ -72,9 +72,10 @@
 using std::exit;
 #include <iostream>
 using std::cout;
-using std::cin;
+using std::cerr;
 using std::endl;
 #include <iomanip>
+using std::scientific;
 using std::setprecision;
 using std::setw;
 #include <cmath>
@@ -219,7 +220,7 @@ bool GaussWaveFunction::sameMolOrbOccNums() {
 }
 bool GaussWaveFunction::readFromFileWFN(string inname) {
    ifstream tif;
-   tif.open(inname.c_str(),ios::in);
+   tif.open(inname.c_str(),std::ios::in);
    if (!(tif.good())) {
       cout << "Error: File " << inname << "could not be opened...\n";
 #if DEBUG
@@ -257,7 +258,7 @@ bool GaussWaveFunction::readFromFileWFN(string inname) {
 }
 bool GaussWaveFunction::readFromFileWFX(string inname) {
    ifstream tif;
-   tif.open(inname.c_str(),ios::in);
+   tif.open(inname.c_str(),std::ios::in);
    if (!(tif.good())) {
       cout << "Error: File " << inname << "could not be opened...\n";
 #if DEBUG
@@ -766,7 +767,7 @@ void GaussWaveFunction::calcCab(void) {
       char goon='n';
       cout << "The number of primitives is " << nPri <<". This will use approximatedly" << endl;
       cout << memest << "MB of RAM memory. Continue anyway (y/n)?" << endl;
-      cin >> goon;
+      std::cin >> goon;
       if ((goon=='n')||(goon=='N')) {
          cout << "Perhaps you may want to recompile this program increasing the maximum number " << endl
               << "  of primitives. " << endl;
@@ -4431,7 +4432,6 @@ void GaussWaveFunction::evalGradDensityMatrix1(double x,double y,double z,\
         "contributions!" << endl;
    }
    return;
-
 }
 void GaussWaveFunction::evalHessDensityMatrix1(double (&xx)[3],double (&xxp)[3],\
       double &gamm,double (&gg)[3],double (&gp)[3],\

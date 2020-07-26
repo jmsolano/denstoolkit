@@ -41,7 +41,7 @@
 #define _IOFUNCTS_WFN_H_
 #include <cstdlib>
 #include <string>
-using namespace std;
+using std::string;
 #include <fstream>
 using std::ifstream;
 using std::ofstream;

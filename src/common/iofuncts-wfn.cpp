@@ -42,24 +42,21 @@
 
 #ifndef _IOFUNCTS_WFN_CPP_
 #define _IOFUNCTS_WFN_CPP_
-
-#include "iofuncts-wfn.h"
 #include <cstdlib>
 using std::atof;
 #include <iostream>
 using std::cout;
 using std::endl;
-#include "mymemory.h"
 #include <cmath>
-/* ********************************************************************************************* */
-/* ********************************************************************************************* */
+#include "mymemory.h"
+#include "iofuncts-wfn.h"
+
 string getTitleFromFileWFN(ifstream &ifil) {
    string line;
    ifil.seekg(ifil.beg);
    getline(ifil,line);
    return line;
 }
-/* ********************************************************************************************* */
 void processFirstDataStringinWFNFile(ifstream &ifil,string* &tit,string &orbdesc,int &nmo,int &npr,int &nnu) {
    string line;
    ifil.seekg(ifil.beg);
@@ -109,7 +106,6 @@ void processFirstDataStringinWFNFile(ifstream &ifil,string* &tit,string &orbdesc
       exit(1);
    }
 }
-/* ********************************************************************************************* */
 void processCentersWFN(ifstream &ifil,const int nnu,string* &atlbl,double* &rr,double* &atch) {
    MyMemory::Alloc1DStringArray("atlbl",nnu,atlbl);
    MyMemory::Alloc1DRealArray("rr",3*nnu,rr);
@@ -144,7 +140,6 @@ void processCentersWFN(ifstream &ifil,const int nnu,string* &atlbl,double* &rr,d
       ifil.seekg(fepos);
    }
 }
-/* ********************************************************************************************* */
 void processPrimitivesWFN(ifstream &ifil,const int npr,int* &pricen,int* &primty,double* &prexp) {
    MyMemory::Alloc1DIntArray("pricen",npr,pricen);
    MyMemory::Alloc1DIntArray("primty",npr,primty);
@@ -211,7 +206,6 @@ void processPrimitivesWFN(ifstream &ifil,const int npr,int* &pricen,int* &primty
       }
    }
 }
-/* ********************************************************************************************* */
 void processMolecularOrbitalPropsAndCoefs(ifstream &ifil,const int norb,const int npr
                                  ,double* &ocn,double* &moe,double* &moc) {
    MyMemory::Alloc1DRealArray("moc",(norb*npr),moc);
@@ -249,7 +243,6 @@ void processMolecularOrbitalPropsAndCoefs(ifstream &ifil,const int norb,const in
       }
    }
 }
-/* ********************************************************************************************* */
 void getEnergyAndVirial(ifstream &ifil,double &theener,double &thevir) {
    string line;
    getline(ifil,line);
@@ -264,8 +257,5 @@ void getEnergyAndVirial(ifstream &ifil,double &theener,double &thevir) {
    while (line[0]==' ') {line.erase(0,1);}
    thevir=(double)atof(line.c_str());
 }
-/* ********************************************************************************************* */
-/* ********************************************************************************************* */
-/* ********************************************************************************************* */
 #endif//_IOFUNCTS_WFN_CPP_
 

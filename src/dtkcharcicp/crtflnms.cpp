@@ -37,10 +37,7 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
-/*
-
-   crtflnms.cpp
+/* crtflnms.cpp
    
    This file contains the implementation of the definitions to modify or to create names for the 
    different files used to record the information extracted from the program.
@@ -61,8 +58,6 @@
    May 2013
    ----------------------
 */
-#ifndef _CRTFLNMS_CPP
-#define _CRTFLNMS_CPP
 #include <cstdlib>
 #include <iostream>
 using std::cout;
@@ -110,4 +105,4 @@ void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn,string &l_fn,\
    }
    return;
 }
-#endif //_CRTFLNMS_CPP
+

@@ -7,8 +7,6 @@ using std::cerr;
 #include "fileutils.h"
 #include "gnuplottools.h"
 
-
-//*******************************************************************************************
 void HelpersPlot::makeGnuplotFile(optFlags &opts, string &gnpnam,string &tsvnam,char p2p,
       double dimparam,bondNetWork &bn,int a1,int a2,int a3,waveFunctionGrid2D &grd) {
    ofstream gfil;

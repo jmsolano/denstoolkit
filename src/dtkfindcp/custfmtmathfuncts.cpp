@@ -37,8 +37,6 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-#ifndef _CUSTFMTMATHFUNCTS_CPP_
-#define _CUSTFMTMATHFUNCTS_CPP_
 #include <cstdlib>
 #include <iostream>
 using std::cout;
@@ -110,6 +108,4 @@ void writeDatMatBondPathCrds(string &bpfn,critPtNetWork &cp) {
    ofil.close();
    return;
 }
-
-#endif /* defined(_CUSTFMTMATHFUNCTS_CPP_) */
 

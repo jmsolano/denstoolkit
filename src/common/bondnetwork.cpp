@@ -45,6 +45,9 @@
 #endif
 #include <cstdlib>
 #include <cmath>
+#include <iostream>
+using std::cout;
+using std::endl;
 
 #include "bondnetwork.h"
 #include "povraytools.h"
@@ -57,10 +60,7 @@
 //#include "atomcolschcust.h" //Choose this for the palette defined by JMHP
 #include "atomcolschjmol.h" //Choose this for the palette used in JMol
 
-//**********************************************************************************************
-bondNetWork::bondNetWork()
-//**********************************************************************************************
-{
+bondNetWork::bondNetWork() {
    R=NULL;
    bondDist=NULL;
    nNuc=0;
@@ -80,10 +80,7 @@ bondNetWork::bondNetWork()
    wireMode=false;
    isSTP=false;
 }
-//**********************************************************************************************
-bondNetWork::~bondNetWork()
-//**********************************************************************************************
-{
+bondNetWork::~bondNetWork() {
    MyMemory::Dealloc2DRealArray(R,nNuc);
    MyMemory::Dealloc2DIntArray(bNet,nNuc);
    MyMemory::Dealloc1DStringArray(atLbl);
@@ -92,14 +89,12 @@ bondNetWork::~bondNetWork()
    MyMemory::Dealloc2DRealArray(bondDist,nNuc);
    isSTP=false;
 }
-//**********************************************************************************************
 bool bondNetWork::imstp() {
    return isSTP;
 }
-//**********************************************************************************************
 bool bondNetWork::readFromFileWFX(string inname) {
    ifstream tif;
-   tif.open(inname.c_str(),ios::in);
+   tif.open(inname.c_str(),std::ios::in);
    if (!(tif.good())) {
       cout << "Error: File " << inname << "could not be opened...\n";
 #if DEBUG
@@ -118,12 +113,11 @@ bool bondNetWork::readFromFileWFX(string inname) {
    tif.close();
    return true;
 }
-//**********************************************************************************************
 bool bondNetWork::readFromFileWFN(string inname) {
    ifstream tif;
    string orDe;
    int nmo,npr;
-   tif.open(inname.c_str(),ios::in);
+   tif.open(inname.c_str(),std::ios::in);
    if (!(tif.good())) {
       cout << "Error: File " << inname << "could not be opened...\n";
 #if DEBUG
@@ -149,7 +143,6 @@ bool bondNetWork::readFromFileWFN(string inname) {
    tif.close();
    return true;
 }
-//*************************************************************************************************
 bool bondNetWork::readFromFile(string inname) {
    string extension;
    extension=inname.substr(inname.length()-3,3);
@@ -163,7 +156,6 @@ bool bondNetWork::readFromFile(string inname) {
       return false;
    }
 }
-//**********************************************************************************************
 double bondNetWork::dist(int i, int j) {
 #if DEBUG
    if ((i>=nNuc)||(j>=nNuc)) {
@@ -176,7 +168,6 @@ double bondNetWork::dist(int i, int j) {
    d+=(R[i][2]-R[j][2])*(R[i][2]-R[j][2]);
    return sqrt(d);
 }
-//**********************************************************************************************
 bool bondNetWork::setUpBNW(void) {
    lookForBonds();
    seekRMaxMin();
@@ -184,7 +175,6 @@ bool bondNetWork::setUpBNW(void) {
    setBoundingBox();
    return isSTP;
 }
-//**********************************************************************************************
 bool bondNetWork::lookForBonds(void) {
    if (!(MyMemory::Alloc2DRealArray(string("bondDist"),nNuc,MAXBONDINGATOMS,bondDist))) {
       cout << "Unknonw error from " << __FILE__ << ", line: " << __LINE__ << endl;
@@ -215,7 +205,6 @@ bool bondNetWork::lookForBonds(void) {
    if (maxBondDist<0.0e0) {maxBondDist=clsstatd;}
    return true;
 }
-//**********************************************************************************************
 void bondNetWork::addBond(int m, int n,double dd) {
    int k=0;
    while (k<MAXBONDINGATOMS) {
@@ -228,7 +217,6 @@ void bondNetWork::addBond(int m, int n,double dd) {
       }
    }
 }
-//**********************************************************************************************
 void bondNetWork::seekRMaxMin(void) {
    for (int i=0; i<nNuc; i++) {
       for (int j=0; j<3; j++) {
@@ -238,10 +226,9 @@ void bondNetWork::seekRMaxMin(void) {
    }
    return;
 }
-//**********************************************************************************************
 bool bondNetWork::makePOVFile(string pnam,POVRayConfiguration &pvp) {
    ofstream pof;
-   pof.open(pnam.c_str(),ios::out);
+   pof.open(pnam.c_str(),std::ios::out);
    if (!(pof.good())) {
       cout << "Error: File " << pnam << "could not be opened...\n";
 #if DEBUG
@@ -281,7 +268,6 @@ bool bondNetWork::makePOVFile(string pnam,POVRayConfiguration &pvp) {
    pof.close();
    return true;
 }
-//**********************************************************************************************
 void bondNetWork::putNuclei(ofstream & pof) {
    int atomn;
    double atrad;
@@ -301,7 +287,6 @@ void bondNetWork::putNuclei(ofstream & pof) {
    }
    return;
 }
-//**********************************************************************************************
 void bondNetWork::putBonds(ofstream &pof) {
    pof << "union{" << endl;
    int k=0,atni,atnk;
@@ -333,7 +318,6 @@ void bondNetWork::putBonds(ofstream &pof) {
    pof << "}" << endl;
    return;
 }
-//**********************************************************************************************
 void bondNetWork::centerMolecule() {
    double trn[3];
    for (int i=0; i<3; i++) {
@@ -346,7 +330,6 @@ void bondNetWork::centerMolecule() {
    }
    return;
 }
-//**********************************************************************************************
 void bondNetWork::calcViewRadius(void) {
    seekRMaxMin();
    double rmagmax=0.0e0,rmagmin=0.0e0;
@@ -360,7 +343,6 @@ void bondNetWork::calcViewRadius(void) {
       }
    }
 }
-//**********************************************************************************************
 void bondNetWork::setBoundingBox(void) {
    for (int i=0; i<nNuc; i++) {
       for (int j=0; j<3; j++) {
@@ -378,7 +360,6 @@ void bondNetWork::setBoundingBox(void) {
    }
    return;
 }
-//**********************************************************************************************
 int bondNetWork::countAtomsOfAtomicNumber(int nat) {
 #if DEBUG
    if (nat<1) {
@@ -391,7 +372,6 @@ int bondNetWork::countAtomsOfAtomicNumber(int nat) {
    for (int i=0; i<nNuc; i++) {if (atNum[i]==n) {k++;}}
    return k;
 }
-//**********************************************************************************************
-//**********************************************************************************************
+
 #endif//_BONDNETWORK_CPP_
 

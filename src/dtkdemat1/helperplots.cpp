@@ -37,9 +37,6 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
-#ifndef _HELPERPLOTS_CPP_
-#define _HELPERPLOTS_CPP_
 #include <cstdlib>
 #include <iostream>
 using std::cout;
@@ -565,5 +562,4 @@ void HelperPlot::generateEPSAndPDFNamesFromGNP(const string &gnam,string &enam,s
    FileUtils::ReplaceExtensionOfFileName(pnam,string("pdf"));
    FileUtils::ReplaceExtensionOfFileName(enam,string("eps"));
 }
-#endif  /* _HELPERPLOTS_CPP_ */
 

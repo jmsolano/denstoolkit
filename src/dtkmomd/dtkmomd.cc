@@ -37,16 +37,12 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
 /*
- Adscription at the moment this program is started:
- University of Guelph,
- Guelph, Ontario, Canada.
- May 2013
-
- */
-
-
+   Adscription at the moment this program is started:
+   University of Guelph,
+   Guelph, Ontario, Canada.
+   May 2013
+*/
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -59,9 +55,9 @@ using std::ofstream;
 using std::exit;
 #include <math.h>
 #include <string>
-using namespace std;
 #include <iomanip>
 using std::setprecision;
+using std::scientific;
 #include <ctime>
 
 #include "../common/screenutils.h"
@@ -71,7 +67,6 @@ using std::setprecision;
 #include "../common/iofuncts-wfn.h"
 #include "../common/mymath.h"
 #include "../common/gausswavefunction.h"
-//#include "../common/bondnetwork.h"
 #include "../common/solcubetools.h"
 #include "optflags.h"
 #include "crtflnms.h"
@@ -86,8 +81,7 @@ void makePlaneTsvFile(optFlags &opts,string &tsvnan,GaussWaveFunction &wf,int th
 void makeCubeFile(optFlags &opts,string &cubnam,GaussWaveFunction &wf,int npts,\
       char thefield,string &strfield);
 
-int main (int argc, char ** argv)
-{
+int main (int argc, char ** argv) {
    const clock_t begin_time = clock();
    const double begin_walltime = time(NULL);
    string infilnam,outfilnam,gnpnam;
@@ -243,10 +237,7 @@ int main (int argc, char ** argv)
    ScreenUtils::SetScrNormalFont();
    return 0;
 }
-//**************************************************************************************************
-
-void makeLineGnuplotFile(optFlags &opts, string &gnpn,string &outn,char thefield)
-{
+void makeLineGnuplotFile(optFlags &opts, string &gnpn,string &outn,char thefield) {
    ofstream gfil;
    gfil.open(gnpn.c_str());
    
@@ -315,10 +306,7 @@ void makeLineGnuplotFile(optFlags &opts, string &gnpn,string &outn,char thefield
 #endif
    return;
 }
-//**************************************************************************************************
-
-void makePlaneGnuplotFile(optFlags &opts, string &gnpn,string &outn,double dimparam,char thefield)
-{
+void makePlaneGnuplotFile(optFlags &opts, string &gnpn,string &outn,double dimparam,char thefield) {
    ofstream gfil;
    gfil.open(gnpn.c_str());
    
@@ -454,10 +442,8 @@ void makePlaneGnuplotFile(optFlags &opts, string &gnpn,string &outn,double dimpa
    cout << "Done." << endl;
    return;
 }
-/* ************************************************************************************ */
 void makeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunction &wf,int theaxis,\
-      int npts,char thefield)
-{
+      int npts,char thefield) {
 #if USEPROGRESSBAR
    ScreenUtils::PrintProgressBar(0);
 #endif
@@ -552,12 +538,9 @@ void makeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunction &wf,int the
    }
    cout << endl;
    ofile.close();
-
 }
-/* ************************************************************************************ */
 void makePlaneTsvFile(optFlags &opts,string &tsvnam,GaussWaveFunction &wf,int theplane,\
-      int npts,char thefield)
-{
+      int npts,char thefield) {
    ofstream ofile;
    ofile.open(tsvnam.c_str(),ios::out);
    double dx,dy,dz,px,py,pz;
@@ -684,10 +667,8 @@ void makePlaneTsvFile(optFlags &opts,string &tsvnam,GaussWaveFunction &wf,int th
       cout << endl;
       ofile.close();
 }
-/* ************************************************************************************ */
 void makeCubeFile(optFlags &opts,string &cubnam,GaussWaveFunction &wf,int npts,\
-      char thefield,string &strfield)
-{
+      char thefield,string &strfield) {
    string comments="#Property: ";
    switch ( thefield ) {
       case 'd' :
@@ -774,5 +755,4 @@ void makeCubeFile(optFlags &opts,string &cubnam,GaussWaveFunction &wf,int npts,\
    ofile.close();
    MyMemory::Dealloc1DRealArray(prop1d);
 }
-/* ************************************************************************************ */
 

@@ -37,27 +37,15 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
+/* Eigen-decomposition code for symmetric 6x6 matrices.
 
-
-
-/*
- 
- Eigen-decomposition code for symmetric 6x6 matrices.
- 
- The code below is a modification from the code found in 
- 
- http://barnesc.blogspot.ca/2007/02/eigenvectors-of-3x3-symmetric-matrix.html
- 
- In turn, the above modification has the following text:
- 
- Eigen decomposition code for symmetric 6x6 matrices, copied from the public
- domain Java Matrix library JAMA.
- 
- The i-th eigenvector is {V[0][i], V[1][i], V[2][i]}
- 
- */
-
-
+   The code below is a modification from the code found in 
+   http://barnesc.blogspot.ca/2007/02/eigenvectors-of-3x3-symmetric-matrix.html
+   In turn, the above modification has the following text:
+   Eigen decomposition code for symmetric 6x6 matrices, copied from the public
+   domain Java Matrix library JAMA.
+   The i-th eigenvector is {V[0][i], V[1][i], V[2][i]}
+*/
 #ifndef _EIG6_CPP_
 #define _EIG6_CPP_
 
@@ -71,9 +59,6 @@
 #define MAX(a, b) ((a)>(b)?(a):(b))
 
 #define N6 6
-
-
-/* ************************************************************************* */
 static double hypot2(double x, double y) {
    return sqrt(x*x+y*y);
 }
@@ -193,7 +178,6 @@ static void tred26(double V[N6][N6], double d[N6], double e[N6]) {
    V[N6-1][N6-1] = 1.0;
    e[0] = 0.0;
 } 
-
 /* ************************************************************************* */
 // Symmetric tridiagonal QL algorithm.
 /* ************************************************************************* */
@@ -324,7 +308,6 @@ void eigen_decomposition6(double A[N6][N6], double V[N6][N6], double d[N6]) {
    tred26(V, d, e);
    tql26(V, d, e);
 }
-/* ************************************************************************* */
 /* ************************************************************************* */
 #endif//_EIG6_CPP_
 

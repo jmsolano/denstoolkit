@@ -38,31 +38,6 @@
    README file.
 */
 
-/*
-
-   crtflnms.cpp
-   
-   This file contains the implementation of the definitions to modify or to create names for the 
-   different files used to record the information extracted from the program.
-
-   ------------------------
-
-   Juan Manuel Solano Altamirano
-   Adscription at the moment this project is initiated:
-   Centro de Investigaciones y Estudios Avanzados del 
-   Instituto Politecnico Nacional, 
-   Unidad Monterrey, Mexico.
-   2011
-   e-mail: jmsolanoalt@gmail.com
-   
-   Adscription at the moment the particular implementation for this program is started:
-   University of Guelph,
-   Guelph, Ontario, Canada.
-   May 2013
-
-*/
-#ifndef _CRTFLNMS_CPP
-#define _CRTFLNMS_CPP
 #include <cstdlib>
 #include <iostream>
 using std::cout;
@@ -149,4 +124,4 @@ void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn, string &o_fn,str
    }
    return;
 }
-#endif //_CRTFLNMS_CPP
+

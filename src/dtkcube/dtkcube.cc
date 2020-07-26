@@ -58,9 +58,9 @@ using std::ofstream;
 using std::exit;
 #include <math.h>
 #include <string>
-using namespace std;
 #include <iomanip>
 using std::setprecision;
+using std::scientific;
 #include <ctime>
 
 #include "../common/screenutils.h"
@@ -71,7 +71,7 @@ using std::setprecision;
 #include "../common/gausswavefunction.h"
 #include "../common/bondnetwork.h"
 #include "../common/wfgrid3d.h"
-#include "../common/solvmdtools.h"
+#include "../common/vmdtools.h"
 #include "optflags.h"
 #include "crtflnms.h"
 

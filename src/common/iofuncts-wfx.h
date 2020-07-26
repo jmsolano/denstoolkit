@@ -40,7 +40,7 @@
 #ifndef _IOFUNCTS_WFX_H_
 #define _IOFUNCTS_WFX_H_
 #include <string>
-using namespace std;
+using std::string;
 #include <fstream>
 using std::ifstream;
 using std::ofstream;

@@ -37,9 +37,6 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
-
-
 #ifndef _RADII_SCHEME_JMHP_CPP_
 #define _RADII_SCHEME_JMHP_CPP_
 

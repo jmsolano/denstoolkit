@@ -59,9 +59,9 @@ using std::ofstream;
 using std::exit;
 #include <math.h>
 #include <string>
-using namespace std;
 #include <iomanip>
 using std::setprecision;
+using std::scientific;
 #include <ctime>
 
 #include "../common/screenutils.h"
@@ -175,7 +175,7 @@ int main (int argc, char ** argv) {
    double **rbgp=NULL;
    MyMemory::Alloc2DRealArray(string("rbgp"),dimarr,3,rbgp);
    
-   int nbgppts;
+   int nbgppts=-1;
    double dl=DEFAULTBONDPATHSTEPMD1;
    double robcp[3];
    double x1[3],x2[3],dx[3];
@@ -576,7 +576,7 @@ int main (int argc, char ** argv) {
                                              x2min[0],x2min[1],x2min[2]);
    cout << endl;
    ScreenUtils::PrintScrCharLine('-');
-   double md1lmin;
+   double md1lmin=1.0e+50;
    if (options.uponbp) {
       md1lmin=gwf.evalDensityMatrix1(robcp[0],robcp[1],robcp[2],robcp[0],robcp[1],robcp[2]);
       cout << "The bond critical point is located at:" << endl;

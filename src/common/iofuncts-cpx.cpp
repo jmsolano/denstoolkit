@@ -37,12 +37,8 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
-
-
 #ifndef _IOFUNCTS_CPX_CPP_
 #define _IOFUNCTS_CPX_CPP_
-
 #include <iostream>
 using std::endl;
 using std::ios;
@@ -55,7 +51,6 @@ using std::setw;
 #include "screenutils.h"
 #include "stringtools.h"
 
-/* ************************************************************************** */
 #define MAXCPXKEYSDEFINED 34
 static const string cpxKeysTab[MAXCPXKEYSDEFINED]={
    "WaveFunctionFileName","CriticalPointType",\
@@ -77,7 +72,6 @@ static const string cpxKeysTab[MAXCPXKEYSDEFINED]={
    "BCPConnectivity","RCPConnectivity",\
    "CCPConnectivity"
 };
-/* ************************************************************************** */
 void writeCPXFile(string cpxname,string wfname,critPtNetWork &cp) {
    ofstream cpxfil;
    cpxfil.open(cpxname.c_str(),ios::out);
@@ -111,19 +105,16 @@ void writeCPXFile(string cpxname,string wfname,critPtNetWork &cp) {
    cpxfil.close();
    return;
 }
-/* ************************************************************************** */
 void writeOpenningAttribute(ofstream &ofil,const char* attrib,bool nl = true) {
    ofil << "<" << attrib << ">";
    if (nl) {ofil << endl << " ";}
    return;
 }
-/* ************************************************************************** */
 void writeClosingAttribute(ofstream &ofil,const char* attrib,bool nl = true) {
    ofil << "</" << attrib << ">";
    if (nl) {ofil << endl;}
    return;
 }
-/* ************************************************************************** */
 void writeWFFileName(ofstream &ofil,string wfname) {
    string key="WaveFunctionFileName";
    writeOpenningAttribute(ofil,key.c_str());
@@ -131,7 +122,6 @@ void writeWFFileName(ofstream &ofil,string wfname) {
    writeClosingAttribute(ofil,key.c_str());
    return;
 }
-/* ************************************************************************** */
 void writeTypeOfCriticalPoints(ofstream &ofil,critPtNetWork &cp) {
    string key="CriticalPointType";
    writeOpenningAttribute(ofil,key.c_str());
@@ -153,7 +143,6 @@ void writeTypeOfCriticalPoints(ofstream &ofil,critPtNetWork &cp) {
    writeClosingAttribute(ofil,key.c_str());
    return;
 }
-/* ************************************************************************** */
 void writeNumberOfCriticalPoints(ofstream &ofil,critPtNetWork &cp) {
    string mkey="NumberOfCriticalPoints";
    string akey="NumberOfACPs";
@@ -187,7 +176,6 @@ void writeNumberOfCriticalPoints(ofstream &ofil,critPtNetWork &cp) {
    writeClosingAttribute(ofil,mkey.c_str());
    return;
 }
-/* ************************************************************************** */
 void writeCoordinatesACPs(ofstream &ofil,critPtNetWork &cp) {
 #if DEBUG
    if (!(cp.iKnowACPs())) {
@@ -205,7 +193,6 @@ void writeCoordinatesACPs(ofstream &ofil,critPtNetWork &cp) {
    writeClosingAttribute(ofil,key.c_str());
    return;
 }
-/* ************************************************************************** */
 void writeCoordinatesBCPs(ofstream &ofil,critPtNetWork &cp) {
 #if DEBUG
    if (!(cp.iKnowBCPs())) {
@@ -223,7 +210,6 @@ void writeCoordinatesBCPs(ofstream &ofil,critPtNetWork &cp) {
    writeClosingAttribute(ofil,key.c_str());
    return;
 }
-/* ************************************************************************** */
 void writeCoordinatesRCPs(ofstream &ofil,critPtNetWork &cp) {
 #if DEBUG
    if (!(cp.iKnowRCPs())) {
@@ -241,7 +227,6 @@ void writeCoordinatesRCPs(ofstream &ofil,critPtNetWork &cp) {
    writeClosingAttribute(ofil,key.c_str());
    return;
 }
-/* ************************************************************************** */
 void writeCoordinatesCCPs(ofstream &ofil,critPtNetWork &cp) {
 #if DEBUG
    if (!(cp.iKnowCCPs())) {
@@ -259,7 +244,6 @@ void writeCoordinatesCCPs(ofstream &ofil,critPtNetWork &cp) {
    writeClosingAttribute(ofil,key.c_str());
    return;
 }
-/* ************************************************************************** */
 void writeConnectivityBCPs(ofstream &ofil,critPtNetWork &cp) {
 #if DEBUG
    if (!(cp.iKnowBCPs())) {
@@ -275,7 +259,6 @@ void writeConnectivityBCPs(ofstream &ofil,critPtNetWork &cp) {
    writeClosingAttribute(ofil,key.c_str());
    return;
 }
-/* ************************************************************************** */
 void writeConnectivityRCPs(ofstream &ofil,critPtNetWork &cp) {
 #if DEBUG
    if (!(cp.iKnowRCPs())) {
@@ -298,7 +281,6 @@ void writeConnectivityRCPs(ofstream &ofil,critPtNetWork &cp) {
    writeClosingAttribute(ofil,key.c_str());
    return;
 }
-/* ************************************************************************** */
 void writeConnectivityCCPs(ofstream &ofil,critPtNetWork &cp) {
 #if DEBUG
    if (!(cp.iKnowCCPs())) {
@@ -321,7 +303,6 @@ void writeConnectivityCCPs(ofstream &ofil,critPtNetWork &cp) {
    writeClosingAttribute(ofil,key.c_str());
    return;
 }
-/* ************************************************************************** */
 void writeLabelsACPs(ofstream &ofil,critPtNetWork &cp) {
 #if DEBUG
    if (!(cp.iKnowACPs())) {
@@ -340,7 +321,6 @@ void writeLabelsACPs(ofstream &ofil,critPtNetWork &cp) {
    writeClosingAttribute(ofil,key.c_str());
    return;
 }
-/* ************************************************************************** */
 void writeLabelsBCPs(ofstream &ofil,critPtNetWork &cp) {
 #if DEBUG
    if (!(cp.iKnowBCPs())) {
@@ -359,7 +339,6 @@ void writeLabelsBCPs(ofstream &ofil,critPtNetWork &cp) {
    writeClosingAttribute(ofil,key.c_str());
    return;
 }
-/* ************************************************************************** */
 void writeLabelsRCPs(ofstream &ofil,critPtNetWork &cp) {
 #if DEBUG
    if (!(cp.iKnowRCPs())) {
@@ -378,7 +357,6 @@ void writeLabelsRCPs(ofstream &ofil,critPtNetWork &cp) {
    writeClosingAttribute(ofil,key.c_str());
    return;
 }
-/* ************************************************************************** */
 void writeLabelsCCPs(ofstream &ofil,critPtNetWork &cp) {
 #if DEBUG
    if (!(cp.iKnowCCPs())) {
@@ -398,7 +376,6 @@ void writeLabelsCCPs(ofstream &ofil,critPtNetWork &cp) {
    writeClosingAttribute(ofil,key.c_str());
    return;
 }
-/* ************************************************************************** */
 void writeNumberOfBondPaths(ofstream &ofil,critPtNetWork &cp) {
 #if DEBUG
    if (!(cp.iKnowBGPs())) {
@@ -411,7 +388,6 @@ void writeNumberOfBondPaths(ofstream &ofil,critPtNetWork &cp) {
    writeClosingAttribute(ofil,key.c_str());
    return;
 }
-/* ************************************************************************** */
 void writeNumberOfRingPaths(ofstream &ofil,critPtNetWork &cp) {
 #if DEBUG
    if (!(cp.iKnowRGPs())) {
@@ -426,7 +402,6 @@ void writeNumberOfRingPaths(ofstream &ofil,critPtNetWork &cp) {
    writeClosingAttribute(ofil,key.c_str());
    return;
 }
-/* ************************************************************************** */
 void writeNumberOfCagePaths(ofstream &ofil,critPtNetWork &cp) {
 #if DEBUG
    if (!(cp.iKnowCGPs())) {
@@ -441,7 +416,6 @@ void writeNumberOfCagePaths(ofstream &ofil,critPtNetWork &cp) {
    writeClosingAttribute(ofil,key.c_str());
    return;
 }
-/* ************************************************************************** */
 void writeNumberOfPointsPerBondPath(ofstream &ofil,critPtNetWork &cp) {
 #if DEBUG
    if (!(cp.iKnowBGPs())) {
@@ -460,7 +434,6 @@ void writeNumberOfPointsPerBondPath(ofstream &ofil,critPtNetWork &cp) {
    writeClosingAttribute(ofil,key.c_str());
    return;
 }
-/* ************************************************************************** */
 void writeNumberOfPointsPerRingPath(ofstream &ofil,critPtNetWork &cp) {
 #if DEBUG
    if (!(cp.iKnowBGPs())) {
@@ -482,7 +455,6 @@ void writeNumberOfPointsPerRingPath(ofstream &ofil,critPtNetWork &cp) {
    writeClosingAttribute(ofil,key.c_str());
    return;
 }
-/* ************************************************************************** */
 void writeNumberOfPointsPerCagePath(ofstream &ofil,critPtNetWork &cp) {
 #if DEBUG
    if (!(cp.iKnowCGPs())) {
@@ -504,7 +476,6 @@ void writeNumberOfPointsPerCagePath(ofstream &ofil,critPtNetWork &cp) {
    writeClosingAttribute(ofil,key.c_str());
    return;
 }
-/* ************************************************************************** */
 void writeBondPathsCoordinates(ofstream &ofil,critPtNetWork &cp) {
 #if DEBUG
    if (!(cp.iKnowBGPs())) {
@@ -536,7 +507,6 @@ void writeBondPathsCoordinates(ofstream &ofil,critPtNetWork &cp) {
    writeClosingAttribute(ofil,mkey.c_str());
    return;
 }
-/* ************************************************************************** */
 void writeRingPathsCoordinates(ofstream &ofil,critPtNetWork &cp) {
 #if DEBUG
    if (!(cp.iKnowRGPs())) {
@@ -572,7 +542,6 @@ void writeRingPathsCoordinates(ofstream &ofil,critPtNetWork &cp) {
    writeClosingAttribute(ofil,mkey.c_str());
    return;
 }
-/* ************************************************************************** */
 void writeCagePathsCoordinates(ofstream &ofil,critPtNetWork &cp) {
 #if DEBUG
    if (!(cp.iKnowCGPs())) {
@@ -608,7 +577,6 @@ void writeCagePathsCoordinates(ofstream &ofil,critPtNetWork &cp) {
    writeClosingAttribute(ofil,mkey.c_str());
    return;
 }
-/* ************************************************************************** */
 bool cpxGetPosBetweenKeyInFile(ifstream &ifil,int &aftik,int &befek,string key,bool frombeg) {
 #if DEBUG
    bool iknowthiskey=false;
@@ -657,7 +625,6 @@ bool cpxGetPosBetweenKeyInFile(ifstream &ifil,int &aftik,int &befek,string key,b
    }
    return foundkey;
 }
-/* ************************************************************************** */
 int cpxGetPosAfterOpenningKeyInFile(ifstream &ifil,string key,bool frombeg) {
    int ip,fp;
    if (!(cpxGetPosBetweenKeyInFile(ifil,ip,fp,key,frombeg))) {
@@ -669,7 +636,6 @@ int cpxGetPosAfterOpenningKeyInFile(ifstream &ifil,string key,bool frombeg) {
    }
    return ip;
 }
-/* ************************************************************************** */
 int cpxGetPosBeforeClosingKeyInFile(ifstream &ifil,string key,bool frombeg) {
    int ip,fp;
    if (!(cpxGetPosBetweenKeyInFile(ifil,ip,fp,key,frombeg))) {
@@ -681,13 +647,11 @@ int cpxGetPosBeforeClosingKeyInFile(ifstream &ifil,string key,bool frombeg) {
    }
    return fp;
 }
-/* ************************************************************************** */
 void cpxSetPosOfFileAfterOpenningKey(ifstream &ifil,string key,bool frombeg) {
    int pos=cpxGetPosAfterOpenningKeyInFile(ifil,key,frombeg);
    ifil.seekg(pos);
    return;
 }
-/* ************************************************************************** */
 string cpxGetWFXFileName(const string cpxname) {
    ifstream ifil(cpxname.c_str());
    string res=cpxGetWFXFileName(ifil);
@@ -695,7 +659,6 @@ string cpxGetWFXFileName(const string cpxname) {
    ifil.clear();
    return res;
 }
-/* ************************************************************************** */
 string cpxGetWFXFileName(ifstream &ifil) {
    string wfxnam;
    int pos=cpxGetPosAfterOpenningKeyInFile(ifil,"WaveFunctionFileName",false);
@@ -704,7 +667,6 @@ string cpxGetWFXFileName(ifstream &ifil) {
    StringTools::RemoveSpacesLeftAndRight(wfxnam);
    return wfxnam;
 }
-/* ************************************************************************** */
 ScalarFieldType cpxGetCriticalPointFieldType(ifstream &ifil) {
    ScalarFieldType sft;
    int pos=cpxGetPosAfterOpenningKeyInFile(ifil,"CriticalPointType",false);
@@ -723,59 +685,50 @@ ScalarFieldType cpxGetCriticalPointFieldType(ifstream &ifil) {
    }
    return sft;
 }
-/* ************************************************************************** */
 int cpxGetNOfACPs(ifstream &ifil) {
    int res;
    cpxSetPosOfFileAfterOpenningKey(ifil,"NumberOfACPs",true);
    ifil >> res;
    return res;
 }
-/* ************************************************************************** */
 int cpxGetNOfBCPs(ifstream &ifil) {
    int res;
    cpxSetPosOfFileAfterOpenningKey(ifil,"NumberOfBCPs",true);
    ifil >> res;
    return res;
 }
-/* ************************************************************************** */
 int cpxGetNOfRCPs(ifstream &ifil) {
    int res;
    cpxSetPosOfFileAfterOpenningKey(ifil,"NumberOfRCPs",true);
    ifil >> res;
    return res;
 }
-/* ************************************************************************** */
 int cpxGetNOfCCPs(ifstream &ifil) {
    int res;
    cpxSetPosOfFileAfterOpenningKey(ifil,"NumberOfCCPs",true);
    ifil >> res;
    return res;
 }
-/* ************************************************************************** */
 void cpxGetACPCartCoordFromFile(ifstream &ifil,const int nn,double** &rr) {
    cpxSetPosOfFileAfterOpenningKey(ifil,"ACPCartesianCoordinates",true);
    for (int i=0; i<nn; i++) {for (int j=0; j<3; j++) {ifil >> rr[i][j];}}
    return;
 }
-/* ************************************************************************** */
 void cpxGetBCPCartCoordFromFile(ifstream &ifil,const int nn,double** &rr) {
    cpxSetPosOfFileAfterOpenningKey(ifil,"BCPCartesianCoordinates",true);
    for (int i=0; i<nn; i++) {for (int j=0; j<3; j++) {ifil >> rr[i][j];}}
    return;
 }
-/* ************************************************************************** */
 void cpxGetRCPCartCoordFromFile(ifstream &ifil,const int nn,double** &rr) {
    cpxSetPosOfFileAfterOpenningKey(ifil,"RCPCartesianCoordinates",true);
    for (int i=0; i<nn; i++) {for (int j=0; j<3; j++) {ifil >> rr[i][j];}}
    return;
 }
-/* ************************************************************************** */
 void cpxGetCCPCartCoordFromFile(ifstream &ifil,const int nn,double** &rr) {
    cpxSetPosOfFileAfterOpenningKey(ifil,"CCPCartesianCoordinates",true);
    for (int i=0; i<nn; i++) {for (int j=0; j<3; j++) {ifil >> rr[i][j];}}
    return;
 }
-/* ************************************************************************** */
 void cpxGetBCPConnectivityFromFile(ifstream &ifil,const int nn,int** (&ii)) {
    cpxSetPosOfFileAfterOpenningKey(ifil,"BCPConnectivity",true);
    int itmp;
@@ -789,44 +742,37 @@ void cpxGetBCPConnectivityFromFile(ifstream &ifil,const int nn,int** (&ii)) {
    }
    return;
 }
-/* ************************************************************************** */
 void cpxGetACPLabelsFromFile(ifstream &ifil,const int nn,string* (&ss)) {
    cpxSetPosOfFileAfterOpenningKey(ifil,"ACPLabels",true);
    for (int i=0; i<nn; i++) {ifil >> ss[i];}
    return;
 }
-/* ************************************************************************** */
 void cpxGetBCPLabelsFromFile(ifstream &ifil,const int nn,string* (&ss)) {
    cpxSetPosOfFileAfterOpenningKey(ifil,"BCPLabels",true);
    for (int i=0; i<nn; i++) {ifil >> ss[i];}
    return;
 }
-/* ************************************************************************** */
 void cpxGetRCPLabelsFromFile(ifstream &ifil,const int nn,string* (&ss)) {
    cpxSetPosOfFileAfterOpenningKey(ifil,"RCPLabels",true);
    for (int i=0; i<nn; i++) {ifil >> ss[i];}
    return;
 }
-/* ************************************************************************** */
 void cpxGetCCPLabelsFromFile(ifstream &ifil,const int nn,string* (&ss)) {
    cpxSetPosOfFileAfterOpenningKey(ifil,"CCPLabels",true);
    for (int i=0; i<nn; i++) {ifil >> ss[i];}
    return;
 }
-/* ************************************************************************** */
 int cpxGetNOfBondPaths(ifstream &ifil) {
    int res;
    cpxSetPosOfFileAfterOpenningKey(ifil,"NumberOfBondPaths",true);
    ifil >> res;
    return res;
 }
-/* ************************************************************************** */
 void cpxGetNOfPtsPerBondPath(ifstream &ifil,const int nn,int** (&ii)) {
    cpxSetPosOfFileAfterOpenningKey(ifil,"NumbersOfPointsPerBondPath",true);
    for (int k=0; k<nn; k++) {ifil >> ii[k][2];}
    return;
 }
-/* ************************************************************************** */
 void cpxGetBondPathData(ifstream &ifil,const int nn,int** (&ii),double*** (&rrr)) {
    cpxSetPosOfFileAfterOpenningKey(ifil,"BondPathsData",true);
    int ktmp;
@@ -840,7 +786,6 @@ void cpxGetBondPathData(ifstream &ifil,const int nn,int** (&ii),double*** (&rrr)
    }
    return;
 }
-/* ************************************************************************** */
 void cpxGetRCPConnectivityFromFile(ifstream &ifil,const int nn,int*** (&cc)) {
    cpxSetPosOfFileAfterOpenningKey(ifil,"RCPConnectivity",true);
    int nrgps;
@@ -853,14 +798,12 @@ void cpxGetRCPConnectivityFromFile(ifstream &ifil,const int nn,int*** (&cc)) {
       }
    }
 }
-/* ************************************************************************** */
 int cpxGetNOfRingPaths(ifstream &ifil) {
    int res;
    cpxSetPosOfFileAfterOpenningKey(ifil,"NumberOfRingPaths",true);
    ifil >> res;
    return res;
 }
-/* ************************************************************************** */
 void cpxGetNOfPtsPerRingPath(ifstream &ifil,const int nn,int*** (&ii)) {
    cpxSetPosOfFileAfterOpenningKey(ifil,"NumbersOfPointsPerRingPath",true);
    int k;
@@ -872,7 +815,6 @@ void cpxGetNOfPtsPerRingPath(ifstream &ifil,const int nn,int*** (&ii)) {
    }
    return;
 }
-/* ************************************************************************** */
 void cpxGetRingPathData(ifstream &ifil,const int nn,int*** (&ii),double**** (&rrr)) {
    cpxSetPosOfFileAfterOpenningKey(ifil,"RingPathsData",true);
    int nnpts,ktmp,glblIdx=0;
@@ -895,7 +837,6 @@ void cpxGetRingPathData(ifstream &ifil,const int nn,int*** (&ii),double**** (&rr
    }
    return;
 }
-/* ************************************************************************** */
 void cpxGetCCPConnectivityFromFile(ifstream &ifil,const int nn,int*** (&cc)) {
    cpxSetPosOfFileAfterOpenningKey(ifil,"CCPConnectivity",true);
    int ncgps;
@@ -908,14 +849,12 @@ void cpxGetCCPConnectivityFromFile(ifstream &ifil,const int nn,int*** (&cc)) {
       }
    }
 }
-/* ************************************************************************** */
 int cpxGetNOfCagePaths(ifstream &ifil) {
    int res;
    cpxSetPosOfFileAfterOpenningKey(ifil,"NumberOfCagePaths",true);
    ifil >> res;
    return res;
 }
-/* ************************************************************************** */
 void cpxGetNOfPtsPerCagePath(ifstream &ifil,const int nn,int*** (&ii)) {
    cpxSetPosOfFileAfterOpenningKey(ifil,"NumbersOfPointsPerCagePath",true);
    int k;
@@ -927,7 +866,6 @@ void cpxGetNOfPtsPerCagePath(ifstream &ifil,const int nn,int*** (&ii)) {
    }
    return;
 }
-/* ************************************************************************** */
 void cpxGetCagePathData(ifstream &ifil,const int nn,int*** (&ii),double**** (&rrr)) {
    cpxSetPosOfFileAfterOpenningKey(ifil,"CagePathsData",true);
    int nnpts,ktmp,glblIdx=0;
@@ -950,7 +888,6 @@ void cpxGetCagePathData(ifstream &ifil,const int nn,int*** (&ii),double**** (&rr
    }
    return;
 }
-/* ************************************************************************** */
 #endif /* defined(_IOFUNCTS_CPX_CPP_) */
 
 

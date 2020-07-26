@@ -149,7 +149,6 @@ using std::scientific;
 #define CPNW_MINARRAYSIZE (8)
 #endif
 
-/* ************************************************************************************ */
 void critPtNetWork::init() {
    //publics
    nACP=nBCP=nRCP=nCCP=0;
@@ -188,13 +187,11 @@ void critPtNetWork::init() {
    wf=NULL;
    bn=NULL;
 }
-/* ************************************************************************************ */
 critPtNetWork::critPtNetWork(GaussWaveFunction &uwf,bondNetWork &ubn) {
    init();
    wf=&uwf;
    bn=&ubn;
 }
-/* ************************************************************************************ */
 critPtNetWork::~critPtNetWork() {
    MyMemory::Dealloc4DRealArray(RCGP,dCCP,CPNW_MAXRCPSCONNECTEDTOCCP,\
          maxGradPathNPts);
@@ -216,7 +213,6 @@ critPtNetWork::~critPtNetWork() {
    wf=NULL;
    bn=NULL;
 }
-/* ************************************************************************************ */
 double critPtNetWork::V0=0.0e0;
 double critPtNetWork::V5=2.0e0/(sqrt(4.0e0+(1.0e0+sqrt(5.0e0))*(1.0e0+sqrt(5.0e0))));
 double critPtNetWork::V8=(1.0e0+sqrt(5.0e0))/(sqrt(4.0e0+(1.0e0+sqrt(5.0e0))*(1.0e0+sqrt(5.0e0))));
@@ -242,7 +238,6 @@ double critPtNetWork::IHV[nIHV][3]={
 //Added for looking at the atomic center and for easy the
 //addition of the labels and coordinates in
 //functions add*?CP
-/* ************************************************************************************ */
 void critPtNetWork::setCriticalPoints(ScalarFieldType ft) {
    if (!bn->imstp()) {
       ScreenUtils::DisplayErrorMessage("Trying to use a non set up bond network object!");
@@ -306,7 +301,6 @@ void critPtNetWork::setCriticalPoints(ScalarFieldType ft) {
       ScreenUtils::PrintScrCharLine('*');
    }
 }
-/* ************************************************************************************ */
 void critPtNetWork::setupACPs(ScalarFieldType ft) {
    mycptype=ft;
    switch (ft) {
@@ -335,7 +329,6 @@ void critPtNetWork::setupACPs(ScalarFieldType ft) {
    MyMemory::Alloc2DRealArray(string("RACP"),dACP,3,RACP,1.0e+50);
    MyMemory::Alloc1DStringArray("lblACP",dACP,lblACP);
 }
-/* ************************************************************************************ */
 void critPtNetWork::setACPs(ScalarFieldType ft) {
    cout << "Looking for Attractor Critical Points..." << endl;
    switch (ft) {
@@ -351,7 +344,6 @@ void critPtNetWork::setACPs(ScalarFieldType ft) {
          break;
    }
 }
-/* ************************************************************************************ */
 void critPtNetWork::setupBCPs(ScalarFieldType ft) {
    if ( mycptype!=ft ) {
       ScreenUtils::DisplayWarningMessage("Change of field type is not allowed, using previous type!");
@@ -377,7 +369,6 @@ void critPtNetWork::setupBCPs(ScalarFieldType ft) {
    }
    return;
 }
-/* ************************************************************************************ */
 void critPtNetWork::setBCPs(ScalarFieldType ft) {
    cout << "Looking for Bond Critical Points..." << endl;
    switch (ft) {
@@ -395,11 +386,9 @@ void critPtNetWork::setBCPs(ScalarFieldType ft) {
    cout << "nBCP: " << nBCP << ", dBCP: " << dBCP << endl;
 #endif
 }
-/* ************************************************************************************ */
 void critPtNetWork::setupBondPaths(void) {
    MyMemory::Alloc3DRealArray(string("RBGP"),dBCP,maxGradPathNPts,3,RBGP);
 }
-/* ************************************************************************************ */
 void critPtNetWork::setBondPaths() {
    if (!iknowbcps) {
       ScreenUtils::DisplayErrorMessage("Please look first for the BCPs...\nNothing to be done!");
@@ -435,7 +424,6 @@ void critPtNetWork::setBondPaths() {
    iknowallgps=(iknowbgps&&iknowrgps&&iknowcgps);
    findMaxBondDist();
 }
-/* ************************************************************************************ */
 bool critPtNetWork::setRhoACPs() {
    double x[3],rho,g[3],magg;
    string lbl;
@@ -497,7 +485,6 @@ bool critPtNetWork::setRhoACPs() {
    }
    return true;
 }
-/* ************************************************************************************ */
 bool critPtNetWork::setRhoBCPs(void) {
 #if USEPROGRESSBAR
    ScreenUtils::PrintProgressBar(0);
@@ -605,7 +592,6 @@ bool critPtNetWork::setRhoBCPs(void) {
    }
    return true;
 }
-/* ************************************************************************************ */
 bool critPtNetWork::setRhoRCPs(void) {
    double x[3],rho,g[3];
    string lbl;
@@ -643,7 +629,6 @@ bool critPtNetWork::setRhoRCPs(void) {
    //ScreenUtils::DisplayWarningMessage("setRhoRCPs(...) under construction.");
    return true;
 }
-/* ************************************************************************************ */
 bool critPtNetWork::setRhoCCPs(void) {
    double x[3],rho,g[3];
    string lbl;
@@ -684,7 +669,6 @@ bool critPtNetWork::setRhoCCPs(void) {
    //ScreenUtils::DisplayWarningMessage("setRhoCCPs(...) under construction.");
    return true;
 }
-/* ************************************************************************************ */
 bool critPtNetWork::setLOLACPs() {
    double x[3],rho,g[3],magg;
    string lbl;
@@ -769,7 +753,6 @@ bool critPtNetWork::setLOLACPs() {
    }
    return true;
 }
-/* ************************************************************************************ */
 bool critPtNetWork::setLOLBCPs(void) {
 #if USEPROGRESSBAR
    ScreenUtils::PrintProgressBar(0);
@@ -878,19 +861,16 @@ bool critPtNetWork::setLOLBCPs(void) {
    // */
    return true;
 }
-/* ************************************************************************************* */
 bool critPtNetWork::setLOLRCPs(void) {
    ScreenUtils::DisplayWarningMessage("No LOL RCP will be look for...");
    ScreenUtils::DisplayWarningMessage("(critPtNetWork::setLOLRCPs(...) under construction.)");
    return false;
 }
-/* ************************************************************************************* */
 bool critPtNetWork::setLOLCCPs(void) {
    ScreenUtils::DisplayWarningMessage("No LOL CCP will be look for...");
    ScreenUtils::DisplayWarningMessage("(critPtNetWork::setLOLCCPs(...) under construction.)");
    return false;
 }
-/* ************************************************************************************ */
 bool critPtNetWork::addRhoACP(double (&x)[3],int sig,string &lbl) {
    if ( sig!=-3 ) {return false;}
    if (nACP==0) {
@@ -913,7 +893,6 @@ bool critPtNetWork::addRhoACP(double (&x)[3],int sig,string &lbl) {
    }
    return false;
 }
-/* ************************************************************************************ */
 bool critPtNetWork::addRhoBCP(double (&x)[3],int sig,string &lbl,int &pos) {
    if ( sig!=-1 ) {
       pos=-1;
@@ -940,7 +919,6 @@ bool critPtNetWork::addRhoBCP(double (&x)[3],int sig,string &lbl,int &pos) {
    }
    return false;
 }
-/* ************************************************************************************ */
 bool critPtNetWork::addRhoRCP(double (&x)[3],int sig,string &lbl,int &pos) {
    if ( sig!=1 ) {
       pos=-1;
@@ -972,7 +950,6 @@ bool critPtNetWork::addRhoRCP(double (&x)[3],int sig,string &lbl,int &pos) {
    }
    return false;
 }
-/* ************************************************************************************ */
 bool critPtNetWork::addRhoCCP(double (&x)[3],int sig,string &lbl,int &pos) {
    if ( sig!=3 ) {
       pos=-1;
@@ -1004,7 +981,6 @@ bool critPtNetWork::addRhoCCP(double (&x)[3],int sig,string &lbl,int &pos) {
    }
    return false;
 }
-/* ************************************************************************************ */
 void critPtNetWork::seekRhoACPsAroundAPoint(double const (&oo)[3],double const ddxx,\
       string const &blbl,int uunvrt) {
    int nvrt=uunvrt;
@@ -1022,7 +998,6 @@ void critPtNetWork::seekRhoACPsAroundAPoint(double const (&oo)[3],double const d
       }
    }
 }
-/* ************************************************************************************ */
 void critPtNetWork::seekRhoBCPsAroundAPoint(double const (&oo)[3],double const ddxx,\
       string const &blbl,int uunvrt) {
    int nvrt=uunvrt;
@@ -1040,7 +1015,6 @@ void critPtNetWork::seekRhoBCPsAroundAPoint(double const (&oo)[3],double const d
       }
    }
 }
-/* ************************************************************************************ */
 void critPtNetWork::seekRhoRCPsAroundAPoint(double const (&oo)[3],double const ddxx,\
       string const &blbl,int uunvrt) {
    int nvrt=uunvrt;
@@ -1058,7 +1032,6 @@ void critPtNetWork::seekRhoRCPsAroundAPoint(double const (&oo)[3],double const d
       }
    }
 }
-/* ************************************************************************************ */
 void critPtNetWork::seekRhoCCPsAroundAPoint(double const (&oo)[3],double const ddxx,\
       string const &blbl,int uunvrt) {
    int nvrt=uunvrt;
@@ -1076,7 +1049,6 @@ void critPtNetWork::seekRhoCCPsAroundAPoint(double const (&oo)[3],double const d
       }
    }
 }
-/* ************************************************************************************ */
 void critPtNetWork::seekRhoBCPWithExtraACP(int acppos,double maxrad) {
    double xx[3],rho,g[3];
    int sig;
@@ -1107,7 +1079,6 @@ void critPtNetWork::seekRhoBCPWithExtraACP(int acppos,double maxrad) {
       }
    }
 }
-/* ************************************************************************************ */
 void critPtNetWork::seekLOLBCPWithExtraACP(int acppos,double maxrad) {
    double xx[3],lol,g[3],hl[3][3];
    int sig;
@@ -1137,7 +1108,6 @@ void critPtNetWork::seekLOLBCPWithExtraACP(int acppos,double maxrad) {
       }
    }
 }
-/* ************************************************************************************ */
 void critPtNetWork::seekLOLACPsAroundAPoint(double const (&oo)[3],double const ddxx,\
       string const &blbl,int uunvrt) {
    int nvrt=uunvrt;
@@ -1155,7 +1125,6 @@ void critPtNetWork::seekLOLACPsAroundAPoint(double const (&oo)[3],double const d
       }
    }
 }
-/* ************************************************************************************ */
 void critPtNetWork::seekLOLACPsOnASphere(int atIdx,int nDivR,int nDivT,int nDivP,\
       double radmin,double radmax) {
    static const double ppii=4.0e0*atan(1.0e0);
@@ -1207,7 +1176,6 @@ void critPtNetWork::seekLOLACPsOnASphere(int atIdx,int nDivR,int nDivT,int nDivP
 #endif
    if ( origacp<nACP ) {cout << "Found " << (nACP-origacp) << " new ACPs!..." << endl;}
 }
-/* ************************************************************************************ */
 void critPtNetWork::extendedSearchCPs(void) {
    double xs[3],dx;
    dx=bn->maxBondDist*0.1e0;
@@ -1306,7 +1274,6 @@ void critPtNetWork::extendedSearchCPs(void) {
                StringTools::GetStringFromInt(nACP-nBCP+nRCP-nCCP)));
    }
 }
-/* ************************************************************************************ */
 void critPtNetWork::customSearchTwoACPs(int acpIdx1,int acpIdx2) {
    cout << "Looking around a custom seed (two acps)..." << endl;
    string str1=string("This acp does not exist! There are ");
@@ -1330,7 +1297,6 @@ void critPtNetWork::customSearchTwoACPs(int acpIdx1,int acpIdx2) {
    }
    customSearchCPs(xs);
 }
-/* ************************************************************************************ */
 void critPtNetWork::customSearchCPs(double (&xs)[3]) {
    double dx;
    dx=bn->maxBondDist*0.05e0;
@@ -1372,45 +1338,6 @@ void critPtNetWork::customSearchCPs(double (&xs)[3]) {
                StringTools::GetStringFromInt(nACP-nBCP+nRCP-nCCP)));
    }
 }
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
 void critPtNetWork::removeRedundInLabel(string &lbl) {
    string tl=lbl,chunk,tchk,tl2,fl="";
    chunk=getFirstChunkOfLabel(tl);
@@ -1435,7 +1362,6 @@ void critPtNetWork::removeRedundInLabel(string &lbl) {
    lbl=fl;
    return;
 }
-/* ************************************************************************************ */
 string critPtNetWork::getFirstChunkOfLabel(string &lbl) {
    if (lbl.length()==0) {
       return string("");
@@ -1443,15 +1369,12 @@ string critPtNetWork::getFirstChunkOfLabel(string &lbl) {
    size_t pos=lbl.find_first_of("-");
    return lbl.substr(0,pos);
 }
-/* ************************************************************************************ */
 void critPtNetWork::printAllFieldProperties(double x,double y,double z) {
    wf->displayAllFieldProperties(x,y,z);
 }
-/* ************************************************************************************ */
 void critPtNetWork::writeAllFieldProperties(double x,double y,double z,ofstream &ofil) {
    wf->writeAllFieldProperties(x,y,z,ofil);
 }
-/* ************************************************************************************ */
 void critPtNetWork::getACPStep(double (&g)[3],double (&hess)[3][3],double (&hh)[3],int &sig) {
    double eive[3][3],b[3],F[3];
    EigenDecompositionJAMA::EigenDecomposition3(hess, eive, b);
@@ -1498,7 +1421,6 @@ void critPtNetWork::getACPStep(double (&g)[3],double (&hess)[3][3],double (&hh)[
    sig=computeSignature(b);
    return;
 }
-/* ************************************************************************************* */
 void critPtNetWork::getBCPStep(double (&g)[3],double (&hess)[3][3],double (&hh)[3],int &sig) {
    double eive[3][3],b[3];
    EigenDecompositionJAMA::EigenDecomposition3(hess, eive, b);
@@ -1535,7 +1457,6 @@ void critPtNetWork::getBCPStep(double (&g)[3],double (&hess)[3][3],double (&hh)[
    sig=computeSignature(b);
    return;
 }
-/* ************************************************************************************* */
 void critPtNetWork::getRCPStep(double (&g)[3],double (&hess)[3][3],double (&hh)[3],int &sig) {
    double eive[3][3],b[3];
    EigenDecompositionJAMA::EigenDecomposition3(hess, eive, b);
@@ -1572,7 +1493,6 @@ void critPtNetWork::getRCPStep(double (&g)[3],double (&hess)[3][3],double (&hh)[
    sig=computeSignature(b);
    return;
 }
-/* ************************************************************************************* */
 void critPtNetWork::getCCPStep(double (&g)[3],double (&hess)[3][3],double (&hh)[3],int &sig) {
    double eive[3][3],b[3];
    EigenDecompositionJAMA::EigenDecomposition3(hess, eive, b);
@@ -1611,7 +1531,6 @@ void critPtNetWork::getCCPStep(double (&g)[3],double (&hess)[3][3],double (&hh)[
    sig=computeSignature(b);
    return;
 }
-/* ************************************************************************************ */
 int critPtNetWork::computeSignature(double (&ev)[3]) {
    int res=0;
    for ( int i=0 ; i<3 ; i++ ) {
@@ -1627,7 +1546,6 @@ int critPtNetWork::computeSignature(double (&ev)[3]) {
    }
    return res;
 }
-/* ************************************************************************************ */
 void critPtNetWork::seekRhoACP(double (&x)[3],double &rho2ret,double (&g)[3],int &sig) {
    double rho,gr[3],hr[3][3],dx[3];
    wf->evalHessian(x[0],x[1],x[2],rho,gr,hr);
@@ -1652,7 +1570,6 @@ void critPtNetWork::seekRhoACP(double (&x)[3],double &rho2ret,double (&g)[3],int
    rho2ret=rho;
    return;
 }
-/* ************************************************************************************ */
 void critPtNetWork::seekRhoBCP(double (&x)[3],double &rho2ret,double (&g)[3],int &sig) {
    double rho,gr[3],hr[3][3],dx[3];
    wf->evalHessian(x[0],x[1],x[2],rho,gr,hr);
@@ -1677,7 +1594,6 @@ void critPtNetWork::seekRhoBCP(double (&x)[3],double &rho2ret,double (&g)[3],int
    rho2ret=rho;
    return;
 }
-/* ************************************************************************************ */
 void critPtNetWork::seekRhoRCP(double (&x)[3],double &rho2ret,double (&g)[3],int &sig) {
    double rho,gr[3],hr[3][3],dx[3];
    wf->evalHessian(x[0],x[1],x[2],rho,gr,hr);
@@ -1702,7 +1618,6 @@ void critPtNetWork::seekRhoRCP(double (&x)[3],double &rho2ret,double (&g)[3],int
    rho2ret=rho;
    return;
 }
-/* ************************************************************************************ */
 void critPtNetWork::seekRhoCCP(double (&x)[3],double &rho2ret,double (&g)[3],int &sig) {
    double rho,gr[3],hr[3][3],dx[3];
    wf->evalHessian(x[0],x[1],x[2],rho,gr,hr);
@@ -1727,7 +1642,6 @@ void critPtNetWork::seekRhoCCP(double (&x)[3],double &rho2ret,double (&g)[3],int
    rho2ret=rho;
    return;
 }
-/* ************************************************************************************ */
 void critPtNetWork::seekLOLACP(double (&x)[3],double &ll,double (&g)[3],int &sig) {
    double lol,gl[3],hl[3][3],dx[3];
    wf->evalHessLOL(x,lol,gl,hl);
@@ -1752,7 +1666,6 @@ void critPtNetWork::seekLOLACP(double (&x)[3],double &ll,double (&g)[3],int &sig
    ll=lol;
    return;
 }
-/* ************************************************************************************ */
 void critPtNetWork::seekLOLBCP(double (&x)[3],double &ll,double (&g)[3],int &sig) {
    double lol,gl[3],hl[3][3],dx[3];
    wf->evalHessLOL(x,lol,gl,hl);
@@ -1777,7 +1690,6 @@ void critPtNetWork::seekLOLBCP(double (&x)[3],double &ll,double (&g)[3],int &sig
    ll=lol;
    return;
 }
-/* ************************************************************************************ */
 void critPtNetWork::seekLOLRCP(double (&x)[3],double &ll,double (&g)[3],int &sig) {
    double lol,gl[3],hl[3][3],dx[3];
    wf->evalHessLOL(x,lol,gl,hl);
@@ -1802,7 +1714,6 @@ void critPtNetWork::seekLOLRCP(double (&x)[3],double &ll,double (&g)[3],int &sig
    ll=lol;
    return;
 }
-/* ************************************************************************************ */
 void critPtNetWork::seekLOLCCP(double (&x)[3],double &ll,double (&g)[3],int &sig) {
    double lol,gl[3],hl[3][3],dx[3];
    wf->evalHessLOL(x,lol,gl,hl);
@@ -1827,13 +1738,11 @@ void critPtNetWork::seekLOLCCP(double (&x)[3],double &ll,double (&g)[3],int &sig
    ll=lol;
    return;
 }
-/* ************************************************************************************ */
 int critPtNetWork::computeSignature(double (&hh)[3][3]) {
    double eive[3][3],b[3];
    EigenDecompositionJAMA::EigenDecomposition3(hh, eive, b);
    return computeSignature(b);
 }
-/* ************************************************************************************ */
 bool critPtNetWork::imNew(double (&x)[3],int dim,double ** (&arr),size_t &pos) {
    double ee;
    int firstzeropos=0,k=1;
@@ -1861,7 +1770,6 @@ bool critPtNetWork::imNew(double (&x)[3],int dim,double ** (&arr),size_t &pos) {
    pos=firstzeropos;
    return true;
 }
-/* ************************************************************************************ */
 void critPtNetWork::displayXCPCoords(char cpt) {
    bool cpknow=false;
    string cplbl="";
@@ -1927,14 +1835,12 @@ void critPtNetWork::displayXCPCoords(char cpt) {
    cout.unsetf(std::ios::scientific);
    return;
 }
-/* ************************************************************************************ */
 void critPtNetWork::displayAllCPCoords(void) {
    displayXCPCoords('a');
    displayXCPCoords('b');
    displayXCPCoords('r');
    displayXCPCoords('c');
 }
-/* ************************************************************************************ */
 void critPtNetWork::displayIHVCoords(void) {
    cout << scientific << setprecision(8);
    ScreenUtils::PrintScrCharLine('+');
@@ -1949,7 +1855,6 @@ void critPtNetWork::displayIHVCoords(void) {
    cout.unsetf(std::ios::scientific);
    return;
 }
-/* ********************************************************************************* */
 void critPtNetWork::findTwoClosestAtoms(double (&xo)[3],int &idx1st,int &idx2nd) {
    if ( wf->nNuc<2 ) {idx1st=0; idx2nd=0; return;}
    double xmagt=0.0e0,xmag1=0.0e0,xmag2=0.0e0;
@@ -1982,7 +1887,6 @@ void critPtNetWork::findTwoClosestAtoms(double (&xo)[3],int &idx1st,int &idx2nd)
 #endif /* ( DEBUG ) */
    return;
 }
-/* ************************************************************************************ */
 void critPtNetWork::findTwoClosestAtomsToBCP(const int bcpIdx,int &at1Idx,int&at2Idx) {
    if ( wf->nNuc<2 ) {at1Idx=0; at2Idx=0; return;}
 #if DEBUG
@@ -2002,7 +1906,6 @@ void critPtNetWork::findTwoClosestAtomsToBCP(const int bcpIdx,int &at1Idx,int&at
    for ( int i=0 ; i<3 ; ++i ) { xo[i]=RBCP[bcpIdx][i]; }
    return findTwoClosestAtoms(xo,at1Idx,at2Idx);
 }
-/* ************************************************************************************ */
 void critPtNetWork::findTwoClosestACPs(double (&xo)[3],int &idx1st,int &idx2nd) {
    if ( nACP<2 ) {idx1st=0; idx2nd=0; return;}
    double xmagt=0.0e0,xmag1=0.0e0,xmag2=0.0e0;
@@ -2035,7 +1938,6 @@ void critPtNetWork::findTwoClosestACPs(double (&xo)[3],int &idx1st,int &idx2nd) 
 #endif /* ( DEBUG ) */
    return;
 }
-/* ************************************************************************************ */
 void critPtNetWork::invertOrderBGPPoints(int dim) {
    int numop=((dim+1)>>1);
 
@@ -2048,7 +1950,6 @@ void critPtNetWork::invertOrderBGPPoints(int dim) {
       }
    }
 }
-/* ************************************************************************************ */
 void critPtNetWork::invertOrderBGPPoints(int dim,double** (&arr)) {
 #if DEBUG
    if (arr==NULL) {
@@ -2067,7 +1968,6 @@ void critPtNetWork::invertOrderBGPPoints(int dim,double** (&arr)) {
       }
    }
 }
-/* ************************************************************************************ */
 void critPtNetWork::writeCPProps(string &ofnam,string &wfnnam) {
    ofstream ofil;
    ofil.open(ofnam.c_str());
@@ -2192,7 +2092,6 @@ void critPtNetWork::writeCPProps(string &ofnam,string &wfnnam) {
    ofil.close();
    return;
 }
-/* ************************************************************************************ */
 bool critPtNetWork::makePOVFile(string pnam,POVRayConfiguration &pvp,int campos) {
    ofstream pof;
    pof.open(pnam.c_str(),std::ios::out);
@@ -2544,7 +2443,6 @@ bool critPtNetWork::makePOVFile(string pnam,POVRayConfiguration &pvp,int campos)
    pof.close();
    return true;
 }
-/* ************************************************************************************* */
 void critPtNetWork::putBonds(ofstream &pof) {
    string pigmstr="transmit TransmitStdBondCylinder";
    pof << "union{" << endl;
@@ -2583,7 +2481,6 @@ void critPtNetWork::putBonds(ofstream &pof) {
    pof << "}" << endl;
    return;
 }
-/* ************************************************************************************ */
 void critPtNetWork::putNuclei(ofstream & pof) {
    int atomn;
    double atrad;
@@ -2597,7 +2494,6 @@ void critPtNetWork::putNuclei(ofstream & pof) {
    }
    return;
 }
-/* ************************************************************************************ */
 void critPtNetWork::centerMolecule(void) {
    double trn[3];
    for (int i=0; i<3; i++) {
@@ -2656,7 +2552,6 @@ void critPtNetWork::centerMolecule(void) {
    for (int i=0; i<3; i++) {centMolecVec[i]=trn[i];}
    return;
 }
-/* ************************************************************************************ */
 bool critPtNetWork::readFromFile(string inname) {
    string tmps;
    tmps=inname.substr(inname.length()-3,inname.length());
@@ -2784,7 +2679,6 @@ bool critPtNetWork::readFromFile(string inname) {
    displayStatus(true);
    return true;
 }
-/* ************************************************************************************ */
 void critPtNetWork::displayStatus(bool lngdesc) {
    ScreenUtils::PrintScrCharLine('+');
    if (lngdesc) {
@@ -2820,7 +2714,6 @@ void critPtNetWork::displayStatus(bool lngdesc) {
    ScreenUtils::PrintScrCharLine('+');
    return;
 }
-/* ************************************************************************************ */
 int critPtNetWork::findSingleRhoBondGradientPathRK5(int at1,int at2,double hstep,\
       int dima,double** (&arbgp),double (&ro)[3]) {
    double rn[3],rho,g[3],h[3][3],eive[3][3],eival[3],dist,maggrad;
@@ -2947,7 +2840,6 @@ int critPtNetWork::findSingleRhoBondGradientPathRK5(int at1,int at2,double hstep
    }
    return count;
 }
-/* ************************************************************************************ */
 int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
       int bcpIdxInRRGP,double hstep,int dima,\
       double** (&arrgp)) {
@@ -3076,7 +2968,6 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
       return -1;
    }
 }
-/* ************************************************************************************ */
 int critPtNetWork::findSingleRhoCageGradientPathRK5(int ccpIdx,\
       int rcpIdxInRCGP,double hstep,int dima,\
       double** (&arrgp)) {
@@ -3131,7 +3022,6 @@ int critPtNetWork::findSingleRhoCageGradientPathRK5(int ccpIdx,\
 #endif /* ( DEBUG ) */
    return -1;
 }
-/* ************************************************************************************ */
 bool critPtNetWork::walkGradientPathRK5ToEndPoint(\
       double (&xi)[3],double (&x1)[3],\
       double (&xe)[3],double (&xm)[3],double &dm,double hstep,int dima,\
@@ -3193,7 +3083,6 @@ bool critPtNetWork::walkGradientPathRK5ToEndPoint(\
    }
    return imatend;
 }
-/* ************************************************************************************ */
 bool critPtNetWork::seekSingleRhoBCP(int ata,int atb,double (&x)[3]) {
    int idxa,idxb;
    idxa=3*ata;
@@ -3217,7 +3106,6 @@ bool critPtNetWork::seekSingleRhoBCP(int ata,int atb,double (&x)[3]) {
    }
    return true;
 }
-/* ************************************************************************************ */
 void critPtNetWork::getNextPointInGradientPathRK5UpHill(double (&xn)[3],double &stepsize,\
       double &mgg) {
    /*
@@ -3279,7 +3167,6 @@ void critPtNetWork::getNextPointInGradientPathRK5UpHill(double (&xn)[3],double &
    mgg=sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]);
    return;
 }
-/* ************************************************************************************ */
 void critPtNetWork::getNextPointInGradientPathRK5DownHill(double (&xn)[3],\
       double &stepsize,double &mgg) {
    static const double b[21]={1.0e0/5.0e0, \
@@ -3319,7 +3206,6 @@ void critPtNetWork::getNextPointInGradientPathRK5DownHill(double (&xn)[3],\
    mgg=sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]);
    return;
 }
-/* ************************************************************************************ */
 void critPtNetWork::findMaxBondDist() {
    if ( !iknowbgps ) {
       ScreenUtils::DisplayErrorMessage("First you need to find the Bond Gradient Paths!");
@@ -3350,7 +3236,6 @@ void critPtNetWork::findMaxBondDist() {
    maxBondDist=sqrt(maxBondDist);
    maxBCPACPDist=sqrt(maxBCPACPDist);
 }
-/* ************************************************************************************ */
 void critPtNetWork::addBCP2ConRCP(const int rcpIdx,const int bcpIdx) {
 #if DEBUG
    if ( conRCP==NULL ) {
@@ -3370,7 +3255,6 @@ void critPtNetWork::addBCP2ConRCP(const int rcpIdx,const int bcpIdx) {
 #endif /* ( DEBUG ) */
    }
 }
-/* ************************************************************************************ */
 void critPtNetWork::addRCP2ConCCP(const int ccpIdx,const int rcpIdx) {
 #if DEBUG
    if ( conCCP==NULL ) {
@@ -3390,7 +3274,6 @@ void critPtNetWork::addRCP2ConCCP(const int ccpIdx,const int rcpIdx) {
 #endif /* ( DEBUG ) */
    }
 }
-/* ************************************************************************************ */
 void critPtNetWork::forceBCPConnectivity(int bcpIdx,int acpIdx1,int acpIdx2) {
 #if DEBUG
    if ( conBCP==NULL ) {
@@ -3417,7 +3300,6 @@ void critPtNetWork::forceBCPConnectivity(int bcpIdx,int acpIdx1,int acpIdx2) {
    conBCP[bcpIdx][1]=acpIdx2;
    lblBCP[bcpIdx]=lblACP[acpIdx1]+"-"+lblACP[acpIdx2];
 }
-/* ************************************************************************************ */
 void critPtNetWork::correctRCPConnectivity(void) {
    findMaxBondDist();
    //double maxallwdd=1.414213562373095e0*maxBCPACPDist;
@@ -3450,7 +3332,6 @@ void critPtNetWork::correctRCPConnectivity(void) {
       }
    }
 }
-/* ************************************************************************************ */
 void critPtNetWork::removeFromConRCP(const int rcpIdx,const int pos2rem) {
    int total=0;
    while ( conRCP[rcpIdx][0][total]>=0 ) {++total;}
@@ -3481,7 +3362,6 @@ void critPtNetWork::removeFromConRCP(const int rcpIdx,const int pos2rem) {
    conRCP[rcpIdx][0][total]=conRCP[rcpIdx][1][total]=-1;
    // */
 }
-/* ************************************************************************************ */
 void critPtNetWork::addToConRCP(const int rcpIdx,const int bcpIdx) {
    int mypos=0;
    while (conRCP[rcpIdx][0][mypos]>=0) {
@@ -3497,7 +3377,6 @@ void critPtNetWork::addToConRCP(const int rcpIdx,const int bcpIdx) {
    }
    conRCP[rcpIdx][0][mypos]=bcpIdx;
 }
-/* ************************************************************************************ */
 void critPtNetWork::addToConCCP(const int ccpIdx,const int rcpIdx) {
    int mypos=0;
    while (conCCP[ccpIdx][0][mypos]>=0) {
@@ -3513,7 +3392,6 @@ void critPtNetWork::addToConCCP(const int ccpIdx,const int rcpIdx) {
    }
    conCCP[ccpIdx][0][mypos]=rcpIdx;
 }
-/* ************************************************************************************ */
 void critPtNetWork::setRingPaths() {
    if (!iknowrcps) {
       ScreenUtils::DisplayErrorMessage("Please look first for the RCPs...\nNothing to be done!");
@@ -3569,7 +3447,6 @@ void critPtNetWork::setRingPaths() {
    iknowrgps=true;
    iknowallgps=(iknowbgps&&iknowrgps&&iknowcgps);
 }
-/* ************************************************************************************ */
 void critPtNetWork::setCagePaths(void) {
   if (!iknowccps) {
       ScreenUtils::DisplayErrorMessage("Please look first for the CCPs...\nNothing to be done!");
@@ -3623,7 +3500,6 @@ void critPtNetWork::setCagePaths(void) {
    iknowcgps=true;
    iknowallgps=(iknowbgps&&iknowrgps&&iknowcgps);
 }
-/* ************************************************************************************ */
 int critPtNetWork::getNofRingPathsOfRCP(int rcpIdx) {
    if ( !iknowrgps ) {
       ScreenUtils::DisplayWarningMessage("First seek for Ring Gradient Paths! Returning 0.");
@@ -3635,7 +3511,6 @@ int critPtNetWork::getNofRingPathsOfRCP(int rcpIdx) {
    while ( conRCP[rcpIdx][0][res]>=0 ) {++res;}
    return res;
 }
-/* ************************************************************************************ */
 int critPtNetWork::getNofCagePathsOfCCP(int ccpIdx) {
    if ( !iknowcgps ) {
       ScreenUtils::DisplayWarningMessage("First seek for Cage Gradient Paths! Returning 0.");
@@ -3647,7 +3522,6 @@ int critPtNetWork::getNofCagePathsOfCCP(int ccpIdx) {
    while ( conCCP[ccpIdx][0][res]>=0 ) {++res;}
    return res;
 }
-/* ************************************************************************************ */
 int critPtNetWork::getTotalNofRingPaths(void) {
 #if DEBUG
    if ( !iknowrgps ) {
@@ -3660,7 +3534,6 @@ int critPtNetWork::getTotalNofRingPaths(void) {
    for ( int i=0 ; i<nRCP ; ++i ) {res+=getNofRingPathsOfRCP(i);}
    return res;
 }
-/* ************************************************************************************ */
 int critPtNetWork::getTotalNofCagePaths(void) {
 #if DEBUG
    if ( !iknowcgps ) {
@@ -3673,21 +3546,11 @@ int critPtNetWork::getTotalNofCagePaths(void) {
    for ( int i=0 ; i<nCCP ; ++i ) {res+=getNofCagePathsOfCCP(i);}
    return res;
 }
-/* ************************************************************************************ */
 void critPtNetWork::copyRGP2Array(double** (&thearr),int nn) {
    for ( int i=0 ; i<nn ; ++i ) {
       for ( int j=0 ; j<3 ; ++j ) {thearr[i][j]=RGP[i][j];}
    }
 }
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-
-
-
 
 #endif  /* _CRITPTNETWORK_CPP_ */
 

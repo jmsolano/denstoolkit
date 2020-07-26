@@ -37,7 +37,6 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
 #include <cstdlib>
 #include <iostream>
 using std::cout;
@@ -45,7 +44,7 @@ using std::endl;
 using std::cerr;
 #include <fstream>
 using std::ofstream;
-#include "solvmdtools.h"
+#include "vmdtools.h"
 #include "fileutils.h"
 #include "screenutils.h"
 

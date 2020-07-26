@@ -77,7 +77,6 @@ using std::ofstream;
 using std::exit;
 #include <math.h>
 #include <string>
-using namespace std;
 #include <iomanip>
 using std::setprecision;
 #include <ctime>

@@ -37,9 +37,7 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
-/*
-   
+/* optflags.cpp
    ------------------------
 
    Juan Manuel Solano Altamirano
@@ -56,25 +54,19 @@
    May 2013
    ------------------------
 */
-#ifndef _OPTSFLAGS_CPP
-#define _OPTSFLAGS_CPP
-#include "figname.h"
-#include "optflags.h"
-#include "../common/screenutils.h"
-
 #include <iostream>
 using std::cout;
 using std::endl;
 using std::ios;
 #include <cstdlib>
 using std::exit;
-using namespace std;
 #include <fstream>
 using std::ifstream;
 #include <string>
 using std::string;
-
-//**************************************************************************************************
+#include "figname.h"
+#include "optflags.h"
+#include "../common/screenutils.h"
 
 optFlags::optFlags() {
    infname=0;
@@ -86,9 +78,6 @@ optFlags::optFlags() {
    setscustfld=0;
    setvcustfld=0;
 }
-
-//**************************************************************************************************
-
 void getOptions(int &argc, char** &argv, optFlags &flags) {
    string progname;
    progname=":-)  ";
@@ -162,11 +151,7 @@ void getOptions(int &argc, char** &argv, optFlags &flags) {
       }
    }
    return;
-}//end updateFlags
-
-
-//**************************************************************************************************
-
+}
 void printHelpMenu(int &argc, char** &argv) {
    string progname=argv[0];
    size_t pos=progname.find("./");
@@ -227,9 +212,7 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "  --help    \t\tSame as -h" << endl;
    cout << "  --version \t\tSame as -V" << endl;
    //-------------------------------------------------------------------------------------
-}//end printHelpMenu
-
-//**************************************************************************************************
+}
 void printErrorMsg(char** &argv,char lab) {
    ScreenUtils::SetScrRedBoldFont();
    cout << "\nError: the option \"" << lab << "\" ";
@@ -259,7 +242,6 @@ void printErrorMsg(char** &argv,char lab) {
    exit(1);
    return;
 }
-//**************************************************************************************************
 void processDoubleDashOptions(int &argc,char** &argv,optFlags &flags,int pos) {
    string progname=argv[0];
    size_t progpos=progname.find("./");
@@ -280,6 +262,4 @@ void processDoubleDashOptions(int &argc,char** &argv,optFlags &flags,int pos) {
    }
    return;
 }
-//**************************************************************************************************
-//**************************************************************************************************
-#endif //_OPTSFLAGS_CPP
+

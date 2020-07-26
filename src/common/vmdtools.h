@@ -38,8 +38,8 @@
    README file.
 */
 
-#ifndef _SOLVMDTOOLS_H_
-#define _SOLVMDTOOLS_H_
+#ifndef _VMDTOOLS_H_
+#define _VMDTOOLS_H_
 #include <string>
 using std::string;
 #include "fldtypesdef.h"
@@ -57,6 +57,5 @@ protected:
 };
 /* ************************************************************************** */
 
-
-#endif  /* _SOLVMDTOOLS_H_ */
+#endif  /* _VMDTOOLS_H_ */
 

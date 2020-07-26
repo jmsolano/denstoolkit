@@ -37,11 +37,7 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
-/*
-
-   crtflnms.cpp
-   
+/* crtflnms.cpp
    This file contains the implementation of the definitions to modify or to create names for the 
    different files used to record the information extracted from the program.
 
@@ -54,14 +50,12 @@
    Unidad Monterrey, Mexico.
    2011
    e-mail: jmsolanoalt@gmail.com
-   
+
    Adscription at the moment the particular implementation for this program is started:
    University of Guelph,
    Guelph, Ontario, Canada.
    May 2013
 */
-#ifndef _CRTFLNMS_CPP
-#define _CRTFLNMS_CPP
 #include <cstdlib>
 #include <iostream>
 using std::cout;
@@ -72,16 +66,10 @@ using std::endl;
 #include "../common/fldtypesdef.h"
 
 void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn, string &o_fn) {
-   //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   /*
-      If you need more names to be created by this function, you need to add the new
-      string in the arguments list here and in the corresponding header file.
-    */
-   //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   /* If you need more names to be created by this function, you need to add the new
+      string in the arguments list here and in the corresponding header file. */
    i_fn=string(argv[1]);
    size_t pos;
-   //string sl="wfn";
-   //pos=i_fn.find(sl);
    if (!((i_fn.find("wfn")!=string::npos)||
        (i_fn.find("WFN")!=string::npos)||
        (i_fn.find("wfx")!=string::npos)||
@@ -93,12 +81,6 @@ void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn, string &o_fn) {
    }
    o_fn=i_fn.substr(0,(i_fn.length()-3));
    o_fn.append("log");
-   char prop;
-   if (opts.prop2plot) {
-      prop=argv[opts.prop2plot][0];
-   } else {
-      prop='a';
-   }
    pos=o_fn.find_last_of('.');
    if (pos!=string::npos) {
       string plbl="AllProp";
@@ -110,4 +92,4 @@ void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn, string &o_fn) {
    }
    return;
 }
-#endif //_CRTFLNMS_CPP
+

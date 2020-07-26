@@ -37,9 +37,7 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
-/*
-
+/* optflags.cpp
    Juan Manuel Solano Altamirano
    Adscription at the moment this project is initiated:
    Centro de Investigaciones y Estudios Avanzados del 
@@ -53,25 +51,19 @@
    Guelph, Ontario, Canada.
    May 2013
 */
-#ifndef _OPTSFLAGS_CPP
-#define _OPTSFLAGS_CPP
-#include "figname.h"
-#include "optflags.h"
-#include "../common/screenutils.h"
-
 #include <iostream>
 using std::cout;
 using std::endl;
 using std::ios;
 #include <cstdlib>
 using std::exit;
-using namespace std;
 #include <fstream>
 using std::ifstream;
 #include <string>
 using std::string;
-
-//**************************************************************************************************
+#include "figname.h"
+#include "optflags.h"
+#include "../common/screenutils.h"
 
 optFlags::optFlags() {
    infname=0;
@@ -93,9 +85,6 @@ optFlags::optFlags() {
    forceseveralbcpconn=0;
    customseedtwoacps=0;
 }
-
-//**************************************************************************************************
-
 void getOptions(int &argc, char** &argv, optFlags &flags) {
    string progname;
    progname=":-)  ";
@@ -195,11 +184,7 @@ void getOptions(int &argc, char** &argv, optFlags &flags) {
       }
    }
    return;
-}//end updateFlags
-
-
-//**************************************************************************************************
-
+}
 void printHelpMenu(int &argc, char** &argv) {
    string progname=argv[0];
    size_t pos=progname.find("./");
@@ -256,10 +241,10 @@ void printHelpMenu(int &argc, char** &argv) {
         << "         \t  than the simple search." << endl;
    cout << "  -v     \tVerbose mode (displays additional information (for example the " << endl
         << "         \t  output of povray, etc." <<endl;
-//#if (defined(__APPLE__)||defined(__linux__))
-//   cout << "  -z     \tCompress the cube file using gzip (which must be intalled" << endl
-//        << "         \t   in your system)." << endl;
-//#endif
+   //#if (defined(__APPLE__)||defined(__linux__))
+   //   cout << "  -z     \tCompress the cube file using gzip (which must be intalled" << endl
+   //        << "         \t   in your system)." << endl;
+   //#endif
    cout << "  -V        \tDisplay the version of this program." << endl;
    cout << "  -h\t\tDisplay the help menu.\n\n";
    //-------------------------------------------------------------------------------------
@@ -293,9 +278,7 @@ void printHelpMenu(int &argc, char** &argv) {
 #endif
    ScreenUtils::PrintScrStarLine();
 #endif
-}//end printHelpMenu
-
-//**************************************************************************************************
+}
 void printErrorMsg(char** &argv,char lab) {
    ScreenUtils::SetScrRedBoldFont();
    cout << "\nError: the option \"" << lab << "\" ";
@@ -316,7 +299,6 @@ void printErrorMsg(char** &argv,char lab) {
    exit(1);
    return;
 }
-//**************************************************************************************************
 void processDoubleDashOptions(int &argc,char** &argv,optFlags &flags,int pos) {
    string progname=argv[0];
    size_t progpos=progname.find("./");
@@ -353,6 +335,4 @@ void processDoubleDashOptions(int &argc,char** &argv,optFlags &flags,int pos) {
    }
    return;
 }
-//**************************************************************************************************
-//**************************************************************************************************
-#endif //_OPTSFLAGS_CPP
+
