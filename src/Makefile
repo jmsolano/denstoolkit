@@ -40,7 +40,7 @@ MYMAKEFLAGS = SETDTKNPROC=$(SETDTKNPROC)
 
 # COMPILERS OPTIONS
 ifneq ($(DARWIN),)
-  CXX          := g++-mp-4.9
+  CXX          := g++-mp-6
 else
   CXX          := g++
 endif
