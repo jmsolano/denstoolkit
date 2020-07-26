@@ -37,17 +37,8 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
-
 #ifndef _SOLDEFINES_H_
 #define _SOLDEFINES_H_
-
-
-#ifndef _HAVE_DEF_SOLREAL_TYPE_
-#define _HAVE_DEF_SOLREAL_TYPE_
-typedef double solreal;
-//typedef float solreal;
-#endif
 
 #ifndef DEBUG
 #define DEBUG 0

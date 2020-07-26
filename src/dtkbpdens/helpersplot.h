@@ -11,8 +11,8 @@ public:
 /* ************************************************************************** */
 static void MakeGnuplotFile(optFlags &opts,string &gnpnam,string &datnam,char p2p,\
       bondNetWork &bn,double lenline,double minval,double maxval,\
-      int at1,int at2,solreal pbcp,solreal** (&rbgp));
-static solreal EvalFieldProperty(char prop,solreal (&x)[3],GaussWaveFunction &wf);
+      int at1,int at2,double pbcp,double** (&rbgp));
+static double EvalFieldProperty(char prop,double (&x)[3],GaussWaveFunction &wf);
 /* ************************************************************************** */
 protected:
 /* ************************************************************************** */

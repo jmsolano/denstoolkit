@@ -108,16 +108,16 @@ public:
    int ***conCCP;
    /** This array contains the coordinates of ACPs. in RACP[i][j], the j-th cartesian
     * coordinates of the i-th ACP are stored.  */
-   solreal **RACP;
+   double **RACP;
    /** This array contains the coordinates of BCPs. in RBCP[i][j], the j-th cartesian
     * coordinates of the i-th ACP are stored.  */
-   solreal **RBCP;
+   double **RBCP;
    /** This array contains the coordinates of RCPs. in RRCP[i][j], the j-th cartesian
     * coordinates of the i-th RCP are stored.  */
-   solreal **RRCP;
+   double **RRCP;
    /** This array contains the coordinates of CCPs. in RCCP[i][j], the j-th cartesian
     * coordinates of the i-th CCP are stored.  */
-   solreal **RCCP;
+   double **RCCP;
    /** RBGP contains the coordinates of the <b>B</b>ond <b>G</b>radient
     * <b>P</b>aths. In this implementation the bond path consists of a set
     * of points along the real bond path (which is a continuos curve in 
@@ -126,7 +126,7 @@ public:
     * i-th BCP, the second indicates
     * the n-th point in the bond path, and the third index is the cartesian
     * coordinate of the n-th point.  */
-   solreal ***RBGP;
+   double ***RBGP;
    /** RRGP contains the coordinates of the <b>R</b>ing <b>G</b>radient
     * <b>P</b>aths. In this implementation the ring path consists of a set
     * of BCPs associated with the RCP. Each RCP-BCP pair consists, in turn,
@@ -138,7 +138,7 @@ public:
     * the j-th BCP connected to the i-th RCP,
     * n refers to the n-tn point in the ring path, and the fourth index is the cartesian
     * coordinate of the n-th point.  */
-   solreal ****RRGP;
+   double ****RRGP;
    /** RCGP contains the coordinates of the <b>C</b>age <b>G</b>radient
     * <b>P</b>aths. In this implementation the cage path consists of a set
     * of RCPs associated with the CCP. Each CCP-RCP pair consists, in turn,
@@ -150,16 +150,16 @@ public:
     * the j-th RCP connected to the i-th CCP,
     * n refers to the n-tn point in the cage path, and the fourth index is the k-th cartesian
     * coordinate of the n-th point.  */
-   solreal ****RCGP;
+   double ****RCGP;
    /** centMolecVec is a vector used for centering the molecule. This array
     * is used for producing POV files. <b>Warning: In the current version,
     * after the POV has been recorded, the coordinates of the critical
     * points will no longer correspond to the coordinate system of the
     * wavefunction.</b>  */
-   solreal centMolecVec[3];
+   double centMolecVec[3];
    /** The array RGP is an auxiliary array, used for manipulating the order
     * of the points in a bond path searching procedure.  */
-   solreal **RGP;
+   double **RGP;
    string *lblACP, /*!< An array to store the labels of the ACPs.  */\
       *lblBCP, /*!< An array to store the labels of the BCPs. */\
       *lblRCP, /*!< An array to store the labels of the RCPs.  */\
@@ -184,7 +184,7 @@ public:
    /** Self descriptive  */
    void setMaxGradPathNPts(int ii) {maxGradPathNPts=ii;}
    /** Self descriptive  */
-   void setStepSizeBGP(solreal ss) {stepSizeBGP=ss;}
+   void setStepSizeBGP(double ss) {stepSizeBGP=ss;}
 /* ************************************************************************************ */
    /** The main public function for searching all critical points.
     * Configuration, such as requesting extended search should be
@@ -248,35 +248,35 @@ public:
     * really vertices, but the origin, and three points along x, y, and z axis,
     * displaced a small distance away from the center.
     */
-   void seekRhoACPsAroundAPoint(solreal const (&oo)[3],solreal const ddxx,\
+   void seekRhoACPsAroundAPoint(double const (&oo)[3],double const ddxx,\
          string const &blbl,int nvrt=-1);
 /* ************************************************************************************ */
-   void seekRhoBCPWithExtraACP(int acppos,solreal maxrad);
+   void seekRhoBCPWithExtraACP(int acppos,double maxrad);
 /* ************************************************************************************ */
    /** Same functionality as critPtNetWork::seekRhoACPsAroundAPoint, but for BCPs.  */
-   void seekRhoBCPsAroundAPoint(solreal const (&oo)[3],solreal const ddxx,\
+   void seekRhoBCPsAroundAPoint(double const (&oo)[3],double const ddxx,\
          string const &blbl,int nvrt=-1);
 /* ************************************************************************************ */
    /** Same functionality as critPtNetWork::seekRhoACPsAroundAPoint, but for RCPs.  */
-   void seekRhoRCPsAroundAPoint(solreal const (&oo)[3],solreal const ddxx,\
+   void seekRhoRCPsAroundAPoint(double const (&oo)[3],double const ddxx,\
          string const &blbl,int nvrt=-1);
 /* ************************************************************************************ */
    /** Same functionality as critPtNetWork::seekRhoACPsAroundAPoint, but for CCPs.  */
-   void seekRhoCCPsAroundAPoint(solreal const (&oo)[3],solreal const ddxx,\
+   void seekRhoCCPsAroundAPoint(double const (&oo)[3],double const ddxx,\
          string const &blbl,int nvrt=-1);
 /* ************************************************************************************ */
    /** Same functionality as critPtNetWork::seekRhoACPsAroundAPoint, but for LOL ACPs.  */
-   void seekLOLACPsAroundAPoint(solreal const (&oo)[3],solreal const ddxx,\
+   void seekLOLACPsAroundAPoint(double const (&oo)[3],double const ddxx,\
          string const &blbl,int nvrt=-1);
 /* ************************************************************************************ */
-   void seekLOLACPsOnASphere(int atIdx,int nDivR,int nDivT,int nDivP,solreal radmin,\
-         solreal radmax);
+   void seekLOLACPsOnASphere(int atIdx,int nDivR,int nDivT,int nDivP,double radmin,\
+         double radmax);
 /* ************************************************************************************ */
-   void seekLOLBCPWithExtraACP(int acppos,solreal maxrad);
+   void seekLOLBCPWithExtraACP(int acppos,double maxrad);
 /* ************************************************************************************ */
    void customSearchTwoACPs(int acpIdx1,int acpIdx2);
 /* ************************************************************************************ */
-   void customSearchCPs(solreal (&xs)[3]);
+   void customSearchCPs(double (&xs)[3]);
 /* ************************************************************************************ */
    void extendedSearchCPs();
 /* ************************************************************************************ */
@@ -296,16 +296,16 @@ public:
 /* ************************************************************************************ */
    void setCagePaths(void);
 /* ************************************************************************************ */
-   bool seekSingleRhoBCP(int ata,int atb,solreal (&x)[3]);
+   bool seekSingleRhoBCP(int ata,int atb,double (&x)[3]);
 /* ************************************************************************************ */
-   int findSingleRhoBondGradientPathRK5(int at1,int at2,solreal hstep,\
-         int dima,solreal** (&arbgp),solreal (&ro)[3]);
+   int findSingleRhoBondGradientPathRK5(int at1,int at2,double hstep,\
+         int dima,double** (&arbgp),double (&ro)[3]);
 /* ************************************************************************************ */
    int findSingleRhoRingGradientPathRK5(int rcpIdx,int bcpIdxInRRGP,\
-         solreal hstep,int dima,solreal** (&arrgp));
+         double hstep,int dima,double** (&arrgp));
 /* ************************************************************************************ */
    int findSingleRhoCageGradientPathRK5(int ccpIdx,int rcpIdxInRCGP,\
-         solreal hstep,int dima,solreal** (&arrgp));
+         double hstep,int dima,double** (&arrgp));
 /* ************************************************************************************ */
    /** This function will follow the grandient path that starts at x_1.
     *  It will use the point x_1 as the actual starting point. This is so, because
@@ -326,9 +326,9 @@ public:
     *  at x_e, the function saves the closest point in the path with 
     *  respect to x_e in x_m.
     * */
-   bool walkGradientPathRK5ToEndPoint(solreal (&xi)[3],solreal (&x1)[3],\
-         solreal (&xe)[3],solreal (&xm)[3],solreal &dm,solreal hstep,int dima,\
-         solreal** (&arrgp),int &npia,solreal maxlen,bool uphilldir);
+   bool walkGradientPathRK5ToEndPoint(double (&xi)[3],double (&x1)[3],\
+         double (&xe)[3],double (&xm)[3],double &dm,double hstep,int dima,\
+         double** (&arrgp),int &npia,double maxlen,bool uphilldir);
 /* ************************************************************************************ */
    void forceBCPConnectivity(int bcpIdx,int acpIdx1,int acpIdx2);
 /* ************************************************************************************ */
@@ -360,9 +360,9 @@ public:
 /* ************************************************************************************ */
    void writeCPProps(string &ofnam,string &wfnam);
 /* ************************************************************************************ */
-   void printAllFieldProperties(solreal x,solreal y,solreal z);
+   void printAllFieldProperties(double x,double y,double z);
 /* ************************************************************************************ */
-   void writeAllFieldProperties(solreal x,solreal y,solreal z,ofstream &ofil);
+   void writeAllFieldProperties(double x,double y,double z,ofstream &ofil);
 /* ************************************************************************************ */   
    bool iKnowACPs(void) {return iknowacps;}
 /* ************************************************************************************ */
@@ -380,9 +380,9 @@ public:
 /* ************************************************************************************ */
    ScalarFieldType myCPType(void) {return mycptype;}
 /* ************************************************************************************ */
-   solreal getMaxBondDist() {return maxBondDist;}
+   double getMaxBondDist() {return maxBondDist;}
 /* ************************************************************************************ */
-   solreal getMaxDistBetwBCPAndBCP() {return maxBCPACPDist;}
+   double getMaxDistBetwBCPAndBCP() {return maxBCPACPDist;}
 /* ************************************************************************************ */
    int getNofRingPathsOfRCP(int rcpIdx);
 /* ************************************************************************************ */
@@ -405,14 +405,14 @@ protected:
    bool drawNuc,drawBnd,drawBGPs,drawRGPs,drawCGPs;
    bool tubeBGPStyle;
    bool mkextsearch;
-   solreal stepSizeACP,stepSizeBCP,stepSizeRCP,stepSizeCCP;
-   solreal stepSizeBGP;
+   double stepSizeACP,stepSizeBCP,stepSizeRCP,stepSizeCCP;
+   double stepSizeBGP;
    ScalarFieldType mycptype;
-   solreal maxBondDist; /*!< The maximum distance between two ACPs related by a BCP  */
-   solreal maxBCPACPDist; /*!< The maximum distance between a BCP and associated ACPs  */
+   double maxBondDist; /*!< The maximum distance between two ACPs related by a BCP  */
+   double maxBCPACPDist; /*!< The maximum distance between a BCP and associated ACPs  */
    static const int nIHV=16; //It is actually the vertices of an icosahedron plus the origin
    // (0,0,0)
-   static solreal V0,V5,V8,IHV[nIHV][3];
+   static double V0,V5,V8,IHV[nIHV][3];
 /* ************************************************************************************ */
    void init();
    /** The constructor without arguments is not public. This will enforce the use
@@ -424,38 +424,38 @@ protected:
 /* ************************************************************************************ */
    string getFirstChunkOfLabel(string &lbl);
 /* ************************************************************************************ */
-   inline solreal computeMagnitudeV3(solreal (&v)[3])
+   inline double computeMagnitudeV3(double (&v)[3])
           {return sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]);}
 /* ************************************************************************************ */
-   bool imNew(solreal (&x)[3],int dim,solreal ** (&arr),size_t &pos);
+   bool imNew(double (&x)[3],int dim,double ** (&arr),size_t &pos);
 /* ************************************************************************************ */
-   void getACPStep(solreal (&g)[3],solreal (&hess)[3][3],solreal (&hh)[3],int &sig);
+   void getACPStep(double (&g)[3],double (&hess)[3][3],double (&hh)[3],int &sig);
 /* ************************************************************************************ */
-   void getBCPStep(solreal (&g)[3],solreal (&hess)[3][3],solreal (&hh)[3],int &sig);
+   void getBCPStep(double (&g)[3],double (&hess)[3][3],double (&hh)[3],int &sig);
 /* ************************************************************************************ */
-   void getRCPStep(solreal (&g)[3],solreal (&hess)[3][3],solreal (&hh)[3],int &sig);
+   void getRCPStep(double (&g)[3],double (&hess)[3][3],double (&hh)[3],int &sig);
 /* ************************************************************************************ */
-   void getCCPStep(solreal (&g)[3],solreal (&hess)[3][3],solreal (&hh)[3],int &sig);
+   void getCCPStep(double (&g)[3],double (&hess)[3][3],double (&hh)[3],int &sig);
 /* ************************************************************************************ */
-   int computeSignature(solreal (&ev)[3]);
+   int computeSignature(double (&ev)[3]);
 /* ************************************************************************************ */
-   int computeSignature(solreal (&hh)[3][3]);
+   int computeSignature(double (&hh)[3][3]);
 /* ************************************************************************************ */
-   void seekRhoACP(solreal (&x)[3],solreal &rho2ret,solreal (&g)[3],int &sig);
+   void seekRhoACP(double (&x)[3],double &rho2ret,double (&g)[3],int &sig);
 /* ************************************************************************************ */
-   void seekRhoBCP(solreal (&x)[3],solreal &rho2ret,solreal (&g)[3],int &sig);
+   void seekRhoBCP(double (&x)[3],double &rho2ret,double (&g)[3],int &sig);
 /* ************************************************************************************ */
-   void seekRhoRCP(solreal (&x)[3],solreal &rho2ret,solreal (&g)[3],int &sig);
+   void seekRhoRCP(double (&x)[3],double &rho2ret,double (&g)[3],int &sig);
 /* ************************************************************************************ */
-   void seekRhoCCP(solreal (&x)[3],solreal &rho2ret,solreal (&g)[3],int &sig);
+   void seekRhoCCP(double (&x)[3],double &rho2ret,double (&g)[3],int &sig);
 /* ************************************************************************************ */
-   void seekLOLACP(solreal (&x)[3],solreal &ll,solreal (&g)[3],int &sig);
+   void seekLOLACP(double (&x)[3],double &ll,double (&g)[3],int &sig);
 /* ************************************************************************************ */
-   void seekLOLBCP(solreal (&x)[3],solreal &ll,solreal (&g)[3],int &sig);
+   void seekLOLBCP(double (&x)[3],double &ll,double (&g)[3],int &sig);
 /* ************************************************************************************ */
-   void seekLOLRCP(solreal (&x)[3],solreal &ll,solreal (&g)[3],int &sig);
+   void seekLOLRCP(double (&x)[3],double &ll,double (&g)[3],int &sig);
 /* ************************************************************************************ */
-   void seekLOLCCP(solreal (&x)[3],solreal &ll,solreal (&g)[3],int &sig);
+   void seekLOLCCP(double (&x)[3],double &ll,double (&g)[3],int &sig);
 /* ************************************************************************************ */
    bool setRhoACPs(void);
 /* ************************************************************************************ */
@@ -473,17 +473,17 @@ protected:
 /* ************************************************************************************ */
    bool setLOLCCPs(void);
 /* ************************************************************************************ */
-   bool addRhoACP(solreal (&x)[3],int sig,string &lbl);
+   bool addRhoACP(double (&x)[3],int sig,string &lbl);
 /* ************************************************************************************ */
-   bool addRhoBCP(solreal (&x)[3],int sig,string &lbl,int &pos);
+   bool addRhoBCP(double (&x)[3],int sig,string &lbl,int &pos);
 /* ************************************************************************************ */
-   bool addRhoRCP(solreal (&x)[3],int sig,string &lbl,int &pos);
+   bool addRhoRCP(double (&x)[3],int sig,string &lbl,int &pos);
 /* ************************************************************************************ */
-   bool addRhoCCP(solreal (&x)[3],int sig,string &lbl,int &pos);
+   bool addRhoCCP(double (&x)[3],int sig,string &lbl,int &pos);
 /* ************************************************************************************ */
-   void findTwoClosestAtoms(solreal (&xo)[3],int &idx1st,int &idx2nd);
+   void findTwoClosestAtoms(double (&xo)[3],int &idx1st,int &idx2nd);
 /* ************************************************************************************ */
-   void findTwoClosestACPs(solreal (&xo)[3],int &idx1st,int &idx2nd);
+   void findTwoClosestACPs(double (&xo)[3],int &idx1st,int &idx2nd);
 /* ************************************************************************************ */
    void addBCP2ConRCP(const int rcpIdx,const int bcpIdx);
 /* ************************************************************************************ */
@@ -491,13 +491,13 @@ protected:
 /* ************************************************************************************ */
    void invertOrderBGPPoints(int dim);
 /* ************************************************************************************ */
-   void invertOrderBGPPoints(int dim,solreal** (&arr));
+   void invertOrderBGPPoints(int dim,double** (&arr));
 /* ************************************************************************************ */
-   void getNextPointInGradientPathRK5UpHill(solreal (&xn)[3],\
-         solreal &stepsize,solreal &mgg);
+   void getNextPointInGradientPathRK5UpHill(double (&xn)[3],\
+         double &stepsize,double &mgg);
 /* ************************************************************************************ */
-   void getNextPointInGradientPathRK5DownHill(solreal (&xn)[3],\
-         solreal &stepsize,solreal &mgg);
+   void getNextPointInGradientPathRK5DownHill(double (&xn)[3],\
+         double &stepsize,double &mgg);
 /* ************************************************************************************ */
    void centerMolecule(void);
 /* ************************************************************************************ */
@@ -507,7 +507,7 @@ protected:
 /* ************************************************************************************ */
    void findMaxBondDist();
 /* ************************************************************************************ */
-   void copyRGP2Array(solreal** (&thearr),int nn);
+   void copyRGP2Array(double** (&thearr),int nn);
 /* ************************************************************************************ */
 /* ************************************************************************************ */
 };

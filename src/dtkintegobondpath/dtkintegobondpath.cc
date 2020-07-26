@@ -76,7 +76,7 @@ using std::setprecision;
 
 int main (int argc, char ** argv) {
    const clock_t begin_time = clock();
-   const solreal begin_walltime = time(NULL);
+   const double begin_walltime = time(NULL);
    string infilnam,logfilnam;
    string progname;
    optFlags options;
@@ -112,7 +112,7 @@ int main (int argc, char ** argv) {
 
    /* Setups the critical point network object  */
    critPtNetWork cpn(gwf,bnw);
-   solreal stepSize=INTEGBP_BONDPATHSTEPSIZE; //defined in soldefines.h
+   double stepSize=INTEGBP_BONDPATHSTEPSIZE; //defined in soldefines.h
    cpn.setStepSizeBGP(stepSize);
    int numPtsBGPArray=INTEGBP_NUMBEROFPOINTSBGPARRAY*4;
    cpn.setMaxGradPathNPts(numPtsBGPArray);
@@ -137,7 +137,7 @@ int main (int argc, char ** argv) {
            << "): " << integ[i]->GetBondPathIntegral() << endl;
    }
    /* Writes the integrals to a file  */
-   solreal globalEnergy=0.0e0;
+   double globalEnergy=0.0e0;
    if ( options.globalenergy ) {
       globalEnergy=std::stod(string(argv[options.globalenergy]));
    } 
@@ -161,9 +161,9 @@ int main (int argc, char ** argv) {
    ScreenUtils::PrintHappyEnding();
    ScreenUtils::PrintScrStarLine();
    cout << setprecision(3) << "CPU Time: "
-        << solreal( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
-   solreal end_walltime=time(NULL);
-   cout << "Wall-clock time: " << solreal (end_walltime-begin_walltime) << "s" << endl;
+        << double( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
+   double end_walltime=time(NULL);
+   cout << "Wall-clock time: " << double (end_walltime-begin_walltime) << "s" << endl;
 #if DEBUG
    cout << "Debuggin mode (under construction...)" << endl;
 #endif

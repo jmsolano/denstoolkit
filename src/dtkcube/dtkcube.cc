@@ -79,7 +79,7 @@ using std::setprecision;
 
 int main (int argc, char ** argv) {
    const clock_t begin_time = clock();
-   const solreal begin_walltime = time(NULL);
+   const double begin_walltime = time(NULL);
    string infilnam,outfilnam,logfilnam;
    string progname;
    optFlags options;
@@ -148,7 +148,7 @@ int main (int argc, char ** argv) {
    
    /* Special configurations  */
    if ( options.configspecialnci ) {
-      solreal ttt=std::stod(string(argv[options.configspecialnci]));
+      double ttt=std::stod(string(argv[options.configspecialnci]));
       gwf.setNCIRhoMin(ttt);
       ttt=std::stod(string(argv[options.configspecialnci+1]));
       gwf.setNCIRhoMax(ttt);
@@ -263,10 +263,10 @@ int main (int argc, char ** argv) {
            << (grid.getNPts(0)*grid.getNPts(1)*grid.getNPts(2)) << endl;
       lfil << "#CPU Time (sec):" << endl;
       lfil << scientific << setprecision(4)
-           <<  solreal( clock () - begin_time ) / CLOCKS_PER_SEC << endl;
+           <<  double( clock () - begin_time ) / CLOCKS_PER_SEC << endl;
       lfil << "#Wall-clock Time (sec):" << endl;
-      solreal tmp_walltime=time(NULL);
-      lfil << solreal (tmp_walltime-begin_walltime) << endl;
+      double tmp_walltime=time(NULL);
+      lfil << double (tmp_walltime-begin_walltime) << endl;
       lfil.close();
    }
    if ( options.genvmdscript ) {
@@ -276,9 +276,9 @@ int main (int argc, char ** argv) {
    ScreenUtils::PrintHappyEnding();
    ScreenUtils::SetScrGreenBoldFont();
    ScreenUtils::PrintScrStarLine();
-   cout << setprecision(3) << "CPU Time: " << solreal( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
-   solreal end_walltime=time(NULL);
-   cout << "Wall-clock time: " << solreal (end_walltime-begin_walltime) << "s" << endl;
+   cout << setprecision(3) << "CPU Time: " << double( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
+   double end_walltime=time(NULL);
+   cout << "Wall-clock time: " << double (end_walltime-begin_walltime) << "s" << endl;
 #if DEBUG
    cout << "Debugging mode (under construction)..." << endl;
 #endif

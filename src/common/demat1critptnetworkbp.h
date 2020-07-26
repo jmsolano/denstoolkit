@@ -52,12 +52,12 @@ public:
    void ComputeCoreInteractionCPs2D(void);
    void ComputeCoreInteractionCPs6D(void);
    bool differentSignaturesCICPvsNN(void);
-   //void MapToUVCoordinatesM3x3(solreal (&e1)[3],solreal (&e2)[3],solreal (&huv)[2][2]);
+   //void MapToUVCoordinatesM3x3(double (&e1)[3],double (&e2)[3],double (&huv)[2][2]);
    /* ************************************************************************** */
    class critPtNetWork *cpn;
-   solreal **eivalCICP2D; /*!< Contains the eigenvalues of 2D CICPs (projected gamma, ACP-ACP connection)  */
-   solreal **eivalCICP6D; /*!< Contains the eigenvalues of 6D CICPs (ACP-ACP connection) */
-   solreal **eivalNN6D; /*!< Contains the eigenvalues of 6D Nuc-Nuc correlations  */
+   double **eivalCICP2D; /*!< Contains the eigenvalues of 2D CICPs (projected gamma, ACP-ACP connection)  */
+   double **eivalCICP6D; /*!< Contains the eigenvalues of 6D CICPs (ACP-ACP connection) */
+   double **eivalNN6D; /*!< Contains the eigenvalues of 6D Nuc-Nuc correlations  */
    int *sigCICP2D; /*!< Contains the information of 2D cicp signatures (projected gamma)  */
    int *sigCICP6D; /*!< Contains the information of 6D cicp signatures.  */
    int *sigNN6D; /*!< Contains the information of 6D nuc-nuc signatures.  */
@@ -73,9 +73,9 @@ protected:
    void ComputeSingleCICP2D(int idx);
    void ComputeSingleCICP6D(int idx);
    bool CPSafetyChecks(void);
-   void GetTangentialVectors(const int bcpIdx,solreal (&e1)[3],solreal (&e2)[3]);
-   int GetSignature(solreal (&v)[2]);
-   int GetSignature(solreal (&v)[6]);
+   void GetTangentialVectors(const int bcpIdx,double (&e1)[3],double (&e2)[3]);
+   int GetSignature(double (&v)[2]);
+   int GetSignature(double (&v)[6]);
    /* ************************************************************************** */
    /* ************************************************************************** */
    class GaussWaveFunction *wf;
@@ -85,8 +85,8 @@ protected:
 protected:
    bool imsetup;
    DeMat1CriticalPointNetworkBP(void) {} //Prohibited the use of default constructor.
-   void assignHessian6D(solreal (&hh)[3][3],solreal (&hph)[3][3],solreal (&hp)[3][3],\
-         solreal (&hess)[6][6]);
+   void assignHessian6D(double (&hh)[3][3],double (&hph)[3][3],double (&hp)[3][3],\
+         double (&hess)[6][6]);
    /* ************************************************************************** */
 };
 /* ************************************************************************** */

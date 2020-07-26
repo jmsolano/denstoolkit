@@ -10,12 +10,12 @@ using std::cerr;
 
 //*******************************************************************************************
 void HelpersPlot::makeGnuplotFile(optFlags &opts, string &gnpnam,string &tsvnam,char p2p,
-      solreal dimparam,bondNetWork &bn,int a1,int a2,int a3,waveFunctionGrid2D &grd) {
+      double dimparam,bondNetWork &bn,int a1,int a2,int a3,waveFunctionGrid2D &grd) {
    ofstream gfil;
    gfil.open(gnpnam.c_str());
    
    /* Choosing the label (legend) for the plot  and the zrange for the plot */
-   solreal minzrange,maxzrange;
+   double minzrange,maxzrange;
    string plbl=getFieldTypeKeyShort(p2p);;
    switch (p2p) {
       case 'd':
@@ -155,7 +155,7 @@ void HelpersPlot::makeGnuplotFile(optFlags &opts, string &gnpnam,string &tsvnam,
    string lbl;
    int at[3];
    at[0]=a1; at[1]=a2; at[2]=a3;
-   solreal xproj,yproj;
+   double xproj,yproj;
    size_t pos;
    std::ostringstream numst;
    bool IDefPlane;

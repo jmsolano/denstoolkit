@@ -74,13 +74,13 @@
 
 
 /* ************************************************************************* */
-static solreal hypot2(solreal x, solreal y) {
+static double hypot2(double x, double y) {
    return sqrt(x*x+y*y);
 }
 /* ************************************************************************* */
 // Symmetric Householder reduction to tridiagonal form.
 /* ************************************************************************* */
-static void tred26(solreal V[N6][N6], solreal d[N6], solreal e[N6]) {
+static void tred26(double V[N6][N6], double d[N6], double e[N6]) {
    //  This is derived from the Algol procedures tred2 by
    //  Bowdler, Martin, Reinsch, and Wilkinson, Handbook for
    //  Auto. Comp., Vol.ii-Linear Algebra, and the corresponding
@@ -96,8 +96,8 @@ static void tred26(solreal V[N6][N6], solreal d[N6], solreal e[N6]) {
       
       // Scale to avoid under/overflow.
       
-      solreal scale = 0.0;
-      solreal h = 0.0;
+      double scale = 0.0;
+      double h = 0.0;
       for (int k = 0; k < i; k++) {
          scale = scale + fabs(d[k]);
       }
@@ -116,8 +116,8 @@ static void tred26(solreal V[N6][N6], solreal d[N6], solreal e[N6]) {
             d[k] /= scale;
             h += d[k] * d[k];
          }
-         solreal f = d[i-1];
-         solreal g = sqrt(h);
+         double f = d[i-1];
+         double g = sqrt(h);
          if (f > 0) {
             g = -g;
          }
@@ -145,7 +145,7 @@ static void tred26(solreal V[N6][N6], solreal d[N6], solreal e[N6]) {
             e[j] /= h;
             f += e[j] * d[j];
          }
-         solreal hh = f / (h + h);
+         double hh = f / (h + h);
          for (int j = 0; j < i; j++) {
             e[j] -= hh * d[j];
          }
@@ -167,13 +167,13 @@ static void tred26(solreal V[N6][N6], solreal d[N6], solreal e[N6]) {
    for (int i = 0; i < N6-1; i++) {
       V[N6-1][i] = V[i][i];
       V[i][i] = 1.0;
-      solreal h = d[i+1];
+      double h = d[i+1];
       if (h != 0.0) {
          for (int k = 0; k <= i; k++) {
             d[k] = V[k][i+1] / h;
          }
          for (int j = 0; j <= i; j++) {
-            solreal g = 0.0;
+            double g = 0.0;
             for (int k = 0; k <= i; k++) {
                g += V[k][i+1] * V[k][j];
             }
@@ -197,7 +197,7 @@ static void tred26(solreal V[N6][N6], solreal d[N6], solreal e[N6]) {
 /* ************************************************************************* */
 // Symmetric tridiagonal QL algorithm.
 /* ************************************************************************* */
-static void tql26(solreal V[N6][N6], solreal d[N6], solreal e[N6]) {
+static void tql26(double V[N6][N6], double d[N6], double e[N6]) {
    //  This is derived from the Algol procedures tql2, by
    //  Bowdler, Martin, Reinsch, and Wilkinson, Handbook for
    //  Auto. Comp., Vol.ii-Linear Algebra, and the corresponding
@@ -208,9 +208,9 @@ static void tql26(solreal V[N6][N6], solreal d[N6], solreal e[N6]) {
    }
    e[N6-1] = 0.0;
    
-   solreal f = 0.0;
-   solreal tst1 = 0.0;
-   solreal eps = pow(2.0,-52.0);
+   double f = 0.0;
+   double tst1 = 0.0;
+   double eps = pow(2.0,-52.0);
    for (int l = 0; l < N6; l++) {
       
       // Find small subdiagonal element
@@ -234,16 +234,16 @@ static void tql26(solreal V[N6][N6], solreal d[N6], solreal e[N6]) {
             
             // Compute implicit shift
             
-            solreal g = d[l];
-            solreal p = (d[l+1] - g) / (2.0 * e[l]);
-            solreal r = hypot2(p,1.0);
+            double g = d[l];
+            double p = (d[l+1] - g) / (2.0 * e[l]);
+            double r = hypot2(p,1.0);
             if (p < 0) {
                r = -r;
             }
             d[l] = e[l] / (p + r);
             d[l+1] = e[l] * (p + r);
-            solreal dl1 = d[l+1];
-            solreal h = g - d[l];
+            double dl1 = d[l+1];
+            double h = g - d[l];
             for (int i = l+2; i < N6; i++) {
                d[i] -= h;
             }
@@ -252,12 +252,12 @@ static void tql26(solreal V[N6][N6], solreal d[N6], solreal e[N6]) {
             // Implicit QL transformation.
             
             p = d[m];
-            solreal c = 1.0;
-            solreal c2 = c;
-            solreal c3 = c;
-            solreal el1 = e[l+1];
-            solreal s = 0.0;
-            solreal s2 = 0.0;
+            double c = 1.0;
+            double c2 = c;
+            double c3 = c;
+            double el1 = e[l+1];
+            double s = 0.0;
+            double s2 = 0.0;
             for (int i = m-1; i >= l; i--) {
                c3 = c2;
                c2 = c;
@@ -295,7 +295,7 @@ static void tql26(solreal V[N6][N6], solreal d[N6], solreal e[N6]) {
    
    for (int i = 0; i < N6-1; i++) {
       int k = i;
-      solreal p = d[i];
+      double p = d[i];
       for (int j = i+1; j < N6; j++) {
          if (d[j] < p) {
             k = j;
@@ -314,8 +314,8 @@ static void tql26(solreal V[N6][N6], solreal d[N6], solreal e[N6]) {
    }
 }
 /* ************************************************************************* */
-void eigen_decomposition6(solreal A[N6][N6], solreal V[N6][N6], solreal d[N6]) {
-   solreal e[N6];
+void eigen_decomposition6(double A[N6][N6], double V[N6][N6], double d[N6]) {
+   double e[N6];
    for (int i = 0; i < N6; i++) {
       for (int j = 0; j < N6; j++) {
          V[i][j] = A[i][j];

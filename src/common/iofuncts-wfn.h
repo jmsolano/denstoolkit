@@ -37,17 +37,9 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
-
-
 #ifndef _IOFUNCTS_WFN_H_
 #define _IOFUNCTS_WFN_H_
-
-#ifndef _HAVE_DEF_SOLREAL_TYPE_
-#define _HAVE_DEF_SOLREAL_TYPE_
-typedef double solreal;
-#endif
-
+#include <cstdlib>
 #include <string>
 using namespace std;
 #include <fstream>
@@ -60,10 +52,10 @@ using std::ofstream;
 
 string getTitleFromFileWFN(ifstream &ifil);
 void processFirstDataStringinWFNFile(ifstream &ifil,string* &tit,string & orbdesc,int &nmo,int &npr,int &nnu);
-void processCentersWFN(ifstream &ifil,const int nnu,string* &atlbl,solreal* &rr,solreal* &atch);
-void processPrimitivesWFN(ifstream &ifil,const int npr,int* &pricen,int* &primty,solreal* &prexp);
+void processCentersWFN(ifstream &ifil,const int nnu,string* &atlbl,double* &rr,double* &atch);
+void processPrimitivesWFN(ifstream &ifil,const int npr,int* &pricen,int* &primty,double* &prexp);
 void processMolecularOrbitalPropsAndCoefs(ifstream &ifil,const int norb,const int npr
-                                 ,solreal* &ocn,solreal* &moe,solreal* &moc);
-void getEnergyAndVirial(ifstream &ifil,solreal &theener,solreal &thevir);
+                                 ,double* &ocn,double* &moe,double* &moc);
+void getEnergyAndVirial(ifstream &ifil,double &theener,double &thevir);
 #endif//_IOFUNCTS_WFN_H_
 

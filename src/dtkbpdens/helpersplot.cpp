@@ -12,10 +12,10 @@ using std::cerr;
 
 void HelpersPlot::MakeGnuplotFile(optFlags &opts,string &gnpnam,string &datnam,char p2p,\
       bondNetWork &bn,double lenline,double minval,double maxval,\
-      int at1,int at2,solreal pbcp,solreal** (&rbgp)) {
+      int at1,int at2,double pbcp,double** (&rbgp)) {
    ofstream ofil;
    string line;
-   ofil.open(gnpnam.c_str(),ios::out);
+   ofil.open(gnpnam.c_str(),std::ios::out);
    
    if (maxval>1000.e0) {maxval=1000.0e0;}
    
@@ -27,7 +27,7 @@ void HelpersPlot::MakeGnuplotFile(optFlags &opts,string &gnpnam,string &datnam,c
    ofil << "ymax2plot=" << maxval*1.05e0 << endl;
    ofil << "set xrange [xmin2plot:xmax2plot]" << endl;
    ofil << "set yrange [ymin2plot:ymax2plot]" << endl;
-   solreal tmpdist=0.0e0;
+   double tmpdist=0.0e0;
    for ( int i=0 ; i<3 ; i++ ) {tmpdist+=((bn.R[at1][i]-rbgp[0][i])*(bn.R[at1][i]-rbgp[0][i]));}
    tmpdist=sqrt(tmpdist);
    int tmpa1=at1,tmpa2=at2;
@@ -78,8 +78,8 @@ void HelpersPlot::MakeGnuplotFile(optFlags &opts,string &gnpnam,string &datnam,c
       GnuplotTools::RenderGnpFile(gnpnam,(!opts.kpgnp));
    }
 }
-solreal HelpersPlot::EvalFieldProperty(char prop,solreal (&x)[3],GaussWaveFunction &wf) {
-   solreal res;
+double HelpersPlot::EvalFieldProperty(char prop,double (&x)[3],GaussWaveFunction &wf) {
+   double res;
    switch (prop) {
       case 'd':
          res=wf.evalDensity(x[0],x[1],x[2]);

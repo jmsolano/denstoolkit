@@ -102,7 +102,7 @@ void WriteLogFile(string fname,DeMat1CriticalPointNetworkBP &dcpn,bondNetWork &b
 
 int main (int argc, char ** argv) {
    const clock_t begin_time = clock();
-   const solreal begin_walltime = time(NULL);
+   const double begin_walltime = time(NULL);
    string infilnam,logfilnam,cpxfilnam,cicpfilnam;
    string progname;
    optFlags options;
@@ -157,9 +157,9 @@ int main (int argc, char ** argv) {
    ScreenUtils::SetScrGreenBoldFont();
    ScreenUtils::PrintScrStarLine();
    cout << setprecision(3) << "CPU Time: "
-        << solreal( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
-   solreal end_walltime=time(NULL);
-   cout << "Wall-clock time: " << solreal (end_walltime-begin_walltime) << "s" << endl;
+        << double( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
+   double end_walltime=time(NULL);
+   cout << "Wall-clock time: " << double (end_walltime-begin_walltime) << "s" << endl;
 #if DEBUG
    cout << "Debuggin mode (under construction...)" << endl;
 #endif

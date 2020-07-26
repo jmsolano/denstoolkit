@@ -37,26 +37,12 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
 /*
- Adscription at the moment this program is started:
- University of Guelph,
- Guelph, Ontario, Canada.
- May 2013
- */
-
-#ifndef _HAVE_DEF_SOLREAL_TYPE_
-#define _HAVE_DEF_SOLREAL_TYPE_
-typedef double solreal;
-//typedef float solreal;
-#endif
-
-//#ifdef DEBUG
-//#undef DEBUG
-//#endif
-//#define DEBUG 1
-//#define USEPROGRESSBAR 1
-//#define EPSFORELFVALUE (2.871e-05)
+   Adscription at the moment this program is started:
+   University of Guelph,
+   Guelph, Ontario, Canada.
+   May 2013
+*/
 
 #include <iostream>
 using std::cout;
@@ -83,7 +69,7 @@ using std::setprecision;
 
 int main (int argc, char ** argv) {
    const clock_t begin_time = clock();
-   const solreal begin_walltime = time(NULL);
+   const double begin_walltime = time(NULL);
    string infilnam,outfilnam;
    string progname;
    optFlags options;
@@ -106,9 +92,9 @@ int main (int argc, char ** argv) {
    }
    cout << "Done." << endl;
    
-   solreal Nofelec=gwf.integralRho();
-   solreal totNucCharg=gwf.totalNuclearCharge();
-   solreal errinteg=100.0e0*fabs(1.0e0-Nofelec/totNucCharg);
+   double Nofelec=gwf.integralRho();
+   double totNucCharg=gwf.totalNuclearCharge();
+   double errinteg=100.0e0*fabs(1.0e0-Nofelec/totNucCharg);
    cout << setprecision(12);
    cout << "     Total Nuclear Charge: " << totNucCharg << endl;
    cout << "N. Electrons (Integrated): " << Nofelec << endl;
@@ -151,7 +137,7 @@ int main (int argc, char ** argv) {
    ofile << setprecision(4);
    ofile << "    Rel. Err. Integration: " << errinteg << "%" << endl;
    
-   solreal x,y,z;
+   double x,y,z;
    x=y=z=0.0e0;
    if ((!options.rcrds)&&(!options.setat)&&(!options.crdfil)) {
       ScreenUtils::SetScrYellowBoldFont();
@@ -226,9 +212,9 @@ int main (int argc, char ** argv) {
    ScreenUtils::SetScrGreenBoldFont();
    ScreenUtils::PrintScrStarLine();
    cout << setprecision(3) << "CPU Time: "
-        << solreal( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
-   solreal end_walltime=time(NULL);
-   cout << "Wall-clock time: " << solreal (end_walltime-begin_walltime) << "s" << endl;
+        << double( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
+   double end_walltime=time(NULL);
+   cout << "Wall-clock time: " << double (end_walltime-begin_walltime) << "s" << endl;
 #if DEBUG
    cout << "Debuggin mode (under construction...)" << endl;
 #endif

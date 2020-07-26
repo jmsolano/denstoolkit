@@ -42,13 +42,6 @@
 #ifndef _GLOBALDEFS_H_
 #define _GLOBALDEFS_H_
 
-
-#ifndef _HAVE_DEF_SOLREAL_TYPE_
-#define _HAVE_DEF_SOLREAL_TYPE_
-typedef double solreal;
-//typedef float solreal;
-#endif
-
 #ifndef DEBUG
 #define DEBUG 0
 #endif

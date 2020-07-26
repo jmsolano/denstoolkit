@@ -81,14 +81,14 @@ using std::setprecision;
 
 /* computeUVProjection evaluates the projection of $\nabla\gamma(x,x')$, $\nabla'\gamma(x,x')$
  * upon the coordinates (u,v)  */
-void computeUVProjection(solreal (&x1)[3],solreal (&x2)[3],\
-      solreal (&g)[3],solreal (&gp)[3],solreal (&uv)[2]);
+void computeUVProjection(double (&x1)[3],double (&x2)[3],\
+      double (&g)[3],double (&gp)[3],double (&uv)[2]);
 
 
 
 int main (int argc, char ** argv) {
    const clock_t begin_time = clock();
-   const solreal begin_walltime = time(NULL);
+   const double begin_walltime = time(NULL);
    string infilnam,outfilnam,o1dfilnam,o1sfilnam,basegnpnam,lognam;
    string progname;
    optFlags options;
@@ -172,16 +172,16 @@ int main (int argc, char ** argv) {
    }
    
    /* Declaring an array to store the coordinates of the bond path points. */
-   solreal **rbgp=NULL;
+   double **rbgp=NULL;
    MyMemory::Alloc2DRealArray(string("rbgp"),dimarr,3,rbgp);
    
    int nbgppts;
-   solreal dl=DEFAULTBONDPATHSTEPMD1;
-   solreal robcp[3];
-   solreal x1[3],x2[3],dx[3];
-   solreal xbeg[3],xend[3];
-   solreal lenline=0.0e0;
-   solreal dist=0.0e0;
+   double dl=DEFAULTBONDPATHSTEPMD1;
+   double robcp[3];
+   double x1[3],x2[3],dx[3];
+   double xbeg[3],xend[3];
+   double lenline=0.0e0;
+   double dist=0.0e0;
    
    if (options.setstep) {sscanf(argv[options.setstep],"%lg",&dl);}
    
@@ -213,9 +213,9 @@ int main (int argc, char ** argv) {
       }
       lenline=sqrt(lenline);
       lenline*=2.0e0;
-      dl=lenline/solreal(dimarr-1);
+      dl=lenline/double(dimarr-1);
       for (int i=0; i<3; i++) {
-         dx[i]=2.0e0*(bnw.R[at2][i]-bnw.R[at1][i])/solreal(dimarr-1);
+         dx[i]=2.0e0*(bnw.R[at2][i]-bnw.R[at1][i])/double(dimarr-1);
          rbgp[0][i]=0.5e0*(3.0e0*bnw.R[at1][i]-bnw.R[at2][i]);
          robcp[i]=0.0e0;
       }
@@ -238,12 +238,12 @@ int main (int argc, char ** argv) {
    o1sfile << scientific << setprecision(12);
    cout << scientific << setprecision(12);
    
-   solreal p1,p2,pbcp,xt[3];
-   solreal md1tmp,md1max=-1.0e+50,md1min=1.0e+50,rhomin=1.0e+50,diagmax=-1.0e+50;
-   solreal x1max[3],x1min[3],x2max[3],x2min[3],p1max,p1min,p2max,p2min,p1dmax,p2dmax;
-   solreal xrmin[3],xd1max[3],xd2max[3];
-   solreal gmd1max=-1.0e+50,gmd1min=1.0e+50;
-   solreal ggradmagmax=-1.0e+50,ggradmagmin=1.0e+50;
+   double p1,p2,pbcp,xt[3];
+   double md1tmp,md1max=-1.0e+50,md1min=1.0e+50,rhomin=1.0e+50,diagmax=-1.0e+50;
+   double x1max[3],x1min[3],x2max[3],x2min[3],p1max,p1min,p2max,p2min,p1dmax,p2dmax;
+   double xrmin[3],xd1max[3],xd2max[3];
+   double gmd1max=-1.0e+50,gmd1min=1.0e+50;
+   double ggradmagmax=-1.0e+50,ggradmagmin=1.0e+50;
    
    /* Evaluating and writing the density matrix of order 1 into the tsv file
       On the fly, determining min/max of MD1 and the respective
@@ -262,7 +262,7 @@ int main (int argc, char ** argv) {
       p1=0.0e0;
       p2=0.0e0;
    }
-   solreal gg[3],gp[3],proj[2],magproj;
+   double gg[3],gp[3],proj[2],magproj;
    
 #if USEPROGRESSBAR
    ScreenUtils::PrintProgressBar(0);
@@ -404,7 +404,7 @@ int main (int argc, char ** argv) {
          }
          p1+=sqrt(dist);
 #if USEPROGRESSBAR
-         ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((nbgppts-1))));
+         ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((nbgppts-1))));
 #endif
       }
    }
@@ -532,7 +532,7 @@ int main (int argc, char ** argv) {
          ofile << endl;
          p1+=dl;
 #if USEPROGRESSBAR
-         ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((nbgppts-1))));
+         ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((nbgppts-1))));
 #endif
       }
    }
@@ -576,7 +576,7 @@ int main (int argc, char ** argv) {
                                              x2min[0],x2min[1],x2min[2]);
    cout << endl;
    ScreenUtils::PrintScrCharLine('-');
-   solreal md1lmin;
+   double md1lmin;
    if (options.uponbp) {
       md1lmin=gwf.evalDensityMatrix1(robcp[0],robcp[1],robcp[2],robcp[0],robcp[1],robcp[2]);
       cout << "The bond critical point is located at:" << endl;
@@ -592,7 +592,7 @@ int main (int argc, char ** argv) {
       cout << "MD1(rho,min): " << md1lmin << endl;
    }
    ScreenUtils::PrintScrCharLine('-');
-   solreal md1dmax;
+   double md1dmax;
    md1dmax=gwf.evalDensityMatrix1(xd1max[0],xd1max[1],xd1max[2],xd2max[0],xd2max[1],xd2max[2]);
    cout << "The maximum value of MD1 at the diagonal (90 degrees from the rho line)" << endl;
    cout << "is located at" << endl;
@@ -676,8 +676,8 @@ int main (int argc, char ** argv) {
    /* Makes the plots */
    
    string line,tmpnam;
-   solreal minval,maxval;
-   solreal range=fabs(md1dmax-md1lmin);
+   double minval,maxval;
+   double range=fabs(md1dmax-md1lmin);
 #if DEBUG
    if ( md1lmin<0.0e0 ) {
       ScreenUtils::DisplayWarningMessage(string("md1lmin: "+getStringFromReal(md1lmin)));
@@ -730,9 +730,9 @@ int main (int argc, char ** argv) {
    ScreenUtils::SetScrGreenBoldFont();
    ScreenUtils::PrintScrStarLine();
    cout << setprecision(3) << "CPU Time: "
-        << solreal( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
-   solreal end_walltime=time(NULL);
-   cout << "Wall-clock time: " << solreal (end_walltime-begin_walltime) << "s" << endl;
+        << double( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
+   double end_walltime=time(NULL);
+   cout << "Wall-clock time: " << double (end_walltime-begin_walltime) << "s" << endl;
 #if DEBUG
    cout << "Debuggin mode (under construction...)" << endl;
 #endif
@@ -741,10 +741,10 @@ int main (int argc, char ** argv) {
    return 0;
 }
 
-void computeUVProjection(solreal (&x1)[3],solreal (&x2)[3],\
-      solreal (&g)[3],solreal (&gp)[3],solreal (&uv)[2])
+void computeUVProjection(double (&x1)[3],double (&x2)[3],\
+      double (&g)[3],double (&gp)[3],double (&uv)[2])
 {
-   solreal tmp1=0.0e0,tmp2=0.0e0;
+   double tmp1=0.0e0,tmp2=0.0e0;
    for ( int i=0 ; i<3 ; i++ ) {
       tmp1+=((x2[i]-x1[i])*g[i]);
       tmp2+=((x2[i]-x1[i])*gp[i]);

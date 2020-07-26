@@ -110,61 +110,61 @@ public:
    int nACP,nSCP,nRCP;
    int asACP,asSCP,asRCP;
 /* ************************************************************************************ */
-   solreal **RACP,**RSCP,**RRCP;
+   double **RACP,**RSCP,**RRCP;
 /* ************************************************************************************ */
    string *lblACP,*lblSCP,*lblRCP;
 /* ************************************************************************************ */
-   solreal x1[3],x2[3],x2mx1[3],x2pmx1p[3];
-   solreal lenline,oolenline;
+   double x1[3],x2[3],x2mx1[3],x2pmx1p[3];
+   double lenline,oolenline;
 /* ************************************************************************************ */
-   void getXCoordinatesFromUV(solreal uu,solreal vv,solreal (&x)[3],solreal (&xp)[3]);
+   void getXCoordinatesFromUV(double uu,double vv,double (&x)[3],double (&xp)[3]);
 /* ************************************************************************************ */
-   void evalUVGrad(solreal uu,solreal vv,solreal &gamm, solreal (&uvg)[2]);
+   void evalUVGrad(double uu,double vv,double &gamm, double (&uvg)[2]);
 /* ************************************************************************************ */
-   void evalUVHessian(solreal uu,solreal vv,solreal &gamm,\
-         solreal (&uvg)[2],solreal (&uvh)[2][2]);
+   void evalUVHessian(double uu,double vv,double &gamm,\
+         double (&uvg)[2],double (&uvh)[2][2]);
 /* ************************************************************************************ */
-   void getACPStep(solreal (&g)[2],solreal (&hess)[2][2],solreal (&hh)[2],int &sig);
+   void getACPStep(double (&g)[2],double (&hess)[2][2],double (&hh)[2],int &sig);
 /* ************************************************************************************ */
-   void getSCPStep(solreal (&g)[2],solreal (&hess)[2][2],solreal (&hh)[2],int &sig);
+   void getSCPStep(double (&g)[2],double (&hess)[2][2],double (&hh)[2],int &sig);
 /* ************************************************************************************ */
-   void getRCPStep(solreal (&g)[2],solreal (&hess)[2][2],solreal (&hh)[2],int &sig);
+   void getRCPStep(double (&g)[2],double (&hess)[2][2],double (&hh)[2],int &sig);
 /* ************************************************************************************ */
-   void seekGammaACP(solreal (&x)[2],solreal &gamm2ret,solreal (&g)[2],\
+   void seekGammaACP(double (&x)[2],double &gamm2ret,double (&g)[2],\
          int &sig,int maxit=DEMAT1MAXITERATIONACPSEARCH);
 /* ************************************************************************************ */
-   void seekGammaSCP(solreal (&x)[2],solreal &gamm2ret,solreal (&g)[2],int &sig,\
+   void seekGammaSCP(double (&x)[2],double &gamm2ret,double (&g)[2],int &sig,\
          int maxit=DEMAT1MAXITERATIONSCPSEARCH);
 /* ************************************************************************************ */
-   void seekGammaRCP(solreal (&x)[2],solreal &gamm2ret,solreal (&g)[2], int &sig,\
+   void seekGammaRCP(double (&x)[2],double &gamm2ret,double (&g)[2], int &sig,\
          int maxit=DEMAT1MAXITERATIONRCPSEARCH);
 /* ************************************************************************************ */
    void setGammaACP(int ndivs=DEFAULTNDIVSACPSEARCH);
 /* ************************************************************************************ */
-   void seekGammaACPsAroundAPoint(solreal (&oo)[2],solreal ddxx);
+   void seekGammaACPsAroundAPoint(double (&oo)[2],double ddxx);
 /* ************************************************************************************ */
-   void seekSingleGammaACP(solreal (&xs)[2],solreal &gamm,solreal (&gg)[2],string &lbl);
+   void seekSingleGammaACP(double (&xs)[2],double &gamm,double (&gg)[2],string &lbl);
 /* ************************************************************************************ */
    void setGammaSCP(int ndivs=DEFAULTNDIVSSCPSEARCH);
 /* ************************************************************************************ */
-   void seekGammaSCPsAroundAPoint(solreal (&oo)[2],solreal ddxx);
+   void seekGammaSCPsAroundAPoint(double (&oo)[2],double ddxx);
 /* ************************************************************************************ */
-   void seekSingleGammaSCP(solreal (&xs)[2],solreal &gamm,solreal (&gg)[2],string &lbl);
+   void seekSingleGammaSCP(double (&xs)[2],double &gamm,double (&gg)[2],string &lbl);
 /* ************************************************************************************ */
    void setGammaRCP(int ndivs=DEFAULTNDIVSRCPSEARCH);
 /* ************************************************************************************ */
-   void seekGammaRCPsAroundAPoint(solreal (&oo)[2],solreal ddxx);
+   void seekGammaRCPsAroundAPoint(double (&oo)[2],double ddxx);
 /* ************************************************************************************ */
-   void seekSingleGammaRCP(solreal (&xs)[2],solreal &gamm,solreal (&gg)[2],string &lbl);
+   void seekSingleGammaRCP(double (&xs)[2],double &gamm,double (&gg)[2],string &lbl);
 /* ************************************************************************************ */
 /* ************************************************************************************ */
-   void addGammaACP(solreal (&x)[2],string lbl);
+   void addGammaACP(double (&x)[2],string lbl);
 /* ************************************************************************************ */
-   void addGammaSCP(solreal (&x)[2],string lbl);
+   void addGammaSCP(double (&x)[2],string lbl);
 /* ************************************************************************************ */
-   void addGammaRCP(solreal (&x)[2],string lbl);
+   void addGammaRCP(double (&x)[2],string lbl);
 /* ************************************************************************************ */
-   bool imNew(solreal (&x)[2],int dim,solreal ** (&arr),size_t &pos);
+   bool imNew(double (&x)[2],int dim,double ** (&arr),size_t &pos);
 /* ************************************************************************************ */
    void displayACPsInfo(void);
    void displaySCPsInfo(void);
@@ -185,7 +185,7 @@ public:
 /* ************************************************************************************ */
    static const int nPolyV=13; //It is actually the vertices of an icosahedron plus the origin 
                              // (0,0,0)
-   static solreal PolyV[nPolyV][2];
+   static double PolyV[nPolyV][2];
 /* ************************************************************************************ */
 private:
 /* ************************************************************************************ */
@@ -199,7 +199,7 @@ private:
 /* ************************************************************************************ */
    void computePolygonVertices(void);
 /* ************************************************************************************ */
-   inline solreal getV2Norm(solreal (&vv)[2]) {return sqrt(vv[0]*vv[0]+vv[1]*vv[1]);}
+   inline double getV2Norm(double (&vv)[2]) {return sqrt(vv[0]*vv[0]+vv[1]*vv[1]);}
 /* ************************************************************************************ */
 /* ************************************************************************************ */
 /* ************************************************************************************ */

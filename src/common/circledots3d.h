@@ -37,14 +37,8 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
 #ifndef _CIRCLEDOTS3D_H_
 #define _CIRCLEDOTS3D_H_
-
-#ifndef _HAVE_DEF_SOLREAL_TYPE_
-#define _HAVE_DEF_SOLREAL_TYPE_
-typedef double solreal;
-#endif
 #include <string>
 using std::string;
 
@@ -56,82 +50,54 @@ public:
    CircleDots3D();
    ~CircleDots3D();
 /* ************************************************************************** */
-   solreal getCartCoord(const int i,const int j);
-/* ************************************************************************** */
-   solreal getPhi(const int i);
-/* ************************************************************************** */
-   void getCartCoords(const int i,solreal (&xx)[3]);
-/* ************************************************************************** */
-   void setE1(const solreal x,const solreal y,const solreal z);
-/* ************************************************************************** */
-   void setE2(const solreal x,const solreal y,const solreal z);
-/* ************************************************************************** */
-   void setE1AndE2(const solreal (&ee1)[3],const solreal (&ee2)[3]);
-/* ************************************************************************** */
-   void setOrigin(const solreal x,const solreal y,const solreal z);
-/* ************************************************************************** */
+   double getCartCoord(const int i,const int j);
+   double getPhi(const int i);
+   void getCartCoords(const int i,double (&xx)[3]);
+   void setE1(const double x,const double y,const double z);
+   void setE2(const double x,const double y,const double z);
+   void setE1AndE2(const double (&ee1)[3],const double (&ee2)[3]);
+   void setOrigin(const double x,const double y,const double z);
    void computeUE3(void);
-/* ************************************************************************** */
    void setNPts(const int nn) {npts_=nn;}
-/* ************************************************************************** */
-   void setRadius(const solreal rr) {radius_=rr;}
-/* ************************************************************************** */
+   void setRadius(const double rr) {radius_=rr;}
    void setupCircle(void);
-/* ************************************************************************** */
    void displayCoordinates(void);
-/* ************************************************************************** */
    void writeCoordinates(const string &oname,bool wrtoo=false);
-/* ************************************************************************** */
-/* ************************************************************************** */
-/* ************************************************************************** */
-/* ************************************************************************** */
-/* ************************************************************************** */
-/* ************************************************************************** */
-/* ************************************************************************** */
 /* ************************************************************************** */
 protected:
 /* ************************************************************************** */
    void init();
-/* ************************************************************************** */
    int npts_; /*!< Number of points of the circle discretization  */
-/* ************************************************************************** */
-   solreal radius_; /*!< Radius of the circle  */
-/* ************************************************************************** */
-   solreal e1_[3]; /*!< First unit vector. The circle will be drawn in 
+   double radius_; /*!< Radius of the circle  */
+   double e1_[3]; /*!< First unit vector. The circle will be drawn in 
                         the plane spanned by \f$\{\vec{e}_1\vec{e}_2\}\f$.  */
-   solreal e2_[3]; /*!< Second unit vector. The circle will be drawn in 
+   double e2_[3]; /*!< Second unit vector. The circle will be drawn in 
                         the plane spanned by \f$\{\vec{e}_1\vec{e}_2\}\f$.  */
-   solreal e3_[3]; /*!< This will contain the vector 
+   double e3_[3]; /*!< This will contain the vector 
                         \f$\vec{e}_3\equiv\vec{e_1}\times\vec{e}_2/
                         |\vec{e_1}\times\vec{e}_2|\f$  */
-   solreal ue1_[3]; /*!< First user unit vector. The circle will be drawn in 
+   double ue1_[3]; /*!< First user unit vector. The circle will be drawn in 
                         the plane spanned by \f$\{\vec{e}_1\vec{e}_2\}\f$.  */
-   solreal ue2_[3]; /*!< Second user unit vector. The circle will be drawn in 
+   double ue2_[3]; /*!< Second user unit vector. The circle will be drawn in 
                         the plane spanned by \f$\{\vec{e}_1\vec{e}_2\}\f$.  */
-   solreal ue3_[3]; /*!< This will contain the user vector 
+   double ue3_[3]; /*!< This will contain the user vector 
                         \f$\vec{e}_3\equiv\vec{e_1}\times\vec{e}_2/
                         |\vec{e_1}\times\vec{e}_2|\f$  */
-   solreal oo_[3]; /*!< This will contain the origin vector (center of
+   double oo_[3]; /*!< This will contain the origin vector (center of
                         coordinates).  */
-/* ************************************************************************** */
    /** This array contains the Cartesian coordinates of the points within
-    * the circle's boundary. In \f$xx\_[i][j]\f$, the jth-Cartesian coordinate
-    * of the i-th point is stored. When j==3 the stored value is the 
-    * angle measured counter clock-wise w.r.t. the vector \f$\hat e_1\f$. */
-   solreal **xx_;
+     the circle's boundary. In \f$xx\_[i][j]\f$, the jth-Cartesian coordinate
+     of the i-th point is stored. When j==3 the stored value is the 
+     angle measured counter clock-wise w.r.t. the vector \f$\hat e_1\f$. */
+   double **xx_;
 /* ************************************************************************** */
    bool havee1,havee2,havee3;
    bool imsetup;
-/* ************************************************************************** */
-   solreal dphi_;
-/* ************************************************************************** */
-   static const solreal twoPi;
-/* ************************************************************************** */
-/* ************************************************************************** */
+   double dphi_;
+   static const double twoPi;
 /* ************************************************************************** */
 };
 /* ************************************************************************** */
-
 
 #endif  /* _CIRCLEDOTS3D_H_ */
 

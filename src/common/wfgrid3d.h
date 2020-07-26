@@ -38,23 +38,13 @@
    README file.
 */
 
-/*
- *  wfgrid3d.h
- *  
- *
- *  Created by Juan Manuel Solano Altamirano on 06/05/13.
- *  Copyright 2013. All rights reserved.
- *
- */
+/* wfgrid3d.h
+   Created by Juan Manuel Solano Altamirano on 06/05/13.
+   Copyright 2013. All rights reserved.
+*/
 
 #ifndef _WFGRID3D_H_
 #define _WFGRID3D_H_
-
-#ifndef _HAVE_DEF_SOLREAL_TYPE_
-#define _HAVE_DEF_SOLREAL_TYPE_ 
-typedef double solreal;
-//typedef float solreal;
-#endif
 
 #include "gausswavefunction.h"
 #include "bondnetwork.h"
@@ -69,95 +59,57 @@ typedef double solreal;
 #define USEPROGRESSBAR 0
 #endif
 
-#include <iostream>
-using std::cout;
-using std::cin;
-using std::endl;
-using std::ios;
 #include <fstream>
-using std::fstream;
 using std::ifstream;
 using std::ofstream;
-#include <cstdlib>
-using std::exit;
-#include <math.h>
 #include <string>
-using namespace std;
-#include <iomanip>
-using std::setprecision;
-using std::scientific;
+using std::string;
 
 /* ********************************************************************************** */
-class waveFunctionGrid3D
+class waveFunctionGrid3D {
 /* ********************************************************************************** */
-{
 public:
-   /* ******************************************************************************* */
+/* ********************************************************************************** */
    waveFunctionGrid3D();
    ~waveFunctionGrid3D();
    /* ******************************************************************************* */
-   solreal dx[3][3];
-   solreal xin[3];
+   double dx[3][3];
+   double xin[3];
    string comments;
-   solreal *prop1d;
+   double *prop1d;
    ScalarFieldType prop2plot;
-   /* ******************************************************************************* */
    void setUpSimpleGrid(GaussWaveFunction &wf,bondNetWork &bn);
-   /* ******************************************************************************* */
    void setUpSmartCuboidGrid(GaussWaveFunction &wf,bondNetWork &bn,const int nmx);
-   /* ******************************************************************************* */
    void setUpCenteredGrid(GaussWaveFunction &wf,bondNetWork &bn,\
          const int at1,const int at2,const double len,const int nmx);
-   /* ******************************************************************************* */
    void setNPts(int nx,int ny,int nz);
-   /* ******************************************************************************* */
    void setNPts(int nn);
-   /* ******************************************************************************* */
    int getNPts(int ii);
-   /* ******************************************************************************* */
    void writeCubeRho(ofstream &ofil,GaussWaveFunction &wf);
-   /* ******************************************************************************* */
    void writeCubeLapRho(ofstream &ofil,GaussWaveFunction &wf);
-   /* ******************************************************************************* */
    void writeCubeELF(ofstream &ofil,GaussWaveFunction &wf);
-   /* ******************************************************************************* */
    void writeCubeShannonEntropy(ofstream &ofil,GaussWaveFunction &wf);
-   /* ******************************************************************************* */
    void writeCubeMagGradRho(ofstream &ofil,GaussWaveFunction &wf);
-   /* ******************************************************************************* */
    void writeCubeLOL(ofstream &ofil,GaussWaveFunction &wf);
-   /* ******************************************************************************* */
    void writeCubeKinetEnerDensG(ofstream &ofil,GaussWaveFunction &wf);
-   /* ******************************************************************************* */
    void writeCubeKinetEnerDensK(ofstream &ofil,GaussWaveFunction &wf);
-   /* ******************************************************************************* */
    void makeCube(string &onam,GaussWaveFunction &wf,ScalarFieldType ft);
-   /* ******************************************************************************* */
    void writeCubeMagGradLOL(ofstream &ofil,GaussWaveFunction &wf);
-   /* ******************************************************************************* */
    void writeCubeMolElecPot(ofstream &ofil,GaussWaveFunction &wf);
-   /* ******************************************************************************* */
    void writeCubeMagLED(ofstream &ofil,GaussWaveFunction &wf);
-   /* ******************************************************************************* */
    void writeCubeRedDensGrad(ofstream &ofil,GaussWaveFunction &wf);
-   /* ******************************************************************************* */
    void writeCubeRoSE(ofstream &ofil,GaussWaveFunction &wf);
-   /* ******************************************************************************* */
    void writeCubeScalarCustFld(ofstream &ofil,GaussWaveFunction &wf);
-   /* ******************************************************************************* */
    void writeCubeEllipticity(ofstream &ofil,GaussWaveFunction &wf);
-   /* ******************************************************************************* */
    void writeCubeVirialPotentialEnergyDensity(ofstream &ofil,GaussWaveFunction &wf);
-   /* ******************************************************************************* */
    void writeCubeNCIRedDensGrad(ofstream &ofil,GaussWaveFunction &wf);
-   /* ******************************************************************************* */
    void writeCubeNCIRho(ofstream &ofil,GaussWaveFunction &wf);
-   /* ******************************************************************************* */
+/* ********************************************************************************** */
 private:
    bool imsetup;
    int npts[3];
-};
 /* ********************************************************************************** */
+};
 /* ********************************************************************************** */
 #endif//_WFGRID3D_H_
 

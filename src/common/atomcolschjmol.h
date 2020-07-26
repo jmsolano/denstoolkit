@@ -42,17 +42,17 @@
 
 #define _HAVE_SELECTED_ATOM_PALETTE_ 1
 
-solreal getAtomicRGBColorReal(int nat,int rgb);
-solreal getAtomicRColorReal(int nat);
-solreal getAtomicGColorReal(int nat);
-solreal getAtomicBColorReal(int nat);
+double getAtomicRGBColorReal(int nat,int rgb);
+double getAtomicRColorReal(int nat);
+double getAtomicGColorReal(int nat);
+double getAtomicBColorReal(int nat);
 
 int getAtomicRGBColorInt(int nat,int rgb);
 int getAtomicRColorInt(int nat);
 int getAtomicGColorInt(int nat);
 int getAtomicBColorInt(int nat);
 
-void getAtomicRGBColorsReal(int nat,solreal &rr,solreal &gg,solreal &bb);
+void getAtomicRGBColorsReal(int nat,double &rr,double &gg,double &bb);
 void getAtomicRGBColorsInt(int nat,int &rr,int &gg,int &bb);
 
 #endif /* defined(_COL_SCHEME_JMOL_H_) */

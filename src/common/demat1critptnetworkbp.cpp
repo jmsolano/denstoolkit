@@ -182,15 +182,15 @@ void DeMat1CriticalPointNetworkBP::ComputeSingleCICP2D(int idx) {
    }
 #endif
    int acp1Idx=cpn->conBCP[idx][0],acp2Idx=cpn->conBCP[idx][1];
-   solreal xx[3],xxp[3],gamm,gg[3],gp[3],hh[3][3],hph[3][3],hp[3][3];
+   double xx[3],xxp[3],gamm,gg[3],gp[3],hh[3][3],hph[3][3],hp[3][3];
    for ( int i=0 ; i<3 ; ++i ) {
       xx[i]=cpn->RACP[acp1Idx][i];
       xxp[i]=cpn->RACP[acp2Idx][i];
    }
    wf->evalHessDensityMatrix1(xx,xxp,gamm,gg,gp,hh,hph,hp);
-   solreal e1[3],e2[3];
+   double e1[3],e2[3];
    GetTangentialVectors(idx,e1,e2);
-   solreal huv[2][2],tmp;
+   double huv[2][2],tmp;
    huv[0][0]=huv[1][1]=huv[0][1]=0.0e0;
    for ( int i=0 ; i<3 ; ++i ) {
       tmp=0.0e0;
@@ -204,7 +204,7 @@ void DeMat1CriticalPointNetworkBP::ComputeSingleCICP2D(int idx) {
       huv[1][1]+=tmp*e2[i];
    }
    huv[1][0]=huv[0][1];
-   solreal eivec[2][2],eival[2];
+   double eivec[2][2],eival[2];
    EigenDecompositionJAMA::EigenDecomposition2(huv,eivec,eival);
    sigCICP2D[idx]=GetSignature(eival);
    for ( int i=0 ; i<2 ; ++i ) { eivalCICP2D[idx][i]=eival[i]; }
@@ -225,13 +225,13 @@ void DeMat1CriticalPointNetworkBP::ComputeSingleCICP6D(int idx) {
 #endif
    /* acp-acp (cicp) determination  */
    int acp1Idx=cpn->conBCP[idx][0],acp2Idx=cpn->conBCP[idx][1];
-   solreal xx[3],xxp[3],gamm,gg[3],gp[3],hh[3][3],hph[3][3],hp[3][3];
+   double xx[3],xxp[3],gamm,gg[3],gp[3],hh[3][3],hph[3][3],hp[3][3];
    for ( int i=0 ; i<3 ; ++i ) {
       xx[i]=cpn->RACP[acp1Idx][i];
       xxp[i]=cpn->RACP[acp2Idx][i];
    }
    wf->evalHessDensityMatrix1(xx,xxp,gamm,gg,gp,hh,hph,hp);
-   solreal hess[6][6],eivec[6][6],eival[6];
+   double hess[6][6],eivec[6][6],eival[6];
    assignHessian6D(hh,hph,hp,hess);
    eigen_decomposition6(hess,eivec,eival);
    sigCICP6D[idx]=GetSignature(eival);
@@ -259,8 +259,8 @@ void DeMat1CriticalPointNetworkBP::ComputeSingleCICP6D(int idx) {
         << sigNN6D[idx] << ")" << endl;
 #endif /* ( DEBUG ) */
 }
-void DeMat1CriticalPointNetworkBP::assignHessian6D(solreal (&hh)[3][3],\
-      solreal (&hph)[3][3],solreal (&hp)[3][3],solreal (&hess)[6][6]) {
+void DeMat1CriticalPointNetworkBP::assignHessian6D(double (&hh)[3][3],\
+      double (&hph)[3][3],double (&hp)[3][3],double (&hess)[6][6]) {
    /* ************************************************************************** */
    hess[0][0]=hh[0][0]; hess[0][1]=hh[0][1]; hess[0][2]=hh[0][2]; hess[0][3]=hph[0][0]; hess[0][4]=hph[0][1]; hess[0][5]=hph[0][2];
    hess[1][0]=hh[1][0]; hess[1][1]=hh[1][1]; hess[1][2]=hh[1][2]; hess[1][3]=hph[1][0]; hess[1][4]=hph[1][1]; hess[1][5]=hph[1][2];
@@ -271,10 +271,10 @@ void DeMat1CriticalPointNetworkBP::assignHessian6D(solreal (&hh)[3][3],\
    hess[5][0]=hph[0][2]; hess[5][1]=hph[1][2]; hess[5][2]=hph[2][2]; hess[5][3]=hp[2][0]; hess[5][4]=hp[2][1]; hess[5][5]=hp[2][2];
    /* ************************************************************************** */
 }
-void DeMat1CriticalPointNetworkBP::GetTangentialVectors(const int bcpIdx,solreal (&e1)[3],\
-      solreal (&e2)[3]) {
+void DeMat1CriticalPointNetworkBP::GetTangentialVectors(const int bcpIdx,double (&e1)[3],\
+      double (&e2)[3]) {
    int npbgp=cpn->conBCP[bcpIdx][2];
-   solreal xi[3],xip1[3];
+   double xi[3],xip1[3];
    for ( int i=0 ; i<3 ; ++i ) {
       xi[i]=cpn->RBGP[bcpIdx][0][i];
       xip1[i]=cpn->RBGP[bcpIdx][1][i];
@@ -288,12 +288,12 @@ void DeMat1CriticalPointNetworkBP::GetTangentialVectors(const int bcpIdx,solreal
    normalizeV3(e1);
    normalizeV3(e2);
 }
-int DeMat1CriticalPointNetworkBP::GetSignature(solreal (&v)[2]) {
+int DeMat1CriticalPointNetworkBP::GetSignature(double (&v)[2]) {
    int s=0;
    for ( int i=0 ; i<2 ; ++i ) { v[i] >=0.0e0 ? ++s : --s; }
    return s;
 }
-int DeMat1CriticalPointNetworkBP::GetSignature(solreal (&v)[6]) {
+int DeMat1CriticalPointNetworkBP::GetSignature(double (&v)[6]) {
    int s=0;
    for ( int i=0 ; i<6 ; ++i ) { v[i] >=0.0e0 ? ++s : --s; }
    return s;

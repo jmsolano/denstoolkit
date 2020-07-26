@@ -45,8 +45,8 @@
 
 #include "atomradiicust.h"
 
-solreal getAtomicVDWRadius(int atn) {
-   static const solreal atomicRadius[MAXDEFINEDATOMICRADII]={
+double getAtomicVDWRadius(int atn) {
+   static const double atomicRadius[MAXDEFINEDATOMICRADII]={
       0.37e0, 0.70e0, 1.23e0, 0.89e0, 0.80e0,
       0.79e0, 0.74e0, 0.74e0, 0.72e0, 0.70e0,
       1.57e0, 1.36e0, 1.25e0, 1.17e0, 1.10e0,

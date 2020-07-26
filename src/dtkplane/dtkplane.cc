@@ -78,7 +78,7 @@ using std::setprecision;
 
 int main (int argc, char ** argv) {
    const clock_t begin_time = clock();
-   const solreal begin_walltime = time(NULL);
+   const double begin_walltime = time(NULL);
    string infilnam,outfilnam,gnpnam;
    string progname;
    optFlags options;
@@ -245,7 +245,7 @@ int main (int argc, char ** argv) {
    
 #if _HAVE_GNUPLOT_
    cout << "          Gnuplot file: " << gnpnam << endl;
-   solreal dd=0.0e0,r[3];
+   double dd=0.0e0,r[3];
    for (int i=0; i<3; i++) {
       r[i]=grid.Ca[i]-grid.Cb[i];
       dd+=r[i]*r[i];
@@ -272,9 +272,9 @@ int main (int argc, char ** argv) {
    ScreenUtils::SetScrGreenBoldFont();
    ScreenUtils::PrintScrStarLine();
    cout << setprecision(3) << "CPU Time: "
-        << solreal( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
-   solreal end_walltime=time(NULL);
-   cout << "Wall-clock time: " << solreal (end_walltime-begin_walltime) << "s" << endl;
+        << double( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
+   double end_walltime=time(NULL);
+   cout << "Wall-clock time: " << double (end_walltime-begin_walltime) << "s" << endl;
 #if DEBUG
    cout << "Debuggin mode (under construction...)" << endl;
 #endif

@@ -79,7 +79,7 @@ using std::setprecision;
 
 int main (int argc, char ** argv) {
    const clock_t begin_time = clock();
-   const solreal begin_walltime = time(NULL);
+   const double begin_walltime = time(NULL);
    string infilnam,outfilnam,gnpnam,lognam;
    string progname;
    optFlags options;
@@ -174,15 +174,15 @@ int main (int argc, char ** argv) {
    }
    
    /* Declares an array to store the coordinates of the bond path points. */
-   solreal **rbgp=NULL;
+   double **rbgp=NULL;
    MyMemory::Alloc2DRealArray(string("rbgp"),dimarr,3,rbgp);
    
    int nbgppts=1;
-   solreal dl=DEFAULTBONDPATHSTEPMD1;
-   solreal robcp[3];
-   solreal x1[3],x2[3],dx[3];
-   solreal lenline=0.0e0;
-   solreal dist=0.0e0;
+   double dl=DEFAULTBONDPATHSTEPMD1;
+   double robcp[3];
+   double x1[3],x2[3],dx[3];
+   double lenline=0.0e0;
+   double dist=0.0e0;
    
    if (options.setstep) {sscanf(argv[options.setstep],"%lg",&dl);}
    
@@ -213,9 +213,9 @@ int main (int argc, char ** argv) {
          lenline+=((bnw.R[at1][i]-bnw.R[at2][i])*(bnw.R[at1][i]-bnw.R[at2][i]));
       }
       lenline=sqrt(lenline);
-      dl=lenline/solreal(dimarr-1);
+      dl=lenline/double(dimarr-1);
       for (int i=0; i<3; i++) {
-         dx[i]=(bnw.R[at2][i]-bnw.R[at1][i])/solreal(dimarr-1);
+         dx[i]=(bnw.R[at2][i]-bnw.R[at1][i])/double(dimarr-1);
          rbgp[0][i]=bnw.R[at1][i];
          robcp[i]=0.0e0;
       }
@@ -236,8 +236,8 @@ int main (int argc, char ** argv) {
    ScreenUtils::PrintProgressBar(0);
 #endif
    
-   solreal xx[3],xt[3],tmpval,pp,pbcp,pmax,pmin,maxval=-1.0e+50,minval=1.0e+50,bcpval;
-   solreal xmax[3],xmin[3];
+   double xx[3],xt[3],tmpval,pp,pbcp,pmax,pmin,maxval=-1.0e+50,minval=1.0e+50,bcpval;
+   double xmax[3],xmin[3];
    pp=0.0e0;
    if (options.uponbp) {
       if ((rbgp[0][0]==robcp[0])&&(rbgp[0][1]==robcp[1])&&(rbgp[0][2]==robcp[2])) {pbcp=pp;}
@@ -266,7 +266,7 @@ int main (int argc, char ** argv) {
       if (tmpval<minval) {minval=tmpval; pmin=pp; for(int k=0; k<3; k++) {xmin[k]=xx[k];}}
       if (tmpval>maxval) {maxval=tmpval; pmax=pp; for(int k=0; k<3; k++) {xmax[k]=xx[k];}}
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((nbgppts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((nbgppts-1))));
 #endif
    }
 #if USEPROGRESSBAR
@@ -350,9 +350,9 @@ int main (int argc, char ** argv) {
    ScreenUtils::SetScrGreenBoldFont();
    ScreenUtils::PrintScrStarLine();
    cout << setprecision(3) << "CPU Time: "
-        << solreal( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
-   solreal end_walltime=time(NULL);
-   cout << "Wall-clock time: " << solreal (end_walltime-begin_walltime) << "s" << endl;
+        << double( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
+   double end_walltime=time(NULL);
+   cout << "Wall-clock time: " << double (end_walltime-begin_walltime) << "s" << endl;
 #if DEBUG
    cout << "Debuggin mode (under construction...)" << endl;
 #endif

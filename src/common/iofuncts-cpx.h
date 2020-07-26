@@ -127,13 +127,13 @@ int cpxGetNOfRCPs(ifstream &ifil);
 /* ************************************************************************** */
 int cpxGetNOfCCPs(ifstream &ifil);
 /* ************************************************************************** */
-void cpxGetACPCartCoordFromFile(ifstream &ifil,const int nn,solreal** &rr);
+void cpxGetACPCartCoordFromFile(ifstream &ifil,const int nn,double** &rr);
 /* ************************************************************************** */
-void cpxGetBCPCartCoordFromFile(ifstream &ifil,const int nn,solreal** &rr);
+void cpxGetBCPCartCoordFromFile(ifstream &ifil,const int nn,double** &rr);
 /* ************************************************************************** */
-void cpxGetRCPCartCoordFromFile(ifstream &ifil,const int nn,solreal** &rr);
+void cpxGetRCPCartCoordFromFile(ifstream &ifil,const int nn,double** &rr);
 /* ************************************************************************** */
-void cpxGetCCPCartCoordFromFile(ifstream &ifil,const int nn,solreal** &rr);
+void cpxGetCCPCartCoordFromFile(ifstream &ifil,const int nn,double** &rr);
 /* ************************************************************************** */
 void cpxGetBCPConnectivityFromFile(ifstream &ifil,const int nn,int** (&ii));
 /* ************************************************************************** */
@@ -149,7 +149,7 @@ int cpxGetNOfBondPaths(ifstream &ifil);
 /* ************************************************************************** */
 void cpxGetNOfPtsPerBondPath(ifstream &ifil,const int nn,int** (&ii));
 /* ************************************************************************** */
-void cpxGetBondPathData(ifstream &ifil,const int nn,int** (&ii),solreal*** (&rrr));
+void cpxGetBondPathData(ifstream &ifil,const int nn,int** (&ii),double*** (&rrr));
 /* ************************************************************************** */
 void cpxGetRCPConnectivityFromFile(ifstream &ifil,const int nn,int*** (&cc));
 /* ************************************************************************** */
@@ -157,7 +157,7 @@ int cpxGetNOfRingPaths(ifstream &ifil);
 /* ************************************************************************** */
 void cpxGetNOfPtsPerRingPath(ifstream &ifil,const int nn,int*** (&ii));
 /* ************************************************************************** */
-void cpxGetRingPathData(ifstream &ifil,const int nn,int*** (&ii),solreal**** (&rrr));
+void cpxGetRingPathData(ifstream &ifil,const int nn,int*** (&ii),double**** (&rrr));
 /* ************************************************************************** */
 void cpxGetCCPConnectivityFromFile(ifstream &ifil,const int nn,int*** (&cc));
 /* ************************************************************************** */
@@ -165,6 +165,6 @@ int cpxGetNOfCagePaths(ifstream &ifil);
 /* ************************************************************************** */
 void cpxGetNOfPtsPerCagePath(ifstream &ifil,const int nn,int*** (&ii));
 /* ************************************************************************** */
-void cpxGetCagePathData(ifstream &ifil,const int nn,int*** (&ii),solreal**** (&rrr));
+void cpxGetCagePathData(ifstream &ifil,const int nn,int*** (&ii),double**** (&rrr));
 /* ************************************************************************** */
 #endif /* defined(_IOFUNCTS_CPX_H_) */

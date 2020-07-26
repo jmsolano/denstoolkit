@@ -67,7 +67,7 @@ static int atomicColorInt[MAXDEFINEDATOMICCOLORS][3]={
 };
 
 /** This table contains the colors for the atoms. The numbers are RGB floats (\f$0.0-1.0\f$) */
-static solreal atomicColor[MAXDEFINEDATOMICCOLORS][3]={
+static double atomicColor[MAXDEFINEDATOMICCOLORS][3]={
    {1.00000, 1.00000, 1.00000},
    {1.00000, 0.75294, 0.79608},
    {0.69804, 0.13333, 0.13333},

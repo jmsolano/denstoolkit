@@ -752,25 +752,25 @@ int cpxGetNOfCCPs(ifstream &ifil) {
    return res;
 }
 /* ************************************************************************** */
-void cpxGetACPCartCoordFromFile(ifstream &ifil,const int nn,solreal** &rr) {
+void cpxGetACPCartCoordFromFile(ifstream &ifil,const int nn,double** &rr) {
    cpxSetPosOfFileAfterOpenningKey(ifil,"ACPCartesianCoordinates",true);
    for (int i=0; i<nn; i++) {for (int j=0; j<3; j++) {ifil >> rr[i][j];}}
    return;
 }
 /* ************************************************************************** */
-void cpxGetBCPCartCoordFromFile(ifstream &ifil,const int nn,solreal** &rr) {
+void cpxGetBCPCartCoordFromFile(ifstream &ifil,const int nn,double** &rr) {
    cpxSetPosOfFileAfterOpenningKey(ifil,"BCPCartesianCoordinates",true);
    for (int i=0; i<nn; i++) {for (int j=0; j<3; j++) {ifil >> rr[i][j];}}
    return;
 }
 /* ************************************************************************** */
-void cpxGetRCPCartCoordFromFile(ifstream &ifil,const int nn,solreal** &rr) {
+void cpxGetRCPCartCoordFromFile(ifstream &ifil,const int nn,double** &rr) {
    cpxSetPosOfFileAfterOpenningKey(ifil,"RCPCartesianCoordinates",true);
    for (int i=0; i<nn; i++) {for (int j=0; j<3; j++) {ifil >> rr[i][j];}}
    return;
 }
 /* ************************************************************************** */
-void cpxGetCCPCartCoordFromFile(ifstream &ifil,const int nn,solreal** &rr) {
+void cpxGetCCPCartCoordFromFile(ifstream &ifil,const int nn,double** &rr) {
    cpxSetPosOfFileAfterOpenningKey(ifil,"CCPCartesianCoordinates",true);
    for (int i=0; i<nn; i++) {for (int j=0; j<3; j++) {ifil >> rr[i][j];}}
    return;
@@ -827,7 +827,7 @@ void cpxGetNOfPtsPerBondPath(ifstream &ifil,const int nn,int** (&ii)) {
    return;
 }
 /* ************************************************************************** */
-void cpxGetBondPathData(ifstream &ifil,const int nn,int** (&ii),solreal*** (&rrr)) {
+void cpxGetBondPathData(ifstream &ifil,const int nn,int** (&ii),double*** (&rrr)) {
    cpxSetPosOfFileAfterOpenningKey(ifil,"BondPathsData",true);
    int ktmp;
    for (int k=0; k<nn; k++) {
@@ -873,7 +873,7 @@ void cpxGetNOfPtsPerRingPath(ifstream &ifil,const int nn,int*** (&ii)) {
    return;
 }
 /* ************************************************************************** */
-void cpxGetRingPathData(ifstream &ifil,const int nn,int*** (&ii),solreal**** (&rrr)) {
+void cpxGetRingPathData(ifstream &ifil,const int nn,int*** (&ii),double**** (&rrr)) {
    cpxSetPosOfFileAfterOpenningKey(ifil,"RingPathsData",true);
    int nnpts,ktmp,glblIdx=0;
    for (int rcpIdx=0; rcpIdx<nn; ++rcpIdx) {
@@ -928,7 +928,7 @@ void cpxGetNOfPtsPerCagePath(ifstream &ifil,const int nn,int*** (&ii)) {
    return;
 }
 /* ************************************************************************** */
-void cpxGetCagePathData(ifstream &ifil,const int nn,int*** (&ii),solreal**** (&rrr)) {
+void cpxGetCagePathData(ifstream &ifil,const int nn,int*** (&ii),double**** (&rrr)) {
    cpxSetPosOfFileAfterOpenningKey(ifil,"CagePathsData",true);
    int nnpts,ktmp,glblIdx=0;
    for (int ccpIdx=0; ccpIdx<nn; ++ccpIdx) {

@@ -37,31 +37,24 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
-/*
- *  wfgrid2d.cpp
- *  
- *
- *  Created by Juan Manuel Solano Altamirano on 10/05/13.
- *  Copyright 2013. All rights reserved.
- *
- */
-
-/*
- 
- Check for errors: Na=Nb=Nc
- 
- */
-
-
+/* wfgrid2d.cpp
+    Created by Juan Manuel Solano Altamirano on 10/05/13.
+    Copyright 2013. All rights reserved.
+*/
+/* Check for errors: Na=Nb=Nc */
 #ifndef _WFGRID2D_CPP_
 #define _WFGRID2D_CPP_
-
+#include <cstdlib>
+#include <iostream>
+using std::cout;
+using std::endl;
+#include <iomanip>
+using std::scientific;
+using std::setprecision;
 #include "wfgrid2d.h"
 #include "mymemory.h"
 #include "mymath.h"
 
-/* ********************************************************************************* */
 waveFunctionGrid2D::waveFunctionGrid2D() {
    for (int i=0; i<3; i++) {
       Ca[i]=0.0e0;
@@ -73,7 +66,7 @@ waveFunctionGrid2D::waveFunctionGrid2D() {
    }
    for (int i=0; i<2; i++) {
       npts[i]=DEFAULTPOINTSPERDIRECTION;
-      dx[i]=1.0e0/solreal(DEFAULTPOINTSPERDIRECTION);
+      dx[i]=1.0e0/double(DEFAULTPOINTSPERDIRECTION);
    }
    comments=string("#");
    prop1d=NULL;
@@ -81,27 +74,22 @@ waveFunctionGrid2D::waveFunctionGrid2D() {
    prop2plot=NONE;
    imsetup=false;
 }
-/* ********************************************************************************* */
 waveFunctionGrid2D::~waveFunctionGrid2D() {
    MyMemory::Dealloc1DRealArray(prop1d);
    MyMemory::Dealloc2DRealArray(prop2d,npts[1]);
 }
-/* ********************************************************************************* */
 void waveFunctionGrid2D::setNPts(int nx,int ny) {
    npts[0]=nx;
    npts[1]=ny;
    return;
 }
-/* ********************************************************************************* */
 void waveFunctionGrid2D::setNPts(int nn) {
    for (int i=0; i<2; i++) {npts[i]=nn;}
    return;
 }
-/* ********************************************************************************* */
 int waveFunctionGrid2D::getNPts(int ii) {
    return npts[ii];   
 }
-/* ********************************************************************************* */
 void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,int na,int nb,int nc) {
    if (!(bn.imstp())) {
       cout << "Error: Trying to use a non set-up bondNetWork object!\n";
@@ -119,20 +107,19 @@ void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,int na,int nb,int nc) 
 #endif
       return;
    }
-   solreal va[3],vb[3],vc[3];
+   double va[3],vb[3],vc[3];
    for (int i=0; i<3; i++) {
       va[i]=bn.R[na][i];
       vb[i]=bn.R[nb][i];
       vc[i]=bn.R[nc][i];
    }
    setUpSimplePlane(bn,va,vb,vc);
-   for (int i=0; i<2; i++) {dx[i]=2.0e0/solreal(npts[i]-1);}
+   for (int i=0; i<2; i++) {dx[i]=2.0e0/double(npts[i]-1);}
    MyMemory::Alloc1DRealArray("prop1d",npts[1],prop1d);
    MyMemory::Alloc2DRealArray(string("prop2d"),npts[1],2,prop2d);
    imsetup=true;
    return;
 }
-/* ********************************************************************************* */
 void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,int na,int nb) {
    if (!(bn.imstp())) {
       cout << "Error: Trying to use a non set-up bondNetWork object!\n";
@@ -150,19 +137,18 @@ void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,int na,int nb) {
 #endif
       return;
    }
-   solreal va[3],vb[3];
+   double va[3],vb[3];
    for (int i=0; i<3; i++) {
       va[i]=bn.R[na][i];
       vb[i]=bn.R[nb][i];
    }
    setUpSimplePlane(bn,va,vb);
-   for (int i=0; i<2; i++) {dx[i]=2.0e0/solreal(npts[i]-1);}
+   for (int i=0; i<2; i++) {dx[i]=2.0e0/double(npts[i]-1);}
    MyMemory::Alloc1DRealArray("prop1d",npts[1],prop1d);
    MyMemory::Alloc2DRealArray(string("prop2d"),npts[1],2,prop2d);
    imsetup=true;
    return;
 }
-/* ********************************************************************************* */
 void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,int na) {
    if (!(bn.imstp())) {
       cout << "Error: Trying to use a non set-up bondNetWork object!\n";
@@ -180,39 +166,37 @@ void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,int na) {
 #endif
       return;
    }
-   solreal va[3];
+   double va[3];
    for (int i=0; i<3; i++) {
       va[i]=bn.R[na][i];
    }
    setUpSimplePlane(bn,va);
-   for (int i=0; i<2; i++) {dx[i]=2.0e0/solreal(npts[i]-1);}
+   for (int i=0; i<2; i++) {dx[i]=2.0e0/double(npts[i]-1);}
    MyMemory::Alloc1DRealArray("prop1d",npts[1],prop1d);
    MyMemory::Alloc2DRealArray(string("prop2d"),npts[1],2,prop2d);
    imsetup=true;
    return;
 }
-/* ********************************************************************************* */
-/* ********************************************************************************* */
 void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,
-                                          solreal (&ta)[3],solreal (&tb)[3],solreal (&tc)[3]) {
+                                          double (&ta)[3],double (&tb)[3],double (&tc)[3]) {
    /*
     Three special cases to consider:
     --> One single atom
     --> Two atoms
     --> Thre colineal atoms: (\vec{A}\cdot\vec{B})/(|\vec{A}||\vec{B}|)=1.0e0
     */
-   solreal n[3],eta[3],xi[3];//,orig[3];
+   double n[3],eta[3],xi[3];//,orig[3];
    for (int i=0; i<3; i++) {
       eta[i]=ta[i]-tb[i];
       xi[i]=ta[i]-tc[i];
       orig[i]=(ta[i]+tb[i]+tc[i])/3.0e0;
    }
-   solreal meta,mxi;
+   double meta,mxi;
    meta=magV3(eta);
    mxi=magV3(xi);
    normalizeV3(eta);
    normalizeV3(xi);
-   solreal tmp=0.0e0;
+   double tmp=0.0e0;
    for (int i=0; i<3; i++) {tmp+=eta[i]*xi[i];}
    if (tmp<(1.0e0-COLLINEAREPS)) {
       crossProductV3(eta,xi,n);
@@ -248,15 +232,14 @@ void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,
    }
    return;
 }
-/* ********************************************************************************* */
-void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,solreal (&ta)[3],solreal (&tb)[3]) {
-   solreal n[3],eta[3],xi[3];//,orig[3];
+void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,double (&ta)[3],double (&tb)[3]) {
+   double n[3],eta[3],xi[3];//,orig[3];
    for (int i=0; i<3; i++) {
       eta[i]=tb[i]-ta[i];
       orig[i]=0.5e0*(ta[i]+tb[i]);
    }
    int posmin;
-   solreal amin=1.0e+50;
+   double amin=1.0e+50;
    for (int i=0; i<3; i++) {
       if (fabs(eta[i])<amin) {
          amin=fabs(eta[i]);
@@ -267,7 +250,7 @@ void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,solreal (&ta)[3],solre
    xi[posmin]=1.0e0;
    /*
    int posmax;
-   solreal amax=-1.0e+50;
+   double amax=-1.0e+50;
    for (int i=0; i<3; i++) {
       if (fabs(eta[i])>amax) {
          amax=fabs(eta[i]);
@@ -282,7 +265,7 @@ void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,solreal (&ta)[3],solre
    normalizeV3(n);
    normalizeV3(eta);
    normalizeV3(xi);
-   solreal tmp;
+   double tmp;
    maxdim=tmp=0.0e0;
    for (int i=0; i<3; i++) {
       tmp+=(bn.bbmin[i]*bn.bbmin[i]);
@@ -310,16 +293,15 @@ void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,solreal (&ta)[3],solre
    // */
    return;
 }
-/* ********************************************************************************* */
-void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,solreal (&ta)[3]) {
-   solreal eta[3],xi[3];
+void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,double (&ta)[3]) {
+   double eta[3],xi[3];
    for (int i=0; i<3; i++) {
       eta[i]=0.0e0;
       xi[i]=0.0e0;
    }
    eta[0]=1.0e0;
    xi[1]=1.0e0;
-   solreal tmp;
+   double tmp;
    maxdim=tmp=0.0e0;
    for (int i=0; i<3; i++) {
       tmp+=(bn.bbmin[i]*bn.bbmin[i]);
@@ -341,10 +323,9 @@ void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,solreal (&ta)[3]) {
    }
    return;
 }
-/* ********************************************************************************* */
 bool waveFunctionGrid2D::writePlaneTsvRho(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
-   solreal e1,e2,xx[3];
+   double e1,e2,xx[3];
    e1=-1.0e0;
    for (int i=0; i<npts[0]; i++) {
       e2=-1.0e0;
@@ -367,12 +348,11 @@ bool waveFunctionGrid2D::writePlaneTsvRho(ofstream &ofil,GaussWaveFunction &wf) 
       e1+=dx[0];
       ofil << endl;
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts[0]-1))));
 #endif
    }
    return true;
 }
-/* ********************************************************************************** */
 void waveFunctionGrid2D::makeTsv(string &onam,GaussWaveFunction &wf,ScalarFieldType ft) {
    if (!wf.imldd) {
       cout << "Error: trying to use a non loaded wave function object!\nNothing done!\n";
@@ -388,7 +368,7 @@ void waveFunctionGrid2D::makeTsv(string &onam,GaussWaveFunction &wf,ScalarFieldT
       cout << "No output will be written." << endl;
       for (int j=0; j<4; j++) {
          for (int i=0; i<4; i++) {
-            ofil << solreal(i) << " " << 2.0e0*solreal(i) << " " << 3.2e0*solreal(i) << endl;
+            ofil << double(i) << " " << 2.0e0*double(i) << " " << 3.2e0*double(i) << endl;
          }
          ofil << endl;
       }
@@ -470,10 +450,9 @@ void waveFunctionGrid2D::makeTsv(string &onam,GaussWaveFunction &wf,ScalarFieldT
    ofil.close();
    return;
 }
-/* ********************************************************************************* */
 bool waveFunctionGrid2D::writePlaneTsvLapRho(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
-   solreal e1,e2,xx[3];
+   double e1,e2,xx[3];
    e1=-1.0e0;
    for (int i=0; i<npts[0]; i++) {
       e2=-1.0e0;
@@ -496,15 +475,14 @@ bool waveFunctionGrid2D::writePlaneTsvLapRho(ofstream &ofil,GaussWaveFunction &w
       e1+=dx[0];
       ofil << endl;
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts[0]-1))));
 #endif
    }
    return false;
 }
-/* ********************************************************************************* */
 bool waveFunctionGrid2D::writePlaneTsvELF(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
-   solreal e1,e2,xx[3];
+   double e1,e2,xx[3];
    e1=-1.0e0;
    for (int i=0; i<npts[0]; i++) {
       e2=-1.0e0;
@@ -527,15 +505,14 @@ bool waveFunctionGrid2D::writePlaneTsvELF(ofstream &ofil,GaussWaveFunction &wf) 
       e1+=dx[0];
       ofil << endl;
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts[0]-1))));
 #endif
    }
    return false;
 }
-/* ********************************************************************************* */
 bool waveFunctionGrid2D::writePlaneTsvShannonEntropy(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
-   solreal e1,e2,xx[3];
+   double e1,e2,xx[3];
    e1=-1.0e0;
    for (int i=0; i<npts[0]; i++) {
       e2=-1.0e0;
@@ -558,15 +535,14 @@ bool waveFunctionGrid2D::writePlaneTsvShannonEntropy(ofstream &ofil,GaussWaveFun
       e1+=dx[0];
       ofil << endl;
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts[0]-1))));
 #endif
    }
    return false;
 }
-/* ********************************************************************************* */
 bool waveFunctionGrid2D::writePlaneTsvMagGradRho(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
-   solreal e1,e2,xx[3];
+   double e1,e2,xx[3];
    e1=-1.0e0;
    for (int i=0; i<npts[0]; i++) {
       e2=-1.0e0;
@@ -589,15 +565,14 @@ bool waveFunctionGrid2D::writePlaneTsvMagGradRho(ofstream &ofil,GaussWaveFunctio
       e1+=dx[0];
       ofil << endl;
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts[0]-1))));
 #endif
    }
    return false;
 }
-/* ********************************************************************************* */
 bool waveFunctionGrid2D::writePlaneTsvLOL(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
-   solreal e1,e2,xx[3];
+   double e1,e2,xx[3];
    e1=-1.0e0;
    for (int i=0; i<npts[0]; i++) {
       e2=-1.0e0;
@@ -620,15 +595,14 @@ bool waveFunctionGrid2D::writePlaneTsvLOL(ofstream &ofil,GaussWaveFunction &wf) 
       e1+=dx[0];
       ofil << endl;
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts[0]-1))));
 #endif
    }
    return false;
 }
-/* ********************************************************************************* */
 bool waveFunctionGrid2D::writePlaneTsvMagGradLOL(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
-   solreal e1,e2,xx[3],gl[3],hl[3][3],lol;
+   double e1,e2,xx[3],gl[3],hl[3][3],lol;
    e1=-1.0e0;
    for (int i=0; i<npts[0]; i++) {
       e2=-1.0e0;
@@ -652,15 +626,14 @@ bool waveFunctionGrid2D::writePlaneTsvMagGradLOL(ofstream &ofil,GaussWaveFunctio
       e1+=dx[0];
       ofil << endl;
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts[0]-1))));
 #endif
    }
    return false;
 }
-/* ********************************************************************************* */
 bool waveFunctionGrid2D::writePlaneTsvKinetEnerDensG(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
-   solreal e1,e2,xx[3];
+   double e1,e2,xx[3];
    e1=-1.0e0;
    for (int i=0; i<npts[0]; i++) {
       e2=-1.0e0;
@@ -683,15 +656,14 @@ bool waveFunctionGrid2D::writePlaneTsvKinetEnerDensG(ofstream &ofil,GaussWaveFun
       e1+=dx[0];
       ofil << endl;
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts[0]-1))));
 #endif
    }
    return false;
 }
-/* ********************************************************************************* */
 bool waveFunctionGrid2D::writePlaneTsvKinetEnerDensK(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
-   solreal e1,e2,xx[3];
+   double e1,e2,xx[3];
    e1=-1.0e0;
    for (int i=0; i<npts[0]; i++) {
       e2=-1.0e0;
@@ -714,15 +686,14 @@ bool waveFunctionGrid2D::writePlaneTsvKinetEnerDensK(ofstream &ofil,GaussWaveFun
       e1+=dx[0];
       ofil << endl;
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts[0]-1))));
 #endif
    }
    return false;
 }
-/* ********************************************************************************* */
 bool waveFunctionGrid2D::writePlaneTsvGradLOL(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
-   solreal e1,e2,xx[3],gl[3],hl[3][3],lol;
+   double e1,e2,xx[3],gl[3],hl[3][3],lol;
    e1=-1.0e0;
    for (int i=0; i<npts[0]; i++) {
       e2=-1.0e0;
@@ -751,15 +722,14 @@ bool waveFunctionGrid2D::writePlaneTsvGradLOL(ofstream &ofil,GaussWaveFunction &
       e1+=dx[0];
       ofil << endl;
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts[0]-1))));
 #endif
    }
    return false;
 }
-/* ********************************************************************************* */
 bool waveFunctionGrid2D::writePlaneTsvMolElecPot(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
-   solreal e1,e2,xx[3];
+   double e1,e2,xx[3];
    e1=-1.0e0;
    for (int i=0; i<npts[0]; i++) {
       e2=-1.0e0;
@@ -782,15 +752,14 @@ bool waveFunctionGrid2D::writePlaneTsvMolElecPot(ofstream &ofil,GaussWaveFunctio
       e1+=dx[0];
       ofil << endl;
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts[0]-1))));
 #endif
    }
    return false;
 }
-/* ************************************************************************************ */
 bool waveFunctionGrid2D::writePlaneTsvLED(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
-   solreal e1,e2,xx[3],led[3];
+   double e1,e2,xx[3],led[3];
    e1=-1.0e0;
    for (int i=0; i<npts[0]; i++) {
       e2=-1.0e0;
@@ -819,15 +788,14 @@ bool waveFunctionGrid2D::writePlaneTsvLED(ofstream &ofil,GaussWaveFunction &wf) 
       e1+=dx[0];
       ofil << endl;
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts[0]-1))));
 #endif
    }
    return false;
 }
-/* ********************************************************************************* */
 bool waveFunctionGrid2D::writePlaneTsvMagLED(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
-   solreal e1,e2,xx[3];
+   double e1,e2,xx[3];
    e1=-1.0e0;
    for (int i=0; i<npts[0]; i++) {
       e2=-1.0e0;
@@ -850,15 +818,14 @@ bool waveFunctionGrid2D::writePlaneTsvMagLED(ofstream &ofil,GaussWaveFunction &w
       e1+=dx[0];
       ofil << endl;
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts[0]-1))));
 #endif
    }
    return false;
 }
-/* ************************************************************************************ */
 bool waveFunctionGrid2D::writePlaneTsvRedDensMag(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
-   solreal e1,e2,xx[3];
+   double e1,e2,xx[3];
    e1=-1.0e0;
    for (int i=0; i<npts[0]; i++) {
       e2=-1.0e0;
@@ -881,15 +848,14 @@ bool waveFunctionGrid2D::writePlaneTsvRedDensMag(ofstream &ofil,GaussWaveFunctio
       e1+=dx[0];
       ofil << endl;
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts[0]-1))));
 #endif
    }
    return false;
 }
-/* ************************************************************************************ */
 bool waveFunctionGrid2D::writePlaneTsvRoSE(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
-   solreal e1,e2,xx[3];
+   double e1,e2,xx[3];
    e1=-1.0e0;
    for (int i=0; i<npts[0]; i++) {
       e2=-1.0e0;
@@ -912,15 +878,14 @@ bool waveFunctionGrid2D::writePlaneTsvRoSE(ofstream &ofil,GaussWaveFunction &wf)
       e1+=dx[0];
       ofil << endl;
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts[0]-1))));
 #endif
    }
    return false;
 }
-/* ************************************************************************************ */
 bool waveFunctionGrid2D::writePlaneTsvScalarCustFld(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
-   solreal e1,e2,xx[3];
+   double e1,e2,xx[3];
    e1=-1.0e0;
    for (int i=0; i<npts[0]; i++) {
       e2=-1.0e0;
@@ -943,15 +908,14 @@ bool waveFunctionGrid2D::writePlaneTsvScalarCustFld(ofstream &ofil,GaussWaveFunc
       e1+=dx[0];
       ofil << endl;
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts[0]-1))));
 #endif
    }
    return false;
 }
-/* ************************************************************************************ */
 bool waveFunctionGrid2D::writePlaneTsvVectorCustFld(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
-   solreal e1,e2,xx[3],vcf[3];
+   double e1,e2,xx[3],vcf[3];
    e1=-1.0e0;
    for (int i=0; i<npts[0]; i++) {
       e2=-1.0e0;
@@ -980,15 +944,14 @@ bool waveFunctionGrid2D::writePlaneTsvVectorCustFld(ofstream &ofil,GaussWaveFunc
       e1+=dx[0];
       ofil << endl;
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts[0]-1))));
 #endif
    }
    return false;
 }
-/* ************************************************************************************ */
 bool waveFunctionGrid2D::writePlaneTsvVirialPotentialEnergyDensity(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
-   solreal e1,e2,xx[3];
+   double e1,e2,xx[3];
    e1=-1.0e0;
    for (int i=0; i<npts[0]; i++) {
       e2=-1.0e0;
@@ -1011,15 +974,14 @@ bool waveFunctionGrid2D::writePlaneTsvVirialPotentialEnergyDensity(ofstream &ofi
       e1+=dx[0];
       ofil << endl;
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts[0]-1))));
 #endif
    }
    return false;
 }
-/* ************************************************************************************ */
 bool waveFunctionGrid2D::writePlaneTsvEllipticity(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
-   solreal e1,e2,xx[3];
+   double e1,e2,xx[3];
    e1=-1.0e0;
    for (int i=0; i<npts[0]; i++) {
       e2=-1.0e0;
@@ -1042,12 +1004,10 @@ bool waveFunctionGrid2D::writePlaneTsvEllipticity(ofstream &ofil,GaussWaveFuncti
       e1+=dx[0];
       ofil << endl;
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts[0]-1))));
 #endif
    }
    return false;
 }
-/* ************************************************************************************ */
-/* ************************************************************************************ */
 
 #endif//_WFGRID2D_CPP_

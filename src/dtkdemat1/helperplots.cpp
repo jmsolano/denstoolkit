@@ -40,12 +40,12 @@
 
 #ifndef _HELPERPLOTS_CPP_
 #define _HELPERPLOTS_CPP_
-
 #include <cstdlib>
 #include <iostream>
 using std::cout;
 using std::endl;
 using std::cerr;
+#include <cmath>
 #include "helperplots.h"
 #include "../common/stringtools.h"
 #include "../common/gnuplottools.h"
@@ -53,12 +53,12 @@ using std::cerr;
 
 
 void HelperPlot::generateMainDiagPlot(optFlags &options,const string &datname,\
-      bondNetWork &bn,int idx1,int idx2,solreal minval2plot,solreal maxval2plot,\
-      solreal linelength,solreal frange) {
+      bondNetWork &bn,int idx1,int idx2,double minval2plot,double maxval2plot,\
+      double linelength,double frange) {
    string gnpname,epsname,pdfname;
    generateGNPEPSAndPDFNamesFromDATORTSV(datname,gnpname,epsname,pdfname);
    //----------------------------------------------------
-   solreal at1pos,at2pos;
+   double at1pos,at2pos;
    if ( options.centredats ) {
       at1pos=-0.25*linelength;
       at2pos=0.25*linelength;
@@ -66,9 +66,9 @@ void HelperPlot::generateMainDiagPlot(optFlags &options,const string &datname,\
       at1pos=0.25*linelength;
       at2pos=0.75*linelength;
    }
-   solreal arroffset=0.1*linelength;
-   solreal lbloffset=0.15*linelength;
-   ofstream ofil(gnpname.c_str(),ios::out);
+   double arroffset=0.1*linelength;
+   double lbloffset=0.15*linelength;
+   ofstream ofil(gnpname.c_str(),std::ios::out);
    addHeaderInfo2GNP(ofil,minval2plot,maxval2plot,linelength,datname,string("y"));
    if ( options.centredats ) {
       ofil << "set xrange[-0.5*dimparam:0.5*dimparam]" << endl;
@@ -104,12 +104,12 @@ void HelperPlot::generateMainDiagPlot(optFlags &options,const string &datname,\
    GnuplotTools::eps2pdf(epsname);
 }
 void HelperPlot::generateSecDiagPlot(optFlags &options,const string &datname,\
-      bondNetWork &bn,int idx1,int idx2,solreal minval2plot,solreal maxval2plot,\
-      solreal linelength,solreal frange) {
+      bondNetWork &bn,int idx1,int idx2,double minval2plot,double maxval2plot,\
+      double linelength,double frange) {
    string gnpname,epsname,pdfname;
    generateGNPEPSAndPDFNamesFromDATORTSV(datname,gnpname,epsname,pdfname);
    //----------------------------------------------------
-   solreal at1pos,at2pos;
+   double at1pos,at2pos;
    if ( options.centredats ) {
       at1pos=-0.25*linelength;
       at2pos=0.25*linelength;
@@ -117,9 +117,9 @@ void HelperPlot::generateSecDiagPlot(optFlags &options,const string &datname,\
       at1pos=0.25*linelength;
       at2pos=0.75*linelength;
    }
-   solreal arroffset=0.1*linelength;
-   solreal lbloffset=0.15*linelength;
-   ofstream ofil(gnpname.c_str(),ios::out);
+   double arroffset=0.1*linelength;
+   double lbloffset=0.15*linelength;
+   ofstream ofil(gnpname.c_str(),std::ios::out);
    addHeaderInfo2GNP(ofil,minval2plot,maxval2plot,linelength,datname,string("y"));
    if ( options.centredats ) {
       ofil << "set xrange[-0.5*dimparam:0.5*dimparam]" << endl;
@@ -155,13 +155,13 @@ void HelperPlot::generateSecDiagPlot(optFlags &options,const string &datname,\
    GnuplotTools::eps2pdf(epsname);
 }
 void HelperPlot::generate3DPlot(optFlags &options,const string &tsvname,\
-      solreal minval2plot,solreal maxval2plot,solreal linelength,int nptsinline) {
+      double minval2plot,double maxval2plot,double linelength,int nptsinline) {
    string gnpname=tsvname,epsname,pdfname;
    FileUtils::InsertAtEndOfFileName(gnpname,string("-3D"));
    FileUtils::ReplaceExtensionOfFileName(gnpname,string("gnp"));
    generateEPSAndPDFNamesFromGNP(gnpname,epsname,pdfname);
    //----------------------------------------------------
-   ofstream ofil(gnpname.c_str(),ios::out);
+   ofstream ofil(gnpname.c_str(),std::ios::out);
    addHeaderInfo2GNP(ofil,minval2plot,maxval2plot,linelength,tsvname,string("z"));
    ofil << "set isosample 300, 300" << endl;
    ofil << "set cntrparam cubicspline" << endl;
@@ -192,15 +192,15 @@ void HelperPlot::generate3DPlot(optFlags &options,const string &tsvname,\
    GnuplotTools::eps2pdf(epsname);
 }
 void HelperPlot::generateHeatMap(optFlags &options,char *argv[],const string &tsvname,bondNetWork &bn,DeMat1CriticalPointNetworkSL &cp,
-      solreal **xx,int nptsinline,solreal minval2plot,\
-      solreal maxval2plot,solreal linelength,solreal md1lmin,solreal md1dmax,int idx1,int idx2) {
+      double **xx,int nptsinline,double minval2plot,\
+      double maxval2plot,double linelength,double md1lmin,double md1dmax,int idx1,int idx2) {
    string gnpname=tsvname,epsname,pdfname;
    FileUtils::InsertAtEndOfFileName(gnpname,string("-2D"));
    FileUtils::ReplaceExtensionOfFileName(gnpname,string("gnp"));
    generateEPSAndPDFNamesFromGNP(gnpname,epsname,pdfname);
    //----------------------------------------------------
    ofstream ofil;
-   ofil.open(gnpname.c_str(),ios::out);
+   ofil.open(gnpname.c_str(),std::ios::out);
    addHeaderInfo2GNP(ofil,minval2plot,maxval2plot,linelength,tsvname,string("z"));
    ofil << "set isosample 300, 300" << endl;
    ofil << "set cntrparam cubicspline" << endl;
@@ -214,8 +214,8 @@ void HelperPlot::generateHeatMap(optFlags &options,char *argv[],const string &ts
    ofil << "unset key" << endl;
    ofil << "set contour base" << endl;
    int noconts=DEFAULTNUMBEROFCONTOURLINES;
-   solreal dcont=(maxval2plot-minval2plot)/solreal(noconts);
-   solreal contval=md1lmin+0.25e0*dcont;
+   double dcont=(maxval2plot-minval2plot)/double(noconts);
+   double contval=md1lmin+0.25e0*dcont;
    ofil << "set cntrparam cubicspline" << endl;
    ofil << "set cntrparam levels ";
    if ( !(options.setinccont) ) {
@@ -253,7 +253,7 @@ void HelperPlot::generateHeatMap(optFlags &options,char *argv[],const string &ts
    }
    if (!options.showatlbls) {ofil << "#";}
    ofil << "set style fill solid 1.0 border lt -1" << endl;
-   solreal at1relpos,at2relpos,cpoffset;
+   double at1relpos,at2relpos,cpoffset;
    if ( options.centredats ) {
       at1relpos=-0.25;
       at2relpos=0.25;
@@ -304,7 +304,7 @@ void HelperPlot::generateHeatMap(optFlags &options,char *argv[],const string &ts
          ofil << " offset character -1,0 font \",8\""<< endl;
       }
    }
-   solreal lowoffset=0.0,uppoffset=1.0;
+   double lowoffset=0.0,uppoffset=1.0;
    if ( options.centredats ) { lowoffset=-0.5; uppoffset=0.5; }
    if (!options.showatlbls) {ofil << "#";}
    ofil << "set arrow 1 nohead lt 2 lc rgb 'black' lw 1 from " << (at1relpos*linelength) <<
@@ -346,8 +346,8 @@ void HelperPlot::generateHeatMap(optFlags &options,char *argv[],const string &ts
    //system(contourtempname.c_str());
 }
 void HelperPlot::generateVectorField(optFlags &options,char *argv[],const string &tsvname,bondNetWork &bn,DeMat1CriticalPointNetworkSL &cp,
-      solreal **xx,int nptsinline,solreal minval2plot,\
-      solreal maxval2plot,solreal maggradmin,solreal maggradmax,solreal linelength,solreal md1lmin,solreal md1dmax,int idx1,int idx2) {
+      double **xx,int nptsinline,double minval2plot,\
+      double maxval2plot,double maggradmin,double maggradmax,double linelength,double md1lmin,double md1dmax,int idx1,int idx2) {
    char prop='D';
    if ( options.prop2plot ) {prop=argv[options.prop2plot][0];}
    string gnpname=tsvname,epsname,pdfname;
@@ -356,7 +356,7 @@ void HelperPlot::generateVectorField(optFlags &options,char *argv[],const string
    generateEPSAndPDFNamesFromGNP(gnpname,epsname,pdfname);
    //----------------------------------------------------
    ofstream ofil;
-   ofil.open(gnpname.c_str(),ios::out);
+   ofil.open(gnpname.c_str(),std::ios::out);
    addHeaderInfo2GNP(ofil,minval2plot,maxval2plot,linelength,tsvname,string("colorbar"));
    ofil << "set isosample 300, 300" << endl;
    ofil << "set cntrparam cubicspline" << endl;
@@ -370,8 +370,8 @@ void HelperPlot::generateVectorField(optFlags &options,char *argv[],const string
    ofil << "unset key" << endl;
    ofil << "set contour base" << endl;
    int noconts=DEFAULTNUMBEROFCONTOURLINES;
-   solreal dcont=(maxval2plot-minval2plot)/solreal(noconts);
-   solreal contval=md1lmin+0.25e0*dcont;
+   double dcont=(maxval2plot-minval2plot)/double(noconts);
+   double contval=md1lmin+0.25e0*dcont;
    ofil << "set cntrparam cubicspline" << endl;
    ofil << "set cntrparam levels ";
    if ( !(options.setinccont) ) {
@@ -409,7 +409,7 @@ void HelperPlot::generateVectorField(optFlags &options,char *argv[],const string
    }
    if (!options.showatlbls) {ofil << "#";}
    ofil << "set style fill solid 1.0 border lt -1" << endl;
-   solreal at1relpos,at2relpos,cpoffset;
+   double at1relpos,at2relpos,cpoffset;
    if ( options.centredats ) {
       at1relpos=-0.25;
       at2relpos=0.25;
@@ -460,7 +460,7 @@ void HelperPlot::generateVectorField(optFlags &options,char *argv[],const string
          ofil << " offset character -1,0 font \",8\""<< endl;
       }
    }
-   solreal lowoffset=0.0,uppoffset=1.0;
+   double lowoffset=0.0,uppoffset=1.0;
    if ( options.centredats ) { lowoffset=-0.5; uppoffset=0.5; }
    if (!options.showatlbls) {ofil << "#";}
    ofil << "set arrow 1 nohead lt 2 lc rgb 'black' lw 1 from " << (at1relpos*linelength) <<
@@ -545,8 +545,8 @@ void HelperPlot::generateVectorField(optFlags &options,char *argv[],const string
    GnuplotTools::RenderGnpFile(gnpname,rmgnp);
    GnuplotTools::eps2pdf(epsname);
 }
-void HelperPlot::addHeaderInfo2GNP(ofstream &ofil,solreal minval,solreal maxval,\
-         solreal dimpar,string datortsv,string axis) {
+void HelperPlot::addHeaderInfo2GNP(ofstream &ofil,double minval,double maxval,\
+         double dimpar,string datortsv,string axis) {
    ofil << "#\n#File generated by DensToolKit (dtkdemat1)\n#" << endl;
    ofil << "namedatfile='" << datortsv << "'" << endl;
    ofil << "#\n#Sets the minimum and maximum value to show in\n#the " << axis << " axis of the plot." << endl;

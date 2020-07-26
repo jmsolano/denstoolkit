@@ -278,7 +278,7 @@ void getNofMolOrbFromFileWFX(ifstream &ifil,int &nmo) {
    ifil >> nmo;
 }
 /* ************************************************************************** */
-void getNucCartCoordsFromFileWFX(ifstream &ifil,const int nn,solreal* &rr) {
+void getNucCartCoordsFromFileWFX(ifstream &ifil,const int nn,double* &rr) {
    if (!rr) {MyMemory::Alloc1DRealArray(string("NuclCartCoords"),3*nn,rr);}
    ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Nuclear Cartesian Coordinates")));
    int ind=0;
@@ -291,7 +291,7 @@ void getNucCartCoordsFromFileWFX(ifstream &ifil,const int nn,solreal* &rr) {
    return;
 }
 /* ************************************************************************** */
-void getNucCartCoordsFromFileWFX(ifstream &ifil,const int nn,solreal** &rr3) {
+void getNucCartCoordsFromFileWFX(ifstream &ifil,const int nn,double** &rr3) {
    if (!rr3) {MyMemory::Alloc2DRealArray(string("NuclCartCoords"),nn,3,rr3);}
    ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Nuclear Cartesian Coordinates")));
    for (int i=0; i<nn; i++) {
@@ -339,7 +339,7 @@ void getAtLabelsFromFileWFX(ifstream &ifil,const int nn,string* &al) {
    return;
 }
 /* ************************************************************************** */
-void getAtChargesFromFileWFX(ifstream &ifil,const int nn,solreal* &ach) {
+void getAtChargesFromFileWFX(ifstream &ifil,const int nn,double* &ach) {
    if (!ach) {MyMemory::Alloc1DRealArray(string("ach"),nn,ach);}
    //Reading atomic charges has a conflict with wfx having pseudopotentials.
    //ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Nuclear Charges")));
@@ -402,7 +402,7 @@ void getEDFPrimTypesFromFileWFX(ifstream &ifil,const int npr,\
    return;
 }
 /* ************************************************************************** */
-void getPrimExponentsFromFileWFX(ifstream &ifil,const int npr,solreal* &pex) {
+void getPrimExponentsFromFileWFX(ifstream &ifil,const int npr,double* &pex) {
    if (!pex) {MyMemory::Alloc1DRealArray(string("pex"),npr,pex);}
    ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Primitive Exponents")));
    for (int i=0; i<npr; i++) {ifil >> pex[i];}
@@ -410,28 +410,28 @@ void getPrimExponentsFromFileWFX(ifstream &ifil,const int npr,solreal* &pex) {
 }
 /* ************************************************************************** */
 void getEDFPrimExponentsFromFileWFX(ifstream &ifil,const int npr,\
-      const int ntot,solreal* &pex) {
+      const int ntot,double* &pex) {
    if (pex==NULL) {MyMemory::Alloc1DRealArray(string("pex"),ntot,pex);}
    ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("EDF Primitive Exponents")));
    for (int i=npr; i<ntot; ++i) {ifil >> pex[i];}
    return;
 }
 /* ************************************************************************** */
-void getMolecOrbOccNumsFromFileWFX(ifstream &ifil,const int nmo,solreal* &ocnu) {
+void getMolecOrbOccNumsFromFileWFX(ifstream &ifil,const int nmo,double* &ocnu) {
    if (!ocnu) {MyMemory::Alloc1DRealArray(string("ocnu"),nmo,ocnu);}
    ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Molecular Orbital Occupation Numbers")));
    for (int i=0; i<nmo; i++) {ifil >> ocnu[i];}
    return;
 }
 /* ************************************************************************** */
-void getMolecOrbEnergiesFromFileWFX(ifstream &ifil,const int nmo,solreal* &orben) {
+void getMolecOrbEnergiesFromFileWFX(ifstream &ifil,const int nmo,double* &orben) {
    if (!orben) {MyMemory::Alloc1DRealArray(string("orben"),nmo,orben);}
    ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Molecular Orbital Energies")));
    for (int i=0; i<nmo; i++) {ifil >> orben[i];}
    return;
 }
 /* ************************************************************************** */
-void getMolecOrbCoefficientsFromFileWFX(ifstream &ifil,const int nmo,const int npr,solreal* &tcf) {
+void getMolecOrbCoefficientsFromFileWFX(ifstream &ifil,const int nmo,const int npr,double* &tcf) {
    if (!tcf) {MyMemory::Alloc1DRealArray(string("tcf"),(nmo*npr),tcf);}
    ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Molecular Orbital Primitive Coefficients")));
    for (int i=0; i<nmo; i++) {
@@ -444,7 +444,7 @@ void getMolecOrbCoefficientsFromFileWFX(ifstream &ifil,const int nmo,const int n
 }
 /* ************************************************************************** */
 void getEDFPrimCoefficientsFromFileWFX(ifstream &ifil,const int nedfp,\
-      solreal* &edfc) {
+      double* &edfc) {
    if (edfc==NULL) {MyMemory::Alloc1DRealArray(string("edfc"),nedfp,edfc);}
    ifil.seekg(getInitPosOfKeyInFile(ifil,true,\
             string("EDF Primitive Coefficients")));
@@ -452,7 +452,7 @@ void getEDFPrimCoefficientsFromFileWFX(ifstream &ifil,const int nedfp,\
    return;
 }
 /* ************************************************************************** */
-void getTotEnerAndVirialFromFileWFX(ifstream &ifil,solreal &tote,solreal &vir) {
+void getTotEnerAndVirialFromFileWFX(ifstream &ifil,double &tote,double &vir) {
    ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Energy = T + Vne + Vee + Vnn")));
    ifil >> tote;
    ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Virial Ratio (-V/T)")));

@@ -77,7 +77,7 @@ using std::setprecision;
 #include "crtflnms.h"
 
 void makeLineGnuplotFile(optFlags &opts, string &gnpn,string &outn,char thefield);
-void makePlaneGnuplotFile(optFlags &opts, string &gnpn,string &outn,solreal dimparam,\
+void makePlaneGnuplotFile(optFlags &opts, string &gnpn,string &outn,double dimparam,\
       char thefield);
 void makeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunction &wf,int theaxis,\
       int npts,char thefield);
@@ -89,7 +89,7 @@ void makeCubeFile(optFlags &opts,string &cubnam,GaussWaveFunction &wf,int npts,\
 int main (int argc, char ** argv)
 {
    const clock_t begin_time = clock();
-   const solreal begin_walltime = time(NULL);
+   const double begin_walltime = time(NULL);
    string infilnam,outfilnam,gnpnam;
    string progname;
    optFlags options;
@@ -99,7 +99,7 @@ int main (int argc, char ** argv)
    getOptions(argc,argv,options); //This processes the options from the command line.
    int dim=0,axis=0,plane=0,npts=DEFAULTPOINTSPERDIRECTION;
    char field='d';
-   solreal px,py,pz;
+   double px,py,pz;
    px=py=pz=0.0e0;
    string extralbl="";
    if (options.evdim) {
@@ -212,7 +212,7 @@ int main (int argc, char ** argv)
       cout << "The total number of points that will be computed is " << npts*npts << endl;
       cout << "Evaluating and writing " << strfield << " on a plane..." << endl;
       makePlaneTsvFile(options,outfilnam,gwf,plane,npts,field);
-      solreal maxdim=DEFAULTMAXVALUEOFP;
+      double maxdim=DEFAULTMAXVALUEOFP;
       makePlaneGnuplotFile(options,gnpnam,outfilnam,maxdim,field);
    }
    
@@ -233,9 +233,9 @@ int main (int argc, char ** argv)
    ScreenUtils::SetScrGreenBoldFont();
    ScreenUtils::PrintScrStarLine();
    cout << setprecision(3) << "CPU Time: "
-        << solreal( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
-   solreal end_walltime=time(NULL);
-   cout << "Wall-clock time: " << solreal (end_walltime-begin_walltime) << "s" << endl;
+        << double( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
+   double end_walltime=time(NULL);
+   cout << "Wall-clock time: " << double (end_walltime-begin_walltime) << "s" << endl;
 #if DEBUG
    cout << "Debuggin mode (under construction...)" << endl;
 #endif
@@ -317,7 +317,7 @@ void makeLineGnuplotFile(optFlags &opts, string &gnpn,string &outn,char thefield
 }
 //**************************************************************************************************
 
-void makePlaneGnuplotFile(optFlags &opts, string &gnpn,string &outn,solreal dimparam,char thefield)
+void makePlaneGnuplotFile(optFlags &opts, string &gnpn,string &outn,double dimparam,char thefield)
 {
    ofstream gfil;
    gfil.open(gnpn.c_str());
@@ -463,12 +463,12 @@ void makeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunction &wf,int the
 #endif
    ofstream ofile;
    ofile.open(datnam.c_str(),ios::out);
-   solreal dx,dy,dz,px,py,pz;
+   double dx,dy,dz,px,py,pz;
    dx=dy=dz=0.0e0;
    px=py=pz=0.0e0;
    switch (theaxis) {
       case 1:
-         dx=2.0e0*DEFAULTMAXVALUEOFP/solreal(npts-1);
+         dx=2.0e0*DEFAULTMAXVALUEOFP/double(npts-1);
          px=-1.0e0*DEFAULTMAXVALUEOFP;
          switch ( thefield ) {
             case 'd' :
@@ -476,7 +476,7 @@ void makeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunction &wf,int the
                   ofile << px << " " << wf.evalFTDensity(px,py,pz) << endl;
                   px+=dx;
 #if USEPROGRESSBAR
-                  ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+                  ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
                }
                break;
@@ -485,7 +485,7 @@ void makeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunction &wf,int the
                   ofile << px << " " << wf.evalFTKineticEnergy(px,py,pz) << endl;
                   px+=dx;
 #if USEPROGRESSBAR
-                  ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+                  ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
                }
                break;
@@ -495,7 +495,7 @@ void makeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunction &wf,int the
          
          break;
       case 2:
-         dy=2.0e0*DEFAULTMAXVALUEOFP/solreal(npts-1);
+         dy=2.0e0*DEFAULTMAXVALUEOFP/double(npts-1);
          py=-1.0e0*DEFAULTMAXVALUEOFP;
          switch ( thefield ) {
             case 'd' :
@@ -503,7 +503,7 @@ void makeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunction &wf,int the
                   ofile << py << " " << wf.evalFTDensity(px,py,pz) << endl;
                   py+=dy;
 #if USEPROGRESSBAR
-                  ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+                  ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
                }
                break;
@@ -512,7 +512,7 @@ void makeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunction &wf,int the
                   ofile << py << " " << wf.evalFTKineticEnergy(px,py,pz) << endl;
                   py+=dy;
 #if USEPROGRESSBAR
-                  ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+                  ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
                }
                break;
@@ -521,7 +521,7 @@ void makeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunction &wf,int the
          }
          break;
       case 3:
-         dz=2.0e0*DEFAULTMAXVALUEOFP/solreal(npts-1);
+         dz=2.0e0*DEFAULTMAXVALUEOFP/double(npts-1);
          pz=-1.0e0*DEFAULTMAXVALUEOFP;
          switch ( thefield ) {
             case 'd' :
@@ -529,7 +529,7 @@ void makeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunction &wf,int the
                   ofile << pz << " " << wf.evalFTDensity(px,py,pz) << endl;
                   pz+=dz;
 #if USEPROGRESSBAR
-                  ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+                  ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
                }
                break;
@@ -538,7 +538,7 @@ void makeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunction &wf,int the
                   ofile << pz << " " << wf.evalFTKineticEnergy(px,py,pz) << endl;
                   pz+=dz;
 #if USEPROGRESSBAR
-                  ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+                  ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
                }
               break;
@@ -560,7 +560,7 @@ void makePlaneTsvFile(optFlags &opts,string &tsvnam,GaussWaveFunction &wf,int th
 {
    ofstream ofile;
    ofile.open(tsvnam.c_str(),ios::out);
-   solreal dx,dy,dz,px,py,pz;
+   double dx,dy,dz,px,py,pz;
    dx=dy=dz=0.0e0;
    px=py=pz=0.0e0;
 #if USEPROGRESSBAR
@@ -568,8 +568,8 @@ void makePlaneTsvFile(optFlags &opts,string &tsvnam,GaussWaveFunction &wf,int th
 #endif
    switch (theplane) {
       case 1:
-         dx=2.0e0*DEFAULTMAXVALUEOFP/solreal(npts-1);
-         dy=2.0e0*DEFAULTMAXVALUEOFP/solreal(npts-1);
+         dx=2.0e0*DEFAULTMAXVALUEOFP/double(npts-1);
+         dy=2.0e0*DEFAULTMAXVALUEOFP/double(npts-1);
          px=-1.0e0*DEFAULTMAXVALUEOFP;
          switch ( thefield ) {
             case 'd' :
@@ -582,7 +582,7 @@ void makePlaneTsvFile(optFlags &opts,string &tsvnam,GaussWaveFunction &wf,int th
                   ofile << endl;
                   px+=dx;
 #if USEPROGRESSBAR
-                  ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+                  ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
                }
                break;
@@ -596,7 +596,7 @@ void makePlaneTsvFile(optFlags &opts,string &tsvnam,GaussWaveFunction &wf,int th
                   ofile << endl;
                   px+=dx;
 #if USEPROGRESSBAR
-                  ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+                  ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
                }
                break;
@@ -605,8 +605,8 @@ void makePlaneTsvFile(optFlags &opts,string &tsvnam,GaussWaveFunction &wf,int th
          }
          break;
       case 2:
-         dx=2.0e0*DEFAULTMAXVALUEOFP/solreal(npts-1);
-         dz=2.0e0*DEFAULTMAXVALUEOFP/solreal(npts-1);
+         dx=2.0e0*DEFAULTMAXVALUEOFP/double(npts-1);
+         dz=2.0e0*DEFAULTMAXVALUEOFP/double(npts-1);
          px=-1.0e0*DEFAULTMAXVALUEOFP;
          switch ( thefield ) {
             case 'd' :
@@ -619,7 +619,7 @@ void makePlaneTsvFile(optFlags &opts,string &tsvnam,GaussWaveFunction &wf,int th
                   ofile << endl;
                   px+=dx;
 #if USEPROGRESSBAR
-                  ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+                  ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
                }
                break;
@@ -633,7 +633,7 @@ void makePlaneTsvFile(optFlags &opts,string &tsvnam,GaussWaveFunction &wf,int th
                   ofile << endl;
                   px+=dx;
 #if USEPROGRESSBAR
-                  ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+                  ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
                }
                break;
@@ -642,8 +642,8 @@ void makePlaneTsvFile(optFlags &opts,string &tsvnam,GaussWaveFunction &wf,int th
          }
          break;
       case 3:
-         dy=2.0e0*DEFAULTMAXVALUEOFP/solreal(npts-1);
-         dz=2.0e0*DEFAULTMAXVALUEOFP/solreal(npts-1);
+         dy=2.0e0*DEFAULTMAXVALUEOFP/double(npts-1);
+         dz=2.0e0*DEFAULTMAXVALUEOFP/double(npts-1);
          py=-1.0e0*DEFAULTMAXVALUEOFP;
          switch ( thefield ) {
             case 'd' :
@@ -656,7 +656,7 @@ void makePlaneTsvFile(optFlags &opts,string &tsvnam,GaussWaveFunction &wf,int th
                   ofile << endl;
                   py+=dy;
 #if USEPROGRESSBAR
-                  ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+                  ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
                }
                break;
@@ -670,7 +670,7 @@ void makePlaneTsvFile(optFlags &opts,string &tsvnam,GaussWaveFunction &wf,int th
                   ofile << endl;
                   py+=dy;
 #if USEPROGRESSBAR
-                  ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+                  ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
                }
                break;
@@ -699,22 +699,22 @@ void makeCubeFile(optFlags &opts,string &cubnam,GaussWaveFunction &wf,int npts,\
       default :
          break;
    }
-   solreal px,py,pz;
+   double px,py,pz;
    px=py=pz=0.0e0;
    int boxnpts[3];
    for (int i=0; i<3; i++) {boxnpts[i]=npts;}
-   solreal xin[3],delta[3][3];
+   double xin[3],delta[3][3];
    for (int i=0; i<3; i++) {
       for (int j=0; j<3; j++) {
          delta[i][j]=0.0e0;
       }
-      delta[i][i]=2.0e0*DEFAULTMAXVALUEOFP/solreal(boxnpts[i]-1);
+      delta[i][i]=2.0e0*DEFAULTMAXVALUEOFP/double(boxnpts[i]-1);
       xin[i]=-DEFAULTMAXVALUEOFP;
    }
    ofstream ofile;
    ofile.open(cubnam.c_str(),ios::out);
    writeCubeHeader(ofile,wf.title[0],comments,boxnpts,xin,delta,wf.nNuc,wf.atCharge,wf.R);
-   solreal *prop1d;
+   double *prop1d;
    MyMemory::Alloc1DRealArray("prop1d",boxnpts[2],prop1d);
    cout << "The size of the grid will be " << boxnpts[0] << " x "
       << boxnpts[1] << " x " << boxnpts[2] << endl;
@@ -741,7 +741,7 @@ void makeCubeFile(optFlags &opts,string &cubnam,GaussWaveFunction &wf,int npts,\
             }
             px+=delta[0][0];
 #if USEPROGRESSBAR
-            ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((boxnpts[0]-1))));
+            ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((boxnpts[0]-1))));
 #endif
          }
          cout << endl;
@@ -762,7 +762,7 @@ void makeCubeFile(optFlags &opts,string &cubnam,GaussWaveFunction &wf,int npts,\
             }
             px+=delta[0][0];
 #if USEPROGRESSBAR
-            ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((boxnpts[0]-1))));
+            ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((boxnpts[0]-1))));
 #endif
          }
          cout << endl;
@@ -770,7 +770,7 @@ void makeCubeFile(optFlags &opts,string &cubnam,GaussWaveFunction &wf,int npts,\
       default :
          break;
    }
-   //writeCubeProp(ofstream &ofil,int dim,solreal* (&prop));
+   //writeCubeProp(ofstream &ofil,int dim,double* (&prop));
    ofile.close();
    MyMemory::Dealloc1DRealArray(prop1d);
 }

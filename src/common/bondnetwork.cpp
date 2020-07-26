@@ -37,15 +37,14 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
-
-
 #ifndef _BONDNETWORK_CPP_
 #define _BONDNETWORK_CPP_
 
 #ifndef CHOOSEPOVVERSION36
 #define CHOOSEPOVVERSION36 0
 #endif
+#include <cstdlib>
+#include <cmath>
 
 #include "bondnetwork.h"
 #include "povraytools.h"
@@ -135,7 +134,7 @@ bool bondNetWork::readFromFileWFN(string inname) {
    tif.seekg(tif.beg);
    nTit=1;
    processFirstDataStringinWFNFile(tif,title,orDe,nmo,npr,nNuc);
-   solreal *atch,*tmprad;
+   double *atch,*tmprad;
    processCentersWFN(tif,nNuc,atLbl,tmprad,atch);
    MyMemory::Alloc2DRealArray(string("R-readwfn-"),nNuc,3,R);
    MyMemory::Alloc1DIntArray(string("atNum"),nNuc,atNum);
@@ -165,13 +164,13 @@ bool bondNetWork::readFromFile(string inname) {
    }
 }
 //**********************************************************************************************
-solreal bondNetWork::dist(int i, int j) {
+double bondNetWork::dist(int i, int j) {
 #if DEBUG
    if ((i>=nNuc)||(j>=nNuc)) {
       cout << "Error: Attempting to obtain information from a non-existent nucleus...\n";
    }
 #endif
-   solreal d;
+   double d;
    d=(R[i][0]-R[j][0])*(R[i][0]-R[j][0]);
    d+=(R[i][1]-R[j][1])*(R[i][1]-R[j][1]);
    d+=(R[i][2]-R[j][2])*(R[i][2]-R[j][2]);
@@ -195,7 +194,7 @@ bool bondNetWork::lookForBonds(void) {
       cout << "Unknonw error from " << __FILE__ << ", line: " << __LINE__ << endl;
       return false;
    }
-   solreal d,vdwd,clsstatd=1.0e+50;
+   double d,vdwd,clsstatd=1.0e+50;
    for (int i=0; i<nNuc; i++) {
       for (int j=i+1; j<nNuc; j++) {
          d=dist(i,j);
@@ -217,7 +216,7 @@ bool bondNetWork::lookForBonds(void) {
    return true;
 }
 //**********************************************************************************************
-void bondNetWork::addBond(int m, int n,solreal dd) {
+void bondNetWork::addBond(int m, int n,double dd) {
    int k=0;
    while (k<MAXBONDINGATOMS) {
       if (bNet[m][k]>0) {
@@ -285,7 +284,7 @@ bool bondNetWork::makePOVFile(string pnam,POVRayConfiguration &pvp) {
 //**********************************************************************************************
 void bondNetWork::putNuclei(ofstream & pof) {
    int atomn;
-   solreal atrad;
+   double atrad;
    for (int i=0; i<nNuc; i++) {
       atomn=atNum[i];
       if (spaceFillingMode) {
@@ -306,7 +305,7 @@ void bondNetWork::putNuclei(ofstream & pof) {
 void bondNetWork::putBonds(ofstream &pof) {
    pof << "union{" << endl;
    int k=0,atni,atnk;
-   solreal startpt[3],frak1;
+   double startpt[3],frak1;
    for (int i=0; i<nNuc; i++) {
       for (int j=0; j<MAXBONDINGATOMS; j++) {
          k=bNet[i][j];
@@ -336,7 +335,7 @@ void bondNetWork::putBonds(ofstream &pof) {
 }
 //**********************************************************************************************
 void bondNetWork::centerMolecule() {
-   solreal trn[3];
+   double trn[3];
    for (int i=0; i<3; i++) {
       trn[i]=0.5e0*(rmax[i]+rmin[i]);
    }
@@ -350,7 +349,7 @@ void bondNetWork::centerMolecule() {
 //**********************************************************************************************
 void bondNetWork::calcViewRadius(void) {
    seekRMaxMin();
-   solreal rmagmax=0.0e0,rmagmin=0.0e0;
+   double rmagmax=0.0e0,rmagmin=0.0e0;
    for (int i=0; i<3; i++) {
       rmagmax+=(rmax[i]*rmax[i]);
       rmagmin+=(rmin[i]*rmin[i]);

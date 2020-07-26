@@ -58,7 +58,7 @@ using std::ofstream;
 
 
 /* ************************************************************************** */
-solreal const CircleDots3D::twoPi=6.28318530717958647692529e0;
+double const CircleDots3D::twoPi=6.28318530717958647692529e0;
 /* ************************************************************************** */
 CircleDots3D::CircleDots3D() {
    init();
@@ -76,7 +76,7 @@ void CircleDots3D::init() {
    imsetup=havee1=havee2=havee3=false;
 }
 /* ************************************************************************** */
-solreal CircleDots3D::getCartCoord(const int i,const int j) {
+double CircleDots3D::getCartCoord(const int i,const int j) {
    if ( (xx_!=NULL) && (i<npts_) && (j<3) ) {
       return xx_[i][j];
    } else {
@@ -106,7 +106,7 @@ solreal CircleDots3D::getCartCoord(const int i,const int j) {
    return 0.0e0;
 }
 /* ************************************************************************** */
-solreal CircleDots3D::getPhi(const int i) {
+double CircleDots3D::getPhi(const int i) {
    if ( (xx_!=NULL) && (i<npts_) ) {
       return xx_[i][3];
    } else {
@@ -129,7 +129,7 @@ solreal CircleDots3D::getPhi(const int i) {
    return 0.0e0;
 }
 /* ************************************************************************** */
-void CircleDots3D::setE1(const solreal x,const solreal y,const solreal z) {
+void CircleDots3D::setE1(const double x,const double y,const double z) {
    ue1_[0]=x; ue1_[1]=y; ue1_[2]=z;
    if ( sqrt(ue1_[0]*ue1_[0]+ue1_[1]*ue1_[1]+ue1_[2]*ue1_[2])<=0.0e0 ) {
       ScreenUtils::DisplayErrorMessage("Please provide a non-zero vector!");
@@ -142,7 +142,7 @@ void CircleDots3D::setE1(const solreal x,const solreal y,const solreal z) {
    havee1=true;
 }
 /* ************************************************************************** */
-void CircleDots3D::setE2(const solreal x,const solreal y,const solreal z) {
+void CircleDots3D::setE2(const double x,const double y,const double z) {
    ue2_[0]=x; ue2_[1]=y; ue2_[2]=z;
    if ( sqrt(ue2_[0]*ue2_[0]+ue2_[1]*ue2_[1]+ue2_[2]*ue2_[2])<=0.0e0 ) {
       ScreenUtils::DisplayErrorMessage("Please provide a non-zero vector!");
@@ -155,7 +155,7 @@ void CircleDots3D::setE2(const solreal x,const solreal y,const solreal z) {
    havee2=true;
 }
 /* ************************************************************************** */
-void CircleDots3D::setE1AndE2(const solreal (&ee1)[3],const solreal (&ee2)[3]) {
+void CircleDots3D::setE1AndE2(const double (&ee1)[3],const double (&ee2)[3]) {
    for ( int i=0 ; i<3 ; ++i ) {
       ue1_[i]=ee1[i];
       ue2_[i]=ee2[i];
@@ -191,11 +191,11 @@ void CircleDots3D::setupCircle(void) {
       e3_[i]=ue3_[i]; normalizeV3(e3_);
       crossProductV3(e3_,e1_,e2_); normalizeV3(e2_);
    }
-   dphi_=twoPi/solreal(npts_-1);
+   dphi_=twoPi/double(npts_-1);
    MyMemory::Alloc2DRealArray("xx_",npts_,4,xx_);
-   solreal phi,cp,sp;
+   double phi,cp,sp;
    for ( int i=0 ; i<npts_ ; ++i ) {
-      phi=solreal(i)*dphi_;
+      phi=double(i)*dphi_;
       cp=cos(phi)*radius_; sp=sin(phi)*radius_;
       for ( int j=0 ; j<3 ; ++j ) {
          xx_[i][j] =(cp*e1_[j]);
@@ -222,7 +222,7 @@ void CircleDots3D::displayCoordinates(void) {
    ScreenUtils::PrintV3Comp("e2: ",e2_);
    ScreenUtils::PrintV3Comp("e3: ",e3_);
    ScreenUtils::PrintScrStarLine();
-   int nnww=floor(log10(solreal(npts_-1)))+1;
+   int nnww=floor(log10(double(npts_-1)))+1;
    for ( int i=0 ; i<npts_ ; ++i ) {
       cout << "P[" << std::setw(nnww) << std::setfill('0') << i << "]: ";
       for ( int j=0 ; j<4 ; ++j ) { cout << std::setw(18) << xx_[i][j]; }
@@ -256,7 +256,7 @@ void CircleDots3D::writeCoordinates(const string &oname,bool wrtoo) {
    ofil.close();
 }
 /* ************************************************************************** */
-void CircleDots3D::setOrigin(const solreal x,const solreal y,const solreal z) {
+void CircleDots3D::setOrigin(const double x,const double y,const double z) {
    oo_[0]=x; oo_[1]=y; oo_[2]=z;
 }
 /* ************************************************************************** */

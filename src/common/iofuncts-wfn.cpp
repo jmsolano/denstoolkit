@@ -110,7 +110,7 @@ void processFirstDataStringinWFNFile(ifstream &ifil,string* &tit,string &orbdesc
    }
 }
 /* ********************************************************************************************* */
-void processCentersWFN(ifstream &ifil,const int nnu,string* &atlbl,solreal* &rr,solreal* &atch) {
+void processCentersWFN(ifstream &ifil,const int nnu,string* &atlbl,double* &rr,double* &atch) {
    MyMemory::Alloc1DStringArray("atlbl",nnu,atlbl);
    MyMemory::Alloc1DRealArray("rr",3*nnu,rr);
    MyMemory::Alloc1DRealArray("atch",nnu,atch);
@@ -145,7 +145,7 @@ void processCentersWFN(ifstream &ifil,const int nnu,string* &atlbl,solreal* &rr,
    }
 }
 /* ********************************************************************************************* */
-void processPrimitivesWFN(ifstream &ifil,const int npr,int* &pricen,int* &primty,solreal* &prexp) {
+void processPrimitivesWFN(ifstream &ifil,const int npr,int* &pricen,int* &primty,double* &prexp) {
    MyMemory::Alloc1DIntArray("pricen",npr,pricen);
    MyMemory::Alloc1DIntArray("primty",npr,primty);
    MyMemory::Alloc1DRealArray("prexp",npr,prexp);
@@ -204,7 +204,7 @@ void processPrimitivesWFN(ifstream &ifil,const int npr,int* &pricen,int* &primty
             if ((line[10]=='D')||(line[10]=='d')) {
                line[10]='e';
             }
-            prexp[count]=(solreal)atof((line.substr(0,14)).c_str());
+            prexp[count]=(double)atof((line.substr(0,14)).c_str());
             count++;
             line.erase(0,14);
          }
@@ -213,7 +213,7 @@ void processPrimitivesWFN(ifstream &ifil,const int npr,int* &pricen,int* &primty
 }
 /* ********************************************************************************************* */
 void processMolecularOrbitalPropsAndCoefs(ifstream &ifil,const int norb,const int npr
-                                 ,solreal* &ocn,solreal* &moe,solreal* &moc) {
+                                 ,double* &ocn,double* &moe,double* &moc) {
    MyMemory::Alloc1DRealArray("moc",(norb*npr),moc);
    MyMemory::Alloc1DRealArray("ocn",norb,ocn);
    MyMemory::Alloc1DRealArray("moe",norb,moe);
@@ -241,7 +241,7 @@ void processMolecularOrbitalPropsAndCoefs(ifstream &ifil,const int norb,const in
                if ((line[12]=='D')||(line[12]=='d')) {
                   line[12]='e';
                }
-               moc[(k*npr)+count]=(solreal)atof((line.substr(0,16)).c_str());
+               moc[(k*npr)+count]=(double)atof((line.substr(0,16)).c_str());
                count++;
                line.erase(0,16);
             }
@@ -250,7 +250,7 @@ void processMolecularOrbitalPropsAndCoefs(ifstream &ifil,const int norb,const in
    }
 }
 /* ********************************************************************************************* */
-void getEnergyAndVirial(ifstream &ifil,solreal &theener,solreal &thevir) {
+void getEnergyAndVirial(ifstream &ifil,double &theener,double &thevir) {
    string line;
    getline(ifil,line);
    int pos;
@@ -258,11 +258,11 @@ void getEnergyAndVirial(ifstream &ifil,solreal &theener,solreal &thevir) {
    line.erase(0,pos+1);
    while (line[0]==' ') {line.erase(0,1);}
    pos=line.find_first_of(' ');
-   theener=(solreal)atof((line.substr(0,pos)).c_str());
+   theener=(double)atof((line.substr(0,pos)).c_str());
    pos=line.find_first_of('=');
    line.erase(0,pos+1);
    while (line[0]==' ') {line.erase(0,1);}
-   thevir=(solreal)atof(line.c_str());
+   thevir=(double)atof(line.c_str());
 }
 /* ********************************************************************************************* */
 /* ********************************************************************************************* */

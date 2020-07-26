@@ -37,17 +37,8 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
-
-
 #ifndef _IOFUNCTS_WFX_H_
 #define _IOFUNCTS_WFX_H_
-
-#ifndef _HAVE_DEF_SOLREAL_TYPE_
-#define _HAVE_DEF_SOLREAL_TYPE_
-typedef double solreal;
-#endif
-
 #include <string>
 using namespace std;
 #include <fstream>
@@ -69,10 +60,10 @@ void getNofNucleiFromFileWFX(ifstream &ifil, int &nnuc);
 void getNofPrimFromFileWFX(ifstream &ifil,int &npri);
 void getNofEDFPrimFromFileWFX(ifstream &ifil,const int nedfc,int &nedfprim);
 void getNofMolOrbFromFileWFX(ifstream &ifil,int &nmo);
-void getNucCartCoordsFromFileWFX(ifstream &ifil,const int nn,solreal* &rr);
-void getNucCartCoordsFromFileWFX(ifstream &ifil,const int nn,solreal** &rr3);
+void getNucCartCoordsFromFileWFX(ifstream &ifil,const int nn,double* &rr);
+void getNucCartCoordsFromFileWFX(ifstream &ifil,const int nn,double** &rr3);
 void getAtLabelsFromFileWFX(ifstream &ifil,const int nn,string* &al);
-void getAtChargesFromFileWFX(ifstream &ifil,const int nn,solreal* &ach);
+void getAtChargesFromFileWFX(ifstream &ifil,const int nn,double* &ach);
 int getAtNumbersFromFileWFX(ifstream &ifil,const int nn,int* &anu);
 void getNofElectronsFromFileWFX(ifstream &ifil,int &nel);
 void getNofCoreElectronsFromFileWFX(ifstream &ifil,int &ncel);
@@ -82,17 +73,17 @@ void getEDFPrimCentersFromFileWFX(ifstream &ifil,const int npr,\
 void getPrimTypesFromFileWFX(ifstream &ifil,const int npr,int* &pt);
 void getEDFPrimTypesFromFileWFX(ifstream &ifil,const int npr,\
       const int ntot,int* &pt);
-void getPrimExponentsFromFileWFX(ifstream &ifil,const int npr,solreal* &pex);
+void getPrimExponentsFromFileWFX(ifstream &ifil,const int npr,double* &pex);
 void getEDFPrimExponentsFromFileWFX(ifstream &ifil,const int npr,\
-      const int ntot,solreal* &pex);
-void getMolecOrbOccNumsFromFileWFX(ifstream &ifil,const int nmo,solreal* &ocnu);
-void getMolecOrbEnergiesFromFileWFX(ifstream &ifil,const int nmo,solreal* &orben);
-void getMolecOrbCoefficientsFromFileWFX(ifstream &ifil,const int nmo,const int npr,solreal* &tcf);
-void getTotEnerAndVirialFromFileWFX(ifstream &ifil,solreal &tote,solreal &vir);
+      const int ntot,double* &pex);
+void getMolecOrbOccNumsFromFileWFX(ifstream &ifil,const int nmo,double* &ocnu);
+void getMolecOrbEnergiesFromFileWFX(ifstream &ifil,const int nmo,double* &orben);
+void getMolecOrbCoefficientsFromFileWFX(ifstream &ifil,const int nmo,const int npr,double* &tcf);
+void getTotEnerAndVirialFromFileWFX(ifstream &ifil,double &tote,double &vir);
 void countEDFCentersFromFileWFX(ifstream &ifil,int &nedfc);
 void getEDFExistenceFromFileWFX(ifstream &ifil,bool &ihaveEDF);
 void getEDFPrimCoefficientsFromFileWFX(ifstream &ifil,\
-      const int nedfp,solreal* &edfc);
+      const int nedfp,double* &edfc);
 
 #endif//_IOFUNCTS_WFX_H_
 

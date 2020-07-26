@@ -38,49 +38,41 @@
    README file.
 */
 
-//
-//  wfgrid1d.cpp
-//  
-//
-//  Created by Juan Manuel Solano on 2013-06-03.
-//
-//
-
+/* wfgrid1d.cpp
+   Created by Juan Manuel Solano on 2013-06-03.
+*/
 #ifndef _WFGRID1D_CPP_
 #define _WFGRID1D_CPP_
-
+#include <cstdlib>
+#include <iostream>
+using std::cout;
+using std::endl;
 #include "wfgrid1d.h"
 #include "mymemory.h"
 #include "mymath.h"
 
-/* ********************************************************************************** */
-/* ********************************************************************************** */
 waveFunctionGrid1D::waveFunctionGrid1D() {
    for (int i=0; i<3; i++) {
       Ca[i]=0.0e0;
       Cb[i]=0.0e0;
    }
    npts=DEFAULTPOINTSPERDIRECTION;
-   dx=1.0e0/solreal(DEFAULTPOINTSPERDIRECTION);
+   dx=1.0e0/double(DEFAULTPOINTSPERDIRECTION);
    comments=string("#");
    prop1d=NULL;
    prop2plot=NONE;
    imsetup=false;
 }
-/* ********************************************************************************** */
 waveFunctionGrid1D::~waveFunctionGrid1D() {
    MyMemory::Dealloc1DRealArray(prop1d);
 }
-/* ********************************************************************************** */
 void waveFunctionGrid1D::setNPts(int nn) {
    npts=nn;
    return;
 }
-/* ********************************************************************************** */
 int waveFunctionGrid1D::getNPts(void) {
    return npts;
 }
-/* ********************************************************************************** */
 void waveFunctionGrid1D::setUpSimpleLine(bondNetWork &bn,int na,int nb) {
    if (!(bn.imstp())) {
       cout << "Error: Trying to use a non set-up bondNetWork object!\n";
@@ -101,26 +93,25 @@ void waveFunctionGrid1D::setUpSimpleLine(bondNetWork &bn,int na,int nb) {
       exit(1);
       return;
    }
-   solreal va[3],vb[3];
+   double va[3],vb[3];
    for (int i=0; i<3; i++) {
       va[i]=bn.R[na][i];
       vb[i]=bn.R[nb][i];
    }
    setUpSimpleLine(bn,va,vb);
-   dx=2.0e0/solreal(npts-1);
+   dx=2.0e0/double(npts-1);
    MyMemory::Alloc1DRealArray("prop1d",npts,prop1d);
    imsetup=true;
    return;
 }
-/* ********************************************************************************** */
-void waveFunctionGrid1D::setUpSimpleLine(bondNetWork &bn,solreal (&ta)[3],solreal (&tb)[3]) {
-   solreal eta[3],orig[3];
+void waveFunctionGrid1D::setUpSimpleLine(bondNetWork &bn,double (&ta)[3],double (&tb)[3]) {
+   double eta[3],orig[3];
    for (int i=0; i<3; i++) {
       eta[i]=tb[i]-ta[i];
       orig[i]=0.5e0*(ta[i]+tb[i]);
    }
    normalizeV3(eta);
-   solreal tmp;
+   double tmp;
    maxdim=tmp=0.0e0;
    for (int i=0; i<3; i++) {
       tmp+=(bn.bbmin[i]*bn.bbmin[i]);
@@ -142,14 +133,13 @@ void waveFunctionGrid1D::setUpSimpleLine(bondNetWork &bn,solreal (&ta)[3],solrea
    //cout << "Or: " << orig[0] << " " << orig[1] << " " << orig[2] << endl;
    return;
 }
-/* ********************************************************************************** */
 bool waveFunctionGrid1D::writeLineDatRho(ofstream &ofil,GaussWaveFunction &wf) {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
       cout << "No output will be written." << endl;
       for (int j=0; j<4; j++) {
          for (int i=0; i<4; i++) {
-            ofil << solreal(i) << " " << 2.0e0*solreal(i) << " " << 3.2e0*solreal(i) << endl;
+            ofil << double(i) << " " << 2.0e0*double(i) << " " << 3.2e0*double(i) << endl;
          }
          ofil << endl;
       }
@@ -158,28 +148,27 @@ bool waveFunctionGrid1D::writeLineDatRho(ofstream &ofil,GaussWaveFunction &wf) {
 #endif
       return false;
    }
-   solreal delta[3],xx[3];
+   double delta[3],xx[3];
    for (int i=0; i<3; i++) {
       delta[i]=(Cb[i]-Ca[i]);
       xx[i]=Ca[i];
    }
-   for (int i=0; i<3; i++) {delta[i]/=solreal(npts-1);}
+   for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
       prop1d[i]=wf.evalDensity(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
-   solreal e2=-1.0e0*maxdim;
+   double e2=-1.0e0*maxdim;
    for (int i=0; i<npts; i++) {
       ofil << e2 << " " << prop1d[i] << endl;
       e2+=dx*maxdim;
    }
    return true;
 }
-/* ********************************************************************************** */
 void waveFunctionGrid1D::setUpSimpleLine(bondNetWork &bn,int na) {
    if (!(bn.imstp())) {
       cout << "Error: Trying to use a non set-up bondNetWork object!\n";
@@ -197,25 +186,24 @@ void waveFunctionGrid1D::setUpSimpleLine(bondNetWork &bn,int na) {
 #endif
       return;
    }
-   solreal va[3],vb[3];
+   double va[3],vb[3];
    for (int i=0; i<3; i++) {
       va[i]=bn.R[na][i]-1.0e0;
       vb[i]=va[i]+2.0e0;
    }
    setUpSimpleLine(bn,va,vb);
-   dx=2.0e0/solreal(npts-1);
+   dx=2.0e0/double(npts-1);
    MyMemory::Alloc1DRealArray("prop1d",npts,prop1d);
    imsetup=true;
    return;
 }
-/* ********************************************************************************** */
 bool waveFunctionGrid1D::writeLineDatLapRho(ofstream &ofil,GaussWaveFunction &wf) {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
       cout << "No output will be written." << endl;
       for (int j=0; j<4; j++) {
          for (int i=0; i<4; i++) {
-            ofil << solreal(i) << " " << 2.0e0*solreal(i) << " " << 3.2e0*solreal(i) << endl;
+            ofil << double(i) << " " << 2.0e0*double(i) << " " << 3.2e0*double(i) << endl;
          }
          ofil << endl;
       }
@@ -224,35 +212,34 @@ bool waveFunctionGrid1D::writeLineDatLapRho(ofstream &ofil,GaussWaveFunction &wf
 #endif
       return false;
    }
-   solreal delta[3],xx[3];
+   double delta[3],xx[3];
    for (int i=0; i<3; i++) {
       delta[i]=(Cb[i]-Ca[i]);
       xx[i]=Ca[i];
    }
-   for (int i=0; i<3; i++) {delta[i]/=solreal(npts-1);}
+   for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
       prop1d[i]=wf.evalLapRho(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
-   solreal e2=-1.0e0*maxdim;
+   double e2=-1.0e0*maxdim;
    for (int i=0; i<npts; i++) {
       ofil << e2 << " " << prop1d[i] << endl;
       e2+=dx*maxdim;
    }
    return true;
 }
-/* ********************************************************************************** */
 bool waveFunctionGrid1D::writeLineDatELF(ofstream &ofil,GaussWaveFunction &wf) {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
       cout << "No output will be written." << endl;
       for (int j=0; j<4; j++) {
          for (int i=0; i<4; i++) {
-            ofil << solreal(i) << " " << 2.0e0*solreal(i) << " " << 3.2e0*solreal(i) << endl;
+            ofil << double(i) << " " << 2.0e0*double(i) << " " << 3.2e0*double(i) << endl;
          }
          ofil << endl;
       }
@@ -261,35 +248,34 @@ bool waveFunctionGrid1D::writeLineDatELF(ofstream &ofil,GaussWaveFunction &wf) {
 #endif
       return false;
    }
-   solreal delta[3],xx[3];
+   double delta[3],xx[3];
    for (int i=0; i<3; i++) {
       delta[i]=(Cb[i]-Ca[i]);
       xx[i]=Ca[i];
    }
-   for (int i=0; i<3; i++) {delta[i]/=solreal(npts-1);}
+   for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
       prop1d[i]=wf.evalELF(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
-   solreal e2=-1.0e0*maxdim;
+   double e2=-1.0e0*maxdim;
    for (int i=0; i<npts; i++) {
       ofil << e2 << " " << prop1d[i] << endl;
       e2+=dx*maxdim;
    }
    return true;
 }
-/* ********************************************************************************** */
 bool waveFunctionGrid1D::writeLineDatLOL(ofstream &ofil,GaussWaveFunction &wf) {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
       cout << "No output will be written." << endl;
       for (int j=0; j<4; j++) {
          for (int i=0; i<4; i++) {
-            ofil << solreal(i) << " " << 2.0e0*solreal(i) << " " << 3.2e0*solreal(i) << endl;
+            ofil << double(i) << " " << 2.0e0*double(i) << " " << 3.2e0*double(i) << endl;
          }
          ofil << endl;
       }
@@ -298,35 +284,34 @@ bool waveFunctionGrid1D::writeLineDatLOL(ofstream &ofil,GaussWaveFunction &wf) {
 #endif
       return false;
    }
-   solreal delta[3],xx[3];
+   double delta[3],xx[3];
    for (int i=0; i<3; i++) {
       delta[i]=(Cb[i]-Ca[i]);
       xx[i]=Ca[i];
    }
-   for (int i=0; i<3; i++) {delta[i]/=solreal(npts-1);}
+   for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
       prop1d[i]=wf.evalLOL(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
-   solreal e2=-1.0e0*maxdim;
+   double e2=-1.0e0*maxdim;
    for (int i=0; i<npts; i++) {
       ofil << e2 << " " << prop1d[i] << endl;
       e2+=dx*maxdim;
    }
    return true;
 }
-/* ********************************************************************************** */
 bool waveFunctionGrid1D::writeLineDatMagGradLOL(ofstream &ofil,GaussWaveFunction &wf) {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
       cout << "No output will be written." << endl;
       for (int j=0; j<4; j++) {
          for (int i=0; i<4; i++) {
-            ofil << solreal(i) << " " << 2.0e0*solreal(i) << " " << 3.2e0*solreal(i) << endl;
+            ofil << double(i) << " " << 2.0e0*double(i) << " " << 3.2e0*double(i) << endl;
          }
          ofil << endl;
       }
@@ -335,37 +320,36 @@ bool waveFunctionGrid1D::writeLineDatMagGradLOL(ofstream &ofil,GaussWaveFunction
 #endif
       return false;
    }
-   solreal delta[3],xx[3],gl[3],hl[3][3],lol;
+   double delta[3],xx[3],gl[3],hl[3][3],lol;
    for (int i=0; i<3; i++) {
       delta[i]=(Cb[i]-Ca[i]);
       xx[i]=Ca[i];
    }
-   for (int i=0; i<3; i++) {delta[i]/=solreal(npts-1);}
+   for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
       wf.evalHessLOL(xx,lol,gl,hl);
       prop1d[i]=sqrt(gl[0]*gl[0]+gl[1]*gl[1]+gl[2]*gl[2]);
       //prop1d[i]=wf.evalLOL(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
-   solreal e2=-1.0e0*maxdim;
+   double e2=-1.0e0*maxdim;
    for (int i=0; i<npts; i++) {
       ofil << e2 << " " << prop1d[i] << endl;
       e2+=dx*maxdim;
    }
    return true;
 }
-/* ********************************************************************************** */
 bool waveFunctionGrid1D::writeLineDatShannonEntropy(ofstream &ofil,GaussWaveFunction &wf) {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
       cout << "No output will be written." << endl;
       for (int j=0; j<4; j++) {
          for (int i=0; i<4; i++) {
-            ofil << solreal(i) << " " << 2.0e0*solreal(i) << " " << 3.2e0*solreal(i) << endl;
+            ofil << double(i) << " " << 2.0e0*double(i) << " " << 3.2e0*double(i) << endl;
          }
          ofil << endl;
       }
@@ -374,35 +358,34 @@ bool waveFunctionGrid1D::writeLineDatShannonEntropy(ofstream &ofil,GaussWaveFunc
 #endif
       return false;
    }
-   solreal delta[3],xx[3];
+   double delta[3],xx[3];
    for (int i=0; i<3; i++) {
       delta[i]=(Cb[i]-Ca[i]);
       xx[i]=Ca[i];
    }
-   for (int i=0; i<3; i++) {delta[i]/=solreal(npts-1);}
+   for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
       prop1d[i]=wf.evalShannonEntropy(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
-   solreal e2=-1.0e0*maxdim;
+   double e2=-1.0e0*maxdim;
    for (int i=0; i<npts; i++) {
       ofil << e2 << " " << prop1d[i] << endl;
       e2+=dx*maxdim;
    }
    return true;
 }
-/* ********************************************************************************** */
 bool waveFunctionGrid1D::writeLineDatMagGradRho(ofstream &ofil,GaussWaveFunction &wf) {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
       cout << "No output will be written." << endl;
       for (int j=0; j<4; j++) {
          for (int i=0; i<4; i++) {
-            ofil << solreal(i) << " " << 2.0e0*solreal(i) << " " << 3.2e0*solreal(i) << endl;
+            ofil << double(i) << " " << 2.0e0*double(i) << " " << 3.2e0*double(i) << endl;
          }
          ofil << endl;
       }
@@ -411,35 +394,34 @@ bool waveFunctionGrid1D::writeLineDatMagGradRho(ofstream &ofil,GaussWaveFunction
 #endif
       return false;
    }
-   solreal delta[3],xx[3];
+   double delta[3],xx[3];
    for (int i=0; i<3; i++) {
       delta[i]=(Cb[i]-Ca[i]);
       xx[i]=Ca[i];
    }
-   for (int i=0; i<3; i++) {delta[i]/=solreal(npts-1);}
+   for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
       prop1d[i]=wf.evalMagGradRho(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
-   solreal e2=-1.0e0*maxdim;
+   double e2=-1.0e0*maxdim;
    for (int i=0; i<npts; i++) {
       ofil << e2 << " " << prop1d[i] << endl;
       e2+=dx*maxdim;
    }
    return true;
 }
-/* ********************************************************************************** */
 bool waveFunctionGrid1D::writeLineDatKinetEnerDensG(ofstream &ofil,GaussWaveFunction &wf) {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
       cout << "No output will be written." << endl;
       for (int j=0; j<4; j++) {
          for (int i=0; i<4; i++) {
-            ofil << solreal(i) << " " << 2.0e0*solreal(i) << " " << 3.2e0*solreal(i) << endl;
+            ofil << double(i) << " " << 2.0e0*double(i) << " " << 3.2e0*double(i) << endl;
          }
          ofil << endl;
       }
@@ -448,35 +430,34 @@ bool waveFunctionGrid1D::writeLineDatKinetEnerDensG(ofstream &ofil,GaussWaveFunc
 #endif
       return false;
    }
-   solreal delta[3],xx[3];
+   double delta[3],xx[3];
    for (int i=0; i<3; i++) {
       delta[i]=(Cb[i]-Ca[i]);
       xx[i]=Ca[i];
    }
-   for (int i=0; i<3; i++) {delta[i]/=solreal(npts-1);}
+   for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
       prop1d[i]=wf.evalKineticEnergyG(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
-   solreal e2=-1.0e0*maxdim;
+   double e2=-1.0e0*maxdim;
    for (int i=0; i<npts; i++) {
       ofil << e2 << " " << prop1d[i] << endl;
       e2+=dx*maxdim;
    }
    return true;
 }
-/* ********************************************************************************** */
 bool waveFunctionGrid1D::writeLineDatKinetEnerDensK(ofstream &ofil,GaussWaveFunction &wf) {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
       cout << "No output will be written." << endl;
       for (int j=0; j<4; j++) {
          for (int i=0; i<4; i++) {
-            ofil << solreal(i) << " " << 2.0e0*solreal(i) << " " << 3.2e0*solreal(i) << endl;
+            ofil << double(i) << " " << 2.0e0*double(i) << " " << 3.2e0*double(i) << endl;
          }
          ofil << endl;
       }
@@ -485,34 +466,33 @@ bool waveFunctionGrid1D::writeLineDatKinetEnerDensK(ofstream &ofil,GaussWaveFunc
 #endif
       return false;
    }
-   solreal delta[3],xx[3];
+   double delta[3],xx[3];
    for (int i=0; i<3; i++) {
       delta[i]=(Cb[i]-Ca[i]);
       xx[i]=Ca[i];
    }
-   for (int i=0; i<3; i++) {delta[i]/=solreal(npts-1);}
+   for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
       prop1d[i]=wf.evalKineticEnergyK(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
    }
-   solreal e2=-1.0e0*maxdim;
+   double e2=-1.0e0*maxdim;
    for (int i=0; i<npts; i++) {
       ofil << e2 << " " << prop1d[i] << endl;
       e2+=dx*maxdim;
    }
    return true;
 }
-/* ********************************************************************************** */
 bool waveFunctionGrid1D::writeLineDatMolElecPot(ofstream &ofil,GaussWaveFunction &wf) {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
       cout << "No output will be written." << endl;
       for (int j=0; j<4; j++) {
          for (int i=0; i<4; i++) {
-            ofil << solreal(i) << " " << 2.0e0*solreal(i) << " " << 3.2e0*solreal(i) << endl;
+            ofil << double(i) << " " << 2.0e0*double(i) << " " << 3.2e0*double(i) << endl;
          }
          ofil << endl;
       }
@@ -521,35 +501,34 @@ bool waveFunctionGrid1D::writeLineDatMolElecPot(ofstream &ofil,GaussWaveFunction
 #endif
       return false;
    }
-   solreal delta[3],xx[3];
+   double delta[3],xx[3];
    for (int i=0; i<3; i++) {
       delta[i]=(Cb[i]-Ca[i]);
       xx[i]=Ca[i];
    }
-   for (int i=0; i<3; i++) {delta[i]/=solreal(npts-1);}
+   for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
       prop1d[i]=wf.evalMolElecPot(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
-   solreal e2=-1.0e0*maxdim;
+   double e2=-1.0e0*maxdim;
    for (int i=0; i<npts; i++) {
       ofil << e2 << " " << prop1d[i] << endl;
       e2+=dx*maxdim;
    }
    return true;
 }
-/* ********************************************************************************** */
 bool waveFunctionGrid1D::writeLineDatMagLED(ofstream &ofil,GaussWaveFunction &wf) {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
       cout << "No output will be written." << endl;
       for (int j=0; j<4; j++) {
          for (int i=0; i<4; i++) {
-            ofil << solreal(i) << " " << 2.0e0*solreal(i) << " " << 3.2e0*solreal(i) << endl;
+            ofil << double(i) << " " << 2.0e0*double(i) << " " << 3.2e0*double(i) << endl;
          }
          ofil << endl;
       }
@@ -558,34 +537,34 @@ bool waveFunctionGrid1D::writeLineDatMagLED(ofstream &ofil,GaussWaveFunction &wf
 #endif
       return false;
    }
-   solreal delta[3],xx[3];
+   double delta[3],xx[3];
    for (int i=0; i<3; i++) {
       delta[i]=(Cb[i]-Ca[i]);
       xx[i]=Ca[i];
    }
-   for (int i=0; i<3; i++) {delta[i]/=solreal(npts-1);}
+   for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
       prop1d[i]=wf.evalMagLED(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
-   solreal e2=-1.0e0*maxdim;
+   double e2=-1.0e0*maxdim;
    for (int i=0; i<npts; i++) {
       ofil << e2 << " " << prop1d[i] << endl;
       e2+=dx*maxdim;
    }
    return true;
-}/* ********************************************************************************** */
+}
 bool waveFunctionGrid1D::writeLineDatRedDensGrad(ofstream &ofil,GaussWaveFunction &wf) {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
       cout << "No output will be written." << endl;
       for (int j=0; j<4; j++) {
          for (int i=0; i<4; i++) {
-            ofil << solreal(i) << " " << 2.0e0*solreal(i) << " " << 3.2e0*solreal(i) << endl;
+            ofil << double(i) << " " << 2.0e0*double(i) << " " << 3.2e0*double(i) << endl;
          }
          ofil << endl;
       }
@@ -594,34 +573,34 @@ bool waveFunctionGrid1D::writeLineDatRedDensGrad(ofstream &ofil,GaussWaveFunctio
 #endif
       return false;
    }
-   solreal delta[3],xx[3];
+   double delta[3],xx[3];
    for (int i=0; i<3; i++) {
       delta[i]=(Cb[i]-Ca[i]);
       xx[i]=Ca[i];
    }
-   for (int i=0; i<3; i++) {delta[i]/=solreal(npts-1);}
+   for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
       prop1d[i]=wf.evalReducedDensityGradient(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
-   solreal e2=-1.0e0*maxdim;
+   double e2=-1.0e0*maxdim;
    for (int i=0; i<npts; i++) {
       ofil << e2 << " " << prop1d[i] << endl;
       e2+=dx*maxdim;
    }
    return true;
-}/* ********************************************************************************** */
+}
 bool waveFunctionGrid1D::writeLineDatRoSE(ofstream &ofil,GaussWaveFunction &wf) {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
       cout << "No output will be written." << endl;
       for (int j=0; j<4; j++) {
          for (int i=0; i<4; i++) {
-            ofil << solreal(i) << " " << 2.0e0*solreal(i) << " " << 3.2e0*solreal(i) << endl;
+            ofil << double(i) << " " << 2.0e0*double(i) << " " << 3.2e0*double(i) << endl;
          }
          ofil << endl;
       }
@@ -630,35 +609,34 @@ bool waveFunctionGrid1D::writeLineDatRoSE(ofstream &ofil,GaussWaveFunction &wf) 
 #endif
       return false;
    }
-   solreal delta[3],xx[3];
+   double delta[3],xx[3];
    for (int i=0; i<3; i++) {
       delta[i]=(Cb[i]-Ca[i]);
       xx[i]=Ca[i];
    }
-   for (int i=0; i<3; i++) {delta[i]/=solreal(npts-1);}
+   for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
       prop1d[i]=wf.evalRoSE(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
-   solreal e2=-1.0e0*maxdim;
+   double e2=-1.0e0*maxdim;
    for (int i=0; i<npts; i++) {
       ofil << e2 << " " << prop1d[i] << endl;
       e2+=dx*maxdim;
    }
    return true;
 }
-/* ********************************************************************************** */
 bool waveFunctionGrid1D::writeLineDatScalarCustFld(ofstream &ofil,GaussWaveFunction &wf) {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
       cout << "No output will be written." << endl;
       for (int j=0; j<4; j++) {
          for (int i=0; i<4; i++) {
-            ofil << solreal(i) << " " << 2.0e0*solreal(i) << " " << 3.2e0*solreal(i) << endl;
+            ofil << double(i) << " " << 2.0e0*double(i) << " " << 3.2e0*double(i) << endl;
          }
          ofil << endl;
       }
@@ -667,35 +645,34 @@ bool waveFunctionGrid1D::writeLineDatScalarCustFld(ofstream &ofil,GaussWaveFunct
 #endif
       return false;
    }
-   solreal delta[3],xx[3];
+   double delta[3],xx[3];
    for (int i=0; i<3; i++) {
       delta[i]=(Cb[i]-Ca[i]);
       xx[i]=Ca[i];
    }
-   for (int i=0; i<3; i++) {delta[i]/=solreal(npts-1);}
+   for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
       prop1d[i]=wf.evalCustomScalarField(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
-   solreal e2=-1.0e0*maxdim;
+   double e2=-1.0e0*maxdim;
    for (int i=0; i<npts; i++) {
       ofil << e2 << " " << prop1d[i] << endl;
       e2+=dx*maxdim;
    }
    return true;
 }
-/* ********************************************************************************** */
 bool waveFunctionGrid1D::writeLineDatVirialPotentialEnergyDensity(ofstream &ofil,GaussWaveFunction &wf) {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
       cout << "No output will be written." << endl;
       for (int j=0; j<4; j++) {
          for (int i=0; i<4; i++) {
-            ofil << solreal(i) << " " << 2.0e0*solreal(i) << " " << 3.2e0*solreal(i) << endl;
+            ofil << double(i) << " " << 2.0e0*double(i) << " " << 3.2e0*double(i) << endl;
          }
          ofil << endl;
       }
@@ -704,35 +681,34 @@ bool waveFunctionGrid1D::writeLineDatVirialPotentialEnergyDensity(ofstream &ofil
 #endif
       return false;
    }
-   solreal delta[3],xx[3];
+   double delta[3],xx[3];
    for (int i=0; i<3; i++) {
       delta[i]=(Cb[i]-Ca[i]);
       xx[i]=Ca[i];
    }
-   for (int i=0; i<3; i++) {delta[i]/=solreal(npts-1);}
+   for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
       prop1d[i]=wf.evalVirialPotentialEnergyDensity(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
-   solreal e2=-1.0e0*maxdim;
+   double e2=-1.0e0*maxdim;
    for (int i=0; i<npts; i++) {
       ofil << e2 << " " << prop1d[i] << endl;
       e2+=dx*maxdim;
    }
    return true;
 }
-/* ********************************************************************************** */
 bool waveFunctionGrid1D::writeLineDatEllipticity(ofstream &ofil,GaussWaveFunction &wf) {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
       cout << "No output will be written." << endl;
       for (int j=0; j<4; j++) {
          for (int i=0; i<4; i++) {
-            ofil << solreal(i) << " " << 2.0e0*solreal(i) << " " << 3.2e0*solreal(i) << endl;
+            ofil << double(i) << " " << 2.0e0*double(i) << " " << 3.2e0*double(i) << endl;
          }
          ofil << endl;
       }
@@ -741,28 +717,27 @@ bool waveFunctionGrid1D::writeLineDatEllipticity(ofstream &ofil,GaussWaveFunctio
 #endif
       return false;
    }
-   solreal delta[3],xx[3];
+   double delta[3],xx[3];
    for (int i=0; i<3; i++) {
       delta[i]=(Cb[i]-Ca[i]);
       xx[i]=Ca[i];
    }
-   for (int i=0; i<3; i++) {delta[i]/=solreal(npts-1);}
+   for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
       prop1d[i]=wf.evalEllipticity(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
-      ScreenUtils::PrintProgressBar(int(100.0e0*solreal(i)/solreal((npts-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
    }
    //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
-   solreal e2=-1.0e0*maxdim;
+   double e2=-1.0e0*maxdim;
    for (int i=0; i<npts; i++) {
       ofil << e2 << " " << prop1d[i] << endl;
       e2+=dx*maxdim;
    }
    return true;
 }
-/* ********************************************************************************** */
 void waveFunctionGrid1D::makeDat(string &onam,GaussWaveFunction &wf,ScalarFieldType ft) {
    if (!wf.imldd) {
       cout << "Error: trying to use a non loaded wave function object!\nNothing done!\n";
@@ -836,6 +811,5 @@ void waveFunctionGrid1D::makeDat(string &onam,GaussWaveFunction &wf,ScalarFieldT
    ofil.close();
    return;
 }
-/* ********************************************************************************** */
 
 #endif//_WFGRID1D_CPP_

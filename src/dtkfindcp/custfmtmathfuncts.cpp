@@ -37,25 +37,25 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
-
-
 #ifndef _CUSTFMTMATHFUNCTS_CPP_
 #define _CUSTFMTMATHFUNCTS_CPP_
-
-#include "custfmtmathfuncts.h"
+#include <cstdlib>
+#include <iostream>
+using std::cout;
+using std::endl;
 #include <fstream>
 using std::ofstream;
 #include <iomanip>
 using std::setprecision;
 using std::scientific;
 using std::setw;
+#include "custfmtmathfuncts.h"
 
 void writeDatMatAtCrds(string &acfn,bondNetWork &bn) {
    ofstream ofil;
    size_t pos;
    string lbl;
-   ofil.open(acfn.c_str(),ios::out);
+   ofil.open(acfn.c_str(),std::ios::out);
    ofil << scientific << setprecision(12);
    for (int i=0; i<bn.nNuc; i++) {
       lbl=bn.atLbl[i];
@@ -70,7 +70,7 @@ void writeDatMatAtCrds(string &acfn,bondNetWork &bn) {
 }
 void writeDatMatCritPtsCrds(string &cpfn,critPtNetWork &cp) {
    ofstream ofil;
-   ofil.open(cpfn.c_str(),ios::out);
+   ofil.open(cpfn.c_str(),std::ios::out);
    ofil << scientific << setprecision(12);
    for (int i=0; i<cp.nACP; i++) {
       ofil << "acp";
@@ -97,7 +97,7 @@ void writeDatMatCritPtsCrds(string &cpfn,critPtNetWork &cp) {
 }
 void writeDatMatBondPathCrds(string &bpfn,critPtNetWork &cp) {
    ofstream ofil;
-   ofil.open(bpfn.c_str(),ios::out);
+   ofil.open(bpfn.c_str(),std::ios::out);
    ofil << scientific << setprecision(12);
    int npts,nbps;
    nbps=cp.nBCP;
