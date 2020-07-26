@@ -59,8 +59,7 @@
 #endif
 
 /* ********************************************************************************** */
-waveFunctionGrid3D::waveFunctionGrid3D()
-{
+waveFunctionGrid3D::waveFunctionGrid3D() {
    for (int i=0; i<3; i++) {
       for (int j=0; j<3; j++) {
          dx[i][j]=0.0e0;
@@ -74,13 +73,11 @@ waveFunctionGrid3D::waveFunctionGrid3D()
    imsetup=false;
 }
 /* ********************************************************************************** */
-waveFunctionGrid3D::~waveFunctionGrid3D()
-{
+waveFunctionGrid3D::~waveFunctionGrid3D() {
    MyMemory::Dealloc1DRealArray(prop1d);
 }
 /* ********************************************************************************** */
-void waveFunctionGrid3D::setUpSimpleGrid(GaussWaveFunction &wf,bondNetWork &bn)
-{
+void waveFunctionGrid3D::setUpSimpleGrid(GaussWaveFunction &wf,bondNetWork &bn) {
    if (!(bn.imstp())) {
       cout << "Error: Trying to use a non set-up bondNetWork object!\n";
       cout << "The grid could not be set up." << endl;
@@ -95,8 +92,7 @@ void waveFunctionGrid3D::setUpSimpleGrid(GaussWaveFunction &wf,bondNetWork &bn)
    return;
 }
 /* ********************************************************************************** */
-void waveFunctionGrid3D::setUpSmartCuboidGrid(GaussWaveFunction &wf,bondNetWork &bn,int nmx)
-{
+void waveFunctionGrid3D::setUpSmartCuboidGrid(GaussWaveFunction &wf,bondNetWork &bn,int nmx) {
    if (!(bn.imstp())) {
       cout << "Error: Trying to use a non set-up bondNetWork object!\n";
       cout << "The grid could not be set up." << endl;
@@ -122,8 +118,7 @@ void waveFunctionGrid3D::setUpSmartCuboidGrid(GaussWaveFunction &wf,bondNetWork 
 }
 /* ********************************************************************************** */
 void waveFunctionGrid3D::setUpCenteredGrid(GaussWaveFunction &wf,bondNetWork &bn,\
-      const int at1,const int at2,const double len,const int nmx)
-{
+      const int at1,const int at2,const double len,const int nmx) {
    if (!(bn.imstp())) {
       cout << "Error: Trying to use a non set-up bondNetWork object!\n";
       cout << "The grid could not be set up." << endl;
@@ -140,27 +135,23 @@ void waveFunctionGrid3D::setUpCenteredGrid(GaussWaveFunction &wf,bondNetWork &bn
    return;
 }
 /* ********************************************************************************** */
-void waveFunctionGrid3D::setNPts(int nx,int ny,int nz)
-{
+void waveFunctionGrid3D::setNPts(int nx,int ny,int nz) {
    npts[0]=nx;
    npts[1]=ny;
    npts[2]=nz;
    return;
 }
 /* ********************************************************************************** */
-void waveFunctionGrid3D::setNPts(int nn)
-{
+void waveFunctionGrid3D::setNPts(int nn) {
    for (int i=0; i<3; i++) {npts[i]=nn;}
    return;
 }
 /* ********************************************************************************** */
-int waveFunctionGrid3D::getNPts(int ii)
-{
+int waveFunctionGrid3D::getNPts(int ii) {
    return npts[ii];
 }
 /* ********************************************************************************** */
-void waveFunctionGrid3D::writeCubeRho(ofstream &ofil,GaussWaveFunction &wf)
-{
+void waveFunctionGrid3D::writeCubeRho(ofstream &ofil,GaussWaveFunction &wf) {
    solreal xx,yy,zz;
    xx=xin[0];
    yy=xin[1];
@@ -185,8 +176,7 @@ void waveFunctionGrid3D::writeCubeRho(ofstream &ofil,GaussWaveFunction &wf)
    return;
 }
 /* ********************************************************************************** */
-void waveFunctionGrid3D::writeCubeLapRho(ofstream &ofil,GaussWaveFunction &wf)
-{
+void waveFunctionGrid3D::writeCubeLapRho(ofstream &ofil,GaussWaveFunction &wf) {
    solreal xx,yy,zz;
    xx=xin[0];
    yy=xin[1];
@@ -211,8 +201,7 @@ void waveFunctionGrid3D::writeCubeLapRho(ofstream &ofil,GaussWaveFunction &wf)
    return;
 }
 /* ******************************************************************************* */
-void waveFunctionGrid3D::writeCubeELF(ofstream &ofil,GaussWaveFunction &wf)
-{
+void waveFunctionGrid3D::writeCubeELF(ofstream &ofil,GaussWaveFunction &wf) {
    solreal xx,yy,zz;
    xx=xin[0];
    yy=xin[1];
@@ -237,8 +226,7 @@ void waveFunctionGrid3D::writeCubeELF(ofstream &ofil,GaussWaveFunction &wf)
    return;
 }
 /* ******************************************************************************* */
-void waveFunctionGrid3D::writeCubeShannonEntropy(ofstream &ofil,GaussWaveFunction &wf)
-{
+void waveFunctionGrid3D::writeCubeShannonEntropy(ofstream &ofil,GaussWaveFunction &wf) {
    solreal xx,yy,zz;
    xx=xin[0];
    yy=xin[1];
@@ -263,8 +251,7 @@ void waveFunctionGrid3D::writeCubeShannonEntropy(ofstream &ofil,GaussWaveFunctio
    return;
 }
 /* ********************************************************************************** */
-void waveFunctionGrid3D::writeCubeMagGradRho(ofstream &ofil,GaussWaveFunction &wf)
-{
+void waveFunctionGrid3D::writeCubeMagGradRho(ofstream &ofil,GaussWaveFunction &wf) {
    solreal xx,yy,zz;
    xx=xin[0];
    yy=xin[1];
@@ -289,8 +276,7 @@ void waveFunctionGrid3D::writeCubeMagGradRho(ofstream &ofil,GaussWaveFunction &w
    return;
 }
 /* ******************************************************************************* */
-void waveFunctionGrid3D::writeCubeLOL(ofstream &ofil,GaussWaveFunction &wf)
-{
+void waveFunctionGrid3D::writeCubeLOL(ofstream &ofil,GaussWaveFunction &wf) {
    solreal xx,yy,zz;
    xx=xin[0];
    yy=xin[1];
@@ -319,8 +305,7 @@ void waveFunctionGrid3D::writeCubeLOL(ofstream &ofil,GaussWaveFunction &wf)
    return;
 }
 /* ********************************************************************************** */
-void waveFunctionGrid3D::writeCubeKinetEnerDensG(ofstream &ofil,GaussWaveFunction &wf)
-{
+void waveFunctionGrid3D::writeCubeKinetEnerDensG(ofstream &ofil,GaussWaveFunction &wf) {
    solreal xx,yy,zz;
    xx=xin[0];
    yy=xin[1];
@@ -345,8 +330,7 @@ void waveFunctionGrid3D::writeCubeKinetEnerDensG(ofstream &ofil,GaussWaveFunctio
    return;
 }
 /* ********************************************************************************** */
-void waveFunctionGrid3D::writeCubeKinetEnerDensK(ofstream &ofil,GaussWaveFunction &wf)
-{
+void waveFunctionGrid3D::writeCubeKinetEnerDensK(ofstream &ofil,GaussWaveFunction &wf) {
    solreal xx,yy,zz;
    xx=xin[0];
    yy=xin[1];
@@ -371,8 +355,7 @@ void waveFunctionGrid3D::writeCubeKinetEnerDensK(ofstream &ofil,GaussWaveFunctio
    return;
 }
 /* ********************************************************************************** */
-void waveFunctionGrid3D::writeCubeMagGradLOL(ofstream &ofil,GaussWaveFunction &wf)
-{
+void waveFunctionGrid3D::writeCubeMagGradLOL(ofstream &ofil,GaussWaveFunction &wf) {
    //solreal xx,yy,zz;
    //xx=xin[0];
    //yy=xin[1];
@@ -403,8 +386,7 @@ void waveFunctionGrid3D::writeCubeMagGradLOL(ofstream &ofil,GaussWaveFunction &w
    return;
 }
 /* ********************************************************************************** */
-void waveFunctionGrid3D::writeCubeMolElecPot(ofstream &ofil,GaussWaveFunction &wf)
-{
+void waveFunctionGrid3D::writeCubeMolElecPot(ofstream &ofil,GaussWaveFunction &wf) {
    solreal xx,yy,zz;
    xx=xin[0];
    yy=xin[1];
@@ -429,8 +411,7 @@ void waveFunctionGrid3D::writeCubeMolElecPot(ofstream &ofil,GaussWaveFunction &w
    return;
 }
 /* ********************************************************************************** */
-void waveFunctionGrid3D::writeCubeMagLED(ofstream &ofil,GaussWaveFunction &wf)
-{
+void waveFunctionGrid3D::writeCubeMagLED(ofstream &ofil,GaussWaveFunction &wf) {
    solreal xx,yy,zz;
    xx=xin[0];
    yy=xin[1];
@@ -455,8 +436,7 @@ void waveFunctionGrid3D::writeCubeMagLED(ofstream &ofil,GaussWaveFunction &wf)
    return;
 }
 /* ********************************************************************************** */
-void waveFunctionGrid3D::writeCubeRedDensGrad(ofstream &ofil,GaussWaveFunction &wf)
-{
+void waveFunctionGrid3D::writeCubeRedDensGrad(ofstream &ofil,GaussWaveFunction &wf) {
    solreal xx,yy,zz;
    xx=xin[0];
    yy=xin[1];
@@ -481,8 +461,7 @@ void waveFunctionGrid3D::writeCubeRedDensGrad(ofstream &ofil,GaussWaveFunction &
    return;
 }
 /* ********************************************************************************** */
-void waveFunctionGrid3D::writeCubeRoSE(ofstream &ofil,GaussWaveFunction &wf)
-{
+void waveFunctionGrid3D::writeCubeRoSE(ofstream &ofil,GaussWaveFunction &wf) {
    solreal xx,yy,zz;
    xx=xin[0];
    yy=xin[1];
@@ -507,8 +486,7 @@ void waveFunctionGrid3D::writeCubeRoSE(ofstream &ofil,GaussWaveFunction &wf)
    return;
 }
 /* ********************************************************************************** */
-void waveFunctionGrid3D::writeCubeScalarCustFld(ofstream &ofil,GaussWaveFunction &wf)
-{
+void waveFunctionGrid3D::writeCubeScalarCustFld(ofstream &ofil,GaussWaveFunction &wf) {
    solreal xx,yy,zz;
    xx=xin[0];
    yy=xin[1];
@@ -533,8 +511,7 @@ void waveFunctionGrid3D::writeCubeScalarCustFld(ofstream &ofil,GaussWaveFunction
    return;
 }
 /* ********************************************************************************** */
-void waveFunctionGrid3D::makeCube(string &onam,GaussWaveFunction &wf,ScalarFieldType ft)
-{
+void waveFunctionGrid3D::makeCube(string &onam,GaussWaveFunction &wf,ScalarFieldType ft) {
    if (!wf.imldd) {
       cout << "Error: trying to use a non loaded wave function object!\nNothing done!\n";
       return;
@@ -615,8 +592,7 @@ void waveFunctionGrid3D::makeCube(string &onam,GaussWaveFunction &wf,ScalarField
    return;
 }
 /* ********************************************************************************** */
-void waveFunctionGrid3D::writeCubeEllipticity(ofstream &ofil,GaussWaveFunction &wf)
-{
+void waveFunctionGrid3D::writeCubeEllipticity(ofstream &ofil,GaussWaveFunction &wf) {
    solreal xx,yy,zz;
    xx=xin[0];
    yy=xin[1];
@@ -641,8 +617,7 @@ void waveFunctionGrid3D::writeCubeEllipticity(ofstream &ofil,GaussWaveFunction &
    return;
 }
 /* ********************************************************************************** */
-void waveFunctionGrid3D::writeCubeVirialPotentialEnergyDensity(ofstream &ofil,GaussWaveFunction &wf)
-{
+void waveFunctionGrid3D::writeCubeVirialPotentialEnergyDensity(ofstream &ofil,GaussWaveFunction &wf) {
    solreal xx,yy,zz;
    xx=xin[0];
    yy=xin[1];
@@ -667,8 +642,7 @@ void waveFunctionGrid3D::writeCubeVirialPotentialEnergyDensity(ofstream &ofil,Ga
    return;
 }
 /* ********************************************************************************** */
-void waveFunctionGrid3D::writeCubeNCIRedDensGrad(ofstream &ofil,GaussWaveFunction &wf)
-{
+void waveFunctionGrid3D::writeCubeNCIRedDensGrad(ofstream &ofil,GaussWaveFunction &wf) {
    solreal xx,yy,zz;
    xx=xin[0];
    yy=xin[1];
@@ -693,8 +667,7 @@ void waveFunctionGrid3D::writeCubeNCIRedDensGrad(ofstream &ofil,GaussWaveFunctio
    return;
 }
 /* ******************************************************************************* */
-void waveFunctionGrid3D::writeCubeNCIRho(ofstream &ofil,GaussWaveFunction &wf)
-{
+void waveFunctionGrid3D::writeCubeNCIRho(ofstream &ofil,GaussWaveFunction &wf) {
    solreal xx,yy,zz;
    xx=xin[0];
    yy=xin[1];

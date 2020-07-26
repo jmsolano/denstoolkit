@@ -1,0 +1,4 @@
+To Refactor ')\n{' to ') {':
+
+vim -c '%s/)\n{/) {/g' -c wq file.cpp
+

@@ -206,8 +206,7 @@ GaussWaveFunction::~GaussWaveFunction()
    imldd=false;
 }
 /* ************************************************************************************** */
-solreal GaussWaveFunction::getCoef(const int orbn,const int primn)
-{
+solreal GaussWaveFunction::getCoef(const int orbn,const int primn) {
 #if DEBUG
    if (orbn>=nMOr) {
       cout << "Error: attempting to look for a non existent Molecular Orbital!\nReturning zero...\n";
@@ -217,8 +216,7 @@ solreal GaussWaveFunction::getCoef(const int orbn,const int primn)
    return MOCoeff[(orbn*nPri)+primn];
 }
 /* *********************************************************************************** */
-solreal GaussWaveFunction::getR(const int nucnum,const int cart)
-{
+solreal GaussWaveFunction::getR(const int nucnum,const int cart) {
 #if DEBUG
    if (nucnum>=nNuc) {
       cout << "Error: attempting to look for a non-existent Nucleus!\nReturning zero...\n";
@@ -228,16 +226,14 @@ solreal GaussWaveFunction::getR(const int nucnum,const int cart)
    return R[3*nucnum+cart];
 }
 /* ************************************************************************************** */
-void GaussWaveFunction::getAng(int pt,int (&tt)[3])
-{
+void GaussWaveFunction::getAng(int pt,int (&tt)[3]) {
    int tty=pt*3;
    tt[0]=prTy[tty+0];
    tt[1]=prTy[tty+1];
    tt[2]=prTy[tty+2];
 }
 /* ************************************************************************************** */
-bool GaussWaveFunction::sameMolOrbOccNums()
-{
+bool GaussWaveFunction::sameMolOrbOccNums() {
    if (!occN) {
       cout << "Error: the wave function has not been properly allocated!\nReturning false...\n";
       return false;
@@ -362,8 +358,7 @@ bool GaussWaveFunction::readFromFileWFX(string inname)
    return true;
 }
 /* ************************************************************************************** */
-bool GaussWaveFunction::readFromFile(string inname)
-{
+bool GaussWaveFunction::readFromFile(string inname) {
    string extension;
    extension=inname.substr(inname.length()-3,3);
    bool res;
@@ -381,8 +376,7 @@ bool GaussWaveFunction::readFromFile(string inname)
    return res;
 }
 /* ************************************************************************************** */
-bool GaussWaveFunction::sanityChecks(void)
-{
+bool GaussWaveFunction::sanityChecks(void) {
    bool ret=true;
    /* Warns about primitive types.  */
    maxPrimType=0;
@@ -399,8 +393,7 @@ bool GaussWaveFunction::sanityChecks(void)
    return ret;
 }
 /* ************************************************************************************** */
-void GaussWaveFunction::countPrimsPerCenter(void)
-{
+void GaussWaveFunction::countPrimsPerCenter(void) {
    MyMemory::Alloc1DIntArray(string("myPN"),nNuc,myPN);
    for (int i=0; i<nPri; i++) {myPN[primCent[i]]++;}
    return;
@@ -414,8 +407,7 @@ bool GaussWaveFunction::writeToFileWFX(string outname)
    return true;
 }
 /* ************************************************************************************** */
-bool GaussWaveFunction::testSupport()
-{
+bool GaussWaveFunction::testSupport() {
    for (int i=0; i<nMOr; i++) {
       if (primType[i]>=MAXPRIMTYPEDEFINED) {
          cout << "Only " << MAXPRIMTYPEDEFINED << " types have been implemented in this version\n";
@@ -428,8 +420,7 @@ bool GaussWaveFunction::testSupport()
    return true;
 }
 /* ************************************************************************************** */
-solreal GaussWaveFunction::evalDensityArray(solreal x,solreal y, solreal z)
-{
+solreal GaussWaveFunction::evalDensityArray(solreal x,solreal y, solreal z) {
    int indr,indc,indp;
    solreal xmr,ymr,zmr,rho,chia,chib,chit;
    rho=0.000000e0;
@@ -464,8 +455,7 @@ solreal GaussWaveFunction::evalDensityArray(solreal x,solreal y, solreal z)
    return rho;
 }
 /* ************************************************************************************** */
-void GaussWaveFunction::displayAllFieldProperties(solreal x,solreal y,solreal z)
-{
+void GaussWaveFunction::displayAllFieldProperties(solreal x,solreal y,solreal z) {
    static solreal rho,lol,xx[3],g[3],hess[3][3];
    static solreal eivec[3][3],eival[3];
    xx[0]=x;
@@ -536,8 +526,7 @@ void GaussWaveFunction::displayAllFieldProperties(solreal x,solreal y,solreal z)
    return;
 }
 /* ************************************************************************************** */
-void GaussWaveFunction::writeAllFieldProperties(solreal x,solreal y,solreal z,ofstream &ofil)
-{
+void GaussWaveFunction::writeAllFieldProperties(solreal x,solreal y,solreal z,ofstream &ofil) {
    static solreal rho,lol,xx[3],g[3],hess[3][3];
    static solreal eivec[3][3],eival[3];
    xx[0]=x;
@@ -609,8 +598,7 @@ return;
 }
 /* ************************************************************************************** */
 /*
-solreal GaussWaveFunction::evalPrimCases(int &pty, solreal &alp, solreal x, solreal y, solreal z)
-{
+solreal GaussWaveFunction::evalPrimCases(int &pty, solreal &alp, solreal x, solreal y, solreal z) {
    solreal xx,yy,zz,rr,pv;
    xx=x*x;
    yy=y*y;
@@ -702,8 +690,7 @@ solreal GaussWaveFunction::evalPrimCases(int &pty, solreal &alp, solreal x, solr
 /* Preliminary tests indicate that, surprisingly, the case choosing is slightly
  * slower (around 1-2%) than the brute for(...) {pv*=x_i;}. Tested with phenantrene and 
  * f2.g09.wfn  */
-solreal GaussWaveFunction::evalAngACases(int &pty, solreal x, solreal y, solreal z)
-{
+solreal GaussWaveFunction::evalAngACases(int &pty, solreal x, solreal y, solreal z) {
    solreal pv=1.00000000e0;
    //*
    int a[3];
@@ -814,8 +801,7 @@ solreal GaussWaveFunction::evalAngACases(int &pty, solreal x, solreal y, solreal
    return pv;
 }
 /* ************************************************************************************** */
-void GaussWaveFunction::calcCab(void)
-{
+void GaussWaveFunction::calcCab(void) {
    int idx,indc;
    idx=0;
    if (nPri>MAXNUMBEROFPRIMITIVESFORMEMALLOC) {
@@ -845,8 +831,7 @@ void GaussWaveFunction::calcCab(void)
 }
 /* ************************************************************************************** */
 #if PARALLELISEDTK
-solreal GaussWaveFunction::evalDensity(solreal x,solreal y,solreal z)
-{
+solreal GaussWaveFunction::evalDensity(solreal x,solreal y,solreal z) {
    int indr,indp;
    solreal xmr,ymr,zmr,rho,chib;
    rho=0.000000e0;
@@ -882,8 +867,7 @@ firstprivate(j) lastprivate(i) reduction(+: rho)
    return rho;
 }
 #else
-solreal GaussWaveFunction::evalDensity(solreal x,solreal y,solreal z)
-{
+solreal GaussWaveFunction::evalDensity(solreal x,solreal y,solreal z) {
    int indr,indp;
    solreal xmr,ymr,zmr,rho,chib;
    rho=0.000000e0;
@@ -952,8 +936,7 @@ solreal GaussWaveFunction::evalDensity(solreal x,solreal y,solreal z)
 }
 #endif
 /* ************************************************************************************** */
-solreal GaussWaveFunction::evalOptimizedScalar(solreal px,solreal py,solreal pz)
-{
+solreal GaussWaveFunction::evalOptimizedScalar(solreal px,solreal py,solreal pz) {
    int indr,indp,ppt;
    solreal rhop,Rx[3],alp;
    complex<solreal> chit,chiu;
@@ -1024,8 +1007,7 @@ solreal GaussWaveFunction::evalOptimizedScalar(solreal px,solreal py,solreal pz)
 }
 /* ************************************************************************************** */
 #if PARALLELISEDTK
-void GaussWaveFunction::evalRhoGradRho(solreal x, solreal y, solreal z,solreal &rho, solreal &dx, solreal &dy, solreal &dz)
-{
+void GaussWaveFunction::evalRhoGradRho(solreal x, solreal y, solreal z,solreal &rho, solreal &dx, solreal &dy, solreal &dz) {
    solreal nabx,naby,nabz,xmr,ymr,zmr,trho,cc,rr,alp,chib;
    int indp,indr,ppt;
    indp=0;
@@ -1074,8 +1056,7 @@ firstprivate(j) lastprivate(i) reduction(+: trho,nabx,naby,nabz)
 }
 #else
 /* ************************************************************************************** */
-void GaussWaveFunction::evalRhoGradRho(solreal x, solreal y, solreal z,solreal &rho, solreal &dx, solreal &dy, solreal &dz)
-{
+void GaussWaveFunction::evalRhoGradRho(solreal x, solreal y, solreal z,solreal &rho, solreal &dx, solreal &dy, solreal &dz) {
    solreal nabx,naby,nabz,xmr,ymr,zmr,trho,cc,rr,alp,chib;
    int indp,indr,ppt;
    indp=0;
@@ -1182,8 +1163,7 @@ void GaussWaveFunction::evalRhoGradRho(solreal x, solreal y, solreal z,solreal &
 }
 #endif
 /* ************************************************************************************** */
-void GaussWaveFunction::evalOptimizedVectorScalar(solreal x, solreal y, solreal z,solreal &rho, solreal &dx, solreal &dy, solreal &dz)
-{
+void GaussWaveFunction::evalOptimizedVectorScalar(solreal x, solreal y, solreal z,solreal &rho, solreal &dx, solreal &dy, solreal &dz) {
    solreal nabx,naby,nabz,xmr,ymr,zmr,trho,cc,rr,alp,chib;
    int indp,indr,ppt;
    indp=0;
@@ -1271,8 +1251,7 @@ void GaussWaveFunction::evalOptimizedVectorScalar(solreal x, solreal y, solreal 
    return;
 }
 /* ************************************************************************************** */
-bool GaussWaveFunction::allocAuxArrays(void)
-{
+bool GaussWaveFunction::allocAuxArrays(void) {
    bool allgood;
    allgood=MyMemory::Alloc1DRealArray("chi",totPri,chi);
    if (!allgood) {
@@ -1326,8 +1305,7 @@ bool GaussWaveFunction::allocAuxArrays(void)
    }
    return allgood;
 }
-bool GaussWaveFunction::allocAuxMEPArray(void)
-{
+bool GaussWaveFunction::allocAuxMEPArray(void) {
    if ( !imldd ) {
       ScreenUtils::DisplayErrorMessage("First load the gausswave function!");
       return false;
@@ -1381,8 +1359,7 @@ bool GaussWaveFunction::allocAuxMEPArray(void)
 }
 /* ************************************************************************************** */
 /* ************************************************************************************** */
-void GaussWaveFunction::evalDkAngCases(int &pty,solreal alp,solreal x, solreal y, solreal z, solreal &anx, solreal &any, solreal &anz)
-{
+void GaussWaveFunction::evalDkAngCases(int &pty,solreal alp,solreal x, solreal y, solreal z, solreal &anx, solreal &any, solreal &anz) {
    solreal cc=(-2.0000000e0*alp);
    /* As opposed to the case of evalAngACases, tests indicate that a combination
     * of cases-choose for small angular momentum, and the generic algorithm for
@@ -1528,8 +1505,7 @@ void GaussWaveFunction::evalDkAngCases(int &pty,solreal alp,solreal x, solreal y
  * So far, evald2SingCartA reproduces without fault values at single
  * points.  */
 void GaussWaveFunction::evalDkDlAngCases(int &pty,solreal alp,solreal x,solreal y,solreal z,
-      solreal &axx,solreal &ayy,solreal &azz,solreal &axy,solreal &axz,solreal &ayz)
-{
+      solreal &axx,solreal &ayy,solreal &azz,solreal &axy,solreal &axz,solreal &ayz) {
    solreal ta=(-2.00000e0*alp);
    //*
    int a[3];
@@ -1736,8 +1712,7 @@ void GaussWaveFunction::evalDkDlAngCases(int &pty,solreal alp,solreal x,solreal 
 /* ************************************************************************************** */
 void GaussWaveFunction::evalHessian(solreal x, solreal y, solreal z,
                                 solreal &dxx, solreal &dyy, solreal &dzz,
-                                solreal &dxy, solreal &dxz, solreal &dyz)
-{
+                                solreal &dxy, solreal &dxz, solreal &dyz) {
    solreal nabxx,nabyy,nabzz,nabxy,nabxz,nabyz,xmr,ymr,zmr,cc,rr,alp,chii,gxi,gyi,gzi;
    solreal sxx,syy,szz,sxy,sxz,syz,gxs,gys,gzs;
    int indp,indr,ppt;
@@ -1811,8 +1786,7 @@ firstprivate(j) lastprivate(i) reduction(+: nabxx,nabyy,nabzz,nabxy,nabxz,nabyz)
 /* ************************************************************************************** */
 void GaussWaveFunction::evalHessian(solreal x, solreal y, solreal z,
                                 solreal &dxx, solreal &dyy, solreal &dzz,
-                                solreal &dxy, solreal &dxz, solreal &dyz)
-{
+                                solreal &dxy, solreal &dxz, solreal &dyz) {
    solreal nabxx,nabyy,nabzz,nabxy,nabxz,nabyz,xmr,ymr,zmr,cc,rr,alp,chii,gxi,gyi,gzi;
    solreal sxx,syy,szz,sxy,sxz,syz,gxs,gys,gzs;
    int indp,indr,ppt;
@@ -1929,8 +1903,7 @@ return;
 }
 #endif
 /* ************************************************************************************** */
-solreal GaussWaveFunction::evalLapAngCases(int &pty,solreal alp,solreal x,solreal y,solreal z,solreal rr)
-{
+solreal GaussWaveFunction::evalLapAngCases(int &pty,solreal alp,solreal x,solreal y,solreal z,solreal rr) {
    solreal ta,fr;
    ta=(-2.00000e0*alp);
    fr=ta*ta;
@@ -2012,8 +1985,7 @@ solreal GaussWaveFunction::evalLapAngCases(int &pty,solreal alp,solreal x,solrea
 }
 #if PARALLELISEDTK
 /* ************************************************************************************** */
-solreal GaussWaveFunction::evalLapRho(solreal x, solreal y, solreal z)
-{
+solreal GaussWaveFunction::evalLapRho(solreal x, solreal y, solreal z) {
    solreal lap,xmr,ymr,zmr,cc,rr,alp;
    solreal sxx,gxs,gys,gzs;
    int indp,indr,ppt;
@@ -2072,8 +2044,7 @@ firstprivate(k) lastprivate(i) reduction(+: lap)
 }
 #else
 /* ************************************************************************************** */
-solreal GaussWaveFunction::evalLapRho(solreal x, solreal y, solreal z)
-{
+solreal GaussWaveFunction::evalLapRho(solreal x, solreal y, solreal z) {
    solreal lap,xmr,ymr,zmr,cc,rr,alp;
    solreal sxx,gxs,gys,gzs;
    int indp,indr,ppt;
@@ -2162,8 +2133,7 @@ solreal GaussWaveFunction::evalLapRho(solreal x, solreal y, solreal z)
 }
 #endif
 /* ************************************************************************************** */
-void GaussWaveFunction::seekBondCP(int ii,int jj,solreal &r1,solreal &r2,solreal &r3,solreal &gx,solreal &gy,solreal &gz)
-{
+void GaussWaveFunction::seekBondCP(int ii,int jj,solreal &r1,solreal &r2,solreal &r3,solreal &gx,solreal &gy,solreal &gz) {
    solreal x[3],delta[3],g[3];
    for (int i=0; i<3; i++) {x[i]=0.500000e0*(R[3*ii+i]+R[3*jj+i]);}
    getBondCPStep(x,delta,g);
@@ -2191,8 +2161,7 @@ void GaussWaveFunction::seekBondCP(int ii,int jj,solreal &r1,solreal &r2,solreal
    return;
 }
 /* ************************************************************************************** */
-void GaussWaveFunction::evalHessian(solreal x, solreal y, solreal z,solreal (&h)[3][3])
-{
+void GaussWaveFunction::evalHessian(solreal x, solreal y, solreal z,solreal (&h)[3][3]) {
    evalHessian(x,y,z,h[0][0],h[1][1],h[2][2],h[0][1],h[0][2],h[1][2]);
    h[1][0]=h[0][1];
    h[2][0]=h[0][2];
@@ -2200,8 +2169,7 @@ void GaussWaveFunction::evalHessian(solreal x, solreal y, solreal z,solreal (&h)
    return;
 }
 /* ************************************************************************************** */
-void GaussWaveFunction::evalHessian(solreal x, solreal y, solreal z,solreal &dens,solreal (&g)[3],solreal (&h)[3][3])
-{
+void GaussWaveFunction::evalHessian(solreal x, solreal y, solreal z,solreal &dens,solreal (&g)[3],solreal (&h)[3][3]) {
    solreal nabxx,nabyy,nabzz,nabxy,nabxz,nabyz,xmr,ymr,zmr,cc,rr,alp,
    chii,gxi,gyi,gzi,rho,delx,dely,delz;
    solreal sxx,syy,szz,sxy,sxz,syz,gxs,gys,gzs;
@@ -2391,8 +2359,7 @@ void GaussWaveFunction::evalHessian(solreal x, solreal y, solreal z,solreal &den
    return;
 }
 /* ************************************************************************************** */
-void GaussWaveFunction::evalOptimizedScalVecHess(solreal x, solreal y, solreal z,solreal &dens,solreal (&g)[3],solreal (&h)[3][3])
-{
+void GaussWaveFunction::evalOptimizedScalVecHess(solreal x, solreal y, solreal z,solreal &dens,solreal (&g)[3],solreal (&h)[3][3]) {
    solreal nabxx,nabyy,nabzz,nabxy,nabxz,nabyz,xmr,ymr,zmr,cc,rr,alp,
    chii,gxi,gyi,gzi,rho,delx,dely,delz;
    solreal sxx,syy,szz,sxy,sxz,syz,gxs,gys,gzs;
@@ -2566,14 +2533,12 @@ void GaussWaveFunction::evalOptimizedScalVecHess(solreal x, solreal y, solreal z
    return;
 }
 /* ************************************************************************************** */
-void GaussWaveFunction::evalRhoGradRho(solreal x, solreal y, solreal z,solreal &rho, solreal (&grd)[3])
-{
+void GaussWaveFunction::evalRhoGradRho(solreal x, solreal y, solreal z,solreal &rho, solreal (&grd)[3]) {
    evalRhoGradRho(x,y,z,rho,grd[0],grd[1],grd[2]);
    return;
 }
 /* ************************************************************************************** */
-void GaussWaveFunction::getBondCPStep(solreal (&x)[3],solreal (&hh)[3],solreal (&g)[3])
-{
+void GaussWaveFunction::getBondCPStep(solreal (&x)[3],solreal (&hh)[3],solreal (&g)[3]) {
    static solreal hess[3][3],eive[3][3],b[3];
    solreal rho;
    evalRhoGradRho(x[0],x[1],x[2],rho,g[0],g[1],g[2]);
@@ -2611,8 +2576,7 @@ void GaussWaveFunction::getBondCPStep(solreal (&x)[3],solreal (&hh)[3],solreal (
    return;
 }
 /* ************************************************************************************** */
-void GaussWaveFunction::getRingCPStep(solreal (&x)[3],solreal (&hh)[3],solreal (&g)[3])
-{
+void GaussWaveFunction::getRingCPStep(solreal (&x)[3],solreal (&hh)[3],solreal (&g)[3]) {
    static solreal hess[3][3],eive[3][3],b[3];
    solreal rho;
    evalRhoGradRho(x[0],x[1],x[2],rho,g[0],g[1],g[2]);
@@ -2650,8 +2614,7 @@ void GaussWaveFunction::getRingCPStep(solreal (&x)[3],solreal (&hh)[3],solreal (
    return;
 }
 /* ************************************************************************************** */
-void GaussWaveFunction::seekRingCP(solreal &r1,solreal &r2,solreal &r3,solreal &gx,solreal &gy,solreal &gz)
-{
+void GaussWaveFunction::seekRingCP(solreal &r1,solreal &r2,solreal &r3,solreal &gx,solreal &gy,solreal &gz) {
    solreal x[3],delta[3],g[3];
    x[0]=r1;
    x[1]=r2;
@@ -2681,8 +2644,7 @@ void GaussWaveFunction::seekRingCP(solreal &r1,solreal &r2,solreal &r3,solreal &
    return;
 }
 /* ************************************************************************************** */
-void GaussWaveFunction::seekCageCP(solreal &r1,solreal &r2,solreal &r3,solreal &gx,solreal &gy,solreal &gz)
-{
+void GaussWaveFunction::seekCageCP(solreal &r1,solreal &r2,solreal &r3,solreal &gx,solreal &gy,solreal &gz) {
    solreal x[3],delta[3],g[3];
    x[0]=r1;
    x[1]=r2;
@@ -2712,8 +2674,7 @@ void GaussWaveFunction::seekCageCP(solreal &r1,solreal &r2,solreal &r3,solreal &
    return;
 }
 /* ************************************************************************************** */
-void GaussWaveFunction::getCageCPStep(solreal (&x)[3],solreal (&hh)[3],solreal (&g)[3])
-{
+void GaussWaveFunction::getCageCPStep(solreal (&x)[3],solreal (&hh)[3],solreal (&g)[3]) {
    static solreal hess[3][3],eive[3][3],b[3];
    solreal rho;
    evalRhoGradRho(x[0],x[1],x[2],rho,g[0],g[1],g[2]);
@@ -2758,8 +2719,7 @@ void GaussWaveFunction::getCageCPStep(solreal (&x)[3],solreal (&hh)[3],solreal (
 }
 #if PARALLELISEDTK
 /* ************************************************************************************** */
-solreal GaussWaveFunction::evalELF(solreal x,solreal y,solreal z)
-{
+solreal GaussWaveFunction::evalELF(solreal x,solreal y,solreal z) {
    static const solreal mto3=-10.0e0/3.0e0;
    static const solreal ooferm2=0.121300564999911e0;
    static const solreal eps=EPSFORELFVALUE;
@@ -2823,8 +2783,7 @@ firstprivate(j) lastprivate(i) reduction(+: rho,kej,nabx,naby,nabz)
 }
 #else
 /* ************************************************************************************** */
-solreal GaussWaveFunction::evalELF(solreal x,solreal y,solreal z)
-{
+solreal GaussWaveFunction::evalELF(solreal x,solreal y,solreal z) {
    static const solreal mto3=-10.0e0/3.0e0;
    static const solreal ooferm2=0.121300564999911e0;
    static const solreal eps=EPSFORELFVALUE;
@@ -2928,28 +2887,24 @@ solreal GaussWaveFunction::evalELF(solreal x,solreal y,solreal z)
 }
 #endif
 /* ************************************************************************************** */
-solreal GaussWaveFunction::evalShannonEntropy(solreal x,solreal y,solreal z)
-{
+solreal GaussWaveFunction::evalShannonEntropy(solreal x,solreal y,solreal z) {
    solreal rho=evalDensity(x,y,z);
    return (-rho*log(rho));
 }
 /* ************************************************************************************** */
-solreal GaussWaveFunction::evalMomentumShannonEntropy(solreal px,solreal py,solreal pz)
-{
+solreal GaussWaveFunction::evalMomentumShannonEntropy(solreal px,solreal py,solreal pz) {
    solreal ppi=evalFTDensity(px,py,pz);
    return (-ppi*log(ppi));
 }
 /* ************************************************************************************** */
-solreal GaussWaveFunction::evalMagGradRho(solreal x,solreal y,solreal z)
-{
+solreal GaussWaveFunction::evalMagGradRho(solreal x,solreal y,solreal z) {
    solreal gx,gy,gz,rho;
    evalRhoGradRho(x,y,z,rho,gx,gy,gz);
    rho=gx*gx+gy*gy+gz*gz;
    return sqrt(rho);
 }
 /* ************************************************************************************** */
-solreal GaussWaveFunction::evalMagGradLOL(solreal x,solreal y,solreal z)
-{
+solreal GaussWaveFunction::evalMagGradLOL(solreal x,solreal y,solreal z) {
    solreal lol,xx[3],gl[3],hl[3][3];
    xx[0]=x; xx[1]=y; xx[2]=z;
    evalHessLOL(xx,lol,gl,hl);
@@ -2957,8 +2912,7 @@ solreal GaussWaveFunction::evalMagGradLOL(solreal x,solreal y,solreal z)
 }
 /* ************************************************************************************** */
 #if PARALLELISEDTK
-solreal GaussWaveFunction::evalLOL(solreal x,solreal y,solreal z)
-{
+solreal GaussWaveFunction::evalLOL(solreal x,solreal y,solreal z) {
    static const solreal fo3=5.0e0/3.0e0;
    static const solreal tferm=5.742468000376382e0;
    static const solreal eps=EPSFORLOLVALUE;
@@ -3015,8 +2969,7 @@ firstprivate(j) lastprivate(i) reduction(+: kej,rho)
 }
 #else
 /* ************************************************************************************** */
-solreal GaussWaveFunction::evalLOL(solreal x,solreal y,solreal z)
-{
+solreal GaussWaveFunction::evalLOL(solreal x,solreal y,solreal z) {
    static const solreal fo3=5.0e0/3.0e0;
    static const solreal tferm=5.742468000376382e0;
    static const solreal eps=EPSFORLOLVALUE;
@@ -3108,8 +3061,7 @@ solreal GaussWaveFunction::evalLOL(solreal x,solreal y,solreal z)
 //end if PARALLELISEDTK
 /* ************************************************************************************** */
 #if PARALLELISEDTK
-solreal GaussWaveFunction::evalKineticEnergyG(solreal x, solreal y, solreal z)
-{
+solreal GaussWaveFunction::evalKineticEnergyG(solreal x, solreal y, solreal z) {
    solreal nabx,naby,nabz,xmr,ymr,zmr,cc,rr,alp;
    int indp,indr,ppt;
    indp=0;
@@ -3163,8 +3115,7 @@ firstprivate(j) lastprivate(i) reduction(+: nabx,naby,nabz)
 }
 #else
 /* ************************************************************************************** */
-solreal GaussWaveFunction::evalKineticEnergyG(solreal x, solreal y, solreal z)
-{
+solreal GaussWaveFunction::evalKineticEnergyG(solreal x, solreal y, solreal z) {
    solreal nabx,naby,nabz,xmr,ymr,zmr,cc,rr,alp;
    int indp,indr,ppt;
    indp=0;
@@ -3255,8 +3206,7 @@ solreal GaussWaveFunction::evalKineticEnergyG(solreal x, solreal y, solreal z)
 /* ************************************************************************************** */
 #if PARALLELISEDTK
 void GaussWaveFunction::evalNabPhi2(solreal const x,solreal const y,solreal const z,\
-      solreal &rho2ret,solreal &twoG)
-{
+      solreal &rho2ret,solreal &twoG) {
 #if DEBUG
    bool prntonce=true;
    if ( prntonce ) {
@@ -3318,8 +3268,7 @@ firstprivate(j) lastprivate(i) reduction(+: nabx,naby,nabz,rho)
 #else
 /* ************************************************************************************** */
 void GaussWaveFunction::evalNabPhi2(solreal const x,solreal const y,solreal const z,\
-      solreal &rho2ret,solreal &twoG)
-{
+      solreal &rho2ret,solreal &twoG) {
    solreal nabx,naby,nabz,xmr,ymr,zmr,cc,rr,alp;
    int indp,indr,ppt;
    indp=0;
@@ -3413,8 +3362,7 @@ void GaussWaveFunction::evalNabPhi2(solreal const x,solreal const y,solreal cons
 #endif
 /* ************************************************************************************** */
 #if PARALLELISEDTK
-solreal GaussWaveFunction::evalKineticEnergyK(solreal x, solreal y, solreal z)
-{
+solreal GaussWaveFunction::evalKineticEnergyK(solreal x, solreal y, solreal z) {
    solreal lap,xmr,ymr,zmr,cc,rr,alp;
    solreal sxx;
    int indp,indr,ppt;
@@ -3453,8 +3401,7 @@ firstprivate(j) lastprivate(i) reduction(+: lap)
 }
 #else
 /* ************************************************************************************** */
-solreal GaussWaveFunction::evalKineticEnergyK(solreal x, solreal y, solreal z)
-{
+solreal GaussWaveFunction::evalKineticEnergyK(solreal x, solreal y, solreal z) {
    solreal lap,xmr,ymr,zmr,cc,rr,alp;
    solreal sxx;
    int indp,indr,ppt;
@@ -3512,8 +3459,7 @@ solreal GaussWaveFunction::evalKineticEnergyK(solreal x, solreal y, solreal z)
 }
 #endif
 /* ************************************************************************************** */
-solreal GaussWaveFunction::evalEllipticity(solreal x,solreal y,solreal z)
-{
+solreal GaussWaveFunction::evalEllipticity(solreal x,solreal y,solreal z) {
    solreal eve[3][3],eva[3],h[3][3];
    evalHessian(x,y,z,h);
    EigenDecompositionJAMA::EigenDecomposition3(h,eve,eva);
@@ -3522,8 +3468,7 @@ solreal GaussWaveFunction::evalEllipticity(solreal x,solreal y,solreal z)
 }
 /* ************************************************************************************** */
 void GaussWaveFunction::evald4SingCartA(int &ang,solreal &t,solreal &f,solreal &x,solreal &x2,
-                                  solreal &d0,solreal &d1,solreal &d2,solreal &d3,solreal &d4)
-{
+                                  solreal &d0,solreal &d1,solreal &d2,solreal &d3,solreal &d4) {
    solreal fax2=f*x2;
    switch (ang) {
       case 0:
@@ -3580,8 +3525,7 @@ void GaussWaveFunction::evald4SingCartA(int &ang,solreal &t,solreal &f,solreal &
 }
 /* ************************************************************************************** */
 void GaussWaveFunction::evald4Ang(int (&a)[3],solreal &alp,solreal (&x)[3],solreal (&x2)[3],
-                              solreal (&d0)[3],solreal (&d1)[3],solreal (&d2)[3],solreal (&d3)[3],solreal (&d4)[3])
-{
+                              solreal (&d0)[3],solreal (&d1)[3],solreal (&d2)[3],solreal (&d3)[3],solreal (&d4)[3]) {
    solreal tma,fa2;
    tma=-2.00000e0*alp;
    fa2=tma*tma;
@@ -3592,8 +3536,7 @@ void GaussWaveFunction::evald4Ang(int (&a)[3],solreal &alp,solreal (&x)[3],solre
 }
 /* ************************************************************************************** */
 void GaussWaveFunction::evald1SingCartA(int &ang,solreal &t,solreal x,\
-      solreal &d0,solreal &d1)
-{
+      solreal &d0,solreal &d1) {
    solreal x2=x*x;
    switch ( ang ) {
       case 0 :
@@ -3629,8 +3572,7 @@ void GaussWaveFunction::evald1SingCartA(int &ang,solreal &t,solreal x,\
 }
 /* ************************************************************************************** */
 void GaussWaveFunction::evald2SingCartA(int &ang,solreal &t,solreal x,\
-                      solreal &d0,solreal &d1,solreal &d2)
-{
+                      solreal &d0,solreal &d1,solreal &d2) {
    solreal x2=x*x;
    solreal f=t*t;
    solreal fax2=f*x2;
@@ -3677,8 +3619,7 @@ void GaussWaveFunction::evald2SingCartA(int &ang,solreal &t,solreal x,\
 }
 /* ************************************************************************************** */
 void GaussWaveFunction::evald3SingCartA(int &ang,solreal &t,solreal &f,solreal &x,solreal &x2,
-                                    solreal &d0,solreal &d1,solreal &d2,solreal &d3)
-{
+                                    solreal &d0,solreal &d1,solreal &d2,solreal &d3) {
    solreal fax2=f*x2;
    switch (ang) {
       case 0:
@@ -3730,8 +3671,7 @@ void GaussWaveFunction::evald3SingCartA(int &ang,solreal &t,solreal &f,solreal &
 }
 /* ************************************************************************************** */
 void GaussWaveFunction::evald3Ang(int (&a)[3],solreal &alp,solreal (&x)[3],solreal (&x2)[3],
-                              solreal (&d0)[3],solreal (&d1)[3],solreal (&d2)[3],solreal (&d3)[3])
-{
+                              solreal (&d0)[3],solreal (&d1)[3],solreal (&d2)[3],solreal (&d3)[3]) {
    solreal tma,fa2;
    tma=-2.00000e0*alp;
    fa2=tma*tma;
@@ -3742,8 +3682,7 @@ void GaussWaveFunction::evald3Ang(int (&a)[3],solreal &alp,solreal (&x)[3],solre
 }
 /* ************************************************************************************** */
 /*
-solreal GaussWaveFunction::evalLapRhoUsingd2(solreal x, solreal y, solreal z)
-{
+solreal GaussWaveFunction::evalLapRhoUsingd2(solreal x, solreal y, solreal z) {
    solreal lap,cc,rr,alp;
    solreal sxx,gxs,gys,gzs;
    solreal r[3];
@@ -3811,8 +3750,7 @@ solreal GaussWaveFunction::evalLapRhoUsingd2(solreal x, solreal y, solreal z)
 // */
 /* *************************************************************************************** */
 void GaussWaveFunction::evalDiDjDkChi(int &pty,solreal &alp,solreal x,solreal y,solreal z,
-                                  solreal (&dlm)[3][3],solreal (&dijk)[3][3][3])
-{
+                                  solreal (&dlm)[3][3],solreal (&dijk)[3][3][3]) {
    static int aa[3];
    int ppt=3*pty;
    for (int m=0; m<3; m++) {aa[m]=prTy[ppt++];}
@@ -3886,8 +3824,7 @@ void GaussWaveFunction::evalDiDjDkChi(int &pty,solreal &alp,solreal x,solreal y,
 void GaussWaveFunction::evalHessLOL(solreal x, solreal y, solreal z, solreal &dens, solreal &keG, solreal &lol,
                                 solreal &ddx, solreal &ddy, solreal &ddz,
                                 solreal &dxx, solreal &dyy, solreal &dzz,
-                                solreal &dxy, solreal &dxz, solreal &dyz)
-{
+                                solreal &dxy, solreal &dxz, solreal &dyz) {
    solreal xmr,ymr,zmr,cc,rr,alp;
    int indp,indr,ppt;
    indp=0;
@@ -4095,8 +4032,7 @@ firstprivate(j) lastprivate(i) reduction(+: nabxx,nabyy,nabzz,nabxy,nabxz,nabyz,
 void GaussWaveFunction::evalHessLOL(solreal x, solreal y, solreal z, solreal &dens, solreal &keG, solreal &lol,
                                 solreal &ddx, solreal &ddy, solreal &ddz,
                                 solreal &dxx, solreal &dyy, solreal &dzz,
-                                solreal &dxy, solreal &dxz, solreal &dyz)
-{
+                                solreal &dxy, solreal &dxz, solreal &dyz) {
    solreal xmr,ymr,zmr,cc,rr,alp;
    int indp,indr,ppt;
    indp=0;
@@ -4266,8 +4202,7 @@ void GaussWaveFunction::evalHessLOL(solreal x, solreal y, solreal z, solreal &de
 }
 #endif
 /* *************************************************************************************** */
-void GaussWaveFunction::evalHessLOL(solreal (&x)[3],solreal &lol,solreal (&glol)[3],solreal (&hlol)[3][3])
-{
+void GaussWaveFunction::evalHessLOL(solreal (&x)[3],solreal &lol,solreal (&glol)[3],solreal (&hlol)[3][3]) {
    static solreal rho,ke;
    evalHessLOL(x[0],x[1],x[2],rho,ke,lol,glol[0],glol[1],glol[2],
                hlol[0][0],hlol[1][1],hlol[2][2],hlol[0][1],hlol[0][2],hlol[1][2]);
@@ -4279,8 +4214,7 @@ void GaussWaveFunction::evalHessLOL(solreal (&x)[3],solreal &lol,solreal (&glol)
 /* *************************************************************************************** */
 void GaussWaveFunction::evalFTASingCartA(int &ang,solreal &a,solreal &ooa,solreal &osra,
                                      solreal &px,solreal &px2,solreal &Rx,
-                                     solreal &RePhi,solreal &ImPhi)
-{
+                                     solreal &RePhi,solreal &ImPhi) {
    //static const solreal srpi=1.77245385090551602729817; //sqrt(pi)
    static const solreal srpi=0.707106781186547524405; //sqrt(pi/(2pi)) --This includes the
                                                       //normalization constant for the FT.
@@ -4316,8 +4250,7 @@ void GaussWaveFunction::evalFTASingCartA(int &ang,solreal &a,solreal &ooa,solrea
 }
 /* *************************************************************************************** */
 void GaussWaveFunction::evalFTAng(int (&a)[3],solreal &alp,solreal &ooalp,solreal (&p)[3],solreal (&p2)[3],
-                              solreal (&Rx)[3],complex<solreal> &pang)
-{
+                              solreal (&Rx)[3],complex<solreal> &pang) {
    solreal osa,rp,ip;
    //oa=1.0e0/alp;
    osa=sqrt(ooalp);
@@ -4333,8 +4266,7 @@ void GaussWaveFunction::evalFTAng(int (&a)[3],solreal &alp,solreal &ooalp,solrea
 /* *************************************************************************************** */
 void GaussWaveFunction::evalFTChi(int &pty,solreal &alp,solreal (&Rx)[3],
                               solreal px,solreal py,solreal pz,
-                              complex<solreal> &phi)
-{
+                              complex<solreal> &phi) {
    static int aa[3];
    int ppt=3*pty;
    for (int m=0; m<3; m++) {aa[m]=prTy[ppt++];}
@@ -4351,8 +4283,7 @@ void GaussWaveFunction::evalFTChi(int &pty,solreal &alp,solreal (&Rx)[3],
 }
 #if PARALLELISEDTK
 /* *************************************************************************************** */
-solreal GaussWaveFunction::evalFTDensity(solreal px,solreal py,solreal pz)
-{
+solreal GaussWaveFunction::evalFTDensity(solreal px,solreal py,solreal pz) {
    int indr,indp,ppt;
    solreal rhop,Rx[3],alp;
    complex<solreal> chit;
@@ -4392,8 +4323,7 @@ firstprivate(j) lastprivate(i) reduction(+: rhop)
 }
 #else
 /* *************************************************************************************** */
-solreal GaussWaveFunction::evalFTDensity(solreal px,solreal py,solreal pz)
-{
+solreal GaussWaveFunction::evalFTDensity(solreal px,solreal py,solreal pz) {
    int indr,indp,ppt;
    solreal rhop,Rx[3],alp;
    complex<solreal> chit,chiu;
@@ -4460,16 +4390,14 @@ solreal GaussWaveFunction::evalFTDensity(solreal px,solreal py,solreal pz)
 }
 #endif
 /* ************************************************************************************ */
-solreal GaussWaveFunction::evalFTKineticEnergy(solreal px,solreal py,solreal pz)
-{
+solreal GaussWaveFunction::evalFTKineticEnergy(solreal px,solreal py,solreal pz) {
    solreal pp=evalFTDensity(px,py,pz);
    pp*=(px*px+py*py+pz*pz);
    return pp;
 }
 /* *************************************************************************************** */
 solreal GaussWaveFunction::evalDensityMatrix1(solreal x,solreal y,solreal z,
-      solreal xp,solreal yp,solreal zp)
-{
+      solreal xp,solreal yp,solreal zp) {
    int indr,indp;
    solreal xmr,ymr,zmr,gamm,chib;
    gamm=0.000000e0;
@@ -4537,8 +4465,7 @@ return gamm;
 /* *************************************************************************************** */
 void GaussWaveFunction::evalGradDensityMatrix1(solreal x,solreal y,solreal z,\
       solreal xp,solreal yp,solreal zp,\
-      solreal &gamm,solreal (&gg)[3],solreal (&gp)[3])
-{
+      solreal &gamm,solreal (&gg)[3],solreal (&gp)[3]) {
    solreal xmr,xpmr,ymr,ypmr,zmr,zpmr,rr,rrp;
    solreal cc,ccp,alp;
    int indp,indr,ppt;
@@ -4610,8 +4537,7 @@ void GaussWaveFunction::evalGradDensityMatrix1(solreal x,solreal y,solreal z,\
 /* ************************************************************************************ */
 void GaussWaveFunction::evalHessDensityMatrix1(solreal (&xx)[3],solreal (&xxp)[3],\
       solreal &gamm,solreal (&gg)[3],solreal (&gp)[3],\
-      solreal (&hh)[3][3],solreal (&hph)[3][3],solreal (&hp)[3][3])
-{
+      solreal (&hh)[3][3],solreal (&hph)[3][3],solreal (&hp)[3][3]) {
    solreal x=xx[0],y=xx[1],z=xx[2];
    solreal xp=xxp[0],yp=xxp[1],zp=xxp[2];
    solreal xmr,xpmr,ymr,ypmr,zmr,zpmr,rr,rrp;
@@ -4788,8 +4714,7 @@ void GaussWaveFunction::evalHessDensityMatrix1(solreal (&xx)[3],solreal (&xxp)[3
 void GaussWaveFunction::evalHermiteCoefs(int (&aia)[3],int (&aib)[3],solreal &alpab,
       solreal (&ra)[3],solreal (&rb)[3],
       solreal (&rp)[3],
-      int (&maxl)[3],solreal (&Eijl)[3][7])
-{
+      int (&maxl)[3],solreal (&Eijl)[3][7]) {
    //for (int i=0; i<3; i++) {for (int j=0; j<=6; j++) {Eijl[i][j]=0.0e0;}}
    int ij[3];
    for (int i=0; i<3; i++) {ij[i]=10*aia[i]+aib[i];}
@@ -4928,8 +4853,7 @@ void GaussWaveFunction::evalHermiteCoefs(int (&aia)[3],int (&aib)[3],solreal &al
 }
 /* *************************************************************************************** */
 void GaussWaveFunction::evalRlmnIntegs(const int (&lmn)[3],const solreal &alpp,const solreal (&cp)[3],
-                                   solreal (&Rlmn)[7][7][7])
-{
+                                   solreal (&Rlmn)[7][7][7]) {
    int maxj=lmn[0]+lmn[1]+lmn[2];
    solreal a=cp[0],b=cp[1],c=cp[2];
    solreal T=alpp*(a*a+b*b+c*c);
@@ -4984,8 +4908,7 @@ void GaussWaveFunction::evalRlmnIntegs(const int (&lmn)[3],const solreal &alpp,c
 }
 /* *************************************************************************************** */
 solreal GaussWaveFunction::evalVAB(solreal (&xx)[3],int (&aa)[3],int (&ab)[3],solreal &alpa,solreal &alpb,
-                               solreal (&xa)[3],solreal (&xb)[3])
-{
+                               solreal (&xa)[3],solreal (&xb)[3]) {
    solreal alpp=alpa+alpb;
    solreal ooalpp=1.0e0/alpp,xp[3],cp[3],ctmp=0.0e0,S00;
    int maxl[3];
@@ -5013,8 +4936,7 @@ solreal GaussWaveFunction::evalVAB(solreal (&xx)[3],int (&aa)[3],int (&ab)[3],so
    return (twopi*ooalpp*S00*ctmp);
 }
 solreal GaussWaveFunction::evalVABCore(solreal &S00,solreal (&xx)[3],int idxA,int idxB,int (&aa)[3],int (&ab)[3],solreal &alpa,solreal &alpb,
-                               solreal (&xa)[3],solreal (&xb)[3])
-{
+                               solreal (&xa)[3],solreal (&xb)[3]) {
    solreal alpp=alpa+alpb;
    solreal xp[3],cp[3],ctmp=0.0e0,ooalpp=1.0e0/alpp;
    for (int i=0; i<3; i++) {
@@ -5037,8 +4959,7 @@ solreal GaussWaveFunction::evalVABCore(solreal &S00,solreal (&xx)[3],int idxA,in
 }
 /* *************************************************************************************** */
 #if PARALLELISEDTK
-solreal GaussWaveFunction::evalMolElecPot(solreal x,solreal y,solreal z)
-{
+solreal GaussWaveFunction::evalMolElecPot(solreal x,solreal y,solreal z) {
 #if DEBUG
    static bool showmsg=true;
 #endif
@@ -5126,8 +5047,7 @@ firstprivate(j) lastprivate(i) shared(xx) reduction(+: mepaa,mepab)
 }
 #else
 /* *************************************************************************************** */
-solreal GaussWaveFunction::evalMolElecPot(solreal x,solreal y,solreal z)
-{
+solreal GaussWaveFunction::evalMolElecPot(solreal x,solreal y,solreal z) {
 #if DEBUG
    static bool showmsg=true;
 #endif
@@ -5214,8 +5134,7 @@ solreal GaussWaveFunction::evalMolElecPot(solreal x,solreal y,solreal z)
 }
 #endif
 /* *************************************************************************************** */
-solreal GaussWaveFunction::integralRho(void)
-{
+solreal GaussWaveFunction::integralRho(void) {
    int indr,inda,indp;
    solreal ra[3],rb[3],alpa,alpb,rhoaa,rhoab,cc;
    int aa[3],ab[3];
@@ -5268,8 +5187,7 @@ solreal GaussWaveFunction::integralRho(void)
 }
 /* *************************************************************************************** */
 solreal GaussWaveFunction::evalOverlapIntegralAB(int (&aa)[3],int (&ab)[3],solreal &alpa,solreal &alpb,
-      solreal (&ra)[3],solreal (&rb)[3])
-{
+      solreal (&ra)[3],solreal (&rb)[3]) {
    solreal alpp=alpa+alpb;
    solreal ooalpp=1.0e0/alpp,xp[3],ctmp=0.0e0,S00;
    int maxl[3];
@@ -5287,24 +5205,21 @@ solreal GaussWaveFunction::evalOverlapIntegralAB(int (&aa)[3],int (&ab)[3],solre
    return (ctmp*sqrt(ooalpp*ooalpp*ooalpp)*S00);
 }
 /* *************************************************************************************** */
-solreal GaussWaveFunction::totalNuclearCharge(void)
-{
+solreal GaussWaveFunction::totalNuclearCharge(void) {
    solreal nc=0.0e0;
    for (int i=0; i<nNuc; i++) {nc+=atCharge[i];}
    if ( ihaveEDF ) { nc+=coreElec; }
    return nc;
 }
 /* *************************************************************************************** */
-void GaussWaveFunction::evalLED(solreal const (&x)[3],solreal (&led)[3])
-{
+void GaussWaveFunction::evalLED(solreal const (&x)[3],solreal (&led)[3]) {
    solreal rho,g[3];
    evalRhoGradRho(x[0],x[1],x[2],rho,g);
    if ( rho<1.0e-12 ) {rho=1.0e-12;}
    for ( int i=0 ; i<3 ; i++ ) {led[i]=(-0.5e0*g[i]/rho);}
 }
 /* *************************************************************************************** */
-solreal GaussWaveFunction::evalMagLED(solreal x,solreal y,solreal z)
-{
+solreal GaussWaveFunction::evalMagLED(solreal x,solreal y,solreal z) {
    solreal rho,g[3];
    evalRhoGradRho(x,y,z,rho,g);
    if ( rho<1.0e-12 ) {rho=1.0e-12;}
@@ -5316,8 +5231,7 @@ solreal GaussWaveFunction::evalMagLED(solreal x,solreal y,solreal z)
    return led;
 }
 /* *************************************************************************************** */
-solreal GaussWaveFunction::evalReducedDensityGradient(solreal x,solreal y,solreal z)
-{
+solreal GaussWaveFunction::evalReducedDensityGradient(solreal x,solreal y,solreal z) {
    static const solreal cc=0.161620459673995481331661e0; /* $(2(3\pi^2)^{1/3})^{-1}$  */
    static const solreal fouo3=4.0e0/3.0e0;
    solreal rho,g[3];
@@ -5326,8 +5240,7 @@ solreal GaussWaveFunction::evalReducedDensityGradient(solreal x,solreal y,solrea
    return (cc*sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2])/pow(rho,fouo3));
 }
 /* *************************************************************************************** */
-solreal GaussWaveFunction::evalRoSE(solreal x,solreal y,solreal z)
-{
+solreal GaussWaveFunction::evalRoSE(solreal x,solreal y,solreal z) {
    static const solreal cc=2.87123400018819181594250e0; /* (3/10)(3\pi^2)^{2/3}  */
    static const solreal fivo3=5.0e0/3.0e0;
    solreal rho,tau;
@@ -5337,16 +5250,14 @@ solreal GaussWaveFunction::evalRoSE(solreal x,solreal y,solreal z)
    return ((tau0-tau)/(tau0+tau));
 }
 /* *************************************************************************************** */
-solreal GaussWaveFunction::evalVirialPotentialEnergyDensity(solreal x, solreal y, solreal z)
-{
+solreal GaussWaveFunction::evalVirialPotentialEnergyDensity(solreal x, solreal y, solreal z) {
    solreal lapRho,G;
    lapRho=evalLapRho(x,y,z);
    G=evalKineticEnergyG(x,y,z);
    return (0.25e0*lapRho-2.0e0*G);
 }
 /* *************************************************************************************** */
-solreal GaussWaveFunction::evalNCIs(solreal x,solreal y,solreal z)
-{
+solreal GaussWaveFunction::evalNCIs(solreal x,solreal y,solreal z) {
    solreal s,rho=evalDensity(x,y,z);
    if (nciRhoMin<rho && rho <= nciRhoMax) {
       s=evalReducedDensityGradient(x,y,z);
@@ -5357,8 +5268,7 @@ solreal GaussWaveFunction::evalNCIs(solreal x,solreal y,solreal z)
    return s;
 }
 /* *************************************************************************************** */
-solreal GaussWaveFunction::evalNCILambda(solreal x,solreal y,solreal z)
-{
+solreal GaussWaveFunction::evalNCILambda(solreal x,solreal y,solreal z) {
    solreal rho=evalDensity(x,y,z);
    if (nciRhoMin<rho && rho <= nciRhoMax) {
       solreal hess[3][3];

@@ -92,13 +92,11 @@ using std::endl;
 
 
 /* ************************************************************************************ */
-DeMat1CriticalPointNetworkSL::DeMat1CriticalPointNetworkSL()
-{
+DeMat1CriticalPointNetworkSL::DeMat1CriticalPointNetworkSL() {
    init();
 }
 /* ************************************************************************************ */
-void DeMat1CriticalPointNetworkSL::init()
-{
+void DeMat1CriticalPointNetworkSL::init() {
    wf=NULL;
    ata=atb=0;
    nACP=nSCP=nRCP=0;
@@ -116,8 +114,7 @@ void DeMat1CriticalPointNetworkSL::init()
 }
 /* ************************************************************************************ */
 DeMat1CriticalPointNetworkSL::DeMat1CriticalPointNetworkSL(GaussWaveFunction *usrwf,\
-      int at1,int at2)
-{
+      int at1,int at2) {
    init();
    wf=usrwf;
    if ( at1==at2 || at1<0 || at1>=(wf->nNuc) || at2<0 || at2>=(wf->nNuc) ) {
@@ -140,8 +137,7 @@ DeMat1CriticalPointNetworkSL::DeMat1CriticalPointNetworkSL(GaussWaveFunction *us
    oolenline=1.0e0/lenline;
 }
 /* ************************************************************************************ */
-DeMat1CriticalPointNetworkSL::~DeMat1CriticalPointNetworkSL()
-{
+DeMat1CriticalPointNetworkSL::~DeMat1CriticalPointNetworkSL() {
    wf=NULL;
    MyMemory::Dealloc2DRealArray(RACP,asACP);
    MyMemory::Dealloc2DRealArray(RSCP,asSCP);
@@ -153,8 +149,7 @@ DeMat1CriticalPointNetworkSL::~DeMat1CriticalPointNetworkSL()
 /* ************************************************************************************ */
 solreal DeMat1CriticalPointNetworkSL::PolyV[nPolyV][2];
 /* ************************************************************************************ */
-void DeMat1CriticalPointNetworkSL::computePolygonVertices(void)
-{
+void DeMat1CriticalPointNetworkSL::computePolygonVertices(void) {
    solreal pio6=4.0e0*atan(1.0e0)/6.0e0;
    solreal alpha;
    for ( int i=0 ; i<2 ; i++ ) {PolyV[0][i]=0.0e0;}
@@ -167,8 +162,7 @@ void DeMat1CriticalPointNetworkSL::computePolygonVertices(void)
 }
 /* ************************************************************************************ */
 void DeMat1CriticalPointNetworkSL::getXCoordinatesFromUV(solreal uu,solreal vv,\
-      solreal (&xx)[3],solreal (&xp)[3])
-{
+      solreal (&xx)[3],solreal (&xp)[3]) {
 #if DEBUG
    if ( uu>1.0e0 || uu<0.0e0 ) {
       ScreenUtils::DisplayErrorMessage("u out of range! u should be: 0<=u<=1");
@@ -187,8 +181,7 @@ void DeMat1CriticalPointNetworkSL::getXCoordinatesFromUV(solreal uu,solreal vv,\
 }
 /* ************************************************************************************ */
 void DeMat1CriticalPointNetworkSL::evalUVGrad(solreal uu,solreal vv,
-      solreal &gamm,solreal (&uvg)[2])
-{
+      solreal &gamm,solreal (&uvg)[2]) {
    solreal xx[3],xp[3],gg[3],gp[3];
    getXCoordinatesFromUV(uu,vv,xx,xp);
    wf->evalGradDensityMatrix1(xx[0],xx[1],xx[2],xp[0],xp[1],xp[2],gamm,gg,gp);
@@ -201,8 +194,7 @@ void DeMat1CriticalPointNetworkSL::evalUVGrad(solreal uu,solreal vv,
 }
 /* ************************************************************************************ */
 void DeMat1CriticalPointNetworkSL::evalUVHessian(solreal uu,solreal vv,solreal &gamm,\
-         solreal (&uvg)[2],solreal (&uvh)[2][2])
-{
+         solreal (&uvg)[2],solreal (&uvh)[2][2]) {
    solreal xx[3],xp[3],gg[3],gp[3],hhhh[3][3],hphh[3][3],hphp[3][3];
    getXCoordinatesFromUV(uu,vv,xx,xp);
    wf->evalHessDensityMatrix1(xx,xp,gamm,gg,gp,hhhh,hphh,hphp);
@@ -407,8 +399,7 @@ void DeMat1CriticalPointNetworkSL::getRCPStep(solreal (&g)[2],solreal (&hess)[2]
 }
 /* ************************************************************************************ */
 void DeMat1CriticalPointNetworkSL::seekGammaACP(solreal (&x)[2],solreal &gamm2ret,solreal (&g)[2],\
-         int &sig,int maxit)
-{
+         int &sig,int maxit) {
    static solreal gamm,gr[2],hr[2][2],dx[2];
    //static int sig;
    evalUVHessian(x[0],x[1],gamm,gr,hr);
@@ -438,8 +429,7 @@ void DeMat1CriticalPointNetworkSL::seekGammaACP(solreal (&x)[2],solreal &gamm2re
 }
 /* ************************************************************************************ */
 void DeMat1CriticalPointNetworkSL::seekGammaSCP(solreal (&x)[2],solreal &gamm2ret,solreal (&g)[2],\
-         int &sig,int maxit)
-{
+         int &sig,int maxit) {
    static solreal gamm,gr[2],hr[2][2],dx[2];
    //static int sig;
    evalUVHessian(x[0],x[1],gamm,gr,hr);
@@ -475,8 +465,7 @@ void DeMat1CriticalPointNetworkSL::seekGammaSCP(solreal (&x)[2],solreal &gamm2re
 }
 /* ************************************************************************************ */
 void DeMat1CriticalPointNetworkSL::seekGammaRCP(solreal (&x)[2],solreal &gamm2ret,solreal (&g)[2],\
-         int &sig,int maxit)
-{
+         int &sig,int maxit) {
    static solreal gamm,gr[2],hr[2][2],dx[2];
    //static int sig;
    evalUVHessian(x[0],x[1],gamm,gr,hr);
@@ -516,8 +505,7 @@ void DeMat1CriticalPointNetworkSL::seekGammaRCP(solreal (&x)[2],solreal &gamm2re
    return;
 }
 /* ************************************************************************************ */
-void DeMat1CriticalPointNetworkSL::setGammaACP(int ndivs)
-{
+void DeMat1CriticalPointNetworkSL::setGammaACP(int ndivs) {
    solreal xx[2],ddx=1.0e0/solreal(ndivs-1); 
    int ntot=ndivs*ndivs,count=1;
    cout << "Processing seed: " << std::flush;
@@ -534,8 +522,7 @@ void DeMat1CriticalPointNetworkSL::setGammaACP(int ndivs)
   return; 
 }
 /* ************************************************************************************ */
-void DeMat1CriticalPointNetworkSL::setGammaSCP(int ndivs)
-{
+void DeMat1CriticalPointNetworkSL::setGammaSCP(int ndivs) {
    solreal xx[2],ddx=1.0e0/solreal(ndivs-1); 
    int ntot=ndivs*ndivs,count=1;
    cout << "Processing seed: " << std::flush;
@@ -552,8 +539,7 @@ void DeMat1CriticalPointNetworkSL::setGammaSCP(int ndivs)
   return; 
 }
 /* ************************************************************************************ */
-void DeMat1CriticalPointNetworkSL::setGammaRCP(int ndivs)
-{
+void DeMat1CriticalPointNetworkSL::setGammaRCP(int ndivs) {
    solreal xx[2],ddx=1.0e0/solreal(ndivs-1); 
    int ntot=ndivs*ndivs,count=1;
    cout << "Processing seed: " << std::flush;
@@ -570,8 +556,7 @@ void DeMat1CriticalPointNetworkSL::setGammaRCP(int ndivs)
   return; 
 }
 /* ************************************************************************************ */
-void DeMat1CriticalPointNetworkSL::addGammaACP(solreal (&x)[2],string lbl)
-{
+void DeMat1CriticalPointNetworkSL::addGammaACP(solreal (&x)[2],string lbl) {
    //if ((x[0]<0.0e0)||(x[0]>1.0e0)) {cout << "Out of box (u)...\n"; return;}
    //if ((x[1]<0.0e0)||(x[1]>1.0e0)) {cout << "Out of box (v)...\n"; return;}
    if ( nACP==0 ) {
@@ -588,8 +573,7 @@ void DeMat1CriticalPointNetworkSL::addGammaACP(solreal (&x)[2],string lbl)
    }
 }
 /* ************************************************************************************ */
-void DeMat1CriticalPointNetworkSL::addGammaSCP(solreal (&x)[2],string lbl)
-{
+void DeMat1CriticalPointNetworkSL::addGammaSCP(solreal (&x)[2],string lbl) {
    //if ((x[0]<0.0e0)||(x[0]>1.0e0)) {cout << "Out of box (u)...\n"; return;}
    //if ((x[1]<0.0e0)||(x[1]>1.0e0)) {cout << "Out of box (v)...\n"; return;}
    if ( nSCP==0 ) {
@@ -606,8 +590,7 @@ void DeMat1CriticalPointNetworkSL::addGammaSCP(solreal (&x)[2],string lbl)
    }
 }
 /* ************************************************************************************ */
-void DeMat1CriticalPointNetworkSL::addGammaRCP(solreal (&x)[2],string lbl)
-{
+void DeMat1CriticalPointNetworkSL::addGammaRCP(solreal (&x)[2],string lbl) {
    //if ((x[0]<0.0e0)||(x[0]>1.0e0)) {cout << "Out of box (u)...\n"; return;}
    //if ((x[1]<0.0e0)||(x[1]>1.0e0)) {cout << "Out of box (v)...\n"; return;}
    if ( nRCP==0 ) {
@@ -625,8 +608,7 @@ void DeMat1CriticalPointNetworkSL::addGammaRCP(solreal (&x)[2],string lbl)
 }
 /* ************************************************************************************ */
 bool DeMat1CriticalPointNetworkSL::imNew(solreal (&x)[2],int dim,solreal ** (&arr),\
-      size_t &pos)
-{
+      size_t &pos) {
    solreal ee;
    int firstzeropos=0,k=1;
    ee=arr[0][0]*arr[0][0]+arr[0][1]*arr[0][1];
@@ -653,8 +635,7 @@ bool DeMat1CriticalPointNetworkSL::imNew(solreal (&x)[2],int dim,solreal ** (&ar
    return true;
 }
 /* ************************************************************************************ */
-void DeMat1CriticalPointNetworkSL::seekGammaACPsAroundAPoint(solreal (&oo)[2],solreal ddxx)
-{
+void DeMat1CriticalPointNetworkSL::seekGammaACPsAroundAPoint(solreal (&oo)[2],solreal ddxx) {
    solreal xxx[2],gamm,ggg[2];
    string lbl;
    for ( int i=0 ; i<nPolyV ; i++ ) {
@@ -665,8 +646,7 @@ void DeMat1CriticalPointNetworkSL::seekGammaACPsAroundAPoint(solreal (&oo)[2],so
    
 }
 /* ************************************************************************************ */
-void DeMat1CriticalPointNetworkSL::seekGammaSCPsAroundAPoint(solreal (&oo)[2],solreal ddxx)
-{
+void DeMat1CriticalPointNetworkSL::seekGammaSCPsAroundAPoint(solreal (&oo)[2],solreal ddxx) {
    solreal xxx[2],gamm,ggg[2];
    string lbl;
    for ( int i=0 ; i<nPolyV ; i++ ) {
@@ -677,8 +657,7 @@ void DeMat1CriticalPointNetworkSL::seekGammaSCPsAroundAPoint(solreal (&oo)[2],so
    
 }
 /* ************************************************************************************ */
-void DeMat1CriticalPointNetworkSL::seekGammaRCPsAroundAPoint(solreal (&oo)[2],solreal ddxx)
-{
+void DeMat1CriticalPointNetworkSL::seekGammaRCPsAroundAPoint(solreal (&oo)[2],solreal ddxx) {
    solreal xxx[2],gamm,ggg[2];
    string lbl;
    for ( int i=0 ; i<nPolyV ; i++ ) {
@@ -690,8 +669,7 @@ void DeMat1CriticalPointNetworkSL::seekGammaRCPsAroundAPoint(solreal (&oo)[2],so
 }
 /* ************************************************************************************ */
 void DeMat1CriticalPointNetworkSL::seekSingleGammaACP(solreal (&xs)[2],solreal &gamm,\
-      solreal (&gg)[2],string &lbl)
-{
+      solreal (&gg)[2],string &lbl) {
    /*
    if ( xs[0]<0.0e0 || xs[1]<0.0e0 || xs[0]>1.0e0 || xs[1]>1.0e0 ) {
       gg[0]=gg[1]=1.0e0;
@@ -708,8 +686,7 @@ void DeMat1CriticalPointNetworkSL::seekSingleGammaACP(solreal (&xs)[2],solreal &
 }
 /* ************************************************************************************ */
 void DeMat1CriticalPointNetworkSL::seekSingleGammaSCP(solreal (&xs)[2],solreal &gamm,\
-      solreal (&gg)[2],string &lbl)
-{
+      solreal (&gg)[2],string &lbl) {
    /*
    if ( xs[0]<0.0e0 || xs[1]<0.0e0 || xs[0]>1.0e0 || xs[1]>1.0e0 ) {
       gg[0]=gg[1]=1.0e0;
@@ -725,8 +702,7 @@ void DeMat1CriticalPointNetworkSL::seekSingleGammaSCP(solreal (&xs)[2],solreal &
 }
 /* ************************************************************************************ */
 void DeMat1CriticalPointNetworkSL::seekSingleGammaRCP(solreal (&xs)[2],solreal &gamm,\
-      solreal (&gg)[2],string &lbl)
-{
+      solreal (&gg)[2],string &lbl) {
    /*
    if ( xs[0]<0.0e0 || xs[1]<0.0e0 || xs[0]>1.0e0 || xs[1]>1.0e0 ) {
       gg[0]=gg[1]=1.0e0;
@@ -741,8 +717,7 @@ void DeMat1CriticalPointNetworkSL::seekSingleGammaRCP(solreal (&xs)[2],solreal &
    }
 }
 /* ************************************************************************************ */
-void DeMat1CriticalPointNetworkSL::displayACPsInfo(void)
-{
+void DeMat1CriticalPointNetworkSL::displayACPsInfo(void) {
    if ( nACP==0 ) {
       cout << "No ACPs found!" << endl;
       return;
@@ -756,8 +731,7 @@ void DeMat1CriticalPointNetworkSL::displayACPsInfo(void)
    }
 }
 /* ************************************************************************************ */
-void DeMat1CriticalPointNetworkSL::displaySCPsInfo(void)
-{
+void DeMat1CriticalPointNetworkSL::displaySCPsInfo(void) {
    if ( nSCP==0 ) {
       cout << "No SCPs found!" << endl;
       return;
@@ -771,8 +745,7 @@ void DeMat1CriticalPointNetworkSL::displaySCPsInfo(void)
    }
 }
 /* ************************************************************************************ */
-void DeMat1CriticalPointNetworkSL::displayRCPsInfo(void)
-{
+void DeMat1CriticalPointNetworkSL::displayRCPsInfo(void) {
    if ( nRCP==0 ) {
       cout << "No RCPs found!" << endl;
       return;
@@ -786,16 +759,14 @@ void DeMat1CriticalPointNetworkSL::displayRCPsInfo(void)
    }
 }
 /* ************************************************************************************ */
-void DeMat1CriticalPointNetworkSL::displayCPsInfo(void)
-{
+void DeMat1CriticalPointNetworkSL::displayCPsInfo(void) {
    displayACPsInfo();
    displaySCPsInfo();
    displayRCPsInfo();
    cout << "nACP-nSCP+nRCP: " << (nACP-nSCP+nRCP) << endl;
 }
 /* ************************************************************************************ */
-void DeMat1CriticalPointNetworkSL::writeACPsInfo(ofstream &ofil)
-{
+void DeMat1CriticalPointNetworkSL::writeACPsInfo(ofstream &ofil) {
    if ( nACP==0 ) {
       ofil << "No ACPs found!" << endl;
       return;
@@ -809,8 +780,7 @@ void DeMat1CriticalPointNetworkSL::writeACPsInfo(ofstream &ofil)
    }
 }
 /* ************************************************************************************ */
-void DeMat1CriticalPointNetworkSL::writeSCPsInfo(ofstream &ofil)
-{
+void DeMat1CriticalPointNetworkSL::writeSCPsInfo(ofstream &ofil) {
    if ( nSCP==0 ) {
       ofil << "No SCPs found!" << endl;
       return;
@@ -824,8 +794,7 @@ void DeMat1CriticalPointNetworkSL::writeSCPsInfo(ofstream &ofil)
    }
 }
 /* ************************************************************************************ */
-void DeMat1CriticalPointNetworkSL::writeRCPsInfo(ofstream &ofil)
-{
+void DeMat1CriticalPointNetworkSL::writeRCPsInfo(ofstream &ofil) {
    if ( nRCP==0 ) {
       ofil << "No RCPs found!" << endl;
       return;
@@ -839,8 +808,7 @@ void DeMat1CriticalPointNetworkSL::writeRCPsInfo(ofstream &ofil)
    }
 }
 /* ************************************************************************************ */
-void DeMat1CriticalPointNetworkSL::writeCPsInfo(ofstream &ofil)
-{
+void DeMat1CriticalPointNetworkSL::writeCPsInfo(ofstream &ofil) {
    ofil << "#Topological information:" << endl;
    writeACPsInfo(ofil);
    writeSCPsInfo(ofil);
@@ -848,8 +816,7 @@ void DeMat1CriticalPointNetworkSL::writeCPsInfo(ofstream &ofil)
    ofil << "nACP-nSCP+nRCP: " << (nACP-nSCP+nRCP) << endl;
 }
 /* ************************************************************************************ */
-void DeMat1CriticalPointNetworkSL::setGammaCriticalPoints(void)
-{
+void DeMat1CriticalPointNetworkSL::setGammaCriticalPoints(void) {
    cout << "Scanning for ACPs..." << endl;
    setGammaACP();
    cout << "Scanning for SCPs..." << endl;

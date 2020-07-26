@@ -45,27 +45,23 @@
 #include "../common/critptnetwork.h"
 
 DTKGLCriticalPointNetWork::DTKGLCriticalPointNetWork(QWidget *parent)
-      : QWidget(parent)
-{
+      : QWidget(parent) {
    cpn=NULL;
 }
 
-DTKGLCriticalPointNetWork::~DTKGLCriticalPointNetWork()
-{
+DTKGLCriticalPointNetWork::~DTKGLCriticalPointNetWork() {
   if (cpn!=NULL) {
      delete cpn;
      cpn=NULL;
   }
 }
 
-void DTKGLCriticalPointNetWork::setupRegularCPN(GaussWaveFunction *uwf, DTKGLBondNetWork *ubn)
-{
+void DTKGLCriticalPointNetWork::setupRegularCPN(GaussWaveFunction *uwf, DTKGLBondNetWork *ubn) {
    cpn=new critPtNetWork(*uwf,*(ubn->bnw));
 
 }
 
-bool DTKGLCriticalPointNetWork::loadCPNStateFromFile(QString fname)
-{
+bool DTKGLCriticalPointNetWork::loadCPNStateFromFile(QString fname) {
    if (cpn==NULL) {
       qDebug() << "Error: first load the critical point network!";
       return false;

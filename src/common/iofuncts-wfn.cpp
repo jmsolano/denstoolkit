@@ -53,16 +53,14 @@ using std::endl;
 #include <cmath>
 /* ********************************************************************************************* */
 /* ********************************************************************************************* */
-string getTitleFromFileWFN(ifstream &ifil)
-{
+string getTitleFromFileWFN(ifstream &ifil) {
    string line;
    ifil.seekg(ifil.beg);
    getline(ifil,line);
    return line;
 }
 /* ********************************************************************************************* */
-void processFirstDataStringinWFNFile(ifstream &ifil,string* &tit,string &orbdesc,int &nmo,int &npr,int &nnu)
-{
+void processFirstDataStringinWFNFile(ifstream &ifil,string* &tit,string &orbdesc,int &nmo,int &npr,int &nnu) {
    string line;
    ifil.seekg(ifil.beg);
    MyMemory::Alloc1DStringArray(string("tit"),1,tit);
@@ -112,8 +110,7 @@ void processFirstDataStringinWFNFile(ifstream &ifil,string* &tit,string &orbdesc
    }
 }
 /* ********************************************************************************************* */
-void processCentersWFN(ifstream &ifil,const int nnu,string* &atlbl,solreal* &rr,solreal* &atch)
-{
+void processCentersWFN(ifstream &ifil,const int nnu,string* &atlbl,solreal* &rr,solreal* &atch) {
    MyMemory::Alloc1DStringArray("atlbl",nnu,atlbl);
    MyMemory::Alloc1DRealArray("rr",3*nnu,rr);
    MyMemory::Alloc1DRealArray("atch",nnu,atch);
@@ -148,8 +145,7 @@ void processCentersWFN(ifstream &ifil,const int nnu,string* &atlbl,solreal* &rr,
    }
 }
 /* ********************************************************************************************* */
-void processPrimitivesWFN(ifstream &ifil,const int npr,int* &pricen,int* &primty,solreal* &prexp)
-{
+void processPrimitivesWFN(ifstream &ifil,const int npr,int* &pricen,int* &primty,solreal* &prexp) {
    MyMemory::Alloc1DIntArray("pricen",npr,pricen);
    MyMemory::Alloc1DIntArray("primty",npr,primty);
    MyMemory::Alloc1DRealArray("prexp",npr,prexp);
@@ -217,8 +213,7 @@ void processPrimitivesWFN(ifstream &ifil,const int npr,int* &pricen,int* &primty
 }
 /* ********************************************************************************************* */
 void processMolecularOrbitalPropsAndCoefs(ifstream &ifil,const int norb,const int npr
-                                 ,solreal* &ocn,solreal* &moe,solreal* &moc)
-{
+                                 ,solreal* &ocn,solreal* &moe,solreal* &moc) {
    MyMemory::Alloc1DRealArray("moc",(norb*npr),moc);
    MyMemory::Alloc1DRealArray("ocn",norb,ocn);
    MyMemory::Alloc1DRealArray("moe",norb,moe);
@@ -255,8 +250,7 @@ void processMolecularOrbitalPropsAndCoefs(ifstream &ifil,const int norb,const in
    }
 }
 /* ********************************************************************************************* */
-void getEnergyAndVirial(ifstream &ifil,solreal &theener,solreal &thevir)
-{
+void getEnergyAndVirial(ifstream &ifil,solreal &theener,solreal &thevir) {
    string line;
    getline(ifil,line);
    int pos;

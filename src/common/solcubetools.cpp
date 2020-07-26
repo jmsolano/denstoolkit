@@ -47,8 +47,7 @@
 
 //**********************************************************************************************
 void writeCubeHeader(ofstream &ofil,string &t1,string &t2,int (&bdim)[3],
-                solreal (&x0)[3],solreal (&dx)[3][3],int nat,solreal* (&atchrg),solreal* (&x))
-{
+                solreal (&x0)[3],solreal (&dx)[3][3],int nat,solreal* (&atchrg),solreal* (&x)) {
    ofil.width(60);
    ofil.setf(std::ios::left);
    ofil << t1 << endl;
@@ -86,8 +85,7 @@ void writeCubeHeader(ofstream &ofil,string &t1,string &t2,int (&bdim)[3],
    return;
 }
 //**********************************************************************************************
-void writeCubeProp(ofstream &ofil,int dim,solreal* (&prop))
-{
+void writeCubeProp(ofstream &ofil,int dim,solreal* (&prop)) {
    int count;
    count=0;
    for (int k=0; k<dim; k++) {

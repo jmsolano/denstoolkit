@@ -53,8 +53,7 @@ typedef double solreal;
 
 #define MAXDEFINEDATOMICCOLORS 109
 
-int getAtomicRGBColorInt(int nat,int rgb)
-{
+int getAtomicRGBColorInt(int nat,int rgb) {
    static const int atomicColorInt[MAXDEFINEDATOMICCOLORS][3]={ //109
       {255, 255, 255},  //  H  1 --
       {217, 255, 255},  //  He 2 --
@@ -169,23 +168,19 @@ int getAtomicRGBColorInt(int nat,int rgb)
    return atomicColorInt[nat][rgb];
 }
 
-int getAtomicRColorInt(int nat)
-{
+int getAtomicRColorInt(int nat) {
    return getAtomicRGBColorInt(nat,0);
 }
 
-int getAtomicGColorInt(int nat)
-{
+int getAtomicGColorInt(int nat) {
    return getAtomicRGBColorInt(nat,1);
 }
 
-int getAtomicBColorInt(int nat)
-{
+int getAtomicBColorInt(int nat) {
    return getAtomicRGBColorInt(nat,2);
 }
 
-solreal getAtomicRGBColorReal(int nat,int rgb)
-{
+solreal getAtomicRGBColorReal(int nat,int rgb) {
    static const solreal atomicColor[MAXDEFINEDATOMICCOLORS][3]={
       {1.000000,1.000000,1.000000}, //  H  1 --
       {0.8509804,1.000000,1.000000}, //  He 2 --
@@ -300,31 +295,26 @@ solreal getAtomicRGBColorReal(int nat,int rgb)
    return atomicColor[nat][rgb];
 }
 
-solreal getAtomicRColorReal(int nat)
-{
+solreal getAtomicRColorReal(int nat) {
    return getAtomicRGBColorReal(nat,0);
 }
 
-solreal getAtomicGColorReal(int nat)
-{
+solreal getAtomicGColorReal(int nat) {
    return getAtomicRGBColorReal(nat,1);
 }
 
-solreal getAtomicBColorReal(int nat)
-{
+solreal getAtomicBColorReal(int nat) {
    return getAtomicRGBColorReal(nat,2);
 }
 
-void getAtomicRGBColorsReal(int nat,solreal &rr,solreal &gg,solreal &bb)
-{
+void getAtomicRGBColorsReal(int nat,solreal &rr,solreal &gg,solreal &bb) {
    rr=getAtomicRGBColorReal(nat,0);
    gg=getAtomicRGBColorReal(nat,1);
    bb=getAtomicRGBColorReal(nat,2);
    return;
 }
 
-void getAtomicRGBColorsInt(int nat,int &rr,int &gg,int &bb)
-{
+void getAtomicRGBColorsInt(int nat,int &rr,int &gg,int &bb) {
    rr=getAtomicRGBColorInt(nat,0);
    gg=getAtomicRGBColorInt(nat,1);
    bb=getAtomicRGBColorInt(nat,2);

@@ -48,8 +48,7 @@ using std::ifstream;
 #include "../common/iofuncts-cpx.h"
 
 
-void dtkglutils::getRotationVectorAndAngle(const QVector3D &v1, const QVector3D &v2, QVector3D &vres, float &ares)
-{
+void dtkglutils::getRotationVectorAndAngle(const QVector3D &v1, const QVector3D &v2, QVector3D &vres, float &ares) {
     const float oeoPI = 180.0f/acos(-1.0f);
     static const QVector3D zAxis(0.0f, 0.0f, 1.0f);
     QVector3D diff=v2-v1;
@@ -59,8 +58,7 @@ void dtkglutils::getRotationVectorAndAngle(const QVector3D &v1, const QVector3D 
 }
 
 
-QString dtkglutils::getWFNFileNameFromCPX(QString cpxname)
-{
+QString dtkglutils::getWFNFileNameFromCPX(QString cpxname) {
    QFileInfo fi(cpxname);
    string str=cpxname.toStdString();
    ifstream ifil(str.c_str());

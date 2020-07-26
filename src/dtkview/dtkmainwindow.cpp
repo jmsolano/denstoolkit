@@ -48,8 +48,7 @@
 
 DTKMainWindow::DTKMainWindow(QWidget *parent) :
    QMainWindow(parent),
-   ui(new Ui::DTKMainWindow)
-{
+   ui(new Ui::DTKMainWindow) {
    ui->setupUi(this);
 
    connect(ui->openGLWidget,SIGNAL(rotationChanged()),this,SLOT(updateStatusBar()));
@@ -62,8 +61,7 @@ DTKMainWindow::DTKMainWindow(QWidget *parent) :
    ui->menuBar->setNativeMenuBar(true);
 }
 
-void DTKMainWindow::updateStatusBar()
-{
+void DTKMainWindow::updateStatusBar() {
    statusBar()->clearMessage();
    statusBar()->showMessage(QString("xAngle: %1   yAngle: %2   zAngle: %3   "
                                     "zoom: %4")
@@ -74,8 +72,7 @@ void DTKMainWindow::updateStatusBar()
                             );
 }
 
-DTKMainWindow::~DTKMainWindow()
-{
+DTKMainWindow::~DTKMainWindow() {
    delete loadMoleculeAction;
    delete loadTestMoleculeAction;
    delete clearViewPortAction;
@@ -102,13 +99,11 @@ DTKMainWindow::~DTKMainWindow()
    delete ui;
 }
 
-void DTKMainWindow::on_resetPushButton_clicked()
-{
+void DTKMainWindow::on_resetPushButton_clicked() {
     ui->openGLWidget->resetView();
 }
 
-void DTKMainWindow::createMenus()
-{
+void DTKMainWindow::createMenus() {
 #ifdef __linux__
    menuBar()->setNativeMenuBar(false);
 #endif
@@ -133,8 +128,7 @@ void DTKMainWindow::createMenus()
    helpMenu->addAction(showAboutDTKAction);
 }
 
-void DTKMainWindow::createActions()
-{
+void DTKMainWindow::createActions() {
     loadMoleculeAction = new QAction(QIcon(":/images/open.png"),tr("&Open Molecule..."), this);
     loadMoleculeAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_O));
     connect(loadMoleculeAction,SIGNAL(triggered()),this,SLOT(loadMolecule()));
@@ -203,8 +197,7 @@ void DTKMainWindow::createActions()
     connect(showAboutDTKAction,SIGNAL(triggered()),this,SLOT(showAboutDTK()));
 }
 
-void DTKMainWindow::setupMainToolbar()
-{
+void DTKMainWindow::setupMainToolbar() {
    ui->mainToolBar->addAction(loadMoleculeAction);
    ui->mainToolBar->addAction(exportViewPortImageAction);
    ui->mainToolBar->addAction(clearViewPortAction);
@@ -220,8 +213,7 @@ void DTKMainWindow::setupMainToolbar()
    ui->mainToolBar->addAction(viewCPLabelsAction);
 }
 
-void DTKMainWindow::loadMolecule()
-{
+void DTKMainWindow::loadMolecule() {
 #ifdef __APPLE__
    QString fname=tr("/Users/jmsolano/Documents/LongRun/proj/readwfn/src/dtkview/cubano_sto3gRhoCP.cpx");
    //QString fname=tr("/Users/jmsolano/Documents/LongRun/proj/readwfn/src/dtkview/phenantreneRhoCP.cpx");
@@ -247,8 +239,7 @@ void DTKMainWindow::loadMolecule()
    ui->openGLWidget->update();
 }
 
-void DTKMainWindow::loadTestMolecule()
-{
+void DTKMainWindow::loadTestMolecule() {
 #ifdef __APPLE__
    QString fname=tr("/Users/jmsolano/Documents/LongRun/proj/readwfn/src/dtkview/cubano_sto3gRhoCP.cpx");
    //QString fname=tr("/Users/jmsolano/Documents/LongRun/proj/readwfn/src/dtkview/phenantreneRhoCP.cpx");
@@ -260,14 +251,12 @@ void DTKMainWindow::loadTestMolecule()
    ui->openGLWidget->update();
 }
 
-void DTKMainWindow::clearViewPort()
-{
+void DTKMainWindow::clearViewPort() {
    ui->openGLWidget->clearWFsBNsCPXs();
    ui->openGLWidget->update();
 }
 
-void DTKMainWindow::exportViewPortImage()
-{
+void DTKMainWindow::exportViewPortImage() {
     QString selfilter = tr("Portable Network Graphics (*.png)");
     QFileDialog *myfdiag=new QFileDialog;
     QString fname=myfdiag->getSaveFileName(this,
@@ -290,8 +279,7 @@ void DTKMainWindow::exportViewPortImage()
     imgbuff.save(fname,0,100);
 }
 
-void DTKMainWindow::setTransparentAtomsAndLinks()
-{
+void DTKMainWindow::setTransparentAtomsAndLinks() {
    bool val=ui->setTransparentCheckBox->isChecked();
    val=(!val);
    ui->setTransparentCheckBox->setChecked(val);
@@ -299,8 +287,7 @@ void DTKMainWindow::setTransparentAtomsAndLinks()
    ui->openGLWidget->setTransparentAtomsAndLinks(val);
 }
 
-void DTKMainWindow::setViewAtoms()
-{
+void DTKMainWindow::setViewAtoms() {
    bool val=ui->viewAtomsCheckBox->isChecked();
    val=(!val);
    ui->viewAtomsCheckBox->setChecked(val);
@@ -308,8 +295,7 @@ void DTKMainWindow::setViewAtoms()
    ui->openGLWidget->setViewAtoms(val);
 }
 
-void DTKMainWindow::setViewAtomLabels()
-{
+void DTKMainWindow::setViewAtomLabels() {
    bool val=ui->viewAtLblsCheckBox->isChecked();
    val=(!val);
    ui->viewAtLblsCheckBox->setChecked(val);
@@ -317,8 +303,7 @@ void DTKMainWindow::setViewAtomLabels()
    ui->openGLWidget->setDrawAtomLabels(val);
 }
 
-void DTKMainWindow::setViewRegularBonds()
-{
+void DTKMainWindow::setViewRegularBonds() {
    bool val=ui->viewRegularBondsCheckBox->isChecked();
    val=(!val);
    ui->viewRegularBondsCheckBox->setChecked(val);
@@ -326,8 +311,7 @@ void DTKMainWindow::setViewRegularBonds()
    ui->openGLWidget->setViewRegularBonds(val);
 }
 
-void DTKMainWindow::setViewBondGradientPaths()
-{
+void DTKMainWindow::setViewBondGradientPaths() {
    bool val=ui->viewBGPsCheckBox->isChecked();
    val=(!val);
    ui->viewBGPsCheckBox->setChecked(val);
@@ -335,8 +319,7 @@ void DTKMainWindow::setViewBondGradientPaths()
    ui->openGLWidget->setViewBondGradientPaths(val);
 }
 
-void DTKMainWindow::setViewRingGradientPaths()
-{
+void DTKMainWindow::setViewRingGradientPaths() {
    bool val=ui->viewRGPsCheckBox->isChecked();
    val=(!val);
    ui->viewRGPsCheckBox->setChecked(val);
@@ -344,8 +327,7 @@ void DTKMainWindow::setViewRingGradientPaths()
    ui->openGLWidget->setViewRingGradientPaths(val);
 }
 
-void DTKMainWindow::setViewCageGradientPaths()
-{
+void DTKMainWindow::setViewCageGradientPaths() {
    bool val=ui->viewCGPsCheckBox->isChecked();
    val=(!val);
    ui->viewCGPsCheckBox->setChecked(val);
@@ -353,8 +335,7 @@ void DTKMainWindow::setViewCageGradientPaths()
    ui->openGLWidget->setViewCageGradientPaths(val);
 }
 
-void DTKMainWindow::setViewCPLabels()
-{
+void DTKMainWindow::setViewCPLabels() {
    bool val=ui->viewCPLabelsCheckBox->isChecked();
    val=(!val);
    ui->viewCPLabelsCheckBox->setChecked(val);
@@ -362,8 +343,7 @@ void DTKMainWindow::setViewCPLabels()
    ui->openGLWidget->setDrawCPLabels(val);
 }
 
-void DTKMainWindow::showAboutDTK()
-{
+void DTKMainWindow::showAboutDTK() {
    QMessageBox about(NULL);
    about.setText(tr("About DensToolKitViewer"));
    about.setInformativeText(tr("Version: "
@@ -380,57 +360,49 @@ void DTKMainWindow::showAboutDTK()
    int ret=about.exec();
 }
 
-void DTKMainWindow::on_viewAtLblsCheckBox_clicked()
-{
+void DTKMainWindow::on_viewAtLblsCheckBox_clicked() {
    bool val=ui->viewAtLblsCheckBox->isChecked();
     ui->openGLWidget->setDrawAtomLabels(val);
     viewAtomLabelsAction->setChecked(val);
 }
 
-void DTKMainWindow::on_viewCGPsCheckBox_clicked()
-{
+void DTKMainWindow::on_viewCGPsCheckBox_clicked() {
    bool val=ui->viewCGPsCheckBox->isChecked();
    ui->openGLWidget->setViewCageGradientPaths(val);
    viewBondGradientPathsAction->setChecked(val);
 }
 
-void DTKMainWindow::on_viewRGPsCheckBox_clicked()
-{
+void DTKMainWindow::on_viewRGPsCheckBox_clicked() {
    bool val=ui->viewRGPsCheckBox->isChecked();
    ui->openGLWidget->setViewRingGradientPaths(val);
    viewRingGradientPathsAction->setChecked(val);
 }
 
-void DTKMainWindow::on_viewBGPsCheckBox_clicked()
-{
+void DTKMainWindow::on_viewBGPsCheckBox_clicked() {
    bool val=ui->viewBGPsCheckBox->isChecked();
    ui->openGLWidget->setViewBondGradientPaths(val);
    viewCageGradientPathsAction->setChecked(val);
 }
 
-void DTKMainWindow::on_viewRegularBondsCheckBox_clicked()
-{
+void DTKMainWindow::on_viewRegularBondsCheckBox_clicked() {
    bool val=ui->viewRegularBondsCheckBox->isChecked();
    ui->openGLWidget->setViewRegularBonds(val);
    viewRegularBondsAction->setChecked(val);
 }
 
-void DTKMainWindow::on_viewAtomsCheckBox_clicked()
-{
+void DTKMainWindow::on_viewAtomsCheckBox_clicked() {
    bool val=ui->viewAtomsCheckBox->isChecked();
    ui->openGLWidget->setViewAtoms(val);
    viewAtomsAction->setChecked(val);
 }
 
-void DTKMainWindow::on_setTransparentCheckBox_clicked()
-{
+void DTKMainWindow::on_setTransparentCheckBox_clicked() {
    bool val=ui->setTransparentCheckBox->isChecked();
    ui->openGLWidget->setTransparentAtomsAndLinks(val);
    setTransparentAtomsAndLinksAction->setChecked(val);
 }
 
-void DTKMainWindow::on_viewCPLabelsCheckBox_clicked()
-{
+void DTKMainWindow::on_viewCPLabelsCheckBox_clicked() {
    bool val=ui->viewCPLabelsCheckBox->isChecked();
    ui->openGLWidget->setDrawCPLabels(val);
    viewCPLabelsAction->setChecked(val);

@@ -51,8 +51,7 @@ using std::setprecision;
 using std::scientific;
 using std::setw;
 
-void writeDatMatAtCrds(string &acfn,bondNetWork &bn)
-{
+void writeDatMatAtCrds(string &acfn,bondNetWork &bn) {
    ofstream ofil;
    size_t pos;
    string lbl;
@@ -70,8 +69,7 @@ void writeDatMatAtCrds(string &acfn,bondNetWork &bn)
    return;
 }
 
-void writeDatMatCritPtsCrds(string &cpfn,critPtNetWork &cp)
-{
+void writeDatMatCritPtsCrds(string &cpfn,critPtNetWork &cp) {
    ofstream ofil;
    ofil.open(cpfn.c_str(),ios::out);
    ofil << scientific << setprecision(12);
@@ -99,8 +97,7 @@ void writeDatMatCritPtsCrds(string &cpfn,critPtNetWork &cp)
    return;
 }
 
-void writeDatMatBondPathCrds(string &bpfn,critPtNetWork &cp)
-{
+void writeDatMatBondPathCrds(string &bpfn,critPtNetWork &cp) {
    ofstream ofil;
    ofil.open(bpfn.c_str(),ios::out);
    ofil << scientific << setprecision(12);

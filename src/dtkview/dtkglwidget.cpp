@@ -91,13 +91,11 @@ DTKGLWidget::DTKGLWidget(QWidget *parent)
    //zFar=100.0f;
 }
 
-DTKGLWidget::~DTKGLWidget()
-{
+DTKGLWidget::~DTKGLWidget() {
    clearWFsBNsCPXs();
 }
 
-void DTKGLWidget::clearWFsBNsCPXs()
-{
+void DTKGLWidget::clearWFsBNsCPXs() {
    for (int i=0; i<waveFunction.size(); ++i) {
       delete waveFunction[i];
       waveFunction[i]=NULL;
@@ -115,8 +113,7 @@ void DTKGLWidget::clearWFsBNsCPXs()
    critPtNW.clear();
 }
 
-void DTKGLWidget::initializeGL()
-{
+void DTKGLWidget::initializeGL() {
    /*
    glClearColor(0.2,0.2,0.2,1.0);
    glEnable(GL_DEPTH_TEST);
@@ -147,8 +144,7 @@ void DTKGLWidget::initializeGL()
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); //Set blending function.
 }
 
-void DTKGLWidget::paintGL()
-{
+void DTKGLWidget::paintGL() {
 
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -162,8 +158,7 @@ void DTKGLWidget::paintGL()
    drawEverything();
 }
 
-void DTKGLWidget::resizeGL(int w, int h)
-{
+void DTKGLWidget::resizeGL(int w, int h) {
    /*
    glViewport(0,0,w,h);
    glMatrixMode(GL_PROJECTION);
@@ -182,8 +177,7 @@ void DTKGLWidget::resizeGL(int w, int h)
    glMatrixMode(GL_MODELVIEW);
 }
 
-void DTKGLWidget::drawAtoms()
-{
+void DTKGLWidget::drawAtoms() {
    DTKGLBondNetWork *bn;
    QVector3D pos,col;
    float rad = DTKGL_DEFAULT_SPHERE_RADIUS;
@@ -211,8 +205,7 @@ void DTKGLWidget::drawAtoms()
    }
 }
 
-void DTKGLWidget::drawLinks()
-{
+void DTKGLWidget::drawLinks() {
     DTKGLBondNetWork *bn;
     float rad = DTKGL_DEFAULT_LINK_RADIUS;
     if (setTransp) {
@@ -237,8 +230,7 @@ void DTKGLWidget::drawLinks()
     }
 }
 
-void DTKGLWidget::drawAtomLabels()
-{
+void DTKGLWidget::drawAtomLabels() {
    DTKGLBondNetWork *bn;
    QVector3D pos;
    QString lbl;
@@ -252,8 +244,7 @@ void DTKGLWidget::drawAtomLabels()
    }
 }
 
-void DTKGLWidget::drawAttractorCriticalPoints()
-{
+void DTKGLWidget::drawAttractorCriticalPoints() {
    DTKGLCriticalPointNetWork *cp;
    const static QVector3D colACP(0.0f,0.0f,0.0f);
    QVector3D pos;
@@ -268,8 +259,7 @@ void DTKGLWidget::drawAttractorCriticalPoints()
    }
 }
 
-void DTKGLWidget::drawBondCriticalPoints()
-{
+void DTKGLWidget::drawBondCriticalPoints() {
    DTKGLCriticalPointNetWork *cp;
    const static QVector3D colBCP(0.0f,0.6f,1.0f);
    QVector3D pos;
@@ -284,8 +274,7 @@ void DTKGLWidget::drawBondCriticalPoints()
    }
 }
 
-void DTKGLWidget::drawRingCriticalPoints()
-{
+void DTKGLWidget::drawRingCriticalPoints() {
    DTKGLCriticalPointNetWork *cp;
    const static QVector3D colRCP(1.0f,1.0f,0.0f);
    QVector3D pos;
@@ -300,8 +289,7 @@ void DTKGLWidget::drawRingCriticalPoints()
    }
 }
 
-void DTKGLWidget::drawCageCriticalPoints()
-{
+void DTKGLWidget::drawCageCriticalPoints() {
    DTKGLCriticalPointNetWork *cp;
    const static QVector3D colCCP(1.0f,0.0f,0.0f);
    QVector3D pos;
@@ -316,16 +304,14 @@ void DTKGLWidget::drawCageCriticalPoints()
    }
 }
 
-void DTKGLWidget::drawCriticalPoints()
-{
+void DTKGLWidget::drawCriticalPoints() {
    drawAttractorCriticalPoints();
    drawBondCriticalPoints();
    drawRingCriticalPoints();
    drawCageCriticalPoints();
 }
 
-void DTKGLWidget::drawCPLabels()
-{
+void DTKGLWidget::drawCPLabels() {
    DTKGLCriticalPointNetWork *cpn;
    QVector3D pos;
    QString lbl;
@@ -359,8 +345,7 @@ void DTKGLWidget::drawCPLabels()
    }
 }
 
-void DTKGLWidget::drawBondGradientPaths()
-{
+void DTKGLWidget::drawBondGradientPaths() {
    DTKGLCriticalPointNetWork *cp;
    const static QVector3D colBGP(0.0f,0.2f,1.0f);
    QVector3D pos;
@@ -378,8 +363,7 @@ void DTKGLWidget::drawBondGradientPaths()
    }
 }
 
-void DTKGLWidget::drawRingGradientPaths()
-{
+void DTKGLWidget::drawRingGradientPaths() {
    DTKGLCriticalPointNetWork *cp;
    const static QVector3D colRGP(0.0f,0.8f,0.0f);
    QVector3D pos;
@@ -401,8 +385,7 @@ void DTKGLWidget::drawRingGradientPaths()
    }
 }
 
-void DTKGLWidget::drawCageGradientPaths()
-{
+void DTKGLWidget::drawCageGradientPaths() {
    DTKGLCriticalPointNetWork *cp;
    const static QVector3D colCGP(1.0f,0.5f,0.0f);
    QVector3D pos;
@@ -424,15 +407,13 @@ void DTKGLWidget::drawCageGradientPaths()
    }
 }
 
-void DTKGLWidget::drawGradientPaths()
-{
+void DTKGLWidget::drawGradientPaths() {
    if (drawBGPs) {drawBondGradientPaths();}
    if (drawRGPs) {drawRingGradientPaths();}
    if (drawCGPs) {drawCageGradientPaths();}
 }
 
-void DTKGLWidget::drawEverything()
-{
+void DTKGLWidget::drawEverything() {
    GLfloat white[] = {1.0f, 1.0f, 1.0f, 1.0f};
    glMaterialfv(GL_FRONT, GL_DIFFUSE, white);
 
@@ -444,8 +425,7 @@ void DTKGLWidget::drawEverything()
    if (drawBnds) { drawLinks(); }
 }
 
-void DTKGLWidget::addMolecule(QString fnam)
-{
+void DTKGLWidget::addMolecule(QString fnam) {
    QString wfnname=dtkglutils::getWFNFileNameFromCPX(fnam);
 
    GaussWaveFunction *wf_lcl=new GaussWaveFunction();
@@ -485,14 +465,12 @@ void DTKGLWidget::addMolecule(QString fnam)
    critPtNW.push_back(cp_lcl);
 }
 
-static void qNormalizeAngle(int &angle)
-{
+static void qNormalizeAngle(int &angle) {
    while (angle < 0) angle += 360;
    while (angle >= 360) angle -= 360;
 }
 
-void DTKGLWidget::setXRotation(int angle)
-{
+void DTKGLWidget::setXRotation(int angle) {
    qNormalizeAngle(angle);
    if (angle != xRot) {
       xRot = angle;
@@ -502,8 +480,7 @@ void DTKGLWidget::setXRotation(int angle)
    }
 }
 
-void DTKGLWidget::setYRotation(int angle)
-{
+void DTKGLWidget::setYRotation(int angle) {
    qNormalizeAngle(angle);
    if (angle != yRot) {
       yRot = angle;
@@ -513,8 +490,7 @@ void DTKGLWidget::setYRotation(int angle)
    }
 }
 
-void DTKGLWidget::setZRotation(int angle)
-{
+void DTKGLWidget::setZRotation(int angle) {
    qNormalizeAngle(angle);
    if (angle != zRot) {
       zRot = angle;
@@ -524,57 +500,48 @@ void DTKGLWidget::setZRotation(int angle)
    }
 }
 
-void DTKGLWidget::setViewAtoms(bool val)
-{
+void DTKGLWidget::setViewAtoms(bool val) {
    drawAts=val;
    update();
 }
 
-void DTKGLWidget::setDrawAtomLabels(bool dal)
-{
+void DTKGLWidget::setDrawAtomLabels(bool dal) {
    drawAtLbls=dal;
    emit drawAtLblsChanged();
    update();
 }
 
-void DTKGLWidget::setViewRegularBonds(bool vrb)
-{
+void DTKGLWidget::setViewRegularBonds(bool vrb) {
    drawBnds=vrb;
    update();
 }
 
-void DTKGLWidget::setViewBondGradientPaths(bool dbgp)
-{
+void DTKGLWidget::setViewBondGradientPaths(bool dbgp) {
    drawBGPs=dbgp;
    update();
 }
 
-void DTKGLWidget::setViewRingGradientPaths(bool drgp)
-{
+void DTKGLWidget::setViewRingGradientPaths(bool drgp) {
    drawRGPs=drgp;
    update();
 }
 
-void DTKGLWidget::setViewCageGradientPaths(bool dcgp)
-{
+void DTKGLWidget::setViewCageGradientPaths(bool dcgp) {
    drawCGPs=dcgp;
    update();
 }
 
-void DTKGLWidget::setDrawCPLabels(bool dal)
-{
+void DTKGLWidget::setDrawCPLabels(bool dal) {
    drawCPLbls=dal;
    update();
 }
 
-void DTKGLWidget::setTransparentAtomsAndLinks(bool val)
-{
+void DTKGLWidget::setTransparentAtomsAndLinks(bool val) {
    setTransp=val;
    update();
 }
 
-void DTKGLWidget::setCameraDistance(double dist)
-{
+void DTKGLWidget::setCameraDistance(double dist) {
    if (dist!=cameraDistance) {
       cameraDistance=dist;
       emit zoomChanged();
@@ -582,8 +549,7 @@ void DTKGLWidget::setCameraDistance(double dist)
    }
 }
 
-void DTKGLWidget::resetView()
-{
+void DTKGLWidget::resetView() {
   xRot=yRot=zRot=0.0f;
   emit rotationChanged();
   cameraDistance=INITIAL_CAMERA_DISTANCE;
@@ -591,13 +557,11 @@ void DTKGLWidget::resetView()
   update();
 }
 
-void DTKGLWidget::mousePressEvent(QMouseEvent *event)
-{
+void DTKGLWidget::mousePressEvent(QMouseEvent *event) {
    lastPos = event->pos();
 }
 
-void DTKGLWidget::mouseMoveEvent(QMouseEvent *event)
-{
+void DTKGLWidget::mouseMoveEvent(QMouseEvent *event) {
    int dx = event->x() - lastPos.x();
    int dy = event->y() - lastPos.y();
 
@@ -612,8 +576,7 @@ void DTKGLWidget::mouseMoveEvent(QMouseEvent *event)
    lastPos = event->pos();
 }
 
-void DTKGLWidget::wheelEvent(QWheelEvent *event)
-{
+void DTKGLWidget::wheelEvent(QWheelEvent *event) {
    int delta = event->delta();
    if (event->orientation() == Qt::Vertical) { if (delta < 0) {
          cameraDistance *= 0.8e0;
@@ -627,8 +590,7 @@ void DTKGLWidget::wheelEvent(QWheelEvent *event)
 }
 
 void DTKGLWidget::drawSingleSphere(float x, float y, float z, float radius,\
-                                   float colr, float colg, float colb)
-{
+                                   float colr, float colg, float colb) {
    glPushMatrix();
    glTranslatef(x,y,z);
    glColor3f(colr,colg,colb);
@@ -638,8 +600,7 @@ void DTKGLWidget::drawSingleSphere(float x, float y, float z, float radius,\
    glPopMatrix();
 }
 
-void DTKGLWidget::drawSingleTransparentSphere(QVector3D r, float rad, QVector3D c, float t)
-{
+void DTKGLWidget::drawSingleTransparentSphere(QVector3D r, float rad, QVector3D c, float t) {
    glPushMatrix();
    glTranslatef(r[0],r[1],r[2]);
    glColor4f(c[0],c[1],c[2],t);
@@ -651,8 +612,7 @@ void DTKGLWidget::drawSingleTransparentSphere(QVector3D r, float rad, QVector3D 
 
 void DTKGLWidget::drawSingleCylinder(QVector3D v0, float height, \
                                      float radius, float angle, QVector3D vrot, \
-                                     QVector3D col)
-{
+                                     QVector3D col) {
    glPushMatrix();
    glTranslatef(v0[0], v0[1], v0[2]);
    glRotatef(angle,vrot[0],vrot[1],vrot[2]);
@@ -663,8 +623,7 @@ void DTKGLWidget::drawSingleCylinder(QVector3D v0, float height, \
    glPopMatrix();
 }
 
-void DTKGLWidget::drawSingleTransparentCylinder(QVector3D v0, float height, float radius, float angle, QVector3D vrot, QVector3D col, float t)
-{
+void DTKGLWidget::drawSingleTransparentCylinder(QVector3D v0, float height, float radius, float angle, QVector3D vrot, QVector3D col, float t) {
    glPushMatrix();
    glTranslatef(v0[0], v0[1], v0[2]);
    glRotatef(angle,vrot[0],vrot[1],vrot[2]);
@@ -675,8 +634,7 @@ void DTKGLWidget::drawSingleTransparentCylinder(QVector3D v0, float height, floa
    glPopMatrix();
 }
 
-void DTKGLWidget::drawText(QVector3D r, QString lbl,int dx,int dy)
-{
+void DTKGLWidget::drawText(QVector3D r, QString lbl,int dx,int dy) {
    GLdouble modelview[16],projection[16];
    GLint viewport[4];
    GLdouble wX,wY,wZ;

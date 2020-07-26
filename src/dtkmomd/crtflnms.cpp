@@ -72,8 +72,7 @@ using std::endl;
 #include "../common/screenutils.h"
 
 void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn, string &o_fn,string &g_fn,
-                 int dim,string &addlbl)
-{
+                 int dim,string &addlbl) {
    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
    /*
       If you need more names to be created by this function, you need to add the new

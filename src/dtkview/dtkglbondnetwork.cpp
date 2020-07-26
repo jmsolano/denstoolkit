@@ -47,23 +47,20 @@
 #include "dtkglutils.h"
 
 DTKGLBondNetWork::DTKGLBondNetWork(QWidget *parent)
-   : QWidget(parent)
-{
+   : QWidget(parent) {
    bnw=NULL;
    links.clear();
    atoms.clear();
 }
 
-DTKGLBondNetWork::~DTKGLBondNetWork()
-{
+DTKGLBondNetWork::~DTKGLBondNetWork() {
    if(bnw!=NULL) {
        delete bnw;
        bnw=NULL;
    }
 }
 
-bool DTKGLBondNetWork::readFromFile(QString filename)
-{
+bool DTKGLBondNetWork::readFromFile(QString filename) {
    std::string fnam=filename.toStdString();
    bnw=new bondNetWork();
    if ( !(bnw->readFromFile(fnam)) ) {

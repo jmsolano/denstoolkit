@@ -76,8 +76,7 @@ using std::string;
 
 //**************************************************************************************************
 
-optFlags::optFlags()
-{
+optFlags::optFlags() {
    infname=0;
    outfname=0;
    prop2plot=0;
@@ -91,8 +90,7 @@ optFlags::optFlags()
 
 //**************************************************************************************************
 
-void getOptions(int &argc, char** &argv, optFlags &flags)
-{
+void getOptions(int &argc, char** &argv, optFlags &flags) {
    string progname;
    progname=":-)  ";
    progname+=argv[0];
@@ -170,8 +168,7 @@ void getOptions(int &argc, char** &argv, optFlags &flags)
 
 //**************************************************************************************************
 
-void printHelpMenu(int &argc, char** &argv)
-{
+void printHelpMenu(int &argc, char** &argv) {
    string progname=argv[0];
    size_t pos=progname.find("./");
    if (pos!=string::npos) {progname.erase(pos,2);}
@@ -234,8 +231,7 @@ void printHelpMenu(int &argc, char** &argv)
 }//end printHelpMenu
 
 //**************************************************************************************************
-void printErrorMsg(char** &argv,char lab)
-{
+void printErrorMsg(char** &argv,char lab) {
    ScreenUtils::SetScrRedBoldFont();
    cout << "\nError: the option \"" << lab << "\" ";
    switch (lab) {
@@ -265,8 +261,7 @@ void printErrorMsg(char** &argv,char lab)
    return;
 }
 //**************************************************************************************************
-void processDoubleDashOptions(int &argc,char** &argv,optFlags &flags,int pos)
-{
+void processDoubleDashOptions(int &argc,char** &argv,optFlags &flags,int pos) {
    string progname=argv[0];
    size_t progpos=progname.find("./");
    if (progpos!=string::npos) {progname.erase(progpos,2);}

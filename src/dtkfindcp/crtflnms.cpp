@@ -72,8 +72,7 @@ using std::endl;
 #include "../common/screenutils.h"
 
 void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn,string &o_fn,string &p_fn,
-                 string &n_fn,string &c_fn,ScalarFieldType &cpt)
-{
+                 string &n_fn,string &c_fn,ScalarFieldType &cpt) {
    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
    /*
       If you need more names to be created by this function, you need to add the new
@@ -129,8 +128,7 @@ void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn,string &o_fn,stri
    return;
 }
 
-void mkDatMatFileNames(string &lgfn,string &acfn,string &cpfn,string &bpfn)
-{
+void mkDatMatFileNames(string &lgfn,string &acfn,string &cpfn,string &bpfn) {
    acfn=lgfn.substr(0,(lgfn.length()-4));
    cpfn=acfn;
    bpfn=acfn;
