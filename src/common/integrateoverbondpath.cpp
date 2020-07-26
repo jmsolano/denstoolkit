@@ -192,6 +192,5 @@ void IntegrateOverBondPath::WriteIntegralValuesToFile(ofstream &ofil,solreal glo
       ofil << endl;
    }
 }
-
 #endif  /* _INTEGRATEOVERBONDPATH_CPP_ */
 

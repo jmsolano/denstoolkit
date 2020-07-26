@@ -185,7 +185,6 @@ int main (int argc, char ** argv)
       default :
          break;
    }
-
    /* This evaluates the momentum density at a single point */
    
    if (dim==0) {
@@ -244,7 +243,6 @@ int main (int argc, char ** argv)
    ScreenUtils::SetScrNormalFont();
    return 0;
 }
-
 //**************************************************************************************************
 
 void makeLineGnuplotFile(optFlags &opts, string &gnpn,string &outn,char thefield)
@@ -317,7 +315,6 @@ void makeLineGnuplotFile(optFlags &opts, string &gnpn,string &outn,char thefield
 #endif
    return;
 }
-
 //**************************************************************************************************
 
 void makePlaneGnuplotFile(optFlags &opts, string &gnpn,string &outn,solreal dimparam,char thefield)
@@ -457,7 +454,6 @@ void makePlaneGnuplotFile(optFlags &opts, string &gnpn,string &outn,solreal dimp
    cout << "Done." << endl;
    return;
 }
-
 /* ************************************************************************************ */
 void makeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunction &wf,int theaxis,\
       int npts,char thefield)

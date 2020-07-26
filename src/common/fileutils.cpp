@@ -44,7 +44,6 @@ int FileUtils::CountNumberOfLines(const string &fname) {
       std::fclose(ifil);
       return -1;
    }
-
    int c; // note: int, not char, required to handle EOF
    int nl=0;
    while ((c = std::fgetc(ifil)) != EOF) { // standard C I/O file reading loop
@@ -295,7 +294,6 @@ bool FileUtils::ExtensionMatches(const string &fname,const string ext) {
    size_t pos=fname.find_last_of('.')+1;
    return (fname.substr(pos,nExt)==ext);
 }
-
 
 #endif  /* _FILEUTILS_CPP_ */
 

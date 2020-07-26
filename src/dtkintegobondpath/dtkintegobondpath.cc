@@ -136,7 +136,6 @@ int main (int argc, char ** argv) {
       cout << "Total integral (" << integ[i]->GetFieldTypeLabelShort() 
            << "): " << integ[i]->GetBondPathIntegral() << endl;
    }
-
    /* Writes the integrals to a file  */
    solreal globalEnergy=0.0e0;
    if ( options.globalenergy ) {
@@ -155,7 +154,6 @@ int main (int argc, char ** argv) {
       delete integ[i];
       integ[i]=NULL;
    }
-
    /* At this point the computation has ended. Usually this means no
     * errors ocurred. */
    

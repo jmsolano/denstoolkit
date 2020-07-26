@@ -86,7 +86,6 @@ optFlags::optFlags() {
    showcont=showatlbl=showallatlbl=0;
 }
 
-
 //**************************************************************************************************
 
 void getOptions(int &argc, char** &argv, optFlags &flags) {

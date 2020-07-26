@@ -115,7 +115,6 @@ int main (int argc, char ** argv)
    if (options.settermgnp) {
       userterm=string(argv[options.settermgnp]);
    }
-
    bool drawHydrogens=true;
    if ( !(options.drawhydrogens) ) {
       drawHydrogens=false;
@@ -157,7 +156,6 @@ int main (int argc, char ** argv)
    ScreenUtils::SetScrNormalFont();
    return 0;
 }
-
 //*******************************************************************************************
 
 void makeMolGnuplotFile(string &gname,bondNetWork &bn,bool putHs,const string term)

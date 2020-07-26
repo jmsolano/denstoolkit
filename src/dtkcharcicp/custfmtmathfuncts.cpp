@@ -68,7 +68,6 @@ void writeDatMatAtCrds(string &acfn,bondNetWork &bn) {
    ofil.close();
    return;
 }
-
 void writeDatMatCritPtsCrds(string &cpfn,critPtNetWork &cp) {
    ofstream ofil;
    ofil.open(cpfn.c_str(),ios::out);
@@ -96,7 +95,6 @@ void writeDatMatCritPtsCrds(string &cpfn,critPtNetWork &cp) {
    ofil.close();
    return;
 }
-
 void writeDatMatBondPathCrds(string &bpfn,critPtNetWork &cp) {
    ofstream ofil;
    ofil.open(bpfn.c_str(),ios::out);
@@ -112,7 +110,6 @@ void writeDatMatBondPathCrds(string &bpfn,critPtNetWork &cp) {
    ofil.close();
    return;
 }
-
 
 #endif /* defined(_CUSTFMTMATHFUNCTS_CPP_) */
 

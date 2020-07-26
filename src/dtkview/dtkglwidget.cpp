@@ -90,11 +90,9 @@ DTKGLWidget::DTKGLWidget(QWidget *parent)
    //zNear=0.01f;
    //zFar=100.0f;
 }
-
 DTKGLWidget::~DTKGLWidget() {
    clearWFsBNsCPXs();
 }
-
 void DTKGLWidget::clearWFsBNsCPXs() {
    for (int i=0; i<waveFunction.size(); ++i) {
       delete waveFunction[i];
@@ -112,7 +110,6 @@ void DTKGLWidget::clearWFsBNsCPXs() {
    }
    critPtNW.clear();
 }
-
 void DTKGLWidget::initializeGL() {
    /*
    glClearColor(0.2,0.2,0.2,1.0);
@@ -143,7 +140,6 @@ void DTKGLWidget::initializeGL() {
    glEnable(GL_BLEND); //Enable blending.
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); //Set blending function.
 }
-
 void DTKGLWidget::paintGL() {
 
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -157,7 +153,6 @@ void DTKGLWidget::paintGL() {
 
    drawEverything();
 }
-
 void DTKGLWidget::resizeGL(int w, int h) {
    /*
    glViewport(0,0,w,h);
@@ -176,7 +171,6 @@ void DTKGLWidget::resizeGL(int w, int h) {
    glFrustum(-w/side, w/side, -h/side, h/side, 2.5, 200.0);
    glMatrixMode(GL_MODELVIEW);
 }
-
 void DTKGLWidget::drawAtoms() {
    DTKGLBondNetWork *bn;
    QVector3D pos,col;
@@ -204,7 +198,6 @@ void DTKGLWidget::drawAtoms() {
       }
    }
 }
-
 void DTKGLWidget::drawLinks() {
     DTKGLBondNetWork *bn;
     float rad = DTKGL_DEFAULT_LINK_RADIUS;
@@ -229,7 +222,6 @@ void DTKGLWidget::drawLinks() {
        }
     }
 }
-
 void DTKGLWidget::drawAtomLabels() {
    DTKGLBondNetWork *bn;
    QVector3D pos;
@@ -243,7 +235,6 @@ void DTKGLWidget::drawAtomLabels() {
       }
    }
 }
-
 void DTKGLWidget::drawAttractorCriticalPoints() {
    DTKGLCriticalPointNetWork *cp;
    const static QVector3D colACP(0.0f,0.0f,0.0f);
@@ -258,7 +249,6 @@ void DTKGLWidget::drawAttractorCriticalPoints() {
       }
    }
 }
-
 void DTKGLWidget::drawBondCriticalPoints() {
    DTKGLCriticalPointNetWork *cp;
    const static QVector3D colBCP(0.0f,0.6f,1.0f);
@@ -273,7 +263,6 @@ void DTKGLWidget::drawBondCriticalPoints() {
       }
    }
 }
-
 void DTKGLWidget::drawRingCriticalPoints() {
    DTKGLCriticalPointNetWork *cp;
    const static QVector3D colRCP(1.0f,1.0f,0.0f);
@@ -288,7 +277,6 @@ void DTKGLWidget::drawRingCriticalPoints() {
       }
    }
 }
-
 void DTKGLWidget::drawCageCriticalPoints() {
    DTKGLCriticalPointNetWork *cp;
    const static QVector3D colCCP(1.0f,0.0f,0.0f);
@@ -303,14 +291,12 @@ void DTKGLWidget::drawCageCriticalPoints() {
       }
    }
 }
-
 void DTKGLWidget::drawCriticalPoints() {
    drawAttractorCriticalPoints();
    drawBondCriticalPoints();
    drawRingCriticalPoints();
    drawCageCriticalPoints();
 }
-
 void DTKGLWidget::drawCPLabels() {
    DTKGLCriticalPointNetWork *cpn;
    QVector3D pos;
@@ -344,7 +330,6 @@ void DTKGLWidget::drawCPLabels() {
       }
    }
 }
-
 void DTKGLWidget::drawBondGradientPaths() {
    DTKGLCriticalPointNetWork *cp;
    const static QVector3D colBGP(0.0f,0.2f,1.0f);
@@ -362,7 +347,6 @@ void DTKGLWidget::drawBondGradientPaths() {
       }
    }
 }
-
 void DTKGLWidget::drawRingGradientPaths() {
    DTKGLCriticalPointNetWork *cp;
    const static QVector3D colRGP(0.0f,0.8f,0.0f);
@@ -384,7 +368,6 @@ void DTKGLWidget::drawRingGradientPaths() {
       }
    }
 }
-
 void DTKGLWidget::drawCageGradientPaths() {
    DTKGLCriticalPointNetWork *cp;
    const static QVector3D colCGP(1.0f,0.5f,0.0f);
@@ -406,13 +389,11 @@ void DTKGLWidget::drawCageGradientPaths() {
       }
    }
 }
-
 void DTKGLWidget::drawGradientPaths() {
    if (drawBGPs) {drawBondGradientPaths();}
    if (drawRGPs) {drawRingGradientPaths();}
    if (drawCGPs) {drawCageGradientPaths();}
 }
-
 void DTKGLWidget::drawEverything() {
    GLfloat white[] = {1.0f, 1.0f, 1.0f, 1.0f};
    glMaterialfv(GL_FRONT, GL_DIFFUSE, white);
@@ -424,7 +405,6 @@ void DTKGLWidget::drawEverything() {
    if (drawCPLbls) { drawCPLabels(); }
    if (drawBnds) { drawLinks(); }
 }
-
 void DTKGLWidget::addMolecule(QString fnam) {
    QString wfnname=dtkglutils::getWFNFileNameFromCPX(fnam);
 
@@ -464,12 +444,10 @@ void DTKGLWidget::addMolecule(QString fnam) {
    }
    critPtNW.push_back(cp_lcl);
 }
-
 static void qNormalizeAngle(int &angle) {
    while (angle < 0) angle += 360;
    while (angle >= 360) angle -= 360;
 }
-
 void DTKGLWidget::setXRotation(int angle) {
    qNormalizeAngle(angle);
    if (angle != xRot) {
@@ -479,7 +457,6 @@ void DTKGLWidget::setXRotation(int angle) {
       update();
    }
 }
-
 void DTKGLWidget::setYRotation(int angle) {
    qNormalizeAngle(angle);
    if (angle != yRot) {
@@ -489,7 +466,6 @@ void DTKGLWidget::setYRotation(int angle) {
       update();
    }
 }
-
 void DTKGLWidget::setZRotation(int angle) {
    qNormalizeAngle(angle);
    if (angle != zRot) {
@@ -499,48 +475,39 @@ void DTKGLWidget::setZRotation(int angle) {
       update();
    }
 }
-
 void DTKGLWidget::setViewAtoms(bool val) {
    drawAts=val;
    update();
 }
-
 void DTKGLWidget::setDrawAtomLabels(bool dal) {
    drawAtLbls=dal;
    emit drawAtLblsChanged();
    update();
 }
-
 void DTKGLWidget::setViewRegularBonds(bool vrb) {
    drawBnds=vrb;
    update();
 }
-
 void DTKGLWidget::setViewBondGradientPaths(bool dbgp) {
    drawBGPs=dbgp;
    update();
 }
-
 void DTKGLWidget::setViewRingGradientPaths(bool drgp) {
    drawRGPs=drgp;
    update();
 }
-
 void DTKGLWidget::setViewCageGradientPaths(bool dcgp) {
    drawCGPs=dcgp;
    update();
 }
-
 void DTKGLWidget::setDrawCPLabels(bool dal) {
    drawCPLbls=dal;
    update();
 }
-
 void DTKGLWidget::setTransparentAtomsAndLinks(bool val) {
    setTransp=val;
    update();
 }
-
 void DTKGLWidget::setCameraDistance(double dist) {
    if (dist!=cameraDistance) {
       cameraDistance=dist;
@@ -548,7 +515,6 @@ void DTKGLWidget::setCameraDistance(double dist) {
       update();
    }
 }
-
 void DTKGLWidget::resetView() {
   xRot=yRot=zRot=0.0f;
   emit rotationChanged();
@@ -556,11 +522,9 @@ void DTKGLWidget::resetView() {
   emit zoomChanged();
   update();
 }
-
 void DTKGLWidget::mousePressEvent(QMouseEvent *event) {
    lastPos = event->pos();
 }
-
 void DTKGLWidget::mouseMoveEvent(QMouseEvent *event) {
    int dx = event->x() - lastPos.x();
    int dy = event->y() - lastPos.y();
@@ -572,10 +536,8 @@ void DTKGLWidget::mouseMoveEvent(QMouseEvent *event) {
       setXRotation(xRot + dy/2 );
       setZRotation(zRot + dx/2 );
    }
-
    lastPos = event->pos();
 }
-
 void DTKGLWidget::wheelEvent(QWheelEvent *event) {
    int delta = event->delta();
    if (event->orientation() == Qt::Vertical) { if (delta < 0) {
@@ -588,7 +550,6 @@ void DTKGLWidget::wheelEvent(QWheelEvent *event) {
    }
    event->accept();
 }
-
 void DTKGLWidget::drawSingleSphere(float x, float y, float z, float radius,\
                                    float colr, float colg, float colb) {
    glPushMatrix();
@@ -599,7 +560,6 @@ void DTKGLWidget::drawSingleSphere(float x, float y, float z, float radius,\
    gluDeleteQuadric(atomsph);
    glPopMatrix();
 }
-
 void DTKGLWidget::drawSingleTransparentSphere(QVector3D r, float rad, QVector3D c, float t) {
    glPushMatrix();
    glTranslatef(r[0],r[1],r[2]);
@@ -609,7 +569,6 @@ void DTKGLWidget::drawSingleTransparentSphere(QVector3D r, float rad, QVector3D 
    gluDeleteQuadric(atomsph);
    glPopMatrix();
 }
-
 void DTKGLWidget::drawSingleCylinder(QVector3D v0, float height, \
                                      float radius, float angle, QVector3D vrot, \
                                      QVector3D col) {
@@ -622,7 +581,6 @@ void DTKGLWidget::drawSingleCylinder(QVector3D v0, float height, \
    gluDeleteQuadric(cylinder);
    glPopMatrix();
 }
-
 void DTKGLWidget::drawSingleTransparentCylinder(QVector3D v0, float height, float radius, float angle, QVector3D vrot, QVector3D col, float t) {
    glPushMatrix();
    glTranslatef(v0[0], v0[1], v0[2]);
@@ -633,7 +591,6 @@ void DTKGLWidget::drawSingleTransparentCylinder(QVector3D v0, float height, floa
    gluDeleteQuadric(cylinder);
    glPopMatrix();
 }
-
 void DTKGLWidget::drawText(QVector3D r, QString lbl,int dx,int dy) {
    GLdouble modelview[16],projection[16];
    GLint viewport[4];
@@ -673,6 +630,5 @@ void DTKGLWidget::drawText(QVector3D r, QString lbl,int dx,int dy) {
    glMatrixMode(GL_MODELVIEW);
    glPopMatrix();
 }
-
 
 

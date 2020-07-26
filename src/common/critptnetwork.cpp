@@ -705,7 +705,6 @@ bool critPtNetWork::setLOLACPs() {
          addRhoACP(x,sig,lbl);
          tmpbool=true;
       }
-
    }
    if ( tmpbool ) {
       ScreenUtils::DisplayWarningMessage("Some ACPs presented |nabla rho|!= 0... Look for '+' in labels.");

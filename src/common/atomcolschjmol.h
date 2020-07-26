@@ -37,17 +37,8 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
-
-
 #ifndef _COL_SCHEME_JMOL_H_
 #define _COL_SCHEME_JMOL_H_
-
-#ifndef _HAVE_DEF_SOLREAL_TYPE_
-#define _HAVE_DEF_SOLREAL_TYPE_
-typedef double solreal;
-//typedef float solreal;
-#endif
 
 #define _HAVE_SELECTED_ATOM_PALETTE_ 1
 
@@ -63,6 +54,5 @@ int getAtomicBColorInt(int nat);
 
 void getAtomicRGBColorsReal(int nat,solreal &rr,solreal &gg,solreal &bb);
 void getAtomicRGBColorsInt(int nat,int &rr,int &gg,int &bb);
-
 
 #endif /* defined(_COL_SCHEME_JMOL_H_) */

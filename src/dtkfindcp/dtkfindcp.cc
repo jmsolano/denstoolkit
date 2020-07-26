@@ -186,7 +186,6 @@ int main (int argc, char ** argv)
       cpn.setRingPaths();
       cpn.setCagePaths();
    }
-
    //cpn.displayIHVCoords();
    //cpn.displayACPCoords();
    //cpn.displayBCPCoords();
@@ -291,7 +290,6 @@ int main (int argc, char ** argv)
    ScreenUtils::SetScrNormalFont();
    return 0;
 }
-
 void setForcedBCPConnectivity(char **argv,optFlags &option,critPtNetWork &cp) {
    if ( !option.forcebcpconn ) {
       return;
@@ -321,5 +319,4 @@ void setForcedBCPConnectivities(char **argv,optFlags &option,critPtNetWork &cp) 
       cp.forceBCPConnectivity(bcpIdx,acpIdx1,acpIdx2);
    }
 }
-
 

@@ -137,4 +137,3 @@ solreal HelpersPlot::EvalFieldProperty(char prop,solreal (&x)[3],GaussWaveFuncti
    return res;
 }
 
-

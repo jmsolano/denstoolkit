@@ -94,7 +94,6 @@ optFlags::optFlags() {
    customseedtwoacps=0;
 }
 
-
 //**************************************************************************************************
 
 void getOptions(int &argc, char** &argv, optFlags &flags) {

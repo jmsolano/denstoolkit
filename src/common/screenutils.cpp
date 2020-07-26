@@ -65,7 +65,6 @@ bool ScreenUtils::IsDigit(char c) {
    } else {
       return false;
    }
-
 }
 /* ************************************************************************************** */
 void ScreenUtils::PrintScrStarLine(void) {

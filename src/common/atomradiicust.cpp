@@ -73,5 +73,4 @@ solreal getAtomicVDWRadius(int atn) {
    };
    return atomicRadius[atn];
 }
-
 #endif /* defined(_RADII_SCHEME_JMHP_H_) */

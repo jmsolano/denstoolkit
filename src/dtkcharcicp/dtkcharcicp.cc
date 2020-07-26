@@ -167,7 +167,6 @@ int main (int argc, char ** argv) {
    ScreenUtils::SetScrNormalFont();
    return 0;
 }
-
 void WriteLogFile(string fname,DeMat1CriticalPointNetworkBP &dcpn,bondNetWork &bn,\
       string &wfnam) {
    ofstream ofil(fname.c_str());
@@ -250,5 +249,4 @@ void WriteLogFile(string fname,DeMat1CriticalPointNetworkBP &dcpn,bondNetWork &b
    FileUtils::WriteScrStarLine(ofil);
    ofil.close();
 }
-
 

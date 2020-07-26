@@ -139,7 +139,6 @@ int main (int argc, char ** argv) {
 
    if ( options.setscustfld ) {gwf.useScalarCustomField(true);}
    if ( options.setvcustfld ) {gwf.useVectorCustomField(true);}
-
    /* Openning the output log-file.  */
    
    ofile.open(outfilnam.c_str(),ios::out);
@@ -216,7 +215,6 @@ int main (int argc, char ** argv) {
       gwf.displayAllFieldProperties(x,y,z);
       gwf.writeAllFieldProperties(x,y,z,ofile);
    }
-
    ofile.close();
    
    cout << endl << "Output written in file: " << outfilnam << endl;

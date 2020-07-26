@@ -229,7 +229,6 @@ void HelpersPlot::makeGnuplotFile(optFlags &opts, string &gnpnam,string &tsvnam,
       GnuplotTools::RenderGnpFile(gnpnam,(!opts.kpgnp));
       GnuplotTools::eps2pdf(epsnam);
    }
-
    cout << "Done." << endl;
    return;
 }

@@ -948,7 +948,6 @@ bool waveFunctionGrid2D::writePlaneTsvScalarCustFld(ofstream &ofil,GaussWaveFunc
    }
    return false;
 }
-
 /* ************************************************************************************ */
 bool waveFunctionGrid2D::writePlaneTsvVectorCustFld(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);

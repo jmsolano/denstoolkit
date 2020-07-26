@@ -131,7 +131,6 @@ int main (int argc, char ** argv) {
       gwf.~GaussWaveFunction();
       exit(1);
    }
-
    char prop='D';
    if ( options.prop2plot ) {prop=argv[options.prop2plot][0];}
    
@@ -223,7 +222,6 @@ int main (int argc, char ** argv) {
       for (int i=1; i<dimarr; i++) {for (int j=0; j<3; j++) {rbgp[i][j]=rbgp[i-1][j]+dx[j];}}
       cout << "The line that joins the atoms consists of " << nbgppts << " points." << endl;
    }
-
    for ( int i=0 ; i<3 ; i++ ) {
       xbeg[i]=rbgp[0][i];
       xend[i]=rbgp[nbgppts-1][i];
@@ -557,7 +555,6 @@ int main (int argc, char ** argv) {
       cp.setGammaCriticalPoints();
       ScreenUtils::PrintScrStarLine();
    }
-
    /* Display the information of min/max of MD1 */
    
    cout << scientific << setprecision(12) << endl;
@@ -743,7 +740,6 @@ int main (int argc, char ** argv) {
    ScreenUtils::SetScrNormalFont();
    return 0;
 }
-
 
 void computeUVProjection(solreal (&x1)[3],solreal (&x2)[3],\
       solreal (&g)[3],solreal (&gp)[3],solreal (&uv)[2])

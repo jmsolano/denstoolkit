@@ -57,7 +57,6 @@ void dtkglutils::getRotationVectorAndAngle(const QVector3D &v1, const QVector3D 
     ares = radians * oeoPI;
 }
 
-
 QString dtkglutils::getWFNFileNameFromCPX(QString cpxname) {
    QFileInfo fi(cpxname);
    string str=cpxname.toStdString();

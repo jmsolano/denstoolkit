@@ -269,7 +269,6 @@ int main (int argc, char ** argv) {
       lfil << solreal (tmp_walltime-begin_walltime) << endl;
       lfil.close();
    }
-
    if ( options.genvmdscript ) {
       VMDTools::writeSimpleVMDScript(outfilnam,prop,options.quietrender);
    }

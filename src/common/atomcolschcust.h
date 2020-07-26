@@ -37,25 +37,13 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
-
-
 #ifndef _COL_SCHEME_JMHP_H_
 #define _COL_SCHEME_JMHP_H_
 
-#ifndef _HAVE_DEF_SOLREAL_TYPE_
-#define _HAVE_DEF_SOLREAL_TYPE_
-typedef double solreal;
-//typedef float solreal;
-#endif
-
 #define _HAVE_SELECTED_ATOM_PALETTE_ 1
-
 #define MAXDEFINEDATOMICCOLORS 19
 
-
-/** This table contains the colors for the atoms. The numbers are RGB integers (\f$0-255\f$)
- */
+/** This table contains the colors for the atoms. The numbers are RGB integers (\f$0-255\f$) */
 static int atomicColorInt[MAXDEFINEDATOMICCOLORS][3]={
    {255, 255, 255},
    {255, 192, 203},

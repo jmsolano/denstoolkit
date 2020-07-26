@@ -161,7 +161,6 @@ void GnuplotTools::MakeLogLogPlotFromMultiYDat(string datnam) {
 void GnuplotTools::MakeLogLinPlotFromMultiYDat(string datnam) {
    MakeLogLogPlotFromMultiYDat(datnam,false,true);
 }
-
 /* ************************************************************************** */
 void GnuplotTools::MakeSimple3DPlotFromTSV(string tsvnam) {
    string gnpnam;

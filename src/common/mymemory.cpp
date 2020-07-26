@@ -15,7 +15,6 @@ bool MyMemory::Alloc1DRealArray(string ptrname,const int n,double* &thptr) {
       return true;
    }
 }
-
 /* ************************************************************************************** */
 bool MyMemory::Alloc1DRealArray(string ptrname,const int n,double* &thptr,const double inval) {
    if (!(thptr=new double[n])) {
@@ -108,7 +107,6 @@ bool MyMemory::Dealloc1DStringArray(string* &tp) {
    } else {
       return false;
    }
-
 }
 /* ************************************************************************************** */
 bool MyMemory::Alloc2DRealArray(string ptrname,const int rows,const int cols,double** &thptr) {

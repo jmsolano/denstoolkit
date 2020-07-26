@@ -308,7 +308,6 @@ bool DeMat1CriticalPointNetworkBP::differentSignaturesCICPvsNN(void) {
    }
    return res;
 }
-
 #endif  /* _DEMAT1CRITPTNETWORKBP_CPP_ */
 
 

@@ -117,5 +117,4 @@ void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn, string &o_fn,str
    }
    return;
 }
-
 #endif //_CRTFLNMS_CPP

@@ -94,7 +94,6 @@ int main (int argc, char ** argv) {
    
    char prop='d';
    if (options.prop2plot) { prop=argv[options.prop2plot][0]; }
-
    /* Checks for non valid property fields */
    
    if (!(prop=='d'||prop=='g'||prop=='l'||prop=='E'||prop=='L'||prop=='M'\
@@ -233,7 +232,6 @@ int main (int argc, char ** argv) {
    cout << "Evaluating " << getFieldTypeKeyLong(prop) << " upon ";
    if (options.uponbp) {cout << "the bond path:" << endl;}
    if (options.uponsl) {cout << "the bond line:" << endl;}
-
 #if USEPROGRESSBAR
    ScreenUtils::PrintProgressBar(0);
 #endif
@@ -362,5 +360,4 @@ int main (int argc, char ** argv) {
    ScreenUtils::SetScrNormalFont();
    return 0;
 }
-
 

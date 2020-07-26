@@ -37,17 +37,8 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
-
-
 #ifndef _COL_SCHEME_JMOL_H_
 #define _COL_SCHEME_JMOL_H_
-
-#ifndef _HAVE_DEF_SOLREAL_TYPE_
-#define _HAVE_DEF_SOLREAL_TYPE_
-typedef double solreal;
-//typedef float solreal;
-#endif
 
 #define _HAVE_SELECTED_ATOM_PALETTE_ 1
 
@@ -167,19 +158,15 @@ int getAtomicRGBColorInt(int nat,int rgb) {
    };
    return atomicColorInt[nat][rgb];
 }
-
 int getAtomicRColorInt(int nat) {
    return getAtomicRGBColorInt(nat,0);
 }
-
 int getAtomicGColorInt(int nat) {
    return getAtomicRGBColorInt(nat,1);
 }
-
 int getAtomicBColorInt(int nat) {
    return getAtomicRGBColorInt(nat,2);
 }
-
 solreal getAtomicRGBColorReal(int nat,int rgb) {
    static const solreal atomicColor[MAXDEFINEDATOMICCOLORS][3]={
       {1.000000,1.000000,1.000000}, //  H  1 --
@@ -294,32 +281,26 @@ solreal getAtomicRGBColorReal(int nat,int rgb) {
    };
    return atomicColor[nat][rgb];
 }
-
 solreal getAtomicRColorReal(int nat) {
    return getAtomicRGBColorReal(nat,0);
 }
-
 solreal getAtomicGColorReal(int nat) {
    return getAtomicRGBColorReal(nat,1);
 }
-
 solreal getAtomicBColorReal(int nat) {
    return getAtomicRGBColorReal(nat,2);
 }
-
 void getAtomicRGBColorsReal(int nat,solreal &rr,solreal &gg,solreal &bb) {
    rr=getAtomicRGBColorReal(nat,0);
    gg=getAtomicRGBColorReal(nat,1);
    bb=getAtomicRGBColorReal(nat,2);
    return;
 }
-
 void getAtomicRGBColorsInt(int nat,int &rr,int &gg,int &bb) {
    rr=getAtomicRGBColorInt(nat,0);
    gg=getAtomicRGBColorInt(nat,1);
    bb=getAtomicRGBColorInt(nat,2);
    return;
 }
-
 
 #endif /* defined(_COL_SCHEME_JMOL_H_) */

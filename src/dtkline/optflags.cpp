@@ -85,7 +85,6 @@ optFlags::optFlags() {
    kpgnp=1;
 }
 
-
 //**************************************************************************************************
 
 void getOptions(int &argc, char** &argv, optFlags &flags) {

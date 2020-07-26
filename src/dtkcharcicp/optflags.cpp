@@ -82,7 +82,6 @@ optFlags::optFlags() {
    atpos=0;
 }
 
-
 //**************************************************************************************************
 
 void getOptions(int &argc, char** &argv, optFlags &flags) {

@@ -52,14 +52,12 @@ DTKGLBondNetWork::DTKGLBondNetWork(QWidget *parent)
    links.clear();
    atoms.clear();
 }
-
 DTKGLBondNetWork::~DTKGLBondNetWork() {
    if(bnw!=NULL) {
        delete bnw;
        bnw=NULL;
    }
 }
-
 bool DTKGLBondNetWork::readFromFile(QString filename) {
    std::string fnam=filename.toStdString();
    bnw=new bondNetWork();

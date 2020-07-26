@@ -127,7 +127,6 @@ void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn,string &o_fn,stri
    }
    return;
 }
-
 void mkDatMatFileNames(string &lgfn,string &acfn,string &cpfn,string &bpfn) {
    acfn=lgfn.substr(0,(lgfn.length()-4));
    cpfn=acfn;
@@ -137,5 +136,4 @@ void mkDatMatFileNames(string &lgfn,string &acfn,string &cpfn,string &bpfn) {
    bpfn.append("-BPCrds.dat");
    return;
 }
-
 #endif //_CRTFLNMS_CPP

@@ -154,7 +154,6 @@ void HelperPlot::generateSecDiagPlot(optFlags &options,const string &datname,\
    GnuplotTools::RenderGnpFile(gnpname,rmgnp);
    GnuplotTools::eps2pdf(epsname);
 }
-
 void HelperPlot::generate3DPlot(optFlags &options,const string &tsvname,\
       solreal minval2plot,solreal maxval2plot,solreal linelength,int nptsinline) {
    string gnpname=tsvname,epsname,pdfname;

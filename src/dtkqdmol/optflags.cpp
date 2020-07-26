@@ -81,7 +81,6 @@ optFlags::optFlags() {
    drawhydrogens=1;
 }
 
-
 //**************************************************************************************************
 
 void getOptions(int &argc, char** &argv, optFlags &flags) {

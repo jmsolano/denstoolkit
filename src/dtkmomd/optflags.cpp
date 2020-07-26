@@ -88,7 +88,6 @@ optFlags::optFlags() {
    setfld=0;
 }
 
-
 //**************************************************************************************************
 
 void getOptions(int &argc, char** &argv, optFlags &flags) {

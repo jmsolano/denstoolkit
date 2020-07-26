@@ -106,7 +106,6 @@ optFlags::optFlags() {
    centredats=false;
 }
 
-
 //**************************************************************************************************
 
 void getOptions(int &argc, char** &argv, optFlags &flags) {

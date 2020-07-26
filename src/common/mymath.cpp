@@ -120,7 +120,6 @@ double RecursiveBoysFunction(const int m,const double x) {
    }
    return res;
 }
-
 /* ************************************************************************** */
 double TabBoysFunction(const int m,const double x) {
    static const double x0[MAXSAMPLESFORBOYSFUNCTION]={0.0e0,0.1e0,0.2e0,0.3e0,0.4e0,0.5e0\

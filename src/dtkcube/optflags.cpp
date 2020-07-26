@@ -102,7 +102,6 @@ optFlags::optFlags() {
    genvmdscript=quietrender=false;
 }
 
-
 //**************************************************************************************************
 
 void getOptions(int &argc, char** &argv, optFlags &flags) {

@@ -170,7 +170,6 @@ int main (int argc, char ** argv)
    } else {
       prop='d';
    }
-
    /* Main calculation loop, chooses between different available fields. */
    
    cout << "Evaluating and writing property..." << endl;
@@ -285,7 +284,6 @@ int main (int argc, char ** argv)
    ScreenUtils::SetScrNormalFont();
    return 0;
 }
-
 void makeGnuplotFile(string &gnpn,string &outn,char p2p,solreal dist,string &l1,string &l2)
 {
    ofstream gfil;
