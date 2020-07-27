@@ -1,9 +1,6 @@
 #ifndef _GNUPLOT_TOOLS_CPP_
 #define _GNUPLOT_TOOLS_CPP_
 #include "gnuplottools.h"
-#include <fstream>
-using std::ifstream;
-using std::ofstream;
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -23,11 +20,9 @@ using std::stringstream;
 #define _HAVE_EPSTOPDF_ 1
 #endif
 
-/* ************************************************************************** */
 GnuplotTools::GnuplotTools() {
    init();
 }
-/* ************************************************************************** */
 void GnuplotTools::init(void) {
    plotType=string("l");
    term="postscript eps enhanced color linewidth 2";
@@ -46,15 +41,12 @@ void GnuplotTools::SetPNGTerminal(string ss) {
    term=string("png enhanced linewidth 2 ")+ss;
    termtype="png";
 }
-/* ************************************************************************** */
 void GnuplotTools::MakeSimplePlotFromDat(string datnam,int cx,int cy) {
    MakeLogLogPlotFromDat(datnam,false,false,cx,cy);
 }
-/* ************************************************************************** */
 void GnuplotTools::MakeSimplePlotFromMultiYDat(string datnam) {
    MakeLogLogPlotFromMultiYDat(datnam,false,false);
 }
-/* ************************************************************************** */
 string GnuplotTools::GetGnuplotRGBColorString(const int r, const int g,\
       const int b) {
 #if DEBUG
@@ -73,8 +65,6 @@ string GnuplotTools::GetGnuplotRGBColorString(const int r, const int g,\
    res+=(oo.str()+"'");
    return res;
 }
-/* ************************************************************************** */
-/* **************************************************************************************** */
 void GnuplotTools::MakeLogLogPlotFromMultiYDat(string datnam,bool setxlog,\
       bool setylog) {
    string gnpnam;
@@ -109,19 +99,15 @@ void GnuplotTools::MakeLogLogPlotFromMultiYDat(string datnam,bool setxlog,\
    system(l.c_str());
    return;
 }
-/* ************************************************************************** */
 void GnuplotTools::MakeLinLogPlotFromMultiYDat(string datnam) {
    MakeLogLogPlotFromMultiYDat(datnam,true,false);
 }
-/* ************************************************************************** */
 void GnuplotTools::MakeLinLogPlotFromDat(string datnam,int cx,int cy) {
    MakeLogLogPlotFromDat(datnam,true,false,cx,cy);
 }
-/* ************************************************************************** */
 void GnuplotTools::MakeLogLinPlotFromDat(string datnam,int cx,int cy) {
    MakeLogLogPlotFromDat(datnam,false,true,cx,cy);
 }
-/* ************************************************************************** */
 void GnuplotTools::MakeLogLogPlotFromDat(string datnam,bool setxlog,\
       bool setylog,int cx,int cy) {
    string gnpnam;
@@ -149,19 +135,15 @@ void GnuplotTools::MakeLogLogPlotFromDat(string datnam,bool setxlog,\
    system(l.c_str());
    return;
 }
-/* ************************************************************************** */
 void GnuplotTools::MakeLogLogPlotFromDat(string datnam,int cx,int cy) {
    MakeLogLogPlotFromDat(datnam,true,true,cx,cy);
 }
-/* ************************************************************************** */
 void GnuplotTools::MakeLogLogPlotFromMultiYDat(string datnam) {
    MakeLogLogPlotFromMultiYDat(datnam,true,true);
 }
-/* ************************************************************************** */
 void GnuplotTools::MakeLogLinPlotFromMultiYDat(string datnam) {
    MakeLogLogPlotFromMultiYDat(datnam,false,true);
 }
-/* ************************************************************************** */
 void GnuplotTools::MakeSimple3DPlotFromTSV(string tsvnam) {
    string gnpnam;
    FileUtils fut;
@@ -190,7 +172,6 @@ void GnuplotTools::MakeSimple3DPlotFromTSV(string tsvnam) {
    system(l.c_str());
    return;
 }
-/* ************************************************************************** */
 void GnuplotTools::MakeSimpleHeatMapFromTSV(string tsvnam) {
    string gnpnam;
    FileUtils fut;
@@ -259,13 +240,10 @@ void GnuplotTools::RenderGnpFile(string gnpname,bool rmGnpFile) {
       system(cmdline.c_str());
    }
 }
-/* ************************************************************************** */
-/* ************************************************************************** */
-/* ************************************************************************** */
-/* ************************************************************************** */
-/* ************************************************************************** */
-/* ************************************************************************** */
-/* ************************************************************************** */
-
+void GnuplotTools::AddCommandsToRemoveTemporaryFileFromGnuplotScript(ofstream &ofil,const string &f2rm) {
+#if(defined(__APPLE__)||defined(__linux__)||defined(__CYGWIN__))
+   ofil << "\nsystem '" << "rm " << f2rm << "'" << endl;
+#endif
+}
 
 #endif /* defined(_GNUPLOT_TOOLS_CPP_) */

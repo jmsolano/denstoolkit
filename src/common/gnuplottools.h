@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 using std::string;
+#include <fstream>
+using std::ofstream;
 
 /* ************************************************************************** */
 class GnuplotTools {
@@ -31,6 +33,7 @@ public:
    void SetPlotType(const char *pt) {SetPlotType(string(pt));}
    static void eps2pdf(const string &epsname,bool quiet=true);
    static void RenderGnpFile(string gnpname,bool rmGnpFile=true);
+   static void AddCommandsToRemoveTemporaryFileFromGnuplotScript(ofstream &ofil,const string &f2rm);
    /* ************************************************************************** */
 protected:
    string plotType;
@@ -40,6 +43,5 @@ protected:
    /* ************************************************************************** */
 };
 /* ************************************************************************** */
-
 
 #endif /* defined(_GNUPLOT_TOOLS_H_) */

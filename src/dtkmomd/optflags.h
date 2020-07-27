@@ -37,10 +37,7 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
-/*
-
-   optsflags.h
+/* optsflags.h
    The actual implementation of the code is in the file optsflags.cpp
    
    This file contains the interface definitions of the class optflags, which is
@@ -72,8 +69,7 @@
 #include <string>
 using std::string;
 
-class optFlags
-{
+class optFlags {
 public: 
    optFlags();//default constructor, initialize all the flags to convenient (default) values.
    unsigned short int infname,outfname,setn1,evdim,setfld;
