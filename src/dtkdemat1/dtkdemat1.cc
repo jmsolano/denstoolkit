@@ -57,7 +57,7 @@ using std::ofstream;
 #include <sstream>
 #include <cstdlib>
 using std::exit;
-#include <math.h>
+#include <cmath>
 #include <string>
 #include <iomanip>
 using std::setprecision;

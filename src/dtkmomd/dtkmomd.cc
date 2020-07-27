@@ -53,7 +53,7 @@ using std::ios;
 using std::ifstream;
 using std::ofstream;
 #include <sstream>
-#include <math.h>
+#include <cmath>
 #include <string>
 #include <iomanip>
 using std::setprecision;
