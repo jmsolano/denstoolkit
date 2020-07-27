@@ -80,6 +80,7 @@ src/oldTest
 src/testMEP
 src/dtkview/oldbuid
 src/dtk*/tmp
+src/common/bkpOld
 
 #specific files
 namefiglet.txt
