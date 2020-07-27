@@ -1,5 +1,3 @@
-#ifndef _FILEUTILS_CPP_
-#define _FILEUTILS_CPP_
 #include <cstdlib>
 #include <cstdio>
 #include <iostream>
@@ -295,5 +293,4 @@ bool FileUtils::ExtensionMatches(const string &fname,const string ext) {
    return (fname.substr(pos,nExt)==ext);
 }
 
-#endif  /* _FILEUTILS_CPP_ */
 

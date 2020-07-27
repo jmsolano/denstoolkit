@@ -1,10 +1,7 @@
-#ifndef _MYMEMORY_CPP_
-#define _MYMEMORY_CPP_
-
-#include "mymemory.h"
+#include <cstdlib>
 #include <cstring>
-/* ************************************************************************************** */
-/* ************************************************************************************** */
+#include "mymemory.h"
+
 bool MyMemory::Alloc1DRealArray(string ptrname,const int n,double* &thptr) {
    if (!(thptr=new double[n])) {
       std::cout << "Warning: cannot allocate "<< ptrname <<", in Alloc1DRealArray(...) function.\n";
@@ -15,7 +12,6 @@ bool MyMemory::Alloc1DRealArray(string ptrname,const int n,double* &thptr) {
       return true;
    }
 }
-/* ************************************************************************************** */
 bool MyMemory::Alloc1DRealArray(string ptrname,const int n,double* &thptr,const double inval) {
    if (!(thptr=new double[n])) {
       std::cout << "Warning: cannot allocate "<< ptrname <<", in Alloc1DRealArray(...) function.\n";
@@ -26,7 +22,6 @@ bool MyMemory::Alloc1DRealArray(string ptrname,const int n,double* &thptr,const 
       return true;
    }
 }
-/* ************************************************************************************** */
 bool MyMemory::Alloc1DIntArray(string ptrname,const int n,int* &thptr) {
    if (!(thptr=new int[n])) {
       std::cout << "Warning: cannot allocate "<< ptrname <<", in Alloc1DIntArray(...) function.\n";
@@ -37,7 +32,6 @@ bool MyMemory::Alloc1DIntArray(string ptrname,const int n,int* &thptr) {
       return true;
    }
 }
-/* ************************************************************************************** */
 bool MyMemory::Alloc1DIntArray(string ptrname,const int n,int* &thptr,const int inval) {
    if (!(thptr=new int[n])) {
       std::cout << "Warning: cannot allocate "<< ptrname <<", in Alloc1DIntArray(...) function.\n";
@@ -48,7 +42,6 @@ bool MyMemory::Alloc1DIntArray(string ptrname,const int n,int* &thptr,const int 
       return true;
    }
 }
-/* ************************************************************************************** */
 bool MyMemory::Alloc1DBoolArray(string ptrname,const int n,bool* &thptr,const bool inval) {
    if (!(thptr=new bool[n])) {
       std::cout << "Warning: cannot allocate "<< ptrname <<", in Alloc1DBoolArray(...) function.\n";
@@ -59,11 +52,9 @@ bool MyMemory::Alloc1DBoolArray(string ptrname,const int n,bool* &thptr,const bo
       return true;
    }
 }
-/* ************************************************************************************** */
 bool MyMemory::Alloc1DBoolArray(string ptrname,const int n,bool* &thptr) {
    return Alloc1DBoolArray(ptrname,n,thptr,false);
 }
-/* ************************************************************************************** */
 bool MyMemory::Dealloc1DBoolArray(bool* &tp) {
    if (tp!=NULL) {
       delete[] tp;
@@ -71,7 +62,6 @@ bool MyMemory::Dealloc1DBoolArray(bool* &tp) {
    }
    return true;
 }
-/* ************************************************************************************** */
 bool MyMemory::Dealloc1DRealArray(double* &tp) {
    if (tp!=NULL) {
       delete[] tp;
@@ -79,7 +69,6 @@ bool MyMemory::Dealloc1DRealArray(double* &tp) {
    }
    return true;
 }
-/* ************************************************************************************** */
 bool MyMemory::Dealloc1DIntArray(int* &tp) {
    if (tp!=NULL) {
       delete[] tp;
@@ -87,7 +76,6 @@ bool MyMemory::Dealloc1DIntArray(int* &tp) {
    }
    return true;
 }
-/* ************************************************************************************** */
 bool MyMemory::Alloc1DStringArray(string ptrname,const int n, string* &thptr) {
    if (!(thptr=new string[n])) {
       std::cout << "Warning: cannot allocate "<< ptrname <<", in Alloc1DStringArray(...) function.\n";
@@ -98,7 +86,6 @@ bool MyMemory::Alloc1DStringArray(string ptrname,const int n, string* &thptr) {
       return true;
    }
 }
-/* ************************************************************************************** */
 bool MyMemory::Dealloc1DStringArray(string* &tp) {
    if (tp!=NULL) {
       delete[] tp;
@@ -108,7 +95,6 @@ bool MyMemory::Dealloc1DStringArray(string* &tp) {
       return false;
    }
 }
-/* ************************************************************************************** */
 bool MyMemory::Alloc2DRealArray(string ptrname,const int rows,const int cols,double** &thptr) {
    if (!(thptr=new double*[rows])) {
       std::cout << "Warning: cannot allocate "<< ptrname <<", in Alloc2DRealArray(...) function.\n";
@@ -129,7 +115,6 @@ bool MyMemory::Alloc2DRealArray(string ptrname,const int rows,const int cols,dou
       return true;
    }
 }
-/* ************************************************************************************** */
 bool MyMemory::Alloc2DRealArray(string ptrname,const int rows,const int cols,double** &thptr,const double inval) {
    if (!(thptr=new double*[rows])) {
       std::cout << "Warning: cannot allocate "<< ptrname <<", in Alloc2DRealArray(...) function.\n";
@@ -150,7 +135,6 @@ bool MyMemory::Alloc2DRealArray(string ptrname,const int rows,const int cols,dou
       return true;
    }
 }
-/* ************************************************************************************** */
 bool MyMemory::Dealloc2DRealArray(double** & tp,const int nr) {
    if (tp!=NULL) {
       for (int i=0; i<nr; i++) {
@@ -164,11 +148,9 @@ bool MyMemory::Dealloc2DRealArray(double** & tp,const int nr) {
       return false;
    }
 }
-/* ************************************************************************************** */
 bool MyMemory::Alloc2DIntArray(string ptrname,const int rows,const int cols,int** &thptr) {
    return Alloc2DIntArray(ptrname,rows,cols,thptr,0);
 }
-/* ************************************************************************************** */
 bool MyMemory::Alloc2DIntArray(string ptrname,const int rows,const int cols,int** &thptr,const int val) {
    if (!(thptr=new int*[rows])) {
       std::cout << "Warning: cannot allocate "<< ptrname <<", in Alloc2DIntArray(...) function.\n";
@@ -189,7 +171,6 @@ bool MyMemory::Alloc2DIntArray(string ptrname,const int rows,const int cols,int*
       return true;
    }
 }
-/* ************************************************************************************** */
 bool MyMemory::Dealloc2DIntArray(int** & tp,const int nr) {
    if (tp!=NULL) {
       for (int i=0; i<nr; i++) {
@@ -201,7 +182,6 @@ bool MyMemory::Dealloc2DIntArray(int** & tp,const int nr) {
    }
    return true;
 }
-/* ************************************************************************************** */
 bool MyMemory::Alloc3DRealArray(string ptrname,const int idx1,const int idx2,const int idx3,double*** &thptr) {
    if (!(thptr=new double**[idx1])) {
       std::cout << "Warning: cannot allocate "<< ptrname <<", in Alloc3DRealArray(...) function.\n";
@@ -234,7 +214,6 @@ bool MyMemory::Alloc3DRealArray(string ptrname,const int idx1,const int idx2,con
       return true;
    }
 }
-/* ************************************************************************************** */
 bool MyMemory::Alloc4DRealArray(string ptrname,const int idx1,const int idx2,\
       const int idx3,const int idx4,double**** &thptr,double val) {
    string errmsg=string("Warning: cannot allocate ")+ptrname\
@@ -276,7 +255,6 @@ bool MyMemory::Alloc4DRealArray(string ptrname,const int idx1,const int idx2,\
       return true;
    }
 }
-/* ************************************************************************************** */
 bool MyMemory::Dealloc3DRealArray(double*** &tp,const int idx1,const int idx2) {
    if (tp!=NULL) {
       for (int i=0; i<idx1; i++) {
@@ -294,7 +272,6 @@ bool MyMemory::Dealloc3DRealArray(double*** &tp,const int idx1,const int idx2) {
       return false;
    }
 }
-/* ************************************************************************************** */
 bool MyMemory::Dealloc4DRealArray(double**** &tp,const int idx1,const int idx2,\
       const int idx3) {
    if (tp!=NULL) {
@@ -317,7 +294,6 @@ bool MyMemory::Dealloc4DRealArray(double**** &tp,const int idx1,const int idx2,\
       return false;
    }
 }
-/* ************************************************************************************** */
 bool MyMemory::Alloc3DIntArray(string ptrname,const int idx1,const int idx2,const int idx3,\
       int*** &thptr,const int val) {
    if (!(thptr=new int**[idx1])) {
@@ -351,7 +327,6 @@ bool MyMemory::Alloc3DIntArray(string ptrname,const int idx1,const int idx2,cons
       return true;
    }
 }
-/* ************************************************************************************** */
 bool MyMemory::Dealloc3DIntArray(int*** &tp,const int idx1,const int idx2) {
    if (tp!=NULL) {
       for (int i=0; i<idx1; i++) {
@@ -369,7 +344,6 @@ bool MyMemory::Dealloc3DIntArray(int*** &tp,const int idx1,const int idx2) {
       return false;
    }
 }
-/* ************************************************************************************** */
 bool MyMemory::AppendTo1DRealArray(string ptrname,const int n,double* &thptr,double thenewval) {
    double *tmpptr;
    bool res=Alloc1DRealArray("tmpptr",(n+1),tmpptr);
@@ -385,6 +359,4 @@ bool MyMemory::AppendTo1DRealArray(string ptrname,const int n,double* &thptr,dou
    }
    return res;
 }
-/* ************************************************************************************** */
-#endif//_MYMEMORY_CPP_
 

@@ -13,8 +13,8 @@
  */
 #ifndef _SCREEN_UTILS_H_
 #define _SCREEN_UTILS_H_
-#include <iomanip>
-#include <iostream>
+#include <string>
+
 #ifndef CURRENTVERSION
 #define CURRENTVERSION "0.0.0"
 #endif

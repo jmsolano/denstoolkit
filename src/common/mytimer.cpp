@@ -1,6 +1,4 @@
-#ifndef _MYTIMER_CPP_
-#define _MYTIMER_CPP_
-
+#include <cstdlib>
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -9,19 +7,14 @@ using std::cerr;
 #include <iomanip>
 #include "mytimer.h"
 
-/* ************************************************************************** */
 MyTimer::MyTimer() {
-   
 }
-/* ************************************************************************** */
 void MyTimer::Start(void) {
    gettimeofday(&start,NULL);
 }
-/* ************************************************************************** */
 void MyTimer::End(void) {
    gettimeofday(&end,NULL);
 }
-/* ************************************************************************** */
 void MyTimer::PrintElapsedTimeMilliSec(string msg) {
    double elaps=GetCPUSecond(end)-GetCPUSecond(start);
    elaps*=1000.0e0;
@@ -36,7 +29,6 @@ void MyTimer::PrintElapsedTimeMilliSec(string msg) {
    std::cout << "\033[m";
 #endif
 }
-/* ************************************************************************** */
 void MyTimer::PrintElapsedTimeSec(string msg) {
    double elaps=GetCPUSecond(end)-GetCPUSecond(start);
    int len=msg.length();
@@ -50,14 +42,5 @@ void MyTimer::PrintElapsedTimeSec(string msg) {
    std::cout << "\033[m";
 #endif
 }
-/* ************************************************************************** */
-/* ************************************************************************** */
-/* ************************************************************************** */
-/* ************************************************************************** */
-/* ************************************************************************** */
-/* ************************************************************************** */
-/* ************************************************************************** */
 
-
-#endif  /* _MYTIMER_CPP_ */
 

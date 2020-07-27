@@ -8,13 +8,10 @@
    ON, N1G 2W1, Canada
  
  */
-
-#ifndef _MYMATH_CPP_
-#define _MYMATH_CPP_
-
-#include "mymath.h"
+#include <cstdlib>
 #include <cmath>
 #include <iostream>
+#include "mymath.h"
 
 #define MAXSAMPLESFORBOYSFUNCTION 13
 
@@ -653,5 +650,4 @@ void invertM3x3(double (&oM)[3][3],double (&rM)[3][3]) {
 /* ************************************************************************** */
 /* ************************************************************************** */
 /* ************************************************************************** */
-#endif//_MYMATH_CPP
 

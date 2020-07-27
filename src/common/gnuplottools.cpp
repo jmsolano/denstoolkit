@@ -1,5 +1,3 @@
-#ifndef _GNUPLOT_TOOLS_CPP_
-#define _GNUPLOT_TOOLS_CPP_
 #include "gnuplottools.h"
 #include <iostream>
 using std::cout;
@@ -246,4 +244,3 @@ void GnuplotTools::AddCommandsToRemoveTemporaryFileFromGnuplotScript(ofstream &o
 #endif
 }
 
-#endif /* defined(_GNUPLOT_TOOLS_CPP_) */

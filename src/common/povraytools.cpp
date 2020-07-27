@@ -1,5 +1,3 @@
-#ifndef _POVRAYTOOLS_CPP_
-#define _POVRAYTOOLS_CPP_
 #include <cstdlib>
 #include <iostream>
 using std::cout;
@@ -368,5 +366,4 @@ bool HelpersPOVRay::WriteTriangle(ofstream &ofil,int nt,\
    ofil.unsetf(ios::scientific);
    return true;
 }
-#endif//_POVRAYTOOLS_CPP_
 

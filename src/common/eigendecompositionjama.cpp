@@ -24,9 +24,7 @@ using std::cerr;
 #endif
 #define MAX(a, b) ((a)>(b)?(a):(b))
 
-/* ************************************************************************** */
 // Symmetric Householder reduction to tridiagonal form.
-/* ************************************************************************** */
 void EigenDecompositionJAMA::tred23(double (&V)[N3][N3], double (&d)[N3], double (&e)[N3]) {
    //  This is derived from the Algol procedures tred2 by
    //  Bowdler, Martin, Reinsch, and Wilkinson, Handbook for
@@ -140,9 +138,7 @@ void EigenDecompositionJAMA::tred23(double (&V)[N3][N3], double (&d)[N3], double
    V[N3-1][N3-1] = 1.0;
    e[0] = 0.0;
 } 
-/* ************************************************************************** */
 // Symmetric tridiagonal QL algorithm.
-/* ************************************************************************** */
 void EigenDecompositionJAMA::tql23(double (&V)[N3][N3], double (&d)[N3], double (&e)[N3]) {
    //  This is derived from the Algol procedures tql2, by
    //  Bowdler, Martin, Reinsch, and Wilkinson, Handbook for
@@ -259,7 +255,6 @@ void EigenDecompositionJAMA::tql23(double (&V)[N3][N3], double (&d)[N3], double 
       }
    }
 }
-/* ************************************************************************** */
 void EigenDecompositionJAMA::EigenDecomposition3(double (&A)[N3][N3], double (&V)[N3][N3], double (&d)[N3]) {
    double e[N3];
    for (int i = 0; i < N3; i++) {
@@ -274,7 +269,6 @@ void EigenDecompositionJAMA::EigenDecomposition3(double (&A)[N3][N3], double (&V
 /* ************************************************************************** */
 /* ************************************************************************** */
 // Symmetric Householder reduction to tridiagonal form.
-/* ************************************************************************** */
 void EigenDecompositionJAMA::tred24(double (&V)[N4][N4], double (&d)[N4], double (&e)[N4]) {
    //  This is derived from the Algol procedures tred2 by
    //  Bowdler, Martin, Reinsch, and Wilkinson, Handbook for
@@ -388,9 +382,7 @@ void EigenDecompositionJAMA::tred24(double (&V)[N4][N4], double (&d)[N4], double
    V[N4-1][N4-1] = 1.0;
    e[0] = 0.0;
 } 
-/* ************************************************************************** */
 // Symmetric tridiagonal QL algorithm.
-/* ************************************************************************** */
 void EigenDecompositionJAMA::tql24(double (&V)[N4][N4], double (&d)[N4], double (&e)[N4]) {
    //  This is derived from the Algol procedures tql2, by
    //  Bowdler, Martin, Reinsch, and Wilkinson, Handbook for
@@ -507,7 +499,6 @@ void EigenDecompositionJAMA::tql24(double (&V)[N4][N4], double (&d)[N4], double 
       }
    }
 }
-/* ************************************************************************** */
 void EigenDecompositionJAMA::EigenDecomposition4(double (&A)[N4][N4], double (&V)[N4][N4], double (&d)[N4]) {
    double e[N4];
    for (int i = 0; i < N4; i++) {
@@ -522,7 +513,6 @@ void EigenDecompositionJAMA::EigenDecomposition4(double (&A)[N4][N4], double (&V
 /* ************************************************************************** */
 /* ************************************************************************** */
 // Symmetric Householder reduction to tridiagonal form.
-/* ************************************************************************** */
 void EigenDecompositionJAMA::tred22(double (&V)[N2][N2], double (&d)[N2], double (&e)[N2]) {
    
    //  This is derived from the Algol procedures tred2 by
@@ -637,9 +627,7 @@ void EigenDecompositionJAMA::tred22(double (&V)[N2][N2], double (&d)[N2], double
    V[N2-1][N2-1] = 1.0;
    e[0] = 0.0;
 } 
-/* ************************************************************************** */
 // Symmetric tridiagonal QL algorithm.
-/* ************************************************************************** */
 void EigenDecompositionJAMA::tql22(double (&V)[N2][N2], double (&d)[N2], double (&e)[N2]) {
    //  This is derived from the Algol procedures tql2, by
    //  Bowdler, Martin, Reinsch, and Wilkinson, Handbook for
@@ -756,7 +744,6 @@ void EigenDecompositionJAMA::tql22(double (&V)[N2][N2], double (&d)[N2], double 
       }
    }
 }
-/* ************************************************************************** */
 void EigenDecompositionJAMA::EigenDecomposition2(double (&A)[N2][N2], double (&V)[N2][N2], double (&d)[N2]) {
    double e[N2];
    for (int i = 0; i < N2; i++) {
@@ -767,7 +754,6 @@ void EigenDecompositionJAMA::EigenDecomposition2(double (&A)[N2][N2], double (&V
    tred22(V, d, e);
    tql22(V, d, e);
 }
-/* ************************************************************************** */
 void EigenDecompositionJAMA::EigenDecomposition2(vector<vector<double> > &A,
       vector<vector<double> > &V,vector<double> &d) {
    if ( d.size()!=2 ) {
@@ -785,7 +771,6 @@ void EigenDecompositionJAMA::EigenDecomposition2(vector<vector<double> > &A,
    }
    for ( int i=0 ; i<N2 ; ++i ) { d[i]=dd[i]; }
 }
-/* ************************************************************************** */
 void EigenDecompositionJAMA::EigenDecomposition3(vector<vector<double> > &A,
       vector<vector<double> > &V,vector<double> &d) {
    if ( d.size()!=3 ) {
@@ -803,7 +788,6 @@ void EigenDecompositionJAMA::EigenDecomposition3(vector<vector<double> > &A,
    }
    for ( int i=0 ; i<N3 ; ++i ) { d[i]=dd[i]; }
 }
-/* ************************************************************************** */
 void EigenDecompositionJAMA::EigenDecomposition4(vector<vector<double> > &A,
       vector<vector<double> > &V,vector<double> &d) {
    if ( d.size()!=4 ) {
@@ -821,5 +805,4 @@ void EigenDecompositionJAMA::EigenDecomposition4(vector<vector<double> > &A,
    }
    for ( int i=0 ; i<N4 ; ++i ) { d[i]=dd[i]; }
 }
-/* ************************************************************************** */
 
