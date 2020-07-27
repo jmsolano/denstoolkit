@@ -49,6 +49,7 @@ using std::cerr;
 #include <cmath>
 #include <fstream>
 using std::ofstream;
+#include <iomanip>
 #include "circledots3d.h"
 #include "screenutils.h"
 #include "stringtools.h"

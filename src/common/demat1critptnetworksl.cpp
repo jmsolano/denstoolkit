@@ -37,15 +37,12 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
-#ifndef _DEMAT1CRITPTNETWORKSL_CPP_
-#define _DEMAT1CRITPTNETWORKSL_CPP_
-
+#include <cstdlib>
 #include <iostream>
 using std::cout;
 using std::endl;
-#include <cstdlib>
 #include <cmath>
+#include <iomanip>
 #include "demat1critptnetworksl.h"
 #include "gausswavefunction.h"
 #include "mymemory.h"
@@ -778,6 +775,4 @@ void DeMat1CriticalPointNetworkSL::setGammaCriticalPoints(void) {
    cout << "Scanning for RCPs..." << endl;
    setGammaRCP();
 }
-
-#endif  /* _DEMAT1CRITPTNETWORKSL_CPP_ */
 
