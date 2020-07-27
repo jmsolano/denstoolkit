@@ -281,7 +281,7 @@ int main (int argc, char ** argv)
 #endif
    ScreenUtils::PrintScrStarLine();
    ScreenUtils::SetScrNormalFont();
-   return 0;
+   return EXIT_SUCCESS;
 }
 void makeGnuplotFile(string &gnpn,string &outn,char p2p,double dist,string &l1,string &l2)
 {

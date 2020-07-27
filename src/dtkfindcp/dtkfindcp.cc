@@ -287,7 +287,7 @@ int main (int argc, char ** argv)
 #endif
    ScreenUtils::PrintScrStarLine();
    ScreenUtils::SetScrNormalFont();
-   return 0;
+   return EXIT_SUCCESS;
 }
 void setForcedBCPConnectivity(char **argv,optFlags &option,critPtNetWork &cp) {
    if ( !option.forcebcpconn ) {

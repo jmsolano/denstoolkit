@@ -164,7 +164,7 @@ int main (int argc, char ** argv) {
 #endif
    ScreenUtils::PrintScrStarLine();
    ScreenUtils::SetScrNormalFont();
-   return 0;
+   return EXIT_SUCCESS;
 }
 void WriteLogFile(string fname,DeMat1CriticalPointNetworkBP &dcpn,bondNetWork &bn,\
       string &wfnam) {

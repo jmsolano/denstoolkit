@@ -84,8 +84,6 @@ using std::scientific;
 void computeUVProjection(double (&x1)[3],double (&x2)[3],\
       double (&g)[3],double (&gp)[3],double (&uv)[2]);
 
-
-
 int main (int argc, char ** argv) {
    const clock_t begin_time = clock();
    const double begin_walltime = time(NULL);
@@ -738,7 +736,7 @@ int main (int argc, char ** argv) {
 #endif
    ScreenUtils::PrintScrStarLine();
    ScreenUtils::SetScrNormalFont();
-   return 0;
+   return EXIT_SUCCESS;
 }
 
 void computeUVProjection(double (&x1)[3],double (&x2)[3],\

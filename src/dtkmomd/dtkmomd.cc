@@ -43,6 +43,8 @@
    Guelph, Ontario, Canada.
    May 2013
 */
+#include <cstdlib>
+using std::exit;
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -51,8 +53,6 @@ using std::ios;
 using std::ifstream;
 using std::ofstream;
 #include <sstream>
-#include <cstdlib>
-using std::exit;
 #include <math.h>
 #include <string>
 #include <iomanip>
@@ -235,7 +235,7 @@ int main (int argc, char ** argv) {
 #endif
    ScreenUtils::PrintScrStarLine();
    ScreenUtils::SetScrNormalFont();
-   return 0;
+   return EXIT_SUCCESS;
 }
 void makeLineGnuplotFile(optFlags &opts, string &gnpn,string &outn,char thefield) {
    ofstream gfil;

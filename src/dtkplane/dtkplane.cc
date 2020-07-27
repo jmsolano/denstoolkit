@@ -202,7 +202,7 @@ int main (int argc, char ** argv) {
 #endif
    ScreenUtils::PrintScrStarLine();
    ScreenUtils::SetScrNormalFont();
-   return 0;
+   return EXIT_SUCCESS;
 }
 
 
