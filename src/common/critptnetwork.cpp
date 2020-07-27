@@ -63,9 +63,6 @@ using std::scientific;
 //#include "atomcolschcust.h" //Choose this for the palette defined by JMHP
 #include "atomcolschjmol.h" //Choose this for the palette used in JMol
 
-/* ************************************************************************************ */
-//                    Macros
-/* ************************************************************************************ */
 #define CPNW_EPSFABSDIFFCOORD (1.0e-06)
 #define CPNW_MINRHOSIGNIFICATIVEVAL (5.0e-05)
 #define CPNW_MINLOLSIGNIFICATIVEVAL (5.0e-04)

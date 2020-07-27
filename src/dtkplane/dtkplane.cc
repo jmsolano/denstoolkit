@@ -37,37 +37,26 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
 /*
- Adscription at the moment this program is started:
- University of Guelph,
- Guelph, Ontario, Canada.
- May 2013
+   Adscription at the moment this program is started:
+   University of Guelph,
+   Guelph, Ontario, Canada.
+   May 2013
  */
-
-
+#include <cstdlib>
 #include <iostream>
 using std::cout;
 using std::endl;
 using std::ios;
+#include <iomanip>
+using std::setprecision;
 #include <fstream>
 using std::ifstream;
 using std::ofstream;
-#include <sstream>
-#include <cstdlib>
-using std::exit;
-#include <math.h>
 #include <string>
-#include <iomanip>
-using std::setprecision;
-#include <ctime>
+using std::string;
+#include <cmath>
 
-#include "screenutils.h"
-#include "fileutils.h"
-#include "mymemory.h"
-#include "iofuncts-wfx.h"
-#include "iofuncts-wfn.h"
-#include "mymath.h"
 #include "gausswavefunction.h"
 #include "bondnetwork.h"
 #include "wfgrid2d.h"
@@ -172,74 +161,8 @@ int main (int argc, char ** argv) {
    
    cout << "Evaluating and writing property..." << endl;
    cout << "(Scalar Field to plot: " << getFieldTypeKeyLong(prop) << ")." << endl << endl;
-   switch (prop) {
-      case 'd':
-         grid.makeTsv(outfilnam,gwf,DENS);
-         cout << endl;
-         break;
-      case 'g':
-         grid.makeTsv(outfilnam,gwf,MGRD);
-         break;
-      case 'l':
-         grid.makeTsv(outfilnam,gwf,LAPD);
-         cout << endl;
-         break;
-      case 'G':
-         grid.makeTsv(outfilnam,gwf,KEDG);
-         break;
-      case 'e':
-         grid.makeTsv(outfilnam,gwf,ELLPY);
-         break;
-      case 'E':
-         grid.makeTsv(outfilnam,gwf,ELFD);
-         break;
-      case 'K':
-         grid.makeTsv(outfilnam,gwf,KEDK);
-         break;
-      case 'S':
-         grid.makeTsv(outfilnam,gwf,SENT);
-         break;
-      case 'L':
-         grid.makeTsv(outfilnam,gwf,LOLD);
-         break;
-      case 'M':
-         grid.makeTsv(outfilnam,gwf,MGLD);
-         break;
-      case 'N':
-         grid.makeTsv(outfilnam,gwf,GLOL);
-         break;
-      case 'p' :
-         grid.makeTsv(outfilnam,gwf,LEDV);
-         break;
-      case 'P' :
-         grid.makeTsv(outfilnam,gwf,MLED);
-         break;
-      case 'r' :
-         grid.makeTsv(outfilnam,gwf,ROSE);
-         break;
-      case 's' :
-         grid.makeTsv(outfilnam,gwf,REDG);
-         break;
-      case 'u' :
-         grid.makeTsv(outfilnam,gwf,SCFD);
-         break;
-      case 'U' :
-         grid.makeTsv(outfilnam,gwf,VCFD);
-         break;
-      case 'V':
-         grid.makeTsv(outfilnam,gwf,MEPD);
-         break;
-      case 'v':
-         grid.makeTsv(outfilnam,gwf,VPED);
-         break;
-      default:
-         ScreenUtils::SetScrRedBoldFont();
-         cout << "Error: The property \"" << prop << "\" does not exist!" << endl;
-         ScreenUtils::SetScrNormalFont();
-         exit(1);
-         break;
-   }
-   
+   ScalarFieldType fldType=Char2ScalarFieldType(prop);
+   grid.makeTsv(outfilnam,gwf,fldType);
    cout << endl << "Output written in file: " << outfilnam << endl;
    
 #if _HAVE_GNUPLOT_
@@ -281,4 +204,5 @@ int main (int argc, char ** argv) {
    ScreenUtils::SetScrNormalFont();
    return 0;
 }
+
 

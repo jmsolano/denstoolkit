@@ -37,14 +37,10 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
-
-
 #ifndef _FLDTYPESDEF_H_
 #define _FLDTYPESDEF_H_
 #include <string>
 using std::string;
-/* ************************************************************************** */
 enum ScalarFieldType {
    NONE,\
    DENS,/* Electron density (Rho)  */\
@@ -70,9 +66,7 @@ enum ScalarFieldType {
    SCFD, /* Scalar Custom Field Density */\
    VCFD /* Vector Custom Field Density */
 };
-/* ************************************************************************** */
-inline char convertScalarFieldType2Char(ScalarFieldType fftt)
-{
+inline char convertScalarFieldType2Char(ScalarFieldType fftt) {
    char res='d';
    switch ( fftt ) {
       case DENS :
@@ -103,7 +97,7 @@ inline char convertScalarFieldType2Char(ScalarFieldType fftt)
          res='G';
          break;
       case GLOL :
-         res='M';
+         res='N';
          break;
       case MEPD :
          res='V';
@@ -145,9 +139,82 @@ inline char convertScalarFieldType2Char(ScalarFieldType fftt)
    }
    return res;
 }
-/* ************************************************************************** */
-inline string getFieldTypeKeyShort(const char prop)
-{
+inline ScalarFieldType Char2ScalarFieldType(const char prop) {
+   ScalarFieldType res=ScalarFieldType::NONE;
+   switch (prop) {
+      case 'd':
+         res=DENS;
+         break;
+      case 'g' :
+         res=MGRD;
+         break;
+      case 'l' :
+         res=LAPD;
+         break;
+      case 'e' :
+         res=ELLPY;
+         break;
+      case 'E' :
+         res=ELFD;
+         break;
+      case 'L' :
+         res=LOLD;
+         break;
+      case 'M' :
+         res=MGLD;
+         break;
+      case 'S' :
+         res=SENT;
+         break;
+      case 'K' :
+         res=KEDK;
+         break;
+      case 'G' :
+         res=KEDG;
+         break;
+      case 'N' :
+         res=GLOL;
+         break;
+      case 'V' :
+         res=MEPD;
+         break;
+      case 'p' :
+         res=LEDV;
+         break;
+      case 'P' :
+         res=MLED;
+         break;
+      case 'r' :
+         res=ROSE;
+         break;
+      case 's' :
+         res=REDG;
+         break;
+      case 'u' :
+         res=SCFD;
+         break;
+      case 'U' :
+         res=VCFD;
+         break;
+      case 'a' :
+         res=EDFTA;
+         break;
+      case 'v' :
+         res=VPED;
+         break;
+      case 'z' :
+         res=NCIS;
+         break;
+      case 'Z' :
+         res=NCIL;
+         break;
+      default :
+         res=NONE;
+         break;
+   }
+   return res;
+}
+inline string getFieldTypeKeyShort(const char prop) {
    string plbl="";
    switch (prop) {
       case 'd':
@@ -222,9 +289,7 @@ inline string getFieldTypeKeyShort(const char prop)
    }
    return plbl;
 }
-/* ************************************************************************** */
-inline string getFieldTypeKeyLong(const char prop)
-{
+inline string getFieldTypeKeyLong(const char prop) {
    string plbl="";
    switch (prop) {
       case 'd':
@@ -299,9 +364,7 @@ inline string getFieldTypeKeyLong(const char prop)
    }
    return plbl;
 }
-/* ************************************************************************** */
-inline string gnuplotFieldTitle(const char p2p)
-{
+inline string gnuplotFieldTitle(const char p2p) {
    string plbl;
    switch (p2p) {
       case 'd':
@@ -373,9 +436,7 @@ inline string gnuplotFieldTitle(const char p2p)
    }
    return plbl;
 }
-/* ************************************************************************** */
-inline double getDefaultIsolvalueForCube(const char p2p)
-{
+inline double getDefaultIsolvalueForCube(const char p2p) {
    double isoval=0.01e0;
    switch ( p2p ) {
       case 'd':
@@ -389,6 +450,5 @@ inline double getDefaultIsolvalueForCube(const char p2p)
    }
    return isoval;
 }
-/* ************************************************************************** */
 #endif//_FLDTYPESDEF_H_
 

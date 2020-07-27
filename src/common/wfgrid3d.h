@@ -37,12 +37,10 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
 /* wfgrid3d.h
    Created by Juan Manuel Solano Altamirano on 06/05/13.
    Copyright 2013. All rights reserved.
 */
-
 #ifndef _WFGRID3D_H_
 #define _WFGRID3D_H_
 
