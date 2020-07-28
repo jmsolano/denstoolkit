@@ -66,7 +66,7 @@ using std::endl;
 #include "../common/fileutils.h"
 #include "../common/screenutils.h"
 
-void MkFileNames(char ** (&argv), optFlags &opts, string &i_fn,string &o_fn,string &p_fn,
+void MkFileNames(char ** (&argv), OptionFlags &opts, string &i_fn,string &o_fn,string &p_fn,
                  string &n_fn,string &c_fn,ScalarFieldType &cpt) {
    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
    /*

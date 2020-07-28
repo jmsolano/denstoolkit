@@ -83,7 +83,7 @@ int main (int argc, char ** argv)
    const double begin_walltime = time(NULL);
    string infilnam,gnpnam;
    string progname;
-   optFlags options;
+   OptionFlags options;
    ifstream ifile;
    
    getOptions(argc,argv,options); //This processes the options from the command line.

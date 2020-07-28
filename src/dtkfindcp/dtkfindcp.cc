@@ -91,8 +91,8 @@ using std::setprecision;
 #include "crtflnms.h"
 #include "custfmtmathfuncts.h"
 
-void SetForcedBCPConnectivity(char **argv,optFlags &option,CritPtNetWork &cp);
-void SetForcedBCPConnectivities(char **argv,optFlags &option,CritPtNetWork &cp);
+void SetForcedBCPConnectivity(char **argv,OptionFlags &option,CritPtNetWork &cp);
+void SetForcedBCPConnectivities(char **argv,OptionFlags &option,CritPtNetWork &cp);
 
 int main (int argc, char ** argv)
 {
@@ -100,7 +100,7 @@ int main (int argc, char ** argv)
    const double begin_walltime = time(NULL);
    string infilnam,outfilnam,povfilnam,pngfilnam,cpxfilnam;
    string progname;
-   optFlags options;
+   OptionFlags options;
    ifstream ifile;
    ofstream ofile;
    ScalarFieldType critpttype=DENS;
@@ -285,7 +285,7 @@ int main (int argc, char ** argv)
    ScreenUtils::SetScrNormalFont();
    return EXIT_SUCCESS;
 }
-void SetForcedBCPConnectivity(char **argv,optFlags &option,CritPtNetWork &cp) {
+void SetForcedBCPConnectivity(char **argv,OptionFlags &option,CritPtNetWork &cp) {
    if ( !option.forcebcpconn ) {
       return;
    }
@@ -297,7 +297,7 @@ void SetForcedBCPConnectivity(char **argv,optFlags &option,CritPtNetWork &cp) {
       << ", ACP1: " << acpIdx1 << ", ACP2: " << acpIdx2 << endl;
    cp.ForceBCPConnectivity(bcpIdx,acpIdx1,acpIdx2);
 }
-void SetForcedBCPConnectivities(char **argv,optFlags &option,CritPtNetWork &cp) {
+void SetForcedBCPConnectivities(char **argv,OptionFlags &option,CritPtNetWork &cp) {
    if ( !option.forceseveralbcpconn ) {
       return;
    }

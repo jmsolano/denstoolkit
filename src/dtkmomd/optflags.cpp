@@ -66,7 +66,7 @@ using std::string;
 #include "optflags.h"
 #include "../common/screenutils.h"
 
-optFlags::optFlags() {
+OptionFlags::OptionFlags() {
    infname=0;
    outfname=0;
    setn1=0;
@@ -77,7 +77,7 @@ optFlags::optFlags() {
    quiet=1;
    setfld=0;
 }
-void getOptions(int &argc, char** &argv, optFlags &flags) {
+void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    string progname;
    progname=":-)  ";
    progname+=argv[0];
@@ -270,7 +270,7 @@ void printErrorMsg(char** &argv,char lab) {
    exit(1);
    return;
 }
-void processDoubleDashOptions(int &argc,char** &argv,optFlags &flags,int pos) {
+void processDoubleDashOptions(int &argc,char** &argv,OptionFlags &flags,int pos) {
    string progname=argv[0];
    size_t progpos=progname.find("./");
    if (progpos!=string::npos) {progname.erase(progpos,2);}

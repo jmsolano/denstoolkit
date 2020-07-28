@@ -10,14 +10,14 @@ class HelpersPlot {
 /* ************************************************************************** */
 public:
 /* ************************************************************************** */
-static void MakeLineGnuplotFile(optFlags &opts, string &gnpn,string &outn,char thefield);
-static void MakePlaneGnuplotFile(optFlags &opts, string &gnpn,string &outn,double dimparam,\
+static void MakeLineGnuplotFile(OptionFlags &opts, string &gnpn,string &outn,char thefield);
+static void MakePlaneGnuplotFile(OptionFlags &opts, string &gnpn,string &outn,double dimparam,\
       char thefield);
-static void MakeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunction &wf,int theaxis,\
+static void MakeLineDatFile(OptionFlags &opts,string &datnam,GaussWaveFunction &wf,int theaxis,\
       int npts,char thefield);
-static void MakePlaneTsvFile(optFlags &opts,string &tsvnan,GaussWaveFunction &wf,int theplane,\
+static void MakePlaneTsvFile(OptionFlags &opts,string &tsvnan,GaussWaveFunction &wf,int theplane,\
       int npts,char thefield);
-static void MakeCubeFile(optFlags &opts,string &cubnam,GaussWaveFunction &wf,int npts,\
+static void MakeCubeFile(OptionFlags &opts,string &cubnam,GaussWaveFunction &wf,int npts,\
       char thefield,string &strfield);
 /* ************************************************************************** */
 protected:

@@ -10,7 +10,7 @@ using std::cerr;
 #include "fileutils.h"
 
 
-void HelpersPlot::MakeGnuplotFile(optFlags &opts,string &gnpnam,string &datnam,char p2p,\
+void HelpersPlot::MakeGnuplotFile(OptionFlags &opts,string &gnpnam,string &datnam,char p2p,\
       BondNetWork &bn,double lenline,double minval,double maxval,\
       int at1,int at2,double pbcp,double** (&rbgp)) {
    ofstream ofil;

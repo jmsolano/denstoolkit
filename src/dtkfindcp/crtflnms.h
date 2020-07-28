@@ -78,7 +78,7 @@ using std::string;
  If no base name is given there, then the DEFAULTBASENAME will be
  used. The latter has been defined at the begining of the main program.
  */
-void MkFileNames(char ** (&argv), optFlags &opts, string &i_fn,string &l_fn,string &p_fn,
+void MkFileNames(char ** (&argv), OptionFlags &opts, string &i_fn,string &l_fn,string &p_fn,
                  string &n_fn,string &c_fn,ScalarFieldType &cpt);
 
 /**

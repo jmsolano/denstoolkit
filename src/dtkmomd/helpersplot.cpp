@@ -9,7 +9,7 @@ using std::cerr;
 #include "../common/stringtools.h"
 #include "../common/gnuplottools.h"
 
-void HelpersPlot::MakeLineGnuplotFile(optFlags &opts, string &gnpn,string &outn,char thefield) {
+void HelpersPlot::MakeLineGnuplotFile(OptionFlags &opts, string &gnpn,string &outn,char thefield) {
    ofstream ofil;
    ofil.open(gnpn.c_str());
    
@@ -41,7 +41,7 @@ void HelpersPlot::MakeLineGnuplotFile(optFlags &opts, string &gnpn,string &outn,
    GnuplotTools::RenderGnpFile(gnpn,!(opts.kpgnp));
    return;
 }
-void HelpersPlot::MakePlaneGnuplotFile(optFlags &opts, string &gnpn,string &outn,double dimparam,char thefield) {
+void HelpersPlot::MakePlaneGnuplotFile(OptionFlags &opts, string &gnpn,string &outn,double dimparam,char thefield) {
    ofstream ofil;
    ofil.open(gnpn.c_str());
    
@@ -128,7 +128,7 @@ void HelpersPlot::MakePlaneGnuplotFile(optFlags &opts, string &gnpn,string &outn
    cout << "Done." << endl;
    return;
 }
-void HelpersPlot::MakeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunction &wf,int theaxis,\
+void HelpersPlot::MakeLineDatFile(OptionFlags &opts,string &datnam,GaussWaveFunction &wf,int theaxis,\
       int npts,char thefield) {
 #if USEPROGRESSBAR
    ScreenUtils::PrintProgressBar(0);
@@ -227,7 +227,7 @@ void HelpersPlot::MakeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunctio
    cout << endl;
    ofile.close();
 }
-void HelpersPlot::MakePlaneTsvFile(optFlags &opts,string &tsvnam,GaussWaveFunction &wf,int theplane,\
+void HelpersPlot::MakePlaneTsvFile(OptionFlags &opts,string &tsvnam,GaussWaveFunction &wf,int theplane,\
       int npts,char thefield) {
    ofstream ofile;
    ofile.open(tsvnam.c_str(),std::ios::out);
@@ -355,7 +355,7 @@ void HelpersPlot::MakePlaneTsvFile(optFlags &opts,string &tsvnam,GaussWaveFuncti
       cout << endl;
       ofile.close();
 }
-void HelpersPlot::MakeCubeFile(optFlags &opts,string &cubnam,GaussWaveFunction &wf,int npts,\
+void HelpersPlot::MakeCubeFile(OptionFlags &opts,string &cubnam,GaussWaveFunction &wf,int npts,\
       char thefield,string &strfield) {
    string comments="#Property: ";
    switch ( thefield ) {

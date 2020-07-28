@@ -99,7 +99,7 @@ int main (int argc, char ** argv) {
    const double begin_walltime = time(NULL);
    string infilnam,logfilnam,cpxfilnam,cicpfilnam;
    string progname;
-   optFlags options;
+   OptionFlags options;
    ifstream ifile;
    ofstream ofile;
    //ScalarFieldType critpttype=DENS;

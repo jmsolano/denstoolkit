@@ -82,7 +82,7 @@ int main (int argc, char ** argv) {
    const double begin_walltime = time(NULL);
    string infilnam,outfilnam,logfilnam;
    string progname;
-   optFlags options;
+   OptionFlags options;
    ifstream ifile;
    ofstream ofile;
    

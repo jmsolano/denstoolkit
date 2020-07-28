@@ -9,7 +9,7 @@ class HelpersPlot {
 /* ************************************************************************** */
 public:
 /* ************************************************************************** */
-static void MakeGnuplotFile(optFlags &opts,string &gnpnam,string &datnam,char p2p,\
+static void MakeGnuplotFile(OptionFlags &opts,string &gnpnam,string &datnam,char p2p,\
       BondNetWork &bn,double lenline,double minval,double maxval,\
       int at1,int at2,double pbcp,double** (&rbgp));
 static double EvalFieldProperty(char prop,double (&x)[3],GaussWaveFunction &wf);

@@ -11,7 +11,7 @@ class HelpersPlot {
 /* ************************************************************************** */
 public:
 /* ************************************************************************** */
-static void makeGnuplotFile(optFlags &opts, string &gnpnam,string &tsvnam,char p2p,double dimparam,
+static void makeGnuplotFile(OptionFlags &opts, string &gnpnam,string &tsvnam,char p2p,double dimparam,
                      BondNetWork &bn,int a1,int a2,int a3,WaveFunctionGrid2D &grd);
 static void addGnuplotRenderingHelpEPS2PDF(ofstream &ofil,const string &gpnnam,const string &epsnam);
 /* ************************************************************************** */

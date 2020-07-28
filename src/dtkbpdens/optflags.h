@@ -73,19 +73,19 @@
 #include <string>
 using std::string;
 
-class optFlags
+class OptionFlags
 {
 public: 
-   optFlags();//default constructor, initialize all the flags to convenient (default) values.
+   OptionFlags();//default constructor, initialize all the flags to convenient (default) values.
    unsigned short int infname,outfname,setn1,setats,setstep;
    unsigned short int uponbp,uponsl,prop2plot;
    unsigned short int zipdat,mkplt,kpgnp,quiet,showatlbls;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);
 void printHelpMenu(int &argc, char** &argv);//self-described
-void getOptions(int &argc, char** &argv, optFlags &flags);//this function will assign the values to
+void getOptions(int &argc, char** &argv, OptionFlags &flags);//this function will assign the values to
                                                            //all the flags. Implementation is in optsflags.cpp
-void processDoubleDashOptions(int &argc,char** &argv,optFlags &flags,int pos);
+void processDoubleDashOptions(int &argc,char** &argv,OptionFlags &flags,int pos);
 #endif //_OPTSFLAGS_H
 
 
