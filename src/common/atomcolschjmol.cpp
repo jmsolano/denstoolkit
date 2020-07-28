@@ -44,7 +44,7 @@
 
 #define MAXDEFINEDATOMICCOLORS 109
 
-int getAtomicRGBColorInt(int nat,int rgb) {
+int GetAtomicRGBColorInt(int nat,int rgb) {
    static const int atomicColorInt[MAXDEFINEDATOMICCOLORS][3]={ //109
       {255, 255, 255},  //  H  1 --
       {217, 255, 255},  //  He 2 --
@@ -158,16 +158,16 @@ int getAtomicRGBColorInt(int nat,int rgb) {
    };
    return atomicColorInt[nat][rgb];
 }
-int getAtomicRColorInt(int nat) {
-   return getAtomicRGBColorInt(nat,0);
+int GetAtomicRColorInt(int nat) {
+   return GetAtomicRGBColorInt(nat,0);
 }
-int getAtomicGColorInt(int nat) {
-   return getAtomicRGBColorInt(nat,1);
+int GetAtomicGColorInt(int nat) {
+   return GetAtomicRGBColorInt(nat,1);
 }
-int getAtomicBColorInt(int nat) {
-   return getAtomicRGBColorInt(nat,2);
+int GetAtomicBColorInt(int nat) {
+   return GetAtomicRGBColorInt(nat,2);
 }
-double getAtomicRGBColorReal(int nat,int rgb) {
+double GetAtomicRGBColorReal(int nat,int rgb) {
    static const double atomicColor[MAXDEFINEDATOMICCOLORS][3]={
       {1.000000,1.000000,1.000000}, //  H  1 --
       {0.8509804,1.000000,1.000000}, //  He 2 --
@@ -281,25 +281,25 @@ double getAtomicRGBColorReal(int nat,int rgb) {
    };
    return atomicColor[nat][rgb];
 }
-double getAtomicRColorReal(int nat) {
-   return getAtomicRGBColorReal(nat,0);
+double GetAtomicRColorReal(int nat) {
+   return GetAtomicRGBColorReal(nat,0);
 }
-double getAtomicGColorReal(int nat) {
-   return getAtomicRGBColorReal(nat,1);
+double GetAtomicGColorReal(int nat) {
+   return GetAtomicRGBColorReal(nat,1);
 }
-double getAtomicBColorReal(int nat) {
-   return getAtomicRGBColorReal(nat,2);
+double GetAtomicBColorReal(int nat) {
+   return GetAtomicRGBColorReal(nat,2);
 }
-void getAtomicRGBColorsReal(int nat,double &rr,double &gg,double &bb) {
-   rr=getAtomicRGBColorReal(nat,0);
-   gg=getAtomicRGBColorReal(nat,1);
-   bb=getAtomicRGBColorReal(nat,2);
+void GetAtomicRGBColorsReal(int nat,double &rr,double &gg,double &bb) {
+   rr=GetAtomicRGBColorReal(nat,0);
+   gg=GetAtomicRGBColorReal(nat,1);
+   bb=GetAtomicRGBColorReal(nat,2);
    return;
 }
-void getAtomicRGBColorsInt(int nat,int &rr,int &gg,int &bb) {
-   rr=getAtomicRGBColorInt(nat,0);
-   gg=getAtomicRGBColorInt(nat,1);
-   bb=getAtomicRGBColorInt(nat,2);
+void GetAtomicRGBColorsInt(int nat,int &rr,int &gg,int &bb) {
+   rr=GetAtomicRGBColorInt(nat,0);
+   gg=GetAtomicRGBColorInt(nat,1);
+   bb=GetAtomicRGBColorInt(nat,2);
    return;
 }
 

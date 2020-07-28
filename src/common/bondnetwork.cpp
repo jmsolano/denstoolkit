@@ -282,8 +282,8 @@ void bondNetWork::putNuclei(ofstream & pof) {
       //HelpersPOVRay::WriteSphere(pof,0,R[i][0],R[i][1],R[i][2],atrad,
       //               atomicColor[atomn][0],atomicColor[atomn][1],atomicColor[atomn][2]);
       HelpersPOVRay::WriteSphere(pof,0,R[i][0],R[i][1],R[i][2],atrad,
-                     getAtomicRColorReal(atomn),getAtomicGColorReal(atomn),
-                     getAtomicBColorReal(atomn));
+                     GetAtomicRColorReal(atomn),GetAtomicGColorReal(atomn),
+                     GetAtomicBColorReal(atomn));
    }
    return;
 }
@@ -305,13 +305,13 @@ void bondNetWork::putBonds(ofstream &pof) {
             HelpersPOVRay::WriteCylinder(pof,1,
                              R[i][0],R[i][1],R[i][2],
                              startpt[0],startpt[1],startpt[2],drawStickSize,
-                             getAtomicRColorReal(atni),getAtomicGColorReal(atni),
-                             getAtomicBColorReal(atni));
+                             GetAtomicRColorReal(atni),GetAtomicGColorReal(atni),
+                             GetAtomicBColorReal(atni));
             HelpersPOVRay::WriteCylinder(pof,1,
                              startpt[0],startpt[1],startpt[2],
                              R[k][0],R[k][1],R[k][2],drawStickSize,
-                             getAtomicRColorReal(atnk),getAtomicGColorReal(atnk),
-                             getAtomicBColorReal(atnk));
+                             GetAtomicRColorReal(atnk),GetAtomicGColorReal(atnk),
+                             GetAtomicBColorReal(atnk));
          }
       }
    }

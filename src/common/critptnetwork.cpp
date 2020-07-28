@@ -2460,20 +2460,20 @@ void critPtNetWork::putBonds(ofstream &pof) {
                   bn->R[i][0],bn->R[i][1],bn->R[i][2],
                   startpt[0],startpt[1],startpt[2],
                   bn->drawStickSize*CPNW_ATOMCRITICALPOINTSIZEFACTOR,
-                  getAtomicRColorReal(atni),getAtomicGColorReal(atni),
-                  getAtomicBColorReal(atni),pigmstr);
+                  GetAtomicRColorReal(atni),GetAtomicGColorReal(atni),
+                  GetAtomicBColorReal(atni),pigmstr);
             HelpersPOVRay::WriteCylinder(pof,1,
                   startpt[0],startpt[1],startpt[2],
                   bn->R[k][0],bn->R[k][1],bn->R[k][2],
                   bn->drawStickSize*CPNW_ATOMCRITICALPOINTSIZEFACTOR,
-                  getAtomicRColorReal(atnk),getAtomicGColorReal(atnk),
-                  getAtomicBColorReal(atnk),pigmstr);
+                  GetAtomicRColorReal(atnk),GetAtomicGColorReal(atnk),
+                  GetAtomicBColorReal(atnk),pigmstr);
          }
       }
       HelpersPOVRay::WriteSphere(pof,0,bn->R[i][0],bn->R[i][1],bn->R[i][2],
             bn->drawStickSize*CPNW_ATOMCRITICALPOINTSIZEFACTOR,
-            getAtomicRColorReal(atni),getAtomicGColorReal(atni),
-            getAtomicBColorReal(atni));
+            GetAtomicRColorReal(atni),GetAtomicGColorReal(atni),
+            GetAtomicBColorReal(atni));
    }
    pof << "}" << endl;
    return;
@@ -2486,8 +2486,8 @@ void critPtNetWork::putNuclei(ofstream & pof) {
       atomn=bn->atNum[i];
       atrad=bn->drawAtSize;
       HelpersPOVRay::WriteTransparentSphere(pof,0,bn->R[i][0],bn->R[i][1],bn->R[i][2],atrad,
-            getAtomicRColorReal(atomn),getAtomicGColorReal(atomn),
-            getAtomicBColorReal(atomn),transmStr);
+            GetAtomicRColorReal(atomn),GetAtomicGColorReal(atomn),
+            GetAtomicBColorReal(atomn),transmStr);
    }
    return;
 }

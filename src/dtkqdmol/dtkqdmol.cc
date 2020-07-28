@@ -217,8 +217,8 @@ void makeMolGnuplotFile(string &gname,bondNetWork &bn,bool putHs,const string te
       if (atnum==0) {
          gfil << "200 200 200" << endl;
       } else {
-         gfil << getAtomicRColorInt(atnum) << " " << getAtomicGColorInt(atnum) << " "
-              << getAtomicBColorInt(atnum) << endl;
+         gfil << GetAtomicRColorInt(atnum) << " " << GetAtomicGColorInt(atnum) << " "
+              << GetAtomicBColorInt(atnum) << endl;
       }
    }
    gfil << "e" << endl;
