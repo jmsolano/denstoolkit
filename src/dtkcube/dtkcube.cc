@@ -93,7 +93,7 @@ int main (int argc, char ** argv) {
    cout << endl << "Loading wave function from file: " << infilnam << endl;
    
    GaussWaveFunction gwf;
-   if (!(gwf.readFromFile(infilnam))) { //Loading the wave function
+   if (!(gwf.ReadFromFile(infilnam))) { //Loading the wave function
       ScreenUtils::SetScrRedBoldFont();
       cout << "Error: the wave function could not be loaded!\n";
       ScreenUtils::SetScrNormalFont();
@@ -149,11 +149,11 @@ int main (int argc, char ** argv) {
    /* Special configurations  */
    if ( options.configspecialnci ) {
       double ttt=std::stod(string(argv[options.configspecialnci]));
-      gwf.setNCIRhoMin(ttt);
+      gwf.SetNCIRhoMin(ttt);
       ttt=std::stod(string(argv[options.configspecialnci+1]));
-      gwf.setNCIRhoMax(ttt);
+      gwf.SetNCIRhoMax(ttt);
       ttt=std::stod(string(argv[options.configspecialnci+2]));
-      gwf.setNCISMax(ttt);
+      gwf.SetNCISMax(ttt);
    }
 #if DEBUG
       cout << "nciRhoMin: " << gwf.nciRhoMin << endl;

@@ -548,11 +548,11 @@ bool critPtNetWork::setRhoBCPs(void) {
          dd=computeMagnitudeV3(x);
          if ((dd>=(bn->maxBondDist*0.9e0))&&(dd<=extbd)) {
             for (int k=0; k<3; k++) {x[k]=0.5e0*(RACP[i][k]+RACP[j][k]);}
-            if ((wf->evalDensity(x[0],x[1],x[2])>CPNW_MINRHOSIGNIFICATIVEVAL)) {
+            if ((wf->EvalDensity(x[0],x[1],x[2])>CPNW_MINRHOSIGNIFICATIVEVAL)) {
                seekRhoBCP(x,rho,g,sig);
                if (i<j) {ata=i; atb=j;} else {ata=j; atb=i;}
                lbl=string("*")+lblACP[ata]+string("-")+lblACP[atb];
-               wf->evalRhoGradRho(x[0],x[1],x[2],rho,g);
+               wf->EvalRhoGradRho(x[0],x[1],x[2],rho,g);
                if ((rho>CPNW_MINRHOSIGNIFICATIVEVAL)&&(computeMagnitudeV3(g)<CPNW_EPSRHOACPGRADMAG)) {
                   addRhoBCP(x,sig,lbl,mypos);
                   if ((mypos>=0)&&(mypos<dBCP)) {
@@ -600,7 +600,7 @@ bool critPtNetWork::setRhoRCPs(void) {
          for ( int k=0 ; k<3 ; k++ ) {x[k]=0.5e0*(RBCP[i][k]+RBCP[j][k]);}
          seekRhoRCP(x,rho,g,sig);
          lbl=(lblBCP[i]+string("-")+lblBCP[j]);
-         //wf->evalRhoGradRho(x[0],x[1],x[2],rho,g);
+         //wf->EvalRhoGradRho(x[0],x[1],x[2],rho,g);
          if ((rho>CPNW_MINRHOSIGNIFICATIVEVAL)&&(computeMagnitudeV3(g)<CPNW_EPSRHOACPGRADMAG)) {
             addRhoRCP(x,sig,lbl,mypos);
             if (mypos>=0) {
@@ -640,7 +640,7 @@ bool critPtNetWork::setRhoCCPs(void) {
          for (int k=0; k<3; k++) {x[k]=0.5e0*(RRCP[i][k]+RRCP[j][k]);}
          seekRhoCCP(x,rho,g,sig);
          lbl=(lblRCP[i]+string("-")+lblRCP[j]);
-         wf->evalRhoGradRho(x[0],x[1],x[2],rho,g);
+         wf->EvalRhoGradRho(x[0],x[1],x[2],rho,g);
          if ((rho>CPNW_MINRHOSIGNIFICATIVEVAL)&&(computeMagnitudeV3(g)<CPNW_EPSRHOACPGRADMAG)) {
             addRhoCCP(x,sig,lbl,mypos);
             if (mypos>=0) {
@@ -817,11 +817,11 @@ bool critPtNetWork::setLOLBCPs(void) {
          dd=computeMagnitudeV3(x);
          if ((dd>=(bn->maxBondDist*0.9e0))&&(dd<=extbd)) {
             for (int k=0; k<3; k++) {x[k]=0.5e0*(RACP[i][k]+RACP[j][k]);}
-            if ((wf->evalDensity(x[0],x[1],x[2])>CPNW_MINRHOSIGNIFICATIVEVAL)) {
+            if ((wf->EvalDensity(x[0],x[1],x[2])>CPNW_MINRHOSIGNIFICATIVEVAL)) {
                seekRhoBCP(x,rho,g,sig);
                if (i<j) {ata=i; atb=j;} else {ata=j; atb=i;}
                lbl=string("*")+lblACP[ata]+string("-")+lblACP[atb];
-               wf->evalRhoGradRho(x[0],x[1],x[2],rho,g);
+               wf->EvalRhoGradRho(x[0],x[1],x[2],rho,g);
                if ((rho>CPNW_MINRHOSIGNIFICATIVEVAL)&&(computeMagnitudeV3(g)<CPNW_EPSRHOACPGRADMAG)) {
                   addRhoBCP(x,sig,lbl,mypos);
                   if ((mypos>=0)&&(mypos<dBCP)) {
@@ -1056,14 +1056,14 @@ void critPtNetWork::seekRhoBCPWithExtraACP(int acppos,double maxrad) {
       for ( int k=0 ; k<3 ; k++ ) {xx[k]=(RACP[acppos][k]-RACP[i][k]);}
       if ( computeMagnitudeV3(xx)<=maxrad ) {
          for (int k=0; k<3; k++) {xx[k]=0.5e0*(RACP[i][k]+RACP[acppos][k]);}
-         if ((wf->evalDensity(xx[0],xx[1],xx[2])>CPNW_MINRHOSIGNIFICATIVEVAL)) {
+         if ((wf->EvalDensity(xx[0],xx[1],xx[2])>CPNW_MINRHOSIGNIFICATIVEVAL)) {
             seekRhoBCP(xx,rho,g,sig);
             if (i<acppos) {
                lbl=string("*")+lblACP[i]+string("-")+lblACP[acppos];
             } else {
                lbl=string("*")+lblACP[acppos]+string("-")+lblACP[i];
             }
-            wf->evalRhoGradRho(xx[0],xx[1],xx[2],rho,g);
+            wf->EvalRhoGradRho(xx[0],xx[1],xx[2],rho,g);
             if ((rho>CPNW_MINRHOSIGNIFICATIVEVAL)&&
                   (computeMagnitudeV3(g)<CPNW_EPSRHOACPGRADMAG)) {
                addRhoBCP(xx,sig,lbl,mypos);
@@ -1086,14 +1086,14 @@ void critPtNetWork::seekLOLBCPWithExtraACP(int acppos,double maxrad) {
       for ( int k=0 ; k<3 ; k++ ) {xx[k]=(RACP[acppos][k]-RACP[i][k]);}
       if ( computeMagnitudeV3(xx)<=maxrad ) {
          for (int k=0; k<3; k++) {xx[k]=0.5e0*(RACP[i][k]+RACP[acppos][k]);}
-         if ((wf->evalDensity(xx[0],xx[1],xx[2])>CPNW_MINRHOSIGNIFICATIVEVAL)) {
+         if ((wf->EvalDensity(xx[0],xx[1],xx[2])>CPNW_MINRHOSIGNIFICATIVEVAL)) {
             seekLOLBCP(xx,lol,g,sig);
             if (i<acppos) {
                lbl=string("*")+lblACP[i]+string("-")+lblACP[acppos];
             } else {
                lbl=string("*")+lblACP[acppos]+string("-")+lblACP[i];
             }
-            wf->evalHessLOL(xx,lol,g,hl);
+            wf->EvalHessLOL(xx,lol,g,hl);
             if (computeMagnitudeV3(g)<CPNW_EPSLOLACPGRADMAG) {
                addRhoBCP(xx,sig,lbl,mypos);
                if ((mypos>=0)&&(mypos<dBCP)) {
@@ -1367,10 +1367,10 @@ string critPtNetWork::getFirstChunkOfLabel(string &lbl) {
    return lbl.substr(0,pos);
 }
 void critPtNetWork::printAllFieldProperties(double x,double y,double z) {
-   wf->displayAllFieldProperties(x,y,z);
+   wf->DisplayAllFieldProperties(x,y,z);
 }
 void critPtNetWork::writeAllFieldProperties(double x,double y,double z,ofstream &ofil) {
-   wf->writeAllFieldProperties(x,y,z,ofil);
+   wf->WriteAllFieldProperties(x,y,z,ofil);
 }
 void critPtNetWork::getACPStep(double (&g)[3],double (&hess)[3][3],double (&hh)[3],int &sig) {
    double eive[3][3],b[3],F[3];
@@ -1545,7 +1545,7 @@ int critPtNetWork::computeSignature(double (&ev)[3]) {
 }
 void critPtNetWork::seekRhoACP(double (&x)[3],double &rho2ret,double (&g)[3],int &sig) {
    double rho,gr[3],hr[3][3],dx[3];
-   wf->evalHessian(x[0],x[1],x[2],rho,gr,hr);
+   wf->EvalHessian(x[0],x[1],x[2],rho,gr,hr);
    sig=computeSignature(hr);
    double magd=computeMagnitudeV3(gr);
    if ( magd<CPNW_EPSRHOACPGRADMAG && sig==-3 ) {
@@ -1558,7 +1558,7 @@ void critPtNetWork::seekRhoACP(double (&x)[3],double &rho2ret,double (&g)[3],int
    while (((magd>CPNW_EPSRHOACPGRADMAG)&&(magh>CPNW_EPSFABSDIFFCOORD))&&(count<maxItACP)) {
       getACPStep(gr,hr,dx,sig);
       for (int i=0; i<3; i++) {x[i]+=dx[i];}
-      wf->evalHessian(x[0],x[1],x[2],rho,gr,hr);
+      wf->EvalHessian(x[0],x[1],x[2],rho,gr,hr);
       magd=sqrt(gr[0]*gr[0]+gr[1]*gr[1]+gr[2]*gr[2]);
       magh=sqrt(dx[0]*dx[0]+dx[1]*dx[1]+dx[2]*dx[2]);
       ++count;
@@ -1569,7 +1569,7 @@ void critPtNetWork::seekRhoACP(double (&x)[3],double &rho2ret,double (&g)[3],int
 }
 void critPtNetWork::seekRhoBCP(double (&x)[3],double &rho2ret,double (&g)[3],int &sig) {
    double rho,gr[3],hr[3][3],dx[3];
-   wf->evalHessian(x[0],x[1],x[2],rho,gr,hr);
+   wf->EvalHessian(x[0],x[1],x[2],rho,gr,hr);
    sig=computeSignature(hr);
    double magd=computeMagnitudeV3(gr);
    if ( magd<CPNW_EPSRHOACPGRADMAG && sig==-1 ) {
@@ -1582,7 +1582,7 @@ void critPtNetWork::seekRhoBCP(double (&x)[3],double &rho2ret,double (&g)[3],int
    while (((magd>CPNW_EPSRHOACPGRADMAG)&&(magh>CPNW_EPSFABSDIFFCOORD))&&(count<maxItBCP)) {
       getBCPStep(gr,hr,dx,sig);
       for (int i=0; i<3; i++) {x[i]+=dx[i];}
-      wf->evalHessian(x[0],x[1],x[2],rho,gr,hr);
+      wf->EvalHessian(x[0],x[1],x[2],rho,gr,hr);
       magd=sqrt(gr[0]*gr[0]+gr[1]*gr[1]+gr[2]*gr[2]);
       magh=sqrt(dx[0]*dx[0]+dx[1]*dx[1]+dx[2]*dx[2]);
       ++count;
@@ -1593,7 +1593,7 @@ void critPtNetWork::seekRhoBCP(double (&x)[3],double &rho2ret,double (&g)[3],int
 }
 void critPtNetWork::seekRhoRCP(double (&x)[3],double &rho2ret,double (&g)[3],int &sig) {
    double rho,gr[3],hr[3][3],dx[3];
-   wf->evalHessian(x[0],x[1],x[2],rho,gr,hr);
+   wf->EvalHessian(x[0],x[1],x[2],rho,gr,hr);
    sig=computeSignature(hr);
    double magd=computeMagnitudeV3(gr);
    if ( magd<=CPNW_EPSRHOACPGRADMAG && sig==1 ) {
@@ -1606,7 +1606,7 @@ void critPtNetWork::seekRhoRCP(double (&x)[3],double &rho2ret,double (&g)[3],int
    while (((magd>CPNW_EPSRHOACPGRADMAG)&&(magh>CPNW_EPSFABSDIFFCOORD))&&(count<maxItRCP)) {
       getRCPStep(gr,hr,dx,sig);
       for (int i=0; i<3; i++) {x[i]+=dx[i];}
-      wf->evalHessian(x[0],x[1],x[2],rho,gr,hr);
+      wf->EvalHessian(x[0],x[1],x[2],rho,gr,hr);
       magd=sqrt(gr[0]*gr[0]+gr[1]*gr[1]+gr[2]*gr[2]);
       magh=sqrt(dx[0]*dx[0]+dx[1]*dx[1]+dx[2]*dx[2]);
       ++count;
@@ -1617,7 +1617,7 @@ void critPtNetWork::seekRhoRCP(double (&x)[3],double &rho2ret,double (&g)[3],int
 }
 void critPtNetWork::seekRhoCCP(double (&x)[3],double &rho2ret,double (&g)[3],int &sig) {
    double rho,gr[3],hr[3][3],dx[3];
-   wf->evalHessian(x[0],x[1],x[2],rho,gr,hr);
+   wf->EvalHessian(x[0],x[1],x[2],rho,gr,hr);
    sig=computeSignature(hr);
    double magd=computeMagnitudeV3(gr);
    if ( magd<CPNW_EPSRHOACPGRADMAG && sig==3 ) {
@@ -1630,7 +1630,7 @@ void critPtNetWork::seekRhoCCP(double (&x)[3],double &rho2ret,double (&g)[3],int
    while (((magd>CPNW_EPSRHOACPGRADMAG)&&(magh>CPNW_EPSFABSDIFFCOORD))&&(count<maxItCCP)) {
       getCCPStep(gr,hr,dx,sig);
       for (int i=0; i<3; i++) {x[i]+=dx[i];}
-      wf->evalHessian(x[0],x[1],x[2],rho,gr,hr);
+      wf->EvalHessian(x[0],x[1],x[2],rho,gr,hr);
       magd=sqrt(gr[0]*gr[0]+gr[1]*gr[1]+gr[2]*gr[2]);
       magh=sqrt(dx[0]*dx[0]+dx[1]*dx[1]+dx[2]*dx[2]);
       ++count;
@@ -1641,7 +1641,7 @@ void critPtNetWork::seekRhoCCP(double (&x)[3],double &rho2ret,double (&g)[3],int
 }
 void critPtNetWork::seekLOLACP(double (&x)[3],double &ll,double (&g)[3],int &sig) {
    double lol,gl[3],hl[3][3],dx[3];
-   wf->evalHessLOL(x,lol,gl,hl);
+   wf->EvalHessLOL(x,lol,gl,hl);
    sig=computeSignature(hl);
    double magd=computeMagnitudeV3(gl);
    if ( magd<CPNW_EPSRHOACPGRADMAG && sig==-3 ) {
@@ -1654,7 +1654,7 @@ void critPtNetWork::seekLOLACP(double (&x)[3],double &ll,double (&g)[3],int &sig
    while (((magd>CPNW_EPSRHOACPGRADMAG)&&(magh>CPNW_EPSFABSDIFFCOORD))&&(count<maxItACP)) {
       getACPStep(gl,hl,dx,sig);
       for (int i=0; i<3; i++) {x[i]+=(dx[i]/*MAXSTEPSIZEACPLOLSEARCH*/);}
-      wf->evalHessLOL(x,lol,gl,hl);
+      wf->EvalHessLOL(x,lol,gl,hl);
       magd=sqrt(gl[0]*gl[0]+gl[1]*gl[1]+gl[2]*gl[2]);
       magh=sqrt(dx[0]*dx[0]+dx[1]*dx[1]+dx[2]*dx[2]);
       ++count;
@@ -1665,7 +1665,7 @@ void critPtNetWork::seekLOLACP(double (&x)[3],double &ll,double (&g)[3],int &sig
 }
 void critPtNetWork::seekLOLBCP(double (&x)[3],double &ll,double (&g)[3],int &sig) {
    double lol,gl[3],hl[3][3],dx[3];
-   wf->evalHessLOL(x,lol,gl,hl);
+   wf->EvalHessLOL(x,lol,gl,hl);
    sig=computeSignature(hl);
    double magd=computeMagnitudeV3(gl);
    if ( magd<CPNW_EPSRHOACPGRADMAG && sig==-1 ) {
@@ -1678,7 +1678,7 @@ void critPtNetWork::seekLOLBCP(double (&x)[3],double &ll,double (&g)[3],int &sig
    while (((magd>CPNW_EPSRHOACPGRADMAG)&&(magh>CPNW_EPSFABSDIFFCOORD))&&(count<maxItBCP)) {
       getBCPStep(gl,hl,dx,sig);
       for (int i=0; i<3; i++) {x[i]+=(dx[i]/*MAXSTEPSIZEACPLOLSEARCH*/);}
-      wf->evalHessLOL(x,lol,gl,hl);
+      wf->EvalHessLOL(x,lol,gl,hl);
       magd=sqrt(gl[0]*gl[0]+gl[1]*gl[1]+gl[2]*gl[2]);
       magh=sqrt(dx[0]*dx[0]+dx[1]*dx[1]+dx[2]*dx[2]);
       ++count;
@@ -1689,7 +1689,7 @@ void critPtNetWork::seekLOLBCP(double (&x)[3],double &ll,double (&g)[3],int &sig
 }
 void critPtNetWork::seekLOLRCP(double (&x)[3],double &ll,double (&g)[3],int &sig) {
    double lol,gl[3],hl[3][3],dx[3];
-   wf->evalHessLOL(x,lol,gl,hl);
+   wf->EvalHessLOL(x,lol,gl,hl);
    sig=computeSignature(hl);
    double magd=computeMagnitudeV3(gl);
    if ( magd<CPNW_EPSRHOACPGRADMAG && sig==1 ) {
@@ -1702,7 +1702,7 @@ void critPtNetWork::seekLOLRCP(double (&x)[3],double &ll,double (&g)[3],int &sig
    while (((magd>CPNW_EPSRHOACPGRADMAG)&&(magh>CPNW_EPSFABSDIFFCOORD))&&(count<maxItRCP)) {
       getRCPStep(gl,hl,dx,sig);
       for (int i=0; i<3; i++) {x[i]+=(dx[i]/*MAXSTEPSIZEACPLOLSEARCH*/);}
-      wf->evalHessLOL(x,lol,gl,hl);
+      wf->EvalHessLOL(x,lol,gl,hl);
       magd=sqrt(gl[0]*gl[0]+gl[1]*gl[1]+gl[2]*gl[2]);
       magh=sqrt(dx[0]*dx[0]+dx[1]*dx[1]+dx[2]*dx[2]);
       ++count;
@@ -1713,7 +1713,7 @@ void critPtNetWork::seekLOLRCP(double (&x)[3],double &ll,double (&g)[3],int &sig
 }
 void critPtNetWork::seekLOLCCP(double (&x)[3],double &ll,double (&g)[3],int &sig) {
    double lol,gl[3],hl[3][3],dx[3];
-   wf->evalHessLOL(x,lol,gl,hl);
+   wf->EvalHessLOL(x,lol,gl,hl);
    sig=computeSignature(hl);
    double magd=computeMagnitudeV3(gl);
    if ( magd<CPNW_EPSRHOACPGRADMAG && sig==3 ) {
@@ -1726,7 +1726,7 @@ void critPtNetWork::seekLOLCCP(double (&x)[3],double &ll,double (&g)[3],int &sig
    while (((magd>CPNW_EPSRHOACPGRADMAG)&&(magh>CPNW_EPSFABSDIFFCOORD))&&(count<maxItRCP)) {
       getCCPStep(gl,hl,dx,sig);
       for (int i=0; i<3; i++) {x[i]+=(dx[i]/*MAXSTEPSIZEACPLOLSEARCH*/);}
-      wf->evalHessLOL(x,lol,gl,hl);
+      wf->EvalHessLOL(x,lol,gl,hl);
       magd=sqrt(gl[0]*gl[0]+gl[1]*gl[1]+gl[2]*gl[2]);
       magh=sqrt(dx[0]*dx[0]+dx[1]*dx[1]+dx[2]*dx[2]);
       ++count;
@@ -1856,9 +1856,9 @@ void critPtNetWork::findTwoClosestAtoms(double (&xo)[3],int &idx1st,int &idx2nd)
    if ( wf->nNuc<2 ) {idx1st=0; idx2nd=0; return;}
    double xmagt=0.0e0,xmag1=0.0e0,xmag2=0.0e0;
    int ii1,ii2,iit;
-   for ( int k=0 ; k<3 ; k++ ) {xmag1+=((xo[k]-wf->getR(0,k))*(xo[k]-wf->getR(0,k)));}
+   for ( int k=0 ; k<3 ; k++ ) {xmag1+=((xo[k]-wf->GetR(0,k))*(xo[k]-wf->GetR(0,k)));}
    ii1=0;
-   for ( int k=0 ; k<3 ; k++ ) {xmag2+=((xo[k]-wf->getR(1,k))*(xo[k]-wf->getR(1,k)));}
+   for ( int k=0 ; k<3 ; k++ ) {xmag2+=((xo[k]-wf->GetR(1,k))*(xo[k]-wf->GetR(1,k)));}
    ii2=1;
    if ( xmag1>xmag2 ) {
       xmagt=xmag1; xmag1=xmag2; xmag2=xmagt;
@@ -1867,7 +1867,7 @@ void critPtNetWork::findTwoClosestAtoms(double (&xo)[3],int &idx1st,int &idx2nd)
    }
    for ( int i=2 ; i<wf->nNuc ; i++ ) {
       xmagt=0.0e0;
-      for ( int k=0 ; k<3 ; k++ ) {xmagt+=((xo[k]-wf->getR(i,k))*(xo[k]-wf->getR(i,k)));}
+      for ( int k=0 ; k<3 ; k++ ) {xmagt+=((xo[k]-wf->GetR(i,k))*(xo[k]-wf->GetR(i,k)));}
       if ( xmagt<xmag2 ) {xmag2=xmagt; ii2=i;}
       if ( xmag1>xmag2 ) {
          xmagt=xmag1; xmag1=xmag2; xmag2=xmagt;
@@ -2715,13 +2715,13 @@ int critPtNetWork::findSingleRhoBondGradientPathRK5(int at1,int at2,double hstep
       int dima,double** (&arbgp),double (&ro)[3]) {
    double rn[3],rho,g[3],h[3][3],eive[3][3],eival[3],dist,maggrad;
    seekSingleRhoBCP(at1,at2,ro);
-   wf->evalHessian(ro[0],ro[1],ro[2],rho,g,h);
+   wf->EvalHessian(ro[0],ro[1],ro[2],rho,g,h);
    EigenDecompositionJAMA::EigenDecomposition3(h,eive,eival);
    maggrad=0.0e0;
    for (int i=0; i<3; i++) {maggrad+=(eive[i][2]*eive[i][2]);}
    maggrad=sqrt(maggrad);
    for (int i=0; i<3; i++) {rn[i]=ro[i]+hstep*eive[i][2]/maggrad;}
-   wf->evalRhoGradRho(rn[0],rn[1],rn[2],rho,g);
+   wf->EvalRhoGradRho(rn[0],rn[1],rn[2],rho,g);
    maggrad=sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]);
    for (int i=0; i<3; i++) {
       arbgp[0][i]=ro[i];
@@ -2774,7 +2774,7 @@ int critPtNetWork::findSingleRhoBondGradientPathRK5(int at1,int at2,double hstep
    for (int i=0; i<3; i++) {maggrad+=(eive[i][2]*eive[i][2]);}
    maggrad=sqrt(maggrad);
    for (int i=0; i<3; i++) {rn[i]=ro[i]-hstep*eive[i][2]/maggrad;}
-   wf->evalRhoGradRho(rn[0],rn[1],rn[2],rho,g);
+   wf->EvalRhoGradRho(rn[0],rn[1],rn[2],rho,g);
    maggrad=sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]);
    for (int i=0; i<3; i++) {
       arbgp[count][i]=rn[i];
@@ -2878,7 +2878,7 @@ int critPtNetWork::findSingleRhoRingGradientPathRK5(int rcpIdx,\
    double ux[3],uy[3]; //,xm0mxr[3],uz[3];
    //for ( int i=0 ; i<3 ; ++i ) { xm0mxr[i]=xm[i]-xr[i]; }
    double hess[3][3],eivec[3][3],tmpv[3];
-   wf->evalHessian(xb[0],xb[1],xb[2],magd,ux,hess);
+   wf->EvalHessian(xb[0],xb[1],xb[2],magd,ux,hess);
    if ( magV3(ux)>CPNW_EPSRHOACPGRADMAG ) {
       ScreenUtils::DisplayWarningMessage(string("Not at a BCP? (")+StringTools::GetStringFromReal(magV3(ux))\
             +string(")"));
@@ -2990,7 +2990,7 @@ int critPtNetWork::findSingleRhoCageGradientPathRK5(int ccpIdx,\
       xc[i]=RCCP[ccpIdx][i];
    }
    double hess[3][3],eivec[3][3],tmpv[3],dir2min[3];
-   wf->evalHessian(xr[0],xr[1],xr[2],magd,tmpv,hess); //here tmpv is gradRho
+   wf->EvalHessian(xr[0],xr[1],xr[2],magd,tmpv,hess); //here tmpv is gradRho
    if ( magV3(tmpv)>CPNW_EPSRHOACPGRADMAG ) {
       ScreenUtils::DisplayWarningMessage(string("Not at an RCP? (")+\
             StringTools::GetStringFromReal(magV3(tmpv))+string(")"));
@@ -3015,7 +3015,7 @@ int critPtNetWork::findSingleRhoCageGradientPathRK5(int ccpIdx,\
    ScreenUtils::DisplayErrorMessage("Unknown error!");
 #if DEBUG
    DISPLAYDEBUGINFOFILELINE;
-   wf->displayAllFieldProperties(xn[0],xn[1],xn[2]);
+   wf->DisplayAllFieldProperties(xn[0],xn[1],xn[2]);
 #endif /* ( DEBUG ) */
    return -1;
 }
@@ -3089,7 +3089,7 @@ bool critPtNetWork::seekSingleRhoBCP(int ata,int atb,double (&x)[3]) {
    double rho,g[3];
    int sig;
    seekRhoBCP(x,rho,g,sig);
-   //wf->evalRhoGradRho(x[0],x[1],x[2],rho,g);
+   //wf->EvalRhoGradRho(x[0],x[1],x[2],rho,g);
    //double magg=0.0e0;
    //for (int n=0; n<3; n++) {magg+=(g[n]*g[n]);}
    //magg=sqrt(magg);
@@ -3097,7 +3097,7 @@ bool critPtNetWork::seekSingleRhoBCP(int ata,int atb,double (&x)[3]) {
       ScreenUtils::DisplayErrorMessage(string("The chosen atoms ("+wf->atLbl[ata]\
                +","+wf->atLbl[atb]+") probably do not lead to a BCP!"));
 #if DEBUG
-      wf->displayAllFieldProperties(x[0],x[1],x[2]);
+      wf->DisplayAllFieldProperties(x[0],x[1],x[2]);
 #endif
       return false;
    }
@@ -3123,7 +3123,7 @@ void critPtNetWork::getNextPointInGradientPathRK5UpHill(double (&xn)[3],double &
             xt[j] += b[l+offset]*k[l][j];
          }
       }
-      wf->evalRhoGradRho(xt[0],xt[1],xt[2],rho,g);
+      wf->EvalRhoGradRho(xt[0],xt[1],xt[2],rho,g);
       maggrad=sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]);
       for(int l=0; l<3; l++) {
          k[i][l] = stepsize*g[l]/maggrad;
@@ -3151,7 +3151,7 @@ void critPtNetWork::getNextPointInGradientPathRK5UpHill(double (&xn)[3],double &
             xt[j] += b[l+offset]*k[l][j];
          }
       }
-      wf->evalRhoGradRho(xt[0],xt[1],xt[2],rho,g);
+      wf->EvalRhoGradRho(xt[0],xt[1],xt[2],rho,g);
       maggrad=sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]);
       for(int l=0; l<3; l++) {
          k[i][l] = stepsize*g[l]/maggrad;
@@ -3160,7 +3160,7 @@ void critPtNetWork::getNextPointInGradientPathRK5UpHill(double (&xn)[3],double &
    for(int i=0; i<3; i++) {
       xn[i]+=(c1*k[0][i]+c3*k[2][i]+c4*k[3][i]+c5*k[4][i]+c6*k[5][i]);
    }
-   wf->evalRhoGradRho(xn[0],xn[1],xn[2],rho,g);
+   wf->EvalRhoGradRho(xn[0],xn[1],xn[2],rho,g);
    mgg=sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]);
    return;
 }
@@ -3190,7 +3190,7 @@ void critPtNetWork::getNextPointInGradientPathRK5DownHill(double (&xn)[3],\
             xt[j] += b[l+offset]*k[l][j];
          }
       }
-      wf->evalRhoGradRho(xt[0],xt[1],xt[2],rho,g);
+      wf->EvalRhoGradRho(xt[0],xt[1],xt[2],rho,g);
       maggrad=sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]);
       for(int l=0; l<3; l++) {
          k[i][l] = -stepsize*g[l]/maggrad;
@@ -3199,7 +3199,7 @@ void critPtNetWork::getNextPointInGradientPathRK5DownHill(double (&xn)[3],\
    for(int i=0; i<3; i++) {
       xn[i]+=(c1*k[0][i]+c3*k[2][i]+c4*k[3][i]+c5*k[4][i]+c6*k[5][i]);
    }
-   wf->evalRhoGradRho(xn[0],xn[1],xn[2],rho,g);
+   wf->EvalRhoGradRho(xn[0],xn[1],xn[2],rho,g);
    mgg=sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]);
    return;
 }

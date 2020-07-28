@@ -37,36 +37,30 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
-
-
-#ifndef _CUSTFLD_WFNCLASS_CPP_
-#define _CUSTFLD_WFNCLASS_CPP_
 #include "gausswavefunction.h"
 /* ************************************************************************************ */
 /* In this file, double is a mask for a double, i.e., a double is a double.
  * This name is used in order to keep compatibility with future implementations
  * requiring floats rather than doubles (old GPUs).  */
-double GaussWaveFunction::evalCustomScalarField(double x,double y,double z)
-{
+double GaussWaveFunction::EvalCustomScalarField(double x,double y,double z) {
    /* 
-    * double rho=evalDensity(x,y,z) //Electron density [ED]
-    * double maggrho=evalMagGradRho(x,y,z); //Magnitude of the Gradient of ED
-    * double lap=evalLapRho(x,y,z); //Laplacian of ED
-    * double lol=evalLOL(x,y,z); //Localized Orbital Locator
-    * double elf=evalELF(x,y,z); //Returns the Electron Localized Function
-    * double shent=evalShannonEntropy(x,y,z); //Shannon entropy density
-    * double mssent=evalMomentumShannonEntropy(px,py,pz); //momentum space shannon
+    * double rho=EvalDensity(x,y,z) //Electron density [ED]
+    * double maggrho=EvalMagGradRho(x,y,z); //Magnitude of the Gradient of ED
+    * double lap=EvalLapRho(x,y,z); //Laplacian of ED
+    * double lol=EvalLOL(x,y,z); //Localized Orbital Locator
+    * double elf=EvalELF(x,y,z); //Returns the Electron Localized Function
+    * double shent=EvalShannonEntropy(x,y,z); //Shannon entropy density
+    * double mssent=EvalMomentumShannonEntropy(px,py,pz); //momentum space shannon
     *                                     //entropy at the momentum-point (px,py,pz)
-    * double keG=evalKineticEnergyG(x,y,z); //self descriptive
-    * double keK=evalKineticEnergyK(x,y,z); //self descriptive
-    * double ftrho=evalFTDensity(px,py,pz); //the momentum-space electron density
+    * double keG=EvalKineticEnergyG(x,y,z); //self descriptive
+    * double keK=EvalKineticEnergyK(x,y,z); //self descriptive
+    * double ftrho=EvalFTDensity(px,py,pz); //the momentum-space electron density
     *                                        // at the momentum-point (px,py,pz)
-    * double mglol=evalMagGradLOL(x,y,z); // Magnitude of grad(LOL)
-    * double mep=evalMolElecPot(x,y,z); //Molecular Electrostatic Potential
-    * double magled=evalMagLED(x,y,z); //Magnitude of LED
-    * double rose=evalRoSE(x,y,z); //Region of Slow Electrons
-    * double s=evalReducedDensityGradient(x,y,z); //self descriptive
+    * double mglol=EvalMagGradLOL(x,y,z); // Magnitude of grad(LOL)
+    * double mep=EvalMolElecPot(x,y,z); //Molecular Electrostatic Potential
+    * double magled=EvalMagLED(x,y,z); //Magnitude of LED
+    * double rose=EvalRoSE(x,y,z); //Region of Slow Electrons
+    * double s=EvalReducedDensityGradient(x,y,z); //self descriptive
     *
     * */
 
@@ -75,15 +69,14 @@ double GaussWaveFunction::evalCustomScalarField(double x,double y,double z)
     * for other fields, you can choose one or more of the above enlisted fields.
     * */
    double eve[3][3],eva[3],h[3][3];
-   evalHessian(x,y,z,h);
+   EvalHessian(x,y,z,h);
    EigenDecompositionJAMA::EigenDecomposition3(h,eve,eva);
    double ellip=(eva[0]/eva[1])-1.0e0;
    return ellip;
 }
 /* ************************************************************************************ */
-void GaussWaveFunction::evalCustomVectorField(double x,double y,double z,\
-      double (&v)[3])
-{
+void GaussWaveFunction::EvalCustomVectorField(double x,double y,double z,\
+      double (&v)[3]) {
    /* 
     * double rho;
     * evalRhoGradRho(x,y,z,rho,v);//Stores the Electron density [ED] in rho, and the 
@@ -102,7 +95,7 @@ void GaussWaveFunction::evalCustomVectorField(double x,double y,double z,\
     * and it only has the purpose of showing its implementation  */
    static const double USRFLD_EPS_DEF=1.0e-10; //avoid division by zero
    double rho,gr[3];
-   evalRhoGradRho(x,y,z,rho,gr);
+   EvalRhoGradRho(x,y,z,rho,gr);
    if ( rho<USRFLD_EPS_DEF ) {rho=USRFLD_EPS_DEF;}
    for ( int i=0 ; i<3 ; i++ ) {v[i]=gr[i]/rho;}
    return;
@@ -116,6 +109,4 @@ void GaussWaveFunction::evalCustomVectorField(double x,double y,double z,\
 /* ************************************************************************************ */
 /* ************************************************************************************ */
 
-
-#endif  /* _CUSTFLD_WFNCLASS_CPP_ */
 

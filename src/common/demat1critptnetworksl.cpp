@@ -173,7 +173,7 @@ void DeMat1CriticalPointNetworkSL::evalUVGrad(double uu,double vv,
       double &gamm,double (&uvg)[2]) {
    double xx[3],xp[3],gg[3],gp[3];
    getXCoordinatesFromUV(uu,vv,xx,xp);
-   wf->evalGradDensityMatrix1(xx[0],xx[1],xx[2],xp[0],xp[1],xp[2],gamm,gg,gp);
+   wf->EvalGradDensityMatrix1(xx[0],xx[1],xx[2],xp[0],xp[1],xp[2],gamm,gg,gp);
    double sum=0.0e0;
    for ( int i=0 ; i<3 ; i++ ) {sum+=x2mx1[i]*gg[i];}
    uvg[0]=sum;
@@ -185,7 +185,7 @@ void DeMat1CriticalPointNetworkSL::evalUVHessian(double uu,double vv,double &gam
          double (&uvg)[2],double (&uvh)[2][2]) {
    double xx[3],xp[3],gg[3],gp[3],hhhh[3][3],hphh[3][3],hphp[3][3];
    getXCoordinatesFromUV(uu,vv,xx,xp);
-   wf->evalHessDensityMatrix1(xx,xp,gamm,gg,gp,hhhh,hphh,hphp);
+   wf->EvalHessDensityMatrix1(xx,xp,gamm,gg,gp,hhhh,hphh,hphp);
    double sum;
    /* ---------------------------------------------------  */
    sum=0.0e0;

@@ -44,12 +44,6 @@
  Guelph, Ontario, Canada.
  May 2013
  */
-
-
-#ifndef _HAVE_GNUPLOT_
-#define _HAVE_GNUPLOT_ 0
-#endif
-
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -77,6 +71,10 @@ using std::setprecision;
 #include "optflags.h"
 #include "crtflnms.h"
 
+#ifndef _HAVE_GNUPLOT_
+#define _HAVE_GNUPLOT_ 0
+#endif
+
 void makeGnuplotFile(string &gnpn,string &outn,char p2p,double dist,string &l1, string &l2);
 
 int main (int argc, char ** argv)
@@ -96,7 +94,7 @@ int main (int argc, char ** argv)
    cout << endl << "Loading wave function from file: " << infilnam << "... ";
    
    GaussWaveFunction gwf;
-   if (!(gwf.readFromFile(infilnam))) { //Loading the wave function
+   if (!(gwf.ReadFromFile(infilnam))) { //Loading the wave function
       ScreenUtils::SetScrRedBoldFont();
       cout << "Error: the wave function could not be loaded!\n";
       ScreenUtils::SetScrNormalFont();

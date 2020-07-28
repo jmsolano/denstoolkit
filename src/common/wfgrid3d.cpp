@@ -149,7 +149,7 @@ void waveFunctionGrid3D::writeCubeRho(ofstream &ofil,GaussWaveFunction &wf) {
       for (int j=0; j<npts[1]; j++) {
          zz=xin[2];
          for (int k=0; k<npts[2]; k++) {
-            prop1d[k]=wf.evalDensity(xx,yy,zz);
+            prop1d[k]=wf.EvalDensity(xx,yy,zz);
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
@@ -173,7 +173,7 @@ void waveFunctionGrid3D::writeCubeLapRho(ofstream &ofil,GaussWaveFunction &wf) {
       for (int j=0; j<npts[1]; j++) {
          zz=xin[2];
          for (int k=0; k<npts[2]; k++) {
-            prop1d[k]=wf.evalLapRho(xx,yy,zz);
+            prop1d[k]=wf.EvalLapRho(xx,yy,zz);
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
@@ -197,7 +197,7 @@ void waveFunctionGrid3D::writeCubeELF(ofstream &ofil,GaussWaveFunction &wf) {
       for (int j=0; j<npts[1]; j++) {
          zz=xin[2];
          for (int k=0; k<npts[2]; k++) {
-            prop1d[k]=wf.evalELF(xx,yy,zz);
+            prop1d[k]=wf.EvalELF(xx,yy,zz);
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
@@ -221,7 +221,7 @@ void waveFunctionGrid3D::writeCubeShannonEntropy(ofstream &ofil,GaussWaveFunctio
       for (int j=0; j<npts[1]; j++) {
          zz=xin[2];
          for (int k=0; k<npts[2]; k++) {
-            prop1d[k]=wf.evalShannonEntropy(xx,yy,zz);
+            prop1d[k]=wf.EvalShannonEntropy(xx,yy,zz);
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
@@ -245,7 +245,7 @@ void waveFunctionGrid3D::writeCubeMagGradRho(ofstream &ofil,GaussWaveFunction &w
       for (int j=0; j<npts[1]; j++) {
          zz=xin[2];
          for (int k=0; k<npts[2]; k++) {
-            prop1d[k]=wf.evalMagGradRho(xx,yy,zz);
+            prop1d[k]=wf.EvalMagGradRho(xx,yy,zz);
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
@@ -270,9 +270,9 @@ void waveFunctionGrid3D::writeCubeLOL(ofstream &ofil,GaussWaveFunction &wf) {
          zz=xin[2];
          for (int k=0; k<npts[2]; k++) {
 //#if PARALLELIZEDTK
-//            prop1d[k]=wf.evalLOLNew(xx,yy,zz);
+//            prop1d[k]=wf.EvalLOLNew(xx,yy,zz);
 //#else
-            prop1d[k]=wf.evalLOL(xx,yy,zz);
+            prop1d[k]=wf.EvalLOL(xx,yy,zz);
 //#endif
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
@@ -297,7 +297,7 @@ void waveFunctionGrid3D::writeCubeKinetEnerDensG(ofstream &ofil,GaussWaveFunctio
       for (int j=0; j<npts[1]; j++) {
          zz=xin[2];
          for (int k=0; k<npts[2]; k++) {
-            prop1d[k]=wf.evalKineticEnergyG(xx,yy,zz);
+            prop1d[k]=wf.EvalKineticEnergyG(xx,yy,zz);
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
@@ -321,7 +321,7 @@ void waveFunctionGrid3D::writeCubeKinetEnerDensK(ofstream &ofil,GaussWaveFunctio
       for (int j=0; j<npts[1]; j++) {
          zz=xin[2];
          for (int k=0; k<npts[2]; k++) {
-            prop1d[k]=wf.evalKineticEnergyK(xx,yy,zz);
+            prop1d[k]=wf.EvalKineticEnergyK(xx,yy,zz);
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
@@ -347,11 +347,11 @@ void waveFunctionGrid3D::writeCubeMagGradLOL(ofstream &ofil,GaussWaveFunction &w
       for (int j=0; j<npts[1]; j++) {
          xl[2]=xin[2];
          for (int k=0; k<npts[2]; k++) {
-            wf.evalHessLOL(xl,lol,gl,hl);
+            wf.EvalHessLOL(xl,lol,gl,hl);
             glm=0.0e0;
             for (int m=0; m<3; m++) {glm+=gl[m]*gl[m];}
             prop1d[k]=sqrt(glm);
-            //prop1d[k]=wf.evalMagGradRho(xx,yy,zz);
+            //prop1d[k]=wf.EvalMagGradRho(xx,yy,zz);
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             xl[2]+=dx[2][2];
          }
@@ -375,7 +375,7 @@ void waveFunctionGrid3D::writeCubeMolElecPot(ofstream &ofil,GaussWaveFunction &w
       for (int j=0; j<npts[1]; j++) {
          zz=xin[2];
          for (int k=0; k<npts[2]; k++) {
-            prop1d[k]=wf.evalMolElecPot(xx,yy,zz);
+            prop1d[k]=wf.EvalMolElecPot(xx,yy,zz);
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
@@ -399,7 +399,7 @@ void waveFunctionGrid3D::writeCubeMagLED(ofstream &ofil,GaussWaveFunction &wf) {
       for (int j=0; j<npts[1]; j++) {
          zz=xin[2];
          for (int k=0; k<npts[2]; k++) {
-            prop1d[k]=wf.evalMagLED(xx,yy,zz);
+            prop1d[k]=wf.EvalMagLED(xx,yy,zz);
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
@@ -423,7 +423,7 @@ void waveFunctionGrid3D::writeCubeRedDensGrad(ofstream &ofil,GaussWaveFunction &
       for (int j=0; j<npts[1]; j++) {
          zz=xin[2];
          for (int k=0; k<npts[2]; k++) {
-            prop1d[k]=wf.evalReducedDensityGradient(xx,yy,zz);
+            prop1d[k]=wf.EvalReducedDensityGradient(xx,yy,zz);
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
@@ -447,7 +447,7 @@ void waveFunctionGrid3D::writeCubeRoSE(ofstream &ofil,GaussWaveFunction &wf) {
       for (int j=0; j<npts[1]; j++) {
          zz=xin[2];
          for (int k=0; k<npts[2]; k++) {
-            prop1d[k]=wf.evalRoSE(xx,yy,zz);
+            prop1d[k]=wf.EvalRoSE(xx,yy,zz);
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
@@ -471,7 +471,7 @@ void waveFunctionGrid3D::writeCubeScalarCustFld(ofstream &ofil,GaussWaveFunction
       for (int j=0; j<npts[1]; j++) {
          zz=xin[2];
          for (int k=0; k<npts[2]; k++) {
-            prop1d[k]=wf.evalCustomScalarField(xx,yy,zz);
+            prop1d[k]=wf.EvalCustomScalarField(xx,yy,zz);
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
@@ -575,7 +575,7 @@ void waveFunctionGrid3D::writeCubeEllipticity(ofstream &ofil,GaussWaveFunction &
       for (int j=0; j<npts[1]; j++) {
          zz=xin[2];
          for (int k=0; k<npts[2]; k++) {
-            prop1d[k]=wf.evalEllipticity(xx,yy,zz);
+            prop1d[k]=wf.EvalEllipticity(xx,yy,zz);
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
@@ -599,7 +599,7 @@ void waveFunctionGrid3D::writeCubeVirialPotentialEnergyDensity(ofstream &ofil,Ga
       for (int j=0; j<npts[1]; j++) {
          zz=xin[2];
          for (int k=0; k<npts[2]; k++) {
-            prop1d[k]=wf.evalVirialPotentialEnergyDensity(xx,yy,zz);
+            prop1d[k]=wf.EvalVirialPotentialEnergyDensity(xx,yy,zz);
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
@@ -623,7 +623,7 @@ void waveFunctionGrid3D::writeCubeNCIRedDensGrad(ofstream &ofil,GaussWaveFunctio
       for (int j=0; j<npts[1]; j++) {
          zz=xin[2];
          for (int k=0; k<npts[2]; k++) {
-            prop1d[k]=wf.evalNCIs(xx,yy,zz);
+            prop1d[k]=wf.EvalNCIs(xx,yy,zz);
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
@@ -647,7 +647,7 @@ void waveFunctionGrid3D::writeCubeNCIRho(ofstream &ofil,GaussWaveFunction &wf) {
       for (int j=0; j<npts[1]; j++) {
          zz=xin[2];
          for (int k=0; k<npts[2]; k++) {
-            prop1d[k]=wf.evalNCILambda(xx,yy,zz);
+            prop1d[k]=wf.EvalNCILambda(xx,yy,zz);
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }

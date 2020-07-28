@@ -65,11 +65,7 @@
    WWW:  http://www.gnu.org/copyleft/gpl.html
    ----------------------
 */
-#ifndef _GAUSSWAVEFUNCTION_CPP_
-#define _GAUSSWAVEFUNCTION_CPP_
-
 #include <cstdlib>
-using std::exit;
 #include <iostream>
 using std::cout;
 using std::cerr;
@@ -186,7 +182,7 @@ GaussWaveFunction::~GaussWaveFunction() {
    }
    imldd=false;
 }
-double GaussWaveFunction::getCoef(const int orbn,const int primn) {
+double GaussWaveFunction::GetCoef(const int orbn,const int primn) {
 #if DEBUG
    if (orbn>=nMOr) {
       cout << "Error: attempting to look for a non existent Molecular Orbital!\nReturning zero...\n";
@@ -195,7 +191,7 @@ double GaussWaveFunction::getCoef(const int orbn,const int primn) {
 #endif
    return MOCoeff[(orbn*nPri)+primn];
 }
-double GaussWaveFunction::getR(const int nucnum,const int cart) {
+double GaussWaveFunction::GetR(const int nucnum,const int cart) {
 #if DEBUG
    if (nucnum>=nNuc) {
       cout << "Error: attempting to look for a non-existent Nucleus!\nReturning zero...\n";
@@ -204,13 +200,13 @@ double GaussWaveFunction::getR(const int nucnum,const int cart) {
 #endif
    return R[3*nucnum+cart];
 }
-void GaussWaveFunction::getAng(int pt,int (&tt)[3]) {
+void GaussWaveFunction::GetAng(int pt,int (&tt)[3]) {
    int tty=pt*3;
    tt[0]=prTy[tty+0];
    tt[1]=prTy[tty+1];
    tt[2]=prTy[tty+2];
 }
-bool GaussWaveFunction::sameMolOrbOccNums() {
+bool GaussWaveFunction::SameMolOrbOccNums() {
    if (!occN) {
       cout << "Error: the wave function has not been properly allocated!\nReturning false...\n";
       return false;
@@ -218,7 +214,7 @@ bool GaussWaveFunction::sameMolOrbOccNums() {
    for (int i=1; i<nMOr; i++) {if (occN[0]!=occN[i]) {return false;}}
    return true;
 }
-bool GaussWaveFunction::readFromFileWFN(string inname) {
+bool GaussWaveFunction::ReadFromFileWFN(string inname) {
    ifstream tif;
    tif.open(inname.c_str(),std::ios::in);
    if (!(tif.good())) {
@@ -248,15 +244,15 @@ bool GaussWaveFunction::readFromFileWFN(string inname) {
       return false;
    }
    getEnergyAndVirial(tif,totener,virial);
-   allocAuxArrays();
-   countPrimsPerCenter();
-   calcCab();
+   AllocAuxArrays();
+   CountPrimsPerCenter();
+   CalcCab();
    tif.close();
-   imldd=testSupport();
-   allocAuxMEPArray();
+   imldd=TestSupport();
+   AllocAuxMEPArray();
    return true;
 }
-bool GaussWaveFunction::readFromFileWFX(string inname) {
+bool GaussWaveFunction::ReadFromFileWFX(string inname) {
    ifstream tif;
    tif.open(inname.c_str(),std::ios::in);
    if (!(tif.good())) {
@@ -302,7 +298,7 @@ bool GaussWaveFunction::readFromFileWFX(string inname) {
    MyMemory::Alloc1DRealArray("occN",(nMOr+1),occN); //The entry occN[nMOr] will save the
                     //number of core electrons when EDF information is present
    MyMemory::Alloc1DRealArray("MOEner",nMOr,MOEner);
-   allocAuxArrays();
+   AllocAuxArrays();
    getAtLabelsFromFileWFX(tif,nNuc,atLbl);
    getNucCartCoordsFromFileWFX(tif,nNuc,R);
    getAtChargesFromFileWFX(tif,nNuc,atCharge);
@@ -321,31 +317,31 @@ bool GaussWaveFunction::readFromFileWFX(string inname) {
       occN[nMOr]=1.0e0;
       getEDFPrimCoefficientsFromFileWFX(tif,EDFPri,EDFCoeff);
    }
-   countPrimsPerCenter();
-   calcCab();
+   CountPrimsPerCenter();
+   CalcCab();
    tif.close();
-   imldd=testSupport();
-   allocAuxMEPArray();
+   imldd=TestSupport();
+   AllocAuxMEPArray();
    return true;
 }
-bool GaussWaveFunction::readFromFile(string inname) {
+bool GaussWaveFunction::ReadFromFile(string inname) {
    string extension;
    extension=inname.substr(inname.length()-3,3);
    bool res;
    if ((extension=="wfn")||(extension=="WFN")) {
-      res=readFromFileWFN(inname);
+      res=ReadFromFileWFN(inname);
    } else if ((extension=="wfx")||(extension=="WFX")) {
-      res=readFromFileWFX(inname);
+      res=ReadFromFileWFX(inname);
    } else {
       cout << "Error: unknown extension ("  << inname << ")!\nNothig to do, returning false...\n";
       cout << __FILE__ << ", line: " << __LINE__ << endl;
       return false;
    }
    if ( !res ) { return res; }
-   res=(res&&sanityChecks());
+   res=(res&&SanityChecks());
    return res;
 }
-bool GaussWaveFunction::sanityChecks(void) {
+bool GaussWaveFunction::SanityChecks(void) {
    bool ret=true;
    /* Warns about primitive types.  */
    maxPrimType=0;
@@ -361,17 +357,17 @@ bool GaussWaveFunction::sanityChecks(void) {
    }
    return ret;
 }
-void GaussWaveFunction::countPrimsPerCenter(void) {
+void GaussWaveFunction::CountPrimsPerCenter(void) {
    MyMemory::Alloc1DIntArray(string("myPN"),nNuc,myPN);
    for (int i=0; i<nPri; i++) {myPN[primCent[i]]++;}
    return;
 }
-bool GaussWaveFunction::writeToFileWFX(string outname) {
-   cout << "The function writeToFileWFX is not yet implemented!\nNothing done to file "
+bool GaussWaveFunction::WriteToFileWFX(string outname) {
+   cout << "The function WriteToFileWFX is not yet implemented!\nNothing done to file "
         << outname << "... \n";
    return true;
 }
-bool GaussWaveFunction::testSupport() {
+bool GaussWaveFunction::TestSupport() {
    for (int i=0; i<nMOr; i++) {
       if (primType[i]>=MAXPRIMTYPEDEFINED) {
          cout << "Only " << MAXPRIMTYPEDEFINED << " types have been implemented in this version\n";
@@ -383,7 +379,7 @@ bool GaussWaveFunction::testSupport() {
    }
    return true;
 }
-double GaussWaveFunction::evalDensityArray(double x,double y, double z) {
+double GaussWaveFunction::EvalDensityArray(double x,double y, double z) {
    int indr,indc,indp;
    double xmr,ymr,zmr,rho,chia,chib,chit;
    rho=0.000000e0;
@@ -398,7 +394,7 @@ double GaussWaveFunction::evalDensityArray(double x,double y, double z) {
          zmr=z-R[indr++];
          rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
          for (int j=0; j<myPN[i]; j++) {
-            chi[indp]=evalAngACases(primType[indp],xmr,ymr,zmr);
+            chi[indp]=EvalAngACases(primType[indp],xmr,ymr,zmr);
             chi[indp]*=exp(primExp[indp]*rr);
             chi[indp++]*=MOCoeff[indc++];
          }
@@ -417,14 +413,14 @@ double GaussWaveFunction::evalDensityArray(double x,double y, double z) {
    }
    return rho;
 }
-void GaussWaveFunction::displayAllFieldProperties(double x,double y,double z) {
+void GaussWaveFunction::DisplayAllFieldProperties(double x,double y,double z) {
    static double rho,lol,xx[3],g[3],hess[3][3];
    static double eivec[3][3],eival[3];
    xx[0]=x;
    xx[1]=y;
    xx[2]=z;
-   evalRhoGradRho(x,y,z,rho,g);
-   evalHessian(xx[0],xx[1],xx[2],hess);
+   EvalRhoGradRho(x,y,z,rho,g);
+   EvalHessian(xx[0],xx[1],xx[2],hess);
    EigenDecompositionJAMA::EigenDecomposition3(hess, eivec, eival);
    cout << scientific << setprecision(12);
    cout << "            R: " << setw(20) << x << setw(20) << y << setw(20) << z << endl;
@@ -447,7 +443,7 @@ void GaussWaveFunction::displayAllFieldProperties(double x,double y,double z) {
                              << setw(20) << eivec[2][2] << endl;
    cout << "  Ellipticity: " << setw(20) << ((eival[0]/eival[1])-1.0e0) << endl;
    cout << "       LapRho: " << setw(20) << (hess[0][0]+hess[1][1]+hess[2][2]) << endl;
-   evalHessLOL(xx,lol,g,hess);//(x,lol,gl,hl)
+   EvalHessLOL(xx,lol,g,hess);//(x,lol,gl,hl)
    EigenDecompositionJAMA::EigenDecomposition3(hess, eivec, eival);
    cout << "          LOL: " << setw(20) << lol << endl;
    cout << "      gradLOL: " << setw(20) << g[0] << setw(20) << g[1] << setw(20) << g[2] << endl;
@@ -466,35 +462,35 @@ void GaussWaveFunction::displayAllFieldProperties(double x,double y,double z) {
                              << setw(20) << eivec[2][1] << endl;
    cout << "               " << setw(20) << eivec[0][2] << setw(20) << eivec[1][2]
                              << setw(20) << eivec[2][2] << endl;
-   cout << "          ELF: " << setw(20) << evalELF(x,y,z) << endl;
-   cout << "      K.E. G.: " << setw(20) << evalKineticEnergyG(x,y,z) << endl;
-   cout << "      K.E. K.: " << setw(20) << evalKineticEnergyK(x,y,z) << endl;
-   cout << "  Shann. Ent.: " << setw(20) << evalShannonEntropy(x,y,z) << endl;
-   cout << "  Elect. Pot.: " << setw(20) << evalMolElecPot(x,y,z) << endl;
-   evalLED(xx,g);
+   cout << "          ELF: " << setw(20) << EvalELF(x,y,z) << endl;
+   cout << "      K.E. G.: " << setw(20) << EvalKineticEnergyG(x,y,z) << endl;
+   cout << "      K.E. K.: " << setw(20) << EvalKineticEnergyK(x,y,z) << endl;
+   cout << "  Shann. Ent.: " << setw(20) << EvalShannonEntropy(x,y,z) << endl;
+   cout << "  Elect. Pot.: " << setw(20) << EvalMolElecPot(x,y,z) << endl;
+   EvalLED(xx,g);
    cout << "          LED: " << setw(20) << g[0] << setw(20) << g[1] << setw(20) << g[2] << endl;
    cout << "        |LED|: " << setw(20) << sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]) << endl;
-   cout << "  RedDensGrad: " << setw(20) << evalReducedDensityGradient(xx[0],xx[1],xx[2]) << endl;
-   cout << "         RoSE: " << setw(20) << evalRoSE(xx[0],xx[1],xx[2]) << endl;
-   cout << "     V.P.E.D.: " << setw(20) << evalVirialPotentialEnergyDensity(x,y,z) << endl;
+   cout << "  RedDensGrad: " << setw(20) << EvalReducedDensityGradient(xx[0],xx[1],xx[2]) << endl;
+   cout << "         RoSE: " << setw(20) << EvalRoSE(xx[0],xx[1],xx[2]) << endl;
+   cout << "     V.P.E.D.: " << setw(20) << EvalVirialPotentialEnergyDensity(x,y,z) << endl;
    if ( usescustfld ) {
-      cout << "Cust. S. Field: " << setw(20) << evalCustomScalarField(xx[0],xx[1],xx[2]) << endl;
+      cout << "Cust. S. Field: " << setw(20) << EvalCustomScalarField(xx[0],xx[1],xx[2]) << endl;
    }
    if ( usevcustfld ) {
-      evalCustomVectorField(xx[0],xx[1],xx[2],g);
+      EvalCustomVectorField(xx[0],xx[1],xx[2],g);
       cout << "Cust. V. Field: " <<  setw(20) << g[0] << setw(20) << g[1] 
                                  << setw(20) << g[2] << endl;
    }
    return;
 }
-void GaussWaveFunction::writeAllFieldProperties(double x,double y,double z,ofstream &ofil) {
+void GaussWaveFunction::WriteAllFieldProperties(double x,double y,double z,ofstream &ofil) {
    static double rho,lol,xx[3],g[3],hess[3][3];
    static double eivec[3][3],eival[3];
    xx[0]=x;
    xx[1]=y;
    xx[2]=z;
-   evalRhoGradRho(x,y,z,rho,g);
-   evalHessian(xx[0],xx[1],xx[2],hess);
+   EvalRhoGradRho(x,y,z,rho,g);
+   EvalHessian(xx[0],xx[1],xx[2],hess);
    EigenDecompositionJAMA::EigenDecomposition3(hess, eivec, eival);
    ofil << scientific << setprecision(12);
    ofil << "  R:           " << setw(20) << x << setw(20) << y << setw(20) << z << endl;
@@ -517,7 +513,7 @@ void GaussWaveFunction::writeAllFieldProperties(double x,double y,double z,ofstr
                              << setw(20) << eivec[2][2] << endl;
    ofil << "  Ellipticity: " << setw(20) << ((eival[0]/eival[1])-1.0e0) << endl;
    ofil << "  LapRho:      " << setw(20) << (hess[0][0]+hess[1][1]+hess[2][2]) << endl;
-   evalHessLOL(xx,lol,g,hess);//(x,lol,gl,hl)
+   EvalHessLOL(xx,lol,g,hess);//(x,lol,gl,hl)
    EigenDecompositionJAMA::EigenDecomposition3(hess, eivec, eival);
    ofil << "  LOL:         " << setw(20) << lol << endl;
    ofil << "  gradLOL:     " << setw(20) << g[0] << setw(20) << g[1] << setw(20) << g[2] << endl;
@@ -536,29 +532,29 @@ void GaussWaveFunction::writeAllFieldProperties(double x,double y,double z,ofstr
                              << setw(20) << eivec[2][1] << endl;
    ofil << "               " << setw(20) << eivec[0][2] << setw(20) << eivec[1][2]
                              << setw(20) << eivec[2][2] << endl;
-   ofil << "  ELF:         " << setw(20) << evalELF(x,y,z) << endl;
-   ofil << "  K.E. G.:     " << setw(20) << evalKineticEnergyG(x,y,z) << endl;
-   ofil << "  K.E. K.:     " << setw(20) << evalKineticEnergyK(x,y,z) << endl;
-   ofil << "  Shann. Ent.: " << setw(20) << evalShannonEntropy(x,y,z) << endl;
-   ofil << "  Elect. Pot.: " << setw(20) << evalMolElecPot(x,y,z) << endl;
-   evalLED(xx,g);
+   ofil << "  ELF:         " << setw(20) << EvalELF(x,y,z) << endl;
+   ofil << "  K.E. G.:     " << setw(20) << EvalKineticEnergyG(x,y,z) << endl;
+   ofil << "  K.E. K.:     " << setw(20) << EvalKineticEnergyK(x,y,z) << endl;
+   ofil << "  Shann. Ent.: " << setw(20) << EvalShannonEntropy(x,y,z) << endl;
+   ofil << "  Elect. Pot.: " << setw(20) << EvalMolElecPot(x,y,z) << endl;
+   EvalLED(xx,g);
    ofil << "  LED:         " << setw(20) << g[0] << setw(20) << g[1] << setw(20) << g[2] << endl;
    ofil << "  |LED|:       " << setw(20) << sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]) << endl;
-   ofil << "  RedDensGrad: " << setw(20) << evalReducedDensityGradient(x,y,z) << endl;
-   ofil << "  RoSE:        " << setw(20) << evalRoSE(x,y,z) << endl;
-   ofil << "  V.P.E.D.:    " << setw(20) << evalVirialPotentialEnergyDensity(x,y,z) << endl;
+   ofil << "  RedDensGrad: " << setw(20) << EvalReducedDensityGradient(x,y,z) << endl;
+   ofil << "  RoSE:        " << setw(20) << EvalRoSE(x,y,z) << endl;
+   ofil << "  V.P.E.D.:    " << setw(20) << EvalVirialPotentialEnergyDensity(x,y,z) << endl;
    if ( usescustfld ) {
-      ofil << "Cust. S. Field: " << setw(20) << evalCustomScalarField(xx[0],xx[1],xx[2]) << endl;
+      ofil << "Cust. S. Field: " << setw(20) << EvalCustomScalarField(xx[0],xx[1],xx[2]) << endl;
    }
    if ( usevcustfld ) {
-      evalCustomVectorField(xx[0],xx[1],xx[2],g);
+      EvalCustomVectorField(xx[0],xx[1],xx[2],g);
       ofil << "Cust. V. Field: " <<  setw(20) << g[0] << setw(20) << g[1] 
                                  << setw(20) << g[2] << endl;
    }
 return;
 }
 /*
-double GaussWaveFunction::evalPrimCases(int &pty, double &alp, double x, double y, double z) {
+double GaussWaveFunction::EvalPrimCases(int &pty, double &alp, double x, double y, double z) {
    double xx,yy,zz,rr,pv;
    xx=x*x;
    yy=y*y;
@@ -649,11 +645,11 @@ double GaussWaveFunction::evalPrimCases(int &pty, double &alp, double x, double 
 /* Preliminary tests indicate that, surprisingly, the case choosing is slightly
  * slower (around 1-2%) than the brute for(...) {pv*=x_i;}. Tested with phenantrene and 
  * f2.g09.wfn  */
-double GaussWaveFunction::evalAngACases(int &pty, double x, double y, double z) {
+double GaussWaveFunction::EvalAngACases(int &pty, double x, double y, double z) {
    double pv=1.00000000e0;
    //*
    int a[3];
-   getAng(pty,a);
+   GetAng(pty,a);
    for ( int i=0 ; i<a[0] ; ++i ) { pv*=x; }
    for ( int i=0 ; i<a[1] ; ++i ) { pv*=y; }
    for ( int i=0 ; i<a[2] ; ++i ) { pv*=z; }
@@ -747,7 +743,7 @@ double GaussWaveFunction::evalAngACases(int &pty, double x, double y, double z) 
       case 34 :
       case 35 :
          int a[3];
-         getAng(pty,a);
+         GetAng(pty,a);
          for ( int i=0 ; i<a[0] ; ++i ) { pv*=x; }
          for ( int i=0 ; i<a[1] ; ++i ) { pv*=y; }
          for ( int i=0 ; i<a[2] ; ++i ) { pv*=z; }
@@ -759,7 +755,7 @@ double GaussWaveFunction::evalAngACases(int &pty, double x, double y, double z) 
    // */
    return pv;
 }
-void GaussWaveFunction::calcCab(void) {
+void GaussWaveFunction::CalcCab(void) {
    int idx,indc;
    idx=0;
    if (nPri>MAXNUMBEROFPRIMITIVESFORMEMALLOC) {
@@ -788,7 +784,7 @@ void GaussWaveFunction::calcCab(void) {
    return;
 }
 #if PARALLELISEDTK
-double GaussWaveFunction::evalDensity(double x,double y,double z) {
+double GaussWaveFunction::EvalDensity(double x,double y,double z) {
    int indr,indp;
    double xmr,ymr,zmr,rho,chib;
    rho=0.000000e0;
@@ -801,7 +797,7 @@ double GaussWaveFunction::evalDensity(double x,double y,double z) {
       zmr=z-R[indr++];
       rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
       for (int j=0; j<myPN[i]; j++) {
-         chi[indp]=evalAngACases(primType[indp],xmr,ymr,zmr);
+         chi[indp]=EvalAngACases(primType[indp],xmr,ymr,zmr);
          chi[indp]*=exp(primExp[indp]*rr);
          indp++;
       }
@@ -824,7 +820,7 @@ firstprivate(j) lastprivate(i) reduction(+: rho)
    return rho;
 }
 #else
-double GaussWaveFunction::evalDensity(double x,double y,double z) {
+double GaussWaveFunction::EvalDensity(double x,double y,double z) {
    int indr,indp;
    double xmr,ymr,zmr,rho,chib;
    rho=0.000000e0;
@@ -837,7 +833,7 @@ double GaussWaveFunction::evalDensity(double x,double y,double z) {
       zmr=z-R[indr++];
       rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
       for (int j=0; j<myPN[i]; j++) {
-         chi[indp]=evalAngACases(primType[indp],xmr,ymr,zmr);
+         chi[indp]=EvalAngACases(primType[indp],xmr,ymr,zmr);
          chi[indp]*=exp(primExp[indp]*rr);
          indp++;
       }
@@ -879,7 +875,7 @@ double GaussWaveFunction::evalDensity(double x,double y,double z) {
          zmr=z-R[indr+2];
          rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
          //cout << "pc: " << primCent[i] << ", rr: " << rr << endl;
-         chi[i]=evalAngACases(primType[i],xmr,ymr,zmr);
+         chi[i]=EvalAngACases(primType[i],xmr,ymr,zmr);
          chi[i]*=exp(primExp[i]*rr);
       }
       chib=0.0e0;
@@ -892,7 +888,7 @@ double GaussWaveFunction::evalDensity(double x,double y,double z) {
    return rho;
 }
 #endif
-double GaussWaveFunction::evalOptimizedScalar(double px,double py,double pz) {
+double GaussWaveFunction::EvalOptimizedScalar(double px,double py,double pz) {
    int indr,indp,ppt;
    double rhop,Rx[3],alp;
    complex<double> chit,chiu;
@@ -905,7 +901,7 @@ double GaussWaveFunction::evalOptimizedScalar(double px,double py,double pz) {
       for (int j=0; j<myPN[i]; j++) {
          ppt=primType[indp];
          alp=primExp[indp];
-         evalFTChi(ppt,alp,Rx,px,py,pz,chit);
+         EvalFTChi(ppt,alp,Rx,px,py,pz,chit);
          chi[indp]=chit.real();
          gx[indp]=chit.imag();
          indp++;
@@ -949,7 +945,7 @@ double GaussWaveFunction::evalOptimizedScalar(double px,double py,double pz) {
          Rx[2]=R[indr+2];
          ppt=primType[i];
          alp=0.5e0*primExp[i];
-         evalFTChi(ppt,alp,Rx,px,py,pz,chit);
+         EvalFTChi(ppt,alp,Rx,px,py,pz,chit);
          chi[i]=chit.real();
          gx[i]=chit.imag();
       }
@@ -962,7 +958,7 @@ double GaussWaveFunction::evalOptimizedScalar(double px,double py,double pz) {
    return rhop;
 }
 #if PARALLELISEDTK
-void GaussWaveFunction::evalRhoGradRho(double x, double y, double z,double &rho, double &dx, double &dy, double &dz) {
+void GaussWaveFunction::EvalRhoGradRho(double x, double y, double z,double &rho, double &dx, double &dy, double &dz) {
    double nabx,naby,nabz,xmr,ymr,zmr,trho,cc,rr,alp,chib;
    int indp,indr,ppt;
    indp=0;
@@ -976,9 +972,9 @@ void GaussWaveFunction::evalRhoGradRho(double x, double y, double z,double &rho,
          ppt=primType[indp];
          alp=primExp[indp];
          cc=exp(alp*rr);
-         chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[indp]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[indp]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
          gx[indp]*=cc;
          gy[indp]*=cc;
          gz[indp]*=cc;
@@ -1010,7 +1006,7 @@ firstprivate(j) lastprivate(i) reduction(+: trho,nabx,naby,nabz)
    return;
 }
 #else
-void GaussWaveFunction::evalRhoGradRho(double x, double y, double z,double &rho, double &dx, double &dy, double &dz) {
+void GaussWaveFunction::EvalRhoGradRho(double x, double y, double z,double &rho, double &dx, double &dy, double &dz) {
    double nabx,naby,nabz,xmr,ymr,zmr,trho,cc,rr,alp,chib;
    int indp,indr,ppt;
    indp=0;
@@ -1024,9 +1020,9 @@ void GaussWaveFunction::evalRhoGradRho(double x, double y, double z,double &rho,
          ppt=primType[indp];
          alp=primExp[indp];
          cc=exp(alp*rr);
-         chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[indp]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[indp]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
          gx[indp]*=cc;
          gy[indp]*=cc;
          gz[indp]*=cc;
@@ -1087,9 +1083,9 @@ void GaussWaveFunction::evalRhoGradRho(double x, double y, double z,double &rho,
          ppt=primType[i];
          alp=primExp[i];
          cc=exp(alp*rr);
-         chi[i]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[i]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[i]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[i],gy[i],gz[i]);
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[i],gy[i],gz[i]);
          gx[i]*=cc;
          gy[i]*=cc;
          gz[i]*=cc;
@@ -1116,7 +1112,7 @@ void GaussWaveFunction::evalRhoGradRho(double x, double y, double z,double &rho,
    return;
 }
 #endif
-void GaussWaveFunction::evalOptimizedVectorScalar(double x, double y, double z,double &rho, double &dx, double &dy, double &dz) {
+void GaussWaveFunction::EvalOptimizedVectorScalar(double x, double y, double z,double &rho, double &dx, double &dy, double &dz) {
    double nabx,naby,nabz,xmr,ymr,zmr,trho,cc,rr,alp,chib;
    int indp,indr,ppt;
    indp=0;
@@ -1130,9 +1126,9 @@ void GaussWaveFunction::evalOptimizedVectorScalar(double x, double y, double z,d
          ppt=primType[indp];
          alp=primExp[indp];
          cc=exp(alp*rr);
-         chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[indp]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[indp]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
          gx[indp]*=cc;
          gy[indp]*=cc;
          gz[indp]*=cc;
@@ -1175,9 +1171,9 @@ void GaussWaveFunction::evalOptimizedVectorScalar(double x, double y, double z,d
          ppt=primType[i];
          alp=primExp[i];
          cc=exp(alp*rr);
-         chi[i]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[i]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[i]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[i],gy[i],gz[i]);
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[i],gy[i],gz[i]);
          gx[i]*=cc;
          gy[i]*=cc;
          gz[i]*=cc;
@@ -1203,7 +1199,7 @@ void GaussWaveFunction::evalOptimizedVectorScalar(double x, double y, double z,d
    }
    return;
 }
-bool GaussWaveFunction::allocAuxArrays(void) {
+bool GaussWaveFunction::AllocAuxArrays(void) {
    bool allgood;
    allgood=MyMemory::Alloc1DRealArray("chi",totPri,chi);
    if (!allgood) {
@@ -1257,7 +1253,7 @@ bool GaussWaveFunction::allocAuxArrays(void) {
    }
    return allgood;
 }
-bool GaussWaveFunction::allocAuxMEPArray(void) {
+bool GaussWaveFunction::AllocAuxMEPArray(void) {
    if ( !imldd ) {
       ScreenUtils::DisplayErrorMessage("First load the gausswave function!");
       return false;
@@ -1309,9 +1305,9 @@ bool GaussWaveFunction::allocAuxMEPArray(void) {
    }
    return allgood;
 }
-void GaussWaveFunction::evalDkAngCases(int &pty,double alp,double x, double y, double z, double &anx, double &any, double &anz) {
+void GaussWaveFunction::EvalDkAngCases(int &pty,double alp,double x, double y, double z, double &anx, double &any, double &anz) {
    double cc=(-2.0000000e0*alp);
-   /* As opposed to the case of evalAngACases, tests indicate that a combination
+   /* As opposed to the case of EvalAngACases, tests indicate that a combination
       of cases-choose for small angular momentum, and the generic algorithm for
       large angular exponent is the fastets choice.  */
    switch (pty) {
@@ -1434,11 +1430,11 @@ void GaussWaveFunction::evalDkAngCases(int &pty,double alp,double x, double y, d
       default:
          {
             int a[3];
-            getAng(pty,a);
+            GetAng(pty,a);
             double tmpx,tmpy,tmpz;
-            evald1SingCartA(a[0],cc,x,tmpx,anx);
-            evald1SingCartA(a[1],cc,y,tmpy,any);
-            evald1SingCartA(a[2],cc,z,tmpz,anz);
+            Evald1SingCartA(a[0],cc,x,tmpx,anx);
+            Evald1SingCartA(a[1],cc,y,tmpy,any);
+            Evald1SingCartA(a[2],cc,z,tmpz,anz);
             anx*=(tmpy*tmpz);
             any*=(tmpx*tmpz);
             anz*=(tmpx*tmpy);
@@ -1447,22 +1443,22 @@ void GaussWaveFunction::evalDkAngCases(int &pty,double alp,double x, double y, d
    }
    return;
 }
-/* Some loop tests shows that using directly evald2SingCartA (as opposed to
-   use cases) for evalDkDlAngCases is slightly faster (~0.5-1.0%).
+/* Some loop tests shows that using directly Evald2SingCartA (as opposed to
+   use cases) for EvalDkDlAngCases is slightly faster (~0.5-1.0%).
    For the time being, JMSA does not advise to remove old code, since
    this is thoroughly tested (numerically), thus it is reliable.
-   So far, evald2SingCartA reproduces without fault values at single
+   So far, Evald2SingCartA reproduces without fault values at single
    points.  */
-void GaussWaveFunction::evalDkDlAngCases(int &pty,double alp,double x,double y,double z,
+void GaussWaveFunction::EvalDkDlAngCases(int &pty,double alp,double x,double y,double z,
       double &axx,double &ayy,double &azz,double &axy,double &axz,double &ayz) {
    double ta=(-2.00000e0*alp);
    //*
    int a[3];
-   getAng(pty,a);
+   GetAng(pty,a);
    double d0x,d0y,d0z,d1x,d2x,d1y,d2y,d1z,d2z;
-   evald2SingCartA(a[0],ta,x,d0x,d1x,d2x);
-   evald2SingCartA(a[1],ta,y,d0y,d1y,d2y);
-   evald2SingCartA(a[2],ta,z,d0z,d1z,d2z);
+   Evald2SingCartA(a[0],ta,x,d0x,d1x,d2x);
+   Evald2SingCartA(a[1],ta,y,d0y,d1y,d2y);
+   Evald2SingCartA(a[2],ta,z,d0z,d1z,d2z);
    axx=d2x*d0y*d0z;
    ayy=d0x*d2y*d0z;
    azz=d0x*d0y*d2z;
@@ -1640,11 +1636,11 @@ void GaussWaveFunction::evalDkDlAngCases(int &pty,double alp,double x,double y,d
       default:
          {
             int a[3];
-            getAng(pty,a);
+            GetAng(pty,a);
             double d0x,d0y,d0z,d1x,d2x,d1y,d2y,d1z,d2z;
-            evald2SingCartA(a[0],ta,x,d0x,d1x,d2x);
-            evald2SingCartA(a[1],ta,y,d0y,d1y,d2y);
-            evald2SingCartA(a[2],ta,z,d0z,d1z,d2z);
+            Evald2SingCartA(a[0],ta,x,d0x,d1x,d2x);
+            Evald2SingCartA(a[1],ta,y,d0y,d1y,d2y);
+            Evald2SingCartA(a[2],ta,z,d0z,d1z,d2z);
             axx=d2x*d0y*d0z;
             ayy=d0x*d2y*d0z;
             azz=d0x*d0y*d2z;
@@ -1658,7 +1654,7 @@ void GaussWaveFunction::evalDkDlAngCases(int &pty,double alp,double x,double y,d
    return;
 }
 #if PARALLELISEDTK
-void GaussWaveFunction::evalHessian(double x, double y, double z,
+void GaussWaveFunction::EvalHessian(double x, double y, double z,
                                 double &dxx, double &dyy, double &dzz,
                                 double &dxy, double &dxz, double &dyz) {
    double nabxx,nabyy,nabzz,nabxy,nabxz,nabyz,xmr,ymr,zmr,cc,rr,alp,chii,gxi,gyi,gzi;
@@ -1675,14 +1671,14 @@ void GaussWaveFunction::evalHessian(double x, double y, double z,
          ppt=primType[indp];
          alp=primExp[indp];
          cc=exp(alp*rr);
-         chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[indp]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[indp]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,
                         gx[indp],gy[indp],gz[indp]);
          gx[indp]*=cc;
          gy[indp]*=cc;
          gz[indp]*=cc;
-         evalDkDlAngCases(ppt,alp,xmr,ymr,zmr,
+         EvalDkDlAngCases(ppt,alp,xmr,ymr,zmr,
                           hxx[indp],hyy[indp],hzz[indp],
                           hxy[indp],hxz[indp],hyz[indp]);
          hxx[indp]*=cc;
@@ -1731,7 +1727,7 @@ firstprivate(j) lastprivate(i) reduction(+: nabxx,nabyy,nabzz,nabxy,nabxz,nabyz)
    return;
 }
 #else
-void GaussWaveFunction::evalHessian(double x, double y, double z,
+void GaussWaveFunction::EvalHessian(double x, double y, double z,
                                 double &dxx, double &dyy, double &dzz,
                                 double &dxy, double &dxz, double &dyz) {
    double nabxx,nabyy,nabzz,nabxy,nabxz,nabyz,xmr,ymr,zmr,cc,rr,alp,chii,gxi,gyi,gzi;
@@ -1748,14 +1744,14 @@ void GaussWaveFunction::evalHessian(double x, double y, double z,
          ppt=primType[indp];
          alp=primExp[indp];
          cc=exp(alp*rr);
-         chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[indp]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[indp]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,
                         gx[indp],gy[indp],gz[indp]);
          gx[indp]*=cc;
          gy[indp]*=cc;
          gz[indp]*=cc;
-         evalDkDlAngCases(ppt,alp,xmr,ymr,zmr,
+         EvalDkDlAngCases(ppt,alp,xmr,ymr,zmr,
                           hxx[indp],hyy[indp],hzz[indp],
                           hxy[indp],hxz[indp],hyz[indp]);
          hxx[indp]*=cc;
@@ -1806,14 +1802,14 @@ void GaussWaveFunction::evalHessian(double x, double y, double z,
          ppt=primType[i];
          alp=primExp[i];
          cc=exp(alp*rr);
-         chi[i]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[i]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[i]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,
                         gx[i],gy[i],gz[i]);
          gx[i]*=cc;
          gy[i]*=cc;
          gz[i]*=cc;
-         evalDkDlAngCases(ppt,alp,xmr,ymr,zmr,
+         EvalDkDlAngCases(ppt,alp,xmr,ymr,zmr,
                           hxx[i],hyy[i],hzz[i],
                           hxy[i],hxz[i],hyz[i]);
          hxx[i]*=cc;
@@ -1849,7 +1845,7 @@ void GaussWaveFunction::evalHessian(double x, double y, double z,
 return;
 }
 #endif
-double GaussWaveFunction::evalLapAngCases(int &pty,double alp,double x,double y,double z,double rr) {
+double GaussWaveFunction::EvalLapAngCases(int &pty,double alp,double x,double y,double z,double rr) {
    double ta,fr;
    ta=(-2.00000e0*alp);
    fr=ta*ta;
@@ -1918,11 +1914,11 @@ double GaussWaveFunction::evalLapAngCases(int &pty,double alp,double x,double y,
       default:
          {
             int a[3];
-            getAng(pty,a);
+            GetAng(pty,a);
             double d0x,d0y,d0z,d1x,d2x,d1y,d2y,d1z,d2z;
-            evald2SingCartA(a[0],ta,x,d0x,d1x,d2x);
-            evald2SingCartA(a[1],ta,y,d0y,d1y,d2y);
-            evald2SingCartA(a[2],ta,z,d0z,d1z,d2z);
+            Evald2SingCartA(a[0],ta,x,d0x,d1x,d2x);
+            Evald2SingCartA(a[1],ta,y,d0y,d1y,d2y);
+            Evald2SingCartA(a[2],ta,z,d0z,d1z,d2z);
             return (d2x*d0y*d0z+d0x*d2y*d0z+d0x*d0y*d2z);
          }
          break;
@@ -1930,7 +1926,7 @@ double GaussWaveFunction::evalLapAngCases(int &pty,double alp,double x,double y,
    return 0.00000e0;
 }
 #if PARALLELISEDTK
-double GaussWaveFunction::evalLapRho(double x, double y, double z) {
+double GaussWaveFunction::EvalLapRho(double x, double y, double z) {
    double lap,xmr,ymr,zmr,cc,rr,alp;
    double sxx,gxs,gys,gzs;
    int indp,indr,ppt;
@@ -1945,11 +1941,11 @@ double GaussWaveFunction::evalLapRho(double x, double y, double z) {
          ppt=primType[indp];
          alp=primExp[indp];
          cc=exp(-alp*rr);
-         chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[indp]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[indp]*=cc;
-         hxx[indp]=evalLapAngCases(ppt,alp,xmr,ymr,zmr,rr);
+         hxx[indp]=EvalLapAngCases(ppt,alp,xmr,ymr,zmr,rr);
          hxx[indp]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,
                         gx[indp],gy[indp],gz[indp]);
          gx[indp]*=cc;
          gy[indp]*=cc;
@@ -1988,7 +1984,7 @@ firstprivate(k) lastprivate(i) reduction(+: lap)
    return (2.00000e0*lap);
 }
 #else
-double GaussWaveFunction::evalLapRho(double x, double y, double z) {
+double GaussWaveFunction::EvalLapRho(double x, double y, double z) {
    double lap,xmr,ymr,zmr,cc,rr,alp;
    double sxx,gxs,gys,gzs;
    int indp,indr,ppt;
@@ -2003,11 +1999,11 @@ double GaussWaveFunction::evalLapRho(double x, double y, double z) {
          ppt=primType[indp];
          alp=primExp[indp];
          cc=exp(-alp*rr);
-         chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[indp]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[indp]*=cc;
-         hxx[indp]=evalLapAngCases(ppt,alp,xmr,ymr,zmr,rr);
+         hxx[indp]=EvalLapAngCases(ppt,alp,xmr,ymr,zmr,rr);
          hxx[indp]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,
                         gx[indp],gy[indp],gz[indp]);
          gx[indp]*=cc;
          gy[indp]*=cc;
@@ -2050,11 +2046,11 @@ double GaussWaveFunction::evalLapRho(double x, double y, double z) {
          ppt=primType[i];
          alp=primExp[i];
          cc=exp(-alp*rr);
-         chi[i]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[i]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[i]*=cc;
-         hxx[i]=evalLapAngCases(ppt,alp,xmr,ymr,zmr,rr);
+         hxx[i]=EvalLapAngCases(ppt,alp,xmr,ymr,zmr,rr);
          hxx[i]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,
                         gx[i],gy[i],gz[i]);
          gx[i]*=cc;
          gy[i]*=cc;
@@ -2076,16 +2072,16 @@ double GaussWaveFunction::evalLapRho(double x, double y, double z) {
    return (2.00000e0*lap);
 }
 #endif
-void GaussWaveFunction::seekBondCP(int ii,int jj,double &r1,double &r2,double &r3,double &gx,double &gy,double &gz) {
+void GaussWaveFunction::SeekBondCP(int ii,int jj,double &r1,double &r2,double &r3,double &gx,double &gy,double &gz) {
    double x[3],delta[3],g[3];
    for (int i=0; i<3; i++) {x[i]=0.500000e0*(R[3*ii+i]+R[3*jj+i]);}
-   getBondCPStep(x,delta,g);
+   GetBondCPStep(x,delta,g);
    double magd=sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]);;
    double magh=magd;
    int count=0;
    while (((magd>EPSGRADMAG)&&(magh>EPSGRADMAG))&&(count<MAXITERATIONBCPSEARCH)){
       for (int i=0; i<3; i++) {x[i]+=delta[i];}
-      getBondCPStep(x,delta,g);
+      GetBondCPStep(x,delta,g);
       magd=sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]);
       count++;
    }
@@ -2103,14 +2099,14 @@ void GaussWaveFunction::seekBondCP(int ii,int jj,double &r1,double &r2,double &r
    gz=g[2];
    return;
 }
-void GaussWaveFunction::evalHessian(double x, double y, double z,double (&h)[3][3]) {
-   evalHessian(x,y,z,h[0][0],h[1][1],h[2][2],h[0][1],h[0][2],h[1][2]);
+void GaussWaveFunction::EvalHessian(double x, double y, double z,double (&h)[3][3]) {
+   EvalHessian(x,y,z,h[0][0],h[1][1],h[2][2],h[0][1],h[0][2],h[1][2]);
    h[1][0]=h[0][1];
    h[2][0]=h[0][2];
    h[2][1]=h[1][2];
    return;
 }
-void GaussWaveFunction::evalHessian(double x, double y, double z,double &dens,double (&g)[3],double (&h)[3][3]) {
+void GaussWaveFunction::EvalHessian(double x, double y, double z,double &dens,double (&g)[3],double (&h)[3][3]) {
    double nabxx,nabyy,nabzz,nabxy,nabxz,nabyz,xmr,ymr,zmr,cc,rr,alp,
    chii,gxi,gyi,gzi,rho,delx,dely,delz;
    double sxx,syy,szz,sxy,sxz,syz,gxs,gys,gzs;
@@ -2126,14 +2122,14 @@ void GaussWaveFunction::evalHessian(double x, double y, double z,double &dens,do
          ppt=primType[indp];
          alp=primExp[indp];
          cc=exp(alp*rr);
-         chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[indp]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[indp]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,
                         gx[indp],gy[indp],gz[indp]);
          gx[indp]*=cc;
          gy[indp]*=cc;
          gz[indp]*=cc;
-         evalDkDlAngCases(ppt,alp,xmr,ymr,zmr,
+         EvalDkDlAngCases(ppt,alp,xmr,ymr,zmr,
                           hxx[indp],hyy[indp],hzz[indp],
                           hxy[indp],hxz[indp],hyz[indp]);
          hxx[indp]*=cc;
@@ -2250,14 +2246,14 @@ void GaussWaveFunction::evalHessian(double x, double y, double z,double &dens,do
          ppt=primType[i];
          alp=primExp[i];
          cc=exp(alp*rr);
-         chi[i]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[i]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[i]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,
                         gx[i],gy[i],gz[i]);
          gx[i]*=cc;
          gy[i]*=cc;
          gz[i]*=cc;
-         evalDkDlAngCases(ppt,alp,xmr,ymr,zmr,
+         EvalDkDlAngCases(ppt,alp,xmr,ymr,zmr,
                           hxx[i],hyy[i],hzz[i],
                           hxy[i],hxz[i],hyz[i]);
          hxx[i]*=cc;
@@ -2299,7 +2295,7 @@ void GaussWaveFunction::evalHessian(double x, double y, double z,double &dens,do
    h[2][1]=h[1][2];
    return;
 }
-void GaussWaveFunction::evalOptimizedScalVecHess(double x, double y, double z,double &dens,double (&g)[3],double (&h)[3][3]) {
+void GaussWaveFunction::EvalOptimizedScalVecHess(double x, double y, double z,double &dens,double (&g)[3],double (&h)[3][3]) {
    double nabxx,nabyy,nabzz,nabxy,nabxz,nabyz,xmr,ymr,zmr,cc,rr,alp,
    chii,gxi,gyi,gzi,rho,delx,dely,delz;
    double sxx,syy,szz,sxy,sxz,syz,gxs,gys,gzs;
@@ -2315,14 +2311,14 @@ void GaussWaveFunction::evalOptimizedScalVecHess(double x, double y, double z,do
          ppt=primType[indp];
          alp=primExp[indp];
          cc=exp(alp*rr);
-         chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[indp]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[indp]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,
                         gx[indp],gy[indp],gz[indp]);
          gx[indp]*=cc;
          gy[indp]*=cc;
          gz[indp]*=cc;
-         evalDkDlAngCases(ppt,alp,xmr,ymr,zmr,
+         EvalDkDlAngCases(ppt,alp,xmr,ymr,zmr,
                           hxx[indp],hyy[indp],hzz[indp],
                           hxy[indp],hxz[indp],hyz[indp]);
          hxx[indp]*=cc;
@@ -2409,14 +2405,14 @@ void GaussWaveFunction::evalOptimizedScalVecHess(double x, double y, double z,do
          ppt=primType[i];
          alp=primExp[i];
          cc=exp(alp*rr);
-         chi[i]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[i]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[i]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,
                         gx[i],gy[i],gz[i]);
          gx[i]*=cc;
          gy[i]*=cc;
          gz[i]*=cc;
-         evalDkDlAngCases(ppt,alp,xmr,ymr,zmr,
+         EvalDkDlAngCases(ppt,alp,xmr,ymr,zmr,
                           hxx[i],hyy[i],hzz[i],
                           hxy[i],hxz[i],hyz[i]);
          hxx[i]*=cc;
@@ -2472,15 +2468,15 @@ void GaussWaveFunction::evalOptimizedScalVecHess(double x, double y, double z,do
    h[2][1]=h[1][2];
    return;
 }
-void GaussWaveFunction::evalRhoGradRho(double x, double y, double z,double &rho, double (&grd)[3]) {
-   evalRhoGradRho(x,y,z,rho,grd[0],grd[1],grd[2]);
+void GaussWaveFunction::EvalRhoGradRho(double x, double y, double z,double &rho, double (&grd)[3]) {
+   EvalRhoGradRho(x,y,z,rho,grd[0],grd[1],grd[2]);
    return;
 }
-void GaussWaveFunction::getBondCPStep(double (&x)[3],double (&hh)[3],double (&g)[3]) {
+void GaussWaveFunction::GetBondCPStep(double (&x)[3],double (&hh)[3],double (&g)[3]) {
    static double hess[3][3],eive[3][3],b[3];
    double rho;
-   evalRhoGradRho(x[0],x[1],x[2],rho,g[0],g[1],g[2]);
-   evalHessian(x[0],x[1],x[2],hess);
+   EvalRhoGradRho(x[0],x[1],x[2],rho,g[0],g[1],g[2]);
+   EvalHessian(x[0],x[1],x[2],hess);
    EigenDecompositionJAMA::EigenDecomposition3(hess, eive, b);
    static double F[3];
    for (int i=0; i<3; i++) {
@@ -2513,11 +2509,11 @@ void GaussWaveFunction::getBondCPStep(double (&x)[3],double (&hh)[3],double (&g)
    }
    return;
 }
-void GaussWaveFunction::getRingCPStep(double (&x)[3],double (&hh)[3],double (&g)[3]) {
+void GaussWaveFunction::GetRingCPStep(double (&x)[3],double (&hh)[3],double (&g)[3]) {
    static double hess[3][3],eive[3][3],b[3];
    double rho;
-   evalRhoGradRho(x[0],x[1],x[2],rho,g[0],g[1],g[2]);
-   evalHessian(x[0],x[1],x[2],hess);
+   EvalRhoGradRho(x[0],x[1],x[2],rho,g[0],g[1],g[2]);
+   EvalHessian(x[0],x[1],x[2],hess);
    EigenDecompositionJAMA::EigenDecomposition3(hess, eive, b);
    static double F[3];
    for (int i=0; i<3; i++) {
@@ -2550,18 +2546,18 @@ void GaussWaveFunction::getRingCPStep(double (&x)[3],double (&hh)[3],double (&g)
    }
    return;
 }
-void GaussWaveFunction::seekRingCP(double &r1,double &r2,double &r3,double &gx,double &gy,double &gz) {
+void GaussWaveFunction::SeekRingCP(double &r1,double &r2,double &r3,double &gx,double &gy,double &gz) {
    double x[3],delta[3],g[3];
    x[0]=r1;
    x[1]=r2;
    x[2]=r3;
-   getRingCPStep(x,delta,g);
+   GetRingCPStep(x,delta,g);
    double magd=sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]);
    double magh=magd;
    int count=0;
    while (((magd>EPSGRADMAG)&&(magh>EPSGRADMAG))&&(count<MAXITERATIONRCPSEARCH)) {
       for (int i=0; i<3; i++) {x[i]+=delta[i];}
-      getRingCPStep(x,delta,g);
+      GetRingCPStep(x,delta,g);
       magd=sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]);
       count++;
    }
@@ -2579,18 +2575,18 @@ void GaussWaveFunction::seekRingCP(double &r1,double &r2,double &r3,double &gx,d
    gz=g[2];
    return;
 }
-void GaussWaveFunction::seekCageCP(double &r1,double &r2,double &r3,double &gx,double &gy,double &gz) {
+void GaussWaveFunction::SeekCageCP(double &r1,double &r2,double &r3,double &gx,double &gy,double &gz) {
    double x[3],delta[3],g[3];
    x[0]=r1;
    x[1]=r2;
    x[2]=r3;
-   getCageCPStep(x,delta,g);
+   GetCageCPStep(x,delta,g);
    double magd=sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]);
    double magh=magd;
    int count=0;
    while (((magd>EPSGRADMAG)&&(magh>EPSGRADMAG))&&(count<MAXITERATIONCCPSEARCH)) {
       for (int i=0; i<3; i++) {x[i]+=delta[i];}
-      getCageCPStep(x,delta,g);
+      GetCageCPStep(x,delta,g);
       magd=sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]);
       count++;
    }
@@ -2608,11 +2604,11 @@ void GaussWaveFunction::seekCageCP(double &r1,double &r2,double &r3,double &gx,d
    gz=g[2];
    return;
 }
-void GaussWaveFunction::getCageCPStep(double (&x)[3],double (&hh)[3],double (&g)[3]) {
+void GaussWaveFunction::GetCageCPStep(double (&x)[3],double (&hh)[3],double (&g)[3]) {
    static double hess[3][3],eive[3][3],b[3];
    double rho;
-   evalRhoGradRho(x[0],x[1],x[2],rho,g[0],g[1],g[2]);
-   evalHessian(x[0],x[1],x[2],hess);
+   EvalRhoGradRho(x[0],x[1],x[2],rho,g[0],g[1],g[2]);
+   EvalHessian(x[0],x[1],x[2],hess);
    EigenDecompositionJAMA::EigenDecomposition3(hess, eive, b);
    static double F[3];
    for (int i=0; i<3; i++) {
@@ -2652,7 +2648,7 @@ void GaussWaveFunction::getCageCPStep(double (&x)[3],double (&hh)[3],double (&g)
    return;
 }
 #if PARALLELISEDTK
-double GaussWaveFunction::evalELF(double x,double y,double z) {
+double GaussWaveFunction::EvalELF(double x,double y,double z) {
    static const double mto3=-10.0e0/3.0e0;
    static const double ooferm2=0.121300564999911e0;
    static const double eps=EPSFORELFVALUE;
@@ -2669,9 +2665,9 @@ double GaussWaveFunction::evalELF(double x,double y,double z) {
          ppt=primType[indp];
          alp=primExp[indp];
          cc=exp(alp*rr);
-         chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[indp]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[indp]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
          gx[indp]*=cc;
          gy[indp]*=cc;
          gz[indp]*=cc;
@@ -2715,7 +2711,7 @@ firstprivate(j) lastprivate(i) reduction(+: rho,kej,nabx,naby,nabz)
    return 1.0e0/(1.0e0+nabx);
 }
 #else
-double GaussWaveFunction::evalELF(double x,double y,double z) {
+double GaussWaveFunction::EvalELF(double x,double y,double z) {
    static const double mto3=-10.0e0/3.0e0;
    static const double ooferm2=0.121300564999911e0;
    static const double eps=EPSFORELFVALUE;
@@ -2732,9 +2728,9 @@ double GaussWaveFunction::evalELF(double x,double y,double z) {
          ppt=primType[indp];
          alp=primExp[indp];
          cc=exp(alp*rr);
-         chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[indp]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[indp]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
          gx[indp]*=cc;
          gy[indp]*=cc;
          gz[indp]*=cc;
@@ -2775,9 +2771,9 @@ double GaussWaveFunction::evalELF(double x,double y,double z) {
          ppt=primType[i];
          alp=primExp[i];
          cc=exp(alp*rr);
-         chi[i]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[i]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[i]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[i],gy[i],gz[i]);
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[i],gy[i],gz[i]);
          gx[i]*=cc;
          gy[i]*=cc;
          gz[i]*=cc;
@@ -2818,28 +2814,28 @@ double GaussWaveFunction::evalELF(double x,double y,double z) {
    return 1.0e0/(1.0e0+dodh);
 }
 #endif
-double GaussWaveFunction::evalShannonEntropy(double x,double y,double z) {
-   double rho=evalDensity(x,y,z);
+double GaussWaveFunction::EvalShannonEntropy(double x,double y,double z) {
+   double rho=EvalDensity(x,y,z);
    return (-rho*log(rho));
 }
-double GaussWaveFunction::evalMomentumShannonEntropy(double px,double py,double pz) {
-   double ppi=evalFTDensity(px,py,pz);
+double GaussWaveFunction::EvalMomentumShannonEntropy(double px,double py,double pz) {
+   double ppi=EvalFTDensity(px,py,pz);
    return (-ppi*log(ppi));
 }
-double GaussWaveFunction::evalMagGradRho(double x,double y,double z) {
+double GaussWaveFunction::EvalMagGradRho(double x,double y,double z) {
    double gx,gy,gz,rho;
-   evalRhoGradRho(x,y,z,rho,gx,gy,gz);
+   EvalRhoGradRho(x,y,z,rho,gx,gy,gz);
    rho=gx*gx+gy*gy+gz*gz;
    return sqrt(rho);
 }
-double GaussWaveFunction::evalMagGradLOL(double x,double y,double z) {
+double GaussWaveFunction::EvalMagGradLOL(double x,double y,double z) {
    double lol,xx[3],gl[3],hl[3][3];
    xx[0]=x; xx[1]=y; xx[2]=z;
-   evalHessLOL(xx,lol,gl,hl);
+   EvalHessLOL(xx,lol,gl,hl);
    return sqrt(gl[0]*gl[0]+gl[1]*gl[1]+gl[2]*gl[2]);
 }
 #if PARALLELISEDTK
-double GaussWaveFunction::evalLOL(double x,double y,double z) {
+double GaussWaveFunction::EvalLOL(double x,double y,double z) {
    static const double fo3=5.0e0/3.0e0;
    static const double tferm=5.742468000376382e0;
    static const double eps=EPSFORLOLVALUE;
@@ -2856,9 +2852,9 @@ double GaussWaveFunction::evalLOL(double x,double y,double z) {
          ppt=primType[indp];
          alp=primExp[indp];
          cc=exp(alp*rr);
-         chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[indp]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[indp]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
          gx[indp]*=cc;
          gy[indp]*=cc;
          gz[indp]*=cc;
@@ -2895,7 +2891,7 @@ firstprivate(j) lastprivate(i) reduction(+: kej,rho)
    return tau/(1.0e0+tau);
 }
 #else
-double GaussWaveFunction::evalLOL(double x,double y,double z) {
+double GaussWaveFunction::EvalLOL(double x,double y,double z) {
    static const double fo3=5.0e0/3.0e0;
    static const double tferm=5.742468000376382e0;
    static const double eps=EPSFORLOLVALUE;
@@ -2912,9 +2908,9 @@ double GaussWaveFunction::evalLOL(double x,double y,double z) {
          ppt=primType[indp];
          alp=primExp[indp];
          cc=exp(alp*rr);
-         chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[indp]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[indp]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
          gx[indp]*=cc;
          gy[indp]*=cc;
          gz[indp]*=cc;
@@ -2952,9 +2948,9 @@ double GaussWaveFunction::evalLOL(double x,double y,double z) {
          ppt=primType[i];
          alp=primExp[i];
          cc=exp(alp*rr);
-         chi[i]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[i]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[i]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[i],gy[i],gz[i]);
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[i],gy[i],gz[i]);
          gx[i]*=cc;
          gy[i]*=cc;
          gz[i]*=cc;
@@ -2986,7 +2982,7 @@ double GaussWaveFunction::evalLOL(double x,double y,double z) {
 #endif
 //end if PARALLELISEDTK
 #if PARALLELISEDTK
-double GaussWaveFunction::evalKineticEnergyG(double x, double y, double z) {
+double GaussWaveFunction::EvalKineticEnergyG(double x, double y, double z) {
    double nabx,naby,nabz,xmr,ymr,zmr,cc,rr,alp;
    int indp,indr,ppt;
    indp=0;
@@ -3000,9 +2996,9 @@ double GaussWaveFunction::evalKineticEnergyG(double x, double y, double z) {
          ppt=primType[indp];
          alp=primExp[indp];
          cc=exp(alp*rr);
-         //chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         //chi[indp]=EvalAngACases(ppt,xmr,ymr,zmr);
          //chi[indp]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
          gx[indp]*=cc;
          gy[indp]*=cc;
          gz[indp]*=cc;
@@ -3039,7 +3035,7 @@ firstprivate(j) lastprivate(i) reduction(+: nabx,naby,nabz)
    return gxj;
 }
 #else
-double GaussWaveFunction::evalKineticEnergyG(double x, double y, double z) {
+double GaussWaveFunction::EvalKineticEnergyG(double x, double y, double z) {
    double nabx,naby,nabz,xmr,ymr,zmr,cc,rr,alp;
    int indp,indr,ppt;
    indp=0;
@@ -3053,9 +3049,9 @@ double GaussWaveFunction::evalKineticEnergyG(double x, double y, double z) {
          ppt=primType[indp];
          alp=primExp[indp];
          cc=exp(alp*rr);
-         //chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         //chi[indp]=EvalAngACases(ppt,xmr,ymr,zmr);
          //chi[indp]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
          gx[indp]*=cc;
          gy[indp]*=cc;
          gz[indp]*=cc;
@@ -3092,7 +3088,7 @@ double GaussWaveFunction::evalKineticEnergyG(double x, double y, double z) {
          ppt=primType[i];
          alp=primExp[i];
          cc=exp(alp*rr);
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[i],gy[i],gz[i]);
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[i],gy[i],gz[i]);
          gx[i]*=cc;
          gy[i]*=cc;
          gz[i]*=cc;
@@ -3128,7 +3124,7 @@ double GaussWaveFunction::evalKineticEnergyG(double x, double y, double z) {
 }
 #endif
 #if PARALLELISEDTK
-void GaussWaveFunction::evalNabPhi2(double const x,double const y,double const z,\
+void GaussWaveFunction::EvalNabPhi2(double const x,double const y,double const z,\
       double &rho2ret,double &twoG) {
 #if DEBUG
    bool prntonce=true;
@@ -3150,9 +3146,9 @@ void GaussWaveFunction::evalNabPhi2(double const x,double const y,double const z
          ppt=primType[indp];
          alp=primExp[indp];
          cc=exp(alp*rr);
-         chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[indp]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[indp]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
          gx[indp]*=cc;
          gy[indp]*=cc;
          gz[indp]*=cc;
@@ -3189,7 +3185,7 @@ firstprivate(j) lastprivate(i) reduction(+: nabx,naby,nabz,rho)
    rho2ret=rho;
 }
 #else
-void GaussWaveFunction::evalNabPhi2(double const x,double const y,double const z,\
+void GaussWaveFunction::EvalNabPhi2(double const x,double const y,double const z,\
       double &rho2ret,double &twoG) {
    double nabx,naby,nabz,xmr,ymr,zmr,cc,rr,alp;
    int indp,indr,ppt;
@@ -3204,9 +3200,9 @@ void GaussWaveFunction::evalNabPhi2(double const x,double const y,double const z
          ppt=primType[indp];
          alp=primExp[indp];
          cc=exp(alp*rr);
-         chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[indp]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[indp]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
          gx[indp]*=cc;
          gy[indp]*=cc;
          gz[indp]*=cc;
@@ -3246,7 +3242,7 @@ void GaussWaveFunction::evalNabPhi2(double const x,double const y,double const z
          ppt=primType[i];
          alp=primExp[i];
          cc=exp(alp*rr);
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[i],gy[i],gz[i]);
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[i],gy[i],gz[i]);
          gx[i]*=cc;
          gy[i]*=cc;
          gz[i]*=cc;
@@ -3283,7 +3279,7 @@ void GaussWaveFunction::evalNabPhi2(double const x,double const y,double const z
 }
 #endif
 #if PARALLELISEDTK
-double GaussWaveFunction::evalKineticEnergyK(double x, double y, double z) {
+double GaussWaveFunction::EvalKineticEnergyK(double x, double y, double z) {
    double lap,xmr,ymr,zmr,cc,rr,alp;
    double sxx;
    int indp,indr,ppt;
@@ -3298,9 +3294,9 @@ double GaussWaveFunction::evalKineticEnergyK(double x, double y, double z) {
          ppt=primType[indp];
          alp=primExp[indp];
          cc=exp(-alp*rr);
-         chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[indp]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[indp]*=cc;
-         hxx[indp]=evalLapAngCases(ppt,alp,xmr,ymr,zmr,rr);
+         hxx[indp]=EvalLapAngCases(ppt,alp,xmr,ymr,zmr,rr);
          hxx[indp]*=cc;
          indp++;
       }
@@ -3321,7 +3317,7 @@ firstprivate(j) lastprivate(i) reduction(+: lap)
    return (-0.50000e0*lap);
 }
 #else
-double GaussWaveFunction::evalKineticEnergyK(double x, double y, double z) {
+double GaussWaveFunction::EvalKineticEnergyK(double x, double y, double z) {
    double lap,xmr,ymr,zmr,cc,rr,alp;
    double sxx;
    int indp,indr,ppt;
@@ -3336,9 +3332,9 @@ double GaussWaveFunction::evalKineticEnergyK(double x, double y, double z) {
          ppt=primType[indp];
          alp=primExp[indp];
          cc=exp(-alp*rr);
-         chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[indp]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[indp]*=cc;
-         hxx[indp]=evalLapAngCases(ppt,alp,xmr,ymr,zmr,rr);
+         hxx[indp]=EvalLapAngCases(ppt,alp,xmr,ymr,zmr,rr);
          hxx[indp]*=cc;
          indp++;
       }
@@ -3363,9 +3359,9 @@ double GaussWaveFunction::evalKineticEnergyK(double x, double y, double z) {
          ppt=primType[i];
          alp=0.5e0*primExp[i];
          cc=exp(-alp*rr);
-         chi[i]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[i]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[i]*=cc;
-         hxx[i]=evalLapAngCases(ppt,alp,xmr,ymr,zmr,rr);
+         hxx[i]=EvalLapAngCases(ppt,alp,xmr,ymr,zmr,rr);
          hxx[i]*=cc;
       }
       sxx=0.0e0;
@@ -3378,14 +3374,14 @@ double GaussWaveFunction::evalKineticEnergyK(double x, double y, double z) {
    return (-0.50000e0*lap);
 }
 #endif
-double GaussWaveFunction::evalEllipticity(double x,double y,double z) {
+double GaussWaveFunction::EvalEllipticity(double x,double y,double z) {
    double eve[3][3],eva[3],h[3][3];
-   evalHessian(x,y,z,h);
+   EvalHessian(x,y,z,h);
    EigenDecompositionJAMA::EigenDecomposition3(h,eve,eva);
    double ellip=(eva[0]/eva[1])-1.0e0;
    return ellip;
 }
-void GaussWaveFunction::evald4SingCartA(int &ang,double &t,double &f,double &x,double &x2,
+void GaussWaveFunction::Evald4SingCartA(int &ang,double &t,double &f,double &x,double &x2,
                                   double &d0,double &d1,double &d2,double &d3,double &d4) {
    double fax2=f*x2;
    switch (ang) {
@@ -3441,17 +3437,17 @@ void GaussWaveFunction::evald4SingCartA(int &ang,double &t,double &f,double &x,d
    }
    return;
 }
-void GaussWaveFunction::evald4Ang(int (&a)[3],double &alp,double (&x)[3],double (&x2)[3],
+void GaussWaveFunction::Evald4Ang(int (&a)[3],double &alp,double (&x)[3],double (&x2)[3],
                               double (&d0)[3],double (&d1)[3],double (&d2)[3],double (&d3)[3],double (&d4)[3]) {
    double tma,fa2;
    tma=-2.00000e0*alp;
    fa2=tma*tma;
    for (int i=0; i<3; i++) {
-      evald4SingCartA(a[i],tma,fa2,x[i],x2[i],d0[i],d1[i],d2[i],d3[i],d4[i]);
+      Evald4SingCartA(a[i],tma,fa2,x[i],x2[i],d0[i],d1[i],d2[i],d3[i],d4[i]);
    }
    return;
 }
-void GaussWaveFunction::evald1SingCartA(int &ang,double &t,double x,\
+void GaussWaveFunction::Evald1SingCartA(int &ang,double &t,double x,\
       double &d0,double &d1) {
    double x2=x*x;
    switch ( ang ) {
@@ -3486,7 +3482,7 @@ void GaussWaveFunction::evald1SingCartA(int &ang,double &t,double x,\
          break;
    }
 }
-void GaussWaveFunction::evald2SingCartA(int &ang,double &t,double x,\
+void GaussWaveFunction::Evald2SingCartA(int &ang,double &t,double x,\
                       double &d0,double &d1,double &d2) {
    double x2=x*x;
    double f=t*t;
@@ -3532,7 +3528,7 @@ void GaussWaveFunction::evald2SingCartA(int &ang,double &t,double x,\
    }
    return;
 }
-void GaussWaveFunction::evald3SingCartA(int &ang,double &t,double &f,double &x,double &x2,
+void GaussWaveFunction::Evald3SingCartA(int &ang,double &t,double &f,double &x,double &x2,
                                     double &d0,double &d1,double &d2,double &d3) {
    double fax2=f*x2;
    switch (ang) {
@@ -3583,18 +3579,18 @@ void GaussWaveFunction::evald3SingCartA(int &ang,double &t,double &f,double &x,d
    }
    return;
 }
-void GaussWaveFunction::evald3Ang(int (&a)[3],double &alp,double (&x)[3],double (&x2)[3],
+void GaussWaveFunction::Evald3Ang(int (&a)[3],double &alp,double (&x)[3],double (&x2)[3],
                               double (&d0)[3],double (&d1)[3],double (&d2)[3],double (&d3)[3]) {
    double tma,fa2;
    tma=-2.00000e0*alp;
    fa2=tma*tma;
    for (int i=0; i<3; i++) {
-      evald3SingCartA(a[i],tma,fa2,x[i],x2[i],d0[i],d1[i],d2[i],d3[i]);
+      Evald3SingCartA(a[i],tma,fa2,x[i],x2[i],d0[i],d1[i],d2[i],d3[i]);
    }
    return;
 }
 /*
-double GaussWaveFunction::evalLapRhoUsingd2(double x, double y, double z) {
+double GaussWaveFunction::EvalLapRhoUsingd2(double x, double y, double z) {
    double lap,cc,rr,alp;
    double sxx,gxs,gys,gzs;
    double r[3];
@@ -3618,7 +3614,7 @@ double GaussWaveFunction::evalLapRhoUsingd2(double x, double y, double z) {
          for (int m=0; m<3; m++) {aa[m]=prTy[ppt++];}
          alp=primExp[indp];
          cc=exp(-alp*rr);
-         evald4Ang(aa,alp,r,r2,D0,D1,D2,D3,D4);
+         Evald4Ang(aa,alp,r,r2,D0,D1,D2,D3,D4);
          chi[indp]=D0[0]*D0[1]*D0[2];
          chi[indp]*=cc;
          hxx[indp]=(D2[0]*D0[1]*D0[2])+(D0[0]*D2[1]*D0[2])+(D0[0]*D0[1]*D2[2]);
@@ -3660,7 +3656,7 @@ double GaussWaveFunction::evalLapRhoUsingd2(double x, double y, double z) {
    return (2.00000e0*lap);
 }
 // */
-void GaussWaveFunction::evalDiDjDkChi(int &pty,double &alp,double x,double y,double z,
+void GaussWaveFunction::EvalDiDjDkChi(int &pty,double &alp,double x,double y,double z,
                                   double (&dlm)[3][3],double (&dijk)[3][3][3]) {
    static int aa[3];
    int ppt=3*pty;
@@ -3670,7 +3666,7 @@ void GaussWaveFunction::evalDiDjDkChi(int &pty,double &alp,double x,double y,dou
    X[1]=y;
    X[2]=z;
    for (int i=0; i<3; i++) {X2[i]=X[i]*X[i];}
-   evald3Ang(aa,alp,X,X2,D0,D1,D2,D3);
+   Evald3Ang(aa,alp,X,X2,D0,D1,D2,D3);
    //------------------------------
    dijk[0][0][0]=D3[0]*D0[1]*D0[2];
    dijk[0][0][1]=D2[0]*D1[1]*D0[2];
@@ -3731,7 +3727,7 @@ void GaussWaveFunction::evalDiDjDkChi(int &pty,double &alp,double x,double y,dou
    }
 }
 #if (PARALLELISEDTK && DEBUG)
-void GaussWaveFunction::evalHessLOL(double x, double y, double z, double &dens, double &keG, double &lol,
+void GaussWaveFunction::EvalHessLOL(double x, double y, double z, double &dens, double &keG, double &lol,
                                 double &ddx, double &ddy, double &ddz,
                                 double &dxx, double &dyy, double &dzz,
                                 double &dxy, double &dxz, double &dyz) {
@@ -3748,14 +3744,14 @@ void GaussWaveFunction::evalHessLOL(double x, double y, double z, double &dens, 
          ppt=primType[indp];
          alp=primExp[indp];
          cc=exp(alp*rr);
-         chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[indp]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[indp]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,
                         gx[indp],gy[indp],gz[indp]);
          gx[indp]*=cc;
          gy[indp]*=cc;
          gz[indp]*=cc;
-         evalDkDlAngCases(ppt,alp,xmr,ymr,zmr,
+         EvalDkDlAngCases(ppt,alp,xmr,ymr,zmr,
                           hxx[indp],hyy[indp],hzz[indp],
                           hxy[indp],hxz[indp],hyz[indp]);
          hxx[indp]*=cc;
@@ -3799,7 +3795,7 @@ firstprivate(j) lastprivate(i) reduction(+: nabxx,nabyy,nabzz,nabxy,nabxz,nabyz,
       xmr=x-R[indr];
       ymr=y-R[indr+1];
       zmr=z-R[indr+2];
-      evalDiDjDkChi(ppt,alp,xmr,ymr,zmr,ddC,dddC);
+      EvalDiDjDkChi(ppt,alp,xmr,ymr,zmr,ddC,dddC);
       indp=i*nPri;
       gxs=gys=gzs=0.00000e0;
       sxx=syy=szz=sxy=sxz=syz=0.00000e0;
@@ -3938,7 +3934,7 @@ firstprivate(j) lastprivate(i) reduction(+: nabxx,nabyy,nabzz,nabxy,nabxz,nabyz,
    return;
 }
 #else
-void GaussWaveFunction::evalHessLOL(double x, double y, double z, double &dens, double &keG, double &lol,
+void GaussWaveFunction::EvalHessLOL(double x, double y, double z, double &dens, double &keG, double &lol,
                                 double &ddx, double &ddy, double &ddz,
                                 double &dxx, double &dyy, double &dzz,
                                 double &dxy, double &dxz, double &dyz) {
@@ -3955,14 +3951,14 @@ void GaussWaveFunction::evalHessLOL(double x, double y, double z, double &dens, 
          ppt=primType[indp];
          alp=primExp[indp];
          cc=exp(alp*rr);
-         chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[indp]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[indp]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,
                         gx[indp],gy[indp],gz[indp]);
          gx[indp]*=cc;
          gy[indp]*=cc;
          gz[indp]*=cc;
-         evalDkDlAngCases(ppt,alp,xmr,ymr,zmr,
+         EvalDkDlAngCases(ppt,alp,xmr,ymr,zmr,
                           hxx[indp],hyy[indp],hzz[indp],
                           hxy[indp],hxz[indp],hyz[indp]);
          hxx[indp]*=cc;
@@ -4000,7 +3996,7 @@ void GaussWaveFunction::evalHessLOL(double x, double y, double z, double &dens, 
       xmr=x-R[indr++];
       ymr=y-R[indr++];
       zmr=z-R[indr++];
-      evalDiDjDkChi(ppt,alp,xmr,ymr,zmr,ddC,dddC);
+      EvalDiDjDkChi(ppt,alp,xmr,ymr,zmr,ddC,dddC);
       gxs=gys=gzs=0.00000e0;
       sxx=syy=szz=sxy=sxz=syz=0.00000e0;
       chij=0.00000e0;
@@ -4110,16 +4106,16 @@ void GaussWaveFunction::evalHessLOL(double x, double y, double z, double &dens, 
    return;
 }
 #endif
-void GaussWaveFunction::evalHessLOL(double (&x)[3],double &lol,double (&glol)[3],double (&hlol)[3][3]) {
+void GaussWaveFunction::EvalHessLOL(double (&x)[3],double &lol,double (&glol)[3],double (&hlol)[3][3]) {
    static double rho,ke;
-   evalHessLOL(x[0],x[1],x[2],rho,ke,lol,glol[0],glol[1],glol[2],
+   EvalHessLOL(x[0],x[1],x[2],rho,ke,lol,glol[0],glol[1],glol[2],
                hlol[0][0],hlol[1][1],hlol[2][2],hlol[0][1],hlol[0][2],hlol[1][2]);
    hlol[1][0]=hlol[0][1];
    hlol[2][0]=hlol[0][2];
    hlol[2][1]=hlol[1][2];
    return;
 }
-void GaussWaveFunction::evalFTASingCartA(int &ang,double &a,double &ooa,double &osra,
+void GaussWaveFunction::EvalFTASingCartA(int &ang,double &a,double &ooa,double &osra,
                                      double &px,double &px2,double &Rx,
                                      double &RePhi,double &ImPhi) {
    //static const double srpi=1.77245385090551602729817; //sqrt(pi)
@@ -4155,21 +4151,21 @@ void GaussWaveFunction::evalFTASingCartA(int &ang,double &a,double &ooa,double &
    }
    return;
 }
-void GaussWaveFunction::evalFTAng(int (&a)[3],double &alp,double &ooalp,double (&p)[3],double (&p2)[3],
+void GaussWaveFunction::EvalFTAng(int (&a)[3],double &alp,double &ooalp,double (&p)[3],double (&p2)[3],
                               double (&Rx)[3],complex<double> &pang) {
    double osa,rp,ip;
    //oa=1.0e0/alp;
    osa=sqrt(ooalp);
-   evalFTASingCartA(a[0],alp,ooalp,osa,p[0],p2[0],Rx[0],rp,ip);
+   EvalFTASingCartA(a[0],alp,ooalp,osa,p[0],p2[0],Rx[0],rp,ip);
    complex<double> tmp(rp,ip);
-   evalFTASingCartA(a[1],alp,ooalp,osa,p[1],p2[1],Rx[1],rp,ip);
+   EvalFTASingCartA(a[1],alp,ooalp,osa,p[1],p2[1],Rx[1],rp,ip);
    tmp*=(complex<double>(rp,ip));
-   evalFTASingCartA(a[2],alp,ooalp,osa,p[2],p2[2],Rx[2],rp,ip);
+   EvalFTASingCartA(a[2],alp,ooalp,osa,p[2],p2[2],Rx[2],rp,ip);
    tmp*=(complex<double>(rp,ip));
    pang=tmp;
    return;
 }
-void GaussWaveFunction::evalFTChi(int &pty,double &alp,double (&Rx)[3],
+void GaussWaveFunction::EvalFTChi(int &pty,double &alp,double (&Rx)[3],
                               double px,double py,double pz,
                               complex<double> &phi) {
    static int aa[3];
@@ -4180,14 +4176,14 @@ void GaussWaveFunction::evalFTChi(int &pty,double &alp,double (&Rx)[3],
    P[0]=px; P[1]=py; P[2]=pz;
    for (int i=0; i<3; i++) {P2[i]=P[i]*P[i];}
    complex<double> chit;
-   evalFTAng(aa,alp,ooalp,P,P2,Rx,chit);
+   EvalFTAng(aa,alp,ooalp,P,P2,Rx,chit);
    double expterm=exp(-0.25*ooalp*(P2[0]+P2[1]+P2[2]));
    chit*=expterm;
    phi=chit;
    return;
 }
 #if PARALLELISEDTK
-double GaussWaveFunction::evalFTDensity(double px,double py,double pz) {
+double GaussWaveFunction::EvalFTDensity(double px,double py,double pz) {
    int indr,indp,ppt;
    double rhop,Rx[3],alp;
    complex<double> chit;
@@ -4200,7 +4196,7 @@ double GaussWaveFunction::evalFTDensity(double px,double py,double pz) {
       for (int j=0; j<myPN[i]; j++) {
          ppt=primType[indp];
          alp=primExp[indp];
-         evalFTChi(ppt,alp,Rx,px,py,pz,chit);
+         EvalFTChi(ppt,alp,Rx,px,py,pz,chit);
          chi[indp]=chit.real();
          gx[indp]=chit.imag();
          //cout << "re: " << chi[indp] << ", im: " << gx[indp] << endl;
@@ -4226,7 +4222,7 @@ firstprivate(j) lastprivate(i) reduction(+: rhop)
    return rhop;
 }
 #else
-double GaussWaveFunction::evalFTDensity(double px,double py,double pz) {
+double GaussWaveFunction::EvalFTDensity(double px,double py,double pz) {
    int indr,indp,ppt;
    double rhop,Rx[3],alp;
    complex<double> chit,chiu;
@@ -4239,7 +4235,7 @@ double GaussWaveFunction::evalFTDensity(double px,double py,double pz) {
       for (int j=0; j<myPN[i]; j++) {
          ppt=primType[indp];
          alp=primExp[indp];
-         evalFTChi(ppt,alp,Rx,px,py,pz,chit);
+         EvalFTChi(ppt,alp,Rx,px,py,pz,chit);
          chi[indp]=chit.real();
          gx[indp]=chit.imag();
          indp++;
@@ -4280,7 +4276,7 @@ double GaussWaveFunction::evalFTDensity(double px,double py,double pz) {
          Rx[2]=R[indr+2];
          ppt=primType[i];
          alp=0.5e0*primExp[i];
-         evalFTChi(ppt,alp,Rx,px,py,pz,chit);
+         EvalFTChi(ppt,alp,Rx,px,py,pz,chit);
          chi[i]=chit.real();
          gx[i]=chit.imag();
       }
@@ -4292,12 +4288,12 @@ double GaussWaveFunction::evalFTDensity(double px,double py,double pz) {
    return rhop;
 }
 #endif
-double GaussWaveFunction::evalFTKineticEnergy(double px,double py,double pz) {
-   double pp=evalFTDensity(px,py,pz);
+double GaussWaveFunction::EvalFTKineticEnergy(double px,double py,double pz) {
+   double pp=EvalFTDensity(px,py,pz);
    pp*=(px*px+py*py+pz*pz);
    return pp;
 }
-double GaussWaveFunction::evalDensityMatrix1(double x,double y,double z,
+double GaussWaveFunction::EvalDensityMatrix1(double x,double y,double z,
       double xp,double yp,double zp) {
    int indr,indp;
    double xmr,ymr,zmr,gamm,chib;
@@ -4311,7 +4307,7 @@ double GaussWaveFunction::evalDensityMatrix1(double x,double y,double z,
       zmr=z-R[indr++];
       rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
       for (int j=0; j<myPN[i]; j++) {
-         chi[indp]=evalAngACases(primType[indp],xmr,ymr,zmr);
+         chi[indp]=EvalAngACases(primType[indp],xmr,ymr,zmr);
          chi[indp]*=exp(primExp[indp]*rr);
          indp++;
       }
@@ -4324,7 +4320,7 @@ double GaussWaveFunction::evalDensityMatrix1(double x,double y,double z,
       zmr=zp-R[indr++];
       rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
       for (int j=0; j<myPN[i]; j++) {
-         gx[indp]=evalAngACases(primType[indp],xmr,ymr,zmr);
+         gx[indp]=EvalAngACases(primType[indp],xmr,ymr,zmr);
          gx[indp]*=exp(primExp[indp]*rr);
          indp++;
       }
@@ -4345,7 +4341,7 @@ double GaussWaveFunction::evalDensityMatrix1(double x,double y,double z,
          ymr=y-R[indr+1];
          zmr=z-R[indr+2];
          rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
-         chi[i]=evalAngACases(primType[i],xmr,ymr,zmr);
+         chi[i]=EvalAngACases(primType[i],xmr,ymr,zmr);
          chi[i]*=exp(0.5e0*primExp[i]*rr);
       }
       for ( int i=nPri ; i<totPri ; ++i ) {
@@ -4354,7 +4350,7 @@ double GaussWaveFunction::evalDensityMatrix1(double x,double y,double z,
          ymr=yp-R[indr+1];
          zmr=zp-R[indr+2];
          rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
-         gx[i]=evalAngACases(primType[i],xmr,ymr,zmr);
+         gx[i]=EvalAngACases(primType[i],xmr,ymr,zmr);
          gx[i]*=exp(0.5e0*primExp[i]*rr);
       }
       for (int i=nPri; i<totPri; ++i) {
@@ -4363,7 +4359,7 @@ double GaussWaveFunction::evalDensityMatrix1(double x,double y,double z,
    }
 return gamm;
 }
-void GaussWaveFunction::evalGradDensityMatrix1(double x,double y,double z,\
+void GaussWaveFunction::EvalGradDensityMatrix1(double x,double y,double z,\
       double xp,double yp,double zp,\
       double &gamm,double (&gg)[3],double (&gp)[3]) {
    double xmr,xpmr,ymr,ypmr,zmr,zpmr,rr,rrp;
@@ -4384,16 +4380,16 @@ void GaussWaveFunction::evalGradDensityMatrix1(double x,double y,double z,\
          ppt=primType[indp];
          alp=primExp[indp];
          cc=exp(alp*rr);
-         chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[indp]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[indp]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
          gx[indp]*=cc;
          gy[indp]*=cc;
          gz[indp]*=cc;
          ccp=exp(alp*rrp);
-         hyz[indp]=evalAngACases(ppt,xpmr,ypmr,zpmr);
+         hyz[indp]=EvalAngACases(ppt,xpmr,ypmr,zpmr);
          hyz[indp]*=ccp;
-         evalDkAngCases(ppt,alp,xpmr,ypmr,zpmr,hxx[indp],hyy[indp],hzz[indp]);
+         EvalDkAngCases(ppt,alp,xpmr,ypmr,zpmr,hxx[indp],hyy[indp],hzz[indp]);
          hxx[indp]*=ccp;
          hyy[indp]*=ccp;
          hzz[indp]*=ccp;
@@ -4428,12 +4424,12 @@ void GaussWaveFunction::evalGradDensityMatrix1(double x,double y,double z,\
    gp[2]=nabzp;
    gamm=trho;
    if ( ihaveEDF ) {
-      cout << "Warning: evalGradDensityMatrix1 does not include EDF " <<
+      cout << "Warning: EvalGradDensityMatrix1 does not include EDF " <<
         "contributions!" << endl;
    }
    return;
 }
-void GaussWaveFunction::evalHessDensityMatrix1(double (&xx)[3],double (&xxp)[3],\
+void GaussWaveFunction::EvalHessDensityMatrix1(double (&xx)[3],double (&xxp)[3],\
       double &gamm,double (&gg)[3],double (&gp)[3],\
       double (&hh)[3][3],double (&hph)[3][3],double (&hp)[3][3]) {
    double x=xx[0],y=xx[1],z=xx[2];
@@ -4456,16 +4452,16 @@ void GaussWaveFunction::evalHessDensityMatrix1(double (&xx)[3],double (&xxp)[3],
          ppt=primType[indp];
          alp=primExp[indp];
          cc=exp(alp*rr);
-         chi[indp]=evalAngACases(ppt,xmr,ymr,zmr);
+         chi[indp]=EvalAngACases(ppt,xmr,ymr,zmr);
          chi[indp]*=cc;
-         evalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
+         EvalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[indp],gy[indp],gz[indp]);
          gx[indp]*=cc;
          gy[indp]*=cc;
          gz[indp]*=cc;
          ccp=exp(alp*rrp);
-         hyz[indp]=evalAngACases(ppt,xpmr,ypmr,zpmr);
+         hyz[indp]=EvalAngACases(ppt,xpmr,ypmr,zpmr);
          hyz[indp]*=ccp;
-         evalDkAngCases(ppt,alp,xpmr,ypmr,zpmr,hxx[indp],hyy[indp],hzz[indp]);
+         EvalDkAngCases(ppt,alp,xpmr,ypmr,zpmr,hxx[indp],hyy[indp],hzz[indp]);
          hxx[indp]*=ccp;
          hyy[indp]*=ccp;
          hzz[indp]*=ccp;
@@ -4532,7 +4528,7 @@ void GaussWaveFunction::evalHessDensityMatrix1(double (&xx)[3],double (&xxp)[3],
          ppt=primType[indp];
          alp=primExp[indp];
          cc=exp(alp*rr);
-         evalDkDlAngCases(ppt,alp,xmr,ymr,zmr,
+         EvalDkDlAngCases(ppt,alp,xmr,ymr,zmr,
                hxx[indp],hyy[indp],hzz[indp],
                hxy[indp],hxz[indp],hyz[indp]);
          hxx[indp]*=cc;
@@ -4573,7 +4569,7 @@ void GaussWaveFunction::evalHessDensityMatrix1(double (&xx)[3],double (&xxp)[3],
          ppt=primType[indp];
          alp=primExp[indp];
          cc=exp(alp*rr);
-         evalDkDlAngCases(ppt,alp,xmr,ymr,zmr,
+         EvalDkDlAngCases(ppt,alp,xmr,ymr,zmr,
                hxx[indp],hyy[indp],hzz[indp],
                hxy[indp],hxz[indp],hyz[indp]);
          hxx[indp]*=cc;
@@ -4603,12 +4599,12 @@ void GaussWaveFunction::evalHessDensityMatrix1(double (&xx)[3],double (&xxp)[3],
    hp[1][0]=sumhxy; hp[1][1]=sumhyy; hp[1][2]=sumhyz;
    hp[2][0]=sumhxz; hp[2][1]=sumhyz; hp[2][2]=sumhzz;
    if ( ihaveEDF ) {
-      cout << "Warning: evalHessDensityMatrix1 does not include EDF " <<
+      cout << "Warning: EvalHessDensityMatrix1 does not include EDF " <<
         "contributions!" << endl;
    }
    return;
 }
-void GaussWaveFunction::evalHermiteCoefs(int (&aia)[3],int (&aib)[3],double &alpab,
+void GaussWaveFunction::EvalHermiteCoefs(int (&aia)[3],int (&aib)[3],double &alpab,
       double (&ra)[3],double (&rb)[3],
       double (&rp)[3],
       int (&maxl)[3],double (&Eijl)[3][7]) {
@@ -4748,7 +4744,7 @@ void GaussWaveFunction::evalHermiteCoefs(int (&aia)[3],int (&aib)[3],double &alp
       }
    }
 }
-void GaussWaveFunction::evalRlmnIntegs(const int (&lmn)[3],const double &alpp,const double (&cp)[3],
+void GaussWaveFunction::EvalRlmnIntegs(const int (&lmn)[3],const double &alpp,const double (&cp)[3],
                                    double (&Rlmn)[7][7][7]) {
    int maxj=lmn[0]+lmn[1]+lmn[2];
    double a=cp[0],b=cp[1],c=cp[2];
@@ -4802,7 +4798,7 @@ void GaussWaveFunction::evalRlmnIntegs(const int (&lmn)[3],const double &alpp,co
    }
    return;
 }
-double GaussWaveFunction::evalVAB(double (&xx)[3],int (&aa)[3],int (&ab)[3],double &alpa,double &alpb,
+double GaussWaveFunction::EvalVAB(double (&xx)[3],int (&aa)[3],int (&ab)[3],double &alpa,double &alpb,
                                double (&xa)[3],double (&xb)[3]) {
    double alpp=alpa+alpb;
    double ooalpp=1.0e0/alpp,xp[3],cp[3],ctmp=0.0e0,S00;
@@ -4817,8 +4813,8 @@ double GaussWaveFunction::evalVAB(double (&xx)[3],int (&aa)[3],int (&ab)[3],doub
    S00=exp(-ctmp);
    if (S00<EPSFORMEPVALUE) {return 0.0e0;}
    double Eabk[3][7],Rijk[7][7][7];
-   evalHermiteCoefs(aa,ab,alpp,xa,xb,xp,maxl,Eabk);
-   evalRlmnIntegs(maxl,alpp,cp,Rijk);
+   EvalHermiteCoefs(aa,ab,alpp,xa,xb,xp,maxl,Eabk);
+   EvalRlmnIntegs(maxl,alpp,cp,Rijk);
    ctmp=0.0e0;
    for (int i=0; i<=maxl[0]; i++) {
       for (int j=0; j<=maxl[1]; j++) {
@@ -4830,7 +4826,7 @@ double GaussWaveFunction::evalVAB(double (&xx)[3],int (&aa)[3],int (&ab)[3],doub
    static const double twopi=6.2831853071795864769;
    return (twopi*ooalpp*S00*ctmp);
 }
-double GaussWaveFunction::evalVABCore(double &S00,double (&xx)[3],int idxA,int idxB,int (&aa)[3],int (&ab)[3],double &alpa,double &alpb,
+double GaussWaveFunction::EvalVABCore(double &S00,double (&xx)[3],int idxA,int idxB,int (&aa)[3],int (&ab)[3],double &alpa,double &alpb,
                                double (&xa)[3],double (&xb)[3]) {
    double alpp=alpa+alpb;
    double xp[3],cp[3],ctmp=0.0e0,ooalpp=1.0e0/alpp;
@@ -4840,8 +4836,8 @@ double GaussWaveFunction::evalVABCore(double &S00,double (&xx)[3],int idxA,int i
    }
    double Eabk[3][7],Rijk[7][7][7];
    int maxl[3];
-   evalHermiteCoefs(aa,ab,alpp,xa,xb,xp,maxl,Eabk);
-   evalRlmnIntegs(maxl,alpp,cp,Rijk);
+   EvalHermiteCoefs(aa,ab,alpp,xa,xb,xp,maxl,Eabk);
+   EvalRlmnIntegs(maxl,alpp,cp,Rijk);
    ctmp=0.0e0;
    for (int i=0; i<=maxl[0]; i++) {
       for (int j=0; j<=maxl[1]; j++) {
@@ -4853,7 +4849,7 @@ double GaussWaveFunction::evalVABCore(double &S00,double (&xx)[3],int idxA,int i
    return (S00*ctmp);
 }
 #if PARALLELISEDTK
-double GaussWaveFunction::evalMolElecPot(double x,double y,double z) {
+double GaussWaveFunction::EvalMolElecPot(double x,double y,double z) {
 #if DEBUG
    static bool showmsg=true;
 #endif
@@ -4901,11 +4897,11 @@ firstprivate(j) lastprivate(i) shared(xx) reduction(+: mepaa,mepab)
          ab[1]=prTy[inda+1];
          ab[2]=prTy[inda+2];
          alpb=primExp[j];
-         mepab+=(cc*evalVABCore(S00,xx,i,j,aa,ab,alpa,alpb,ra,rb));
+         mepab+=(cc*EvalVABCore(S00,xx,i,j,aa,ab,alpa,alpb,ra,rb));
       }
       S00=prefMEP[indp+i];
       if ( S00>0.0e0 ) {
-         mepaa+=(cab[indp+i]*evalVABCore(S00,xx,i,i,aa,aa,alpa,alpa,ra,ra));
+         mepaa+=(cab[indp+i]*EvalVABCore(S00,xx,i,i,aa,aa,alpa,alpa,ra,ra));
       }
    }
    if ( ihaveEDF ) {
@@ -4922,7 +4918,7 @@ firstprivate(j) lastprivate(i) shared(xx) reduction(+: mepaa,mepab)
          S00=prefMEP[i*(nPri+1)];
          if ( S00>0.0e0 ) {
             cc=EDFCoeff[i-nPri];
-            mepaa+=(cc*evalVABCore(S00,xx,i,i,aa,aa,alpa,alpa,ra,ra));
+            mepaa+=(cc*EvalVABCore(S00,xx,i,i,aa,aa,alpa,alpa,ra,ra));
          }
       }
    }
@@ -4940,7 +4936,7 @@ firstprivate(j) lastprivate(i) shared(xx) reduction(+: mepaa,mepab)
    return (mepab-mepelec);
 }
 #else
-double GaussWaveFunction::evalMolElecPot(double x,double y,double z) {
+double GaussWaveFunction::EvalMolElecPot(double x,double y,double z) {
 #if DEBUG
    static bool showmsg=true;
 #endif
@@ -4976,7 +4972,7 @@ double GaussWaveFunction::evalMolElecPot(double x,double y,double z) {
       S00=prefMEP[indp];
       cc=cab[indp++];
       if ( S00>0.0e0 ) {
-         mepaa+=(cc*evalVABCore(S00,xx,i,i,aa,aa,alpa,alpa,ra,ra));
+         mepaa+=(cc*EvalVABCore(S00,xx,i,i,aa,aa,alpa,alpa,ra,ra));
       }
       for (int j=(i+1); j<nPri; j++) {
          S00=prefMEP[indp];
@@ -4991,7 +4987,7 @@ double GaussWaveFunction::evalMolElecPot(double x,double y,double z) {
          ab[1]=prTy[inda+1];
          ab[2]=prTy[inda+2];
          alpb=primExp[j];
-         mepab+=(cc*evalVABCore(S00,xx,i,j,aa,ab,alpa,alpb,ra,rb));
+         mepab+=(cc*EvalVABCore(S00,xx,i,j,aa,ab,alpa,alpb,ra,rb));
       }
    }
    if ( ihaveEDF ) {
@@ -5008,7 +5004,7 @@ double GaussWaveFunction::evalMolElecPot(double x,double y,double z) {
          S00=prefMEP[i*(nPri+1)];
          if ( S00>0.0e0 ) {
             cc=EDFCoeff[i-nPri];
-            mepaa+=(cc*evalVABCore(S00,xx,i,i,aa,aa,alpa,alpa,ra,ra));
+            mepaa+=(cc*EvalVABCore(S00,xx,i,i,aa,aa,alpa,alpa,ra,ra));
          }
       }
    }
@@ -5026,7 +5022,7 @@ double GaussWaveFunction::evalMolElecPot(double x,double y,double z) {
    return (mepab-mepelec);
 }
 #endif
-double GaussWaveFunction::integralRho(void) {
+double GaussWaveFunction::IntegralRho(void) {
    int indr,inda,indp;
    double ra[3],rb[3],alpa,alpb,rhoaa,rhoab,cc;
    int aa[3],ab[3];
@@ -5044,7 +5040,7 @@ double GaussWaveFunction::integralRho(void) {
       alpa=primExp[i];
       indp=i*(nPri+1);
       cc=cab[indp++];
-      rhoaa+=(cc*evalOverlapIntegralAB(aa,aa,alpa,alpa,ra,ra));
+      rhoaa+=(cc*EvalOverlapIntegralAB(aa,aa,alpa,alpa,ra,ra));
       //mepab=0.0e0;
       for (int j=(i+1); j<nPri; j++) {
          cc=cab[indp++];
@@ -5057,7 +5053,7 @@ double GaussWaveFunction::integralRho(void) {
          ab[1]=prTy[inda+1];
          ab[2]=prTy[inda+2];
          alpb=primExp[j];
-         rhoab+=(cc*evalOverlapIntegralAB(aa,ab,alpa,alpb,ra,rb));
+         rhoab+=(cc*EvalOverlapIntegralAB(aa,ab,alpa,alpb,ra,rb));
       }
    }
    if ( ihaveEDF ) {
@@ -5072,12 +5068,12 @@ double GaussWaveFunction::integralRho(void) {
          aa[2]=prTy[inda+2];
          alpa=0.5e0*primExp[i];
          cc=EDFCoeff[i-nPri];
-         rhoaa+=(cc*evalOverlapIntegralAB(aa,aa,alpa,alpa,ra,ra));
+         rhoaa+=(cc*EvalOverlapIntegralAB(aa,aa,alpa,alpa,ra,ra));
       }
    }
    return (rhoaa+2.0e0*rhoab);
 }
-double GaussWaveFunction::evalOverlapIntegralAB(int (&aa)[3],int (&ab)[3],double &alpa,double &alpb,
+double GaussWaveFunction::EvalOverlapIntegralAB(int (&aa)[3],int (&ab)[3],double &alpa,double &alpb,
       double (&ra)[3],double (&rb)[3]) {
    double alpp=alpa+alpb;
    double ooalpp=1.0e0/alpp,xp[3],ctmp=0.0e0,S00;
@@ -5090,26 +5086,26 @@ double GaussWaveFunction::evalOverlapIntegralAB(int (&aa)[3],int (&ab)[3],double
    ctmp*=(alpa*alpb*ooalpp);
    S00=exp(-ctmp);
    double Eabk[3][7];
-   evalHermiteCoefs(aa,ab,alpp,ra,rb,xp,maxl,Eabk);
+   EvalHermiteCoefs(aa,ab,alpp,ra,rb,xp,maxl,Eabk);
    ctmp=Eabk[0][0]*Eabk[1][0]*Eabk[2][0];
    ooalpp*=3.1415926535897932385;
    return (ctmp*sqrt(ooalpp*ooalpp*ooalpp)*S00);
 }
-double GaussWaveFunction::totalNuclearCharge(void) {
+double GaussWaveFunction::TotalNuclearCharge(void) {
    double nc=0.0e0;
    for (int i=0; i<nNuc; i++) {nc+=atCharge[i];}
    if ( ihaveEDF ) { nc+=coreElec; }
    return nc;
 }
-void GaussWaveFunction::evalLED(double const (&x)[3],double (&led)[3]) {
+void GaussWaveFunction::EvalLED(double const (&x)[3],double (&led)[3]) {
    double rho,g[3];
-   evalRhoGradRho(x[0],x[1],x[2],rho,g);
+   EvalRhoGradRho(x[0],x[1],x[2],rho,g);
    if ( rho<1.0e-12 ) {rho=1.0e-12;}
    for ( int i=0 ; i<3 ; i++ ) {led[i]=(-0.5e0*g[i]/rho);}
 }
-double GaussWaveFunction::evalMagLED(double x,double y,double z) {
+double GaussWaveFunction::EvalMagLED(double x,double y,double z) {
    double rho,g[3];
-   evalRhoGradRho(x,y,z,rho,g);
+   EvalRhoGradRho(x,y,z,rho,g);
    if ( rho<1.0e-12 ) {rho=1.0e-12;}
    double led=0.0e0;
    for ( int i=0 ; i<3 ; i++ ) {led+=(g[i]*g[i]);}
@@ -5118,45 +5114,45 @@ double GaussWaveFunction::evalMagLED(double x,double y,double z) {
    led/=rho;
    return led;
 }
-double GaussWaveFunction::evalReducedDensityGradient(double x,double y,double z) {
+double GaussWaveFunction::EvalReducedDensityGradient(double x,double y,double z) {
    static const double cc=0.161620459673995481331661e0; /* $(2(3\pi^2)^{1/3})^{-1}$  */
    static const double fouo3=4.0e0/3.0e0;
    double rho,g[3];
-   evalRhoGradRho(x,y,z,rho,g);
+   EvalRhoGradRho(x,y,z,rho,g);
    if ( rho<1.0e-10 ) {rho=1.0e-10;}
    return (cc*sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2])/pow(rho,fouo3));
 }
-double GaussWaveFunction::evalRoSE(double x,double y,double z) {
+double GaussWaveFunction::EvalRoSE(double x,double y,double z) {
    static const double cc=2.87123400018819181594250e0; /* (3/10)(3\pi^2)^{2/3}  */
    static const double fivo3=5.0e0/3.0e0;
    double rho,tau;
-   evalNabPhi2(x,y,z,rho,tau); //Here tau=2G
+   EvalNabPhi2(x,y,z,rho,tau); //Here tau=2G
    tau*=0.5e0; //tau=G
    double tau0=cc*pow(rho,fivo3);
    return ((tau0-tau)/(tau0+tau));
 }
-double GaussWaveFunction::evalVirialPotentialEnergyDensity(double x, double y, double z) {
+double GaussWaveFunction::EvalVirialPotentialEnergyDensity(double x, double y, double z) {
    double lapRho,G;
-   lapRho=evalLapRho(x,y,z);
-   G=evalKineticEnergyG(x,y,z);
+   lapRho=EvalLapRho(x,y,z);
+   G=EvalKineticEnergyG(x,y,z);
    return (0.25e0*lapRho-2.0e0*G);
 }
-double GaussWaveFunction::evalNCIs(double x,double y,double z) {
-   double s,rho=evalDensity(x,y,z);
+double GaussWaveFunction::EvalNCIs(double x,double y,double z) {
+   double s,rho=EvalDensity(x,y,z);
    if (nciRhoMin<rho && rho <= nciRhoMax) {
-      s=evalReducedDensityGradient(x,y,z);
+      s=EvalReducedDensityGradient(x,y,z);
       s=(s<=nciSMax ?  s : 100.0e0);
    } else {
       s=100.0e0;
    }
    return s;
 }
-double GaussWaveFunction::evalNCILambda(double x,double y,double z) {
-   double rho=evalDensity(x,y,z);
+double GaussWaveFunction::EvalNCILambda(double x,double y,double z) {
+   double rho=EvalDensity(x,y,z);
    if (nciRhoMin<rho && rho <= nciRhoMax) {
       double hess[3][3];
       double eingvectors[3][3],eingvalues[3];
-      evalHessian(x,y,z,hess);
+      EvalHessian(x,y,z,hess);
       EigenDecompositionJAMA::EigenDecomposition3(hess,eingvectors,eingvalues);
       rho=(eingvalues[1]<0.0e0 ? (-rho) : rho);
    } else{
@@ -5166,5 +5162,4 @@ double GaussWaveFunction::evalNCILambda(double x,double y,double z) {
 }
 /* The following line includes the implementation of the custom scalar and vector fields.  */
 #include "custfld-wfnclass.cxx"
-#endif//_GAUSSWAVEFUNCTION_CPP_
 

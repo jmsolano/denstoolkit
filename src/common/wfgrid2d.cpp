@@ -337,7 +337,7 @@ bool waveFunctionGrid2D::writePlaneTsvRho(ofstream &ofil,GaussWaveFunction &wf) 
             xx[k]+=Cd[k]*(1.0e0-e1)*(1.0e0+e2);
             xx[k]*=0.25e0;
          }
-         prop1d[j]=wf.evalDensity(xx[0],xx[1],xx[2]);
+         prop1d[j]=wf.EvalDensity(xx[0],xx[1],xx[2]);
          e2+=dx[1];
       }
       e2=-1.0e0*maxdim;
@@ -464,7 +464,7 @@ bool waveFunctionGrid2D::writePlaneTsvLapRho(ofstream &ofil,GaussWaveFunction &w
             xx[k]+=Cd[k]*(1.0e0-e1)*(1.0e0+e2);
             xx[k]*=0.25e0;
          }
-         prop1d[j]=wf.evalLapRho(xx[0],xx[1],xx[2]);
+         prop1d[j]=wf.EvalLapRho(xx[0],xx[1],xx[2]);
          e2+=dx[1];
       }
       e2=-1.0e0*maxdim;
@@ -494,7 +494,7 @@ bool waveFunctionGrid2D::writePlaneTsvELF(ofstream &ofil,GaussWaveFunction &wf) 
             xx[k]+=Cd[k]*(1.0e0-e1)*(1.0e0+e2);
             xx[k]*=0.25e0;
          }
-         prop1d[j]=wf.evalELF(xx[0],xx[1],xx[2]);
+         prop1d[j]=wf.EvalELF(xx[0],xx[1],xx[2]);
          e2+=dx[1];
       }
       e2=-1.0e0*maxdim;
@@ -524,7 +524,7 @@ bool waveFunctionGrid2D::writePlaneTsvShannonEntropy(ofstream &ofil,GaussWaveFun
             xx[k]+=Cd[k]*(1.0e0-e1)*(1.0e0+e2);
             xx[k]*=0.25e0;
          }
-         prop1d[j]=wf.evalShannonEntropy(xx[0],xx[1],xx[2]);
+         prop1d[j]=wf.EvalShannonEntropy(xx[0],xx[1],xx[2]);
          e2+=dx[1];
       }
       e2=-1.0e0*maxdim;
@@ -554,7 +554,7 @@ bool waveFunctionGrid2D::writePlaneTsvMagGradRho(ofstream &ofil,GaussWaveFunctio
             xx[k]+=Cd[k]*(1.0e0-e1)*(1.0e0+e2);
             xx[k]*=0.25e0;
          }
-         prop1d[j]=wf.evalMagGradRho(xx[0],xx[1],xx[2]);
+         prop1d[j]=wf.EvalMagGradRho(xx[0],xx[1],xx[2]);
          e2+=dx[1];
       }
       e2=-1.0e0*maxdim;
@@ -584,7 +584,7 @@ bool waveFunctionGrid2D::writePlaneTsvLOL(ofstream &ofil,GaussWaveFunction &wf) 
             xx[k]+=Cd[k]*(1.0e0-e1)*(1.0e0+e2);
             xx[k]*=0.25e0;
          }
-         prop1d[j]=wf.evalLOL(xx[0],xx[1],xx[2]);
+         prop1d[j]=wf.EvalLOL(xx[0],xx[1],xx[2]);
          e2+=dx[1];
       }
       e2=-1.0e0*maxdim;
@@ -614,7 +614,7 @@ bool waveFunctionGrid2D::writePlaneTsvMagGradLOL(ofstream &ofil,GaussWaveFunctio
             xx[k]+=Cd[k]*(1.0e0-e1)*(1.0e0+e2);
             xx[k]*=0.25e0;
          }
-         wf.evalHessLOL(xx,lol,gl,hl);
+         wf.EvalHessLOL(xx,lol,gl,hl);
          prop1d[j]=sqrt(gl[0]*gl[0]+gl[1]*gl[1]+gl[2]*gl[2]);
          e2+=dx[1];
       }
@@ -645,7 +645,7 @@ bool waveFunctionGrid2D::writePlaneTsvKinetEnerDensG(ofstream &ofil,GaussWaveFun
             xx[k]+=Cd[k]*(1.0e0-e1)*(1.0e0+e2);
             xx[k]*=0.25e0;
          }
-         prop1d[j]=wf.evalKineticEnergyG(xx[0],xx[1],xx[2]);
+         prop1d[j]=wf.EvalKineticEnergyG(xx[0],xx[1],xx[2]);
          e2+=dx[1];
       }
       e2=-1.0e0*maxdim;
@@ -675,7 +675,7 @@ bool waveFunctionGrid2D::writePlaneTsvKinetEnerDensK(ofstream &ofil,GaussWaveFun
             xx[k]+=Cd[k]*(1.0e0-e1)*(1.0e0+e2);
             xx[k]*=0.25e0;
          }
-         prop1d[j]=wf.evalKineticEnergyK(xx[0],xx[1],xx[2]);
+         prop1d[j]=wf.EvalKineticEnergyK(xx[0],xx[1],xx[2]);
          e2+=dx[1];
       }
       e2=-1.0e0*maxdim;
@@ -705,7 +705,7 @@ bool waveFunctionGrid2D::writePlaneTsvGradLOL(ofstream &ofil,GaussWaveFunction &
             xx[k]+=Cd[k]*(1.0e0-e1)*(1.0e0+e2);
             xx[k]*=0.25e0;
          }
-         wf.evalHessLOL(xx,lol,gl,hl);
+         wf.EvalHessLOL(xx,lol,gl,hl);
          //prop1d[j]=sqrt(gl[0]*gl[0]+gl[1]*gl[1]+gl[2]*gl[2]);
          prop2d[j][0]=prop2d[j][1]=0.0e0;
          for (int p=0; p<3; p++) {
@@ -741,7 +741,7 @@ bool waveFunctionGrid2D::writePlaneTsvMolElecPot(ofstream &ofil,GaussWaveFunctio
             xx[k]+=Cd[k]*(1.0e0-e1)*(1.0e0+e2);
             xx[k]*=0.25e0;
          }
-         prop1d[j]=wf.evalMolElecPot(xx[0],xx[1],xx[2]);
+         prop1d[j]=wf.EvalMolElecPot(xx[0],xx[1],xx[2]);
          e2+=dx[1];
       }
       e2=-1.0e0*maxdim;
@@ -771,7 +771,7 @@ bool waveFunctionGrid2D::writePlaneTsvLED(ofstream &ofil,GaussWaveFunction &wf) 
             xx[k]+=Cd[k]*(1.0e0-e1)*(1.0e0+e2);
             xx[k]*=0.25e0;
          }
-         wf.evalLED(xx,led);
+         wf.EvalLED(xx,led);
          //prop1d[j]=sqrt(gl[0]*gl[0]+gl[1]*gl[1]+gl[2]*gl[2]);
          prop2d[j][0]=prop2d[j][1]=0.0e0;
          for (int p=0; p<3; p++) {
@@ -807,7 +807,7 @@ bool waveFunctionGrid2D::writePlaneTsvMagLED(ofstream &ofil,GaussWaveFunction &w
             xx[k]+=Cd[k]*(1.0e0-e1)*(1.0e0+e2);
             xx[k]*=0.25e0;
          }
-         prop1d[j]=wf.evalMagLED(xx[0],xx[1],xx[2]);
+         prop1d[j]=wf.EvalMagLED(xx[0],xx[1],xx[2]);
          e2+=dx[1];
       }
       e2=-1.0e0*maxdim;
@@ -837,7 +837,7 @@ bool waveFunctionGrid2D::writePlaneTsvRedDensMag(ofstream &ofil,GaussWaveFunctio
             xx[k]+=Cd[k]*(1.0e0-e1)*(1.0e0+e2);
             xx[k]*=0.25e0;
          }
-         prop1d[j]=wf.evalReducedDensityGradient(xx[0],xx[1],xx[2]);
+         prop1d[j]=wf.EvalReducedDensityGradient(xx[0],xx[1],xx[2]);
          e2+=dx[1];
       }
       e2=-1.0e0*maxdim;
@@ -867,7 +867,7 @@ bool waveFunctionGrid2D::writePlaneTsvRoSE(ofstream &ofil,GaussWaveFunction &wf)
             xx[k]+=Cd[k]*(1.0e0-e1)*(1.0e0+e2);
             xx[k]*=0.25e0;
          }
-         prop1d[j]=wf.evalRoSE(xx[0],xx[1],xx[2]);
+         prop1d[j]=wf.EvalRoSE(xx[0],xx[1],xx[2]);
          e2+=dx[1];
       }
       e2=-1.0e0*maxdim;
@@ -897,7 +897,7 @@ bool waveFunctionGrid2D::writePlaneTsvScalarCustFld(ofstream &ofil,GaussWaveFunc
             xx[k]+=Cd[k]*(1.0e0-e1)*(1.0e0+e2);
             xx[k]*=0.25e0;
          }
-         prop1d[j]=wf.evalCustomScalarField(xx[0],xx[1],xx[2]);
+         prop1d[j]=wf.EvalCustomScalarField(xx[0],xx[1],xx[2]);
          e2+=dx[1];
       }
       e2=-1.0e0*maxdim;
@@ -927,7 +927,7 @@ bool waveFunctionGrid2D::writePlaneTsvVectorCustFld(ofstream &ofil,GaussWaveFunc
             xx[k]+=Cd[k]*(1.0e0-e1)*(1.0e0+e2);
             xx[k]*=0.25e0;
          }
-         wf.evalCustomVectorField(xx[0],xx[1],xx[2],vcf);
+         wf.EvalCustomVectorField(xx[0],xx[1],xx[2],vcf);
          //prop1d[j]=sqrt(gl[0]*gl[0]+gl[1]*gl[1]+gl[2]*gl[2]);
          prop2d[j][0]=prop2d[j][1]=0.0e0;
          for (int p=0; p<3; p++) {
@@ -963,7 +963,7 @@ bool waveFunctionGrid2D::writePlaneTsvVirialPotentialEnergyDensity(ofstream &ofi
             xx[k]+=Cd[k]*(1.0e0-e1)*(1.0e0+e2);
             xx[k]*=0.25e0;
          }
-         prop1d[j]=wf.evalVirialPotentialEnergyDensity(xx[0],xx[1],xx[2]);
+         prop1d[j]=wf.EvalVirialPotentialEnergyDensity(xx[0],xx[1],xx[2]);
          e2+=dx[1];
       }
       e2=-1.0e0*maxdim;
@@ -993,7 +993,7 @@ bool waveFunctionGrid2D::writePlaneTsvEllipticity(ofstream &ofil,GaussWaveFuncti
             xx[k]+=Cd[k]*(1.0e0-e1)*(1.0e0+e2);
             xx[k]*=0.25e0;
          }
-         prop1d[j]=wf.evalEllipticity(xx[0],xx[1],xx[2]);
+         prop1d[j]=wf.EvalEllipticity(xx[0],xx[1],xx[2]);
          e2+=dx[1];
       }
       e2=-1.0e0*maxdim;

@@ -63,7 +63,7 @@
       int *myPN         --> The number of primitives associated with each nuclear center.
       double *R           --> The coordinates of the nuclei. It is a 1-dimensional array. It is 
                                this way to facilitate
-                               the implementation of cuda code. Later, a function getR(i,j) will be 
+                               the implementation of cuda code. Later, a function GetR(i,j) will be 
                                provided to access easily the j-th coordinate of the i-th nucleus.
                                (Beware the 0 index in c arrays)
       double *atCharge    --> The atomic charge
@@ -190,188 +190,188 @@ public:
       This function returns the value of the cart-th Cartesian coordinate of the nucnum-th nucleus.
       (0 for x, 1 for y and 1 for z coordinates.)
     */
-   double getR(const int nucnum,const int cart);
+   double GetR(const int nucnum,const int cart);
    /** Sets the s cutoff for NCI  */
-   void setNCISMax(double sm) {nciSMax=sm;}
+   void SetNCISMax(double sm) {nciSMax=sm;}
    /** Sets the rho lower cutoff for NCI  */
-   void setNCIRhoMin(double rr) {nciRhoMin=rr;}
+   void SetNCIRhoMin(double rr) {nciRhoMin=rr;}
    /** Sets the rho upper cutoff for NCI  */
-   void setNCIRhoMax(double rr) {nciRhoMax=rr;}
+   void SetNCIRhoMax(double rr) {nciRhoMax=rr;}
    /** This function returns three angular exponents of the type pt (primitive type). */
-   void getAng(int pt,int (&tt)[3]);
+   void GetAng(int pt,int (&tt)[3]);
    /**
       This function returns the value of the primitive coefficient of the orbn-th orbital
       and primn-th primitive. As any function in c, the indices run from 0 to some number.
       You should be careful about this.
     */
-   double getCoef(const int orbn,const int primn);
+   double GetCoef(const int orbn,const int primn);
    /** 
       This function returns the value of the density (\f$\rho\f$) at the point \f$\vec{r}=(x,y,z)\f$ using
       a non optimized algorithm. It remains in this class for having a reference for the
-      subsequent optimization of the function evalDensity. Unless you change evalDensity, use the 
+      subsequent optimization of the function EvalDensity. Unless you change EvalDensity, use the 
       latter to obtain the density (it is the faster function).
     */
-   double evalDensityArray(double x,double y, double z);
+   double EvalDensityArray(double x,double y, double z);
    /** This function calculates and prints to screen all the programmed field properties.
     */
-   void displayAllFieldProperties(double x,double y,double z);
+   void DisplayAllFieldProperties(double x,double y,double z);
    /* *********************************************************************************** */
    /** This function calculates and writes to ofil all the programmed field properties.
     */
-   void writeAllFieldProperties(double x,double y,double z,ofstream &ofil);
+   void WriteAllFieldProperties(double x,double y,double z,ofstream &ofil);
    /**
       This function returns the value of the density (\f$\rho\f$) at the point \f$\vec{r}=(x,y,z)\f$ using
       the most optimized algorithm.
     */
-   double evalDensity(double x,double y,double z);
-   double evalOptimizedScalar(double px,double py,double pz);
+   double EvalDensity(double x,double y,double z);
+   double EvalOptimizedScalar(double px,double py,double pz);
    /* *********************************************************************************** */
    /**
       This function returns true if all the Molecular Orbital Occupation Numers have the same
       value. It only takes one occupation number to be different in order to this
       function returning false.
     */
-   bool sameMolOrbOccNums(void);
+   bool SameMolOrbOccNums(void);
    /** This function returns the value of the density (\f$\rho\f$) and the gradient of it 
       (\f$\nabla\rho=dx\hat{\imath}+dy\hat{\jmath}+dz\hat{k}\f$) at the point 
       \f$\vec{r}=(x,y,z)\f$ using the most optimized algorithm.
     */
-   void evalRhoGradRho(double x, double y, double z,\
+   void EvalRhoGradRho(double x, double y, double z,\
          double &rho, double &dx, double &dy, double &dz);
-   void evalOptimizedVectorScalar(double x, double y, double z,\
+   void EvalOptimizedVectorScalar(double x, double y, double z,\
          double &rho, double &dx, double &dy, double &dz);
    /**
-      This function is the same as evalRhoGradRho, but using an array for the gradient instead of
+      This function is the same as EvalRhoGradRho, but using an array for the gradient instead of
       individual components of the gradient. i.e.
-      evalRhoGradRho(x,y,z,rho,g[3])=evalRhoGradRho(x,y,z,rho,g[0],g[1],g[2])
+      EvalRhoGradRho(x,y,z,rho,g[3])=EvalRhoGradRho(x,y,z,rho,g[0],g[1],g[2])
     */
-   void evalRhoGradRho(double x, double y, double z,double &rho, double (&grd)[3]);
+   void EvalRhoGradRho(double x, double y, double z,double &rho, double (&grd)[3]);
    /**
       This function will load all the values of the wave function (title, orbDesc, etc.) from a 
       file, which name is inname. As the name of the function suggest, the file must be *.wfn The function
       will automatically allocate the corresponding arrays. And since a destructor is given, you
       one does not need to deallocate the arrays of the wave function.
     */
-   bool readFromFileWFN(string inname);
+   bool ReadFromFileWFN(string inname);
    /**
-      This function is essentially the same as readFromFileWFN, but using a *wfx file. 
+      This function is essentially the same as ReadFromFileWFN, but using a *wfx file. 
       In the future, it is expected that both functions differ from each other, 
       since the files wfx are/will be capable of containing a larger amount of information.
     */
-   bool readFromFileWFX(string inname);
+   bool ReadFromFileWFX(string inname);
    /**
       This function just look for the extension of the inname, if it is wfn(wfx), then calls
-      readFromFileWFN(readFromFileWFX)
+      ReadFromFileWFN(ReadFromFileWFX)
       */
-   bool readFromFile(string inname);
+   bool ReadFromFile(string inname);
    /** As the name suggests, the function performs a series of test to verify the sanity
       (or suitability) of the loaded wavefunction. In the first implementation,
       for instance, if the primitive type of any primitive center is higher than
       20, a warning message will be printed about the incompleteness of the implemented
       fields. 
    */
-   bool sanityChecks(void);
+   bool SanityChecks(void);
    /** This function allocates memory space for the auxiliar arrays the GaussWaveFunctiontion object
       uses for calculating numerical properties (rho, grad(rho), hess(rho), etc.). */
-   bool allocAuxArrays(void);
-   bool allocAuxMEPArray(void);
+   bool AllocAuxArrays(void);
+   bool AllocAuxMEPArray(void);
    /** This function counts the number of primitives associated with each one
       of the nuclear centers. */
-   void countPrimsPerCenter(void);
+   void CountPrimsPerCenter(void);
    /** This function calculates the values of the matrix coefficients array \f$C_{\dot{A}\dot{B}}\f$
      (see notes ******* for notation details.) */
-   void calcCab(void);
+   void CalcCab(void);
    /** This function will write the wave function into a wfx file which name is outname. */
-   bool writeToFileWFX(string outname);
+   bool WriteToFileWFX(string outname);
    /** This function returns true if the *.wfn or *.wfx is supported. At the current version,
       only gaussian wave functions are handled. */
-   bool testSupport(void);
+   bool TestSupport(void);
    /** This funtion returns the value of the angular part of the primitive, i.e., it returns the
       value of \f$x^{a_1}y^{a_2}z^{a^3}\f$, where a1,a2,a3 are the values of the angular exponents.
       The values of a_i are coded in the value of pty (the type of primitive). For correct results,
       x must be the difference between the field point and the primitive center.*/
-   double evalAngACases(int &pty, double x, double y, double z);
+   double EvalAngACases(int &pty, double x, double y, double z);
    /** Let the field point be \f$\vec{\xi}\f$, and a primitive \f$\phi_{\dot{A}}\f$, with center 
       \f$R_{\dot{A}}\f$, type pty, and primitive exponent alp. The function
-      evalDkAngCases returns the value of
+      EvalDkAngCases returns the value of
       (\f$\nabla\phi_{\dot{A}}(x,y,z))\exp(-2\alpha r^2)\f$, where \f$x=\xi_x-R^x_{\dot{A}}\f$..., and
       \f$r^2=x^2+y^2+z^2\f$. The individual components are anx, any, anz, respectively*/
-   void evalDkAngCases(int &pty,double alp,double x, double y, double z,\
+   void EvalDkAngCases(int &pty,double alp,double x, double y, double z,\
          double &anx, double &any, double &anz);
    /** Let the field point be \f$\vec{\xi}\f$, and a primitive \f$\phi_{\dot{A}}\f$, with center 
      \f$R_{\dot{A}}\f$, type pty, and primitive exponent alp. The function
-     evalDkDlAngCases returns the value of
+     EvalDkDlAngCases returns the value of
      (\f$\partial_k\partial_l\phi_{\dot{A}}(x,y,z))/exp(-2 alp r^2)\f$, where x=\xi_x-R^x_{\dot{A}}..., and
      \f$r^2=x^2+y^2+z^2\f$. The individual components are axx,ayy,azz,axy,axz,ayz, respectively. */
-   void evalDkDlAngCases(int &pty,double alp,double x,double y,double z,\
+   void EvalDkDlAngCases(int &pty,double alp,double x,double y,double z,\
          double &axx,double &ayy,double &azz,double &axy,double &axz,double &ayz);
    /** Let the field point be \f$\vec{\xi}\f$, and a primitive \f$\phi_{\dot{A}}\f$, with center 
      \f$R_{\dot{A}}\f$, type pty, and primitive exponent alp. The function
-     evalLapAngCases returns the value of
+     EvalLapAngCases returns the value of
      (\f$\nabla^2\phi_{\dot{A}}(x,y,z))/exp(-2 alp rr)\f$, where x=\xi_x-R^x_{\dot{A}}..., and
      \f$rr=x^2+y^2+z^2\f$.*/
-   double evalLapAngCases(int &pty,double alp,double x,double y,double z,double rr);
+   double EvalLapAngCases(int &pty,double alp,double x,double y,double z,double rr);
    /** This function evaluates the six independent components of the Hessian of \f$\rho\f$ 
       (dxx,dyy,dzz,dxy,dxz,dyz) at the point \f$(x,y,z)\f$ */
-   void evalHessian(double x, double y, double z,double &dxx, double &dyy, double &dzz,\
+   void EvalHessian(double x, double y, double z,double &dxx, double &dyy, double &dzz,\
          double &dxy, double &dxz, double &dyz);
    /** This function evaluates the Hessian of \f$\rho\f$ at the point \f$(x,y,z)\f$ and 
      store them in the array h. */
-   void evalHessian(double x, double y, double z,double (&h)[3][3]);
+   void EvalHessian(double x, double y, double z,double (&h)[3][3]);
    /** This function evaluates the gradient and Hessian of \f$\rho\f$ at the point 
      \f$(x,y,z)\f$ and store them in the arrays g and h. */
-   void evalHessian(double x, double y, double z,double &dens,double (&g)[3],double (&h)[3][3]);
-   void evalOptimizedScalVecHess(double x, double y, double z,double &dens,double (&g)[3],double (&h)[3][3]);
+   void EvalHessian(double x, double y, double z,double &dens,double (&g)[3],double (&h)[3][3]);
+   void EvalOptimizedScalVecHess(double x, double y, double z,double &dens,double (&g)[3],double (&h)[3][3]);
    /**
       This function returns the value of the Laplacian of the density
       (\f$\nabla^2\rho\f$) at the point \f$(x,y,z)\f$*/
-   double evalLapRho(double x, double y, double z);
+   double EvalLapRho(double x, double y, double z);
    /**
       This function returns the value of the Electron Localization Function, EFL 
       (\f$\eta(x,y,z)=\frac{1}{1+[D(x,y,z)/D_h(x,y,z)]^2}\f$, where \f$D(x,y,z)=\frac{1}{2}
         \sum_i|\nabla\phi_i(x,y,z)|^2-\frac{1}{8}\frac{|\nabla\rho(x,y,z)|^2}{\rho(x,y,z)}\f$,
       and \f$D_h(x,y,z)=(3/10)(3\phi^2)^{2/3}\rho(x,y,z)^{5/3}\f$) at the
       point (x,y,z).*/
-   double evalELF(double x,double y,double z);
+   double EvalELF(double x,double y,double z);
    /**
       This function returns the value of the Shannon entropy density (\f$-\rho\ln\rho\f$) at the
       point (x,y,z).*/
-   double evalShannonEntropy(double x,double y,double z);
+   double EvalShannonEntropy(double x,double y,double z);
    /**
     This function returns the value of the Shannon entropy density in the momentum space 
     (\f$-\pi\ln\pi\f$) at the point (px,py,pz). */
-   double evalMomentumShannonEntropy(double px,double py,double pz);
+   double EvalMomentumShannonEntropy(double px,double py,double pz);
    /**
     This function returns the value of the Magnitude of the Density Gradient 
     (\f$|\nabla\rho|\f$) at the point (x,y,z). */
-   double evalMagGradRho(double x,double y,double z);
+   double EvalMagGradRho(double x,double y,double z);
    /**
     This function returns the value of the Localized Orbital Locator, LOL, 
     (\f$\gamma(x,y,z)=\frac{\tau(x,y,z)}{1+\tau(x,y,z)}\f$, where
      \tau=2D_h(x,y,z)/(\sum_i|\nabla\chi_i|^2)) at the field point (x,y,z) */
-   double evalLOL(double x,double y,double z);
+   double EvalLOL(double x,double y,double z);
    /**
     This function returns the value of the Kinetic Energy Density G, defined through
     \f$G(\vec{x})=\frac{1}{2}\sum_{\dot{A}\sum_{\dot{B}}}C_{\dot{A}\dot{B}}\nabla\phi_{\dot{A}}
      \cdot\nabla\phi_{\dot{B}}\f$ */
-   double evalKineticEnergyG(double x,double y,double z);
+   double EvalKineticEnergyG(double x,double y,double z);
    /** This function returns the value of
     \f$\sum_{\dot{A}\sum_{\dot{B}}}C_{\dot{A}\dot{B}}\nabla\phi_{\dot{A}}
      \cdot\nabla\phi_{\dot{B}}\f$, and rho. It severs for evaluation of
      indices such as the 'reduced density gradient' or 'region of
      slow electrons'. */
-   void evalNabPhi2(double const x,double const y,double const z,\
+   void EvalNabPhi2(double const x,double const y,double const z,\
          double &rho2ret,double &twoG);
    /** This function returns the value of the Kinetic Energy Density K, defined through
      \f$K(\vec{x})=-\frac{1}{4}\sum_{\dot{A}\sum_{\dot{B}}}C_{\dot{A}\dot{B}}
      (\phi_{\dot{A}}\nabla^2\phi_{\dot{B}}+\phi_{\dot{B}}\nabla^2\phi_{\dot{A}})\f$ */
-   double evalKineticEnergyK(double x,double y,double z);
+   double EvalKineticEnergyK(double x,double y,double z);
    /** Returns the ellipticity at the point (x,y,z). The ellipticity is defined as
     * \f$\varepsilon(\vec x)=\frac{\lambda_1}{\lambda_2}-1\f$. Here \f$\lambda_1\ (\lambda_2)\f$
     * is the first (second) Hessian eigenvalue. See 
     * Chem. Phys. Lett., 143 (1988) 450 - 458 for an example of how to use
     * ellipticyt profiles. */
-   double evalEllipticity(double x,double y,double z);
+   double EvalEllipticity(double x,double y,double z);
    /** This function seeks for a Bond Critical Point. The integers ii and jj are used to set
       \f$\vec{x}_0=\frac{1}{2}(\vec{R}_i+\vec{R}_j)\f$. The final values of the search are 
       stored in rx,ry,rz; in addition the values of the gradient at the point rx,ry,rz are 
@@ -380,7 +380,7 @@ public:
       the gradient at such a point).
       <b>Important: For searching critical points, please use the class critPtNetWork instead of
       this function. This function will be deprecated within the next few revisions.</b> */
-   void seekBondCP(int ii,int jj,double &rx,double &ry,double &rz,double &gx,double &gy,double &gz);
+   void SeekBondCP(int ii,int jj,double &rx,double &ry,double &rz,double &gx,double &gy,double &gz);
    /* This function uses the vector \f$\vec{x}\f$ as the original position, then it calculates 
       the step hh using the eigen-vector following algorithm. This algorithm is described with 
       detail for  this particular problem in 
@@ -388,14 +388,14 @@ public:
             all types of critical points in the charge density and its Laplacian".
       More details (and ) can be found in references [9-11] of the above article.
       This particular function aims to locate Bond Critical Points. */
-   void getBondCPStep(double (&x)[3],double (&hh)[3],double (&gg)[3]);
+   void GetBondCPStep(double (&x)[3],double (&hh)[3],double (&gg)[3]);
    /* This function seeks for a Ring Critical Point. The vector \f$\vec{x}_0=(r1,r2,r3)\f$ is used as
     the starting point for the search. The final values of the search are 
     stored in rx,ry,rz; in addition the values of the gradient at the point rx,ry,rz are 
     saved in gx,gy,gz. If the maximum number of iterations is reached and the critical
     was not found, then rx,ry,rz are the last values obtained from the search (and
     the gradient at such a point). */
-   void seekRingCP(double &r1,double &r2,double &r3,double &gx,double &gy,double &gz);
+   void SeekRingCP(double &r1,double &r2,double &r3,double &gx,double &gy,double &gz);
    /* This function uses the vector \f$\vec{x}\f$ as the original position, then it calculates 
     the step hh using the eigen-vector following algorithm. This algorithm is described with 
     detail for  this particular problem in 
@@ -403,14 +403,14 @@ public:
     all types of critical points in the charge density and its Laplacian".
     More details (and ) can be found in references [9-11] of the above article.
     This particular function aims to locate Ring Critical Points. */
-   void getRingCPStep(double (&x)[3],double (&hh)[3],double (&g)[3]);
+   void GetRingCPStep(double (&x)[3],double (&hh)[3],double (&g)[3]);
    /* This function seeks for a Cage Critical Point. The vector \f$\vec{x}_0=(r1,r2,r3)\f$ is used as
     the starting point for the search. The final values of the search are 
     stored in rx,ry,rz; in addition the values of the gradient at the point r1,r2,r3 are 
     saved in gx,gy,gz. If the maximum number of iterations is reached and the critical
     was not found, then rx,ry,rz are the last values obtained from the search (and
     the gradient at such a point). */
-   void seekCageCP(double &r1,double &r2,double &r3,double &gx,double &gy,double &gz);
+   void SeekCageCP(double &r1,double &r2,double &r3,double &gx,double &gy,double &gz);
    /* This function uses the vector \f$\vec{x}\f$ as the original position, then it calculates 
       the step hh using the eigen-vector following algorithm. This algorithm is described with 
       detail for  this particular problem in 
@@ -418,11 +418,11 @@ public:
       all types of critical points in the charge density and its Laplacian".
       More details (and ) can be found in references [9-11] of the above article.
       This particular function aims to locate Cage Critical Points. */
-   void getCageCPStep(double (&x)[3],double (&hh)[3],double (&g)[3]);
-   void evald1SingCartA(int &ang,double &t,double x,double &d0,double &d1);
-   void evald2SingCartA(int &ang,double &t,double x,\
+   void GetCageCPStep(double (&x)[3],double (&hh)[3],double (&g)[3]);
+   void Evald1SingCartA(int &ang,double &t,double x,double &d0,double &d1);
+   void Evald2SingCartA(int &ang,double &t,double x,\
                       double &d0,double &d1,double &d2);
-   void evald3SingCartA(int &ang,double &t,double &f,double &x,double &x2,
+   void Evald3SingCartA(int &ang,double &t,double &f,double &x,double &x2,
                       double &d0,double &d1,double &d2,double &d3);
    /** This function returns the third derivatives of the angular factors for evaluating
      the third derivatives of the primitives. Since these derivatives are usually
@@ -430,9 +430,9 @@ public:
      also evaluates the zero-th (angular factor), first, second, and third derivative
      factors of the primitives. The final derivatives of the primitives are
      obtained by multiplying the components of di times \f$\exp(-r^2\alpha)\f$.  */
-   void evald3Ang(int (&a)[3],double &alp,double (&x)[3],double (&x2)[3],
+   void Evald3Ang(int (&a)[3],double &alp,double (&x)[3],double (&x2)[3],
                   double (&d0)[3],double (&d1)[3],double (&d2)[3],double (&d3)[3]);
-   void evald4SingCartA(int &ang,double &t,double &f,double &x,double &x2,
+   void Evald4SingCartA(int &ang,double &t,double &f,double &x,double &x2,
                         double &d0,double &d1,double &d2,double &d3,double &d4);
    /** This function returns the fourth derivatives of the angular factors for evaluating
       the fourth derivatives of the primitives. Since these derivatives are usually
@@ -440,118 +440,118 @@ public:
       also evaluates the zero-th (angular factor), first, second, third, and fourth derivative
       factors of the primitives. The final derivatives of the primitives are
       obtained by multiplying the components of di times \f$\exp(-r^2\alpha)\f$.  */
-   void evald4Ang(int (&a)[3],double &alp,double (&x)[3],double (&x2)[3],
+   void Evald4Ang(int (&a)[3],double &alp,double (&x)[3],double (&x2)[3],
                   double (&d0)[3],double (&d1)[3],double (&d2)[3],double (&d3)[3],
                   double (&d4)[3]);
    /* This function evaluates \f$\nabla^2\rho(x,y,z)\f$. It is implemented in order to
-    * test evalDkDlAngCases(...)  */
-   //double evalLapRhoUsingd2(double x,double y,double z);
-   /* void evalDkDlAngCases(int &pty,double alp,double x,double y,double z,
+    * test EvalDkDlAngCases(...)  */
+   //double EvalLapRhoUsingd2(double x,double y,double z);
+   /* void EvalDkDlAngCases(int &pty,double alp,double x,double y,double z,
     double &axx,double &ayy,double &azz,double &axy,double &axz,double &ayz); */
-   void evalDiDjDkChi(int &pty,double &alp,double x,double y,double z,\
+   void EvalDiDjDkChi(int &pty,double &alp,double x,double y,double z,\
                       double (&dlm)[3][3],double (&dijk)[3][3][3]);
    /** Evaluates the Hessian of LOL (dxx,dyy,dzz,dxy,dxz,dyz). 
     * On the fly, it evaluates the electron density (dens),
     * the kinetic energy G (keG, LOL (lol), and the gradient of LOL (dx,dy,dz).  */
-   void evalHessLOL(double x, double y, double z, double &dens,double &keG, double &lol,
+   void EvalHessLOL(double x, double y, double z, double &dens,double &keG, double &lol,
          double &ddx, double &ddy, double &ddz,
          double &dxx, double &dyy, double &dzz,
          double &dxy, double &dxz, double &dyz);
    /** Evaluates the Hessian of LOL. It is an overloaded function.  */
-   void evalHessLOL(double (&x)[3],double &lol,double (&glol)[3],double (&hlol)[3][3]);
+   void EvalHessLOL(double (&x)[3],double &lol,double (&glol)[3],double (&hlol)[3][3]);
    /**
      This function evaluates the "angular" part of the Fourier transform of every primitive.
        ang is the angular exponent for the component, ooa is 1/alpha, osra=1/sqrt(a),
        Rx is the component of the primitive center, px is the component of the momentum, and
        px2=px*px. */
-   void evalFTASingCartA(int &ang,double &a,double &ooa,double &osra,\
+   void EvalFTASingCartA(int &ang,double &a,double &ooa,double &osra,\
          double &px,double &px2,double &Rx,\
          double &RePhi,double &ImPhi);
-   void evalFTAng(int (&a)[3],double &alp,double &ooalp,double (&p)[3],double (&p2)[3],\
+   void EvalFTAng(int (&a)[3],double &alp,double &ooalp,double (&p)[3],double (&p2)[3],\
                   double (&Rx)[3],complex<double> &pang);
-   void evalFTChi(int &pty,double &alp,double (&Rx)[3],double px,double py,double pz,
+   void EvalFTChi(int &pty,double &alp,double (&Rx)[3],double px,double py,double pz,
                       complex<double> &phi);
    /** This function computes the Fourier Transform of the electron density. <em>i.e.</em>
     * the momentum-space electron density.  */
-   double evalFTDensity(double px,double py,double pz);
+   double EvalFTDensity(double px,double py,double pz);
    /** This function computes the Kinetic energy density K in momentum space.  */
-   double evalFTKineticEnergy(double px,double py,double pz);
+   double EvalFTKineticEnergy(double px,double py,double pz);
    /** This function evaluates the Density Matrix of Order 1 at the points
     * \f$(x,y,z)\f$ and \f$(xp,yp,zp)\f$  */
-   double evalDensityMatrix1(double x,double y,double z,double xp,double yp,double zp);
+   double EvalDensityMatrix1(double x,double y,double z,double xp,double yp,double zp);
    /** This function evaluates the gradients of the Density Matrix of order 1, with
     * respect to the primed and non-primed variables.  */
-   void evalGradDensityMatrix1(double x,double y,double z,\
+   void EvalGradDensityMatrix1(double x,double y,double z,\
          double xp,double yp,double zp,\
          double &gamm,double (&gg)[3],double (&gp)[3]);
    /** This function computes the Hessian of the Density Matrix of Order 1 (second
     * derivatives), with respect to the primed, non-primed and combined cases.  */
-   void evalHessDensityMatrix1(double (&xx)[3],double (&xxp)[3],\
+   void EvalHessDensityMatrix1(double (&xx)[3],double (&xxp)[3],\
          double &gamm,double (&gg)[3],double (&gp)[3],\
          double (&hh)[3][3],double (&hph)[3][3],double (&hp)[3][3]);
    /** This function evaluates the magnitude of the grandient of LOL.  */
-   double evalMagGradLOL(double x,double y,double z);
+   double EvalMagGradLOL(double x,double y,double z);
    /** This function returns the Molecular Electrostatic Potential (MEP) at the
     * point (x,y,z).  */
-   double evalMolElecPot(double x,double y,double z);
-   void evalHermiteCoefs(int (&aia)[3],int (&aib)[3],double &alpab,
+   double EvalMolElecPot(double x,double y,double z);
+   void EvalHermiteCoefs(int (&aia)[3],int (&aib)[3],double &alpab,
                          double (&ra)[3],double (&rb)[3],
                          double (&rp)[3],
                          int (&maxl)[3],double (&Eijl)[3][7]);//tested on Dec 28th, 2013
-   void evalRlmnIntegs(const int (&lmn)[3],const double &alpp,const double (&cp)[3],
+   void EvalRlmnIntegs(const int (&lmn)[3],const double &alpp,const double (&cp)[3],
                        double (&Rlmn)[7][7][7]);
-   double evalVAB(double (&xx)[3],int (&aa)[3],int (&ab)[3],double &alpa,double &alpb,
+   double EvalVAB(double (&xx)[3],int (&aa)[3],int (&ab)[3],double &alpa,double &alpb,
                           double (&ra)[3],double (&rb)[3]);
-   double evalVABCore(double &s00,double (&xx)[3],int idxA,int idxB,int (&aa)[3],int (&ab)[3],double &alpa,double &alpb,
+   double EvalVABCore(double &s00,double (&xx)[3],int idxA,int idxB,int (&aa)[3],int (&ab)[3],double &alpa,double &alpb,
                           double (&ra)[3],double (&rb)[3]);
-   double evalOverlapIntegralAB(int (&aa)[3],int (&ab)[3],double &alpa,double &alpb,
+   double EvalOverlapIntegralAB(int (&aa)[3],int (&ab)[3],double &alpa,double &alpb,
                          double (&ra)[3],double (&rb)[3]);
    /** This function returns the integral of the electron density. It uses the analytical
     * properties of the Gauss-type orbital basis.  */
-   double integralRho(void);
+   double IntegralRho(void);
    /** This function returns the sum of the total number of protons of the molecule.  */
-   double totalNuclearCharge(void);
+   double TotalNuclearCharge(void);
    /** This function evaluates the Localized Electrons Detector vector (led) at the
     * point x. For the definition, see H. J. Boh\'orquez, C. F. Matta, and R. J. Boyd,
     * Int. Jour. Quantum Chem., 110 (2010) 2418--2425. The field is defined as
     * \f$\tilde{\boldsymbol P}=\frac{\nabla\rho}{2\rho}\f$.  */
-   void evalLED(double const (&x)[3],double (&led)[3]);
+   void EvalLED(double const (&x)[3],double (&led)[3]);
    /** This function returns the magnitude of the vector LED.
     * See the dtk-manual for more details.  */
-   double evalMagLED(double x,double y,double z);
+   double EvalMagLED(double x,double y,double z);
    /** This function returns the Reduced Density Gradient at the point (x,y,z).
     * See the dtk-manual for more details. */
-   double evalReducedDensityGradient(double x,double y,double z);
+   double EvalReducedDensityGradient(double x,double y,double z);
    /** This function computes the Region of Slow Electron index at the point
     * (x,y,z). See the dtk-manual for more details. */
-   double evalRoSE(double x,double y,double z);
+   double EvalRoSE(double x,double y,double z);
    /** This function is left to the final user for implementing its own custom 
     * scalar field.  */
-   double evalCustomScalarField(double x,double y,double z);
+   double EvalCustomScalarField(double x,double y,double z);
    /** This function is left to the final user for implementing its own custom 
     * vector field.  */
-   void evalCustomVectorField(double x,double y,double z,double (&v)[3]);
-   void useScalarCustomField(bool ucf) {usescustfld=ucf;}
-   void useVectorCustomField(bool ucf) {usevcustfld=ucf;}
+   void EvalCustomVectorField(double x,double y,double z,double (&v)[3]);
+   void UseScalarCustomField(bool ucf) {usescustfld=ucf;}
+   void UseVectorCustomField(bool ucf) {usevcustfld=ucf;}
    /** This function returns the Potential Energy Density at the point (x,y,z)
     * This field is taken from: "Hydrogen bond strengths revealed by topological
     * analyses of experimentally observed electron densities",
     * E. Espinosa, E. Molins, C. Lecomte, Chemical Physics Letters, 285 (1998), 170-173. */
-   double evalVirialPotentialEnergyDensity(double x,double y,double z);
-   /**The funtion evalNCIs returns values of Reduced Density Gradient 
+   double EvalVirialPotentialEnergyDensity(double x,double y,double z);
+   /**The funtion EvalNCIs returns values of Reduced Density Gradient 
     * applying NCI conditions.
     * To set the cutoffs, use setNCISMax, setNCIRhoMin, and setNCIRhoMax
     * See J. Contreras-Garcia, E. R. Johnson, S. Keinan, R. Chaudret, J-P. Piquemal,
     * D. N. Beratan, and W. Yang. J. Chem. Theory Comput. 2011, 7, pp 625-632
     * for more details */
-   double evalNCIs(double x,double y,double z);
+   double EvalNCIs(double x,double y,double z);
    /**Returns rho*sigma (if nciRhoMin<rho<nciRhoMax), where sigma is the second Hessian eigenvalue sign
     * To set the cutoffs (nciRhoMin and nciRhoMax)), use setNCISMax, setNCIRhoMin, and setNCIRhoMax
     * See J. Contreras-Garcia, E. R. Johnson, S. Keinan, R. Chaudret, J-P. Piquemal,
     * D. N. Beratan, and W. Yang. J. Chem. Theory Comput. 2011, 7, pp 625-632
     * for more details */
-   double evalNCILambda(double x,double y,double z);
-   int getPrTy(int idx) {return prTy[idx];}
+   double EvalNCILambda(double x,double y,double z);
+   int GetPrTy(int idx) {return prTy[idx];}
 /* ************************************************************************************ */
 protected:
 /* ************************************************************************************ */

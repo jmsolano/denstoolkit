@@ -152,7 +152,7 @@ int main (int argc, char ** argv) {
    cout << endl << "Loading wave function from file: " << infilnam << "... ";
    
    GaussWaveFunction gwf;
-   if (!(gwf.readFromFile(infilnam))) { //Loading the wave function
+   if (!(gwf.ReadFromFile(infilnam))) { //Loading the wave function
       ScreenUtils::SetScrRedBoldFont();
       cout << "Error: the wave function could not be loaded!\n";
       ScreenUtils::SetScrNormalFont();
@@ -176,9 +176,9 @@ int main (int argc, char ** argv) {
    if (dim==0) {
       cout << scientific << setprecision(12);
       cout << "\nMomentum density at\nP=(" << px << "," << py << "," << pz << "): " << endl;
-      cout << endl << gwf.evalFTDensity(px,py,pz) << endl;
+      cout << endl << gwf.EvalFTDensity(px,py,pz) << endl;
       cout << "\nK. E. in Momentum space at \nP=(" << px << "," << py << "," << pz << "): " << endl;
-      cout << endl << gwf.evalFTKineticEnergy(px,py,pz) << endl;
+      cout << endl << gwf.EvalFTKineticEnergy(px,py,pz) << endl;
    }
    
    /* Evaluates the momentum density on a line */

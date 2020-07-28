@@ -145,7 +145,7 @@ void HelpersPlot::MakeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunctio
          switch ( thefield ) {
             case 'd' :
                for (int i=0; i<npts; i++) {
-                  ofile << px << " " << wf.evalFTDensity(px,py,pz) << endl;
+                  ofile << px << " " << wf.EvalFTDensity(px,py,pz) << endl;
                   px+=dx;
 #if USEPROGRESSBAR
                   ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
@@ -154,7 +154,7 @@ void HelpersPlot::MakeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunctio
                break;
             case 'K' :
                for (int i=0; i<npts; i++) {
-                  ofile << px << " " << wf.evalFTKineticEnergy(px,py,pz) << endl;
+                  ofile << px << " " << wf.EvalFTKineticEnergy(px,py,pz) << endl;
                   px+=dx;
 #if USEPROGRESSBAR
                   ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
@@ -172,7 +172,7 @@ void HelpersPlot::MakeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunctio
          switch ( thefield ) {
             case 'd' :
                for (int i=0; i<npts; i++) {
-                  ofile << py << " " << wf.evalFTDensity(px,py,pz) << endl;
+                  ofile << py << " " << wf.EvalFTDensity(px,py,pz) << endl;
                   py+=dy;
 #if USEPROGRESSBAR
                   ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
@@ -181,7 +181,7 @@ void HelpersPlot::MakeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunctio
                break;
             case 'K' :
               for (int i=0; i<npts; i++) {
-                  ofile << py << " " << wf.evalFTKineticEnergy(px,py,pz) << endl;
+                  ofile << py << " " << wf.EvalFTKineticEnergy(px,py,pz) << endl;
                   py+=dy;
 #if USEPROGRESSBAR
                   ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
@@ -198,7 +198,7 @@ void HelpersPlot::MakeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunctio
          switch ( thefield ) {
             case 'd' :
                for (int i=0; i<npts; i++) {
-                  ofile << pz << " " << wf.evalFTDensity(px,py,pz) << endl;
+                  ofile << pz << " " << wf.EvalFTDensity(px,py,pz) << endl;
                   pz+=dz;
 #if USEPROGRESSBAR
                   ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
@@ -207,7 +207,7 @@ void HelpersPlot::MakeLineDatFile(optFlags &opts,string &datnam,GaussWaveFunctio
                break;
             case 'K' :
               for (int i=0; i<npts; i++) {
-                  ofile << pz << " " << wf.evalFTKineticEnergy(px,py,pz) << endl;
+                  ofile << pz << " " << wf.EvalFTKineticEnergy(px,py,pz) << endl;
                   pz+=dz;
 #if USEPROGRESSBAR
                   ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
@@ -247,7 +247,7 @@ void HelpersPlot::MakePlaneTsvFile(optFlags &opts,string &tsvnam,GaussWaveFuncti
                for (int i=0; i<npts; i++) {
                   py=-1.0e0*DEFAULTMAXVALUEOFP;
                   for (int j=0; j<npts; j++) {
-                     ofile << px << "\t" << py << "\t" << wf.evalFTDensity(px,py,pz) << endl;
+                     ofile << px << "\t" << py << "\t" << wf.EvalFTDensity(px,py,pz) << endl;
                      py+=dy;
                   }
                   ofile << endl;
@@ -261,7 +261,7 @@ void HelpersPlot::MakePlaneTsvFile(optFlags &opts,string &tsvnam,GaussWaveFuncti
                for (int i=0; i<npts; i++) {
                   py=-1.0e0*DEFAULTMAXVALUEOFP;
                   for (int j=0; j<npts; j++) {
-                     ofile << px << "\t" << py << "\t" << wf.evalFTKineticEnergy(px,py,pz) << endl;
+                     ofile << px << "\t" << py << "\t" << wf.EvalFTKineticEnergy(px,py,pz) << endl;
                      py+=dy;
                   }
                   ofile << endl;
@@ -284,7 +284,7 @@ void HelpersPlot::MakePlaneTsvFile(optFlags &opts,string &tsvnam,GaussWaveFuncti
                for (int i=0; i<npts; i++) {
                   pz=-1.0e0*DEFAULTMAXVALUEOFP;
                   for (int j=0; j<npts; j++) {
-                     ofile << px << "\t" << pz << "\t" << wf.evalFTDensity(px,py,pz) << endl;
+                     ofile << px << "\t" << pz << "\t" << wf.EvalFTDensity(px,py,pz) << endl;
                      pz+=dz;
                   }
                   ofile << endl;
@@ -298,7 +298,7 @@ void HelpersPlot::MakePlaneTsvFile(optFlags &opts,string &tsvnam,GaussWaveFuncti
                for (int i=0; i<npts; i++) {
                   pz=-1.0e0*DEFAULTMAXVALUEOFP;
                   for (int j=0; j<npts; j++) {
-                     ofile << px << "\t" << pz << "\t" << wf.evalFTKineticEnergy(px,py,pz) << endl;
+                     ofile << px << "\t" << pz << "\t" << wf.EvalFTKineticEnergy(px,py,pz) << endl;
                      pz+=dz;
                   }
                   ofile << endl;
@@ -321,7 +321,7 @@ void HelpersPlot::MakePlaneTsvFile(optFlags &opts,string &tsvnam,GaussWaveFuncti
                for (int i=0; i<npts; i++) {
                   pz=-1.0e0*DEFAULTMAXVALUEOFP;
                   for (int j=0; j<npts; j++) {
-                     ofile << py << "\t" << pz << "\t" << wf.evalFTDensity(px,py,pz) << endl;
+                     ofile << py << "\t" << pz << "\t" << wf.EvalFTDensity(px,py,pz) << endl;
                      pz+=dz;
                   }
                   ofile << endl;
@@ -335,7 +335,7 @@ void HelpersPlot::MakePlaneTsvFile(optFlags &opts,string &tsvnam,GaussWaveFuncti
                for (int i=0; i<npts; i++) {
                   pz=-1.0e0*DEFAULTMAXVALUEOFP;
                   for (int j=0; j<npts; j++) {
-                     ofile << py << "\t" << pz << "\t" << wf.evalFTKineticEnergy(px,py,pz) << endl;
+                     ofile << py << "\t" << pz << "\t" << wf.EvalFTKineticEnergy(px,py,pz) << endl;
                      pz+=dz;
                   }
                   ofile << endl;
@@ -401,7 +401,7 @@ void HelpersPlot::MakeCubeFile(optFlags &opts,string &cubnam,GaussWaveFunction &
             for (int j=0; j<boxnpts[1]; j++) {
                pz=xin[2];
                for (int k=0; k<boxnpts[2]; k++) {
-                  prop1d[k]=wf.evalFTDensity(px,py,pz);
+                  prop1d[k]=wf.EvalFTDensity(px,py,pz);
                   //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
                   pz+=delta[2][2];
                }
@@ -422,7 +422,7 @@ void HelpersPlot::MakeCubeFile(optFlags &opts,string &cubnam,GaussWaveFunction &
             for (int j=0; j<boxnpts[1]; j++) {
                pz=xin[2];
                for (int k=0; k<boxnpts[2]; k++) {
-                  prop1d[k]=wf.evalFTKineticEnergy(px,py,pz);
+                  prop1d[k]=wf.EvalFTKineticEnergy(px,py,pz);
                   //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
                   pz+=delta[2][2];
                }

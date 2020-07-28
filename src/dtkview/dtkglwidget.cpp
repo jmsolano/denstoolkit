@@ -409,7 +409,7 @@ void DTKGLWidget::addMolecule(QString fnam) {
    QString wfnname=dtkglutils::getWFNFileNameFromCPX(fnam);
 
    GaussWaveFunction *wf_lcl=new GaussWaveFunction();
-   if ( !(wf_lcl->readFromFile(wfnname.toStdString())) ) {
+   if ( !(wf_lcl->ReadFromFile(wfnname.toStdString())) ) {
       QMessageBox::warning(this, tr("Error"),\
             (tr("Could not open the file ")+wfnname+tr("!")\
              +tr("\nPlease remember that cpx and its associated"\

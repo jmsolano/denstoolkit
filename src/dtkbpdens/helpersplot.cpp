@@ -82,49 +82,49 @@ double HelpersPlot::EvalFieldProperty(char prop,double (&x)[3],GaussWaveFunction
    double res;
    switch (prop) {
       case 'd':
-         res=wf.evalDensity(x[0],x[1],x[2]);
+         res=wf.EvalDensity(x[0],x[1],x[2]);
          break;
       case 'g':
-         res=wf.evalMagGradRho(x[0],x[1],x[2]);
+         res=wf.EvalMagGradRho(x[0],x[1],x[2]);
          break;
       case 'l':
-         res=wf.evalLapRho(x[0],x[1],x[2]);
+         res=wf.EvalLapRho(x[0],x[1],x[2]);
          break;
       case 'e':
-         res=wf.evalEllipticity(x[0],x[1],x[2]);
+         res=wf.EvalEllipticity(x[0],x[1],x[2]);
          break;
       case 'E':
-         res=wf.evalELF(x[0],x[1],x[2]);
+         res=wf.EvalELF(x[0],x[1],x[2]);
          break;
       case 'L':
-         res=wf.evalLOL(x[0],x[1],x[2]);
+         res=wf.EvalLOL(x[0],x[1],x[2]);
          break;
       case 'M':
-         res=wf.evalMagGradLOL(x[0],x[1],x[2]);
+         res=wf.EvalMagGradLOL(x[0],x[1],x[2]);
          break;
       case 'P' :
-         res=wf.evalMagLED(x[0],x[1],x[2]);
+         res=wf.EvalMagLED(x[0],x[1],x[2]);
          break;
       case 'r' :
-         res=wf.evalRoSE(x[0],x[1],x[2]);
+         res=wf.EvalRoSE(x[0],x[1],x[2]);
          break;
       case 's' :
-         res=wf.evalReducedDensityGradient(x[0],x[1],x[2]);
+         res=wf.EvalReducedDensityGradient(x[0],x[1],x[2]);
          break;
       case 'S':
-         res=wf.evalShannonEntropy(x[0],x[1],x[2]);
+         res=wf.EvalShannonEntropy(x[0],x[1],x[2]);
          break;
       case 'G':
-         res=wf.evalKineticEnergyG(x[0],x[1],x[2]);
+         res=wf.EvalKineticEnergyG(x[0],x[1],x[2]);
          break;
       case 'K':
-         res=wf.evalKineticEnergyK(x[0],x[1],x[2]);
+         res=wf.EvalKineticEnergyK(x[0],x[1],x[2]);
          break;
       case 'u' :
-         res=wf.evalCustomScalarField(x[0],x[1],x[2]);
+         res=wf.EvalCustomScalarField(x[0],x[1],x[2]);
          break;
       case 'V':
-         res=wf.evalMolElecPot(x[0],x[1],x[2]);
+         res=wf.EvalMolElecPot(x[0],x[1],x[2]);
          break;
       default:
 #if DEBUG

@@ -155,7 +155,7 @@ bool waveFunctionGrid1D::writeLineDatRho(ofstream &ofil,GaussWaveFunction &wf) {
    }
    for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
-      prop1d[i]=wf.evalDensity(xx[0],xx[1],xx[2]);
+      prop1d[i]=wf.EvalDensity(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
       ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
@@ -219,7 +219,7 @@ bool waveFunctionGrid1D::writeLineDatLapRho(ofstream &ofil,GaussWaveFunction &wf
    }
    for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
-      prop1d[i]=wf.evalLapRho(xx[0],xx[1],xx[2]);
+      prop1d[i]=wf.EvalLapRho(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
       ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
@@ -255,7 +255,7 @@ bool waveFunctionGrid1D::writeLineDatELF(ofstream &ofil,GaussWaveFunction &wf) {
    }
    for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
-      prop1d[i]=wf.evalELF(xx[0],xx[1],xx[2]);
+      prop1d[i]=wf.EvalELF(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
       ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
@@ -291,7 +291,7 @@ bool waveFunctionGrid1D::writeLineDatLOL(ofstream &ofil,GaussWaveFunction &wf) {
    }
    for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
-      prop1d[i]=wf.evalLOL(xx[0],xx[1],xx[2]);
+      prop1d[i]=wf.EvalLOL(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
       ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
@@ -327,9 +327,9 @@ bool waveFunctionGrid1D::writeLineDatMagGradLOL(ofstream &ofil,GaussWaveFunction
    }
    for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
-      wf.evalHessLOL(xx,lol,gl,hl);
+      wf.EvalHessLOL(xx,lol,gl,hl);
       prop1d[i]=sqrt(gl[0]*gl[0]+gl[1]*gl[1]+gl[2]*gl[2]);
-      //prop1d[i]=wf.evalLOL(xx[0],xx[1],xx[2]);
+      //prop1d[i]=wf.EvalLOL(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
       ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
@@ -365,7 +365,7 @@ bool waveFunctionGrid1D::writeLineDatShannonEntropy(ofstream &ofil,GaussWaveFunc
    }
    for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
-      prop1d[i]=wf.evalShannonEntropy(xx[0],xx[1],xx[2]);
+      prop1d[i]=wf.EvalShannonEntropy(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
       ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
@@ -401,7 +401,7 @@ bool waveFunctionGrid1D::writeLineDatMagGradRho(ofstream &ofil,GaussWaveFunction
    }
    for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
-      prop1d[i]=wf.evalMagGradRho(xx[0],xx[1],xx[2]);
+      prop1d[i]=wf.EvalMagGradRho(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
       ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
@@ -437,7 +437,7 @@ bool waveFunctionGrid1D::writeLineDatKinetEnerDensG(ofstream &ofil,GaussWaveFunc
    }
    for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
-      prop1d[i]=wf.evalKineticEnergyG(xx[0],xx[1],xx[2]);
+      prop1d[i]=wf.EvalKineticEnergyG(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
       ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
@@ -473,7 +473,7 @@ bool waveFunctionGrid1D::writeLineDatKinetEnerDensK(ofstream &ofil,GaussWaveFunc
    }
    for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
-      prop1d[i]=wf.evalKineticEnergyK(xx[0],xx[1],xx[2]);
+      prop1d[i]=wf.EvalKineticEnergyK(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
       ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
@@ -508,7 +508,7 @@ bool waveFunctionGrid1D::writeLineDatMolElecPot(ofstream &ofil,GaussWaveFunction
    }
    for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
-      prop1d[i]=wf.evalMolElecPot(xx[0],xx[1],xx[2]);
+      prop1d[i]=wf.EvalMolElecPot(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
       ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
@@ -544,7 +544,7 @@ bool waveFunctionGrid1D::writeLineDatMagLED(ofstream &ofil,GaussWaveFunction &wf
    }
    for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
-      prop1d[i]=wf.evalMagLED(xx[0],xx[1],xx[2]);
+      prop1d[i]=wf.EvalMagLED(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
       ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
@@ -580,7 +580,7 @@ bool waveFunctionGrid1D::writeLineDatRedDensGrad(ofstream &ofil,GaussWaveFunctio
    }
    for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
-      prop1d[i]=wf.evalReducedDensityGradient(xx[0],xx[1],xx[2]);
+      prop1d[i]=wf.EvalReducedDensityGradient(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
       ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
@@ -616,7 +616,7 @@ bool waveFunctionGrid1D::writeLineDatRoSE(ofstream &ofil,GaussWaveFunction &wf) 
    }
    for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
-      prop1d[i]=wf.evalRoSE(xx[0],xx[1],xx[2]);
+      prop1d[i]=wf.EvalRoSE(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
       ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
@@ -652,7 +652,7 @@ bool waveFunctionGrid1D::writeLineDatScalarCustFld(ofstream &ofil,GaussWaveFunct
    }
    for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
-      prop1d[i]=wf.evalCustomScalarField(xx[0],xx[1],xx[2]);
+      prop1d[i]=wf.EvalCustomScalarField(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
       ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
@@ -688,7 +688,7 @@ bool waveFunctionGrid1D::writeLineDatVirialPotentialEnergyDensity(ofstream &ofil
    }
    for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
-      prop1d[i]=wf.evalVirialPotentialEnergyDensity(xx[0],xx[1],xx[2]);
+      prop1d[i]=wf.EvalVirialPotentialEnergyDensity(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
       ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
@@ -724,7 +724,7 @@ bool waveFunctionGrid1D::writeLineDatEllipticity(ofstream &ofil,GaussWaveFunctio
    }
    for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
    for (int i=0; i<npts; i++) {
-      prop1d[i]=wf.evalEllipticity(xx[0],xx[1],xx[2]);
+      prop1d[i]=wf.EvalEllipticity(xx[0],xx[1],xx[2]);
       for (int j=0; j<3; j++) {xx[j]+=delta[j];}
 #if USEPROGRESSBAR
       ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));

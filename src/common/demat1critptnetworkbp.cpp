@@ -187,7 +187,7 @@ void DeMat1CriticalPointNetworkBP::ComputeSingleCICP2D(int idx) {
       xx[i]=cpn->RACP[acp1Idx][i];
       xxp[i]=cpn->RACP[acp2Idx][i];
    }
-   wf->evalHessDensityMatrix1(xx,xxp,gamm,gg,gp,hh,hph,hp);
+   wf->EvalHessDensityMatrix1(xx,xxp,gamm,gg,gp,hh,hph,hp);
    double e1[3],e2[3];
    GetTangentialVectors(idx,e1,e2);
    double huv[2][2],tmp;
@@ -230,7 +230,7 @@ void DeMat1CriticalPointNetworkBP::ComputeSingleCICP6D(int idx) {
       xx[i]=cpn->RACP[acp1Idx][i];
       xxp[i]=cpn->RACP[acp2Idx][i];
    }
-   wf->evalHessDensityMatrix1(xx,xxp,gamm,gg,gp,hh,hph,hp);
+   wf->EvalHessDensityMatrix1(xx,xxp,gamm,gg,gp,hh,hph,hp);
    double hess[6][6],eivec[6][6],eival[6];
    assignHessian6D(hh,hph,hp,hess);
    eigen_decomposition6(hess,eivec,eival);
@@ -242,7 +242,7 @@ void DeMat1CriticalPointNetworkBP::ComputeSingleCICP6D(int idx) {
       xx[i]=bn->R[acp1Idx][i];
       xxp[i]=bn->R[acp2Idx][i];
    }
-   wf->evalHessDensityMatrix1(xx,xxp,gamm,gg,gp,hh,hph,hp);
+   wf->EvalHessDensityMatrix1(xx,xxp,gamm,gg,gp,hh,hph,hp);
    assignHessian6D(hh,hph,hp,hess);
    eigen_decomposition6(hess,eivec,eival);
    sigNN6D[idx]=GetSignature(eival);

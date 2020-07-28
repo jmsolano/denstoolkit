@@ -84,7 +84,7 @@ int main (int argc, char ** argv) {
    cout << endl << "Loading wave function from file: " << infilnam << "... ";
    
    GaussWaveFunction gwf;
-   if (!(gwf.readFromFile(infilnam))) { //Loading the wave function
+   if (!(gwf.ReadFromFile(infilnam))) { //Loading the wave function
       ScreenUtils::SetScrRedBoldFont();
       cout << "Error: the wave function could not be loaded!\n";
       ScreenUtils::SetScrNormalFont();
@@ -92,8 +92,8 @@ int main (int argc, char ** argv) {
    }
    cout << "Done." << endl;
    
-   double Nofelec=gwf.integralRho();
-   double totNucCharg=gwf.totalNuclearCharge();
+   double Nofelec=gwf.IntegralRho();
+   double totNucCharg=gwf.TotalNuclearCharge();
    double errinteg=100.0e0*fabs(1.0e0-Nofelec/totNucCharg);
    cout << setprecision(12);
    cout << "     Total Nuclear Charge: " << totNucCharg << endl;
@@ -123,8 +123,8 @@ int main (int argc, char ** argv) {
 
    /* Checking whether custom fields should be computed  */
 
-   if ( options.setscustfld ) {gwf.useScalarCustomField(true);}
-   if ( options.setvcustfld ) {gwf.useVectorCustomField(true);}
+   if ( options.setscustfld ) {gwf.UseScalarCustomField(true);}
+   if ( options.setvcustfld ) {gwf.UseVectorCustomField(true);}
    /* Openning the output log-file.  */
    
    ofile.open(outfilnam.c_str(),ios::out);
@@ -189,17 +189,17 @@ int main (int argc, char ** argv) {
       while (!rfile.eof()) {
          FileUtils::DiscardComments(rfile);
          rfile >> x >> y >> z;
-         gwf.displayAllFieldProperties(x,y,z);
+         gwf.DisplayAllFieldProperties(x,y,z);
          cout << endl;
-         gwf.writeAllFieldProperties(x,y,z,ofile);
+         gwf.WriteAllFieldProperties(x,y,z,ofile);
          ofile << endl;
       }
       rfile.close();
    } else {
       cout << endl;
       ofile << endl;
-      gwf.displayAllFieldProperties(x,y,z);
-      gwf.writeAllFieldProperties(x,y,z,ofile);
+      gwf.DisplayAllFieldProperties(x,y,z);
+      gwf.WriteAllFieldProperties(x,y,z,ofile);
    }
    ofile.close();
    

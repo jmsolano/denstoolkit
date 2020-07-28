@@ -95,7 +95,7 @@ int main (int argc, char ** argv) {
    /* Loading the wave function  */
    cout << endl << "Loading wave function from file: " << infilnam << "... ";
    GaussWaveFunction gwf;
-   if (!(gwf.readFromFile(infilnam))) {
+   if (!(gwf.ReadFromFile(infilnam))) {
       ScreenUtils::SetScrRedBoldFont();
       cout << "Error: the wave function could not be loaded!\n";
       ScreenUtils::SetScrNormalFont();

@@ -146,22 +146,22 @@ double IntegrateOverBondPath::theFunction(double (&x)[3]) {
    double trho;
    switch ( myFieldType ) {
       case DENS :
-         return wf->evalDensity(x[0],x[1],x[2]);
+         return wf->EvalDensity(x[0],x[1],x[2]);
          break;
       case KEDK :
-         return wf->evalKineticEnergyK(x[0],x[1],x[2]);
+         return wf->EvalKineticEnergyK(x[0],x[1],x[2]);
          break;
       case KEDG :
-         return wf->evalKineticEnergyG(x[0],x[1],x[2]);
+         return wf->EvalKineticEnergyG(x[0],x[1],x[2]);
          break;
       case REDG :
-         return wf->evalReducedDensityGradient(x[0],x[1],x[2]);
+         return wf->EvalReducedDensityGradient(x[0],x[1],x[2]);
          break;
       case MEPD :
-         return wf->evalMolElecPot(x[0],x[1],x[2]);
+         return wf->EvalMolElecPot(x[0],x[1],x[2]);
          break;
       case EDFTA :
-         trho=wf->evalDensity(x[0],x[1],x[2]);
+         trho=wf->EvalDensity(x[0],x[1],x[2]);
          return (-threeo4*pow((threeopi*trho),1.0e0/3.0e0));
          break;
       default :

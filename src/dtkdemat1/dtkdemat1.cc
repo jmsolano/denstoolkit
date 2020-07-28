@@ -100,7 +100,7 @@ int main (int argc, char ** argv) {
    /* Loading the wave function */
    cout << endl << "Loading wave function from file: " << infilnam << "... ";
    GaussWaveFunction gwf;
-   if (!(gwf.readFromFile(infilnam))) { //Loading the wave function
+   if (!(gwf.ReadFromFile(infilnam))) { //Loading the wave function
       ScreenUtils::SetScrRedBoldFont();
       cout << "Error: the wave function could not be loaded!\n";
       ScreenUtils::SetScrNormalFont();
@@ -273,9 +273,9 @@ int main (int argc, char ** argv) {
          for (int k=0; k<3; k++) {x2[k]=rbgp[0][k];}
          if (options.centredats) { p2=-0.5e0*lenline; } else { p2=0.0e0; }
          if ( prop=='G' ) {
-            gwf.evalGradDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2],md1tmp,gg,gp);
+            gwf.EvalGradDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2],md1tmp,gg,gp);
          } else {
-            md1tmp=gwf.evalDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2]);
+            md1tmp=gwf.EvalDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2]);
          }
          if (md1tmp>md1max) {
             md1max=md1tmp;
@@ -325,9 +325,9 @@ int main (int argc, char ** argv) {
             }
             p2+=sqrt(dist);
             if ( prop=='G' ) {
-               gwf.evalGradDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2],md1tmp,gg,gp);
+               gwf.EvalGradDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2],md1tmp,gg,gp);
             } else {
-               md1tmp=gwf.evalDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2]);
+               md1tmp=gwf.EvalDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2]);
             }
             if (i==j) {
                if (rhomin>md1tmp) {
@@ -413,9 +413,9 @@ int main (int argc, char ** argv) {
          for (int k=0; k<3; k++) {x2[k]=rbgp[0][k];}
          if (options.centredats) { p2=-0.5e0*lenline; } else { p2=0.0e0; }
          if ( prop=='G' ) {
-            gwf.evalGradDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2],md1tmp,gg,gp);
+            gwf.EvalGradDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2],md1tmp,gg,gp);
          } else {
-            md1tmp=gwf.evalDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2]);
+            md1tmp=gwf.EvalDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2]);
          }
          if (md1tmp>md1max) {
             md1max=md1tmp;
@@ -460,9 +460,9 @@ int main (int argc, char ** argv) {
             for (int k=0; k<3; k++) {x2[k]=rbgp[j][k];}
             p2+=dl;
             if ( prop=='G' ) {
-               gwf.evalGradDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2],md1tmp,gg,gp);
+               gwf.EvalGradDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2],md1tmp,gg,gp);
             } else {
-               md1tmp=gwf.evalDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2]);
+               md1tmp=gwf.EvalDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2]);
             }
             if (i==j) {
                if (rhomin>md1tmp) {
@@ -562,7 +562,7 @@ int main (int argc, char ** argv) {
    ScreenUtils::PrintV3Comp("x1(max): ",x1max);
    ScreenUtils::PrintV3Comp("x2(max): ",x2max);
    cout << "(p1: " << p1max << ")\n(p2: " << p2max << ")" << endl;
-   cout << "MD1(max): " << gwf.evalDensityMatrix1(x1max[0],x1max[1],x1max[2],
+   cout << "MD1(max): " << gwf.EvalDensityMatrix1(x1max[0],x1max[1],x1max[2],
                                              x2max[0],x2max[1],x2max[2]);
    cout << endl;
    ScreenUtils::PrintScrCharLine('-');
@@ -570,13 +570,13 @@ int main (int argc, char ** argv) {
    ScreenUtils::PrintV3Comp("x1(min): ",x1min);
    ScreenUtils::PrintV3Comp("x2(min): ",x2min);
    cout << "(p1: " << p1min << ")\n(p2: " << p2min << ")" << endl;
-   cout << "MD1(min): " << gwf.evalDensityMatrix1(x1min[0],x1min[1],x1min[2],
+   cout << "MD1(min): " << gwf.EvalDensityMatrix1(x1min[0],x1min[1],x1min[2],
                                              x2min[0],x2min[1],x2min[2]);
    cout << endl;
    ScreenUtils::PrintScrCharLine('-');
    double md1lmin=1.0e+50;
    if (options.uponbp) {
-      md1lmin=gwf.evalDensityMatrix1(robcp[0],robcp[1],robcp[2],robcp[0],robcp[1],robcp[2]);
+      md1lmin=gwf.EvalDensityMatrix1(robcp[0],robcp[1],robcp[2],robcp[0],robcp[1],robcp[2]);
       cout << "The bond critical point is located at:" << endl;
       ScreenUtils::PrintV3Comp("R(BCP): ",robcp);
       cout << "p1(p2): " << pbcp << endl;
@@ -585,13 +585,13 @@ int main (int argc, char ** argv) {
    if (options.uponsl) {
       cout << "The minimum value of the density is located at" << endl;
       cout << "(considering only the evaluated points)" << endl;
-      md1lmin= gwf.evalDensityMatrix1(xrmin[0],xrmin[1],xrmin[2],xrmin[0],xrmin[1],xrmin[2]);
+      md1lmin= gwf.EvalDensityMatrix1(xrmin[0],xrmin[1],xrmin[2],xrmin[0],xrmin[1],xrmin[2]);
       ScreenUtils::PrintV3Comp("R(rho,min): ",xrmin);
       cout << "MD1(rho,min): " << md1lmin << endl;
    }
    ScreenUtils::PrintScrCharLine('-');
    double md1dmax;
-   md1dmax=gwf.evalDensityMatrix1(xd1max[0],xd1max[1],xd1max[2],xd2max[0],xd2max[1],xd2max[2]);
+   md1dmax=gwf.EvalDensityMatrix1(xd1max[0],xd1max[1],xd1max[2],xd2max[0],xd2max[1],xd2max[2]);
    cout << "The maximum value of MD1 at the diagonal (90 degrees from the rho line)" << endl;
    cout << "is located at" << endl;
    ScreenUtils::PrintV3Comp("x1(diag,max): ",xd1max);
@@ -604,7 +604,7 @@ int main (int argc, char ** argv) {
    }
    ScreenUtils::PrintScrCharLine('-');
    cout << "The value of MD1 at the point e --aka cicp-- is:" << endl;
-   cout << "MD1(cicp): " << gwf.evalDensityMatrix1(\
+   cout << "MD1(cicp): " << gwf.EvalDensityMatrix1(\
          bnw.R[at1][0],bnw.R[at1][1],bnw.R[at1][2],\
          bnw.R[at2][0],bnw.R[at2][1],bnw.R[at2][2]) << endl;
    ScreenUtils::PrintScrCharLine('-');
@@ -625,7 +625,7 @@ int main (int argc, char ** argv) {
    FileUtils::WriteV3Components(logfil,"#x1(max):\n",x1max);
    FileUtils::WriteV3Components(logfil,"#x2(max):\n",x2max);
    logfil << "#(p1):\n" << p1max << "\n#(p2):\n" << p2max << endl;
-   logfil << "#MD1(max):\n" << gwf.evalDensityMatrix1(x1max[0],x1max[1],x1max[2],
+   logfil << "#MD1(max):\n" << gwf.EvalDensityMatrix1(x1max[0],x1max[1],x1max[2],
                                                     x2max[0],x2max[1],x2max[2]);
    logfil << endl;
    FileUtils::WriteScrCharLine(logfil,'-');
@@ -633,7 +633,7 @@ int main (int argc, char ** argv) {
    FileUtils::WriteV3Components(logfil,"#x1(min):\n",x1min);
    FileUtils::WriteV3Components(logfil,"#x2(min):\n",x2min);
    logfil << "#(p1):\n" << p1min << "\n#(p2):\n" << p2min << endl;
-   logfil << "#MD1(min):\n" << gwf.evalDensityMatrix1(x1min[0],x1min[1],x1min[2],
+   logfil << "#MD1(min):\n" << gwf.EvalDensityMatrix1(x1min[0],x1min[1],x1min[2],
                                                     x2min[0],x2min[1],x2min[2]);
    logfil << endl;
    FileUtils::WriteScrCharLine(logfil,'-');
@@ -664,7 +664,7 @@ int main (int argc, char ** argv) {
    /* Writes the value of gamma at cicp  */
    FileUtils::WriteScrCharLine(logfil,'-');
    logfil << "#The value of MD1 at the point e --aka cicp-- is:" << endl;
-   logfil << "#MD1(CICP): " << endl << gwf.evalDensityMatrix1(\
+   logfil << "#MD1(CICP): " << endl << gwf.EvalDensityMatrix1(\
          bnw.R[at1][0],bnw.R[at1][1],bnw.R[at1][2],\
          bnw.R[at2][0],bnw.R[at2][1],bnw.R[at2][2]) << endl;
    FileUtils::WriteScrCharLine(logfil,'-');
