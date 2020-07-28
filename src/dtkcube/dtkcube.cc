@@ -270,7 +270,7 @@ int main (int argc, char ** argv) {
       lfil.close();
    }
    if ( options.genvmdscript ) {
-      VMDTools::writeSimpleVMDScript(outfilnam,prop,options.quietrender);
+      VMDTools::WriteSimpleVMDScript(outfilnam,prop,options.quietrender);
    }
    
    ScreenUtils::PrintHappyEnding();

@@ -49,7 +49,7 @@ class VMDTools {
 /* ************************************************************************** */
 public:
 /* ************************************************************************** */
-   static void writeSimpleVMDScript(string cubename,const char prop2rend,bool addquiet=false);
+   static void WriteSimpleVMDScript(string cubename,const char prop2rend,bool addquiet=false);
 /* ************************************************************************** */
 protected:
 /* ************************************************************************** */

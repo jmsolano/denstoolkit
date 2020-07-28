@@ -48,7 +48,7 @@ using std::ofstream;
 #include "fileutils.h"
 #include "screenutils.h"
 
-void VMDTools::writeSimpleVMDScript(string cubename,const char prop2rend,bool addquiet) {
+void VMDTools::WriteSimpleVMDScript(string cubename,const char prop2rend,bool addquiet) {
    string vmdname=cubename;
    string tganame=cubename;
    FileUtils::ReplaceExtensionOfFileName(vmdname,"vmd");
