@@ -106,45 +106,45 @@ int main (int argc, char ** argv) {
                                //was read, there souldn't be problems here.
    bnw.setUpBNW(); //To setup the bond network.
    
-   waveFunctionGrid3D grid;
+   WaveFunctionGrid3D grid;
    
    /* Looking for user grid dimensions */
    
    int nn=DEFAULTPOINTSPERDIRECTION;
    if (options.setn1) {
       sscanf(argv[options.setn1],"%d",&nn); //same number of points per direction
-      grid.setNPts(nn);
+      grid.SetNPts(nn);
    } else if (options.setn3) {
       int ny,nz;
       sscanf(argv[options.setn3],"%d",&nn);  //different number of points per direction
       sscanf(argv[options.setn3+1],"%d",&ny); //manually given by the user
       sscanf(argv[options.setn3+2],"%d",&nz);
-      grid.setNPts(nn,ny,nz);
+      grid.SetNPts(nn,ny,nz);
    } else if (options.setsmcub1) {
       sscanf(argv[options.setsmcub1],"%d",&nn); //uses nn for determining the number of points
                      //of the largest axis. The rest will have proportional number to their length
    } else if ( options.setcentredcub ) {
       nn=DEFAULTNUMPTSCENTREDCUBE;
-      grid.setNPts(nn);
+      grid.SetNPts(nn);
    } else {
-      grid.setNPts(nn);
+      grid.SetNPts(nn);
    }
    
    if ((options.setsmcub)||(options.setsmcub1)) {
-      grid.setUpSmartCuboidGrid(gwf,bnw,nn);
+      grid.SetUpSmartCuboidGrid(gwf,bnw,nn);
    } else if ( options.setcentredcub ) {
      int at1,at2;
      sscanf(argv[options.setcentredcub],"%d",&at1);
      sscanf(argv[options.setcentredcub+1],"%d",&at2);
-     grid.setUpCenteredGrid(gwf,bnw,at1,at2,DEFAULTLENGTHCENTREDCUBE,nn);
+     grid.SetUpCenteredGrid(gwf,bnw,at1,at2,DEFAULTLENGTHCENTREDCUBE,nn);
    } else {
-      grid.setUpSimpleGrid(gwf,bnw);
+      grid.SetUpSimpleGrid(gwf,bnw);
    }
    
-   cout << "The size of the grid will be: " << grid.getNPts(0) << " x " 
-        << grid.getNPts(1) << " x " << grid.getNPts(2) << endl;
+   cout << "The size of the grid will be: " << grid.GetNPts(0) << " x " 
+        << grid.GetNPts(1) << " x " << grid.GetNPts(2) << endl;
    cout << "Total number of points that will be computed: " 
-        << (grid.getNPts(0)*grid.getNPts(1)*grid.getNPts(2)) << endl;
+        << (grid.GetNPts(0)*grid.GetNPts(1)*grid.GetNPts(2)) << endl;
    
    /* Special configurations  */
    if ( options.configspecialnci ) {
@@ -175,60 +175,60 @@ int main (int argc, char ** argv) {
    cout << "(Scalar Field to plot: " << GetFieldTypeKeyLong(prop) << ")." << endl << endl;
    switch (prop) {
       case 'd':
-         grid.makeCube(outfilnam,gwf,DENS);
+         grid.MakeCube(outfilnam,gwf,DENS);
          cout << endl;
          break;
       case 'g':
-         grid.makeCube(outfilnam,gwf,MGRD);
+         grid.MakeCube(outfilnam,gwf,MGRD);
          break;
       case 'l':
-         grid.makeCube(outfilnam,gwf,LAPD);
+         grid.MakeCube(outfilnam,gwf,LAPD);
          cout << endl;
          break;
       case 'e':
-         grid.makeCube(outfilnam,gwf,ELLPY);
+         grid.MakeCube(outfilnam,gwf,ELLPY);
          break;
       case 'E':
-         grid.makeCube(outfilnam,gwf,ELFD);
+         grid.MakeCube(outfilnam,gwf,ELFD);
          break;
       case 'P' :
-         grid.makeCube(outfilnam,gwf,MLED);
+         grid.MakeCube(outfilnam,gwf,MLED);
          break;
       case 'r' :
-         grid.makeCube(outfilnam,gwf,ROSE);
+         grid.MakeCube(outfilnam,gwf,ROSE);
          break;
       case 's' :
-         grid.makeCube(outfilnam,gwf,REDG);
+         grid.MakeCube(outfilnam,gwf,REDG);
          break;
       case 'S':
-         grid.makeCube(outfilnam,gwf,SENT);
+         grid.MakeCube(outfilnam,gwf,SENT);
          break;
       case 'L':
-         grid.makeCube(outfilnam,gwf,LOLD);
+         grid.MakeCube(outfilnam,gwf,LOLD);
          break;
       case 'M':
-         grid.makeCube(outfilnam,gwf,MGLD);
+         grid.MakeCube(outfilnam,gwf,MGLD);
          break;
       case 'G':
-         grid.makeCube(outfilnam,gwf,KEDG);
+         grid.MakeCube(outfilnam,gwf,KEDG);
          break;
       case 'K':
-         grid.makeCube(outfilnam,gwf,KEDK);
+         grid.MakeCube(outfilnam,gwf,KEDK);
          break;
       case 'u' :
-         grid.makeCube(outfilnam,gwf,SCFD);
+         grid.MakeCube(outfilnam,gwf,SCFD);
          break;
       case 'V':
-         grid.makeCube(outfilnam,gwf,MEPD);
+         grid.MakeCube(outfilnam,gwf,MEPD);
          break;
       case 'v':
-         grid.makeCube(outfilnam,gwf,VPED);
+         grid.MakeCube(outfilnam,gwf,VPED);
          break;
       case 'Z':
-         grid.makeCube(outfilnam,gwf,NCIS);
+         grid.MakeCube(outfilnam,gwf,NCIS);
          break;
       case 'z':
-         grid.makeCube(outfilnam,gwf,NCIL);
+         grid.MakeCube(outfilnam,gwf,NCIL);
          break;
       default:
          ScreenUtils::SetScrRedBoldFont();
@@ -258,9 +258,9 @@ int main (int argc, char ** argv) {
       lfil << "#Wave function file name: " << endl << infilnam << endl;
       lfil << "#Number of primitives: "  << endl << gwf.nPri << endl;
       lfil << "#Grid dimensions:" << endl
-           << grid.getNPts(0) << " " << grid.getNPts(1) << " " << grid.getNPts(2) << endl;
+           << grid.GetNPts(0) << " " << grid.GetNPts(1) << " " << grid.GetNPts(2) << endl;
       lfil << "#Total number of points in the cube:" << endl
-           << (grid.getNPts(0)*grid.getNPts(1)*grid.getNPts(2)) << endl;
+           << (grid.GetNPts(0)*grid.GetNPts(1)*grid.GetNPts(2)) << endl;
       lfil << "#CPU Time (sec):" << endl;
       lfil << scientific << setprecision(4)
            <<  double( clock () - begin_time ) / CLOCKS_PER_SEC << endl;

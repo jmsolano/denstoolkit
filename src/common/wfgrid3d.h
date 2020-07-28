@@ -64,44 +64,44 @@ using std::ofstream;
 using std::string;
 
 /* ********************************************************************************** */
-class waveFunctionGrid3D {
+class WaveFunctionGrid3D {
 /* ********************************************************************************** */
 public:
 /* ********************************************************************************** */
-   waveFunctionGrid3D();
-   ~waveFunctionGrid3D();
+   WaveFunctionGrid3D();
+   ~WaveFunctionGrid3D();
    /* ******************************************************************************* */
    double dx[3][3];
    double xin[3];
    string comments;
    double *prop1d;
    ScalarFieldType prop2plot;
-   void setUpSimpleGrid(GaussWaveFunction &wf,bondNetWork &bn);
-   void setUpSmartCuboidGrid(GaussWaveFunction &wf,bondNetWork &bn,const int nmx);
-   void setUpCenteredGrid(GaussWaveFunction &wf,bondNetWork &bn,\
+   void SetUpSimpleGrid(GaussWaveFunction &wf,bondNetWork &bn);
+   void SetUpSmartCuboidGrid(GaussWaveFunction &wf,bondNetWork &bn,const int nmx);
+   void SetUpCenteredGrid(GaussWaveFunction &wf,bondNetWork &bn,\
          const int at1,const int at2,const double len,const int nmx);
-   void setNPts(int nx,int ny,int nz);
-   void setNPts(int nn);
-   int getNPts(int ii);
-   void writeCubeRho(ofstream &ofil,GaussWaveFunction &wf);
-   void writeCubeLapRho(ofstream &ofil,GaussWaveFunction &wf);
-   void writeCubeELF(ofstream &ofil,GaussWaveFunction &wf);
-   void writeCubeShannonEntropy(ofstream &ofil,GaussWaveFunction &wf);
-   void writeCubeMagGradRho(ofstream &ofil,GaussWaveFunction &wf);
-   void writeCubeLOL(ofstream &ofil,GaussWaveFunction &wf);
-   void writeCubeKinetEnerDensG(ofstream &ofil,GaussWaveFunction &wf);
-   void writeCubeKinetEnerDensK(ofstream &ofil,GaussWaveFunction &wf);
-   void makeCube(string &onam,GaussWaveFunction &wf,ScalarFieldType ft);
-   void writeCubeMagGradLOL(ofstream &ofil,GaussWaveFunction &wf);
-   void writeCubeMolElecPot(ofstream &ofil,GaussWaveFunction &wf);
-   void writeCubeMagLED(ofstream &ofil,GaussWaveFunction &wf);
-   void writeCubeRedDensGrad(ofstream &ofil,GaussWaveFunction &wf);
-   void writeCubeRoSE(ofstream &ofil,GaussWaveFunction &wf);
-   void writeCubeScalarCustFld(ofstream &ofil,GaussWaveFunction &wf);
-   void writeCubeEllipticity(ofstream &ofil,GaussWaveFunction &wf);
-   void writeCubeVirialPotentialEnergyDensity(ofstream &ofil,GaussWaveFunction &wf);
-   void writeCubeNCIRedDensGrad(ofstream &ofil,GaussWaveFunction &wf);
-   void writeCubeNCIRho(ofstream &ofil,GaussWaveFunction &wf);
+   void SetNPts(int nx,int ny,int nz);
+   void SetNPts(int nn);
+   int GetNPts(int ii);
+   void WriteCubeRho(ofstream &ofil,GaussWaveFunction &wf);
+   void WriteCubeLapRho(ofstream &ofil,GaussWaveFunction &wf);
+   void WriteCubeELF(ofstream &ofil,GaussWaveFunction &wf);
+   void WriteCubeShannonEntropy(ofstream &ofil,GaussWaveFunction &wf);
+   void WriteCubeMagGradRho(ofstream &ofil,GaussWaveFunction &wf);
+   void WriteCubeLOL(ofstream &ofil,GaussWaveFunction &wf);
+   void WriteCubeKinetEnerDensG(ofstream &ofil,GaussWaveFunction &wf);
+   void WriteCubeKinetEnerDensK(ofstream &ofil,GaussWaveFunction &wf);
+   void MakeCube(string &onam,GaussWaveFunction &wf,ScalarFieldType ft);
+   void WriteCubeMagGradLOL(ofstream &ofil,GaussWaveFunction &wf);
+   void WriteCubeMolElecPot(ofstream &ofil,GaussWaveFunction &wf);
+   void WriteCubeMagLED(ofstream &ofil,GaussWaveFunction &wf);
+   void WriteCubeRedDensGrad(ofstream &ofil,GaussWaveFunction &wf);
+   void WriteCubeRoSE(ofstream &ofil,GaussWaveFunction &wf);
+   void WriteCubeScalarCustFld(ofstream &ofil,GaussWaveFunction &wf);
+   void WriteCubeEllipticity(ofstream &ofil,GaussWaveFunction &wf);
+   void WriteCubeVirialPotentialEnergyDensity(ofstream &ofil,GaussWaveFunction &wf);
+   void WriteCubeNCIRedDensGrad(ofstream &ofil,GaussWaveFunction &wf);
+   void WriteCubeNCIRho(ofstream &ofil,GaussWaveFunction &wf);
 /* ********************************************************************************** */
 private:
    bool imsetup;
