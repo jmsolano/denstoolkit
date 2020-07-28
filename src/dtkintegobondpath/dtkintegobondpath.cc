@@ -106,9 +106,9 @@ int main (int argc, char ** argv) {
    /* Loads the bond-network (if the wave function
     * was read, there souldn't be problems here to
     * setup the bond network).  */
-   bondNetWork bnw;
-   bnw.readFromFile(infilnam);
-   bnw.setUpBNW();
+   BondNetWork bnw;
+   bnw.ReadFromFile(infilnam);
+   bnw.SetUpBNW();
 
    /* Setups the critical point network object  */
    critPtNetWork cpn(gwf,bnw);

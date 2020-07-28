@@ -71,9 +71,9 @@ WaveFunctionGrid3D::WaveFunctionGrid3D() {
 WaveFunctionGrid3D::~WaveFunctionGrid3D() {
    MyMemory::Dealloc1DRealArray(prop1d);
 }
-void WaveFunctionGrid3D::SetUpSimpleGrid(GaussWaveFunction &wf,bondNetWork &bn) {
-   if (!(bn.imstp())) {
-      cout << "Error: Trying to use a non set-up bondNetWork object!\n";
+void WaveFunctionGrid3D::SetUpSimpleGrid(GaussWaveFunction &wf,BondNetWork &bn) {
+   if (!(bn.ImStp())) {
+      cout << "Error: Trying to use a non set-up BondNetWork object!\n";
       cout << "The grid could not be set up." << endl;
       return;
    }
@@ -85,9 +85,9 @@ void WaveFunctionGrid3D::SetUpSimpleGrid(GaussWaveFunction &wf,bondNetWork &bn) 
    imsetup=true;
    return;
 }
-void WaveFunctionGrid3D::SetUpSmartCuboidGrid(GaussWaveFunction &wf,bondNetWork &bn,int nmx) {
-   if (!(bn.imstp())) {
-      cout << "Error: Trying to use a non set-up bondNetWork object!\n";
+void WaveFunctionGrid3D::SetUpSmartCuboidGrid(GaussWaveFunction &wf,BondNetWork &bn,int nmx) {
+   if (!(bn.ImStp())) {
+      cout << "Error: Trying to use a non set-up BondNetWork object!\n";
       cout << "The grid could not be set up." << endl;
       return;
    }
@@ -109,10 +109,10 @@ void WaveFunctionGrid3D::SetUpSmartCuboidGrid(GaussWaveFunction &wf,bondNetWork 
    imsetup=true;
    return;
 }
-void WaveFunctionGrid3D::SetUpCenteredGrid(GaussWaveFunction &wf,bondNetWork &bn,\
+void WaveFunctionGrid3D::SetUpCenteredGrid(GaussWaveFunction &wf,BondNetWork &bn,\
       const int at1,const int at2,const double len,const int nmx) {
-   if (!(bn.imstp())) {
-      cout << "Error: Trying to use a non set-up bondNetWork object!\n";
+   if (!(bn.ImStp())) {
+      cout << "Error: Trying to use a non set-up BondNetWork object!\n";
       cout << "The grid could not be set up." << endl;
       return;
    }

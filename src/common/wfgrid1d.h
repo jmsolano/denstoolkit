@@ -88,10 +88,10 @@ public:
    /* ******************************************************************************* */
    void SetNPts(int nx);
    int GetNPts(void);
-   void SetUpSimpleLine(bondNetWork &bn,int na,int nb);
-   void SetUpSimpleLine(bondNetWork &bn,int na);
-   void SetUpSimpleLine(bondNetWork &bn,double (&ta)[3],double (&tb)[3]);
-   //void SetUpSimpleLine(bondNetWork &bn,double (&ta)[3]);
+   void SetUpSimpleLine(BondNetWork &bn,int na,int nb);
+   void SetUpSimpleLine(BondNetWork &bn,int na);
+   void SetUpSimpleLine(BondNetWork &bn,double (&ta)[3],double (&tb)[3]);
+   //void SetUpSimpleLine(BondNetWork &bn,double (&ta)[3]);
    bool WriteLineDatRho(ofstream &ofil,GaussWaveFunction &wf);
    void MakeDat(string &onam,GaussWaveFunction &wf,ScalarFieldType ft);
    bool WriteLineDatLapRho(ofstream &ofil,GaussWaveFunction &wf);

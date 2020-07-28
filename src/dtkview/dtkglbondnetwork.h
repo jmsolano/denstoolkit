@@ -85,7 +85,7 @@ public:
       QVector3D color;
    };
 protected:
-   bondNetWork *bnw;
+   BondNetWork *bnw;
 private:
    QVector<Link>   links;
    QVector<Atom>   atoms;

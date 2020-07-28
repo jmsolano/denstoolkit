@@ -76,9 +76,9 @@ public:
    string comments;
    double *prop1d;
    ScalarFieldType prop2plot;
-   void SetUpSimpleGrid(GaussWaveFunction &wf,bondNetWork &bn);
-   void SetUpSmartCuboidGrid(GaussWaveFunction &wf,bondNetWork &bn,const int nmx);
-   void SetUpCenteredGrid(GaussWaveFunction &wf,bondNetWork &bn,\
+   void SetUpSimpleGrid(GaussWaveFunction &wf,BondNetWork &bn);
+   void SetUpSmartCuboidGrid(GaussWaveFunction &wf,BondNetWork &bn,const int nmx);
+   void SetUpCenteredGrid(GaussWaveFunction &wf,BondNetWork &bn,\
          const int at1,const int at2,const double len,const int nmx);
    void SetNPts(int nx,int ny,int nz);
    void SetNPts(int nn);

@@ -73,9 +73,9 @@ void WaveFunctionGrid1D::SetNPts(int nn) {
 int WaveFunctionGrid1D::GetNPts(void) {
    return npts;
 }
-void WaveFunctionGrid1D::SetUpSimpleLine(bondNetWork &bn,int na,int nb) {
-   if (!(bn.imstp())) {
-      cout << "Error: Trying to use a non set-up bondNetWork object!\n";
+void WaveFunctionGrid1D::SetUpSimpleLine(BondNetWork &bn,int na,int nb) {
+   if (!(bn.ImStp())) {
+      cout << "Error: Trying to use a non set-up BondNetWork object!\n";
       cout << "The grid could not be set up." << endl;
 #if DEBUG
       cout << "From: " << __FILE__ << " at line " << __LINE__ << endl;
@@ -104,7 +104,7 @@ void WaveFunctionGrid1D::SetUpSimpleLine(bondNetWork &bn,int na,int nb) {
    imsetup=true;
    return;
 }
-void WaveFunctionGrid1D::SetUpSimpleLine(bondNetWork &bn,double (&ta)[3],double (&tb)[3]) {
+void WaveFunctionGrid1D::SetUpSimpleLine(BondNetWork &bn,double (&ta)[3],double (&tb)[3]) {
    double eta[3],orig[3];
    for (int i=0; i<3; i++) {
       eta[i]=tb[i]-ta[i];
@@ -169,9 +169,9 @@ bool WaveFunctionGrid1D::WriteLineDatRho(ofstream &ofil,GaussWaveFunction &wf) {
    }
    return true;
 }
-void WaveFunctionGrid1D::SetUpSimpleLine(bondNetWork &bn,int na) {
-   if (!(bn.imstp())) {
-      cout << "Error: Trying to use a non set-up bondNetWork object!\n";
+void WaveFunctionGrid1D::SetUpSimpleLine(BondNetWork &bn,int na) {
+   if (!(bn.ImStp())) {
+      cout << "Error: Trying to use a non set-up BondNetWork object!\n";
       cout << "The grid could not be set up." << endl;
 #if DEBUG
       cout << "From: " << __FILE__ << " at line " << __LINE__ << endl;

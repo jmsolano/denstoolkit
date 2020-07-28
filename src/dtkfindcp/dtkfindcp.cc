@@ -145,10 +145,10 @@ int main (int argc, char ** argv)
    
    //return 0;
    
-   bondNetWork bnw;
-   bnw.readFromFile(infilnam); //Loading the bond-network (if the wave function
+   BondNetWork bnw;
+   bnw.ReadFromFile(infilnam); //Loading the bond-network (if the wave function
                                //was read, there souldn't be problems here.
-   bnw.setUpBNW();             //To setup the bond network.
+   bnw.SetUpBNW();             //To setup the bond network.
    
    critPtNetWork cpn(gwf,bnw);
    

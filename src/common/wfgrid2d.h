@@ -91,12 +91,12 @@ public:
    int GetNPts(int ii);   
    void SetNPts(int nx,int ny);
    void SetNPts(int nn);
-   void SetUpSimplePlane(bondNetWork &bn,int na,int nb,int nc);
-   void SetUpSimplePlane(bondNetWork &bn,int na,int nb);
-   void SetUpSimplePlane(bondNetWork &bn,int na);
-   void SetUpSimplePlane(bondNetWork &bn,double (&ta)[3],double (&tb)[3],double (&tc)[3]);
-   void SetUpSimplePlane(bondNetWork &bn,double (&ta)[3],double (&tb)[3]);
-   void SetUpSimplePlane(bondNetWork &bn,double (&ta)[3]);
+   void SetUpSimplePlane(BondNetWork &bn,int na,int nb,int nc);
+   void SetUpSimplePlane(BondNetWork &bn,int na,int nb);
+   void SetUpSimplePlane(BondNetWork &bn,int na);
+   void SetUpSimplePlane(BondNetWork &bn,double (&ta)[3],double (&tb)[3],double (&tc)[3]);
+   void SetUpSimplePlane(BondNetWork &bn,double (&ta)[3],double (&tb)[3]);
+   void SetUpSimplePlane(BondNetWork &bn,double (&ta)[3]);
    bool WritePlaneTsvRho(ofstream &ofil,GaussWaveFunction &wf);
    bool WritePlaneTsvLapRho(ofstream &ofil,GaussWaveFunction &wf);
    bool WritePlaneTsvELF(ofstream &ofil,GaussWaveFunction &wf);

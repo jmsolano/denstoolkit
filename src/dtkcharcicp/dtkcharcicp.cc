@@ -91,7 +91,7 @@ using std::setprecision;
 #include "crtflnms.h"
 #include "custfmtmathfuncts.h"
 
-void WriteLogFile(string fname,DeMat1CriticalPointNetworkBP &dcpn,bondNetWork &bn,\
+void WriteLogFile(string fname,DeMat1CriticalPointNetworkBP &dcpn,BondNetWork &bn,\
       string &wfnam);
 
 int main (int argc, char ** argv) {
@@ -127,10 +127,10 @@ int main (int argc, char ** argv) {
       --atom1; --atom2;
    }
    
-   bondNetWork bnw;
-   bnw.readFromFile(infilnam); //Loading the bond-network (if the wave function
+   BondNetWork bnw;
+   bnw.ReadFromFile(infilnam); //Loading the bond-network (if the wave function
                                //was read, there souldn't be problems here.
-   bnw.setUpBNW();             //To setup the bond network.
+   bnw.SetUpBNW();             //To setup the bond network.
    
    //critPtNetWork cpn(gwf,bnw);
 
@@ -161,7 +161,7 @@ int main (int argc, char ** argv) {
    ScreenUtils::SetScrNormalFont();
    return EXIT_SUCCESS;
 }
-void WriteLogFile(string fname,DeMat1CriticalPointNetworkBP &dcpn,bondNetWork &bn,\
+void WriteLogFile(string fname,DeMat1CriticalPointNetworkBP &dcpn,BondNetWork &bn,\
       string &wfnam) {
    ofstream ofil(fname.c_str());
    if ( !ofil.good() ) {

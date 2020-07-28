@@ -52,18 +52,18 @@ class HelperPlot {
 /* ************************************************************************** */
 public:
    static void generateMainDiagPlot(optFlags &options,const string &datname,\
-         bondNetWork &bn,int idx1,int idx2,double minval2plot,double maxval2plot,\
+         BondNetWork &bn,int idx1,int idx2,double minval2plot,double maxval2plot,\
          double linelength,double frange);
    static void generateSecDiagPlot(optFlags &options,const string &datname,\
-         bondNetWork &bn,int idx1,int idx2,double minval2plot,double maxval2plot,\
+         BondNetWork &bn,int idx1,int idx2,double minval2plot,double maxval2plot,\
          double linelength,double frange);
    static void generate3DPlot(optFlags &options,const string &tsvname,double minval2plot,\
          double maxval2plot,double linelength,int nptsinline);
    static void generateHeatMap(optFlags &options,char *argv[],const string &tsvname,\
-         bondNetWork &bn,DeMat1CriticalPointNetworkSL &cp,double **(xx),int nptsinline,double minval2plot,\
+         BondNetWork &bn,DeMat1CriticalPointNetworkSL &cp,double **(xx),int nptsinline,double minval2plot,\
          double maxval2plot,double linelength,double md1lmin,double md1dmax,int idx1,int idx2);
    static void generateVectorField(optFlags &options,char *argv[],const string &tsvname,\
-         bondNetWork &bn,DeMat1CriticalPointNetworkSL &cp,double **(xx),int nptsinline,double minval2plot,\
+         BondNetWork &bn,DeMat1CriticalPointNetworkSL &cp,double **(xx),int nptsinline,double minval2plot,\
          double maxval2plot,double maggradmin,double maggradmax,double linelength,double md1lmin,double md1dmax,int idx1,int idx2);
    static void addHeaderInfo2GNP(ofstream &ofil,double minval,double maxval,\
          double dimpar,string datortsv,string axis="y");

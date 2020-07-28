@@ -75,7 +75,7 @@ using std::setprecision;
 #include "optflags.h"
 #include "crtflnms.h"
 
-void makeMolGnuplotFile(string &gname,bondNetWork &bn,bool putHs=true,const string term = "x11");
+void makeMolGnuplotFile(string &gname,BondNetWork &bn,bool putHs=true,const string term = "x11");
 
 int main (int argc, char ** argv)
 {
@@ -103,10 +103,10 @@ int main (int argc, char ** argv)
    cout << "Done." << endl;
    // */
    
-   bondNetWork bnw;
-   bnw.readFromFile(infilnam); //Loading the bond-network (if the wave function
+   BondNetWork bnw;
+   bnw.ReadFromFile(infilnam); //Loading the bond-network (if the wave function
                                //was read, there souldn't be problems here.
-   bnw.setUpBNW();             //To setup the bond network.
+   bnw.SetUpBNW();             //To setup the bond network.
    
    cout << " Done." << endl;
    
@@ -157,7 +157,7 @@ int main (int argc, char ** argv)
 }
 //*******************************************************************************************
 
-void makeMolGnuplotFile(string &gname,bondNetWork &bn,bool putHs,const string term)
+void makeMolGnuplotFile(string &gname,BondNetWork &bn,bool putHs,const string term)
 {
    ofstream gfil;
    gfil.open(gname.c_str(),ios::out);

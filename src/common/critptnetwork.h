@@ -168,9 +168,9 @@ public:
 //                   Functions
 /* ************************************************************************************ */
    /** The only allowed constructor. It requires a GaussWaveFunction and
-    * a bondNetWork objects. <b>Warning: these objects must be
+    * a BondNetWork objects. <b>Warning: these objects must be
     * properly initialized before passing to the critPtNetWork object.</b>  */
-   critPtNetWork(class GaussWaveFunction &uwf,class bondNetWork &ubn);
+   critPtNetWork(class GaussWaveFunction &uwf,class BondNetWork &ubn);
    ~critPtNetWork();
 /* ************************************************************************************ */
    /** Self descriptive.  */
@@ -395,7 +395,7 @@ public:
 protected:
 /* ************************************************************************************ */
    class GaussWaveFunction *wf;
-   class bondNetWork *bn;
+   class BondNetWork *bn;
    int dACP,dBCP,dRCP,dCCP;
    int maxItACP,maxItBCP,maxItRCP,maxItCCP;
    int maxGradPathNPts;
@@ -417,7 +417,7 @@ protected:
    void init();
    /** The constructor without arguments is not public. This will enforce the use
     * of the constructor for assigning the pointers of GaussWaveFunction and 
-    * bondNetWork.  */
+    * BondNetWork.  */
    critPtNetWork();
 /* ************************************************************************************ */
    void removeRedundInLabel(string &lbl);

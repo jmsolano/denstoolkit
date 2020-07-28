@@ -60,7 +60,7 @@ DTKGLBondNetWork::~DTKGLBondNetWork() {
 }
 bool DTKGLBondNetWork::readFromFile(QString filename) {
    std::string fnam=filename.toStdString();
-   bnw=new bondNetWork();
+   bnw=new BondNetWork();
    if ( !(bnw->readFromFile(fnam)) ) {
       QMessageBox::warning(this, tr("Error"),\
             tr("Could not open the file!"));

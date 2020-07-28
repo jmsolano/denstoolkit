@@ -49,7 +49,7 @@ using std::setprecision;
 using std::scientific;
 using std::setw;
 
-void writeDatMatAtCrds(string &acfn,bondNetWork &bn) {
+void writeDatMatAtCrds(string &acfn,BondNetWork &bn) {
    ofstream ofil;
    size_t pos;
    string lbl;

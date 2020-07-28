@@ -69,7 +69,7 @@ using std::cerr;
 #endif
 
 DeMat1CriticalPointNetworkBP::DeMat1CriticalPointNetworkBP(\
-      GaussWaveFunction &usrwf,bondNetWork &usrbn) {
+      GaussWaveFunction &usrwf,BondNetWork &usrbn) {
    Init();
    if ( !usrwf.imldd ) { 
       cout << "Error: First load a Gaussian Wave Function!" << endl;

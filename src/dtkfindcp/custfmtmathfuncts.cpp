@@ -49,7 +49,7 @@ using std::scientific;
 using std::setw;
 #include "custfmtmathfuncts.h"
 
-void WriteDatMatAtCrds(string &acfn,bondNetWork &bn) {
+void WriteDatMatAtCrds(string &acfn,BondNetWork &bn) {
    ofstream ofil;
    size_t pos;
    string lbl;

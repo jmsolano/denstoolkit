@@ -46,7 +46,7 @@ class DeMat1CriticalPointNetworkBP {
    /* ************************************************************************** */
 public:
    DeMat1CriticalPointNetworkBP(class GaussWaveFunction &usrwf,\
-         class bondNetWork &usrbn);
+         class BondNetWork &usrbn);
    ~DeMat1CriticalPointNetworkBP();
    inline bool ImSetup(void) {return imsetup;}
    void ComputeCoreInteractionCPs2D(void);
@@ -77,7 +77,7 @@ protected:
    int GetSignature(double (&v)[6]);
    /* ************************************************************************** */
    class GaussWaveFunction *wf;
-   class bondNetWork *bn;
+   class BondNetWork *bn;
    int at1,at2;
    /* ************************************************************************** */
 protected:

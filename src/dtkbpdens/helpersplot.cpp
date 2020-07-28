@@ -11,7 +11,7 @@ using std::cerr;
 
 
 void HelpersPlot::MakeGnuplotFile(optFlags &opts,string &gnpnam,string &datnam,char p2p,\
-      bondNetWork &bn,double lenline,double minval,double maxval,\
+      BondNetWork &bn,double lenline,double minval,double maxval,\
       int at1,int at2,double pbcp,double** (&rbgp)) {
    ofstream ofil;
    string line;

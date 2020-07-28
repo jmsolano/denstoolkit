@@ -56,16 +56,16 @@ using std::string;
 
 #define MAXBONDINGATOMS 8
 
-class bondNetWork {
+class BondNetWork {
    /* ************************************************************************** */
 public:
 /* ************************************************************************** */
-   bondNetWork(); /* Default constructor */
-   bondNetWork(int nn,double* &rin);
-   ~bondNetWork(); /* Destructor */
-   bool readFromFileWFX(string inname);
-   bool readFromFileWFN(string inname);
-   bool readFromFile(string inname);
+   BondNetWork(); /* Default constructor */
+   BondNetWork(int nn,double* &rin);
+   ~BondNetWork(); /* Destructor */
+   bool ReadFromFileWFX(string inname);
+   bool ReadFromFileWFN(string inname);
+   bool ReadFromFile(string inname);
    /* ************************************************************************** */
    double **R;         //Contains the atoms' radius-vectors.
    double **bondDist;  //It contains the bond distances of the actual bonded atoms. It will
@@ -86,20 +86,20 @@ public:
    bool spaceFillingMode;
    bool wireMode;
    /* ************************************************************************** */
-   bool setUpBNW(void);
-   bool imstp(void);
-   bool lookForBonds(void);
+   bool SetUpBNW(void);
+   bool ImStp(void);
+   bool LookForBonds(void);
    /* ************************************************************************** */
-   double dist(int i, int k);
-   void addBond(int i,int j,double dd);
-   bool makePOVFile(string pnam, POVRayConfiguration &pvp);
-   void seekRMaxMin(void);
-   void calcViewRadius(void);
-   void putNuclei(ofstream &pof);
-   void putBonds(ofstream &pof);
-   void centerMolecule(void);
-   void setBoundingBox(void);
-   int countAtomsOfAtomicNumber(int nat);
+   double Dist(int i, int k);
+   void AddBond(int i,int j,double dd);
+   bool MakePOVFile(string pnam, POVRayConfiguration &pvp);
+   void SeekRMaxMin(void);
+   void CalcViewRadius(void);
+   void PutNuclei(ofstream &pof);
+   void PutBonds(ofstream &pof);
+   void CenterMolecule(void);
+   void SetBoundingBox(void);
+   int CountAtomsOfAtomicNumber(int nat);
 /* ************************************************************************** */
 private:
    bool isSTP;       //Just to ensure that the bond network has been set up.

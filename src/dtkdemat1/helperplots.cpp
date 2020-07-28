@@ -50,7 +50,7 @@ using std::cerr;
 
 
 void HelperPlot::generateMainDiagPlot(optFlags &options,const string &datname,\
-      bondNetWork &bn,int idx1,int idx2,double minval2plot,double maxval2plot,\
+      BondNetWork &bn,int idx1,int idx2,double minval2plot,double maxval2plot,\
       double linelength,double frange) {
    string gnpname,epsname,pdfname;
    generateGNPEPSAndPDFNamesFromDATORTSV(datname,gnpname,epsname,pdfname);
@@ -101,7 +101,7 @@ void HelperPlot::generateMainDiagPlot(optFlags &options,const string &datname,\
    GnuplotTools::eps2pdf(epsname);
 }
 void HelperPlot::generateSecDiagPlot(optFlags &options,const string &datname,\
-      bondNetWork &bn,int idx1,int idx2,double minval2plot,double maxval2plot,\
+      BondNetWork &bn,int idx1,int idx2,double minval2plot,double maxval2plot,\
       double linelength,double frange) {
    string gnpname,epsname,pdfname;
    generateGNPEPSAndPDFNamesFromDATORTSV(datname,gnpname,epsname,pdfname);
@@ -188,7 +188,7 @@ void HelperPlot::generate3DPlot(optFlags &options,const string &tsvname,\
    GnuplotTools::RenderGnpFile(gnpname,rmgnp);
    GnuplotTools::eps2pdf(epsname);
 }
-void HelperPlot::generateHeatMap(optFlags &options,char *argv[],const string &tsvname,bondNetWork &bn,DeMat1CriticalPointNetworkSL &cp,
+void HelperPlot::generateHeatMap(optFlags &options,char *argv[],const string &tsvname,BondNetWork &bn,DeMat1CriticalPointNetworkSL &cp,
       double **xx,int nptsinline,double minval2plot,\
       double maxval2plot,double linelength,double md1lmin,double md1dmax,int idx1,int idx2) {
    string gnpname=tsvname,epsname,pdfname;
@@ -342,7 +342,7 @@ void HelperPlot::generateHeatMap(optFlags &options,char *argv[],const string &ts
    //contourtempname=string("rm -f ")+contourtempname;
    //system(contourtempname.c_str());
 }
-void HelperPlot::generateVectorField(optFlags &options,char *argv[],const string &tsvname,bondNetWork &bn,DeMat1CriticalPointNetworkSL &cp,
+void HelperPlot::generateVectorField(optFlags &options,char *argv[],const string &tsvname,BondNetWork &bn,DeMat1CriticalPointNetworkSL &cp,
       double **xx,int nptsinline,double minval2plot,\
       double maxval2plot,double maggradmin,double maggradmax,double linelength,double md1lmin,double md1dmax,int idx1,int idx2) {
    char prop='D';

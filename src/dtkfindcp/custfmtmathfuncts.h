@@ -47,7 +47,7 @@ using std::string;
 #include "../common/critptnetwork.h"
 
 
-void WriteDatMatAtCrds(string &acfn,bondNetWork &bn);
+void WriteDatMatAtCrds(string &acfn,BondNetWork &bn);
 void WriteDatMatCritPtsCrds(string &cpfn,critPtNetWork &cp);
 void WriteDatMatBondPathCrds(string &bpfn,critPtNetWork &cp);
 

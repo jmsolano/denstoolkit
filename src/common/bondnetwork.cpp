@@ -60,7 +60,7 @@ using std::endl;
 //#include "atomcolschcust.h" //Choose this for the palette defined by JMHP
 #include "atomcolschjmol.h" //Choose this for the palette used in JMol
 
-bondNetWork::bondNetWork() {
+BondNetWork::BondNetWork() {
    R=NULL;
    bondDist=NULL;
    nNuc=0;
@@ -80,7 +80,7 @@ bondNetWork::bondNetWork() {
    wireMode=false;
    isSTP=false;
 }
-bondNetWork::~bondNetWork() {
+BondNetWork::~BondNetWork() {
    MyMemory::Dealloc2DRealArray(R,nNuc);
    MyMemory::Dealloc2DIntArray(bNet,nNuc);
    MyMemory::Dealloc1DStringArray(atLbl);
@@ -89,10 +89,10 @@ bondNetWork::~bondNetWork() {
    MyMemory::Dealloc2DRealArray(bondDist,nNuc);
    isSTP=false;
 }
-bool bondNetWork::imstp() {
+bool BondNetWork::ImStp() {
    return isSTP;
 }
-bool bondNetWork::readFromFileWFX(string inname) {
+bool BondNetWork::ReadFromFileWFX(string inname) {
    ifstream tif;
    tif.open(inname.c_str(),std::ios::in);
    if (!(tif.good())) {
@@ -113,7 +113,7 @@ bool bondNetWork::readFromFileWFX(string inname) {
    tif.close();
    return true;
 }
-bool bondNetWork::readFromFileWFN(string inname) {
+bool BondNetWork::ReadFromFileWFN(string inname) {
    ifstream tif;
    string orDe;
    int nmo,npr;
@@ -143,20 +143,20 @@ bool bondNetWork::readFromFileWFN(string inname) {
    tif.close();
    return true;
 }
-bool bondNetWork::readFromFile(string inname) {
+bool BondNetWork::ReadFromFile(string inname) {
    string extension;
    extension=inname.substr(inname.length()-3,3);
    if ((extension=="wfn")||(extension=="WFN")) {
-      return readFromFileWFN(inname);
+      return ReadFromFileWFN(inname);
    } else if ((extension=="wfx")||(extension=="WFX")) {
-      return readFromFileWFX(inname);
+      return ReadFromFileWFX(inname);
    } else {
       cout << "Error: unknown extension!(" << inname << ")\nNothig to do, returning false...\n";
       cout << __FILE__ << ", line: " << __LINE__ << endl;
       return false;
    }
 }
-double bondNetWork::dist(int i, int j) {
+double BondNetWork::Dist(int i, int j) {
 #if DEBUG
    if ((i>=nNuc)||(j>=nNuc)) {
       cout << "Error: Attempting to obtain information from a non-existent nucleus...\n";
@@ -168,14 +168,14 @@ double bondNetWork::dist(int i, int j) {
    d+=(R[i][2]-R[j][2])*(R[i][2]-R[j][2]);
    return sqrt(d);
 }
-bool bondNetWork::setUpBNW(void) {
-   lookForBonds();
-   seekRMaxMin();
+bool BondNetWork::SetUpBNW(void) {
+   LookForBonds();
+   SeekRMaxMin();
    isSTP=true;
-   setBoundingBox();
+   SetBoundingBox();
    return isSTP;
 }
-bool bondNetWork::lookForBonds(void) {
+bool BondNetWork::LookForBonds(void) {
    if (!(MyMemory::Alloc2DRealArray(string("bondDist"),nNuc,MAXBONDINGATOMS,bondDist))) {
       cout << "Unknonw error from " << __FILE__ << ", line: " << __LINE__ << endl;
       return false;
@@ -187,11 +187,11 @@ bool bondNetWork::lookForBonds(void) {
    double d,vdwd,clsstatd=1.0e+50;
    for (int i=0; i<nNuc; i++) {
       for (int j=i+1; j<nNuc; j++) {
-         d=dist(i,j);
+         d=Dist(i,j);
          //vdwd=(atomicRadius[atNum[i]]+atomicRadius[atNum[j]])/BOHRTOANGSTROM;
          vdwd=(GetAtomicVDWRadius(atNum[i])+GetAtomicVDWRadius(atNum[j]))/BOHRTOANGSTROM;
          if (d<=vdwd) {
-            addBond(i,j,d);
+            AddBond(i,j,d);
             if (d>maxBondDist) {
                maxBondDist=d;
             }
@@ -201,11 +201,11 @@ bool bondNetWork::lookForBonds(void) {
       }
    }
    if (nNuc==1) {maxBondDist=AUTOMATICMAXBONDDIST;}
-   if ((maxBondDist<0.0e0)&&(nNuc==2)) {maxBondDist=dist(0,1);}
+   if ((maxBondDist<0.0e0)&&(nNuc==2)) {maxBondDist=Dist(0,1);}
    if (maxBondDist<0.0e0) {maxBondDist=clsstatd;}
    return true;
 }
-void bondNetWork::addBond(int m, int n,double dd) {
+void BondNetWork::AddBond(int m, int n,double dd) {
    int k=0;
    while (k<MAXBONDINGATOMS) {
       if (bNet[m][k]>0) {
@@ -217,7 +217,7 @@ void bondNetWork::addBond(int m, int n,double dd) {
       }
    }
 }
-void bondNetWork::seekRMaxMin(void) {
+void BondNetWork::SeekRMaxMin(void) {
    for (int i=0; i<nNuc; i++) {
       for (int j=0; j<3; j++) {
          if (R[i][j]<rmin[j]) {rmin[j]=R[i][j];}
@@ -226,7 +226,7 @@ void bondNetWork::seekRMaxMin(void) {
    }
    return;
 }
-bool bondNetWork::makePOVFile(string pnam,POVRayConfiguration &pvp) {
+bool BondNetWork::MakePOVFile(string pnam,POVRayConfiguration &pvp) {
    ofstream pof;
    pof.open(pnam.c_str(),std::ios::out);
    if (!(pof.good())) {
@@ -237,10 +237,10 @@ bool bondNetWork::makePOVFile(string pnam,POVRayConfiguration &pvp) {
       return false;
    }
    //POVRayConfiguration pvp;
-   if (!isSTP) {setUpBNW();}
+   if (!isSTP) {SetUpBNW();}
    if (!ballAndStickMode) {drawAtSize*=AUTOMATICBALLANDSTICKRATIO;}
-   centerMolecule();
-   calcViewRadius();
+   CenterMolecule();
+   CalcViewRadius();
    cout << "rView: " << rView << endl;
    for (int i=0; i<3; i++) {
       pvp.locCam[i]*=rView;
@@ -257,18 +257,18 @@ bool bondNetWork::makePOVFile(string pnam,POVRayConfiguration &pvp) {
       pof << HelpersPOVRay::IndTabsStr(pvp.currIndLev) << "merge{" << endl;
       pvp.currIndLev++;
    }
-   putNuclei(pof);
+   PutNuclei(pof);
    if (spaceFillingMode) {
       pvp.currIndLev--;
       pof << HelpersPOVRay::IndTabsStr(pvp.currIndLev) << "}" << endl;
    }
    if (ballAndStickMode||wireMode) {
-      putBonds(pof);
+      PutBonds(pof);
    }
    pof.close();
    return true;
 }
-void bondNetWork::putNuclei(ofstream & pof) {
+void BondNetWork::PutNuclei(ofstream & pof) {
    int atomn;
    double atrad;
    for (int i=0; i<nNuc; i++) {
@@ -287,7 +287,7 @@ void bondNetWork::putNuclei(ofstream & pof) {
    }
    return;
 }
-void bondNetWork::putBonds(ofstream &pof) {
+void BondNetWork::PutBonds(ofstream &pof) {
    pof << "union{" << endl;
    int k=0,atni,atnk;
    double startpt[3],frak1;
@@ -318,7 +318,7 @@ void bondNetWork::putBonds(ofstream &pof) {
    pof << "}" << endl;
    return;
 }
-void bondNetWork::centerMolecule() {
+void BondNetWork::CenterMolecule() {
    double trn[3];
    for (int i=0; i<3; i++) {
       trn[i]=0.5e0*(rmax[i]+rmin[i]);
@@ -330,8 +330,8 @@ void bondNetWork::centerMolecule() {
    }
    return;
 }
-void bondNetWork::calcViewRadius(void) {
-   seekRMaxMin();
+void BondNetWork::CalcViewRadius(void) {
+   SeekRMaxMin();
    double rmagmax=0.0e0,rmagmin=0.0e0;
    for (int i=0; i<3; i++) {
       rmagmax+=(rmax[i]*rmax[i]);
@@ -343,7 +343,7 @@ void bondNetWork::calcViewRadius(void) {
       }
    }
 }
-void bondNetWork::setBoundingBox(void) {
+void BondNetWork::SetBoundingBox(void) {
    for (int i=0; i<nNuc; i++) {
       for (int j=0; j<3; j++) {
          if (R[i][j]<=bbmin[j]) {bbmin[j]=R[i][j];}
@@ -351,7 +351,7 @@ void bondNetWork::setBoundingBox(void) {
       }
    }
    if (!isSTP) {
-      cout << "Error: The bondNetWork object is not set up!\n";
+      cout << "Error: The BondNetWork object is not set up!\n";
    } else {
       for (int i=0; i<3; i++) {
          bbmax[i]+=(0.5e0*maxBondDist);
@@ -360,7 +360,7 @@ void bondNetWork::setBoundingBox(void) {
    }
    return;
 }
-int bondNetWork::countAtomsOfAtomicNumber(int nat) {
+int BondNetWork::CountAtomsOfAtomicNumber(int nat) {
 #if DEBUG
    if (nat<1) {
       displayErrorMessage("Invalid atomic number!\nReturning zero.");

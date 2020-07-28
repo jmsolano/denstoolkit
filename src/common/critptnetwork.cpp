@@ -184,7 +184,7 @@ void critPtNetWork::init() {
    wf=NULL;
    bn=NULL;
 }
-critPtNetWork::critPtNetWork(GaussWaveFunction &uwf,bondNetWork &ubn) {
+critPtNetWork::critPtNetWork(GaussWaveFunction &uwf,BondNetWork &ubn) {
    init();
    wf=&uwf;
    bn=&ubn;
@@ -236,7 +236,7 @@ double critPtNetWork::IHV[nIHV][3]={
 //addition of the labels and coordinates in
 //functions add*?CP
 void critPtNetWork::setCriticalPoints(ScalarFieldType ft) {
-   if (!bn->imstp()) {
+   if (!bn->ImStp()) {
       ScreenUtils::DisplayErrorMessage("Trying to use a non set up bond network object!");
       return;
    }
@@ -2157,7 +2157,7 @@ bool critPtNetWork::makePOVFile(string pnam,POVRayConfiguration &pvp,int campos)
    FileUtils::WriteScrCharLine(pof,'/',false);
    pof << "// END OF CUSTOM OPTIONS" << endl;
    FileUtils::WriteScrCharLine(pof ,'/',false);
-   if (!(bn->imstp())) {bn->setUpBNW();}
+   if (!(bn->ImStp())) {bn->SetUpBNW();}
    if (!(bn->ballAndStickMode)) {bn->drawAtSize*=AUTOMATICBALLANDSTICKRATIO;}
 #if DEBUG
    ScreenUtils::DisplayWarningMessage("In this version, calling critPtNetWork::makePovFILE(...)\n\
@@ -2165,7 +2165,7 @@ bool critPtNetWork::makePOVFile(string pnam,POVRayConfiguration &pvp,int campos)
          and the coordinates on the bondnetwork object as well.");
 #endif
    centerMolecule();
-   bn->calcViewRadius();
+   bn->CalcViewRadius();
    //cout << "rView: " << bn->rView << endl;
    double camdist=2.5e0;
    for (int i=0; i<3; i++) {pvp.locCam[i]=0.0e0;}
@@ -2545,7 +2545,7 @@ void critPtNetWork::centerMolecule(void) {
          }
       }
    }
-   bn->centerMolecule();
+   bn->CenterMolecule();
    for (int i=0; i<3; i++) {centMolecVec[i]=trn[i];}
    return;
 }

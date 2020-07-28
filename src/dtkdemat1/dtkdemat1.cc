@@ -133,10 +133,10 @@ int main (int argc, char ** argv) {
    if ( options.prop2plot ) {prop=argv[options.prop2plot][0];}
    
    /* Setting the bond network of the molecule */
-   bondNetWork bnw;
-   bnw.readFromFile(infilnam); //Loading the bond-network (if the wave function
+   BondNetWork bnw;
+   bnw.ReadFromFile(infilnam); //Loading the bond-network (if the wave function
                                //was read, there souldn't be problems here.
-   bnw.setUpBNW();             //To setup the bond network.
+   bnw.SetUpBNW();             //To setup the bond network.
    
    /* Defining the main critical point network object. */
    critPtNetWork cpn(gwf,bnw);
@@ -147,7 +147,7 @@ int main (int argc, char ** argv) {
       if (dimarr<=0) {
          ScreenUtils::DisplayErrorMessage("Please provide a positive number for the number of points!");
          gwf.~GaussWaveFunction();
-         bnw.~bondNetWork();
+         bnw.~BondNetWork();
          cpn.~critPtNetWork();
          exit(1);
       }

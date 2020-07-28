@@ -50,7 +50,7 @@ using std::string;
 #include "../common/critptnetwork.h"
 
 
-void writeDatMatAtCrds(string &acfn,bondNetWork &bn);
+void writeDatMatAtCrds(string &acfn,BondNetWork &bn);
 void writeDatMatCritPtsCrds(string &cpfn,critPtNetWork &cp);
 void writeDatMatBondPathCrds(string &bpfn,critPtNetWork &cp);
 

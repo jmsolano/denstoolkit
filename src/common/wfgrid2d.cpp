@@ -90,9 +90,9 @@ void WaveFunctionGrid2D::SetNPts(int nn) {
 int WaveFunctionGrid2D::GetNPts(int ii) {
    return npts[ii];   
 }
-void WaveFunctionGrid2D::SetUpSimplePlane(bondNetWork &bn,int na,int nb,int nc) {
-   if (!(bn.imstp())) {
-      cout << "Error: Trying to use a non set-up bondNetWork object!\n";
+void WaveFunctionGrid2D::SetUpSimplePlane(BondNetWork &bn,int na,int nb,int nc) {
+   if (!(bn.ImStp())) {
+      cout << "Error: Trying to use a non set-up BondNetWork object!\n";
       cout << "The grid could not be set up." << endl;
 #if DEBUG
       cout << "From: " << __FILE__ << " at line " << __LINE__ << endl;
@@ -120,9 +120,9 @@ void WaveFunctionGrid2D::SetUpSimplePlane(bondNetWork &bn,int na,int nb,int nc) 
    imsetup=true;
    return;
 }
-void WaveFunctionGrid2D::SetUpSimplePlane(bondNetWork &bn,int na,int nb) {
-   if (!(bn.imstp())) {
-      cout << "Error: Trying to use a non set-up bondNetWork object!\n";
+void WaveFunctionGrid2D::SetUpSimplePlane(BondNetWork &bn,int na,int nb) {
+   if (!(bn.ImStp())) {
+      cout << "Error: Trying to use a non set-up BondNetWork object!\n";
       cout << "The grid could not be set up." << endl;
 #if DEBUG
       cout << "From: " << __FILE__ << " at line " << __LINE__ << endl;
@@ -149,9 +149,9 @@ void WaveFunctionGrid2D::SetUpSimplePlane(bondNetWork &bn,int na,int nb) {
    imsetup=true;
    return;
 }
-void WaveFunctionGrid2D::SetUpSimplePlane(bondNetWork &bn,int na) {
-   if (!(bn.imstp())) {
-      cout << "Error: Trying to use a non set-up bondNetWork object!\n";
+void WaveFunctionGrid2D::SetUpSimplePlane(BondNetWork &bn,int na) {
+   if (!(bn.ImStp())) {
+      cout << "Error: Trying to use a non set-up BondNetWork object!\n";
       cout << "The grid could not be set up." << endl;
 #if DEBUG
       cout << "From: " << __FILE__ << " at line " << __LINE__ << endl;
@@ -177,7 +177,7 @@ void WaveFunctionGrid2D::SetUpSimplePlane(bondNetWork &bn,int na) {
    imsetup=true;
    return;
 }
-void WaveFunctionGrid2D::SetUpSimplePlane(bondNetWork &bn,
+void WaveFunctionGrid2D::SetUpSimplePlane(BondNetWork &bn,
                                           double (&ta)[3],double (&tb)[3],double (&tc)[3]) {
    /*
     Three special cases to consider:
@@ -232,7 +232,7 @@ void WaveFunctionGrid2D::SetUpSimplePlane(bondNetWork &bn,
    }
    return;
 }
-void WaveFunctionGrid2D::SetUpSimplePlane(bondNetWork &bn,double (&ta)[3],double (&tb)[3]) {
+void WaveFunctionGrid2D::SetUpSimplePlane(BondNetWork &bn,double (&ta)[3],double (&tb)[3]) {
    double n[3],eta[3],xi[3];//,orig[3];
    for (int i=0; i<3; i++) {
       eta[i]=tb[i]-ta[i];
@@ -293,7 +293,7 @@ void WaveFunctionGrid2D::SetUpSimplePlane(bondNetWork &bn,double (&ta)[3],double
    // */
    return;
 }
-void WaveFunctionGrid2D::SetUpSimplePlane(bondNetWork &bn,double (&ta)[3]) {
+void WaveFunctionGrid2D::SetUpSimplePlane(BondNetWork &bn,double (&ta)[3]) {
    double eta[3],xi[3];
    for (int i=0; i<3; i++) {
       eta[i]=0.0e0;
