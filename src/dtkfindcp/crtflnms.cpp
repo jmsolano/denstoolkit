@@ -66,7 +66,7 @@ using std::endl;
 #include "../common/fileutils.h"
 #include "../common/screenutils.h"
 
-void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn,string &o_fn,string &p_fn,
+void MkFileNames(char ** (&argv), optFlags &opts, string &i_fn,string &o_fn,string &p_fn,
                  string &n_fn,string &c_fn,ScalarFieldType &cpt) {
    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
    /*
@@ -122,7 +122,7 @@ void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn,string &o_fn,stri
    }
    return;
 }
-void mkDatMatFileNames(string &lgfn,string &acfn,string &cpfn,string &bpfn) {
+void MkDatMatFileNames(string &lgfn,string &acfn,string &cpfn,string &bpfn) {
    acfn=lgfn.substr(0,(lgfn.length()-4));
    cpfn=acfn;
    bpfn=acfn;

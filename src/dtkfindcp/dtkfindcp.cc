@@ -83,11 +83,7 @@ using std::setprecision;
 
 #include "../common/screenutils.h"
 #include "../common/fileutils.h"
-#include "../common/mymemory.h"
-#include "../common/iofuncts-wfx.h"
-#include "../common/iofuncts-wfn.h"
 #include "../common/iofuncts-cpx.h"
-#include "../common/mymath.h"
 #include "../common/gausswavefunction.h"
 #include "../common/bondnetwork.h"
 #include "../common/critptnetwork.h"
@@ -95,8 +91,8 @@ using std::setprecision;
 #include "crtflnms.h"
 #include "custfmtmathfuncts.h"
 
-void setForcedBCPConnectivity(char **argv,optFlags &option,critPtNetWork &cp);
-void setForcedBCPConnectivities(char **argv,optFlags &option,critPtNetWork &cp);
+void SetForcedBCPConnectivity(char **argv,optFlags &option,critPtNetWork &cp);
+void SetForcedBCPConnectivities(char **argv,optFlags &option,critPtNetWork &cp);
 
 int main (int argc, char ** argv)
 {
@@ -129,7 +125,7 @@ int main (int argc, char ** argv)
       }
    }
    
-   mkFileNames(argv,options,infilnam,outfilnam,povfilnam,
+   MkFileNames(argv,options,infilnam,outfilnam,povfilnam,
                pngfilnam,cpxfilnam,critpttype); //This creates the names used.
    ScreenUtils::PrintHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS); //Just to let the user know that the initial configuration is OK
    
@@ -160,10 +156,10 @@ int main (int argc, char ** argv)
       case DENS:
          cpn.setCriticalPoints(DENS);
          if ( options.forcebcpconn ) {
-            setForcedBCPConnectivity(argv,options,cpn);
+            SetForcedBCPConnectivity(argv,options,cpn);
          }
          if ( options.forceseveralbcpconn ) {
-            setForcedBCPConnectivities(argv,options,cpn);
+            SetForcedBCPConnectivities(argv,options,cpn);
          }
          if (options.calcbgps) {cpn.setBondPaths();}
          break;
@@ -196,7 +192,7 @@ int main (int argc, char ** argv)
    lfil << setprecision(3) << "CPU Time: " << endl
         << double( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
    lfil.close();
-   writeCPXFile(cpxfilnam,infilnam,cpn);
+   WriteCPXFile(cpxfilnam,infilnam,cpn);
    
    cout << endl << "Output written in files: " << outfilnam << ", and " << cpxfilnam << endl;
    
@@ -255,10 +251,10 @@ int main (int argc, char ** argv)
    
    if (options.mkdatmat) {
       string acfname,cpfname,bpfname;
-      mkDatMatFileNames(outfilnam,acfname,cpfname,bpfname);
-      writeDatMatAtCrds(acfname,bnw);
-      writeDatMatCritPtsCrds(cpfname,cpn);
-      writeDatMatBondPathCrds(bpfname,cpn);
+      MkDatMatFileNames(outfilnam,acfname,cpfname,bpfname);
+      WriteDatMatAtCrds(acfname,bnw);
+      WriteDatMatCritPtsCrds(cpfname,cpn);
+      WriteDatMatBondPathCrds(bpfname,cpn);
    }
    
    
@@ -289,7 +285,7 @@ int main (int argc, char ** argv)
    ScreenUtils::SetScrNormalFont();
    return EXIT_SUCCESS;
 }
-void setForcedBCPConnectivity(char **argv,optFlags &option,critPtNetWork &cp) {
+void SetForcedBCPConnectivity(char **argv,optFlags &option,critPtNetWork &cp) {
    if ( !option.forcebcpconn ) {
       return;
    }
@@ -301,7 +297,7 @@ void setForcedBCPConnectivity(char **argv,optFlags &option,critPtNetWork &cp) {
       << ", ACP1: " << acpIdx1 << ", ACP2: " << acpIdx2 << endl;
    cp.forceBCPConnectivity(bcpIdx,acpIdx1,acpIdx2);
 }
-void setForcedBCPConnectivities(char **argv,optFlags &option,critPtNetWork &cp) {
+void SetForcedBCPConnectivities(char **argv,optFlags &option,critPtNetWork &cp) {
    if ( !option.forceseveralbcpconn ) {
       return;
    }

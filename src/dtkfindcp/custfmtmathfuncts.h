@@ -37,9 +37,6 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
-
-
 #ifndef _CUSTFMTMATHFUNCTS_H_
 #define _CUSTFMTMATHFUNCTS_H_
 
@@ -50,8 +47,8 @@ using std::string;
 #include "../common/critptnetwork.h"
 
 
-void writeDatMatAtCrds(string &acfn,bondNetWork &bn);
-void writeDatMatCritPtsCrds(string &cpfn,critPtNetWork &cp);
-void writeDatMatBondPathCrds(string &bpfn,critPtNetWork &cp);
+void WriteDatMatAtCrds(string &acfn,bondNetWork &bn);
+void WriteDatMatCritPtsCrds(string &cpfn,critPtNetWork &cp);
+void WriteDatMatBondPathCrds(string &bpfn,critPtNetWork &cp);
 
 #endif /* defined(_CUSTFMTMATHFUNCTS_H_) */

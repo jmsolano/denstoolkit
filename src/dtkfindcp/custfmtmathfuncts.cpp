@@ -49,7 +49,7 @@ using std::scientific;
 using std::setw;
 #include "custfmtmathfuncts.h"
 
-void writeDatMatAtCrds(string &acfn,bondNetWork &bn) {
+void WriteDatMatAtCrds(string &acfn,bondNetWork &bn) {
    ofstream ofil;
    size_t pos;
    string lbl;
@@ -66,7 +66,7 @@ void writeDatMatAtCrds(string &acfn,bondNetWork &bn) {
    ofil.close();
    return;
 }
-void writeDatMatCritPtsCrds(string &cpfn,critPtNetWork &cp) {
+void WriteDatMatCritPtsCrds(string &cpfn,critPtNetWork &cp) {
    ofstream ofil;
    ofil.open(cpfn.c_str(),std::ios::out);
    ofil << scientific << setprecision(12);
@@ -93,7 +93,7 @@ void writeDatMatCritPtsCrds(string &cpfn,critPtNetWork &cp) {
    ofil.close();
    return;
 }
-void writeDatMatBondPathCrds(string &bpfn,critPtNetWork &cp) {
+void WriteDatMatBondPathCrds(string &bpfn,critPtNetWork &cp) {
    ofstream ofil;
    ofil.open(bpfn.c_str(),std::ios::out);
    ofil << scientific << setprecision(12);

@@ -81,16 +81,11 @@ using std::exit;
 using std::setprecision;
 #include <ctime>
 
-#include "../common/screenutils.h"
 #include "../common/fileutils.h"
-#include "../common/mymemory.h"
-#include "../common/iofuncts-wfx.h"
-#include "../common/iofuncts-wfn.h"
 #include "../common/iofuncts-cpx.h"
-#include "../common/mymath.h"
 #include "../common/gausswavefunction.h"
 #include "../common/bondnetwork.h"
-#include "../common/critptnetwork.h"
+//#include "../common/critptnetwork.h"
 #include "../common/demat1critptnetworkbp.h"
 #include "optflags.h"
 #include "crtflnms.h"
@@ -147,7 +142,7 @@ int main (int argc, char ** argv) {
    WriteLogFile(cicpfilnam,dmcpbp,bnw,infilnam);
 
    cout << "Saving cps information to " << cpxfilnam << endl;
-   writeCPXFile(cpxfilnam,infilnam,*(dmcpbp.cpn));
+   WriteCPXFile(cpxfilnam,infilnam,*(dmcpbp.cpn));
 
    /* At this point the computation has ended. Usually this means no errors ocurred. */
 

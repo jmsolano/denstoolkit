@@ -78,7 +78,7 @@ using std::string;
  If no base name is given there, then the DEFAULTBASENAME will be
  used. The latter has been defined at the begining of the main program.
  */
-void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn,string &l_fn,string &p_fn,
+void MkFileNames(char ** (&argv), optFlags &opts, string &i_fn,string &l_fn,string &p_fn,
                  string &n_fn,string &c_fn,ScalarFieldType &cpt);
 
 /**
@@ -86,7 +86,7 @@ void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn,string &l_fn,stri
  It is assumed that lgfn is the name of the log file used in the program.
  lg stands for log, ac for atomic coordinates, cp for critical points, and bp for bond path
  */
-void mkDatMatFileNames(string &lgfn,string &atfn,string &cpfn,string &bpfn);
+void MkDatMatFileNames(string &lgfn,string &atfn,string &cpfn,string &bpfn);
 
 #endif //_CRTFLNMS_H
 
