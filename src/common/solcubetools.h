@@ -45,9 +45,9 @@ using std::ofstream;
 #include <string>
 using std::string;
 
-void writeCubeHeader(ofstream &ofil,string &t1,string &t2,int (&bdim)[3],
+void WriteCubeHeader(ofstream &ofil,string &t1,string &t2,int (&bdim)[3],
                 double (&x0)[3],double (&dx)[3][3],int nat,double* (&atchrg),double* (&x));
-void writeCubeProp(ofstream &ofil,int dim,double* (&prop));
+void WriteCubeProp(ofstream &ofil,int dim,double* (&prop));
 
 #endif//_SOLCUBETOOLS_H_
 

@@ -382,7 +382,7 @@ void HelpersPlot::MakeCubeFile(optFlags &opts,string &cubnam,GaussWaveFunction &
    }
    ofstream ofile;
    ofile.open(cubnam.c_str(),std::ios::out);
-   writeCubeHeader(ofile,wf.title[0],comments,boxnpts,xin,delta,wf.nNuc,wf.atCharge,wf.R);
+   WriteCubeHeader(ofile,wf.title[0],comments,boxnpts,xin,delta,wf.nNuc,wf.atCharge,wf.R);
    double *prop1d;
    MyMemory::Alloc1DRealArray("prop1d",boxnpts[2],prop1d);
    cout << "The size of the grid will be " << boxnpts[0] << " x "
@@ -405,7 +405,7 @@ void HelpersPlot::MakeCubeFile(optFlags &opts,string &cubnam,GaussWaveFunction &
                   //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
                   pz+=delta[2][2];
                }
-               writeCubeProp(ofile,boxnpts[2],prop1d);
+               WriteCubeProp(ofile,boxnpts[2],prop1d);
                py+=delta[1][1];
             }
             px+=delta[0][0];
@@ -426,7 +426,7 @@ void HelpersPlot::MakeCubeFile(optFlags &opts,string &cubnam,GaussWaveFunction &
                   //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
                   pz+=delta[2][2];
                }
-               writeCubeProp(ofile,boxnpts[2],prop1d);
+               WriteCubeProp(ofile,boxnpts[2],prop1d);
                py+=delta[1][1];
             }
             px+=delta[0][0];
@@ -439,7 +439,7 @@ void HelpersPlot::MakeCubeFile(optFlags &opts,string &cubnam,GaussWaveFunction &
       default :
          break;
    }
-   //writeCubeProp(ofstream &ofil,int dim,double* (&prop));
+   //WriteCubeProp(ofstream &ofil,int dim,double* (&prop));
    ofile.close();
    MyMemory::Dealloc1DRealArray(prop1d);
 }

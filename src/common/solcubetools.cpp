@@ -51,7 +51,7 @@ using std::scientific;
 using std::setprecision;
 #include "solcubetools.h"
 
-void writeCubeHeader(ofstream &ofil,string &t1,string &t2,int (&bdim)[3],
+void WriteCubeHeader(ofstream &ofil,string &t1,string &t2,int (&bdim)[3],
                 double (&x0)[3],double (&dx)[3][3],int nat,double* (&atchrg),double* (&x)) {
    ofil.width(60);
    ofil.setf(std::ios::left);
@@ -89,7 +89,7 @@ void writeCubeHeader(ofstream &ofil,string &t1,string &t2,int (&bdim)[3],
    }
    return;
 }
-void writeCubeProp(ofstream &ofil,int dim,double* (&prop)) {
+void WriteCubeProp(ofstream &ofil,int dim,double* (&prop)) {
    int count;
    count=0;
    for (int k=0; k<dim; k++) {

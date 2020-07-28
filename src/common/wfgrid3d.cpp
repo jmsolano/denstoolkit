@@ -153,7 +153,7 @@ void waveFunctionGrid3D::writeCubeRho(ofstream &ofil,GaussWaveFunction &wf) {
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
-         writeCubeProp(ofil,npts[2],prop1d);
+         WriteCubeProp(ofil,npts[2],prop1d);
          yy+=dx[1][1];
       }
       xx+=dx[0][0];
@@ -177,7 +177,7 @@ void waveFunctionGrid3D::writeCubeLapRho(ofstream &ofil,GaussWaveFunction &wf) {
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
-         writeCubeProp(ofil,npts[2],prop1d);
+         WriteCubeProp(ofil,npts[2],prop1d);
          yy+=dx[1][1];
       }
       xx+=dx[0][0];
@@ -201,7 +201,7 @@ void waveFunctionGrid3D::writeCubeELF(ofstream &ofil,GaussWaveFunction &wf) {
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
-         writeCubeProp(ofil,npts[2],prop1d);
+         WriteCubeProp(ofil,npts[2],prop1d);
          yy+=dx[1][1];
       }
       xx+=dx[0][0];
@@ -225,7 +225,7 @@ void waveFunctionGrid3D::writeCubeShannonEntropy(ofstream &ofil,GaussWaveFunctio
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
-         writeCubeProp(ofil,npts[2],prop1d);
+         WriteCubeProp(ofil,npts[2],prop1d);
          yy+=dx[1][1];
       }
       xx+=dx[0][0];
@@ -249,7 +249,7 @@ void waveFunctionGrid3D::writeCubeMagGradRho(ofstream &ofil,GaussWaveFunction &w
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
-         writeCubeProp(ofil,npts[2],prop1d);
+         WriteCubeProp(ofil,npts[2],prop1d);
          yy+=dx[1][1];
       }
       xx+=dx[0][0];
@@ -277,7 +277,7 @@ void waveFunctionGrid3D::writeCubeLOL(ofstream &ofil,GaussWaveFunction &wf) {
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
-         writeCubeProp(ofil,npts[2],prop1d);
+         WriteCubeProp(ofil,npts[2],prop1d);
          yy+=dx[1][1];
       }
       xx+=dx[0][0];
@@ -301,7 +301,7 @@ void waveFunctionGrid3D::writeCubeKinetEnerDensG(ofstream &ofil,GaussWaveFunctio
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
-         writeCubeProp(ofil,npts[2],prop1d);
+         WriteCubeProp(ofil,npts[2],prop1d);
          yy+=dx[1][1];
       }
       xx+=dx[0][0];
@@ -325,7 +325,7 @@ void waveFunctionGrid3D::writeCubeKinetEnerDensK(ofstream &ofil,GaussWaveFunctio
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
-         writeCubeProp(ofil,npts[2],prop1d);
+         WriteCubeProp(ofil,npts[2],prop1d);
          yy+=dx[1][1];
       }
       xx+=dx[0][0];
@@ -355,7 +355,7 @@ void waveFunctionGrid3D::writeCubeMagGradLOL(ofstream &ofil,GaussWaveFunction &w
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             xl[2]+=dx[2][2];
          }
-         writeCubeProp(ofil,npts[2],prop1d);
+         WriteCubeProp(ofil,npts[2],prop1d);
          xl[1]+=dx[1][1];
       }
       xl[0]+=dx[0][0];
@@ -379,7 +379,7 @@ void waveFunctionGrid3D::writeCubeMolElecPot(ofstream &ofil,GaussWaveFunction &w
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
-         writeCubeProp(ofil,npts[2],prop1d);
+         WriteCubeProp(ofil,npts[2],prop1d);
          yy+=dx[1][1];
       }
       xx+=dx[0][0];
@@ -403,7 +403,7 @@ void waveFunctionGrid3D::writeCubeMagLED(ofstream &ofil,GaussWaveFunction &wf) {
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
-         writeCubeProp(ofil,npts[2],prop1d);
+         WriteCubeProp(ofil,npts[2],prop1d);
          yy+=dx[1][1];
       }
       xx+=dx[0][0];
@@ -427,7 +427,7 @@ void waveFunctionGrid3D::writeCubeRedDensGrad(ofstream &ofil,GaussWaveFunction &
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
-         writeCubeProp(ofil,npts[2],prop1d);
+         WriteCubeProp(ofil,npts[2],prop1d);
          yy+=dx[1][1];
       }
       xx+=dx[0][0];
@@ -451,7 +451,7 @@ void waveFunctionGrid3D::writeCubeRoSE(ofstream &ofil,GaussWaveFunction &wf) {
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
-         writeCubeProp(ofil,npts[2],prop1d);
+         WriteCubeProp(ofil,npts[2],prop1d);
          yy+=dx[1][1];
       }
       xx+=dx[0][0];
@@ -475,7 +475,7 @@ void waveFunctionGrid3D::writeCubeScalarCustFld(ofstream &ofil,GaussWaveFunction
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
-         writeCubeProp(ofil,npts[2],prop1d);
+         WriteCubeProp(ofil,npts[2],prop1d);
          yy+=dx[1][1];
       }
       xx+=dx[0][0];
@@ -495,7 +495,7 @@ void waveFunctionGrid3D::makeCube(string &onam,GaussWaveFunction &wf,ScalarField
    comments+=GetFieldTypeKeyLong(cft);
    ofstream ofil;
    ofil.open(onam.c_str());
-   writeCubeHeader(ofil,wf.title[0],comments,npts,xin,dx,wf.nNuc,wf.atCharge,wf.R);
+   WriteCubeHeader(ofil,wf.title[0],comments,npts,xin,dx,wf.nNuc,wf.atCharge,wf.R);
 #if USEPROGRESSBAR
    ScreenUtils::PrintProgressBar(0);
 #endif
@@ -579,7 +579,7 @@ void waveFunctionGrid3D::writeCubeEllipticity(ofstream &ofil,GaussWaveFunction &
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
-         writeCubeProp(ofil,npts[2],prop1d);
+         WriteCubeProp(ofil,npts[2],prop1d);
          yy+=dx[1][1];
       }
       xx+=dx[0][0];
@@ -603,7 +603,7 @@ void waveFunctionGrid3D::writeCubeVirialPotentialEnergyDensity(ofstream &ofil,Ga
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
-         writeCubeProp(ofil,npts[2],prop1d);
+         WriteCubeProp(ofil,npts[2],prop1d);
          yy+=dx[1][1];
       }
       xx+=dx[0][0];
@@ -627,7 +627,7 @@ void waveFunctionGrid3D::writeCubeNCIRedDensGrad(ofstream &ofil,GaussWaveFunctio
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
-         writeCubeProp(ofil,npts[2],prop1d);
+         WriteCubeProp(ofil,npts[2],prop1d);
          yy+=dx[1][1];
       }
       xx+=dx[0][0];
@@ -651,7 +651,7 @@ void waveFunctionGrid3D::writeCubeNCIRho(ofstream &ofil,GaussWaveFunction &wf) {
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }
-         writeCubeProp(ofil,npts[2],prop1d);
+         WriteCubeProp(ofil,npts[2],prop1d);
          yy+=dx[1][1];
       }
       xx+=dx[0][0];
