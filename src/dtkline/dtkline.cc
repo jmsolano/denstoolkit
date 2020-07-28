@@ -75,10 +75,9 @@ using std::setprecision;
 #define _HAVE_GNUPLOT_ 0
 #endif
 
-void makeGnuplotFile(string &gnpn,string &outn,char p2p,double dist,string &l1, string &l2);
+void MakeGnuplotFile(string &gnpn,string &outn,char p2p,double dist,string &l1, string &l2);
 
-int main (int argc, char ** argv)
-{
+int main (int argc, char ** argv) {
    const clock_t begin_time = clock();
    const double begin_walltime = time(NULL);
    string infilnam,outfilnam,gnpnam;
@@ -107,16 +106,16 @@ int main (int argc, char ** argv)
                                //was read, there souldn't be problems here.
    bnw.setUpBNW();             //To setup the bond network.
    
-   waveFunctionGrid1D grid;    //Defining a grid object
+   WaveFunctionGrid1D grid;    //Defining a grid object
    
    /* Looking for user grid dimensions */
    
    int nn=DEFAULTPOINTSPERDIRECTION;
    if (options.setn1) {
       sscanf(argv[options.setn1],"%d",&nn);
-      grid.setNPts(nn);
+      grid.SetNPts(nn);
    } else {
-      grid.setNPts(nn);
+      grid.SetNPts(nn);
    }
    
    /* Defining the line direction and other properties, and setting up the grid */
@@ -126,13 +125,13 @@ int main (int argc, char ** argv)
       at1=at2=0;
       cout << "The file " << infilnam << " has only one atom" << endl;
       cout << "Using this atom to set the line...\n";
-      grid.setUpSimpleLine(bnw,0);
+      grid.SetUpSimpleLine(bnw,0);
    } else if (bnw.nNuc==2) {
       at1=0;
       at2=1;
       cout << "The file " << infilnam << " has only two atoms" << endl;
       cout << "Using these atoms to set the line...\n";
-      grid.setUpSimpleLine(bnw,0,1);
+      grid.SetUpSimpleLine(bnw,0,1);
    } else {
       if (options.setats) {
          sscanf(argv[options.setats],"%d",&at1);
@@ -148,16 +147,16 @@ int main (int argc, char ** argv)
               << endl;
          at1--;
          at2--;
-         grid.setUpSimpleLine(bnw,at1,at2);
+         grid.SetUpSimpleLine(bnw,at1,at2);
       } else {
          at1=at2=0;
-         grid.setUpSimpleLine(bnw,0);
+         grid.SetUpSimpleLine(bnw,0);
          cout << "Using the first atom to set the line...\n";
       }
    }
    
-   cout << "The size of the grid will be: " << grid.getNPts() << endl;
-   cout << "Total number of points that will be computed: " << grid.getNPts() << endl;
+   cout << "The size of the grid will be: " << grid.GetNPts() << endl;
+   cout << "Total number of points that will be computed: " << grid.GetNPts() << endl;
    
    /* Setting the property to be computed */
 
@@ -173,52 +172,52 @@ int main (int argc, char ** argv)
       cout << "(Scalar Field to plot: " << GetFieldTypeKeyLong(prop) << ")." << endl << endl;
    switch (prop) {
       case 'd':
-         grid.makeDat(outfilnam,gwf,DENS);
+         grid.MakeDat(outfilnam,gwf,DENS);
          break;
       case 'g':
-         grid.makeDat(outfilnam,gwf,MGRD);
+         grid.MakeDat(outfilnam,gwf,MGRD);
          break;
       case 'l':
-         grid.makeDat(outfilnam,gwf,LAPD);
+         grid.MakeDat(outfilnam,gwf,LAPD);
          break;
       case 'e':
-         grid.makeDat(outfilnam,gwf,ELLPY);
+         grid.MakeDat(outfilnam,gwf,ELLPY);
          break;
       case 'E':
-         grid.makeDat(outfilnam,gwf,ELFD);
+         grid.MakeDat(outfilnam,gwf,ELFD);
          break;
       case 'P' :
-         grid.makeDat(outfilnam,gwf,MLED);
+         grid.MakeDat(outfilnam,gwf,MLED);
          break;
       case 'r' :
-         grid.makeDat(outfilnam,gwf,ROSE);
+         grid.MakeDat(outfilnam,gwf,ROSE);
          break;
       case 's' :
-         grid.makeDat(outfilnam,gwf,REDG);
+         grid.MakeDat(outfilnam,gwf,REDG);
          break;
       case 'S':
-         grid.makeDat(outfilnam,gwf,SENT);
+         grid.MakeDat(outfilnam,gwf,SENT);
          break;
       case 'L':
-         grid.makeDat(outfilnam,gwf,LOLD);
+         grid.MakeDat(outfilnam,gwf,LOLD);
          break;
       case 'M':
-         grid.makeDat(outfilnam,gwf,MGLD);
+         grid.MakeDat(outfilnam,gwf,MGLD);
          break;
       case 'G':
-         grid.makeDat(outfilnam,gwf,KEDG);
+         grid.MakeDat(outfilnam,gwf,KEDG);
          break;
       case 'K':
-         grid.makeDat(outfilnam,gwf,KEDK);
+         grid.MakeDat(outfilnam,gwf,KEDK);
          break;
       case 'u' :
-         grid.makeDat(outfilnam,gwf,SCFD);
+         grid.MakeDat(outfilnam,gwf,SCFD);
          break;
       case 'V':
-         grid.makeDat(outfilnam,gwf,MEPD);
+         grid.MakeDat(outfilnam,gwf,MEPD);
          break;
       case 'v':
-         grid.makeDat(outfilnam,gwf,VPED);
+         grid.MakeDat(outfilnam,gwf,VPED);
          break;
       default:
          ScreenUtils::SetScrRedBoldFont();
@@ -242,7 +241,7 @@ int main (int argc, char ** argv)
    }
    dd=sqrt(dd);
    if (options.mkplt) {
-      makeGnuplotFile(gnpnam,outfilnam,prop,0.5*dd,bnw.atLbl[at1],bnw.atLbl[at2]);
+      MakeGnuplotFile(gnpnam,outfilnam,prop,0.5*dd,bnw.atLbl[at1],bnw.atLbl[at2]);
    }
    if (!(options.kpgnp)) {
       cout << "Cleaning temporary files..." << endl;
@@ -281,8 +280,7 @@ int main (int argc, char ** argv)
    ScreenUtils::SetScrNormalFont();
    return EXIT_SUCCESS;
 }
-void makeGnuplotFile(string &gnpn,string &outn,char p2p,double dist,string &l1,string &l2)
-{
+void MakeGnuplotFile(string &gnpn,string &outn,char p2p,double dist,string &l1,string &l2) {
    ofstream gfil;
    gfil.open(gnpn.c_str());
    

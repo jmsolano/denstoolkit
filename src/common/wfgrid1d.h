@@ -73,12 +73,12 @@ using std::ofstream;
 using std::string;
 
 /* ********************************************************************************** */
-class waveFunctionGrid1D {
+class WaveFunctionGrid1D {
 /* ********************************************************************************** */
 public:
    /* ******************************************************************************* */
-   waveFunctionGrid1D();
-   ~waveFunctionGrid1D();
+   WaveFunctionGrid1D();
+   ~WaveFunctionGrid1D();
    /* ******************************************************************************* */
    double dx,maxdim;
    double Ca[3],Cb[3];
@@ -86,29 +86,29 @@ public:
    double *prop1d;
    ScalarFieldType prop2plot;
    /* ******************************************************************************* */
-   void setNPts(int nx);
-   int getNPts(void);
-   void setUpSimpleLine(bondNetWork &bn,int na,int nb);
-   void setUpSimpleLine(bondNetWork &bn,int na);
-   void setUpSimpleLine(bondNetWork &bn,double (&ta)[3],double (&tb)[3]);
-   //void setUpSimpleLine(bondNetWork &bn,double (&ta)[3]);
-   bool writeLineDatRho(ofstream &ofil,GaussWaveFunction &wf);
-   void makeDat(string &onam,GaussWaveFunction &wf,ScalarFieldType ft);
-   bool writeLineDatLapRho(ofstream &ofil,GaussWaveFunction &wf);
-   bool writeLineDatELF(ofstream &ofil,GaussWaveFunction &wf);
-   bool writeLineDatLOL(ofstream &ofil,GaussWaveFunction &wf);
-   bool writeLineDatMagGradLOL(ofstream &ofil,GaussWaveFunction &wf);
-   bool writeLineDatShannonEntropy(ofstream &ofil,GaussWaveFunction &wf);
-   bool writeLineDatMagGradRho(ofstream &ofil,GaussWaveFunction &wf);
-   bool writeLineDatKinetEnerDensG(ofstream &ofil,GaussWaveFunction &wf);
-   bool writeLineDatKinetEnerDensK(ofstream &ofil,GaussWaveFunction &wf);
-   bool writeLineDatMolElecPot(ofstream &ofil,GaussWaveFunction &wf);
-   bool writeLineDatMagLED(ofstream &ofil,GaussWaveFunction &wf);
-   bool writeLineDatRedDensGrad(ofstream &ofil,GaussWaveFunction &wf);
-   bool writeLineDatRoSE(ofstream &ofil,GaussWaveFunction &wf);
-   bool writeLineDatScalarCustFld(ofstream &ofil,GaussWaveFunction &wf);
-   bool writeLineDatVirialPotentialEnergyDensity(ofstream &ofil,GaussWaveFunction &wf);
-   bool writeLineDatEllipticity(ofstream &ofil,GaussWaveFunction &wf);
+   void SetNPts(int nx);
+   int GetNPts(void);
+   void SetUpSimpleLine(bondNetWork &bn,int na,int nb);
+   void SetUpSimpleLine(bondNetWork &bn,int na);
+   void SetUpSimpleLine(bondNetWork &bn,double (&ta)[3],double (&tb)[3]);
+   //void SetUpSimpleLine(bondNetWork &bn,double (&ta)[3]);
+   bool WriteLineDatRho(ofstream &ofil,GaussWaveFunction &wf);
+   void MakeDat(string &onam,GaussWaveFunction &wf,ScalarFieldType ft);
+   bool WriteLineDatLapRho(ofstream &ofil,GaussWaveFunction &wf);
+   bool WriteLineDatELF(ofstream &ofil,GaussWaveFunction &wf);
+   bool WriteLineDatLOL(ofstream &ofil,GaussWaveFunction &wf);
+   bool WriteLineDatMagGradLOL(ofstream &ofil,GaussWaveFunction &wf);
+   bool WriteLineDatShannonEntropy(ofstream &ofil,GaussWaveFunction &wf);
+   bool WriteLineDatMagGradRho(ofstream &ofil,GaussWaveFunction &wf);
+   bool WriteLineDatKinetEnerDensG(ofstream &ofil,GaussWaveFunction &wf);
+   bool WriteLineDatKinetEnerDensK(ofstream &ofil,GaussWaveFunction &wf);
+   bool WriteLineDatMolElecPot(ofstream &ofil,GaussWaveFunction &wf);
+   bool WriteLineDatMagLED(ofstream &ofil,GaussWaveFunction &wf);
+   bool WriteLineDatRedDensGrad(ofstream &ofil,GaussWaveFunction &wf);
+   bool WriteLineDatRoSE(ofstream &ofil,GaussWaveFunction &wf);
+   bool WriteLineDatScalarCustFld(ofstream &ofil,GaussWaveFunction &wf);
+   bool WriteLineDatVirialPotentialEnergyDensity(ofstream &ofil,GaussWaveFunction &wf);
+   bool WriteLineDatEllipticity(ofstream &ofil,GaussWaveFunction &wf);
    /* ******************************************************************************* */
 private:
    bool imsetup;
