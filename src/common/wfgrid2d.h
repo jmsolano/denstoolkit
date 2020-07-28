@@ -75,47 +75,48 @@ using std::ofstream;
 using std::string;
 
 /* ****************************************************************************** */
-class waveFunctionGrid2D {
+class WaveFunctionGrid2D {
 /* ****************************************************************************** */
 public:
    /* *************************************************************************** */
-   waveFunctionGrid2D();
-   ~waveFunctionGrid2D();
+   WaveFunctionGrid2D();
+   ~WaveFunctionGrid2D();
    /* *************************************************************************** */
    double dircos1[3],dircos2[3],orig[3],dx[2],maxdim;
    double Ca[3],Cb[3],Cc[3],Cd[3];
    string comments;
    double *prop1d,**prop2d;
    ScalarFieldType prop2plot;
-   void setNPts(int nx,int ny);
-   void setNPts(int nn);
-   int getNPts(int ii);   
-   void setUpSimplePlane(bondNetWork &bn,int na,int nb,int nc);
-   void setUpSimplePlane(bondNetWork &bn,int na,int nb);
-   void setUpSimplePlane(bondNetWork &bn,int na);
-   void setUpSimplePlane(bondNetWork &bn,double (&ta)[3],double (&tb)[3],double (&tc)[3]);
-   void setUpSimplePlane(bondNetWork &bn,double (&ta)[3],double (&tb)[3]);
-   void setUpSimplePlane(bondNetWork &bn,double (&ta)[3]);
-   bool writePlaneTsvRho(ofstream &ofil,GaussWaveFunction &wf);
-   bool writePlaneTsvLapRho(ofstream &ofil,GaussWaveFunction &wf);
-   bool writePlaneTsvELF(ofstream &ofil,GaussWaveFunction &wf);
-   bool writePlaneTsvShannonEntropy(ofstream &ofil,GaussWaveFunction &wf);
-   bool writePlaneTsvMagGradRho(ofstream &ofil,GaussWaveFunction &wf);
-   bool writePlaneTsvLOL(ofstream &ofil,GaussWaveFunction &wf);
-   bool writePlaneTsvMagGradLOL(ofstream &ofil,GaussWaveFunction &wf);
-   bool writePlaneTsvGradLOL(ofstream &ofil,GaussWaveFunction &wf);
-   bool writePlaneTsvKinetEnerDensG(ofstream &ofil,GaussWaveFunction &wf);
-   bool writePlaneTsvKinetEnerDensK(ofstream &ofil,GaussWaveFunction &wf);
-   bool writePlaneTsvMolElecPot(ofstream &ofil,GaussWaveFunction &wf);
-   bool writePlaneTsvLED(ofstream &ofil,GaussWaveFunction &wf);
-   bool writePlaneTsvMagLED(ofstream &ofil,GaussWaveFunction &wf);
-   bool writePlaneTsvRedDensMag(ofstream &ofil,GaussWaveFunction &wf);
-   bool writePlaneTsvRoSE(ofstream &ofil,GaussWaveFunction &wf);
-   bool writePlaneTsvScalarCustFld(ofstream &ofil,GaussWaveFunction &wf);
-   bool writePlaneTsvVectorCustFld(ofstream &ofil,GaussWaveFunction &wf);
-   bool writePlaneTsvVirialPotentialEnergyDensity(ofstream &ofil,GaussWaveFunction &wf);
-   bool writePlaneTsvEllipticity(ofstream &ofil,GaussWaveFunction &wf);
-   void makeTsv(string &onam,GaussWaveFunction &wf,ScalarFieldType ft);
+   /* *************************************************************************** */
+   int GetNPts(int ii);   
+   void SetNPts(int nx,int ny);
+   void SetNPts(int nn);
+   void SetUpSimplePlane(bondNetWork &bn,int na,int nb,int nc);
+   void SetUpSimplePlane(bondNetWork &bn,int na,int nb);
+   void SetUpSimplePlane(bondNetWork &bn,int na);
+   void SetUpSimplePlane(bondNetWork &bn,double (&ta)[3],double (&tb)[3],double (&tc)[3]);
+   void SetUpSimplePlane(bondNetWork &bn,double (&ta)[3],double (&tb)[3]);
+   void SetUpSimplePlane(bondNetWork &bn,double (&ta)[3]);
+   bool WritePlaneTsvRho(ofstream &ofil,GaussWaveFunction &wf);
+   bool WritePlaneTsvLapRho(ofstream &ofil,GaussWaveFunction &wf);
+   bool WritePlaneTsvELF(ofstream &ofil,GaussWaveFunction &wf);
+   bool WritePlaneTsvShannonEntropy(ofstream &ofil,GaussWaveFunction &wf);
+   bool WritePlaneTsvMagGradRho(ofstream &ofil,GaussWaveFunction &wf);
+   bool WritePlaneTsvLOL(ofstream &ofil,GaussWaveFunction &wf);
+   bool WritePlaneTsvMagGradLOL(ofstream &ofil,GaussWaveFunction &wf);
+   bool WritePlaneTsvGradLOL(ofstream &ofil,GaussWaveFunction &wf);
+   bool WritePlaneTsvKinetEnerDensG(ofstream &ofil,GaussWaveFunction &wf);
+   bool WritePlaneTsvKinetEnerDensK(ofstream &ofil,GaussWaveFunction &wf);
+   bool WritePlaneTsvMolElecPot(ofstream &ofil,GaussWaveFunction &wf);
+   bool WritePlaneTsvLED(ofstream &ofil,GaussWaveFunction &wf);
+   bool WritePlaneTsvMagLED(ofstream &ofil,GaussWaveFunction &wf);
+   bool WritePlaneTsvRedDensMag(ofstream &ofil,GaussWaveFunction &wf);
+   bool WritePlaneTsvRoSE(ofstream &ofil,GaussWaveFunction &wf);
+   bool WritePlaneTsvScalarCustFld(ofstream &ofil,GaussWaveFunction &wf);
+   bool WritePlaneTsvVectorCustFld(ofstream &ofil,GaussWaveFunction &wf);
+   bool WritePlaneTsvVirialPotentialEnergyDensity(ofstream &ofil,GaussWaveFunction &wf);
+   bool WritePlaneTsvEllipticity(ofstream &ofil,GaussWaveFunction &wf);
+   void MakeTsv(string &onam,GaussWaveFunction &wf,ScalarFieldType ft);
 /* *************************************************************************** */
 private:
 /* *************************************************************************** */

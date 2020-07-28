@@ -93,16 +93,16 @@ int main (int argc, char ** argv) {
                                //was read, there souldn't be problems here.
    bnw.setUpBNW();             //To setup the bond network.
    
-   waveFunctionGrid2D grid;    //Defining a grid object
+   WaveFunctionGrid2D grid;    //Defining a grid object
    
    /* Looking for user grid dimensions */
    
    int nn=DEFAULTPOINTSPERDIRECTION;
    if (options.setn1) {
       sscanf(argv[options.setn1],"%d",&nn);
-      grid.setNPts(nn);
+      grid.SetNPts(nn);
    } else {
-      grid.setNPts(nn);
+      grid.SetNPts(nn);
    }
    
    /* Defining the line direction and other properties, and setting up the grid */
@@ -110,13 +110,13 @@ int main (int argc, char ** argv) {
    int at1=0,at2=1,at3=2;
    if (bnw.nNuc==1) {
       at1=at2=0,at3=0;
-      grid.setUpSimplePlane(bnw,0);
+      grid.SetUpSimplePlane(bnw,0);
       cout << "The file " << infilnam << " has only one atom" << endl;
       cout << "Using this atom to set the plane...\n";
    } else if (bnw.nNuc==2) {
       at1=0;
       at2=at3=1;
-      grid.setUpSimplePlane(bnw,0,1);
+      grid.SetUpSimplePlane(bnw,0,1);
       cout << "The file " << infilnam << " has only two atoms" << endl;
       cout << "Using these atoms to set the plane...\n";
    } else {
@@ -137,16 +137,16 @@ int main (int argc, char ** argv) {
          at1--;
          at2--;
          at3--;
-         grid.setUpSimplePlane(bnw,at1,at2,at3);
+         grid.SetUpSimplePlane(bnw,at1,at2,at3);
       } else {
          at1=at2=at3=0;
-         grid.setUpSimplePlane(bnw,0);
+         grid.SetUpSimplePlane(bnw,0);
          cout << "Using the first atom to set the line...\n";
       }
    }
    //cout << "checkpoint" << endl;
-   cout << "The size of the grid will be: " << grid.getNPts(0) << "x" << grid.getNPts(1) << endl;
-   cout << "Total number of points that will be computed: " << grid.getNPts(0)*grid.getNPts(1) << endl;
+   cout << "The size of the grid will be: " << grid.GetNPts(0) << "x" << grid.GetNPts(1) << endl;
+   cout << "Total number of points that will be computed: " << grid.GetNPts(0)*grid.GetNPts(1) << endl;
    
    /* Setting the property to be computed */
    
@@ -162,7 +162,7 @@ int main (int argc, char ** argv) {
    cout << "Evaluating and writing property..." << endl;
    cout << "(Scalar Field to plot: " << GetFieldTypeKeyLong(prop) << ")." << endl << endl;
    ScalarFieldType fldType=Char2ScalarFieldType(prop);
-   grid.makeTsv(outfilnam,gwf,fldType);
+   grid.MakeTsv(outfilnam,gwf,fldType);
    cout << endl << "Output written in file: " << outfilnam << endl;
    
 #if _HAVE_GNUPLOT_

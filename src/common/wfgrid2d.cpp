@@ -55,7 +55,7 @@ using std::setprecision;
 #include "mymemory.h"
 #include "mymath.h"
 
-waveFunctionGrid2D::waveFunctionGrid2D() {
+WaveFunctionGrid2D::WaveFunctionGrid2D() {
    for (int i=0; i<3; i++) {
       Ca[i]=0.0e0;
       Cb[i]=0.0e0;
@@ -74,23 +74,23 @@ waveFunctionGrid2D::waveFunctionGrid2D() {
    prop2plot=NONE;
    imsetup=false;
 }
-waveFunctionGrid2D::~waveFunctionGrid2D() {
+WaveFunctionGrid2D::~WaveFunctionGrid2D() {
    MyMemory::Dealloc1DRealArray(prop1d);
    MyMemory::Dealloc2DRealArray(prop2d,npts[1]);
 }
-void waveFunctionGrid2D::setNPts(int nx,int ny) {
+void WaveFunctionGrid2D::SetNPts(int nx,int ny) {
    npts[0]=nx;
    npts[1]=ny;
    return;
 }
-void waveFunctionGrid2D::setNPts(int nn) {
+void WaveFunctionGrid2D::SetNPts(int nn) {
    for (int i=0; i<2; i++) {npts[i]=nn;}
    return;
 }
-int waveFunctionGrid2D::getNPts(int ii) {
+int WaveFunctionGrid2D::GetNPts(int ii) {
    return npts[ii];   
 }
-void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,int na,int nb,int nc) {
+void WaveFunctionGrid2D::SetUpSimplePlane(bondNetWork &bn,int na,int nb,int nc) {
    if (!(bn.imstp())) {
       cout << "Error: Trying to use a non set-up bondNetWork object!\n";
       cout << "The grid could not be set up." << endl;
@@ -113,14 +113,14 @@ void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,int na,int nb,int nc) 
       vb[i]=bn.R[nb][i];
       vc[i]=bn.R[nc][i];
    }
-   setUpSimplePlane(bn,va,vb,vc);
+   SetUpSimplePlane(bn,va,vb,vc);
    for (int i=0; i<2; i++) {dx[i]=2.0e0/double(npts[i]-1);}
    MyMemory::Alloc1DRealArray("prop1d",npts[1],prop1d);
    MyMemory::Alloc2DRealArray(string("prop2d"),npts[1],2,prop2d);
    imsetup=true;
    return;
 }
-void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,int na,int nb) {
+void WaveFunctionGrid2D::SetUpSimplePlane(bondNetWork &bn,int na,int nb) {
    if (!(bn.imstp())) {
       cout << "Error: Trying to use a non set-up bondNetWork object!\n";
       cout << "The grid could not be set up." << endl;
@@ -142,14 +142,14 @@ void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,int na,int nb) {
       va[i]=bn.R[na][i];
       vb[i]=bn.R[nb][i];
    }
-   setUpSimplePlane(bn,va,vb);
+   SetUpSimplePlane(bn,va,vb);
    for (int i=0; i<2; i++) {dx[i]=2.0e0/double(npts[i]-1);}
    MyMemory::Alloc1DRealArray("prop1d",npts[1],prop1d);
    MyMemory::Alloc2DRealArray(string("prop2d"),npts[1],2,prop2d);
    imsetup=true;
    return;
 }
-void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,int na) {
+void WaveFunctionGrid2D::SetUpSimplePlane(bondNetWork &bn,int na) {
    if (!(bn.imstp())) {
       cout << "Error: Trying to use a non set-up bondNetWork object!\n";
       cout << "The grid could not be set up." << endl;
@@ -170,14 +170,14 @@ void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,int na) {
    for (int i=0; i<3; i++) {
       va[i]=bn.R[na][i];
    }
-   setUpSimplePlane(bn,va);
+   SetUpSimplePlane(bn,va);
    for (int i=0; i<2; i++) {dx[i]=2.0e0/double(npts[i]-1);}
    MyMemory::Alloc1DRealArray("prop1d",npts[1],prop1d);
    MyMemory::Alloc2DRealArray(string("prop2d"),npts[1],2,prop2d);
    imsetup=true;
    return;
 }
-void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,
+void WaveFunctionGrid2D::SetUpSimplePlane(bondNetWork &bn,
                                           double (&ta)[3],double (&tb)[3],double (&tc)[3]) {
    /*
     Three special cases to consider:
@@ -225,14 +225,14 @@ void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,
       }
    } else {
       if (meta>mxi) {
-         setUpSimplePlane(bn,ta,tb);
+         SetUpSimplePlane(bn,ta,tb);
       } else {
-         setUpSimplePlane(bn,ta,tc);
+         SetUpSimplePlane(bn,ta,tc);
       }
    }
    return;
 }
-void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,double (&ta)[3],double (&tb)[3]) {
+void WaveFunctionGrid2D::SetUpSimplePlane(bondNetWork &bn,double (&ta)[3],double (&tb)[3]) {
    double n[3],eta[3],xi[3];//,orig[3];
    for (int i=0; i<3; i++) {
       eta[i]=tb[i]-ta[i];
@@ -293,7 +293,7 @@ void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,double (&ta)[3],double
    // */
    return;
 }
-void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,double (&ta)[3]) {
+void WaveFunctionGrid2D::SetUpSimplePlane(bondNetWork &bn,double (&ta)[3]) {
    double eta[3],xi[3];
    for (int i=0; i<3; i++) {
       eta[i]=0.0e0;
@@ -323,7 +323,7 @@ void waveFunctionGrid2D::setUpSimplePlane(bondNetWork &bn,double (&ta)[3]) {
    }
    return;
 }
-bool waveFunctionGrid2D::writePlaneTsvRho(ofstream &ofil,GaussWaveFunction &wf) {
+bool WaveFunctionGrid2D::WritePlaneTsvRho(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
    double e1,e2,xx[3];
    e1=-1.0e0;
@@ -353,7 +353,7 @@ bool waveFunctionGrid2D::writePlaneTsvRho(ofstream &ofil,GaussWaveFunction &wf) 
    }
    return true;
 }
-void waveFunctionGrid2D::makeTsv(string &onam,GaussWaveFunction &wf,ScalarFieldType ft) {
+void WaveFunctionGrid2D::MakeTsv(string &onam,GaussWaveFunction &wf,ScalarFieldType ft) {
    if (!wf.imldd) {
       cout << "Error: trying to use a non loaded wave function object!\nNothing done!\n";
       return;
@@ -383,61 +383,61 @@ void waveFunctionGrid2D::makeTsv(string &onam,GaussWaveFunction &wf,ScalarFieldT
 #endif
    switch (ft) {
       case DENS:
-         writePlaneTsvRho(ofil,wf);
+         WritePlaneTsvRho(ofil,wf);
          break;
       case LAPD:
-         writePlaneTsvLapRho(ofil,wf);
+         WritePlaneTsvLapRho(ofil,wf);
          break;
       case ELFD:
-         writePlaneTsvELF(ofil,wf);
+         WritePlaneTsvELF(ofil,wf);
          break;
       case SENT:
-         writePlaneTsvShannonEntropy(ofil,wf);
+         WritePlaneTsvShannonEntropy(ofil,wf);
          break;
       case MGRD:
-         writePlaneTsvMagGradRho(ofil,wf);
+         WritePlaneTsvMagGradRho(ofil,wf);
          break;
       case LOLD:
-         writePlaneTsvLOL(ofil,wf);
+         WritePlaneTsvLOL(ofil,wf);
          break;
       case MGLD:
-         writePlaneTsvMagGradLOL(ofil,wf);
+         WritePlaneTsvMagGradLOL(ofil,wf);
          break;
       case GLOL:
-         writePlaneTsvGradLOL(ofil,wf);
+         WritePlaneTsvGradLOL(ofil,wf);
          break;
       case KEDG:
-         writePlaneTsvKinetEnerDensG(ofil,wf);
+         WritePlaneTsvKinetEnerDensG(ofil,wf);
          break;
       case KEDK:
-         writePlaneTsvKinetEnerDensK(ofil,wf);
+         WritePlaneTsvKinetEnerDensK(ofil,wf);
          break;
       case MEPD:
-         writePlaneTsvMolElecPot(ofil,wf);
+         WritePlaneTsvMolElecPot(ofil,wf);
          break;
       case LEDV :
-         writePlaneTsvLED(ofil,wf);
+         WritePlaneTsvLED(ofil,wf);
          break;
       case MLED :
-         writePlaneTsvMagLED(ofil,wf);
+         WritePlaneTsvMagLED(ofil,wf);
          break;
       case ROSE :
-         writePlaneTsvRoSE(ofil,wf);
+         WritePlaneTsvRoSE(ofil,wf);
          break;
       case REDG :
-         writePlaneTsvRedDensMag(ofil,wf);
+         WritePlaneTsvRedDensMag(ofil,wf);
          break;
       case SCFD :
-         writePlaneTsvScalarCustFld(ofil,wf);
+         WritePlaneTsvScalarCustFld(ofil,wf);
          break;
       case VCFD :
-         writePlaneTsvVectorCustFld(ofil,wf);
+         WritePlaneTsvVectorCustFld(ofil,wf);
          break;
       case VPED :
-         writePlaneTsvVirialPotentialEnergyDensity(ofil,wf);
+         WritePlaneTsvVirialPotentialEnergyDensity(ofil,wf);
          break;
       case ELLPY:
-         writePlaneTsvEllipticity(ofil,wf);
+         WritePlaneTsvEllipticity(ofil,wf);
          break;
       default:
          cout << "Error: Field type not known!\n dat file incomplete!" << endl;
@@ -450,7 +450,7 @@ void waveFunctionGrid2D::makeTsv(string &onam,GaussWaveFunction &wf,ScalarFieldT
    ofil.close();
    return;
 }
-bool waveFunctionGrid2D::writePlaneTsvLapRho(ofstream &ofil,GaussWaveFunction &wf) {
+bool WaveFunctionGrid2D::WritePlaneTsvLapRho(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
    double e1,e2,xx[3];
    e1=-1.0e0;
@@ -480,7 +480,7 @@ bool waveFunctionGrid2D::writePlaneTsvLapRho(ofstream &ofil,GaussWaveFunction &w
    }
    return false;
 }
-bool waveFunctionGrid2D::writePlaneTsvELF(ofstream &ofil,GaussWaveFunction &wf) {
+bool WaveFunctionGrid2D::WritePlaneTsvELF(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
    double e1,e2,xx[3];
    e1=-1.0e0;
@@ -510,7 +510,7 @@ bool waveFunctionGrid2D::writePlaneTsvELF(ofstream &ofil,GaussWaveFunction &wf) 
    }
    return false;
 }
-bool waveFunctionGrid2D::writePlaneTsvShannonEntropy(ofstream &ofil,GaussWaveFunction &wf) {
+bool WaveFunctionGrid2D::WritePlaneTsvShannonEntropy(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
    double e1,e2,xx[3];
    e1=-1.0e0;
@@ -540,7 +540,7 @@ bool waveFunctionGrid2D::writePlaneTsvShannonEntropy(ofstream &ofil,GaussWaveFun
    }
    return false;
 }
-bool waveFunctionGrid2D::writePlaneTsvMagGradRho(ofstream &ofil,GaussWaveFunction &wf) {
+bool WaveFunctionGrid2D::WritePlaneTsvMagGradRho(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
    double e1,e2,xx[3];
    e1=-1.0e0;
@@ -570,7 +570,7 @@ bool waveFunctionGrid2D::writePlaneTsvMagGradRho(ofstream &ofil,GaussWaveFunctio
    }
    return false;
 }
-bool waveFunctionGrid2D::writePlaneTsvLOL(ofstream &ofil,GaussWaveFunction &wf) {
+bool WaveFunctionGrid2D::WritePlaneTsvLOL(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
    double e1,e2,xx[3];
    e1=-1.0e0;
@@ -600,7 +600,7 @@ bool waveFunctionGrid2D::writePlaneTsvLOL(ofstream &ofil,GaussWaveFunction &wf) 
    }
    return false;
 }
-bool waveFunctionGrid2D::writePlaneTsvMagGradLOL(ofstream &ofil,GaussWaveFunction &wf) {
+bool WaveFunctionGrid2D::WritePlaneTsvMagGradLOL(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
    double e1,e2,xx[3],gl[3],hl[3][3],lol;
    e1=-1.0e0;
@@ -631,7 +631,7 @@ bool waveFunctionGrid2D::writePlaneTsvMagGradLOL(ofstream &ofil,GaussWaveFunctio
    }
    return false;
 }
-bool waveFunctionGrid2D::writePlaneTsvKinetEnerDensG(ofstream &ofil,GaussWaveFunction &wf) {
+bool WaveFunctionGrid2D::WritePlaneTsvKinetEnerDensG(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
    double e1,e2,xx[3];
    e1=-1.0e0;
@@ -661,7 +661,7 @@ bool waveFunctionGrid2D::writePlaneTsvKinetEnerDensG(ofstream &ofil,GaussWaveFun
    }
    return false;
 }
-bool waveFunctionGrid2D::writePlaneTsvKinetEnerDensK(ofstream &ofil,GaussWaveFunction &wf) {
+bool WaveFunctionGrid2D::WritePlaneTsvKinetEnerDensK(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
    double e1,e2,xx[3];
    e1=-1.0e0;
@@ -691,7 +691,7 @@ bool waveFunctionGrid2D::writePlaneTsvKinetEnerDensK(ofstream &ofil,GaussWaveFun
    }
    return false;
 }
-bool waveFunctionGrid2D::writePlaneTsvGradLOL(ofstream &ofil,GaussWaveFunction &wf) {
+bool WaveFunctionGrid2D::WritePlaneTsvGradLOL(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
    double e1,e2,xx[3],gl[3],hl[3][3],lol;
    e1=-1.0e0;
@@ -727,7 +727,7 @@ bool waveFunctionGrid2D::writePlaneTsvGradLOL(ofstream &ofil,GaussWaveFunction &
    }
    return false;
 }
-bool waveFunctionGrid2D::writePlaneTsvMolElecPot(ofstream &ofil,GaussWaveFunction &wf) {
+bool WaveFunctionGrid2D::WritePlaneTsvMolElecPot(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
    double e1,e2,xx[3];
    e1=-1.0e0;
@@ -757,7 +757,7 @@ bool waveFunctionGrid2D::writePlaneTsvMolElecPot(ofstream &ofil,GaussWaveFunctio
    }
    return false;
 }
-bool waveFunctionGrid2D::writePlaneTsvLED(ofstream &ofil,GaussWaveFunction &wf) {
+bool WaveFunctionGrid2D::WritePlaneTsvLED(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
    double e1,e2,xx[3],led[3];
    e1=-1.0e0;
@@ -793,7 +793,7 @@ bool waveFunctionGrid2D::writePlaneTsvLED(ofstream &ofil,GaussWaveFunction &wf) 
    }
    return false;
 }
-bool waveFunctionGrid2D::writePlaneTsvMagLED(ofstream &ofil,GaussWaveFunction &wf) {
+bool WaveFunctionGrid2D::WritePlaneTsvMagLED(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
    double e1,e2,xx[3];
    e1=-1.0e0;
@@ -823,7 +823,7 @@ bool waveFunctionGrid2D::writePlaneTsvMagLED(ofstream &ofil,GaussWaveFunction &w
    }
    return false;
 }
-bool waveFunctionGrid2D::writePlaneTsvRedDensMag(ofstream &ofil,GaussWaveFunction &wf) {
+bool WaveFunctionGrid2D::WritePlaneTsvRedDensMag(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
    double e1,e2,xx[3];
    e1=-1.0e0;
@@ -853,7 +853,7 @@ bool waveFunctionGrid2D::writePlaneTsvRedDensMag(ofstream &ofil,GaussWaveFunctio
    }
    return false;
 }
-bool waveFunctionGrid2D::writePlaneTsvRoSE(ofstream &ofil,GaussWaveFunction &wf) {
+bool WaveFunctionGrid2D::WritePlaneTsvRoSE(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
    double e1,e2,xx[3];
    e1=-1.0e0;
@@ -883,7 +883,7 @@ bool waveFunctionGrid2D::writePlaneTsvRoSE(ofstream &ofil,GaussWaveFunction &wf)
    }
    return false;
 }
-bool waveFunctionGrid2D::writePlaneTsvScalarCustFld(ofstream &ofil,GaussWaveFunction &wf) {
+bool WaveFunctionGrid2D::WritePlaneTsvScalarCustFld(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
    double e1,e2,xx[3];
    e1=-1.0e0;
@@ -913,7 +913,7 @@ bool waveFunctionGrid2D::writePlaneTsvScalarCustFld(ofstream &ofil,GaussWaveFunc
    }
    return false;
 }
-bool waveFunctionGrid2D::writePlaneTsvVectorCustFld(ofstream &ofil,GaussWaveFunction &wf) {
+bool WaveFunctionGrid2D::WritePlaneTsvVectorCustFld(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
    double e1,e2,xx[3],vcf[3];
    e1=-1.0e0;
@@ -949,7 +949,7 @@ bool waveFunctionGrid2D::writePlaneTsvVectorCustFld(ofstream &ofil,GaussWaveFunc
    }
    return false;
 }
-bool waveFunctionGrid2D::writePlaneTsvVirialPotentialEnergyDensity(ofstream &ofil,GaussWaveFunction &wf) {
+bool WaveFunctionGrid2D::WritePlaneTsvVirialPotentialEnergyDensity(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
    double e1,e2,xx[3];
    e1=-1.0e0;
@@ -979,7 +979,7 @@ bool waveFunctionGrid2D::writePlaneTsvVirialPotentialEnergyDensity(ofstream &ofi
    }
    return false;
 }
-bool waveFunctionGrid2D::writePlaneTsvEllipticity(ofstream &ofil,GaussWaveFunction &wf) {
+bool WaveFunctionGrid2D::WritePlaneTsvEllipticity(ofstream &ofil,GaussWaveFunction &wf) {
    ofil << scientific << setprecision (10);
    double e1,e2,xx[3];
    e1=-1.0e0;
