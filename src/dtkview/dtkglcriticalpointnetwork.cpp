@@ -63,6 +63,6 @@ bool DTKGLCriticalPointNetWork::loadCPNStateFromFile(QString fname) {
       qDebug() << "Error: first load the critical point network!";
       return false;
    }
-   return cpn->readFromFile(fname.toStdString());
+   return cpn->ReadFromFile(fname.toStdString());
 }
 

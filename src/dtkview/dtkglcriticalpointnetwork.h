@@ -114,10 +114,10 @@ public:
     QString getRCPLabel(int idx) {return QString::fromStdString(cpn->lblRCP[idx]);}
     QString getCCPLabel(int idx) {return QString::fromStdString(cpn->lblCCP[idx]);}
 
-    bool iKnowACPs(void) {return cpn->iKnowACPs();}
+    bool iKnowACPs(void) {return cpn->IKnowACPs();}
     bool IKnowBCPs(void) {return cpn->IKnowBCPs();}
-    bool iKnowRCPs(void) {return cpn->iKnowRCPs();}
-    bool iKnowCCPs(void) {return cpn->iKnowCCPs();}
+    bool iKnowRCPs(void) {return cpn->IKnowRCPs();}
+    bool iKnowCCPs(void) {return cpn->IKnowCCPs();}
 private:
     class CritPtNetWork *cpn;
 };

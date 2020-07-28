@@ -61,21 +61,21 @@ DTKGLBondNetWork::~DTKGLBondNetWork() {
 bool DTKGLBondNetWork::readFromFile(QString filename) {
    std::string fnam=filename.toStdString();
    bnw=new BondNetWork();
-   if ( !(bnw->readFromFile(fnam)) ) {
+   if ( !(bnw->ReadFromFile(fnam)) ) {
       QMessageBox::warning(this, tr("Error"),\
             tr("Could not open the file!"));
       delete bnw;
       bnw=NULL;
       return false;
    }
-   bnw->setUpBNW();
-   bnw->calcViewRadius();
+   bnw->SetUpBNW();
+   bnw->CalcViewRadius();
    atoms.resize((bnw->nNuc));
    for (int i=0; i<atoms.size(); ++i) {
       for (int j=0; j<3; ++j) {atoms[i].r[j]=bnw->R[i][j];}
-      atoms[i].color[0]=float(getAtomicRColorReal(bnw->atNum[i]));
-      atoms[i].color[1]=float(getAtomicGColorReal(bnw->atNum[i]));
-      atoms[i].color[2]=float(getAtomicBColorReal(bnw->atNum[i]));
+      atoms[i].color[0]=float(GetAtomicRColorReal(bnw->atNum[i]));
+      atoms[i].color[1]=float(GetAtomicGColorReal(bnw->atNum[i]));
+      atoms[i].color[2]=float(GetAtomicBColorReal(bnw->atNum[i]));
    }
    links.resize(2*(bnw->nBonds));
    float alpha,frak1,dist;
@@ -87,8 +87,8 @@ bool DTKGLBondNetWork::readFromFile(QString filename) {
          if (k>0) {
             atni=bnw->atNum[i];
             atnk=bnw->atNum[k];
-            frak1=getAtomicVDWRadius(atni)/(getAtomicVDWRadius(atni)\
-                                            +getAtomicVDWRadius(atnk));
+            frak1=GetAtomicVDWRadius(atni)/(GetAtomicVDWRadius(atni)\
+                                            +GetAtomicVDWRadius(atnk));
             for (int l=0; l<3; l++) {
                va[l]=bnw->R[i][l];
                vb[l]=bnw->R[k][l];
@@ -101,9 +101,9 @@ bool DTKGLBondNetWork::readFromFile(QString filename) {
             links[currIdx].rotVec=rot;
             links[currIdx].angle=alpha;
             links[currIdx].height=dist;
-            links[currIdx].color[0]=float(getAtomicRColorReal(atni));
-            links[currIdx].color[1]=float(getAtomicGColorReal(atni));
-            links[currIdx].color[2]=float(getAtomicBColorReal(atni));
+            links[currIdx].color[0]=float(GetAtomicRColorReal(atni));
+            links[currIdx].color[1]=float(GetAtomicGColorReal(atni));
+            links[currIdx].color[2]=float(GetAtomicBColorReal(atni));
             ++currIdx;
             dist=startpt.distanceToPoint(vb);
             dtkglutils::getRotationVectorAndAngle(startpt,vb,rot,alpha);
@@ -112,9 +112,9 @@ bool DTKGLBondNetWork::readFromFile(QString filename) {
             links[currIdx].rotVec=rot;
             links[currIdx].angle=alpha;
             links[currIdx].height=dist;
-            links[currIdx].color[0]=float(getAtomicRColorReal(atnk));
-            links[currIdx].color[1]=float(getAtomicGColorReal(atnk));
-            links[currIdx].color[2]=float(getAtomicBColorReal(atnk));
+            links[currIdx].color[0]=float(GetAtomicRColorReal(atnk));
+            links[currIdx].color[1]=float(GetAtomicGColorReal(atnk));
+            links[currIdx].color[2]=float(GetAtomicBColorReal(atnk));
             ++currIdx;
          }
       }
