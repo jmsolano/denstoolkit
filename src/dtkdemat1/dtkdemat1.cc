@@ -550,7 +550,7 @@ int main (int argc, char ** argv) {
    DeMat1CriticalPointNetworkSL cp(&gwf,at1,at2);
    if ( options.findcps ) {
       ScreenUtils::PrintBetweenStarLines("Searching Critical Points");
-      cp.setGammaCriticalPoints();
+      cp.SetGammaCriticalPoints();
       ScreenUtils::PrintScrStarLine();
    }
    /* Display the information of min/max of MD1 */
@@ -600,7 +600,7 @@ int main (int argc, char ** argv) {
    cout << "MD1(diag,max): " << md1dmax << endl;
    if ( options.findcps ) {
       ScreenUtils::PrintScrCharLine('-');
-      cp.displayCPsInfo();
+      cp.DisplayCPsInfo();
    }
    ScreenUtils::PrintScrCharLine('-');
    cout << "The value of MD1 at the point e --aka cicp-- is:" << endl;
@@ -659,7 +659,7 @@ int main (int argc, char ** argv) {
    /* Writing the information of MD1 (min/max) to the log file */
    if ( options.findcps ) {
       FileUtils::WriteScrCharLine(logfil,'-');
-      cp.writeCPsInfo(logfil);
+      cp.WriteCPsInfo(logfil);
    }
    /* Writes the value of gamma at cicp  */
    FileUtils::WriteScrCharLine(logfil,'-');

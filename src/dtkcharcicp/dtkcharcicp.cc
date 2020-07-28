@@ -177,7 +177,7 @@ void WriteLogFile(string fname,DeMat1CriticalPointNetworkBP &dcpn,bondNetWork &b
    /* ************************************************************************** */
    FileUtils::WriteScrStarLine(ofil);
    FileUtils::WriteCenteredString(ofil,string("Data obtained from file: ")+wfnam);
-   if ( dcpn.differentSignaturesCICPvsNN() ) {
+   if ( dcpn.DifferentSignaturesCICPvsNN() ) {
       FileUtils::WriteCenteredString(ofil,"Found DIFFERENT SIGNATURES [CICP] vs [Nuc-Nuc]!");
    } else {
       FileUtils::WriteCenteredString(ofil,"Found SAME SIGNATURES [CICP] vs [Nuc-Nuc]!");

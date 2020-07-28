@@ -71,35 +71,34 @@ using std::ofstream;
 #define DEFAULTNDIVSRCPSEARCH 12
 #endif
 
-/* ************************************************************************************ */
 /** 
- * This class will find, store and manipulate the critical points of the
- * density matrix of order 1.
- * For this class, it is assumed that the density matrix is studied in a plane
- * whose coordinates are given by pairs (u,v) (we denote this plane by
- * 'the plane UV' or the 'UV plane'). Therefore, there are only 
- * three types of critical points, which we will call as follows.
- * Also, it is assumed that only two nuclei are contained within the
- * plane UV.
- *
- * Abbrev.:         Name                  (range,signature)
- *
- *   ACP:   Attractive Critical Point   (2,-2)
- *   SCP:   Saddle Critical Point       (2, 0)
- *   RCP:   Repulsive CP                (2,+2)
- *
- *   The name is just for keeping some compatibility with the
- *   naming of three dimensional critical points (used in
- *   Bader's QTAIM).
- * 
- * When this class is instantiated, two atom indices (i,j) must be given.
- * In the first implementation, this will define the direction
- * of the straight line in real space that joins the atoms i and j,
- * and whose parametrization is (u,v). This indices are assumed to
- * be from zero to the number of nuclei contained in the 
- * wave function object, which is also required for instantiating 
- * the object DeMat1CriticalPointNetworkSL.
- * */
+   This class will find, store and manipulate the critical points of the
+   density matrix of order 1.
+   For this class, it is assumed that the density matrix is studied in a plane
+   whose coordinates are given by pairs (u,v) (we denote this plane by
+   'the plane UV' or the 'UV plane'). Therefore, there are only 
+   three types of critical points, which we will call as follows.
+   Also, it is assumed that only two nuclei are contained within the
+   plane UV.
+  
+   Abbrev.:         Name                  (range,signature)
+  
+     ACP:   Attractive Critical Point   (2,-2)
+     SCP:   Saddle Critical Point       (2, 0)
+     RCP:   Repulsive CP                (2,+2)
+  
+     The name is just for keeping some compatibility with the
+     naming of three dimensional critical points (used in
+     Bader's QTAIM).
+   
+   When this class is instantiated, two atom indices (i,j) must be given.
+   In the first implementation, this will define the direction
+   of the straight line in real space that joins the atoms i and j,
+   and whose parametrization is (u,v). This indices are assumed to
+   be from zero to the number of nuclei contained in the 
+   wave function object, which is also required for instantiating 
+   the object DeMat1CriticalPointNetworkSL.
+*/
 class DeMat1CriticalPointNetworkSL {
 /* ************************************************************************************ */
 public:
@@ -109,107 +108,61 @@ public:
 /* ************************************************************************************ */
    int nACP,nSCP,nRCP;
    int asACP,asSCP,asRCP;
-/* ************************************************************************************ */
    double **RACP,**RSCP,**RRCP;
-/* ************************************************************************************ */
    string *lblACP,*lblSCP,*lblRCP;
-/* ************************************************************************************ */
    double x1[3],x2[3],x2mx1[3],x2pmx1p[3];
    double lenline,oolenline;
 /* ************************************************************************************ */
-   void getXCoordinatesFromUV(double uu,double vv,double (&x)[3],double (&xp)[3]);
-/* ************************************************************************************ */
-   void evalUVGrad(double uu,double vv,double &gamm, double (&uvg)[2]);
-/* ************************************************************************************ */
-   void evalUVHessian(double uu,double vv,double &gamm,\
+   void GetXCoordinatesFromUV(double uu,double vv,double (&x)[3],double (&xp)[3]);
+   void EvalUVGrad(double uu,double vv,double &gamm, double (&uvg)[2]);
+   void EvalUVHessian(double uu,double vv,double &gamm,\
          double (&uvg)[2],double (&uvh)[2][2]);
-/* ************************************************************************************ */
-   void getACPStep(double (&g)[2],double (&hess)[2][2],double (&hh)[2],int &sig);
-/* ************************************************************************************ */
-   void getSCPStep(double (&g)[2],double (&hess)[2][2],double (&hh)[2],int &sig);
-/* ************************************************************************************ */
-   void getRCPStep(double (&g)[2],double (&hess)[2][2],double (&hh)[2],int &sig);
-/* ************************************************************************************ */
-   void seekGammaACP(double (&x)[2],double &gamm2ret,double (&g)[2],\
+   void GetACPStep(double (&g)[2],double (&hess)[2][2],double (&hh)[2],int &sig);
+   void GetSCPStep(double (&g)[2],double (&hess)[2][2],double (&hh)[2],int &sig);
+   void GetRCPStep(double (&g)[2],double (&hess)[2][2],double (&hh)[2],int &sig);
+   void SeekGammaACP(double (&x)[2],double &gamm2ret,double (&g)[2],\
          int &sig,int maxit=DEMAT1MAXITERATIONACPSEARCH);
-/* ************************************************************************************ */
-   void seekGammaSCP(double (&x)[2],double &gamm2ret,double (&g)[2],int &sig,\
+   void SeekGammaSCP(double (&x)[2],double &gamm2ret,double (&g)[2],int &sig,\
          int maxit=DEMAT1MAXITERATIONSCPSEARCH);
-/* ************************************************************************************ */
-   void seekGammaRCP(double (&x)[2],double &gamm2ret,double (&g)[2], int &sig,\
+   void SeekGammaRCP(double (&x)[2],double &gamm2ret,double (&g)[2], int &sig,\
          int maxit=DEMAT1MAXITERATIONRCPSEARCH);
-/* ************************************************************************************ */
-   void setGammaACP(int ndivs=DEFAULTNDIVSACPSEARCH);
-/* ************************************************************************************ */
-   void seekGammaACPsAroundAPoint(double (&oo)[2],double ddxx);
-/* ************************************************************************************ */
-   void seekSingleGammaACP(double (&xs)[2],double &gamm,double (&gg)[2],string &lbl);
-/* ************************************************************************************ */
-   void setGammaSCP(int ndivs=DEFAULTNDIVSSCPSEARCH);
-/* ************************************************************************************ */
-   void seekGammaSCPsAroundAPoint(double (&oo)[2],double ddxx);
-/* ************************************************************************************ */
-   void seekSingleGammaSCP(double (&xs)[2],double &gamm,double (&gg)[2],string &lbl);
-/* ************************************************************************************ */
-   void setGammaRCP(int ndivs=DEFAULTNDIVSRCPSEARCH);
-/* ************************************************************************************ */
-   void seekGammaRCPsAroundAPoint(double (&oo)[2],double ddxx);
-/* ************************************************************************************ */
-   void seekSingleGammaRCP(double (&xs)[2],double &gamm,double (&gg)[2],string &lbl);
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-   void addGammaACP(double (&x)[2],string lbl);
-/* ************************************************************************************ */
-   void addGammaSCP(double (&x)[2],string lbl);
-/* ************************************************************************************ */
-   void addGammaRCP(double (&x)[2],string lbl);
-/* ************************************************************************************ */
-   bool imNew(double (&x)[2],int dim,double ** (&arr),size_t &pos);
-/* ************************************************************************************ */
-   void displayACPsInfo(void);
-   void displaySCPsInfo(void);
-   void displayRCPsInfo(void);
-   void displayCPsInfo(void);
-/* ************************************************************************************ */
-   void writeACPsInfo(ofstream &ofil);
-   void writeSCPsInfo(ofstream &ofil);
-   void writeRCPsInfo(ofstream &ofil);
-   void writeCPsInfo(ofstream &ofil);
-/* ************************************************************************************ */
-   void setGammaCriticalPoints(void);
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
+   void SetGammaACP(int ndivs=DEFAULTNDIVSACPSEARCH);
+   void SeekGammaACPsAroundAPoint(double (&oo)[2],double ddxx);
+   void SeekSingleGammaACP(double (&xs)[2],double &gamm,double (&gg)[2],string &lbl);
+   void SetGammaSCP(int ndivs=DEFAULTNDIVSSCPSEARCH);
+   void SeekGammaSCPsAroundAPoint(double (&oo)[2],double ddxx);
+   void SeekSingleGammaSCP(double (&xs)[2],double &gamm,double (&gg)[2],string &lbl);
+   void SetGammaRCP(int ndivs=DEFAULTNDIVSRCPSEARCH);
+   void SeekGammaRCPsAroundAPoint(double (&oo)[2],double ddxx);
+   void SeekSingleGammaRCP(double (&xs)[2],double &gamm,double (&gg)[2],string &lbl);
+   void AddGammaACP(double (&x)[2],string lbl);
+   void AddGammaSCP(double (&x)[2],string lbl);
+   void AddGammaRCP(double (&x)[2],string lbl);
+   bool ImNew(double (&x)[2],int dim,double ** (&arr),size_t &pos);
+   void DisplayACPsInfo(void);
+   void DisplaySCPsInfo(void);
+   void DisplayRCPsInfo(void);
+   void DisplayCPsInfo(void);
+   void WriteACPsInfo(ofstream &ofil);
+   void WriteSCPsInfo(ofstream &ofil);
+   void WriteRCPsInfo(ofstream &ofil);
+   void WriteCPsInfo(ofstream &ofil);
+   void SetGammaCriticalPoints(void);
 /* ************************************************************************************ */
    static const int nPolyV=13; //It is actually the vertices of an icosahedron plus the origin 
                              // (0,0,0)
-   static double PolyV[nPolyV][2];
+   static double polyV[nPolyV][2];
 /* ************************************************************************************ */
 private:
 /* ************************************************************************************ */
    int ata,atb;
-/* ************************************************************************************ */
    DeMat1CriticalPointNetworkSL();
-/* ************************************************************************************ */
    class GaussWaveFunction* wf;
-/* ************************************************************************************ */
-   void init(void);
-/* ************************************************************************************ */
-   void computePolygonVertices(void);
-/* ************************************************************************************ */
-   inline double getV2Norm(double (&vv)[2]) {return sqrt(vv[0]*vv[0]+vv[1]*vv[1]);}
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
+   void Init(void);
+   void ComputePolygonVertices(void);
+   inline double GetV2Norm(double (&vv)[2]) {return sqrt(vv[0]*vv[0]+vv[1]*vv[1]);}
 /* ************************************************************************************ */
 };
 /* ************************************************************************************ */
-
-
-
-
 #endif  /* _DEMAT1CRITPTNETWORKSL_H_ */
 

@@ -51,9 +51,8 @@ public:
    inline bool ImSetup(void) {return imsetup;}
    void ComputeCoreInteractionCPs2D(void);
    void ComputeCoreInteractionCPs6D(void);
-   bool differentSignaturesCICPvsNN(void);
+   bool DifferentSignaturesCICPvsNN(void);
    //void MapToUVCoordinatesM3x3(double (&e1)[3],double (&e2)[3],double (&huv)[2][2]);
-   /* ************************************************************************** */
    class critPtNetWork *cpn;
    double **eivalCICP2D; /*!< Contains the eigenvalues of 2D CICPs (projected gamma, ACP-ACP connection)  */
    double **eivalCICP6D; /*!< Contains the eigenvalues of 6D CICPs (ACP-ACP connection) */
@@ -65,8 +64,8 @@ public:
    /* ************************************************************************** */
 protected:
    /* ************************************************************************** */
-   void init(void);
-   void destroy(void);
+   void Init(void);
+   void Destroy(void);
    bool InitSafetyChecks(void);
    bool SetupCPN(void);
    bool AllocAuxArrays(void);
@@ -77,7 +76,6 @@ protected:
    int GetSignature(double (&v)[2]);
    int GetSignature(double (&v)[6]);
    /* ************************************************************************** */
-   /* ************************************************************************** */
    class GaussWaveFunction *wf;
    class bondNetWork *bn;
    int at1,at2;
@@ -85,7 +83,7 @@ protected:
 protected:
    bool imsetup;
    DeMat1CriticalPointNetworkBP(void) {} //Prohibited the use of default constructor.
-   void assignHessian6D(double (&hh)[3][3],double (&hph)[3][3],double (&hp)[3][3],\
+   void AssignHessian6D(double (&hh)[3][3],double (&hph)[3][3],double (&hp)[3][3],\
          double (&hess)[6][6]);
    /* ************************************************************************** */
 };

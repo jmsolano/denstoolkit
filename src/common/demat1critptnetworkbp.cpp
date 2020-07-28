@@ -70,7 +70,7 @@ using std::cerr;
 
 DeMat1CriticalPointNetworkBP::DeMat1CriticalPointNetworkBP(\
       GaussWaveFunction &usrwf,bondNetWork &usrbn) {
-   init();
+   Init();
    if ( !usrwf.imldd ) { 
       cout << "Error: First load a Gaussian Wave Function!" << endl;
       return;
@@ -86,9 +86,9 @@ DeMat1CriticalPointNetworkBP::DeMat1CriticalPointNetworkBP(\
    imsetup=imsetup&&SetupCPN();
 }
 DeMat1CriticalPointNetworkBP::~DeMat1CriticalPointNetworkBP() {
-   destroy();
+   Destroy();
 }
-void DeMat1CriticalPointNetworkBP::init() {
+void DeMat1CriticalPointNetworkBP::Init() {
    wf=NULL;
    cpn=NULL;
    eivalNN6D=eivalCICP2D=eivalCICP6D=NULL;
@@ -96,7 +96,7 @@ void DeMat1CriticalPointNetworkBP::init() {
    imsetup=false;
    nCICP=0;
 }
-void DeMat1CriticalPointNetworkBP::destroy(void) {
+void DeMat1CriticalPointNetworkBP::Destroy(void) {
    wf=NULL;
    bn=NULL;
    if ( cpn!=NULL ) { delete cpn; cpn=NULL; }
@@ -232,7 +232,7 @@ void DeMat1CriticalPointNetworkBP::ComputeSingleCICP6D(int idx) {
    }
    wf->EvalHessDensityMatrix1(xx,xxp,gamm,gg,gp,hh,hph,hp);
    double hess[6][6],eivec[6][6],eival[6];
-   assignHessian6D(hh,hph,hp,hess);
+   AssignHessian6D(hh,hph,hp,hess);
    eigen_decomposition6(hess,eivec,eival);
    sigCICP6D[idx]=GetSignature(eival);
    for ( int i=0 ; i<6 ; ++i ) { eivalCICP6D[idx][i]=eival[i]; }
@@ -243,7 +243,7 @@ void DeMat1CriticalPointNetworkBP::ComputeSingleCICP6D(int idx) {
       xxp[i]=bn->R[acp2Idx][i];
    }
    wf->EvalHessDensityMatrix1(xx,xxp,gamm,gg,gp,hh,hph,hp);
-   assignHessian6D(hh,hph,hp,hess);
+   AssignHessian6D(hh,hph,hp,hess);
    eigen_decomposition6(hess,eivec,eival);
    sigNN6D[idx]=GetSignature(eival);
    for ( int i=0 ; i<6 ; ++i ) { eivalNN6D[idx][i]=eival[i]; }
@@ -259,7 +259,7 @@ void DeMat1CriticalPointNetworkBP::ComputeSingleCICP6D(int idx) {
         << sigNN6D[idx] << ")" << endl;
 #endif /* ( DEBUG ) */
 }
-void DeMat1CriticalPointNetworkBP::assignHessian6D(double (&hh)[3][3],\
+void DeMat1CriticalPointNetworkBP::AssignHessian6D(double (&hh)[3][3],\
       double (&hph)[3][3],double (&hp)[3][3],double (&hess)[6][6]) {
    /* ************************************************************************** */
    hess[0][0]=hh[0][0]; hess[0][1]=hh[0][1]; hess[0][2]=hh[0][2]; hess[0][3]=hph[0][0]; hess[0][4]=hph[0][1]; hess[0][5]=hph[0][2];
@@ -298,7 +298,7 @@ int DeMat1CriticalPointNetworkBP::GetSignature(double (&v)[6]) {
    for ( int i=0 ; i<6 ; ++i ) { v[i] >=0.0e0 ? ++s : --s; }
    return s;
 }
-bool DeMat1CriticalPointNetworkBP::differentSignaturesCICPvsNN(void) {
+bool DeMat1CriticalPointNetworkBP::DifferentSignaturesCICPvsNN(void) {
    bool res=false;
    for ( int i=0 ; i<nCICP ; ++i ) {
       if ( sigNN6D[i]!=sigCICP6D[i] ) {
