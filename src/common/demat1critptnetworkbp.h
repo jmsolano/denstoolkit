@@ -53,7 +53,7 @@ public:
    void ComputeCoreInteractionCPs6D(void);
    bool DifferentSignaturesCICPvsNN(void);
    //void MapToUVCoordinatesM3x3(double (&e1)[3],double (&e2)[3],double (&huv)[2][2]);
-   class critPtNetWork *cpn;
+   class CritPtNetWork *cpn;
    double **eivalCICP2D; /*!< Contains the eigenvalues of 2D CICPs (projected gamma, ACP-ACP connection)  */
    double **eivalCICP6D; /*!< Contains the eigenvalues of 6D CICPs (ACP-ACP connection) */
    double **eivalNN6D; /*!< Contains the eigenvalues of 6D Nuc-Nuc correlations  */

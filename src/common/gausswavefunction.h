@@ -378,7 +378,7 @@ public:
       saved in gx,gy,gz. If the maximum number of iterations is reached and the critical
       was not found, then rx,ry,rz are the last values obtained from the search (and
       the gradient at such a point).
-      <b>Important: For searching critical points, please use the class critPtNetWork instead of
+      <b>Important: For searching critical points, please use the class CritPtNetWork instead of
       this function. This function will be deprecated within the next few revisions.</b> */
    void SeekBondCP(int ii,int jj,double &rx,double &ry,double &rz,double &gx,double &gy,double &gz);
    /* This function uses the vector \f$\vec{x}\f$ as the original position, then it calculates 

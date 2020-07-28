@@ -55,7 +55,7 @@ DTKGLCriticalPointNetWork::~DTKGLCriticalPointNetWork() {
   }
 }
 void DTKGLCriticalPointNetWork::setupRegularCPN(GaussWaveFunction *uwf, DTKGLBondNetWork *ubn) {
-   cpn=new critPtNetWork(*uwf,*(ubn->bnw));
+   cpn=new CritPtNetWork(*uwf,*(ubn->bnw));
 
 }
 bool DTKGLCriticalPointNetWork::loadCPNStateFromFile(QString fname) {

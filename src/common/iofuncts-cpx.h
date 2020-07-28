@@ -50,7 +50,7 @@ using std::ofstream;
 #include "critptnetwork.h"
 
 /* ************************************************************************** */
-void WriteCPXFile(string cpxname,string wfname,critPtNetWork &cp);
+void WriteCPXFile(string cpxname,string wfname,CritPtNetWork &cp);
 /* ************************************************************************** */
 void WriteOpenningAttribute(ofstream &ofil,const char* attrib,bool nl);
 /* ************************************************************************** */
@@ -58,49 +58,49 @@ void WriteClosingAttribute(ofstream &ofil,const char* attrib,bool nl);
 /* ************************************************************************** */
 void WriteWFFileName(ofstream &ofil,string wfname);
 /* ************************************************************************** */
-void WriteTypeOfCriticalPoints(ofstream &ofil,critPtNetWork &cp);
+void WriteTypeOfCriticalPoints(ofstream &ofil,CritPtNetWork &cp);
 /* ************************************************************************** */
-void WriteNumberOfCriticalPoints(ofstream &ofil,critPtNetWork &cp);
+void WriteNumberOfCriticalPoints(ofstream &ofil,CritPtNetWork &cp);
 /* ************************************************************************** */
-void WriteCoordinatesACPs(ofstream &ofil,critPtNetWork &cp);
+void WriteCoordinatesACPs(ofstream &ofil,CritPtNetWork &cp);
 /* ************************************************************************** */
-void WriteCoordinatesBCPs(ofstream &ofil,critPtNetWork &cp);
+void WriteCoordinatesBCPs(ofstream &ofil,CritPtNetWork &cp);
 /* ************************************************************************** */
-void WriteCoordinatesRCPs(ofstream &ofil,critPtNetWork &cp);
+void WriteCoordinatesRCPs(ofstream &ofil,CritPtNetWork &cp);
 /* ************************************************************************** */
-void WriteCoordinatesCCPs(ofstream &ofil,critPtNetWork &cp);
+void WriteCoordinatesCCPs(ofstream &ofil,CritPtNetWork &cp);
 /* ************************************************************************** */
-void WriteConnectivityBCPs(ofstream &ofil,critPtNetWork &cp);
+void WriteConnectivityBCPs(ofstream &ofil,CritPtNetWork &cp);
 /* ************************************************************************** */
-void WriteConnectivityRCPs(ofstream &ofil,critPtNetWork &cp);
+void WriteConnectivityRCPs(ofstream &ofil,CritPtNetWork &cp);
 /* ************************************************************************** */
-void WriteConnectivityCCPs(ofstream &ofil,critPtNetWork &cp);
+void WriteConnectivityCCPs(ofstream &ofil,CritPtNetWork &cp);
 /* ************************************************************************** */
-void WriteLabelsACPs(ofstream &ofil,critPtNetWork &cp);
+void WriteLabelsACPs(ofstream &ofil,CritPtNetWork &cp);
 /* ************************************************************************** */
-void WriteLabelsBCPs(ofstream &ofil,critPtNetWork &cp);
+void WriteLabelsBCPs(ofstream &ofil,CritPtNetWork &cp);
 /* ************************************************************************* */
-void WriteLabelsRCPs(ofstream &ofil,critPtNetWork &cp);
+void WriteLabelsRCPs(ofstream &ofil,CritPtNetWork &cp);
 /* ************************************************************************** */
-void WriteLabelsCCPs(ofstream &ofil,critPtNetWork &cp);
+void WriteLabelsCCPs(ofstream &ofil,CritPtNetWork &cp);
 /* ************************************************************************** */
-void WriteNumberOfBondPaths(ofstream &ofil,critPtNetWork &cp);
+void WriteNumberOfBondPaths(ofstream &ofil,CritPtNetWork &cp);
 /* ************************************************************************** */
-void WriteNumberOfRingPaths(ofstream &ofil,critPtNetWork &cp);
+void WriteNumberOfRingPaths(ofstream &ofil,CritPtNetWork &cp);
 /* ************************************************************************** */
-void WriteNumberOfCagePaths(ofstream &ofil,critPtNetWork &cp);
+void WriteNumberOfCagePaths(ofstream &ofil,CritPtNetWork &cp);
 /* ************************************************************************** */
-void WriteNumberOfPointsPerBondPath(ofstream &ofil,critPtNetWork &cp);
+void WriteNumberOfPointsPerBondPath(ofstream &ofil,CritPtNetWork &cp);
 /* ************************************************************************** */
-void WriteNumberOfPointsPerRingPath(ofstream &ofil,critPtNetWork &cp);
+void WriteNumberOfPointsPerRingPath(ofstream &ofil,CritPtNetWork &cp);
 /* ************************************************************************** */
-void WriteNumberOfPointsPerCagePath(ofstream &ofil,critPtNetWork &cp);
+void WriteNumberOfPointsPerCagePath(ofstream &ofil,CritPtNetWork &cp);
 /* ************************************************************************** */
-void WriteBondPathsCoordinates(ofstream &ofil,critPtNetWork &cp);
+void WriteBondPathsCoordinates(ofstream &ofil,CritPtNetWork &cp);
 /* ************************************************************************** */
-void WriteRingPathsCoordinates(ofstream &ofil,critPtNetWork &cp);
+void WriteRingPathsCoordinates(ofstream &ofil,CritPtNetWork &cp);
 /* ************************************************************************** */
-void WriteCagePathsCoordinates(ofstream &ofil,critPtNetWork &cp);
+void WriteCagePathsCoordinates(ofstream &ofil,CritPtNetWork &cp);
 /* ************************************************************************** */
 bool cpxGetPosBetweenKeyInFile(ifstream &ifil,int &aftik,int &befek,string key,bool frombeg);
 /* ************************************************************************** */

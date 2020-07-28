@@ -48,7 +48,7 @@ using std::ofstream;
 class IntegrateOverBondPath {
 /* ************************************************************************** */
 public:
-   IntegrateOverBondPath(class GaussWaveFunction &ugwf,class critPtNetWork &ucpn,\
+   IntegrateOverBondPath(class GaussWaveFunction &ugwf,class CritPtNetWork &ucpn,\
          ScalarFieldType utp=DENS);
    ~IntegrateOverBondPath();
    void ComputeAllIntegralsOverBondPaths(void);
@@ -60,7 +60,7 @@ public:
 /* ************************************************************************** */
 protected:
    class GaussWaveFunction *wf;
-   class critPtNetWork *cp;
+   class CritPtNetWork *cp;
    /* Functions  */
    void Init(void);
    void GetIntermediateCoordinatesAndDistanceBetweenPoints(int startIdx,double** (&arr),double &h,\

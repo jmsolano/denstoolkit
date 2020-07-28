@@ -61,19 +61,19 @@ void IntegrateOverBondPath::Init(void) {
    nbgp=0;
    myFieldType=NONE;
 }
-IntegrateOverBondPath::IntegrateOverBondPath(GaussWaveFunction &ugwf,critPtNetWork &ucpn,\
+IntegrateOverBondPath::IntegrateOverBondPath(GaussWaveFunction &ugwf,CritPtNetWork &ucpn,\
       ScalarFieldType utp) {
    Init();
    wf=&ugwf;
-   if ( !ucpn.iKnowBCPs() ) {
+   if ( !ucpn.IKnowBCPs() ) {
       ScreenUtils::DisplayErrorMessage("First seek the critical points!");
-      ScreenUtils::DisplayWarningMessage("critPtNetWork pointer is set to null!");
+      ScreenUtils::DisplayWarningMessage("CritPtNetWork pointer is set to null!");
       cout << __FILE__ << ", line: " << __LINE__ << endl;
       return;
    }
-   if ( !ucpn.iKnowBGPs() ) {
+   if ( !ucpn.IKnowBGPs() ) {
       ScreenUtils::DisplayErrorMessage("First compute the bond paths!");
-      ScreenUtils::DisplayWarningMessage("critPtNetWork pointer is set to null!");
+      ScreenUtils::DisplayWarningMessage("CritPtNetWork pointer is set to null!");
       cout << __FILE__ << ", line: " << __LINE__ << endl;
       return;
    }

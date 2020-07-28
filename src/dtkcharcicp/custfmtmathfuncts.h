@@ -51,7 +51,7 @@ using std::string;
 
 
 void writeDatMatAtCrds(string &acfn,BondNetWork &bn);
-void writeDatMatCritPtsCrds(string &cpfn,critPtNetWork &cp);
-void writeDatMatBondPathCrds(string &bpfn,critPtNetWork &cp);
+void writeDatMatCritPtsCrds(string &cpfn,CritPtNetWork &cp);
+void writeDatMatBondPathCrds(string &bpfn,CritPtNetWork &cp);
 
 #endif /* defined(_CUSTFMTMATHFUNCTS_H_) */

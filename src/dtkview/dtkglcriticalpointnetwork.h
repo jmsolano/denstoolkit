@@ -115,11 +115,11 @@ public:
     QString getCCPLabel(int idx) {return QString::fromStdString(cpn->lblCCP[idx]);}
 
     bool iKnowACPs(void) {return cpn->iKnowACPs();}
-    bool iKnowBCPs(void) {return cpn->iKnowBCPs();}
+    bool IKnowBCPs(void) {return cpn->IKnowBCPs();}
     bool iKnowRCPs(void) {return cpn->iKnowRCPs();}
     bool iKnowCCPs(void) {return cpn->iKnowCCPs();}
 private:
-    class critPtNetWork *cpn;
+    class CritPtNetWork *cpn;
 };
 
 #endif // DTKGLCRITICALPOINTNETWORK_H

@@ -132,7 +132,7 @@ int main (int argc, char ** argv) {
                                //was read, there souldn't be problems here.
    bnw.SetUpBNW();             //To setup the bond network.
    
-   //critPtNetWork cpn(gwf,bnw);
+   //CritPtNetWork cpn(gwf,bnw);
 
    DeMat1CriticalPointNetworkBP dmcpbp(gwf,bnw);
    cout << "Computing CICP eigenvalues and signatures..." << endl;
@@ -203,7 +203,7 @@ void WriteLogFile(string fname,DeMat1CriticalPointNetworkBP &dcpn,BondNetWork &b
    FileUtils::WriteScrStarLine(ofil);
    int a1,a2;
    for ( int i=0 ; i<n ; ++i ) {
-      dcpn.cpn->findTwoClosestAtomsToBCP(i,a1,a2);
+      dcpn.cpn->FindTwoClosestAtomsToBCP(i,a1,a2);
       ofil << bn.atLbl[a1] << '-' << bn.atLbl[a2] << ": ";
       for ( int j=0 ; j<6 ; ++j ) {
          ofil << dcpn.eivalNN6D[i][j] << " ";
@@ -215,7 +215,7 @@ void WriteLogFile(string fname,DeMat1CriticalPointNetworkBP &dcpn,BondNetWork &b
    FileUtils::WriteCenteredString(ofil,"Nuc-Nuc signatures 6D");
    FileUtils::WriteScrStarLine(ofil);
    for ( int i=0 ; i<n ; ++i ) {
-      dcpn.cpn->findTwoClosestAtomsToBCP(i,a1,a2);
+      dcpn.cpn->FindTwoClosestAtomsToBCP(i,a1,a2);
       ofil << bn.atLbl[a1] << '-' << bn.atLbl[a2] << ": ";
       ofil << dcpn.sigCICP6D[i] << endl;
    }

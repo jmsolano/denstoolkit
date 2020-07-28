@@ -37,9 +37,6 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
-
-
 #ifndef _CRITPTNETWORK_H_
 #define _CRITPTNETWORK_H_
 
@@ -64,7 +61,7 @@ using std::ofstream;
 #endif
 
 /* ************************************************************************************ */
-class critPtNetWork {
+class CritPtNetWork {
 /* ************************************************************************************ */
 public:
 /* ************************************************************************************ */
@@ -169,23 +166,22 @@ public:
 /* ************************************************************************************ */
    /** The only allowed constructor. It requires a GaussWaveFunction and
     * a BondNetWork objects. <b>Warning: these objects must be
-    * properly initialized before passing to the critPtNetWork object.</b>  */
-   critPtNetWork(class GaussWaveFunction &uwf,class BondNetWork &ubn);
-   ~critPtNetWork();
+    * properly initialized before passing to the CritPtNetWork object.</b>  */
+   CritPtNetWork(class GaussWaveFunction &uwf,class BondNetWork &ubn);
+   ~CritPtNetWork();
 /* ************************************************************************************ */
    /** Self descriptive.  */
-   void setMaxIterationsACP(int ii) {maxItACP=ii;}
+   void SetMaxIterationsACP(int ii) {maxItACP=ii;}
    /** Self descriptive.  */
-   void setMaxIterationsBCP(int ii) {maxItBCP=ii;}
+   void SetMaxIterationsBCP(int ii) {maxItBCP=ii;}
    /** Self descriptive.  */
-   void setMaxIterationsRCP(int ii) {maxItRCP=ii;}
+   void SetMaxIterationsRCP(int ii) {maxItRCP=ii;}
    /** Self descriptive.  */
-   void setMaxIterationsCCP(int ii) {maxItCCP=ii;}
+   void SetMaxIterationsCCP(int ii) {maxItCCP=ii;}
    /** Self descriptive  */
-   void setMaxGradPathNPts(int ii) {maxGradPathNPts=ii;}
+   void SetMaxGradPathNPts(int ii) {maxGradPathNPts=ii;}
    /** Self descriptive  */
-   void setStepSizeBGP(double ss) {stepSizeBGP=ss;}
-/* ************************************************************************************ */
+   void SetStepSizeBGP(double ss) {stepSizeBGP=ss;}
    /** The main public function for searching all critical points.
     * Configuration, such as requesting extended search should be
     * done before calling this function.
@@ -193,47 +189,38 @@ public:
     * In current implementation, only the electron density
     * (DENS) and some of the LOL (LOLD) CPs are found.
     */
-   void setCriticalPoints(ScalarFieldType ft);
-/* ************************************************************************************ */
+   void SetCriticalPoints(ScalarFieldType ft);
    /** It allocates the arrays to work with ACPs. It is public because for non
     * regular applications, only selected parts of the whole critical point search
     * are needed. For instance, one would be interested in searching ONLY ACPs.  */
-   void setupACPs(ScalarFieldType ft);
-   /** This function searchs the ACPs. For regular calculations, use setCriticalPoints()  */
-   void setACPs(ScalarFieldType ft);
+   void SetupACPs(ScalarFieldType ft);
+   /** This function searchs the ACPs. For regular calculations, use SetCriticalPoints()  */
+   void SetACPs(ScalarFieldType ft);
    /** Basically, it allocates the arrays for working with BCPs. It needs to know
     * ACPs.  */
-   void setupBCPs(ScalarFieldType ft);
-   /** This function search the BCPs. For regular calculations, use setCriticalPoints().  */
-   void setBCPs(ScalarFieldType ft);
-/* ************************************************************************************ */
+   void SetupBCPs(ScalarFieldType ft);
+   /** This function search the BCPs. For regular calculations, use SetCriticalPoints().  */
+   void SetBCPs(ScalarFieldType ft);
    /** Displays the coordinates of the critical points of type 'cpt'.
     * @param cpt: This char parameter is used to request the critical
     * point type. It can take the values: 'a', 'b', 'r', and 'c'.
     */
-   void displayXCPCoords(char cpt);
-/* ************************************************************************************ */
+   void DisplayXCPCoords(char cpt);
    /** Prints to the std::cout the coordinates of all CPs found.  */
-   void displayAllCPCoords(void);
-/* ************************************************************************************ */
+   void DisplayAllCPCoords(void);
    /** Self descriptive.  */
-   void displayACPCoords(void) {displayXCPCoords('a');}
-/* ************************************************************************************ */
+   void DisplayACPCoords(void) {DisplayXCPCoords('a');}
    /** Self descriptive.  */
-   void displayBCPCoords(void) {displayXCPCoords('b');}
-/* ************************************************************************************ */
+   void DisplayBCPCoords(void) {DisplayXCPCoords('b');}
    /** Self descriptive.  */
-   void displayRCPCoords(void) {displayXCPCoords('r');}
-/* ************************************************************************************ */
+   void DisplayRCPCoords(void) {DisplayXCPCoords('r');}
    /** Self descriptive.  */
-   void displayCCPCoords(void) {displayXCPCoords('c');}
-/* ************************************************************************************ */
+   void DisplayCCPCoords(void) {DisplayXCPCoords('c');}
    /** Prints to the std::cout the coordinates used for seeding around a point.
     * Here seeding means to set starting points for a cp search. The letters
     * IHV are the acronynm of <b>I</b>cosa<b>H</b>edron <b>V</b>ertices.
     */
-   void displayIHVCoords(void);
-/* ************************************************************************************ */
+   void DisplayIHVCoords(void);
    /** Self descriptive. 
     * This function uses a point as a spatial reference. A icosahedron, whose vertices
     * are considered to coincide with a sphere centered at the reference point, is
@@ -248,65 +235,45 @@ public:
     * really vertices, but the origin, and three points along x, y, and z axis,
     * displaced a small distance away from the center.
     */
-   void seekRhoACPsAroundAPoint(double const (&oo)[3],double const ddxx,\
+   void SeekRhoACPsAroundAPoint(double const (&oo)[3],double const ddxx,\
          string const &blbl,int nvrt=-1);
-/* ************************************************************************************ */
-   void seekRhoBCPWithExtraACP(int acppos,double maxrad);
-/* ************************************************************************************ */
-   /** Same functionality as critPtNetWork::seekRhoACPsAroundAPoint, but for BCPs.  */
-   void seekRhoBCPsAroundAPoint(double const (&oo)[3],double const ddxx,\
+   void SeekRhoBCPWithExtraACP(int acppos,double maxrad);
+   /** Same functionality as CritPtNetWork::SeekRhoACPsAroundAPoint, but for BCPs.  */
+   void SeekRhoBCPsAroundAPoint(double const (&oo)[3],double const ddxx,\
          string const &blbl,int nvrt=-1);
-/* ************************************************************************************ */
-   /** Same functionality as critPtNetWork::seekRhoACPsAroundAPoint, but for RCPs.  */
-   void seekRhoRCPsAroundAPoint(double const (&oo)[3],double const ddxx,\
+   /** Same functionality as CritPtNetWork::SeekRhoACPsAroundAPoint, but for RCPs.  */
+   void SeekRhoRCPsAroundAPoint(double const (&oo)[3],double const ddxx,\
          string const &blbl,int nvrt=-1);
-/* ************************************************************************************ */
-   /** Same functionality as critPtNetWork::seekRhoACPsAroundAPoint, but for CCPs.  */
-   void seekRhoCCPsAroundAPoint(double const (&oo)[3],double const ddxx,\
+   /** Same functionality as CritPtNetWork::SeekRhoACPsAroundAPoint, but for CCPs.  */
+   void SeekRhoCCPsAroundAPoint(double const (&oo)[3],double const ddxx,\
          string const &blbl,int nvrt=-1);
-/* ************************************************************************************ */
-   /** Same functionality as critPtNetWork::seekRhoACPsAroundAPoint, but for LOL ACPs.  */
-   void seekLOLACPsAroundAPoint(double const (&oo)[3],double const ddxx,\
+   /** Same functionality as CritPtNetWork::SeekRhoACPsAroundAPoint, but for LOL ACPs.  */
+   void SeekLOLACPsAroundAPoint(double const (&oo)[3],double const ddxx,\
          string const &blbl,int nvrt=-1);
-/* ************************************************************************************ */
-   void seekLOLACPsOnASphere(int atIdx,int nDivR,int nDivT,int nDivP,double radmin,\
+   void SeekLOLACPsOnASphere(int atIdx,int nDivR,int nDivT,int nDivP,double radmin,\
          double radmax);
-/* ************************************************************************************ */
-   void seekLOLBCPWithExtraACP(int acppos,double maxrad);
-/* ************************************************************************************ */
-   void customSearchTwoACPs(int acpIdx1,int acpIdx2);
-/* ************************************************************************************ */
-   void customSearchCPs(double (&xs)[3]);
-/* ************************************************************************************ */
-   void extendedSearchCPs();
-/* ************************************************************************************ */
-   bool readFromFile(string inname);
-/* ************************************************************************************ */
-   void displayStatus(bool lngdesc = false);
-/* ************************************************************************************ */
+   void SeekLOLBCPWithExtraACP(int acppos,double maxrad);
+   void CustomSearchTwoACPs(int acpIdx1,int acpIdx2);
+   void CustomSearchCPs(double (&xs)[3]);
+   void ExtendedSearchCPs();
+   bool ReadFromFile(string inname);
+   void DisplayStatus(bool lngdesc = false);
    /** Basically, it allocates the necessary arrays for working with bond paths.
     * It requires to know ACPs.  */
-   void setupBondPaths(void);
+   void SetupBondPaths(void);
    /** The main function to compute bond paths. It requires to know BPCs (and ACPs).
-    * This function calls setupBondPaths internally. Within regular calculations
+    * This function calls SetupBondPaths internally. Within regular calculations
     * this function should be used.  */
-   void setBondPaths(void);
-/* ************************************************************************************ */
-   void setRingPaths(void);
-/* ************************************************************************************ */
-   void setCagePaths(void);
-/* ************************************************************************************ */
-   bool seekSingleRhoBCP(int ata,int atb,double (&x)[3]);
-/* ************************************************************************************ */
-   int findSingleRhoBondGradientPathRK5(int at1,int at2,double hstep,\
+   void SetBondPaths(void);
+   void SetRingPaths(void);
+   void SetCagePaths(void);
+   bool SeekSingleRhoBCP(int ata,int atb,double (&x)[3]);
+   int FindSingleRhoBondGradientPathRK5(int at1,int at2,double hstep,\
          int dima,double** (&arbgp),double (&ro)[3]);
-/* ************************************************************************************ */
-   int findSingleRhoRingGradientPathRK5(int rcpIdx,int bcpIdxInRRGP,\
+   int FindSingleRhoRingGradientPathRK5(int rcpIdx,int bcpIdxInRRGP,\
          double hstep,int dima,double** (&arrgp));
-/* ************************************************************************************ */
-   int findSingleRhoCageGradientPathRK5(int ccpIdx,int rcpIdxInRCGP,\
+   int FindSingleRhoCageGradientPathRK5(int ccpIdx,int rcpIdxInRCGP,\
          double hstep,int dima,double** (&arrgp));
-/* ************************************************************************************ */
    /** This function will follow the grandient path that starts at x_1.
     *  It will use the point x_1 as the actual starting point. This is so, because
     *  usually paths starts at some CP, thus it is not well defined the direction
@@ -326,71 +293,41 @@ public:
     *  at x_e, the function saves the closest point in the path with 
     *  respect to x_e in x_m.
     * */
-   bool walkGradientPathRK5ToEndPoint(double (&xi)[3],double (&x1)[3],\
+   bool WalkGradientPathRK5ToEndPoint(double (&xi)[3],double (&x1)[3],\
          double (&xe)[3],double (&xm)[3],double &dm,double hstep,int dima,\
          double** (&arrgp),int &npia,double maxlen,bool uphilldir);
-/* ************************************************************************************ */
-   void forceBCPConnectivity(int bcpIdx,int acpIdx1,int acpIdx2);
-/* ************************************************************************************ */
-   void correctRCPConnectivity(void);
-/* ************************************************************************************ */
-   void removeFromConRCP(const int rcpIdx,const int pos2rem);
-/* ************************************************************************************ */
-   void addToConRCP(const int rcpIdx,const int bcpIdx);
-/* ************************************************************************************ */
-   void addToConCCP(const int ccpIdx,const int rcpIdx);
-/* ************************************************************************************ */
-   void findTwoClosestAtomsToBCP(int bcpIdx,int &at1Idx,int&at2Idx);
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-/* ************************************************************************************ */
-   bool makePOVFile(string pnam,class POVRayConfiguration &pvp,int campos);
-/* ************************************************************************************ */
-   void drawNuclei(bool dn) {drawNuc=dn;}
-/* ************************************************************************************ */
-   void drawBonds(bool db) {drawBnd=db;}
-/* ************************************************************************************ */
-   void drawBondGradPaths(bool dbg) {drawBGPs=dbg;}
-/* ************************************************************************************ */
-   void drawRingGradPaths(bool dbg) {drawRGPs=dbg;}
-/* ************************************************************************************ */
-   void tubeStyleBGP(bool stl) {tubeBGPStyle=stl;}
-/* ************************************************************************************ */
-   void setExtendedSearch(bool ss) {mkextsearch=ss;}
-/* ************************************************************************************ */
-   void writeCPProps(string &ofnam,string &wfnam);
-/* ************************************************************************************ */
-   void printAllFieldProperties(double x,double y,double z);
-/* ************************************************************************************ */
-   void writeAllFieldProperties(double x,double y,double z,ofstream &ofil);
-/* ************************************************************************************ */   
-   bool iKnowACPs(void) {return iknowacps;}
-/* ************************************************************************************ */
-   bool iKnowBCPs(void) {return iknowbcps;}
-/* ************************************************************************************ */
-   bool iKnowRCPs(void) {return iknowrcps;}
-/* ************************************************************************************ */
-   bool iKnowCCPs(void) {return iknowccps;}
-/* ************************************************************************************ */
-   bool iKnowBGPs(void) {return iknowbgps;}
-/* ************************************************************************************ */
-   bool iKnowRGPs(void) {return iknowrgps;}
-/* ************************************************************************************ */
-   bool iKnowCGPs(void) {return iknowcgps;}
-/* ************************************************************************************ */
-   ScalarFieldType myCPType(void) {return mycptype;}
-/* ************************************************************************************ */
-   double getMaxBondDist() {return maxBondDist;}
-/* ************************************************************************************ */
-   double getMaxDistBetwBCPAndBCP() {return maxBCPACPDist;}
-/* ************************************************************************************ */
-   int getNofRingPathsOfRCP(int rcpIdx);
-/* ************************************************************************************ */
-   int getNofCagePathsOfCCP(int ccpIdx);
-/* ************************************************************************************ */
-   int getTotalNofRingPaths(void);
-/* ************************************************************************************ */
-   int getTotalNofCagePaths(void);
+   void ForceBCPConnectivity(int bcpIdx,int acpIdx1,int acpIdx2);
+   void CorrectRCPConnectivity(void);
+   void RemoveFromConRCP(const int rcpIdx,const int pos2rem);
+   void AddToConRCP(const int rcpIdx,const int bcpIdx);
+   void AddToConCCP(const int ccpIdx,const int rcpIdx);
+   void FindTwoClosestAtomsToBCP(int bcpIdx,int &at1Idx,int&at2Idx);
+   /* ************************************************************************** */
+   /* ************************************************************************** */
+   bool MakePOVFile(string pnam,class POVRayConfiguration &pvp,int campos);
+   void DrawNuclei(bool dn) {drawNuc=dn;}
+   void DrawBonds(bool db) {drawBnd=db;}
+   void DrawBondGradPaths(bool dbg) {drawBGPs=dbg;}
+   void DrawRingGradPaths(bool dbg) {drawRGPs=dbg;}
+   void TubeStyleBGP(bool stl) {tubeBGPStyle=stl;}
+   void SetExtendedSearch(bool ss) {mkextsearch=ss;}
+   void WriteCPProps(string &ofnam,string &wfnam);
+   void PrintAllFieldProperties(double x,double y,double z);
+   void WriteAllFieldProperties(double x,double y,double z,ofstream &ofil);
+   bool IKnowACPs(void) {return iknowacps;}
+   bool IKnowBCPs(void) {return iknowbcps;}
+   bool IKnowRCPs(void) {return iknowrcps;}
+   bool IKnowCCPs(void) {return iknowccps;}
+   bool IKnowBGPs(void) {return iknowbgps;}
+   bool IKnowRGPs(void) {return iknowrgps;}
+   bool IKnowCGPs(void) {return iknowcgps;}
+   ScalarFieldType MyCPType(void) {return mycptype;}
+   double GetMaxBondDist() {return maxBondDist;}
+   double GetMaxDistBetwBCPAndBCP() {return maxBCPACPDist;}
+   int GetNofRingPathsOfRCP(int rcpIdx);
+   int GetNofCagePathsOfCCP(int ccpIdx);
+   int GetTotalNofRingPaths(void);
+   int GetTotalNofCagePaths(void);
 /* ************************************************************************************ */
 protected:
 /* ************************************************************************************ */
@@ -413,106 +350,60 @@ protected:
    static const int nIHV=16; //It is actually the vertices of an icosahedron plus the origin
    // (0,0,0)
    static double V0,V5,V8,IHV[nIHV][3];
-/* ************************************************************************************ */
-   void init();
+   void Init();
    /** The constructor without arguments is not public. This will enforce the use
     * of the constructor for assigning the pointers of GaussWaveFunction and 
     * BondNetWork.  */
-   critPtNetWork();
-/* ************************************************************************************ */
-   void removeRedundInLabel(string &lbl);
-/* ************************************************************************************ */
-   string getFirstChunkOfLabel(string &lbl);
-/* ************************************************************************************ */
-   inline double computeMagnitudeV3(double (&v)[3])
+   CritPtNetWork();
+   void RemoveRedundInLabel(string &lbl);
+   string GetFirstChunkOfLabel(string &lbl);
+   inline double ComputeMagnitudeV3(double (&v)[3])
           {return sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]);}
-/* ************************************************************************************ */
-   bool imNew(double (&x)[3],int dim,double ** (&arr),size_t &pos);
-/* ************************************************************************************ */
-   void getACPStep(double (&g)[3],double (&hess)[3][3],double (&hh)[3],int &sig);
-/* ************************************************************************************ */
-   void getBCPStep(double (&g)[3],double (&hess)[3][3],double (&hh)[3],int &sig);
-/* ************************************************************************************ */
-   void getRCPStep(double (&g)[3],double (&hess)[3][3],double (&hh)[3],int &sig);
-/* ************************************************************************************ */
-   void getCCPStep(double (&g)[3],double (&hess)[3][3],double (&hh)[3],int &sig);
-/* ************************************************************************************ */
-   int computeSignature(double (&ev)[3]);
-/* ************************************************************************************ */
-   int computeSignature(double (&hh)[3][3]);
-/* ************************************************************************************ */
-   void seekRhoACP(double (&x)[3],double &rho2ret,double (&g)[3],int &sig);
-/* ************************************************************************************ */
-   void seekRhoBCP(double (&x)[3],double &rho2ret,double (&g)[3],int &sig);
-/* ************************************************************************************ */
-   void seekRhoRCP(double (&x)[3],double &rho2ret,double (&g)[3],int &sig);
-/* ************************************************************************************ */
-   void seekRhoCCP(double (&x)[3],double &rho2ret,double (&g)[3],int &sig);
-/* ************************************************************************************ */
-   void seekLOLACP(double (&x)[3],double &ll,double (&g)[3],int &sig);
-/* ************************************************************************************ */
-   void seekLOLBCP(double (&x)[3],double &ll,double (&g)[3],int &sig);
-/* ************************************************************************************ */
-   void seekLOLRCP(double (&x)[3],double &ll,double (&g)[3],int &sig);
-/* ************************************************************************************ */
-   void seekLOLCCP(double (&x)[3],double &ll,double (&g)[3],int &sig);
-/* ************************************************************************************ */
-   bool setRhoACPs(void);
-/* ************************************************************************************ */
-   bool setRhoBCPs(void);
-/* ************************************************************************************ */
-   bool setRhoRCPs(void);
-/* ************************************************************************************ */
-   bool setRhoCCPs(void);
-/* ************************************************************************************ */
-   bool setLOLACPs(void);
-/* ************************************************************************************ */
-   bool setLOLBCPs(void);
-/* ************************************************************************************ */
-   bool setLOLRCPs(void);
-/* ************************************************************************************ */
-   bool setLOLCCPs(void);
-/* ************************************************************************************ */
-   bool addRhoACP(double (&x)[3],int sig,string &lbl);
-/* ************************************************************************************ */
-   bool addRhoBCP(double (&x)[3],int sig,string &lbl,int &pos);
-/* ************************************************************************************ */
-   bool addRhoRCP(double (&x)[3],int sig,string &lbl,int &pos);
-/* ************************************************************************************ */
-   bool addRhoCCP(double (&x)[3],int sig,string &lbl,int &pos);
-/* ************************************************************************************ */
-   void findTwoClosestAtoms(double (&xo)[3],int &idx1st,int &idx2nd);
-/* ************************************************************************************ */
-   void findTwoClosestACPs(double (&xo)[3],int &idx1st,int &idx2nd);
-/* ************************************************************************************ */
-   void addBCP2ConRCP(const int rcpIdx,const int bcpIdx);
-/* ************************************************************************************ */
-   void addRCP2ConCCP(const int ccpIdx,const int rcpIdx);
-/* ************************************************************************************ */
-   void invertOrderBGPPoints(int dim);
-/* ************************************************************************************ */
-   void invertOrderBGPPoints(int dim,double** (&arr));
-/* ************************************************************************************ */
-   void getNextPointInGradientPathRK5UpHill(double (&xn)[3],\
+   bool ImNew(double (&x)[3],int dim,double ** (&arr),size_t &pos);
+   void GetACPStep(double (&g)[3],double (&hess)[3][3],double (&hh)[3],int &sig);
+   void GetBCPStep(double (&g)[3],double (&hess)[3][3],double (&hh)[3],int &sig);
+   void GetRCPStep(double (&g)[3],double (&hess)[3][3],double (&hh)[3],int &sig);
+   void GetCCPStep(double (&g)[3],double (&hess)[3][3],double (&hh)[3],int &sig);
+   int ComputeSignature(double (&ev)[3]);
+   int ComputeSignature(double (&hh)[3][3]);
+   void SeekRhoACP(double (&x)[3],double &rho2ret,double (&g)[3],int &sig);
+   void SeekRhoBCP(double (&x)[3],double &rho2ret,double (&g)[3],int &sig);
+   void SeekRhoRCP(double (&x)[3],double &rho2ret,double (&g)[3],int &sig);
+   void SeekRhoCCP(double (&x)[3],double &rho2ret,double (&g)[3],int &sig);
+   void SeekLOLACP(double (&x)[3],double &ll,double (&g)[3],int &sig);
+   void SeekLOLBCP(double (&x)[3],double &ll,double (&g)[3],int &sig);
+   void SeekLOLRCP(double (&x)[3],double &ll,double (&g)[3],int &sig);
+   void SeekLOLCCP(double (&x)[3],double &ll,double (&g)[3],int &sig);
+   bool SetRhoACPs(void);
+   bool SetRhoBCPs(void);
+   bool SetRhoRCPs(void);
+   bool SetRhoCCPs(void);
+   bool SetLOLACPs(void);
+   bool SetLOLBCPs(void);
+   bool SetLOLRCPs(void);
+   bool SetLOLCCPs(void);
+   bool AddRhoACP(double (&x)[3],int sig,string &lbl);
+   bool AddRhoBCP(double (&x)[3],int sig,string &lbl,int &pos);
+   bool AddRhoRCP(double (&x)[3],int sig,string &lbl,int &pos);
+   bool AddRhoCCP(double (&x)[3],int sig,string &lbl,int &pos);
+   void FindTwoClosestAtoms(double (&xo)[3],int &idx1st,int &idx2nd);
+   void FindTwoClosestACPs(double (&xo)[3],int &idx1st,int &idx2nd);
+   void AddBCP2ConRCP(const int rcpIdx,const int bcpIdx);
+   void AddRCP2ConCCP(const int ccpIdx,const int rcpIdx);
+   void InvertOrderBGPPoints(int dim);
+   void InvertOrderBGPPoints(int dim,double** (&arr));
+   void GetNextPointInGradientPathRK5UpHill(double (&xn)[3],\
          double &stepsize,double &mgg);
-/* ************************************************************************************ */
-   void getNextPointInGradientPathRK5DownHill(double (&xn)[3],\
+   void GetNextPointInGradientPathRK5DownHill(double (&xn)[3],\
          double &stepsize,double &mgg);
-/* ************************************************************************************ */
-   void centerMolecule(void);
-/* ************************************************************************************ */
-   void putNuclei(ofstream &pof);
-/* ************************************************************************************ */
-   void putBonds(ofstream &pof);
-/* ************************************************************************************ */
-   void findMaxBondDist();
-/* ************************************************************************************ */
-   void copyRGP2Array(double** (&thearr),int nn);
-/* ************************************************************************************ */
+   void CenterMolecule(void);
+   void PutNuclei(ofstream &pof);
+   void PutBonds(ofstream &pof);
+   void FindMaxBondDist();
+   void CopyRGP2Array(double** (&thearr),int nn);
 /* ************************************************************************************ */
 };
 /* ************************************************************************************ */
-
 
 #endif  /* _CRITPTNETWORK_H_ */
 

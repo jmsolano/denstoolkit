@@ -91,8 +91,8 @@ using std::setprecision;
 #include "crtflnms.h"
 #include "custfmtmathfuncts.h"
 
-void SetForcedBCPConnectivity(char **argv,optFlags &option,critPtNetWork &cp);
-void SetForcedBCPConnectivities(char **argv,optFlags &option,critPtNetWork &cp);
+void SetForcedBCPConnectivity(char **argv,optFlags &option,CritPtNetWork &cp);
+void SetForcedBCPConnectivities(char **argv,optFlags &option,CritPtNetWork &cp);
 
 int main (int argc, char ** argv)
 {
@@ -150,21 +150,21 @@ int main (int argc, char ** argv)
                                //was read, there souldn't be problems here.
    bnw.SetUpBNW();             //To setup the bond network.
    
-   critPtNetWork cpn(gwf,bnw);
+   CritPtNetWork cpn(gwf,bnw);
    
    switch (critpttype) {
       case DENS:
-         cpn.setCriticalPoints(DENS);
+         cpn.SetCriticalPoints(DENS);
          if ( options.forcebcpconn ) {
             SetForcedBCPConnectivity(argv,options,cpn);
          }
          if ( options.forceseveralbcpconn ) {
             SetForcedBCPConnectivities(argv,options,cpn);
          }
-         if (options.calcbgps) {cpn.setBondPaths();}
+         if (options.calcbgps) {cpn.SetBondPaths();}
          break;
       case LOLD:
-         cpn.setCriticalPoints(LOLD);
+         cpn.SetCriticalPoints(LOLD);
          break;
       default:
          break;
@@ -172,21 +172,21 @@ int main (int argc, char ** argv)
    if ( options.customseedtwoacps ) {
       int acp1=std::stoi(string(argv[options.customseedtwoacps]))-1;
       int acp2=std::stoi(string(argv[options.customseedtwoacps+1]))-1;
-      cpn.customSearchTwoACPs(acp1,acp2);
+      cpn.CustomSearchTwoACPs(acp1,acp2);
    }
    if ( options.mkextsearch ) {
-      cpn.extendedSearchCPs();
+      cpn.ExtendedSearchCPs();
    }
    if (options.calcrgps) {
-      cpn.setRingPaths();
-      cpn.setCagePaths();
+      cpn.SetRingPaths();
+      cpn.SetCagePaths();
    }
-   //cpn.displayIHVCoords();
-   //cpn.displayACPCoords();
-   //cpn.displayBCPCoords();
-   //cpn.printCPProps(gwf);
+   //cpn.DisplayIHVCoords();
+   //cpn.DisplayACPCoords();
+   //cpn.DisplayBCPCoords();
+   //cpn.PrintCPProps(gwf);
    
-   cpn.writeCPProps(outfilnam,infilnam);
+   cpn.WriteCPProps(outfilnam,infilnam);
    ofstream lfil;
    lfil.open(outfilnam.c_str(),std::ofstream::app);
    lfil << setprecision(3) << "CPU Time: " << endl
@@ -200,7 +200,7 @@ int main (int argc, char ** argv)
    int cameravdir=1;
    if (options.camvdir) {sscanf(argv[options.camvdir],"%d",&cameravdir);}
    if (options.drawnuc) {
-      cpn.drawNuclei(true);
+      cpn.DrawNuclei(true);
    }
    string cmdl;
    if (options.mkpov||options.mkpng) {
@@ -210,11 +210,11 @@ int main (int argc, char ** argv)
          ScreenUtils::DisplayWarningMessage("Nothing to include in the pov file.");
       }
       if (options.drawbgps&&options.calcbgps) {
-         cpn.drawBondGradPaths(true);
-         cpn.drawBonds(false);
-         if (options.bgptubes) {cpn.tubeStyleBGP(true);}
+         cpn.DrawBondGradPaths(true);
+         cpn.DrawBonds(false);
+         if (options.bgptubes) {cpn.TubeStyleBGP(true);}
       }
-      cpn.makePOVFile(povfilnam,povconf,cameravdir);
+      cpn.MakePOVFile(povfilnam,povconf,cameravdir);
    }
    if (options.kppov) {
       cout << "           PovRay file: " << povfilnam << endl;
@@ -285,7 +285,7 @@ int main (int argc, char ** argv)
    ScreenUtils::SetScrNormalFont();
    return EXIT_SUCCESS;
 }
-void SetForcedBCPConnectivity(char **argv,optFlags &option,critPtNetWork &cp) {
+void SetForcedBCPConnectivity(char **argv,optFlags &option,CritPtNetWork &cp) {
    if ( !option.forcebcpconn ) {
       return;
    }
@@ -295,9 +295,9 @@ void SetForcedBCPConnectivity(char **argv,optFlags &option,critPtNetWork &cp) {
    --bcpIdx; --acpIdx1; --acpIdx2;
    cout << "Trying forced connectivity. BCP: " << bcpIdx
       << ", ACP1: " << acpIdx1 << ", ACP2: " << acpIdx2 << endl;
-   cp.forceBCPConnectivity(bcpIdx,acpIdx1,acpIdx2);
+   cp.ForceBCPConnectivity(bcpIdx,acpIdx1,acpIdx2);
 }
-void SetForcedBCPConnectivities(char **argv,optFlags &option,critPtNetWork &cp) {
+void SetForcedBCPConnectivities(char **argv,optFlags &option,CritPtNetWork &cp) {
    if ( !option.forceseveralbcpconn ) {
       return;
    }
@@ -311,7 +311,7 @@ void SetForcedBCPConnectivities(char **argv,optFlags &option,critPtNetWork &cp) 
       --bcpIdx; --acpIdx1; --acpIdx2;
       cout << "Trying forced connectivity. BCP: " << bcpIdx
          << ", ACP1: " << acpIdx1 << ", ACP2: " << acpIdx2 << endl;
-      cp.forceBCPConnectivity(bcpIdx,acpIdx1,acpIdx2);
+      cp.ForceBCPConnectivity(bcpIdx,acpIdx1,acpIdx2);
    }
 }
 

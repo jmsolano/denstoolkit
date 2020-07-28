@@ -66,7 +66,7 @@ void WriteDatMatAtCrds(string &acfn,BondNetWork &bn) {
    ofil.close();
    return;
 }
-void WriteDatMatCritPtsCrds(string &cpfn,critPtNetWork &cp) {
+void WriteDatMatCritPtsCrds(string &cpfn,CritPtNetWork &cp) {
    ofstream ofil;
    ofil.open(cpfn.c_str(),std::ios::out);
    ofil << scientific << setprecision(12);
@@ -93,7 +93,7 @@ void WriteDatMatCritPtsCrds(string &cpfn,critPtNetWork &cp) {
    ofil.close();
    return;
 }
-void WriteDatMatBondPathCrds(string &bpfn,critPtNetWork &cp) {
+void WriteDatMatBondPathCrds(string &bpfn,CritPtNetWork &cp) {
    ofstream ofil;
    ofil.open(bpfn.c_str(),std::ios::out);
    ofil << scientific << setprecision(12);

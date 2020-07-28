@@ -82,7 +82,7 @@ DeMat1CriticalPointNetworkBP::DeMat1CriticalPointNetworkBP(\
       ScreenUtils::DisplayErrorMessage("DeMat1CriticalPointNetworkBP object could not be setut!");
       return;
    }
-   cpn=new critPtNetWork(usrwf,usrbn);
+   cpn=new CritPtNetWork(usrwf,usrbn);
    imsetup=imsetup&&SetupCPN();
 }
 DeMat1CriticalPointNetworkBP::~DeMat1CriticalPointNetworkBP() {
@@ -116,18 +116,18 @@ bool DeMat1CriticalPointNetworkBP::InitSafetyChecks(void) {
    return true;
 }
 bool DeMat1CriticalPointNetworkBP::SetupCPN(void) {
-   cpn->setMaxGradPathNPts(DM1CPNWBP_DEFAULTARRAYSIZEBGP);
-   cpn->setStepSizeBGP(DM1CPNWBP_DEFAULTSTEPSIZEBGP);
-   cpn->setCriticalPoints(DENS);
-   cpn->setBondPaths();
+   cpn->SetMaxGradPathNPts(DM1CPNWBP_DEFAULTARRAYSIZEBGP);
+   cpn->SetStepSizeBGP(DM1CPNWBP_DEFAULTSTEPSIZEBGP);
+   cpn->SetCriticalPoints(DENS);
+   cpn->SetBondPaths();
    nCICP=cpn->nBGP;
    AllocAuxArrays();
    return true;
 }
 bool DeMat1CriticalPointNetworkBP::AllocAuxArrays(void) {
    bool res;
-   if ( !(res=cpn->iKnowBGPs()) ) {
-      ScreenUtils::DisplayErrorMessage("First setup the critPtNetWork object!");
+   if ( !(res=cpn->IKnowBGPs()) ) {
+      ScreenUtils::DisplayErrorMessage("First setup the CritPtNetWork object!");
       return res;
    }
    nCICP=cpn->nBGP;
@@ -148,7 +148,7 @@ void DeMat1CriticalPointNetworkBP::ComputeCoreInteractionCPs2D(void) {
       return;
    }
    if ( !CPSafetyChecks() ) {
-      ScreenUtils::DisplayErrorMessage("DeMat1CriticalPointNetworkBP's internal critPtNetWork is not ready!");
+      ScreenUtils::DisplayErrorMessage("DeMat1CriticalPointNetworkBP's internal CritPtNetWork is not ready!");
       return;
    }
    for ( int i=0 ; i<nCICP ; ++i ) { ComputeSingleCICP2D(i); }
@@ -163,14 +163,14 @@ void DeMat1CriticalPointNetworkBP::ComputeCoreInteractionCPs6D(void) {
       return;
    }
    if ( !CPSafetyChecks() ) {
-      ScreenUtils::DisplayErrorMessage("DeMat1CriticalPointNetworkBP's internal critPtNetWork is not ready!");
+      ScreenUtils::DisplayErrorMessage("DeMat1CriticalPointNetworkBP's internal CritPtNetWork is not ready!");
       return;
    }
    for ( int i=0 ; i<nCICP ; ++i ) { ComputeSingleCICP6D(i); }
    //ComputeSingleCICP6D(0);
 }
 bool DeMat1CriticalPointNetworkBP::CPSafetyChecks(void) {
-   return cpn->iKnowBGPs();
+   return cpn->IKnowBGPs();
 }
 void DeMat1CriticalPointNetworkBP::ComputeSingleCICP2D(int idx) {
 #if DEBUG
@@ -237,7 +237,7 @@ void DeMat1CriticalPointNetworkBP::ComputeSingleCICP6D(int idx) {
    sigCICP6D[idx]=GetSignature(eival);
    for ( int i=0 ; i<6 ; ++i ) { eivalCICP6D[idx][i]=eival[i]; }
    /* nuc-nuc correlation determination  */
-   cpn->findTwoClosestAtomsToBCP(idx,acp1Idx,acp2Idx);
+   cpn->FindTwoClosestAtomsToBCP(idx,acp1Idx,acp2Idx);
    for ( int i=0 ; i<3 ; ++i ) {
       xx[i]=bn->R[acp1Idx][i];
       xxp[i]=bn->R[acp2Idx][i];

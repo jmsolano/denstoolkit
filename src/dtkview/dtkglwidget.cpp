@@ -256,7 +256,7 @@ void DTKGLWidget::drawBondCriticalPoints() {
    float rad=DTKGL_DEFAULT_CRIT_PT_RADIUS;
    for (int cpIdx=0; cpIdx<critPtNW.size(); ++cpIdx) {
       cp=critPtNW[cpIdx];
-      if (!(cp->iKnowBCPs())) {return;}
+      if (!(cp->IKnowBCPs())) {return;}
       for (int i=0; i<cp->getNumBCPs(); ++i) {
          pos=cp->getBCPCoordinates(i);
          drawSingleSphere(pos,rad,colBCP);

@@ -72,7 +72,7 @@ static const string cpxKeysTab[MAXCPXKEYSDEFINED]={
    "BCPConnectivity","RCPConnectivity",\
    "CCPConnectivity"
 };
-void WriteCPXFile(string cpxname,string wfname,critPtNetWork &cp) {
+void WriteCPXFile(string cpxname,string wfname,CritPtNetWork &cp) {
    ofstream cpxfil;
    cpxfil.open(cpxname.c_str(),ios::out);
    WriteWFFileName(cpxfil,wfname);
@@ -83,8 +83,8 @@ void WriteCPXFile(string cpxname,string wfname,critPtNetWork &cp) {
    WriteCoordinatesRCPs(cpxfil,cp);
    WriteCoordinatesCCPs(cpxfil,cp);
    WriteConnectivityBCPs(cpxfil,cp);
-   if (cp.iKnowRGPs()) {WriteConnectivityRCPs(cpxfil,cp);}
-   if (cp.iKnowCGPs()) {WriteConnectivityCCPs(cpxfil,cp);}
+   if (cp.IKnowRGPs()) {WriteConnectivityRCPs(cpxfil,cp);}
+   if (cp.IKnowCGPs()) {WriteConnectivityCCPs(cpxfil,cp);}
    WriteLabelsACPs(cpxfil,cp);
    WriteLabelsBCPs(cpxfil,cp);
    WriteLabelsRCPs(cpxfil,cp);
@@ -92,12 +92,12 @@ void WriteCPXFile(string cpxname,string wfname,critPtNetWork &cp) {
    WriteNumberOfBondPaths(cpxfil,cp);
    WriteNumberOfPointsPerBondPath(cpxfil,cp);
    WriteBondPathsCoordinates(cpxfil,cp);
-   if ( cp.iKnowRGPs() ) {
+   if ( cp.IKnowRGPs() ) {
       WriteNumberOfRingPaths(cpxfil,cp);
       WriteNumberOfPointsPerRingPath(cpxfil,cp);
       WriteRingPathsCoordinates(cpxfil,cp);
    }
-   if ( cp.iKnowCGPs() ) {
+   if ( cp.IKnowCGPs() ) {
       WriteNumberOfCagePaths(cpxfil,cp);
       WriteNumberOfPointsPerCagePath(cpxfil,cp);
       WriteCagePathsCoordinates(cpxfil,cp);
@@ -122,10 +122,10 @@ void WriteWFFileName(ofstream &ofil,string wfname) {
    WriteClosingAttribute(ofil,key.c_str());
    return;
 }
-void WriteTypeOfCriticalPoints(ofstream &ofil,critPtNetWork &cp) {
+void WriteTypeOfCriticalPoints(ofstream &ofil,CritPtNetWork &cp) {
    string key="CriticalPointType";
    WriteOpenningAttribute(ofil,key.c_str());
-   switch (cp.myCPType()) {
+   switch (cp.MyCPType()) {
       case DENS:
          ofil << "Electron Density";
          break;
@@ -143,7 +143,7 @@ void WriteTypeOfCriticalPoints(ofstream &ofil,critPtNetWork &cp) {
    WriteClosingAttribute(ofil,key.c_str());
    return;
 }
-void WriteNumberOfCriticalPoints(ofstream &ofil,critPtNetWork &cp) {
+void WriteNumberOfCriticalPoints(ofstream &ofil,CritPtNetWork &cp) {
    string mkey="NumberOfCriticalPoints";
    string akey="NumberOfACPs";
    string bkey="NumberOfBCPs";
@@ -154,31 +154,31 @@ void WriteNumberOfCriticalPoints(ofstream &ofil,critPtNetWork &cp) {
    ofil << endl;
    //
    WriteOpenningAttribute(ofil,akey.c_str());
-   if (cp.iKnowACPs()) {ofil << cp.nACP;} else {ofil << -1;}
+   if (cp.IKnowACPs()) {ofil << cp.nACP;} else {ofil << -1;}
    ofil << endl;
    WriteClosingAttribute(ofil,akey.c_str());
    //
    WriteOpenningAttribute(ofil,bkey.c_str());
-   if (cp.iKnowBCPs()) {ofil << cp.nBCP;} else {ofil << -1;}
+   if (cp.IKnowBCPs()) {ofil << cp.nBCP;} else {ofil << -1;}
    ofil << endl;
    WriteClosingAttribute(ofil,bkey.c_str());
    //
    WriteOpenningAttribute(ofil,rkey.c_str());
-   if (cp.iKnowRCPs()) {ofil << cp.nRCP;} else {ofil << -1;}
+   if (cp.IKnowRCPs()) {ofil << cp.nRCP;} else {ofil << -1;}
    ofil << endl;
    WriteClosingAttribute(ofil,rkey.c_str());
    //
    WriteOpenningAttribute(ofil,ckey.c_str());
-   if (cp.iKnowCCPs()) {ofil << cp.nCCP;} else {ofil << -1;}
+   if (cp.IKnowCCPs()) {ofil << cp.nCCP;} else {ofil << -1;}
    ofil << endl;
    WriteClosingAttribute(ofil,ckey.c_str());
    //
    WriteClosingAttribute(ofil,mkey.c_str());
    return;
 }
-void WriteCoordinatesACPs(ofstream &ofil,critPtNetWork &cp) {
+void WriteCoordinatesACPs(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
-   if (!(cp.iKnowACPs())) {
+   if (!(cp.IKnowACPs())) {
       return;
    }
 #endif
@@ -193,9 +193,9 @@ void WriteCoordinatesACPs(ofstream &ofil,critPtNetWork &cp) {
    WriteClosingAttribute(ofil,key.c_str());
    return;
 }
-void WriteCoordinatesBCPs(ofstream &ofil,critPtNetWork &cp) {
+void WriteCoordinatesBCPs(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
-   if (!(cp.iKnowBCPs())) {
+   if (!(cp.IKnowBCPs())) {
       return;
    }
 #endif
@@ -210,9 +210,9 @@ void WriteCoordinatesBCPs(ofstream &ofil,critPtNetWork &cp) {
    WriteClosingAttribute(ofil,key.c_str());
    return;
 }
-void WriteCoordinatesRCPs(ofstream &ofil,critPtNetWork &cp) {
+void WriteCoordinatesRCPs(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
-   if (!(cp.iKnowRCPs())) {
+   if (!(cp.IKnowRCPs())) {
       return;
    }
 #endif
@@ -227,9 +227,9 @@ void WriteCoordinatesRCPs(ofstream &ofil,critPtNetWork &cp) {
    WriteClosingAttribute(ofil,key.c_str());
    return;
 }
-void WriteCoordinatesCCPs(ofstream &ofil,critPtNetWork &cp) {
+void WriteCoordinatesCCPs(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
-   if (!(cp.iKnowCCPs())) {
+   if (!(cp.IKnowCCPs())) {
       return;
    }
 #endif
@@ -244,9 +244,9 @@ void WriteCoordinatesCCPs(ofstream &ofil,critPtNetWork &cp) {
    WriteClosingAttribute(ofil,key.c_str());
    return;
 }
-void WriteConnectivityBCPs(ofstream &ofil,critPtNetWork &cp) {
+void WriteConnectivityBCPs(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
-   if (!(cp.iKnowBCPs())) {
+   if (!(cp.IKnowBCPs())) {
       return;
    }
 #endif
@@ -259,9 +259,9 @@ void WriteConnectivityBCPs(ofstream &ofil,critPtNetWork &cp) {
    WriteClosingAttribute(ofil,key.c_str());
    return;
 }
-void WriteConnectivityRCPs(ofstream &ofil,critPtNetWork &cp) {
+void WriteConnectivityRCPs(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
-   if (!(cp.iKnowRCPs())) {
+   if (!(cp.IKnowRCPs())) {
       return;
    }
 #endif
@@ -273,7 +273,7 @@ void WriteConnectivityRCPs(ofstream &ofil,critPtNetWork &cp) {
    ofil << endl;
    int nofrgps;
    for (int i=0; i<cp.nRCP; ++i) {
-      nofrgps=cp.getNofRingPathsOfRCP(i);
+      nofrgps=cp.GetNofRingPathsOfRCP(i);
       ofil << (i+1) << " " << nofrgps;
       for ( int k=0 ; k<nofrgps ; ++k ) {ofil << " " << cp.conRCP[i][0][k];}
       ofil << endl;
@@ -281,9 +281,9 @@ void WriteConnectivityRCPs(ofstream &ofil,critPtNetWork &cp) {
    WriteClosingAttribute(ofil,key.c_str());
    return;
 }
-void WriteConnectivityCCPs(ofstream &ofil,critPtNetWork &cp) {
+void WriteConnectivityCCPs(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
-   if (!(cp.iKnowCCPs())) {
+   if (!(cp.IKnowCCPs())) {
       return;
    }
 #endif
@@ -295,7 +295,7 @@ void WriteConnectivityCCPs(ofstream &ofil,critPtNetWork &cp) {
    ofil << endl;
    int nofcgps;
    for (int i=0; i<cp.nCCP; ++i) {
-      nofcgps=cp.getNofCagePathsOfCCP(i);
+      nofcgps=cp.GetNofCagePathsOfCCP(i);
       ofil << (i+1) << " " << nofcgps;
       for ( int k=0 ; k<nofcgps ; ++k ) {ofil << " " << cp.conCCP[i][0][k];}
       ofil << endl;
@@ -303,9 +303,9 @@ void WriteConnectivityCCPs(ofstream &ofil,critPtNetWork &cp) {
    WriteClosingAttribute(ofil,key.c_str());
    return;
 }
-void WriteLabelsACPs(ofstream &ofil,critPtNetWork &cp) {
+void WriteLabelsACPs(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
-   if (!(cp.iKnowACPs())) {
+   if (!(cp.IKnowACPs())) {
       return;
    }
 #endif
@@ -321,9 +321,9 @@ void WriteLabelsACPs(ofstream &ofil,critPtNetWork &cp) {
    WriteClosingAttribute(ofil,key.c_str());
    return;
 }
-void WriteLabelsBCPs(ofstream &ofil,critPtNetWork &cp) {
+void WriteLabelsBCPs(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
-   if (!(cp.iKnowBCPs())) {
+   if (!(cp.IKnowBCPs())) {
       return;
    }
 #endif
@@ -339,9 +339,9 @@ void WriteLabelsBCPs(ofstream &ofil,critPtNetWork &cp) {
    WriteClosingAttribute(ofil,key.c_str());
    return;
 }
-void WriteLabelsRCPs(ofstream &ofil,critPtNetWork &cp) {
+void WriteLabelsRCPs(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
-   if (!(cp.iKnowRCPs())) {
+   if (!(cp.IKnowRCPs())) {
       return;
    }
 #endif
@@ -357,9 +357,9 @@ void WriteLabelsRCPs(ofstream &ofil,critPtNetWork &cp) {
    WriteClosingAttribute(ofil,key.c_str());
    return;
 }
-void WriteLabelsCCPs(ofstream &ofil,critPtNetWork &cp) {
+void WriteLabelsCCPs(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
-   if (!(cp.iKnowCCPs())) {
+   if (!(cp.IKnowCCPs())) {
       return;
    }
 #endif
@@ -376,9 +376,9 @@ void WriteLabelsCCPs(ofstream &ofil,critPtNetWork &cp) {
    WriteClosingAttribute(ofil,key.c_str());
    return;
 }
-void WriteNumberOfBondPaths(ofstream &ofil,critPtNetWork &cp) {
+void WriteNumberOfBondPaths(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
-   if (!(cp.iKnowBGPs())) {
+   if (!(cp.IKnowBGPs())) {
       return;
    }
 #endif
@@ -388,9 +388,9 @@ void WriteNumberOfBondPaths(ofstream &ofil,critPtNetWork &cp) {
    WriteClosingAttribute(ofil,key.c_str());
    return;
 }
-void WriteNumberOfRingPaths(ofstream &ofil,critPtNetWork &cp) {
+void WriteNumberOfRingPaths(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
-   if (!(cp.iKnowRGPs())) {
+   if (!(cp.IKnowRGPs())) {
       return;
    }
 #endif
@@ -398,13 +398,13 @@ void WriteNumberOfRingPaths(ofstream &ofil,critPtNetWork &cp) {
    ofil << "#Reminder: NumberOfRingPaths is the total number." << endl;
    ofil << "#The connectivity is in RCPConnectivity." << endl;
    WriteOpenningAttribute(ofil,key.c_str());
-   ofil << cp.getTotalNofRingPaths() << endl;
+   ofil << cp.GetTotalNofRingPaths() << endl;
    WriteClosingAttribute(ofil,key.c_str());
    return;
 }
-void WriteNumberOfCagePaths(ofstream &ofil,critPtNetWork &cp) {
+void WriteNumberOfCagePaths(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
-   if (!(cp.iKnowCGPs())) {
+   if (!(cp.IKnowCGPs())) {
       return;
    }
 #endif
@@ -412,13 +412,13 @@ void WriteNumberOfCagePaths(ofstream &ofil,critPtNetWork &cp) {
    ofil << "#Reminder: NumberOfCagePaths is the total number." << endl;
    ofil << "#The connectivity is in CCPConnectivity." << endl;
    WriteOpenningAttribute(ofil,key.c_str());
-   ofil << cp.getTotalNofCagePaths() << endl;
+   ofil << cp.GetTotalNofCagePaths() << endl;
    WriteClosingAttribute(ofil,key.c_str());
    return;
 }
-void WriteNumberOfPointsPerBondPath(ofstream &ofil,critPtNetWork &cp) {
+void WriteNumberOfPointsPerBondPath(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
-   if (!(cp.iKnowBGPs())) {
+   if (!(cp.IKnowBGPs())) {
       return;
    }
 #endif
@@ -434,9 +434,9 @@ void WriteNumberOfPointsPerBondPath(ofstream &ofil,critPtNetWork &cp) {
    WriteClosingAttribute(ofil,key.c_str());
    return;
 }
-void WriteNumberOfPointsPerRingPath(ofstream &ofil,critPtNetWork &cp) {
+void WriteNumberOfPointsPerRingPath(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
-   if (!(cp.iKnowBGPs())) {
+   if (!(cp.IKnowBGPs())) {
       return;
    }
 #endif
@@ -445,7 +445,7 @@ void WriteNumberOfPointsPerRingPath(ofstream &ofil,critPtNetWork &cp) {
    ofil << endl;
    int nofrgps,ninps=0;
    for (int i=0; i<cp.nRCP; ++i) {
-      nofrgps=cp.getNofRingPathsOfRCP(i);
+      nofrgps=cp.GetNofRingPathsOfRCP(i);
       for ( int k=0 ; k<nofrgps ; ++k ) {
          ofil << " " << cp.conRCP[i][1][k];
          if ((++ninps)==5) {ofil << endl; ninps=0;}
@@ -455,9 +455,9 @@ void WriteNumberOfPointsPerRingPath(ofstream &ofil,critPtNetWork &cp) {
    WriteClosingAttribute(ofil,key.c_str());
    return;
 }
-void WriteNumberOfPointsPerCagePath(ofstream &ofil,critPtNetWork &cp) {
+void WriteNumberOfPointsPerCagePath(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
-   if (!(cp.iKnowCGPs())) {
+   if (!(cp.IKnowCGPs())) {
       return;
    }
 #endif
@@ -466,7 +466,7 @@ void WriteNumberOfPointsPerCagePath(ofstream &ofil,critPtNetWork &cp) {
    ofil << endl;
    int nofcgps,ninps=0;
    for (int i=0; i<cp.nCCP; ++i) {
-      nofcgps=cp.getNofCagePathsOfCCP(i);
+      nofcgps=cp.GetNofCagePathsOfCCP(i);
       for ( int k=0 ; k<nofcgps ; ++k ) {
          ofil << " " << cp.conCCP[i][1][k];
          if ((++ninps)==5) {ofil << endl; ninps=0;}
@@ -476,9 +476,9 @@ void WriteNumberOfPointsPerCagePath(ofstream &ofil,critPtNetWork &cp) {
    WriteClosingAttribute(ofil,key.c_str());
    return;
 }
-void WriteBondPathsCoordinates(ofstream &ofil,critPtNetWork &cp) {
+void WriteBondPathsCoordinates(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
-   if (!(cp.iKnowBGPs())) {
+   if (!(cp.IKnowBGPs())) {
       return;
    }
 #endif
@@ -507,9 +507,9 @@ void WriteBondPathsCoordinates(ofstream &ofil,critPtNetWork &cp) {
    WriteClosingAttribute(ofil,mkey.c_str());
    return;
 }
-void WriteRingPathsCoordinates(ofstream &ofil,critPtNetWork &cp) {
+void WriteRingPathsCoordinates(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
-   if (!(cp.iKnowRGPs())) {
+   if (!(cp.IKnowRGPs())) {
       return;
    }
 #endif
@@ -521,7 +521,7 @@ void WriteRingPathsCoordinates(ofstream &ofil,critPtNetWork &cp) {
    ofil << scientific << setprecision(12);
    int npts,nrps,count=0;
    for (int rcpIdx=0; rcpIdx<cp.nRCP; ++rcpIdx) {
-      nrps=cp.getNofRingPathsOfRCP(rcpIdx);
+      nrps=cp.GetNofRingPathsOfRCP(rcpIdx);
       for ( int bcpIdxInRRGP=0 ; bcpIdxInRRGP<nrps ; ++bcpIdxInRRGP ) {
          WriteOpenningAttribute(ofil,ikey.c_str());
          ofil << count << endl;
@@ -542,9 +542,9 @@ void WriteRingPathsCoordinates(ofstream &ofil,critPtNetWork &cp) {
    WriteClosingAttribute(ofil,mkey.c_str());
    return;
 }
-void WriteCagePathsCoordinates(ofstream &ofil,critPtNetWork &cp) {
+void WriteCagePathsCoordinates(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
-   if (!(cp.iKnowCGPs())) {
+   if (!(cp.IKnowCGPs())) {
       return;
    }
 #endif
@@ -556,7 +556,7 @@ void WriteCagePathsCoordinates(ofstream &ofil,critPtNetWork &cp) {
    ofil << scientific << setprecision(12);
    int npts,ncps,count=0;
    for (int ccpIdx=0; ccpIdx<cp.nCCP; ++ccpIdx) {
-      ncps=cp.getNofCagePathsOfCCP(ccpIdx);
+      ncps=cp.GetNofCagePathsOfCCP(ccpIdx);
       for ( int rcpIdxInRCGP=0 ; rcpIdxInRCGP<ncps ; ++rcpIdxInRCGP ) {
          WriteOpenningAttribute(ofil,ikey.c_str());
          ofil << count << endl;

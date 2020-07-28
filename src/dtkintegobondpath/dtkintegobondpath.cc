@@ -111,13 +111,13 @@ int main (int argc, char ** argv) {
    bnw.SetUpBNW();
 
    /* Setups the critical point network object  */
-   critPtNetWork cpn(gwf,bnw);
+   CritPtNetWork cpn(gwf,bnw);
    double stepSize=INTEGBP_BONDPATHSTEPSIZE; //defined in soldefines.h
-   cpn.setStepSizeBGP(stepSize);
+   cpn.SetStepSizeBGP(stepSize);
    int numPtsBGPArray=INTEGBP_NUMBEROFPOINTSBGPARRAY*4;
-   cpn.setMaxGradPathNPts(numPtsBGPArray);
-   cpn.setCriticalPoints(DENS);
-   cpn.setBondPaths();
+   cpn.SetMaxGradPathNPts(numPtsBGPArray);
+   cpn.SetCriticalPoints(DENS);
+   cpn.SetBondPaths();
 
    /* Setups the IntegrateOverBondPath object  */
    vector<IntegrateOverBondPath*> integ;
