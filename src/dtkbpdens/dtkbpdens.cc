@@ -229,7 +229,7 @@ int main (int argc, char ** argv) {
    ofile << scientific << setprecision(12);
    cout << scientific << setprecision(12);
    
-   cout << "Evaluating " << getFieldTypeKeyLong(prop) << " upon ";
+   cout << "Evaluating " << GetFieldTypeKeyLong(prop) << " upon ";
    if (options.uponbp) {cout << "the bond path:" << endl;}
    if (options.uponsl) {cout << "the bond line:" << endl;}
 #if USEPROGRESSBAR
@@ -284,18 +284,18 @@ int main (int argc, char ** argv) {
    cout << "The maximum value (within the evaluated line) is located at:" << endl;
    ScreenUtils::PrintV3Comp("R(maxval): ",xmax);
    cout << "p(maxval): " << pmax << endl;
-   cout << getFieldTypeKeyShort(prop) << "(max): " << maxval << endl;
+   cout << GetFieldTypeKeyShort(prop) << "(max): " << maxval << endl;
    ScreenUtils::PrintScrCharLine('-');
    cout << "The minimum value (within the evaluated line) is located at:" << endl;
    ScreenUtils::PrintV3Comp("R(minval): ",xmin);
    cout << "p(minval): " << pmin << endl;
-   cout << getFieldTypeKeyShort(prop) << "(min): " << minval << endl;
+   cout << GetFieldTypeKeyShort(prop) << "(min): " << minval << endl;
    ScreenUtils::PrintScrCharLine('-');
    if (options.uponbp) {
       cout << "The value at BCP is:" << endl;
       ScreenUtils::PrintV3Comp("R(bcp): ",robcp);
       cout << "p(pcp): " << pbcp << endl;
-      cout << getFieldTypeKeyShort(prop) << "(bcp): " << bcpval << endl;
+      cout << GetFieldTypeKeyShort(prop) << "(bcp): " << bcpval << endl;
    }
    ScreenUtils::PrintScrCharLine('-');
    
@@ -310,18 +310,18 @@ int main (int argc, char ** argv) {
    logfil << "#The maximum value (within the evaluated line) is located at:" << endl;
    FileUtils::WriteV3Components(logfil,"#R(maxval):\n",xmax);
    logfil << "#p(maxval):\n" << pmax << endl;
-   logfil << "#" << getFieldTypeKeyShort(prop) << "(max):\n" << maxval << endl;
+   logfil << "#" << GetFieldTypeKeyShort(prop) << "(max):\n" << maxval << endl;
    FileUtils::WriteScrCharLine(logfil,'-');
    logfil << "#The minimum value (within the evaluated line) is located at:" << endl;
    FileUtils::WriteV3Components(logfil,"#R(minval):\n",xmin);
    logfil << "#p(minval):\n" << pmin << endl;
-   logfil << "#" << getFieldTypeKeyShort(prop) << "(min):\n" << minval << endl;
+   logfil << "#" << GetFieldTypeKeyShort(prop) << "(min):\n" << minval << endl;
    FileUtils::WriteScrCharLine(logfil,'-');
    if (options.uponbp) {
       logfil << "#The value at BCP is:" << endl;
       FileUtils::WriteV3Components(logfil,"R(bcp):\n",robcp);
       logfil << "#p(pcp):\n" << pbcp << endl;
-      logfil << getFieldTypeKeyShort(prop) << "(bcp):\n" << bcpval << endl;
+      logfil << GetFieldTypeKeyShort(prop) << "(bcp):\n" << bcpval << endl;
       FileUtils::WriteScrCharLine(logfil,'-');
    }
    

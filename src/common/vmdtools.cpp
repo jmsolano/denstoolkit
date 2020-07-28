@@ -53,7 +53,7 @@ void VMDTools::writeSimpleVMDScript(string cubename,const char prop2rend,bool ad
    string tganame=cubename;
    FileUtils::ReplaceExtensionOfFileName(vmdname,"vmd");
    FileUtils::ReplaceExtensionOfFileName(tganame,"tga");
-   double isovalue=getDefaultIsolvalueForCube(prop2rend);
+   double isovalue=GetDefaultIsolvalueForCube(prop2rend);
    ofstream ofil(vmdname.c_str());
    if ( !ofil.good() ) {
       ScreenUtils::DisplayErrorMessage(string("Could not open the file '")+vmdname+string("'."));

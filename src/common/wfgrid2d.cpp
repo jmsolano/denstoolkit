@@ -358,9 +358,9 @@ void waveFunctionGrid2D::makeTsv(string &onam,GaussWaveFunction &wf,ScalarFieldT
       cout << "Error: trying to use a non loaded wave function object!\nNothing done!\n";
       return;
    }
-   char cft=convertScalarFieldType2Char(ft);
+   char cft=ConvertScalarFieldType2Char(ft);
    comments+=string("Property: ");
-   comments+=getFieldTypeKeyLong(cft);
+   comments+=GetFieldTypeKeyLong(cft);
    ofstream ofil;
    ofil.open(onam.c_str());
    if (!imsetup) {

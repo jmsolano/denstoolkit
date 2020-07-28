@@ -170,7 +170,7 @@ int main (int argc, char ** argv)
    /* Main calculation loop, chooses between different available fields. */
    
    cout << "Evaluating and writing property..." << endl;
-      cout << "(Scalar Field to plot: " << getFieldTypeKeyLong(prop) << ")." << endl << endl;
+      cout << "(Scalar Field to plot: " << GetFieldTypeKeyLong(prop) << ")." << endl << endl;
    switch (prop) {
       case 'd':
          grid.makeDat(outfilnam,gwf,DENS);
@@ -289,7 +289,7 @@ void makeGnuplotFile(string &gnpn,string &outn,char p2p,double dist,string &l1,s
    /* Choosing the label (legend) for the plot */
    
    string plbl="";
-   plbl=gnuplotFieldTitle(p2p);
+   plbl=GnuplotFieldTitle(p2p);
    
    /* In this part the name is scanned for possible occurrings of the character '_'.
       For a proper display in the eps file, it has to be changed to "\_" */

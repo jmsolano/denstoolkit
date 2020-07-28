@@ -66,7 +66,7 @@ enum ScalarFieldType {
    SCFD, /* Scalar Custom Field Density */\
    VCFD /* Vector Custom Field Density */
 };
-inline char convertScalarFieldType2Char(ScalarFieldType fftt) {
+inline char ConvertScalarFieldType2Char(ScalarFieldType fftt) {
    char res='d';
    switch ( fftt ) {
       case DENS :
@@ -214,7 +214,7 @@ inline ScalarFieldType Char2ScalarFieldType(const char prop) {
    }
    return res;
 }
-inline string getFieldTypeKeyShort(const char prop) {
+inline string GetFieldTypeKeyShort(const char prop) {
    string plbl="";
    switch (prop) {
       case 'd':
@@ -289,7 +289,7 @@ inline string getFieldTypeKeyShort(const char prop) {
    }
    return plbl;
 }
-inline string getFieldTypeKeyLong(const char prop) {
+inline string GetFieldTypeKeyLong(const char prop) {
    string plbl="";
    switch (prop) {
       case 'd':
@@ -364,7 +364,7 @@ inline string getFieldTypeKeyLong(const char prop) {
    }
    return plbl;
 }
-inline string gnuplotFieldTitle(const char p2p) {
+inline string GnuplotFieldTitle(const char p2p) {
    string plbl;
    switch (p2p) {
       case 'd':
@@ -436,7 +436,7 @@ inline string gnuplotFieldTitle(const char p2p) {
    }
    return plbl;
 }
-inline double getDefaultIsolvalueForCube(const char p2p) {
+inline double GetDefaultIsolvalueForCube(const char p2p) {
    double isoval=0.01e0;
    switch ( p2p ) {
       case 'd':

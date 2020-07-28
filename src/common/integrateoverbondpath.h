@@ -55,8 +55,8 @@ public:
    double GetBondPathIntegral();
    void WriteIntegralValuesToFile(ofstream &ofil,double globalEnergy=0.0e0);
    inline double GetBondPathIntegral(int idx) {return integralValue[idx];}
-   inline string GetFieldTypeLabelShort() {return getFieldTypeKeyShort(myCharFieldType);}
-   inline string GetFieldTypeLabelLong() {return getFieldTypeKeyLong(myCharFieldType);}
+   inline string GetFieldTypeLabelShort() {return GetFieldTypeKeyShort(myCharFieldType);}
+   inline string GetFieldTypeLabelLong() {return GetFieldTypeKeyLong(myCharFieldType);}
 /* ************************************************************************** */
 protected:
    class GaussWaveFunction *wf;

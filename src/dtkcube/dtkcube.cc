@@ -172,7 +172,7 @@ int main (int argc, char ** argv) {
    /* Main calculation loop, chooses between different available fields. */
    
    cout << "Evaluating and writing property..." << endl;
-   cout << "(Scalar Field to plot: " << getFieldTypeKeyLong(prop) << ")." << endl << endl;
+   cout << "(Scalar Field to plot: " << GetFieldTypeKeyLong(prop) << ")." << endl << endl;
    switch (prop) {
       case 'd':
          grid.makeCube(outfilnam,gwf,DENS);

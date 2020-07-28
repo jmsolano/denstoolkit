@@ -160,7 +160,7 @@ int main (int argc, char ** argv) {
    /* Main calculation loop, chooses between different available fields. */
    
    cout << "Evaluating and writing property..." << endl;
-   cout << "(Scalar Field to plot: " << getFieldTypeKeyLong(prop) << ")." << endl << endl;
+   cout << "(Scalar Field to plot: " << GetFieldTypeKeyLong(prop) << ")." << endl << endl;
    ScalarFieldType fldType=Char2ScalarFieldType(prop);
    grid.makeTsv(outfilnam,gwf,fldType);
    cout << endl << "Output written in file: " << outfilnam << endl;

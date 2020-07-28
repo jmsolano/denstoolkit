@@ -84,7 +84,7 @@ IntegrateOverBondPath::IntegrateOverBondPath(GaussWaveFunction &ugwf,critPtNetWo
       cout << __FILE__ << ", line: " << __LINE__ << endl;
    }
    myFieldType=utp;
-   myCharFieldType=convertScalarFieldType2Char(myFieldType);
+   myCharFieldType=ConvertScalarFieldType2Char(myFieldType);
 }
 bool IntegrateOverBondPath::AllocateAuxiliaryArrays(void) {
    return MyMemory::Alloc1DRealArray("integralValue",nbgp,integralValue);

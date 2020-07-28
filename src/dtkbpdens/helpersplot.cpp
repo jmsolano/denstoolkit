@@ -63,7 +63,7 @@ void HelpersPlot::MakeGnuplotFile(optFlags &opts,string &gnpnam,string &datnam,c
    ofil << "set output '" << epsnam << "'" << endl;
 #endif
    ofil << "plot namedatfile using 1:5 with lines lw 2 title '"
-        << gnuplotFieldTitle(p2p) << "'" << endl;
+        << GnuplotFieldTitle(p2p) << "'" << endl;
    ofil << "#" << endl;
    FileUtils::WriteScrCharLine(ofil,'#');
    ofil << "#                 END OF GNUPLOT COMMANDS" << endl;

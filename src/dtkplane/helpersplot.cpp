@@ -14,7 +14,7 @@ void HelpersPlot::makeGnuplotFile(optFlags &opts, string &gnpnam,string &tsvnam,
    
    /* Choosing the label (legend) for the plot  and the zrange for the plot */
    double minzrange,maxzrange;
-   string plbl=getFieldTypeKeyShort(p2p);;
+   string plbl=GetFieldTypeKeyShort(p2p);;
    switch (p2p) {
       case 'd':
          minzrange=0.0e0;

@@ -490,9 +490,9 @@ void waveFunctionGrid3D::makeCube(string &onam,GaussWaveFunction &wf,ScalarField
       cout << "Error: trying to use a non loaded wave function object!\nNothing done!\n";
       return;
    }
-   char cft=convertScalarFieldType2Char(ft);
+   char cft=ConvertScalarFieldType2Char(ft);
    comments+=string("Property: ");
-   comments+=getFieldTypeKeyLong(cft);
+   comments+=GetFieldTypeKeyLong(cft);
    ofstream ofil;
    ofil.open(onam.c_str());
    writeCubeHeader(ofil,wf.title[0],comments,npts,xin,dx,wf.nNuc,wf.atCharge,wf.R);

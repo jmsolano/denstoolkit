@@ -98,7 +98,7 @@ void mkFileNames(char ** (&argv), optFlags &opts, string &i_fn, string &o_fn,str
    }
    pos=o_fn.find_last_of('.');
    if (pos!=string::npos) {
-      string plbl=getFieldTypeKeyShort(prop);
+      string plbl=GetFieldTypeKeyShort(prop);
       plbl+="2D";
       o_fn.insert(pos,plbl);
       g_fn.insert(pos,plbl);
