@@ -54,7 +54,7 @@ using std::cerr;
 #include "mymath.h"
 #include "fileutils.h"
 
-void IntegrateOverBondPath::init(void) {
+void IntegrateOverBondPath::Init(void) {
    wf=NULL;
    cp=NULL;
    integralValue=NULL;
@@ -63,7 +63,7 @@ void IntegrateOverBondPath::init(void) {
 }
 IntegrateOverBondPath::IntegrateOverBondPath(GaussWaveFunction &ugwf,critPtNetWork &ucpn,\
       ScalarFieldType utp) {
-   init();
+   Init();
    wf=&ugwf;
    if ( !ucpn.iKnowBCPs() ) {
       ScreenUtils::DisplayErrorMessage("First seek the critical points!");
@@ -124,10 +124,10 @@ void IntegrateOverBondPath::GetIntermediateCoordinatesAndDistanceBetweenPoints(i
 void IntegrateOverBondPath::ComputeScalarFunctionValuesAtIntermediatePoints(\
       double (&x0)[3],double (&x1)[3],double (&x2)[3],double (&x3)[3],\
       double (&f)[4]) {
-   f[0]=theFunction(x0);
-   f[1]=theFunction(x1);
-   f[2]=theFunction(x2);
-   f[3]=theFunction(x3);
+   f[0]=TheFunction(x0);
+   f[1]=TheFunction(x1);
+   f[2]=TheFunction(x2);
+   f[3]=TheFunction(x3);
 }
 void IntegrateOverBondPath::ComputeBondPathIntegrals(void) {
    for ( int i=0 ; i<nbgp ; ++i ) {
@@ -142,7 +142,7 @@ double IntegrateOverBondPath::GetBondPathIntegral(void) {
 void IntegrateOverBondPath::ComputeAllIntegralsOverBondPaths(void) {
    ComputeBondPathIntegrals();
 }
-double IntegrateOverBondPath::theFunction(double (&x)[3]) {
+double IntegrateOverBondPath::TheFunction(double (&x)[3]) {
    double trho;
    switch ( myFieldType ) {
       case DENS :

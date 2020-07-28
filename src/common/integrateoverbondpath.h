@@ -62,7 +62,7 @@ protected:
    class GaussWaveFunction *wf;
    class critPtNetWork *cp;
    /* Functions  */
-   void init(void);
+   void Init(void);
    void GetIntermediateCoordinatesAndDistanceBetweenPoints(int startIdx,double** (&arr),double &h,\
          double (&x0)[3],double (&x1)[3],double (&x2)[3],double (&x3)[3]);
    void ComputeScalarFunctionValuesAtIntermediatePoints(double (&x0)[3],double (&x1)[3],\
@@ -70,7 +70,7 @@ protected:
    double ComputeBondPathIntegral(int bpIdx);
    void ComputeBondPathIntegrals(void);
    bool AllocateAuxiliaryArrays(void);
-   double theFunction(double (&x)[3]);
+   double TheFunction(double (&x)[3]);
 /* ************************************************************************** */
    static constexpr double oo3=1.0e0/3.0e0,threeo8=3.0e0/8.0e0;
    static constexpr double threeo4=3.0e0/4.0e0;
