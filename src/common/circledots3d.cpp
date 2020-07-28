@@ -37,15 +37,11 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
-#ifndef _CIRCLEDOTS3D_CPP_
-#define _CIRCLEDOTS3D_CPP_
-
+#include <cstdlib>
 #include <iostream>
 using std::cout;
 using std::endl;
 using std::cerr;
-#include <cstdlib>
 #include <cmath>
 #include <fstream>
 using std::ofstream;
@@ -60,19 +56,19 @@ using std::ofstream;
 
 double const CircleDots3D::twoPi=6.28318530717958647692529e0;
 CircleDots3D::CircleDots3D() {
-   init();
+   Init();
 }
 CircleDots3D::~CircleDots3D() {
    MyMemory::Dealloc2DRealArray(xx_,npts_);
 }
-void CircleDots3D::init() {
+void CircleDots3D::Init() {
    npts_=0;
    for ( int i=0 ; i<3 ; ++i ) {oo_[i]=ue1_[i]=ue2_[i]=ue3_[i]=0.0e0;}
    radius_=1.0e0;
    xx_=NULL;
    imsetup=havee1=havee2=havee3=false;
 }
-double CircleDots3D::getCartCoord(const int i,const int j) {
+double CircleDots3D::GetCartCoord(const int i,const int j) {
    if ( (xx_!=NULL) && (i<npts_) && (j<3) ) {
       return xx_[i][j];
    } else {
@@ -101,7 +97,7 @@ double CircleDots3D::getCartCoord(const int i,const int j) {
    }
    return 0.0e0;
 }
-double CircleDots3D::getPhi(const int i) {
+double CircleDots3D::GetPhi(const int i) {
    if ( (xx_!=NULL) && (i<npts_) ) {
       return xx_[i][3];
    } else {
@@ -123,7 +119,7 @@ double CircleDots3D::getPhi(const int i) {
    }
    return 0.0e0;
 }
-void CircleDots3D::setE1(const double x,const double y,const double z) {
+void CircleDots3D::SetE1(const double x,const double y,const double z) {
    ue1_[0]=x; ue1_[1]=y; ue1_[2]=z;
    if ( sqrt(ue1_[0]*ue1_[0]+ue1_[1]*ue1_[1]+ue1_[2]*ue1_[2])<=0.0e0 ) {
       ScreenUtils::DisplayErrorMessage("Please provide a non-zero vector!");
@@ -135,7 +131,7 @@ void CircleDots3D::setE1(const double x,const double y,const double z) {
    } else { cout << "magE1: " << magV3(ue1_) << endl;}
    havee1=true;
 }
-void CircleDots3D::setE2(const double x,const double y,const double z) {
+void CircleDots3D::SetE2(const double x,const double y,const double z) {
    ue2_[0]=x; ue2_[1]=y; ue2_[2]=z;
    if ( sqrt(ue2_[0]*ue2_[0]+ue2_[1]*ue2_[1]+ue2_[2]*ue2_[2])<=0.0e0 ) {
       ScreenUtils::DisplayErrorMessage("Please provide a non-zero vector!");
@@ -147,14 +143,14 @@ void CircleDots3D::setE2(const double x,const double y,const double z) {
    }
    havee2=true;
 }
-void CircleDots3D::setE1AndE2(const double (&ee1)[3],const double (&ee2)[3]) {
+void CircleDots3D::SetE1AndE2(const double (&ee1)[3],const double (&ee2)[3]) {
    for ( int i=0 ; i<3 ; ++i ) {
       ue1_[i]=ee1[i];
       ue2_[i]=ee2[i];
    }
    havee1=havee2=true;
 }
-void CircleDots3D::computeUE3(void) {
+void CircleDots3D::ComputeUE3(void) {
    if ( !(havee1&&havee2) ) {
       ScreenUtils::DisplayErrorMessage("First set e1 and e2!");
 #if DEBUG
@@ -165,8 +161,8 @@ void CircleDots3D::computeUE3(void) {
    crossProductV3(ue1_,ue2_,ue3_);
    havee3=true;
 }
-void CircleDots3D::setupCircle(void) {
-   computeUE3();
+void CircleDots3D::SetupCircle(void) {
+   ComputeUE3();
    if ( !havee3 ) {
       ScreenUtils::DisplayErrorMessage("First setup the e3 vector!");
       return;
@@ -195,7 +191,7 @@ void CircleDots3D::setupCircle(void) {
    }
    imsetup=true;
 }
-void CircleDots3D::displayCoordinates(void) {
+void CircleDots3D::DisplayCoordinates(void) {
    if ( !imsetup ) {
       ScreenUtils::DisplayErrorMessage("The circle is not setup!");
 #if DEBUG
@@ -220,7 +216,7 @@ void CircleDots3D::displayCoordinates(void) {
    cout << "width: " << nnww << endl;
    ScreenUtils::PrintScrStarLine();
 }
-void CircleDots3D::writeCoordinates(const string &oname,bool wrtoo) {
+void CircleDots3D::WriteCoordinates(const string &oname,bool wrtoo) {
    ofstream ofil(oname.c_str());
    FileUtils::WriteScrStarLine(ofil);
    FileUtils::WriteCenteredString(ofil,"Coordinates of circle, centered at");
@@ -243,9 +239,7 @@ void CircleDots3D::writeCoordinates(const string &oname,bool wrtoo) {
    }
    ofil.close();
 }
-void CircleDots3D::setOrigin(const double x,const double y,const double z) {
+void CircleDots3D::SetOrigin(const double x,const double y,const double z) {
    oo_[0]=x; oo_[1]=y; oo_[2]=z;
 }
-
-#endif  /* _CIRCLEDOTS3D_CPP_ */
 

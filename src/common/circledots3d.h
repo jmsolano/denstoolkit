@@ -50,23 +50,23 @@ public:
    CircleDots3D();
    ~CircleDots3D();
 /* ************************************************************************** */
-   double getCartCoord(const int i,const int j);
-   double getPhi(const int i);
-   void getCartCoords(const int i,double (&xx)[3]);
-   void setE1(const double x,const double y,const double z);
-   void setE2(const double x,const double y,const double z);
-   void setE1AndE2(const double (&ee1)[3],const double (&ee2)[3]);
-   void setOrigin(const double x,const double y,const double z);
-   void computeUE3(void);
-   void setNPts(const int nn) {npts_=nn;}
-   void setRadius(const double rr) {radius_=rr;}
-   void setupCircle(void);
-   void displayCoordinates(void);
-   void writeCoordinates(const string &oname,bool wrtoo=false);
+   double GetCartCoord(const int i,const int j);
+   double GetPhi(const int i);
+   void GetCartCoords(const int i,double (&xx)[3]);
+   void SetE1(const double x,const double y,const double z);
+   void SetE2(const double x,const double y,const double z);
+   void SetE1AndE2(const double (&ee1)[3],const double (&ee2)[3]);
+   void SetOrigin(const double x,const double y,const double z);
+   void ComputeUE3(void);
+   void SetNPts(const int nn) {npts_=nn;}
+   void SetRadius(const double rr) {radius_=rr;}
+   void SetupCircle(void);
+   void DisplayCoordinates(void);
+   void WriteCoordinates(const string &oname,bool wrtoo=false);
 /* ************************************************************************** */
 protected:
 /* ************************************************************************** */
-   void init();
+   void Init();
    int npts_; /*!< Number of points of the circle discretization  */
    double radius_; /*!< Radius of the circle  */
    double e1_[3]; /*!< First unit vector. The circle will be drawn in 
