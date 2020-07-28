@@ -189,7 +189,7 @@ bool bondNetWork::lookForBonds(void) {
       for (int j=i+1; j<nNuc; j++) {
          d=dist(i,j);
          //vdwd=(atomicRadius[atNum[i]]+atomicRadius[atNum[j]])/BOHRTOANGSTROM;
-         vdwd=(getAtomicVDWRadius(atNum[i])+getAtomicVDWRadius(atNum[j]))/BOHRTOANGSTROM;
+         vdwd=(GetAtomicVDWRadius(atNum[i])+GetAtomicVDWRadius(atNum[j]))/BOHRTOANGSTROM;
          if (d<=vdwd) {
             addBond(i,j,d);
             if (d>maxBondDist) {
@@ -275,7 +275,7 @@ void bondNetWork::putNuclei(ofstream & pof) {
       atomn=atNum[i];
       if (spaceFillingMode) {
          //atrad=atomicRadius[atomn]*AUTOMATICSPACEFILLINGRATIO;
-         atrad=getAtomicVDWRadius(atomn)*AUTOMATICSPACEFILLINGRATIO;
+         atrad=GetAtomicVDWRadius(atomn)*AUTOMATICSPACEFILLINGRATIO;
       } else {
          atrad=drawAtSize;
       }
@@ -297,7 +297,7 @@ void bondNetWork::putBonds(ofstream &pof) {
          atni=atNum[i];
          atnk=atNum[k];
          //frak1=atomicRadius[atni]/(atomicRadius[atni]+atomicRadius[atnk]);
-         frak1=getAtomicVDWRadius(atni)/(getAtomicVDWRadius(atni)+getAtomicVDWRadius(atnk));
+         frak1=GetAtomicVDWRadius(atni)/(GetAtomicVDWRadius(atni)+GetAtomicVDWRadius(atnk));
          for (int l=0; l<3; l++) {
             startpt[l]=R[i][l]*(1.0e0-frak1)+R[k][l]*frak1;
          }

@@ -2451,7 +2451,7 @@ void critPtNetWork::putBonds(ofstream &pof) {
          atni=bn->atNum[i];
          atnk=bn->atNum[k];
          //frak1=atomicRadius[atni]/(atomicRadius[atni]+atomicRadius[atnk]);
-         frak1=getAtomicVDWRadius(atni)/(getAtomicVDWRadius(atni)+getAtomicVDWRadius(atnk));
+         frak1=GetAtomicVDWRadius(atni)/(GetAtomicVDWRadius(atni)+GetAtomicVDWRadius(atnk));
          for (int l=0; l<3; l++) {
             startpt[l]=bn->R[i][l]*(1.0e0-frak1)+bn->R[k][l]*frak1;
          }
