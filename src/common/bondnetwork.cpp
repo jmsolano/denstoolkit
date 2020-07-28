@@ -102,14 +102,14 @@ bool bondNetWork::readFromFileWFX(string inname) {
 #endif
       return false;
    }
-   getTitleFromFileWFX(tif,nTit,title);
-   getNofNucleiFromFileWFX(tif,nNuc);
+   GetTitleFromFileWFX(tif,nTit,title);
+   GetNofNucleiFromFileWFX(tif,nNuc);
    MyMemory::Alloc1DStringArray("atLbl",nNuc,atLbl);
    MyMemory::Alloc2DRealArray(string("R"),nNuc,3,R);
    MyMemory::Alloc1DIntArray(string("atNum"),nNuc,atNum);
-   getAtLabelsFromFileWFX(tif,nNuc,atLbl);
-   getNucCartCoordsFromFileWFX(tif,nNuc,R);
-   getAtNumbersFromFileWFX(tif,nNuc,atNum);
+   GetAtLabelsFromFileWFX(tif,nNuc,atLbl);
+   GetNucCartCoordsFromFileWFX(tif,nNuc,R);
+   GetAtNumbersFromFileWFX(tif,nNuc,atNum);
    tif.close();
    return true;
 }
@@ -127,9 +127,9 @@ bool bondNetWork::readFromFileWFN(string inname) {
    }
    tif.seekg(tif.beg);
    nTit=1;
-   processFirstDataStringinWFNFile(tif,title,orDe,nmo,npr,nNuc);
+   ProcessFirstDataStringinWFNFile(tif,title,orDe,nmo,npr,nNuc);
    double *atch,*tmprad;
-   processCentersWFN(tif,nNuc,atLbl,tmprad,atch);
+   ProcessCentersWFN(tif,nNuc,atLbl,tmprad,atch);
    MyMemory::Alloc2DRealArray(string("R-readwfn-"),nNuc,3,R);
    MyMemory::Alloc1DIntArray(string("atNum"),nNuc,atNum);
    for (int i=0; i<nNuc; i++) {

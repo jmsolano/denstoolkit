@@ -51,13 +51,13 @@ using std::endl;
 #include "mymemory.h"
 #include "iofuncts-wfn.h"
 
-string getTitleFromFileWFN(ifstream &ifil) {
+string GetTitleFromFileWFN(ifstream &ifil) {
    string line;
    ifil.seekg(ifil.beg);
    getline(ifil,line);
    return line;
 }
-void processFirstDataStringinWFNFile(ifstream &ifil,string* &tit,string &orbdesc,int &nmo,int &npr,int &nnu) {
+void ProcessFirstDataStringinWFNFile(ifstream &ifil,string* &tit,string &orbdesc,int &nmo,int &npr,int &nnu) {
    string line;
    ifil.seekg(ifil.beg);
    MyMemory::Alloc1DStringArray(string("tit"),1,tit);
@@ -106,7 +106,7 @@ void processFirstDataStringinWFNFile(ifstream &ifil,string* &tit,string &orbdesc
       exit(1);
    }
 }
-void processCentersWFN(ifstream &ifil,const int nnu,string* &atlbl,double* &rr,double* &atch) {
+void ProcessCentersWFN(ifstream &ifil,const int nnu,string* &atlbl,double* &rr,double* &atch) {
    MyMemory::Alloc1DStringArray("atlbl",nnu,atlbl);
    MyMemory::Alloc1DRealArray("rr",3*nnu,rr);
    MyMemory::Alloc1DRealArray("atch",nnu,atch);
@@ -140,7 +140,7 @@ void processCentersWFN(ifstream &ifil,const int nnu,string* &atlbl,double* &rr,d
       ifil.seekg(fepos);
    }
 }
-void processPrimitivesWFN(ifstream &ifil,const int npr,int* &pricen,int* &primty,double* &prexp) {
+void ProcessPrimitivesWFN(ifstream &ifil,const int npr,int* &pricen,int* &primty,double* &prexp) {
    MyMemory::Alloc1DIntArray("pricen",npr,pricen);
    MyMemory::Alloc1DIntArray("primty",npr,primty);
    MyMemory::Alloc1DRealArray("prexp",npr,prexp);
@@ -206,7 +206,7 @@ void processPrimitivesWFN(ifstream &ifil,const int npr,int* &pricen,int* &primty
       }
    }
 }
-void processMolecularOrbitalPropsAndCoefs(ifstream &ifil,const int norb,const int npr
+void ProcessMolecularOrbitalPropsAndCoefs(ifstream &ifil,const int norb,const int npr
                                  ,double* &ocn,double* &moe,double* &moc) {
    MyMemory::Alloc1DRealArray("moc",(norb*npr),moc);
    MyMemory::Alloc1DRealArray("ocn",norb,ocn);
@@ -243,7 +243,7 @@ void processMolecularOrbitalPropsAndCoefs(ifstream &ifil,const int norb,const in
       }
    }
 }
-void getEnergyAndVirial(ifstream &ifil,double &theener,double &thevir) {
+void GetEnergyAndVirial(ifstream &ifil,double &theener,double &thevir) {
    string line;
    getline(ifil,line);
    int pos;

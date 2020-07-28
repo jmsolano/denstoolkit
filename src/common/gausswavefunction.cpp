@@ -226,11 +226,11 @@ bool GaussWaveFunction::ReadFromFileWFN(string inname) {
    }
    tif.seekg(tif.beg);
    nTit=1;
-   processFirstDataStringinWFNFile(tif,title,orbDesc,nMOr,nPri,nNuc);
+   ProcessFirstDataStringinWFNFile(tif,title,orbDesc,nMOr,nPri,nNuc);
    totPri=nPri;
-   processCentersWFN(tif,nNuc,atLbl,R,atCharge);
-   processPrimitivesWFN(tif,nPri,primCent,primType,primExp);
-   processMolecularOrbitalPropsAndCoefs(tif,nMOr,nPri,occN,MOEner,MOCoeff);
+   ProcessCentersWFN(tif,nNuc,atLbl,R,atCharge);
+   ProcessPrimitivesWFN(tif,nPri,primCent,primType,primExp);
+   ProcessMolecularOrbitalPropsAndCoefs(tif,nMOr,nPri,occN,MOEner,MOCoeff);
    string liend;
    getline(tif,liend);
    //cout << "nPri%5: " << (nPri%5) << " len: " << liend.length() << endl;
@@ -243,7 +243,7 @@ bool GaussWaveFunction::ReadFromFileWFN(string inname) {
       cout << "Line: " << liend << endl;
       return false;
    }
-   getEnergyAndVirial(tif,totener,virial);
+   GetEnergyAndVirial(tif,totener,virial);
    AllocAuxArrays();
    CountPrimsPerCenter();
    CalcCab();
@@ -262,16 +262,16 @@ bool GaussWaveFunction::ReadFromFileWFX(string inname) {
 #endif
       return false;
    }
-   getTitleFromFileWFX(tif,nTit,title);
-   getKeyWordsFromFileWFX(tif,orbDesc);
+   GetTitleFromFileWFX(tif,nTit,title);
+   GetKeyWordsFromFileWFX(tif,orbDesc);
    if (orbDesc.substr(0,3)!="GTO") {
       cout << "Error: not supported wave function. Keyword: " << orbDesc << endl;
    }
-   getNofNucleiFromFileWFX(tif,nNuc);
-   getNofMolOrbFromFileWFX(tif,nMOr);
-   getNofPrimFromFileWFX(tif,nPri);
+   GetNofNucleiFromFileWFX(tif,nNuc);
+   GetNofMolOrbFromFileWFX(tif,nMOr);
+   GetNofPrimFromFileWFX(tif,nPri);
    totPri=nPri;
-   getEDFExistenceFromFileWFX(tif,ihaveEDF);
+   GetEDFExistenceFromFileWFX(tif,ihaveEDF);
    if ( ihaveEDF ) {
       int kk;
       countEDFCentersFromFileWFX(tif,kk);
@@ -281,7 +281,7 @@ bool GaussWaveFunction::ReadFromFileWFX(string inname) {
             << endl;
          return false;
       }
-      getNofEDFPrimFromFileWFX(tif,1,EDFPri); //1: number of times to seek for
+      GetNofEDFPrimFromFileWFX(tif,1,EDFPri); //1: number of times to seek for
                      //EDF primitives. 1 is used for combined edfs, otherwise,
                      //it should be the number obtained wiht 
                      //countEDFCentersFromFileWFX.
@@ -299,23 +299,23 @@ bool GaussWaveFunction::ReadFromFileWFX(string inname) {
                     //number of core electrons when EDF information is present
    MyMemory::Alloc1DRealArray("MOEner",nMOr,MOEner);
    AllocAuxArrays();
-   getAtLabelsFromFileWFX(tif,nNuc,atLbl);
-   getNucCartCoordsFromFileWFX(tif,nNuc,R);
-   getAtChargesFromFileWFX(tif,nNuc,atCharge);
-   getPrimCentersFromFileWFX(tif,nPri,primCent);
-   getPrimTypesFromFileWFX(tif,nPri,primType);
-   getPrimExponentsFromFileWFX(tif,nPri,primExp);
-   getMolecOrbOccNumsFromFileWFX(tif,nMOr,occN);
-   getMolecOrbEnergiesFromFileWFX(tif,nMOr,MOEner);
-   getMolecOrbCoefficientsFromFileWFX(tif,nMOr,nPri,MOCoeff);
-   getTotEnerAndVirialFromFileWFX(tif,totener,virial);
+   GetAtLabelsFromFileWFX(tif,nNuc,atLbl);
+   GetNucCartCoordsFromFileWFX(tif,nNuc,R);
+   GetAtChargesFromFileWFX(tif,nNuc,atCharge);
+   GetPrimCentersFromFileWFX(tif,nPri,primCent);
+   GetPrimTypesFromFileWFX(tif,nPri,primType);
+   GetPrimExponentsFromFileWFX(tif,nPri,primExp);
+   GetMolecOrbOccNumsFromFileWFX(tif,nMOr,occN);
+   GetMolecOrbEnergiesFromFileWFX(tif,nMOr,MOEner);
+   GetMolecOrbCoefficientsFromFileWFX(tif,nMOr,nPri,MOCoeff);
+   GetTotEnerAndVirialFromFileWFX(tif,totener,virial);
    if ( ihaveEDF ) {
-      getEDFPrimCentersFromFileWFX(tif,nPri,totPri,primCent);
-      getEDFPrimTypesFromFileWFX(tif,nPri,totPri,primType);
-      getEDFPrimExponentsFromFileWFX(tif,nPri,totPri,primExp);
-      getNofCoreElectronsFromFileWFX(tif,coreElec);
+      GetEDFPrimCentersFromFileWFX(tif,nPri,totPri,primCent);
+      GetEDFPrimTypesFromFileWFX(tif,nPri,totPri,primType);
+      GetEDFPrimExponentsFromFileWFX(tif,nPri,totPri,primExp);
+      GetNofCoreElectronsFromFileWFX(tif,coreElec);
       occN[nMOr]=1.0e0;
-      getEDFPrimCoefficientsFromFileWFX(tif,EDFPri,EDFCoeff);
+      GetEDFPrimCoefficientsFromFileWFX(tif,EDFPri,EDFCoeff);
    }
    CountPrimsPerCenter();
    CalcCab();

@@ -69,7 +69,7 @@ static const string wfxKeysTab[MAXWFXKEYSDEF]= {
    ,"EDF Primitive Exponents","EDF Primitive Coefficients"
 };
 
-string getWfxKey(const int ii) {
+string GetWfxKey(const int ii) {
 #if DEBUG
    if (ii>=MAXWFXKEYSDEF) {
       cout << "The maximum number of defined keys is " << MAXWFXKEYSDEF << endl
@@ -79,7 +79,7 @@ string getWfxKey(const int ii) {
 #endif
    return wfxKeysTab[ii];
 }
-void getPosInFile(ifstream &ifil,bool frombeg,string idkey,int & ist,int &ien) {
+void GetPosInFile(ifstream &ifil,bool frombeg,string idkey,int & ist,int &ien) {
    int orpos,pos;
    string line,tk;
    orpos=ifil.tellg();
@@ -131,7 +131,7 @@ void getPosInFile(ifstream &ifil,bool frombeg,string idkey,int & ist,int &ien) {
    }
    // */
 }
-int getInitPosOfKeyInFile(ifstream &ifil,bool frombeg,string idkey) {
+int GetInitPosOfKeyInFile(ifstream &ifil,bool frombeg,string idkey) {
    int orpos,pos;
    string line,tk;
    orpos=ifil.tellg();
@@ -164,10 +164,10 @@ int getInitPosOfKeyInFile(ifstream &ifil,bool frombeg,string idkey) {
          return pos;
       }
    }
-   //cout << "Not found getInitPosOfKeyInFile..." << endl;
+   //cout << "Not found GetInitPosOfKeyInFile..." << endl;
    return -1; //if it does not return within the loop, there is an error...
 }
-int getFinPosOfKeyInFile(ifstream &ifil,bool frombeg,string idkey) {
+int GetFinPosOfKeyInFile(ifstream &ifil,bool frombeg,string idkey) {
    int orpos,pos;
    string line,tk;
    orpos=ifil.tellg();
@@ -202,11 +202,11 @@ int getFinPosOfKeyInFile(ifstream &ifil,bool frombeg,string idkey) {
    }
    return -1; //if the function does not return before, there is an error...
 }
-bool getTitleFromFileWFX(ifstream &ifil,int &nt,string* &tit) {
+bool GetTitleFromFileWFX(ifstream &ifil,int &nt,string* &tit) {
    ifil.seekg(ifil.beg);
    int ipos,fpos;
-   ipos=getInitPosOfKeyInFile(ifil,true,string("Title"));
-   fpos=getFinPosOfKeyInFile(ifil,false,string("Title"));
+   ipos=GetInitPosOfKeyInFile(ifil,true,string("Title"));
+   fpos=GetFinPosOfKeyInFile(ifil,false,string("Title"));
    ifil.seekg(ipos);
    nt=0;
    string line;
@@ -223,11 +223,11 @@ bool getTitleFromFileWFX(ifstream &ifil,int &nt,string* &tit) {
    }
    return true;
 }
-bool getKeyWordsFromFileWFX(ifstream &ifil,string &kw) {
+bool GetKeyWordsFromFileWFX(ifstream &ifil,string &kw) {
    ifil.seekg(ifil.beg);
    int ipos,fpos;
-   ipos=getInitPosOfKeyInFile(ifil,true,string("Keywords"));
-   fpos=getFinPosOfKeyInFile(ifil,false,string("Keywords"));
+   ipos=GetInitPosOfKeyInFile(ifil,true,string("Keywords"));
+   fpos=GetFinPosOfKeyInFile(ifil,false,string("Keywords"));
    ifil.seekg(ipos);
    string line;
    while (ifil.tellg()<(fpos-12)) {//12 is the length of the string "\n</Keywords>"
@@ -239,33 +239,33 @@ bool getKeyWordsFromFileWFX(ifstream &ifil,string &kw) {
    //cout << kw;
    return true;
 }
-void getNetCharge(ifstream &ifil,int &nc) {
-   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Net Charge")));
+void GetNetCharge(ifstream &ifil,int &nc) {
+   ifil.seekg(GetInitPosOfKeyInFile(ifil,true,string("Net Charge")));
    ifil >> nc;
    return;
 }
-void getNofNucleiFromFileWFX(ifstream &ifil, int & nnuc) {
-   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Number of Nuclei")));
+void GetNofNucleiFromFileWFX(ifstream &ifil, int & nnuc) {
+   ifil.seekg(GetInitPosOfKeyInFile(ifil,true,string("Number of Nuclei")));
    ifil >> nnuc;
    return;
 }
-void getNofElectronsFromFileWFX(ifstream &ifil, int & nel) {
-   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Number of Electrons")));
+void GetNofElectronsFromFileWFX(ifstream &ifil, int & nel) {
+   ifil.seekg(GetInitPosOfKeyInFile(ifil,true,string("Number of Electrons")));
    ifil >> nel;
    return;
 }
-void getNofCoreElectronsFromFileWFX(ifstream &ifil, int & ncel) {
-   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Number of Core Electrons")));
+void GetNofCoreElectronsFromFileWFX(ifstream &ifil, int & ncel) {
+   ifil.seekg(GetInitPosOfKeyInFile(ifil,true,string("Number of Core Electrons")));
    ifil >> ncel;
    return;
 }
-void getNofMolOrbFromFileWFX(ifstream &ifil,int &nmo) {
-   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Number of Occupied Molecular Orbitals")));
+void GetNofMolOrbFromFileWFX(ifstream &ifil,int &nmo) {
+   ifil.seekg(GetInitPosOfKeyInFile(ifil,true,string("Number of Occupied Molecular Orbitals")));
    ifil >> nmo;
 }
-void getNucCartCoordsFromFileWFX(ifstream &ifil,const int nn,double* &rr) {
+void GetNucCartCoordsFromFileWFX(ifstream &ifil,const int nn,double* &rr) {
    if (!rr) {MyMemory::Alloc1DRealArray(string("NuclCartCoords"),3*nn,rr);}
-   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Nuclear Cartesian Coordinates")));
+   ifil.seekg(GetInitPosOfKeyInFile(ifil,true,string("Nuclear Cartesian Coordinates")));
    int ind=0;
    for (int i=0; i<nn; i++) {
       ind=3*i;
@@ -275,9 +275,9 @@ void getNucCartCoordsFromFileWFX(ifstream &ifil,const int nn,double* &rr) {
    }
    return;
 }
-void getNucCartCoordsFromFileWFX(ifstream &ifil,const int nn,double** &rr3) {
+void GetNucCartCoordsFromFileWFX(ifstream &ifil,const int nn,double** &rr3) {
    if (!rr3) {MyMemory::Alloc2DRealArray(string("NuclCartCoords"),nn,3,rr3);}
-   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Nuclear Cartesian Coordinates")));
+   ifil.seekg(GetInitPosOfKeyInFile(ifil,true,string("Nuclear Cartesian Coordinates")));
    for (int i=0; i<nn; i++) {
       ifil >> rr3[i][0];
       ifil >> rr3[i][1];
@@ -285,18 +285,18 @@ void getNucCartCoordsFromFileWFX(ifstream &ifil,const int nn,double** &rr3) {
    }
    return;
 }
-void getNofPrimFromFileWFX(ifstream &ifil,int &npri) {
-   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Number of Primitives")));
+void GetNofPrimFromFileWFX(ifstream &ifil,int &npri) {
+   ifil.seekg(GetInitPosOfKeyInFile(ifil,true,string("Number of Primitives")));
    ifil >> npri;
    return;
 }
-void getNofEDFPrimFromFileWFX(ifstream &ifil,const int nedfc,int &nedfprim) {
+void GetNofEDFPrimFromFileWFX(ifstream &ifil,const int nedfc,int &nedfprim) {
    int nc=0;
    int totp=0,tmp;
    ifil.seekg(ifil.beg);
    size_t tt;
    while ( nedfc>nc ) {
-      if ( (tt=getInitPosOfKeyInFile(ifil,false,\
+      if ( (tt=GetInitPosOfKeyInFile(ifil,false,\
                   string("Number of EDF Primitives"))) == string::npos ) {
          cout << "Error: key not found!" << endl;
          break;
@@ -310,26 +310,26 @@ void getNofEDFPrimFromFileWFX(ifstream &ifil,const int nedfc,int &nedfprim) {
    ifil.clear();
    return;
 }
-void getAtLabelsFromFileWFX(ifstream &ifil,const int nn,string* &al) {
+void GetAtLabelsFromFileWFX(ifstream &ifil,const int nn,string* &al) {
    if (!al) {MyMemory::Alloc1DStringArray(string("al"),nn,al);}
-   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Nuclear Names")));
+   ifil.seekg(GetInitPosOfKeyInFile(ifil,true,string("Nuclear Names")));
    for (int i=0; i<nn; i++) {
       getline(ifil,al[i]);
       StringTools::RemoveSpacesLeftAndRight(al[i]);
    }
    return;
 }
-void getAtChargesFromFileWFX(ifstream &ifil,const int nn,double* &ach) {
+void GetAtChargesFromFileWFX(ifstream &ifil,const int nn,double* &ach) {
    if (!ach) {MyMemory::Alloc1DRealArray(string("ach"),nn,ach);}
    //Reading atomic charges has a conflict with wfx having pseudopotentials.
-   //ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Nuclear Charges")));
-   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Atomic Numbers")));
+   //ifil.seekg(GetInitPosOfKeyInFile(ifil,true,string("Nuclear Charges")));
+   ifil.seekg(GetInitPosOfKeyInFile(ifil,true,string("Atomic Numbers")));
    for (int i=0; i<nn; i++) {ifil >> ach[i];}
    return;
 }
-int getAtNumbersFromFileWFX(ifstream &ifil,const int nn,int* &anu) {
+int GetAtNumbersFromFileWFX(ifstream &ifil,const int nn,int* &anu) {
    if(!anu){MyMemory::Alloc1DIntArray(string("anu"),nn,anu);}
-   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Atomic Numbers")));
+   ifil.seekg(GetInitPosOfKeyInFile(ifil,true,string("Atomic Numbers")));
    int nprot=0;
    for (int i=0; i<nn; i++) {
       ifil >> anu[i];
@@ -338,92 +338,92 @@ int getAtNumbersFromFileWFX(ifstream &ifil,const int nn,int* &anu) {
    }
    return nprot;
 }
-void getPrimCentersFromFileWFX(ifstream &ifil,const int npr,int* &pc) {
+void GetPrimCentersFromFileWFX(ifstream &ifil,const int npr,int* &pc) {
    if (!pc) {MyMemory::Alloc1DIntArray(string("pc"),npr,pc);}
-   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Primitive Centers")));
+   ifil.seekg(GetInitPosOfKeyInFile(ifil,true,string("Primitive Centers")));
    for (int i=0; i<npr; i++) {
       ifil >> pc[i];
       pc[i]--;
    }
    return;
 }
-void getEDFPrimCentersFromFileWFX(ifstream &ifil,const int npr,\
+void GetEDFPrimCentersFromFileWFX(ifstream &ifil,const int npr,\
       const int ntot,int* &pc) {
    if (pc==NULL) {MyMemory::Alloc1DIntArray(string("pc"),ntot,pc);}
-   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("EDF Primitive Centers")));
+   ifil.seekg(GetInitPosOfKeyInFile(ifil,true,string("EDF Primitive Centers")));
    for (int i=npr; i<ntot; ++i) {
       ifil >> pc[i];
       pc[i]--;
    }
    return;
 }
-void getPrimTypesFromFileWFX(ifstream &ifil,const int npr,int* &pt) {
+void GetPrimTypesFromFileWFX(ifstream &ifil,const int npr,int* &pt) {
    if (!pt) {MyMemory::Alloc1DIntArray(string("pt"),npr,pt);}
-   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Primitive Types")));
+   ifil.seekg(GetInitPosOfKeyInFile(ifil,true,string("Primitive Types")));
    for (int i=0; i<npr; i++) {
       ifil >> pt[i];
       pt[i]--;
    }
    return;
 }
-void getEDFPrimTypesFromFileWFX(ifstream &ifil,const int npr,\
+void GetEDFPrimTypesFromFileWFX(ifstream &ifil,const int npr,\
       const int ntot,int* &pt) {
    if (pt==NULL) {MyMemory::Alloc1DIntArray(string("pt"),ntot,pt);}
-   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("EDF Primitive Types")));
+   ifil.seekg(GetInitPosOfKeyInFile(ifil,true,string("EDF Primitive Types")));
    for (int i=npr; i<ntot; ++i) {
       ifil >> pt[i];
       pt[i]--;
    }
    return;
 }
-void getPrimExponentsFromFileWFX(ifstream &ifil,const int npr,double* &pex) {
+void GetPrimExponentsFromFileWFX(ifstream &ifil,const int npr,double* &pex) {
    if (!pex) {MyMemory::Alloc1DRealArray(string("pex"),npr,pex);}
-   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Primitive Exponents")));
+   ifil.seekg(GetInitPosOfKeyInFile(ifil,true,string("Primitive Exponents")));
    for (int i=0; i<npr; i++) {ifil >> pex[i];}
    return;
 }
-void getEDFPrimExponentsFromFileWFX(ifstream &ifil,const int npr,\
+void GetEDFPrimExponentsFromFileWFX(ifstream &ifil,const int npr,\
       const int ntot,double* &pex) {
    if (pex==NULL) {MyMemory::Alloc1DRealArray(string("pex"),ntot,pex);}
-   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("EDF Primitive Exponents")));
+   ifil.seekg(GetInitPosOfKeyInFile(ifil,true,string("EDF Primitive Exponents")));
    for (int i=npr; i<ntot; ++i) {ifil >> pex[i];}
    return;
 }
-void getMolecOrbOccNumsFromFileWFX(ifstream &ifil,const int nmo,double* &ocnu) {
+void GetMolecOrbOccNumsFromFileWFX(ifstream &ifil,const int nmo,double* &ocnu) {
    if (!ocnu) {MyMemory::Alloc1DRealArray(string("ocnu"),nmo,ocnu);}
-   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Molecular Orbital Occupation Numbers")));
+   ifil.seekg(GetInitPosOfKeyInFile(ifil,true,string("Molecular Orbital Occupation Numbers")));
    for (int i=0; i<nmo; i++) {ifil >> ocnu[i];}
    return;
 }
-void getMolecOrbEnergiesFromFileWFX(ifstream &ifil,const int nmo,double* &orben) {
+void GetMolecOrbEnergiesFromFileWFX(ifstream &ifil,const int nmo,double* &orben) {
    if (!orben) {MyMemory::Alloc1DRealArray(string("orben"),nmo,orben);}
-   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Molecular Orbital Energies")));
+   ifil.seekg(GetInitPosOfKeyInFile(ifil,true,string("Molecular Orbital Energies")));
    for (int i=0; i<nmo; i++) {ifil >> orben[i];}
    return;
 }
-void getMolecOrbCoefficientsFromFileWFX(ifstream &ifil,const int nmo,const int npr,double* &tcf) {
+void GetMolecOrbCoefficientsFromFileWFX(ifstream &ifil,const int nmo,const int npr,double* &tcf) {
    if (!tcf) {MyMemory::Alloc1DRealArray(string("tcf"),(nmo*npr),tcf);}
-   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Molecular Orbital Primitive Coefficients")));
+   ifil.seekg(GetInitPosOfKeyInFile(ifil,true,string("Molecular Orbital Primitive Coefficients")));
    for (int i=0; i<nmo; i++) {
-      ifil.seekg(getFinPosOfKeyInFile(ifil,false,string("MO Number")));
+      ifil.seekg(GetFinPosOfKeyInFile(ifil,false,string("MO Number")));
       for (int j=0; j<npr; j++) {
          ifil >> tcf[npr*i+j];
       }
    }
    return;
 }
-void getEDFPrimCoefficientsFromFileWFX(ifstream &ifil,const int nedfp,\
+void GetEDFPrimCoefficientsFromFileWFX(ifstream &ifil,const int nedfp,\
       double* &edfc) {
    if (edfc==NULL) {MyMemory::Alloc1DRealArray(string("edfc"),nedfp,edfc);}
-   ifil.seekg(getInitPosOfKeyInFile(ifil,true,\
+   ifil.seekg(GetInitPosOfKeyInFile(ifil,true,\
             string("EDF Primitive Coefficients")));
    for (int i=0; i<nedfp; ++i) {ifil >> edfc[i];}
    return;
 }
-void getTotEnerAndVirialFromFileWFX(ifstream &ifil,double &tote,double &vir) {
-   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Energy = T + Vne + Vee + Vnn")));
+void GetTotEnerAndVirialFromFileWFX(ifstream &ifil,double &tote,double &vir) {
+   ifil.seekg(GetInitPosOfKeyInFile(ifil,true,string("Energy = T + Vne + Vee + Vnn")));
    ifil >> tote;
-   ifil.seekg(getInitPosOfKeyInFile(ifil,true,string("Virial Ratio (-V/T)")));
+   ifil.seekg(GetInitPosOfKeyInFile(ifil,true,string("Virial Ratio (-V/T)")));
    ifil >> vir;
    return;
 }
@@ -441,7 +441,7 @@ void countEDFCentersFromFileWFX(ifstream &ifil,int &nedfc) {
    ifil.seekg(orpos);
    ifil.clear();
 }
-void getEDFExistenceFromFileWFX(ifstream &ifil,bool &ihaveEDF) {
+void GetEDFExistenceFromFileWFX(ifstream &ifil,bool &ihaveEDF) {
    string line;
    size_t orpos=ifil.tellg();
    ifil.seekg(ifil.beg);

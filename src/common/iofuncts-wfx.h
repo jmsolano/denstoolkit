@@ -49,40 +49,40 @@ using std::ofstream;
 #define DEBUG 0
 #endif
 
-string getWfxKey(const int ii);
-void getPosInFile(ifstream &ifil,bool frombeg,string idkey,int & ist,int &ien);
-int getInitPosOfKeyInFile(ifstream &ifil,bool frombeg,string idkey);
-int getFinPosOfKeyInFile(ifstream &ifil,bool frombeg,string idkey);
-bool getTitleFromFileWFX(ifstream &ifil,int &nt,string* &tit);
-bool getKeyWordsFromFileWFX(ifstream &ifil,string &kw);
-void getNetCharge(ifstream &ifil,int &nc);
-void getNofNucleiFromFileWFX(ifstream &ifil, int &nnuc);
-void getNofPrimFromFileWFX(ifstream &ifil,int &npri);
-void getNofEDFPrimFromFileWFX(ifstream &ifil,const int nedfc,int &nedfprim);
-void getNofMolOrbFromFileWFX(ifstream &ifil,int &nmo);
-void getNucCartCoordsFromFileWFX(ifstream &ifil,const int nn,double* &rr);
-void getNucCartCoordsFromFileWFX(ifstream &ifil,const int nn,double** &rr3);
-void getAtLabelsFromFileWFX(ifstream &ifil,const int nn,string* &al);
-void getAtChargesFromFileWFX(ifstream &ifil,const int nn,double* &ach);
-int getAtNumbersFromFileWFX(ifstream &ifil,const int nn,int* &anu);
-void getNofElectronsFromFileWFX(ifstream &ifil,int &nel);
-void getNofCoreElectronsFromFileWFX(ifstream &ifil,int &ncel);
-void getPrimCentersFromFileWFX(ifstream &ifil,const int npr,int* &pc);
-void getEDFPrimCentersFromFileWFX(ifstream &ifil,const int npr,\
+string GetWfxKey(const int ii);
+void GetPosInFile(ifstream &ifil,bool frombeg,string idkey,int & ist,int &ien);
+int GetInitPosOfKeyInFile(ifstream &ifil,bool frombeg,string idkey);
+int GetFinPosOfKeyInFile(ifstream &ifil,bool frombeg,string idkey);
+bool GetTitleFromFileWFX(ifstream &ifil,int &nt,string* &tit);
+bool GetKeyWordsFromFileWFX(ifstream &ifil,string &kw);
+void GetNetCharge(ifstream &ifil,int &nc);
+void GetNofNucleiFromFileWFX(ifstream &ifil, int &nnuc);
+void GetNofPrimFromFileWFX(ifstream &ifil,int &npri);
+void GetNofEDFPrimFromFileWFX(ifstream &ifil,const int nedfc,int &nedfprim);
+void GetNofMolOrbFromFileWFX(ifstream &ifil,int &nmo);
+void GetNucCartCoordsFromFileWFX(ifstream &ifil,const int nn,double* &rr);
+void GetNucCartCoordsFromFileWFX(ifstream &ifil,const int nn,double** &rr3);
+void GetAtLabelsFromFileWFX(ifstream &ifil,const int nn,string* &al);
+void GetAtChargesFromFileWFX(ifstream &ifil,const int nn,double* &ach);
+int GetAtNumbersFromFileWFX(ifstream &ifil,const int nn,int* &anu);
+void GetNofElectronsFromFileWFX(ifstream &ifil,int &nel);
+void GetNofCoreElectronsFromFileWFX(ifstream &ifil,int &ncel);
+void GetPrimCentersFromFileWFX(ifstream &ifil,const int npr,int* &pc);
+void GetEDFPrimCentersFromFileWFX(ifstream &ifil,const int npr,\
       const int ntot,int* &pc);
-void getPrimTypesFromFileWFX(ifstream &ifil,const int npr,int* &pt);
-void getEDFPrimTypesFromFileWFX(ifstream &ifil,const int npr,\
+void GetPrimTypesFromFileWFX(ifstream &ifil,const int npr,int* &pt);
+void GetEDFPrimTypesFromFileWFX(ifstream &ifil,const int npr,\
       const int ntot,int* &pt);
-void getPrimExponentsFromFileWFX(ifstream &ifil,const int npr,double* &pex);
-void getEDFPrimExponentsFromFileWFX(ifstream &ifil,const int npr,\
+void GetPrimExponentsFromFileWFX(ifstream &ifil,const int npr,double* &pex);
+void GetEDFPrimExponentsFromFileWFX(ifstream &ifil,const int npr,\
       const int ntot,double* &pex);
-void getMolecOrbOccNumsFromFileWFX(ifstream &ifil,const int nmo,double* &ocnu);
-void getMolecOrbEnergiesFromFileWFX(ifstream &ifil,const int nmo,double* &orben);
-void getMolecOrbCoefficientsFromFileWFX(ifstream &ifil,const int nmo,const int npr,double* &tcf);
-void getTotEnerAndVirialFromFileWFX(ifstream &ifil,double &tote,double &vir);
+void GetMolecOrbOccNumsFromFileWFX(ifstream &ifil,const int nmo,double* &ocnu);
+void GetMolecOrbEnergiesFromFileWFX(ifstream &ifil,const int nmo,double* &orben);
+void GetMolecOrbCoefficientsFromFileWFX(ifstream &ifil,const int nmo,const int npr,double* &tcf);
+void GetTotEnerAndVirialFromFileWFX(ifstream &ifil,double &tote,double &vir);
 void countEDFCentersFromFileWFX(ifstream &ifil,int &nedfc);
-void getEDFExistenceFromFileWFX(ifstream &ifil,bool &ihaveEDF);
-void getEDFPrimCoefficientsFromFileWFX(ifstream &ifil,\
+void GetEDFExistenceFromFileWFX(ifstream &ifil,bool &ihaveEDF);
+void GetEDFPrimCoefficientsFromFileWFX(ifstream &ifil,\
       const int nedfp,double* &edfc);
 
 #endif//_IOFUNCTS_WFX_H_

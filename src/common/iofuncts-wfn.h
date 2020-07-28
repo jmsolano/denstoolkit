@@ -50,12 +50,12 @@ using std::ofstream;
 #define DEBUG 0
 #endif
 
-string getTitleFromFileWFN(ifstream &ifil);
-void processFirstDataStringinWFNFile(ifstream &ifil,string* &tit,string & orbdesc,int &nmo,int &npr,int &nnu);
-void processCentersWFN(ifstream &ifil,const int nnu,string* &atlbl,double* &rr,double* &atch);
-void processPrimitivesWFN(ifstream &ifil,const int npr,int* &pricen,int* &primty,double* &prexp);
-void processMolecularOrbitalPropsAndCoefs(ifstream &ifil,const int norb,const int npr
+string GetTitleFromFileWFN(ifstream &ifil);
+void ProcessFirstDataStringinWFNFile(ifstream &ifil,string* &tit,string & orbdesc,int &nmo,int &npr,int &nnu);
+void ProcessCentersWFN(ifstream &ifil,const int nnu,string* &atlbl,double* &rr,double* &atch);
+void ProcessPrimitivesWFN(ifstream &ifil,const int npr,int* &pricen,int* &primty,double* &prexp);
+void ProcessMolecularOrbitalPropsAndCoefs(ifstream &ifil,const int norb,const int npr
                                  ,double* &ocn,double* &moe,double* &moc);
-void getEnergyAndVirial(ifstream &ifil,double &theener,double &thevir);
+void GetEnergyAndVirial(ifstream &ifil,double &theener,double &thevir);
 #endif//_IOFUNCTS_WFN_H_
 
