@@ -55,6 +55,7 @@ public:
    static void WriteV3Components(ofstream &ofil,const std::string &s,const double (&v)[3]);
 /* ************************************************************************** */
    static void ReplaceExtensionOfFileName(string &orig,const string thenewext);
+   static void RemoveExtensionFromFileName(string &str);
 /* ************************************************************************** */
    static void InsertAtEndOfFileName(string &orig,const string str2insrt);
 /* ************************************************************************** */

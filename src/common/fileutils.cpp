@@ -283,6 +283,10 @@ void FileUtils::ReplaceExtensionOfFileName(string &orig,\
    size_t pos=orig.find_last_of('.')+1;
    orig=orig.substr(0,pos)+thenewext;
 }
+void FileUtils::RemoveExtensionFromFileName(string &str) {
+   size_t pos=str.find_last_of('.');
+   if ( pos!=std::string::npos ) { str=str.substr(0,pos); }
+}
 void FileUtils::InsertAtEndOfFileName(string &orig,const string str2insrt) {
    size_t pos=orig.find_last_of('.');
    orig.insert(pos,str2insrt);

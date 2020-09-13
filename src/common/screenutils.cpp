@@ -149,7 +149,15 @@ void ScreenUtils::DisplayErrorMessage(const std::string &s) {
 }
 void ScreenUtils::DisplayErrorMessage(const char* word) {
    DisplayErrorMessage(std::string(word));
-   return;
+}
+void ScreenUtils::DisplayErrorFileNotOpen(const std::string &s) {
+   std::string msg="The file '";
+   msg+=s;
+   msg+="' could not be opened!";
+   DisplayErrorMessage(msg);
+}
+void ScreenUtils::DisplayErrorFileNotOpen(const char* word) {
+   return DisplayErrorFileNotOpen(std::string(word));
 }
 void ScreenUtils::DisplayWarningMessage(const std::string &s) {
    SetScrYellowBoldFont();
