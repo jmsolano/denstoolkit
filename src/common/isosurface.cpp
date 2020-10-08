@@ -3,15 +3,28 @@
 using std::cout;
 using std::endl;
 using std::cerr;
+#include <memory>
+using std::shared_ptr;
+#include <algorithm>
 #include "isosurface.h"
 #include "povraytools.h"
 #include "screenutils.h"
+#include "palette.h"
+#include "colorutils.h"
+
+#ifndef BIGNUMBER4MINANDMAX
+#define BIGNUMBER4MINANDMAX 1.0e0+100
+#endif
 
 Isosurface::Isosurface() {
    triangles.clear();
+   prop2map.clear();
    isovalue=0.0e0;
    verbose=false;
+   usecolormap=false;
    SetRGB(0.6,0.6,0.6);
+   pmin=BIGNUMBER4MINANDMAX;
+   pmax=-BIGNUMBER4MINANDMAX;
 }
 Isosurface::~Isosurface() {
    ResetTriangles();
@@ -61,6 +74,44 @@ void Isosurface::ScaleTriangles(vector<double> dx) {
          triangles[i].p[j].z*=dx[2];
       }
    }
+}
+void Isosurface::ComputeCentroids() {
+   centroid.resize(triangles.size());
+   for ( size_t i=0 ; i<centroid.size() ; ++i ) {
+      centroid[i].resize(3);
+      centroid[i][0]=triangles[i].p[0].x;
+      centroid[i][1]=triangles[i].p[0].y;
+      centroid[i][2]=triangles[i].p[0].z;
+      centroid[i][0]+=triangles[i].p[1].x;
+      centroid[i][1]+=triangles[i].p[1].y;
+      centroid[i][2]+=triangles[i].p[1].z;
+      centroid[i][0]+=triangles[i].p[2].x;
+      centroid[i][1]+=triangles[i].p[2].y;
+      centroid[i][2]+=triangles[i].p[2].z;
+   }
+   double oo3=1.0e0/3.0e0;
+   for ( size_t i=0 ; i<centroid.size() ; ++i ) {
+      centroid[i][0]*=oo3;
+      centroid[i][1]*=oo3;
+      centroid[i][2]*=oo3;
+   }
+   usecolormap=true;
+}
+bool Isosurface::SetProperty2Map(const vector<double> &p) {
+   if ( p.size()!=triangles.size() ) {
+      ScreenUtils::DisplayErrorMessage("Sizes of triangles and prop2map are different!");
+      cout << __FILE__ << ", line: " << __LINE__ << '\n';
+      usecolormap=false;
+      return false;
+   }
+   prop2map=p;
+   SearchMinAndMaxProp2Map();
+   usecolormap=true;
+   return true;
+}
+void Isosurface::SearchMinAndMaxProp2Map() {
+   pmin=(*std::min_element(prop2map.begin(),prop2map.end()));
+   pmax=(*std::max_element(prop2map.begin(),prop2map.end()));
 }
 
 
@@ -122,6 +173,46 @@ bool HelpersIsosurface::AddIsosurfacePOV(ofstream &ofil,Isosurface &iso,int usrn
                t->p[1].x,t->p[1].y,t->p[1].z,
                t->p[2].x,t->p[2].y,t->p[2].z,
                iso.rgb[0],iso.rgb[1],iso.rgb[2]);
+      }
+   }
+   thetabs=HelpersPOVRay::IndTabsStr(--indlev);
+   ofil << thetabs << "}" << endl;
+   return true;
+}
+bool HelpersIsosurface::AddIsosurfacePOV(ofstream &ofil,Isosurface &iso,\
+      shared_ptr<Palette> pal,int usrntabs) {
+   if ( !iso.UseColorMap() ) { return AddIsosurfacePOV(ofil,iso,usrntabs); }
+   int indlev=usrntabs;
+   string thetabs=HelpersPOVRay::IndTabsStr(indlev++);
+   ofil << thetabs << "union {" << endl;
+   PolygonizeMarchingCubes::TRIANGLE* t;
+   if ( pal==nullptr ) { pal=std::make_shared<Palette>(); }
+   pal->SetBlues();
+   double pmin=iso.MinP2Map(),pmax=iso.MaxP2Map();
+   double oodeltatimes255=255.0e0/(pmax-pmin);
+   double tmp,r,g,b;
+   size_t pos;
+   for ( size_t i=0 ; i<iso.TrianglesSize() ; ++i ) {
+      tmp=iso.Property2Map(i);
+      if ( tmp<pmin ) { tmp=pmin; }
+      if ( tmp>pmax ) { tmp=pmax; }
+      tmp*=oodeltatimes255;
+      if ( tmp>=0 ) {
+         pos=size_t(tmp);
+      } else {
+         ScreenUtils::DisplayWarningMessage("tmp<0!");
+         cout << __FILE__ << ", line: " << __LINE__ << '\n';
+         pos=0;
+      }
+      pal->GetRGB(pos,r,g,b);
+      //cout << pos << ": " << r << " " << g << " " << b << '\n';
+      for ( size_t j=0 ; j<3 ; ++j ) {
+         t=iso.GetTrianglePointer(i);
+         HelpersPOVRay::WriteTriangle(ofil,indlev,\
+               t->p[0].x,t->p[0].y,t->p[0].z,
+               t->p[1].x,t->p[1].y,t->p[1].z,
+               t->p[2].x,t->p[2].y,t->p[2].z,
+               r,g,b);
       }
    }
    thetabs=HelpersPOVRay::IndTabsStr(--indlev);
