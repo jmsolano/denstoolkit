@@ -522,6 +522,7 @@ public:
    /** This function returns the Reduced Density Gradient at the point (x,y,z).
     * See the dtk-manual for more details. */
    double EvalReducedDensityGradient(double x,double y,double z);
+   void EvalGradReducedDensityGradient(double x,double y,double z,double (&gs)[3]);
    /** This function computes the Region of Slow Electron index at the point
     * (x,y,z). See the dtk-manual for more details. */
    double EvalRoSE(double x,double y,double z);

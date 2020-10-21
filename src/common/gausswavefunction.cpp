@@ -5122,6 +5122,21 @@ double GaussWaveFunction::EvalReducedDensityGradient(double x,double y,double z)
    if ( rho<1.0e-10 ) {rho=1.0e-10;}
    return (cc*sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2])/pow(rho,fouo3));
 }
+void GaussWaveFunction::EvalGradReducedDensityGradient(double x,double y,double z,double (&gs)[3]) {
+   static const double cc=0.161620459673995481331661e0; /* $(2(3\pi^2)^{1/3})^{-1}$  */
+   static const double fouo3=4.0e0/3.0e0;
+   double rho,g[3],h[3][3];
+   EvalHessian(x,y,z,rho,g,h);
+   if ( rho<1.0e-10 ) {rho=1.0e-10;}
+   double oorho=1.0e0/rho;
+   double corho4o3=cc/pow(rho,fouo3);
+   double maggr=sqrt((g[0]*g[0])+(g[1]*g[1])+(g[2]*g[2]));
+   double oomaggr=1.0e0/maggr;
+   for ( int i=0 ; i<3 ; ++i ) {
+      gs[i]=((g[0]*h[i][0]+g[1]*h[i][1]+g[2]*h[i][2])*oomaggr)-fouo3*(maggr*oorho)*g[i];
+      g[i]*=corho4o3;
+   }
+}
 double GaussWaveFunction::EvalRoSE(double x,double y,double z) {
    static const double cc=2.87123400018819181594250e0; /* (3/10)(3\pi^2)^{2/3}  */
    static const double fivo3=5.0e0/3.0e0;
