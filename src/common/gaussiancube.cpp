@@ -15,6 +15,7 @@ GaussianCube::GaussianCube() {
    for ( size_t i=0 ; i<3 ; ++i ) { dx[i].resize(3); }
    nx=ny=nz=0;
    useBohrUnits=true;
+   cubeLoaded=false;
    data.clear();
 }
 GaussianCube::GaussianCube(const string &cubname) : GaussianCube() {
@@ -23,38 +24,45 @@ GaussianCube::GaussianCube(const string &cubname) : GaussianCube() {
             string("' has no *cub or *cube extension."));
    }
    ifstream ifil(cubname.c_str());
-   mol.ReadFromFile(ifil); //Recall this function sets buffer pos=0 (rewind file) after reading molecule's info.
-   string tmp;
-   for ( size_t i=0 ; i<2 ; ++i ) { std::getline(ifil,tmp); }
-   int itmp;
-   ifil >> itmp;
-   for ( size_t i=0 ; i<3 ; ++i ) { ifil >> x0[i]; }
-   ifil >> itmp;
-   nx=(itmp >= 0 ? itmp : -itmp);
-   if ( itmp<0 ) { useBohrUnits=false; }
-   for ( size_t i=0 ; i<3 ; ++i ) { ifil >> dx[0][i]; }
-   ifil >> itmp;
-   ny=(itmp >= 0 ? itmp : -itmp);
-   if ( itmp<0 ) { useBohrUnits=false; }
-   for ( size_t i=0 ; i<3 ; ++i ) { ifil >> dx[1][i]; }
-   ifil >> itmp;;
-   nz=(itmp >= 0 ? itmp : -itmp);
-   if ( itmp<0 ) { useBohrUnits=false; }
-   for ( size_t i=0 ; i<3 ; ++i ) { ifil >> dx[2][i]; }
-   nyz=ny*nz;
-   if ( !useBohrUnits ) {
-      ScreenUtils::DisplayWarningMessage("negative cube, see Paul Bourke webpage about cube format.");
-   }
-   for ( size_t i=0 ; i<=mol.Size() ; ++i ) { //required to read an empty line...
-      std::getline(ifil,tmp);
-   }
-   data.resize(nx*ny*nz);
-   for ( size_t i=0 ; i<nx ; ++i ) {
-      for ( size_t j=0 ; j<ny ; ++j ) {
-         for ( size_t k=0 ; k<nz ; ++k ) { ifil >> data[i*nyz+j*nz+k]; }
+   if ( !ifil.good() ) {
+      ScreenUtils::DisplayErrorFileNotOpen(cubname);
+      cout << __FILE__ << ", line: " << __LINE__ << '\n';
+      ifil.close();
+   } else {
+      mol.ReadFromFile(ifil); //Recall this function sets buffer pos=0 (rewind file) after reading molecule's info.
+      string tmp;
+      for ( size_t i=0 ; i<2 ; ++i ) { std::getline(ifil,tmp); }
+      int itmp;
+      ifil >> itmp;
+      for ( size_t i=0 ; i<3 ; ++i ) { ifil >> x0[i]; }
+      ifil >> itmp;
+      nx=(itmp >= 0 ? itmp : -itmp);
+      if ( itmp<0 ) { useBohrUnits=false; }
+      for ( size_t i=0 ; i<3 ; ++i ) { ifil >> dx[0][i]; }
+      ifil >> itmp;
+      ny=(itmp >= 0 ? itmp : -itmp);
+      if ( itmp<0 ) { useBohrUnits=false; }
+      for ( size_t i=0 ; i<3 ; ++i ) { ifil >> dx[1][i]; }
+      ifil >> itmp;;
+      nz=(itmp >= 0 ? itmp : -itmp);
+      if ( itmp<0 ) { useBohrUnits=false; }
+      for ( size_t i=0 ; i<3 ; ++i ) { ifil >> dx[2][i]; }
+      nyz=ny*nz;
+      if ( !useBohrUnits ) {
+         ScreenUtils::DisplayWarningMessage("negative cube, see Paul Bourke webpage about cube format.");
       }
+      for ( size_t i=0 ; i<=mol.Size() ; ++i ) { //required to read an empty line...
+         std::getline(ifil,tmp);
+      }
+      data.resize(nx*ny*nz);
+      for ( size_t i=0 ; i<nx ; ++i ) {
+         for ( size_t j=0 ; j<ny ; ++j ) {
+            for ( size_t k=0 ; k<nz ; ++k ) { ifil >> data[i*nyz+j*nz+k]; }
+         }
+      }
+      ifil.close();
+      cubeLoaded=true;
    }
-   ifil.close();
 }
 GaussianCube::~GaussianCube() {
    data.clear();

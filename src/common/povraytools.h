@@ -5,6 +5,8 @@ using std::ifstream;
 using std::ofstream;
 #include <string>
 using std::string;
+#include <vector>
+using std::vector;
 
 #ifndef SPTSIZEINDENT
 #define SPTSIZEINDENT 2
@@ -48,8 +50,11 @@ class HelpersPOVRay {
 public:
 /* ************************************************************************** */
    static void WriteIndTabs(ofstream &ofil, int nt);
-   static void WriteVector(ofstream &ofil,double xx,double yy, double zz);
-   static void WriteVector(ofstream &ofil,int xx, int yy, int zz);
+   template <class Tp> static inline void WriteVector(ofstream &ofil,Tp xx,Tp yy,Tp zz)
+   {ofil << "< " << xx << ", " << yy << ", " << zz << " >";}
+   //static void WriteVector(ofstream &ofil,double xx,double yy, double zz);
+   //static void WriteVector(ofstream &ofil,int xx,int yy,int zz);
+   //static void WriteVector(ofstream &ofil,size_t xx,size_t yy,size_t zz);
    static string IndTabsStr(int nt);
    static bool WriteSphere(ofstream &ofil,int nt,
          double xx, double yy, double zz, double rr,
@@ -85,6 +90,9 @@ public:
          double x1,double y1,double z1,
          double x2,double y2,double z2,
          double x3,double y3,double z3,
+         double cr,double cg,double cb,const string &pigmentStr="");
+   static bool WriteSmoothTriangle(ofstream &ofil,int nt,\
+         const vector<vector<double> > &v,const vector<vector<double> > &n,
          double cr,double cg,double cb,const string &pigmentStr="");
 /* ************************************************************************** */
 };

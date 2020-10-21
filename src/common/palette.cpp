@@ -23,6 +23,37 @@ void Palette::GetRGB(const size_t pos,\
    g=round(255.0e0*dg);
    b=round(255.0e0*db);
 }
+/* cat the contents of ../expandpalette/SELECTPALFNCT  */
+void Palette::SelectPalette(const string &unm) {
+   if (unm==string("bentcoolwarm")) { SetBentcoolwarm(); }
+   else if (unm==string("blues")) { SetBlues(); }
+   else if (unm==string("bugn")) { SetBugn(); }
+   else if (unm==string("gnbu")) { SetGnbu(); }
+   else if (unm==string("greens")) { SetGreens(); }
+   else if (unm==string("greys")) { SetGreys(); }
+   else if (unm==string("inferno")) { SetInferno(); }
+   else if (unm==string("magma")) { SetMagma(); }
+   else if (unm==string("moreland")) { SetMoreland(); }
+   else if (unm==string("oranges")) { SetOranges(); }
+   else if (unm==string("orrd")) { SetOrrd(); }
+   else if (unm==string("plasma")) { SetPlasma(); }
+   else if (unm==string("pubu")) { SetPubu(); }
+   else if (unm==string("purples")) { SetPurples(); }
+   else if (unm==string("rdbu")) { SetRdbu(); }
+   else if (unm==string("rdylbu")) { SetRdylbu(); }
+   else if (unm==string("rdylgn")) { SetRdylgn(); }
+   else if (unm==string("reds")) { SetReds(); }
+   else if (unm==string("spectral")) { SetSpectral(); }
+   else if (unm==string("viridis")) { SetViridis(); }
+   else if (unm==string("ylgnbu")) { SetYlgnbu(); }
+   else if (unm==string("ylgn")) { SetYlgn(); }
+   else if (unm==string("ylorbr")) { SetYlorbr(); }
+   else if (unm==string("ylorrd")) { SetYlorrd(); }
+   else {
+      cout << "Palette '" << unm << "' does not exist!\nSetting up blues.\n";
+      SetBlues();
+   }
+};
 /* cat the contents of ../expandpalette/VECPALIMPLS (see ../expandpalette/README
  * Remember: palettes are in HSL format.  */
 vector<vector<double> > Palette::bentcoolwarm { { 2.4655333315e+02, 4.9292029225e-01, 5.1978950000e-01 },\

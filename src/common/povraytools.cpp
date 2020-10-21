@@ -151,12 +151,14 @@ void HelpersPOVRay::WriteIndTabs(ofstream &ofil, int nt) {
       for (int j=0; j<SPTSIZEINDENT; j++) {ofil << ' ';}
    }
 }
+/*
 void HelpersPOVRay::WriteVector(ofstream &ofil,double xx,double yy, double zz) {
    ofil << "< " << xx << ", " << yy << ", " << zz << " >";
 }
 void WriteVector(ofstream &ofil,int xx,int yy, int zz) {
    ofil << "< " << xx << ", " << yy << ", " << zz << " >";
 }
+// */
 string HelpersPOVRay::IndTabsStr(int nt) {
    string s="";
    for (int i=0; i<nt; i++) {s.append("  ");}
@@ -358,6 +360,34 @@ bool HelpersPOVRay::WriteTriangle(ofstream &ofil,int nt,\
    WriteVector(ofil,x2,y2,z2);
    ofil << "," << endl << thetabs;
    WriteVector(ofil,x3,y3,z3);
+   ofil << endl << thetabs << "pigment { rgb ";
+   WriteVector(ofil,cr,cg,cb);
+   ofil << (pigmentStr.size()>0 ? (string(" ")+pigmentStr+string(" ")) : " ") << "}" << endl;
+   indlev--; thetabs=IndTabsStr(indlev);
+   ofil << thetabs << "}" << endl;
+   ofil.unsetf(ios::scientific);
+   return true;
+}
+bool HelpersPOVRay::WriteSmoothTriangle(ofstream &ofil,int nt,\
+         const vector<vector<double> > &v,const vector<vector<double> > &n,
+         double cr,double cg,double cb,const string &pigmentStr) {
+   int indlev=nt;
+   string thetabs=IndTabsStr(indlev);
+   ofil << thetabs << "smooth_triangle { " << endl;
+   ++indlev; thetabs=IndTabsStr(indlev);
+   ofil << scientific << setprecision(12);
+   ofil << thetabs;
+   WriteVector(ofil,v[0][0],v[0][1],v[0][2]);
+   ofil << "," << endl << thetabs;
+   WriteVector(ofil,n[0][0],n[0][1],n[0][2]);
+   ofil << "," << endl << thetabs;
+   WriteVector(ofil,v[1][0],v[1][1],v[1][2]);
+   ofil << "," << endl << thetabs;
+   WriteVector(ofil,n[1][0],n[1][1],n[1][2]);
+   ofil << "," << endl << thetabs;
+   WriteVector(ofil,v[2][0],v[2][1],v[2][2]);
+   ofil << "," << endl << thetabs;
+   WriteVector(ofil,n[2][0],n[2][1],n[2][2]);
    ofil << endl << thetabs << "pigment { rgb ";
    WriteVector(ofil,cr,cg,cb);
    ofil << (pigmentStr.size()>0 ? (string(" ")+pigmentStr+string(" ")) : " ") << "}" << endl;

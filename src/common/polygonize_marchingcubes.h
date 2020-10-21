@@ -43,9 +43,11 @@ public:
    of totally below the isovalue.
 */
    int PolygonizeVoxel(GRIDCELL &g,const double iso);
+   int PolygonizeVoxelTetrahedrons(GRIDCELL &g,const double iso);
 /** Returns the point between two points in the same ratio as
    isolevel is between valp1 and valp2.
 */
+   int PolygoniseTri(GRIDCELL g,double iso,TRIANGLE *tri,int v0,int v1,int v2,int v3);
    XYZ VertexInterp(const double isolevel,\
          const XYZ &p1,const XYZ &p2,const double valp1,const double valp2);
    TRIANGLE GetTriangle(size_t idx) {return auxtriangles[idx];}

@@ -2,6 +2,8 @@
 #define _PALETTE_H_
 #include <vector>
 using std::vector;
+#include <string>
+using std::string;
 
 /* ************************************************************************** */
 class Palette {
@@ -14,6 +16,7 @@ public:
       { h=((*pal)[pos][0]); s=((*pal)[pos][1]); l=((*pal)[pos][2]); }
 /* ************************************************************************** */
    Palette();
+   void SelectPalette(const string &unm);
    /* cat the contents of ../expandpalette/SETPALFNCTS (see ../expandpalette/README  */
    void SetBentcoolwarm() { pal=&bentcoolwarm; }
    void SetBlues() { pal=&blues; }
