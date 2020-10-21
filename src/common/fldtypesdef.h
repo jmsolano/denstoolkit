@@ -352,10 +352,10 @@ inline string GetFieldTypeKeyLong(const char prop) {
       case 'v':
          plbl="Virial Potential Energy Density";
          break;
-      case 'Z':
+      case 'z':
          plbl="Non Covalent Interactions - Reduced Density Gradient";
          break;
-      case 'z':
+      case 'Z':
          plbl="Non Covalent Interactions - Density";
          break;
       default:
@@ -424,10 +424,10 @@ inline string GnuplotFieldTitle(const char p2p) {
       case 'v':
          plbl=string("V.P.E.D.");
          break;
-      case 'Z':
+      case 'z':
          plbl=string("NCI -- s");
          break;
-      case 'z':
+      case 'Z':
          plbl=string("NCI -- Rho");
          break;
       default:
