@@ -11,6 +11,7 @@ using std::setprecision;
 
 POVRayConfiguration::POVRayConfiguration() {
    angView=67.5e0;
+   vecAngView[0]=angView; vecAngView[1]=vecAngView[2]=0.0e0;
    skyCam[0]=0.0e0; skyCam[1]=0.0e0; skyCam[2]=1.0e0;
    locCam[0]=0.0e0; locCam[1]=0.0e0; locCam[2]=2.3e0;
    lookAtCam[0]=0.0e0; lookAtCam[1]=0.0e0; lookAtCam[2]=0.0e0;
@@ -71,6 +72,9 @@ void POVRayConfiguration::SetBGColor(double rgbr,double rgbg,double rgbb) {
 void POVRayConfiguration::SetAngView(double av) {
    angView=av;
    return;
+}
+void POVRayConfiguration::SetAngView(double avx,double avy,double avz) {
+   vecAngView[0]=avx; vecAngView[1]=avy; vecAngView[2]=avz;
 }
 void POVRayConfiguration::SetSkyCam(double xx,double yy,double zz) {
    skyCam[0]=xx; skyCam[1]=yy; skyCam[2]=zz;

@@ -39,9 +39,9 @@
 */
 /*
    Adscription at the moment this program is started:
-   University of Guelph,
-   Guelph, Ontario, Canada.
-   May 2013
+   Meritorious Autonomous Unversity of Puebla
+   Puebla, Pue., Mexico
+   2020
  */
 #include <iostream>
 using std::cout;
@@ -142,16 +142,13 @@ int main (int argc, char ** argv) {
       cout << "nciSMax: " << gwf.nciSMax << '\n';
 #endif
    /* Setting the property to be computed */
-
    char prop='z';
 
-   /* Main calculation loop, chooses between different available fields. */
-   
+   /* Computes cube (if requested). */
    if ( !options.skipcube ) {
       cout << "Evaluating and writing " << GetFieldTypeKeyLong(prop) << ")." << '\n' << '\n';
       grid.MakeCube(cubfnam,gwf,NCIS);
    }
-   
    cout << '\n' << "Reduced density gradient cube file: " << cubfnam << '\n';
    
    cout << "Extracting isosurface..." << std::endl;
@@ -177,26 +174,40 @@ int main (int argc, char ** argv) {
    /* At this point the computation has ended. Usually this means no errors ocurred. */
 
    /* Rendering  */
-   if ( options.mkpov ) {
-      cout << "Lambda2 limits in '" << cubfnam << "':\n";
-      cout << "    Lambda2 min: " << iso.MinP2Map() << '\n';
-      cout << "    Lambda2 max: " << iso.MaxP2Map() << '\n';
-      double Lmin=-0.02e0;
-      double Lmax=0.02e0;
-      if ( options.setcolorscalesingle ) {
-         Lmax=std::stod(string(argv[options.setcolorscalesingle]));
-         Lmin=-Lmax;
-      }
-      if ( options.setcolorscaleboth ) {
-         Lmin=std::stod(string(argv[options.setcolorscaleboth]));
-         Lmax=std::stod(string(argv[options.setcolorscaleboth+1]));
-      }
-      cout << "Generating povray file (" << povfnam << ")" << '\n';
-      cout << "Color scale: [" << Lmin << ',' << Lmax << ']' << '\n';
-      iso.SetMinP2Map(Lmin);
-      iso.SetMaxP2Map(Lmax);
-      HelpersNCI::MakePovFile(povfnam,bnw,iso,options.mkpng);
+   cout << "Lambda2 limits in '" << cubfnam << "':\n";
+   cout << "    Lambda2 min: " << iso.MinP2Map() << '\n';
+   cout << "    Lambda2 max: " << iso.MaxP2Map() << '\n';
+   double Lmin=-0.02e0;
+   double Lmax=0.02e0;
+   if ( options.setcolorscalesingle ) {
+      Lmax=std::stod(string(argv[options.setcolorscalesingle]));
+      Lmin=-Lmax;
    }
+   if ( options.setcolorscaleboth ) {
+      Lmin=std::stod(string(argv[options.setcolorscaleboth]));
+      Lmax=std::stod(string(argv[options.setcolorscaleboth+1]));
+   }
+   POVRayConfiguration pvp;
+   double cv[3]={0.0e0,0.0e0,0.0e0};
+   if ( options.setgnpangles ) {
+      cv[0]=std::stod(string(argv[options.setgnpangles]));
+      cv[2]=std::stod(string(argv[options.setgnpangles+1]));
+   }
+   if ( options.setviewangles ) {
+      cv[0]=std::stod(string(argv[options.setviewangles  ]));
+      cv[1]=std::stod(string(argv[options.setviewangles+1]));
+      cv[2]=std::stod(string(argv[options.setviewangles+2]));
+   }
+   pvp.SetAngView(cv[0],cv[1],cv[2]);
+   cout << "Generating povray file (" << povfnam << ")" << '\n';
+   cout << "Color scale: [" << Lmin << ',' << Lmax << ']' << '\n';
+   iso.SetMinP2Map(Lmin);
+   iso.SetMaxP2Map(Lmax);
+   string palname="greens";
+   if ( options.selectpalette ) {
+      palname=argv[options.selectpalette];
+   }
+   HelpersNCI::MakePovFile(povfnam,pvp,bnw,iso,palname,options.mkpng);
 
    /* In principle, everything went OK. Exiting.  */
    ScreenUtils::PrintHappyEnding();

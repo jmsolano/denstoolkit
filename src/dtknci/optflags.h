@@ -76,6 +76,7 @@ public:
    unsigned short int setsmcub,setsmcub1;
    unsigned short int configspecialnci;
    unsigned short int setsisovalue,setcolorscalesingle,setcolorscaleboth;
+   unsigned short int selectpalette,setviewangles,setgnpangles;
    bool mkpov,kppov,mkpng,skipcube;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);

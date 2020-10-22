@@ -84,13 +84,22 @@ void mkFileNames(char ** (&argv), OptionFlags &opts, string &i_fn, string &c_fn,
       exit(EXIT_FAILURE);
    }
 
+   string basename=i_fn;
+   if ( opts.outfname ) {
+      basename=argv[opts.outfname];
+   }
+
    c_fn=i_fn;
    string plbl="NCI"+GetFieldTypeKeyShort('s');
    FileUtils::InsertAtEndOfFileName(c_fn,plbl);
    FileUtils::ReplaceExtensionOfFileName(c_fn,"cub");
 
-   pv_fn=i_fn;
-   FileUtils::ReplaceExtensionOfFileName(pv_fn,"pov");
-   FileUtils::InsertAtEndOfFileName(pv_fn,"NCI");
+   pv_fn=basename;
+   if ( opts.outfname ) {
+      pv_fn+=(string("NCI.pov"));
+   } else {
+      FileUtils::InsertAtEndOfFileName(pv_fn,"NCI");
+      FileUtils::ReplaceExtensionOfFileName(pv_fn,"pov");
+   }
 }
 

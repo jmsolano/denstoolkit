@@ -86,6 +86,7 @@ OptionFlags::OptionFlags() {
    configspecialnci=0;
    setsisovalue=0;
    setcolorscalesingle=setcolorscaleboth=0;
+   selectpalette=setgnpangles=setviewangles=0;
    skipcube=kppov=mkpov=mkpng=false;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
@@ -112,6 +113,16 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    for (int i=1; i<argc; i++){
       if (argv[i][0] == '-'){
          switch (argv[i][1]){
+            case 'a' :
+               if ((i+2)>=argc) {printErrorMsg(argv,'a');}
+               flags.setgnpangles=(++i);
+               i++;
+               break;
+            case 'A' :
+               if ((i+3)>=argc) {printErrorMsg(argv,'A');}
+               flags.setviewangles=(++i);
+               i+=2;
+               break;
             case 'b' :
                flags.setcolorscalesingle=(++i);
                if (i>=argc) {printErrorMsg(argv,'b');}
@@ -130,6 +141,10 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                break;
             case 'k' :
                flags.kppov=true;
+               break;
+            case 'l' :
+               flags.selectpalette=(++i);
+               if (i>=argc) {printErrorMsg(argv,'l');}
                break;
             case 'n' :
                if (i>=argc) {printErrorMsg(argv,'n');}
@@ -213,30 +228,40 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "\nUsage:\n\n\t" << progname << " wf?name [option [value(s)]] ... [option [value(s)]]\n\n";
    ScreenUtils::SetScrNormalFont();
    cout << "Where wf?name is the input wfx(wfn) name, and options can be:\n\n";
+   cout << "  -a aG1 aG2\tSets the gnuplot angles to be aG1 and aG2.\n"
+        << "            \t  Use dtkqdmol to check and set these angles." << '\n';
+   cout << "  -A aX aY aZ\tSets the view angles to be aX, aY, and aZ." << '\n';
    cout << "  -b val    \tSets the color scale to be [-val,val]." << '\n';
    cout << "  -B vMin vMax\tSets the color scale to be [vMin,vMax]." << '\n';
    cout << "  -c        \tSkips the cube calculation. Notice this will assume that the\n"
         << "            \t  cube was previously computed." << '\n';
    cout << "  -k        \tKeeps the pov-ray script (see also option P, below)." << '\n';
+   cout << "  -l palette\tSelects the color scheme 'palette', which can be any of:\n"
+        << "            \t  bentcoolwarm blues bugn gnbu greens greys inferno\n"
+        << "            \t  magma moreland oranges orrd plasma pubu purples rdbu\n"
+        << "            \t  rdylbu rdylgn reds spectral viridis ylgn ylgnbu\n"
+        << "            \t  ylorbr ylorrd" << '\n';
    cout << "  -n  dim   \tSets the number of points per direction for the s-cube" << endl
         << "            \t  to be dim x dim x dim." << endl;
    cout << "  -N nx ny nz\tSets the individual points per direction for the s-cube" << endl
         << "            \t  to be nx x ny x nz." << endl;
-   cout << "  -o outname\tSets the output file name." << endl;
+   cout << "  -o outname\tSets the output file names to use 'outname' as a basename,\n"
+        << "            \t  i.e., the pov and png files will be named:\n"
+        << "            \t  outnameNCI.pov and outnameNCI.png, respectively." << endl;
    cout << "  -s        \tUses a smart cuboid for the s-cube. The number of points for the" <<endl
         << "            \t  largest direction will be " << DEFAULTPOINTSPERDIRECTION << "." << endl;
    cout << "  -S ln     \tUses a smart cuboid for the s-cube. ln is the number of points" << endl
         << "            \t  the largest axis will have. The remaining axes will have" << endl
         << "            \t  a number of points proportional to the molecule dimensions." << endl;
-   cout << "  -P     \tGenerates a pov-ray script to render the field. Notice: this requires povray" << endl
-        << "         \t   to be installed in your system." << endl;
+   cout << "  -P        \tGenerates a pov-ray script and renders it. Notice: this requires" << endl
+        << "            \t   povray to be installed in your system." << endl;
    cout << "  -V        \tDisplays the version of this program." << endl;
    cout << "  -h\t\tDisplay the help menu.\n\n";
    //-------------------------------------------------------------------------------------
    cout << "  --configure-nci rMin rMax sMax \tSet the parameters rhoMin, rhoMax," << endl
-        << "             \t\t  and redGradMax to be rMin, rMax, and sMax, respectively." << endl
-        << "             \t\t  Default values: rhoMin=" << NCIRHOMIN << "," << endl
-        << "             \t\t  rhoMax= " << NCIRHOMAX << ", and redGradMax= " <<  NCISMAX << endl;
+        << "             \t\t  and redDensGradMax to be rMin, rMax, and sMax," << endl
+        << "             \t\t  respectively. Default values: rhoMin=" << NCIRHOMIN << ",\n"
+        << "             \t\t  rhoMax=" << NCIRHOMAX << ", and redGradMax=" <<  NCISMAX << ".\n";
    cout << "  --help    \t\tSame as -h" << endl;
    cout << "  --version \t\tSame as -V" << endl;
    //-------------------------------------------------------------------------------------
@@ -245,6 +270,10 @@ void printErrorMsg(char** &argv,char lab) {
    ScreenUtils::SetScrRedBoldFont();
    cout << "\nError: the option \"" << lab << "\" ";
    switch (lab) {
+      case 'A' :
+         cout << "should be followed by three real numbers." << '\n';
+         break;
+      case 'a' :
       case 'B' :
          cout << "should be followed by two real numbers." << endl;
          break;

@@ -21,6 +21,7 @@ public:
    bool WriteHeader(ofstream &ofil,bool placecam = true);
    void SetBGColor(double rgbr,double rgbg,double rgbb);
    void SetAngView(double av);
+   void SetAngView(double avx,double avy,double avz);
    void SetSkyCam(double xx,double yy,double zz);
    void SetLocCam(double xx,double yy,double zz);
    void SetLookAtCam(double xx,double yy,double zz);
@@ -35,6 +36,7 @@ public:
    double **lightSource;
    double backGroundColor[3];
    double angView;
+   double vecAngView[3];
    double skyCam[3];
    double locCam[3];
    double lookAtCam[3];
