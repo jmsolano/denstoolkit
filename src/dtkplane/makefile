@@ -14,6 +14,11 @@ DARWIN = $(strip $(findstring DARWIN, $(OSUPPER)))
 # OS-specific build flags
 ifneq ($(DARWIN),)
     CXXFLAGS   := -arch $(OS_ARCH)
+    DARWINVERSION=$(shell sw_vers -productVersion | tr '.' ' ' | awk '{print $$2}')
+	 GTTN_14 = $(shell [ $(DARWINVERSION) -gt 14 ] && echo true)
+    ifeq ($(GTTN_14),true)
+	     CXXFLAGS += -isysroot $(shell xcrun --show-sdk-path)
+    endif
 else
   ifeq ($(OS_SIZE),32)
     CXXFLAGS   := -m32

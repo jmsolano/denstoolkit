@@ -17,6 +17,11 @@ DARWIN = $(strip $(findstring DARWIN, $(OSUPPER)))
 # OS-specific build flags
 ifneq ($(DARWIN),)
     CXXFLAGS   := -arch $(OS_ARCH)
+    DARWINVERSION=$(shell sw_vers -productVersion | tr '.' ' ' | awk '{print $$2}')
+	 GTTN_14 = $(shell [ $(DARWINVERSION) -gt 14 ] && echo true)
+    ifeq ($(GTTN_14),true)
+	     CXXFLAGS += -isysroot $(shell xcrun --show-sdk-path)
+    endif
 else
   ifeq ($(OS_SIZE),32)
     CXXFLAGS   := -m32
@@ -88,6 +93,8 @@ help: ## Shows this help
 	@echo 'targets:'
 	@egrep -e '^(.+)\:\ .*##\ (.+)' ${MAKEFILE_LIST} | sed 's/:.*##/#/' | column -t -c 2 -s '#'
 	@echo ''
+	@echo "The default installation path is '/usr/local/bin', but this can be"
+	@echo "  changed by setting INSTALL_PATH='/custom/install/path'"
 	@echo '=================================================================================='
 
 .PHONY: info
