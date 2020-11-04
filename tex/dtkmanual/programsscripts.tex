@@ -6,11 +6,11 @@
 %% 
 %%              Contributors: Juan Manuel Solano-Altamirano
 %%                            Julio Manuel Hernandez-Perez
-%%         Copyright (c) 2013-2015, Juan Manuel Solano-Altamirano
+%%         Copyright (c) 2013-2020, Juan Manuel Solano-Altamirano
 %%                                  <jmsolanoalt@gmail.com>
 %% 
 %%  -------------------------------------------------------------------
-%%  Copyright (c) 2013-2015 Juan Manuel Solano Altamirano.
+%%  Copyright (c) 2013-2020 Juan Manuel Solano Altamirano.
 %%  Permission is granted to copy, distribute and/or modify this document
 %%  under the terms of the GNU Free Documentation License, Version 1.3
 %%  or any later version published by the Free Software Foundation;
@@ -37,6 +37,7 @@
 
 \newcommand{\wfexfile}{\texttt{ci\-clo\-pro\-pa\-no\_\-pbe\-63\-11.wfx}}
 \newcommand{\progusg}[2]{\phantom{asd}\\\texttt{\phantom{MMM}\$#1 ciclopropano\_pbe6311.wfx #2}\\\phantom{asfd}\\}
+%\newcommand{\progusg}[2]{\begin{lstlisting}$#1 ciclopropano\_pbe6311.wfx #2\end{lstlisting}}
 
 %**********************************************************************************************
 %**********************************************************************************************
@@ -57,11 +58,16 @@ Whenever possible, we will provide an example of how to run the program, and aft
 \subsection{Input files}
 %..............................................................................................
 
-All the programs belonging to \DTK{} read wave function files. These files can be obtained by Computational Quantum Chemistry packages such as Gaussian~\cite{bib:gaussian09}, GAMESS~\cite{bib:gamess}, or NWCHEM~\cite{bib:nwchem}. \DTK{} can read either the old \texttt{wfn} files or the newer \texttt{wfx} files~\cite{bib:webwfxformat}.\footnote{Some incompatibilities may arise when mixing files between Windows and Unix-like operative systems. Please ensure that the files \texttt{wfx} or \texttt{wfn} use the same newline as the operative system where \DTK{} is running. For this, you can use the programs \texttt{dos2unix} and \texttt{unix2dos}.}
+All the programs belonging to \DTK{} suite read wave function files. These files can be obtained by Computational Quantum Chemistry packages such as Gaussian~\cite{bib:gaussian09}, GAMESS~\cite{bib:gamess}, or NWCHEM~\cite{bib:nwchem}. \DTK{} can read either the old \texttt{wfn} files or the newer \texttt{wfx} files~\cite{bib:webwfxformat}.\footnote{Some incompatibilities may arise when mixing files between Windows and Unix-like operative systems. Please ensure that the files \texttt{wfx} or \texttt{wfn} use the same newline as the operative system where \DTK{} is running. For this, you can use the programs \texttt{dos2unix} and \texttt{unix2dos}.} Wavefunction files can be obtained indirectly from other formats through
+the program \href{https://github.com/zorkzou/Molden2AIM}{molden2aim} \cite{bib:molden2aim}.
 
-The wave function file is \textit{always} the first argument in the command line. The only exception is when requesting the displaying of the help menu (which actually does not evaluate anything). Thus, the usage of every program in \DTK{} obeys the following pattern:\\\phantom{as}\\
-\phantom{MMM}\texttt{\$dtk*** inputname.wf? [option [value(s)]] \dots [option [value(s)]]}\\
-\phantom{a}\\
+The wave function file is \textbf{\textit{always}} the first argument in the command line.
+The only exception is when requesting the displaying of the help menu (which actually
+does not evaluate anything). Thus, the usage of every program in \DTK{} obeys the
+following pattern:
+\begin{lstlisting}
+$dtk*** inputname.wf? [option [value(s)]] ... [option [value(s)]]
+\end{lstlisting}
 Here, the stars represent any of the programs in \DTK, the question mark can be \texttt{n} or \texttt{x}, and the options (with possible values) are specific to each program.
 
 %..............................................................................................
@@ -71,11 +77,11 @@ Here, the stars represent any of the programs in \DTK, the question mark can be 
 Most of the programs included in \DTK{} produce some kind of output. The main output is numerical, and it is saved in different files. While the specific output depends on the particular program, there are a few conventions that we adopt. 
 
 \begin{itemize}
-   \item \texttt{\textbf{dat files:}} This type contains single or multi-column data and is used whenever a field is evaluated at a line of points (one-dimensional grid). In some output files of this kind, comments are added at the beginning of the file. These comments start with the character \texttt{\#}.
+   \item \texttt{\textbf{dat files:}} This type contains single or multi-column data and is used whenever a field is evaluated at a line (or a parametrized curve) of points (one-dimensional grid). In some output files of this kind, comments are added at the beginning of the file. These comments start with the character \texttt{\#}.
    \item \texttt{\textbf{tsv files:}} This file contains the information for two-dimensional grids. It is the format known as \textit{tab separated values}, and the files also may contain comments starting with the character \texttt{\#}.
    \item \texttt{\textbf{cub files:}} This file contains the information for three-dimensional grids. The format of these files is the standard \texttt{cub} format of Gaussian \cite{bib:gaussian09}.
    \item \texttt{\textbf{gnp files:}} These files are scripts to be parsed to gnuplot. They purpose is to provide basic scripts with non-trivial information about the system that is being plotted. For instance, the positions of labels in the plot, values for the parametrization when lines or planes are projected, colours for the atoms etc.
-   \item \texttt{\textbf{pov files:}} These type of files are the input for the pov ray-tracer.
+   \item \texttt{\textbf{pov files:}} These type of files are the input for the pov-ray tracer.
    \item \texttt{\textbf{cpx files:}} This type of file is a native file of \DTK. It contains the information of critical points. These files act both as output and as input. For more details about this format, see \S\ref{sec:cpxfilefmt}.
 \end{itemize}
 
@@ -86,22 +92,54 @@ Most of the programs included in \DTK{} produce some kind of output. The main ou
 All programs in \DTK{} share the following options:
 
 \begin{itemize}
-   \item \textbf{Help menu:} Usage and some details of the program at hand is displayed by means of\\
-   \phantom{MMM}\texttt{\$dtk*** -h}\\or\\
-   \phantom{MMM}\texttt{\$dtk*** {-}-help}
-   \item \textbf{Version:} The version number can be accessed by\\
-   \phantom{MMM}\texttt{\$dtk*** -V}\\or\\
-   \phantom{MMM}\texttt{\$dtk*** {-}-version}
-   \item\textbf{Output name:} By using this option, the user can give a name other than the automatic name generated by each program. The program at hand will invariably add the appropriate extension to the file-name, and any extension will be considered part of the name.
-   This option is particularly useful when one wishes to give a wfx(wfn) and an out files located at arbitrary directories. For instance, the command\\\phantom{adf}\\
-   \phantom{MMM}\texttt{\$dtk*** /arbitrary/path/input.wfx -o /other/path/othername ...}\\\phantom{adf}\\
-   will invoke the program \texttt{dtk***} with an input wave function file located at \texttt{/arbit\-rary\-/path} and the output will be saved in the directory \texttt{/other/path} using the name \texttt{othername} with different extensions for the output.
-   \item \textbf{Plotting the data:} Most of the \DTK's programs have the capability to create scripts that can be passed to plotting/rendering programs such as gnuplot or povray. While the primary purpose of \DTK{} is to evaluate numerical functions, we are aware that the visualization of the data is also important. With this in mind, and recalling that it is quite common the use of severs dedicated to Molecular Quantum Mechanical calculations, we have found that it is really convenient to be able to produce the visualization of data in a simple manner. If the program has the capability of calling plotting/rendering programs, such a call is activated with\\
-   \phantom{MMM}\texttt{\$dtk*** \dots\ -P}\\
-   The programs that produce scripts (and internal callings) are: \texttt{dtkline, dtkplane, dtkfindcp, dtkmomd, dtkdemat1, dtkbpdens, dtkqdmol}
-   \item \textbf{Compressing data:} Some programs have the option to call \texttt{gzip}. If this option is available, it can be activated with the following command line:\\
-     \phantom{MMM}\texttt{\$dtk*** \dots\ -z}\\
-     The programs that provide this option are: \texttt{dtkline, dtkplane, dtkcube, dtkmomd}
+   \item \textbf{Help menu:} Usage and some details of the program at hand is displayed by means of
+		\begin{lstlisting}
+$dtk*** -h
+		\end{lstlisting}
+	or
+		\begin{lstlisting}
+$dtk*** --help
+		\end{lstlisting}
+   \item \textbf{Version:} The version number can be accessed by
+   	\begin{lstlisting}
+$dtk*** -V
+		\end{lstlisting}
+	or
+		\begin{lstlisting}
+$dtk*** --version
+		\end{lstlisting}
+   \item\textbf{Output name:} By using this option, the user can give a name other
+   	than the automatic name generated by each program. The program at hand will invariably add
+		the appropriate extension to the file-name, and any extension will be considered part of the name.
+	   This option is particularly useful when one wishes to give a wfx(wfn) and out files located at
+	   arbitrary directories, or to perform calculations with different parameters using the same wavefunction.
+		For instance, the command
+		\begin{lstlisting}
+$dtk*** /arbitrary/path/input.wfx -o /other/path/othername ...
+		\end{lstlisting}
+		will invoke the program \texttt{dtk***} with an input wave function file located at
+		\texttt{/arbit\-rary\-/path} and the output will be saved in the directory
+		\texttt{/other/path} using the name \texttt{othername} with different extensions for the output.
+   \item \textbf{Plotting the data:} Most of the \DTK's programs have the capability to create
+   	scripts that can be passed to plotting/rendering programs such as gnuplot or povray. While
+		the primary purpose of \DTK{} is to evaluate numerical functions, we are aware that the visualisation
+		of the data is also important. With this in mind, and recalling that it is quite common to use
+		severs dedicated to Molecular Quantum Mechanical calculations, we have found really
+		convenient visualise data in a simple and quick manner. If a \DTK{} program has
+		the capability of calling plotting/rendering programs, such a call is activated with
+		\begin{lstlisting}
+$dtk*** ... -P
+		\end{lstlisting}
+	   The programs that produce scripts (and internal callings) are: \texttt{dtkline}, \texttt{dtkplane},
+	   \texttt{dtkfindcp}, \texttt{dtkmomd}, \texttt{dtkdemat1}, \texttt{dtkbpdens},
+	   \texttt{dtkqdmol}, \texttt{dtkgetnciplot}, and \texttt{dtknci}.
+   \item \textbf{Compressing data:} Some programs have the option to call \texttt{gzip}.
+   	If this option is available, it can be activated with the following command line:
+		\begin{lstlisting}
+$dtk*** ... -z
+     \end{lstlisting}
+     The programs that provide this option are: \texttt{dtkline}, \texttt{dtkplane}, \texttt{dtkcube},
+     and \texttt{dtkmomd}.
 \end{itemize}
 
 %----------------------------------------------------------------------------------------------
@@ -111,9 +149,13 @@ All programs in \DTK{} share the following options:
 This program calculates all the implemented properties at a point or at a set of them (see \S \ref{sec:availablefields}). Additionally, the program will perform the integration of the electron density over the whole space (which should render the molecule's total number of electrons). The program takes the wavefunction file and calculates the fields at the point(s) given by the user. The point(s) for the fields can be given in three different forms:
 \begin{itemize}
    \item \textbf{Cartesian coordinates}. The fields are calculated at the point $(x,y,z)$. Example:\\
-      \progusg{dtkpoint}{-c 0.75e0 -5.0e-01 1.2e0}
+      \begin{lstlisting}
+$dtkpoint ciclopropano_pbe6311.wfx -c 0.75e0 -5.0e-01 1.2e0
+\end{lstlisting}
    \item \textbf{Set of Cartesian points.} The fields are calculated at a set of points given in an input file. For example, if the file \texttt{coords.dat} contains the coordinates, then the syntax is:\\
-      \progusg{dtkpoint}{-i coords.dat}
+      \begin{lstlisting}
+$dtkpoint ciclopropano_pbe6311.wfx -i coords.dat
+\end{lstlisting}
       
       The file \texttt{coords.dat} contains the following data:
       \begin{verbatim}
@@ -123,9 +165,16 @@ This program calculates all the implemented properties at a point or at a set of
 #Another comment between coordinates
 2.3e0 4.4e-2 -3.31543e+00
       \end{verbatim}
-      Every line started with the character ``\texttt{\#}'' will be ignored, and comments can be at any line of the input file. This program does not perform any check on the coordinates input file, therefore the user is responsible for providing a file that has $3N$ numbers, where $N$ is the number of non-commented rows in the file. Each row corresponds to a point in the three dimensional space.
-      \item \textbf{At a nucleus.} The fields are calculated at the position of a nucleus. Example:\\
-         \progusg{dtkpoint}{-a 2}\\
+      Every line that starts with the character ``\texttt{\#}'' will be ignored,
+      and comments can be placed at any line of the input file. This program
+      does not perform any check on the coordinates input file, therefore the
+      user is responsible of providing a file that has $3N$ numbers, where $N$
+      is the number of non-commented rows in the file. Each row corresponds to
+      a point in the three dimensional space.
+      \item \textbf{At a nucleus.} The fields are calculated at the position of a nucleus. Example:
+         \begin{lstlisting}
+$dtkpoint ciclopropano_pbe6311.wfx -a 2
+\end{lstlisting}
    This will calculate the fields at the position of the 2$^{\textrm{nd}}$ nucleus listed in \wfexfile.
 \end{itemize}
 
@@ -142,20 +191,23 @@ This program calculates all the implemented properties at a point or at a set of
 \section{dtkline}
 %----------------------------------------------------------------------------------------------
 This program calculates one of the implemented scalar fields (see \S\ref{sec:availablefields}) along a line defined by two of the molecule's atoms. For instance, the ELF along the line that passes through the atoms labeled as 2 and 4 of the cyclopropane molecule (Fig. \ref{fig:cyclopmolline}) is evaluated by means of\\
-\progusg{dtkline}{-a 2 4 -p E -P}
+\begin{lstlisting}
+$dtkline ciclopropano_pbe6311.wfx -a 2 4 -p E -P
+\end{lstlisting}
 Here, the option \texttt{-a} tells \texttt{dtkline} to use the atoms \texttt{2} and \texttt{4} to define the line whereat the property will be evaluated; the option \texttt{-P} tells \texttt{dtkline} to create a pdf image using gnuplot; and with option \texttt{-p E}, one chooses the field ELF (see the help menu of \texttt{dtkline} for a complete list of fields ---below---). The final result, after some editing of the gnuplot script is presented in Fig. \ref{fig:cyclopelfline}.\footnote{Let us recall that \DTK{} facilitates the creation of quality-plots (for instance, by providing the projected coordinates of the atoms C$_2$ and H$_4$ along the line), but it cannot replace the human judgement for creating nice plots.}
 \begin{figure}[hb!]
 \centering
 \subfigure[Cyclopropane molecule.]{\includegraphics[width=0.45\textwidth]{cyclopQDMolLine}\label{fig:cyclopmolline}}\quad%
 \subfigure[ELF along the red line of Fig. \ref{fig:cyclopmolline}.]{\includegraphics[width=0.45\textwidth]{cyclopELFLine}\label{fig:cyclopelfline}}
-\caption{Evaluating the ELF along the line that joins the atoms C$_2$ and H$_4$ with \texttt{dtkline}.}\label{fig:dtklineuseex}
+\caption{Evaluating the ELF along the line that joins the atoms C$_2$ and H$_4$ (red line
+of subfigure \subref{fig:cyclopmolline}) with \texttt{dtkline}.}\label{fig:dtklineuseex}
 \end{figure}
 
 Sometimes, it is convenient to increase/decrease the number of points to evaluate within the line. To do so, one can use the option \texttt{-n dim}, where \texttt{dim} is the new number of points. If this option is not specified, \texttt{dtkline} uses 200 points.
 
 \textbf{Special cases:}
 \begin{itemize}
-   \item \textbf{Wave function with one single atom:} In this case, \texttt{dtkline} will use the single atom present in the wave function file and then define a line that passes through this atom. The option \texttt{-a} is ignored, thus it is not necessary to use it, however if used the syntax must include two numbers. It is recommended, when you are interested in single atom wave functions, better not use the option \texttt{-a}.
+   \item \textbf{Wave function with one single atom:} In this case, \texttt{dtkline} will use the single atom present in the wave function file and then define a line that passes through this atom. The option \texttt{-a} is ignored, thus it is not necessary to use it, however if used the syntax must include two numbers. It is recommended, if you are interested in single atom wave functions, not to use the option \texttt{-a}.
    \item \textbf{Wave function with only two atoms:} For diatomic systems, \texttt{dtkline} will use these atoms to define the line, and if option \texttt{-a} is used, it will be ignored. 
 \end{itemize}
 
@@ -171,24 +223,45 @@ Sometimes, it is convenient to increase/decrease the number of points to evaluat
 \section{dtkplane}
 %----------------------------------------------------------------------------------------------
 
-As the name suggests, this program evaluates a field upon a plane. \texttt{dtkplane} defines
-a plane based on the choosing of three atoms. Once the atoms are given, the program translates the plane until the centroid of the triangle that the three atoms form coincides with the centre of a square. The size of the plane is calculated such that all the atoms in the molecule are contained in the plane, even if not all the atoms are within the plane. Since there is no restriction about the distance between the chosen atoms, it is assumed that the user is interested in studying the field around those atoms, therefore, the produced script only contains one parameter (called ``dimparam'') to zoom in the plotted region.
+As the name suggests, this program evaluates a field upon a plane. \texttt{dtkplane}
+defines a plane based on the choosing of three atoms. Once the atoms are given,
+the program translates the plane until the centroid of the triangle formed by the
+three atoms' coordinates coincides with the centre of a square. The size of the
+plane is calculated such that all the atoms in the molecule are contained in
+the plane, even if not all the atoms intersect the plane. Since there is no
+restriction about the distance between the chosen atoms, it is assumed that
+the user is interested in studying the field around those atoms. Therefore,
+the produced script only contains one parameter (called ``dimparam'') to zoom in
+the plotted region, \textit{i.e.} to zoom in the plot, you simply need to edit
+the gnuplot script in order to decrease the value set for dimparam.
 
-As an example, the command line\\
-\progusg{dtkplane}{-a 1 2 3 -p L -P -k -c -l}
-is the base for producing the figure \ref{fig:cycloplolplane}. 
+As an example, the command line
+\begin{lstlisting}
+$dtkplane ciclopropano_pbe6311.wfx -a 1 2 3 -p L -P -k -c -l
+\end{lstlisting}
+produces a gnuplot script that is the base for rendering the figure \ref{fig:cycloplolplane}. 
 %
 \begin{figure}[h!]
 \centering
 \subfigure[Cyclopropane molecule.]{\includegraphics[width=0.35\textwidth]{cyclopQDMolPlane}\label{fig:cyclopmolplane}}\qquad\qquad%
-\subfigure[LOL evaluated at the blue plane of Fig. \ref{fig:cyclopmolplane}.]{\includegraphics[width=0.45\textwidth]{cyclopLOLPlane}\label{fig:cycloplolplane}}
-\caption{Evaluating the LOL within the plane that contains the atoms C$_1$, C$_2$, and C$_3$ with \texttt{dtkplane}. The plot is rendered by gnuplot.}\label{fig:dtkplaneuseex}
+\subfigure[LOL evaluated at the blue plane of \subref{fig:cyclopmolplane}.]{\includegraphics[width=0.45\textwidth]{cyclopLOLPlane}\label{fig:cycloplolplane}}
+\caption{Evaluating the LOL within the plane that contains the atoms C$_1$, C$_2$,
+ and C$_3$ (blue-ish triangle of subfigure \subref{fig:cyclopmolplane}) with \texttt{dtkplane}. The plot \subref{fig:cycloplolplane} was rendered by gnuplot.}\label{fig:dtkplaneuseex}
 \end{figure}
 %
 
-In the above command line, the option \texttt{-a 1 2 3} is used to provide the atoms that the plain will contain. \texttt{-p L} is the option for choosing the LOL field (see the menu help, below, for the complete list of fields); \texttt{-P} is for rendering a plot by calling gnuplot; \texttt{-k} for keeping the the gnuplot script on disk; \texttt{-c} activates the contours on the plane; and \texttt{-l} activates the labels of the atoms.
+In the above command line, the option \texttt{-a 1 2 3} is used to provide the atoms
+used to define the plane. \texttt{-p L} is the option for choosing the LOL field
+(see the menu help, below, for the complete list of fields); \texttt{-P} is for
+rendering a plot (by calling gnuplot); \texttt{-k} is for keeping the gnuplot
+script on disk; \texttt{-c} activates the contours on the plane; and \texttt{-l}
+activates the labels of the atoms. By default, only the atoms used to define the plane
+will be shown in the plot; however, if you need the plane-projected positions and labels of
+the other molecule atoms, edit the gnuplot script and activate their display by
+removing the character `\texttt{\#}' at the beginning of each line. Thre rest of the
+options are:
 
-\texttt{\textbf{-n}:} For increasing/decreasing the number of points per direction, one can use the option \texttt{-n dim}. This will create a plane with \texttt{dim x dim} points.
+\texttt{\textbf{-n}:} For increasing/decreasing the number of points per direction, one can use the option \texttt{-n dim}. This will create a 2D grid with \texttt{dim x dim} points.
 
 \texttt{\textbf{-c:}} This option will print contour lines in the final plot.
 
@@ -200,7 +273,7 @@ In the above command line, the option \texttt{-a 1 2 3} is used to provide the a
 
 \textbf{Special cases:}
 \begin{itemize}
-   \item \textbf{Wave function with one single atom:} In this case, \texttt{dtkplane} will use the single atom present in the wave function file and then define a plane that passes through this atom. The option \texttt{-a} is ignored, thus it is not necessary to use it, however if it is used, then the syntax must include three numbers. It is recommended, when you are interested in single atom wave functions, not to use the option \texttt{-a}.
+   \item \textbf{Wave function with one single atom:} In this case, \texttt{dtkplane} will use the single atom present in the wave function file and then define a plane that passes through this atom. The option \texttt{-a} is ignored, thus it is not necessary to use it, however if it is used, then the syntax must include three numbers. It is recommended, if you are interested in single atom wave functions, not to use the option \texttt{-a}.
    \item \textbf{Wave function with only two atoms:} For diatomic systems, \texttt{dtkplane} will use these atoms to define the plane, and if option \texttt{-a} is used, it will be ignored, however it must contain three numbers.
 \end{itemize}
 
@@ -215,19 +288,36 @@ In the above command line, the option \texttt{-a 1 2 3} is used to provide the a
 \section{dtkcube}\label{sec:dtkcube}
 %----------------------------------------------------------------------------------------------
 
-This program evaluates a scalar field within a three dimensional grid. The data is saved in a *.cub file, which is the standard cube file from the Gaussian~\cite{bib:gaussian09} package. This is perhaps the most computationally expensive program in \DTK{}, and also one of the few programs that does not produce any visualization.
+This program evaluates a scalar field within a three dimensional grid. The data is saved
+in a *.cub file, which is the standard cube format used by the Gaussian~\cite{bib:gaussian09}
+package. This is perhaps the most computationally expensive program in \DTK{}, and also
+one of the few programs that does not automatically produce any visualisation, however,
+it can produce a \texttt{VMD} script that can be independently parsed to \texttt{VMD}.
+Again, this script is only the basic starting script, which needs to be adjusted to render
+adequate isosurfaces of the evaluated field.
 
-The purpose of this program is to create standard output that can be processed by advanced visualization programs such as VMD. For instance, with the command line\\
-\progusg{dtkcube}{-p l -S 100}
-we produce the cub file that later is used in VMD to create the Figure \ref{fig:dtkcubeuseex}.
+The main purpose of \texttt{dtkcube} is to create standard output that can be
+processed by advanced visualisation programs such as VMD. For instance, we produced
+a cube file with the command line
+\begin{lstlisting}
+./dtkcube.x ciclopropano_pbe6311.wfx -p l -P -S 100
+\end{lstlisting}
+Subsequently, we used the cube file to to create the Figure \ref{fig:dtkcubeuseex},
+using \texttt{VMD}:
+\begin{lstlisting}
+vmd -e ciclopropano_pbe6311LapRho.vmd
+\end{lstlisting}
 %
+and selecting the view and modifying a few visualisation options. The isovalue was
+0.22 a.u.
 \begin{figure}[hb!]
 \centering
 \includegraphics[width=0.45\textwidth]{cyclopLap}\label{fig:cyclopLap}
-\caption{Evaluating $\nabla^2\rho$ within a three-dimensional grid (cube). The plot was generated using VMD, and later povray.}\label{fig:dtkcubeuseex}
+\caption{Visualising an isosurface $\nabla^2\rho=0.22$ a.u., within a three-dimensional grid (cube). The plot was generated using VMD. }\label{fig:dtkcubeuseex}
 \end{figure}
 %
-The option \texttt{-p l} tells \texttt{dtkcube} to evaluate the Laplacian of the electron density (see below for the complete list of available fields), and \texttt{-S 100} activates a \textit{smart} cube. By smart cube, we mean that we try to minimize the number of trivial points, this is, we adjust the cube to be a rectangular cuboid such that it encloses the molecule and a few extra space around the most outer atoms of the molecule. This allows \DTK{} to skip the calculation of spatial points that offer only trivial information (since the wave function and its derivatives decay rapidly as the point moves away from the molecule). For instance, the cuboid generated by the example command generates a grid of \texttt{96 x 100 x 90 = 864,000} points, which is 86.4 \% of the points that would have been calculated if a normal cube had been evaluated.
+The option \texttt{-p l} tells \texttt{dtkcube} to evaluate the Laplacian of the electron density (see below for the complete list of available fields), \texttt{-P} tells
+\texttt{dtkcube} to create a starting vmd script, and \texttt{-S 100} activates a \textit{smart} cube. Choosing a smart cube, minimises the number of trivial points, this is, we adjust the cube to be a rectangular cuboid such that it encloses the molecule and a few extra space around the most outer atoms of the molecule. This allows \DTK{} to skip the calculation of spatial points that offer only trivial information (since the wave function and its derivatives decay rapidly as the evaluation point moves away from the molecule). For instance, the cuboid generated by the example command generates a grid of \texttt{96 x 100 x 90 = 864,000} points, which is 86.4 \% of the points that would have been calculated if a normal cube had been evaluated.
 
 \texttt{dtkcube} always creates the grid around the geometric centre of the molecule. This also reduces the number of trivial points in the final cube/cuboid. This criterion is different from
 the procedure usually followed for creating wavefunction files (wherein the molecule's centre
@@ -251,6 +341,10 @@ Such an option produces a \texttt{log} file which contains that information.
 
 In the current version, \texttt{dtkcube} does not rotate the molecule to minimize the cuboid dimensions, but only looks for the highest and lower values of the atoms' coordinates in all of the three axis. These values are the ones used to adjust the cuboid.
 
+Also, in version \dtkversion, one can zoom in the cube by using the option \texttt{-c a1 a2}.
+This option centers the cube at the midpoint of atoms \texttt{a2} and \texttt{a2}.
+The grid is then setup around this midpoint with a lenght of 30 nm per side of the grid.
+
 \rule{\textwidth}{1pt}
 {\center\texttt{dtkcube} help menu.\\}
 \rule{\textwidth}{1pt}
@@ -265,12 +359,18 @@ In the current version, \texttt{dtkcube} does not rotate the molecule to minimiz
 This program searches critical points (CP) within a molecule. In version \dtkversion, the complete analysis is implemented for the electron density (ED). Partial implementation is offered for searching LOL critical points. In the future, additional fields will be implemented.
 
 The complete search of critical points of a molecule can be found by the following command:\\
-\progusg{dtkfindcp}{}
+\begin{lstlisting}
+$dtkfindcp ciclopropano_pbe6311.wfx 
+\end{lstlisting}
 This will find all the ED critical points (including ACPs, BCPs, RCPs, and CCPs), as well as the bond gradient paths (paths that connect ACPs with BCPs). The information of the critical points are saved into two files. The \texttt{log} file contains the coordinates of all CPs found, and the field properties at such points. The \texttt{cpx} file shares the coordinates of the CPs, but additional information is stored in these files, such as the coordinates of the gradient bond paths, and the name of the wave function used to perform the search of CPs.
 
 \texttt{dtkfindcp} is also capable of producing \texttt{pov} files (and internal callings to povray) for rendering 3D images of the critical points. For instance, the Figure \ref{fig:cyclopCPs} was produced by typing\\
-\progusg{dtkfindcp}{-P -g -T -k -a}
-This command produces a \texttt{pov} file and calls povray to render the image displayed in Fig. \ref{fig:dtkfindcpusex}. The option \texttt{-g} tells \texttt{dtkfindcp} to display the bond gradient paths; and the option \texttt{-T} sets the style of the bond gradient paths to be tubes. On the other hand, Figure \ref{fig:cubaneCPs} was produced using \\\progusg{dtkfindcp}{-P -g -T -k -r -a}.
+\begin{lstlisting}
+$dtkfindcp ciclopropano_pbe6311.wfx -P -g -T -k -a
+\end{lstlisting}
+This command produces a \texttt{pov} file and calls povray to render the image displayed in Fig. \ref{fig:dtkfindcpusex}. The option \texttt{-g} tells \texttt{dtkfindcp} to display the bond gradient paths; and the option \texttt{-T} sets the style of the bond gradient paths to be tubes. On the other hand, Figure \ref{fig:cubaneCPs} was produced using \\\begin{lstlisting}
+$dtkfindcp ciclopropano_pbe6311.wfx -P -g -T -k -r -a
+\end{lstlisting}.
 %
 \begin{figure}[hb!]
 \centering
@@ -553,9 +653,9 @@ Every \texttt{pov} file created by \texttt{dtkfindcp} has the following header:
 \end{verbatim}
 \end{footnotesize}
 
-Getting the right position of the povray's camera is a bit tricky, and we do not attempt to solve this problem in an automatic way. However, we provide a relatively easy-to-use tool to find an adequate view. Using the program \texttt{dtkqdmol}, you can create a quick view of the molecule, and since it is rendered via gnuplot, two view angles are displayed in the window (see \S\ref{sec:dtkqdmol}). You can adjust the view through the interactive gnuplot's window and then change the values of the defined variables \texttt{GNUPlotAngle1}, and \texttt{GNUPlotAngle1}. An extra angle can be specified in povray (which gnuplot does not use): the \texttt{YAngle} variable. For more information about this view angles, see the povray's documentation (under the ``camera's rotate'' section) or the gnuplot's help menu (\texttt{help set view}).
+Getting the right position of the povray's camera is a bit tricky, and we do not attempt to solve this problem in an automatic way. However, we provide a relatively easy-to-use tool to find an adequate view. The program \texttt{dtkqdmol} creates a quick view of the molecule, and since it is rendered via gnuplot, two view angles are displayed in the window (see \S\ref{sec:dtkqdmol}). You can adjust the view through the interactive gnuplot's window and then change the values of the defined variables \texttt{GNUPlotAngle1}, and \texttt{GNUPlotAngle1}. An extra angle can be specified in povray (which gnuplot does not use): the \texttt{YAngle} variable. For more information about this view angles, see the povray's documentation (under the ``camera's rotate'' section) or the gnuplot's help menu (\texttt{help set view}).
 
-By default, all critical points are drawn with the same size. For setting different sizes, you can adjust the options ``\texttt{RadiusACP=RadiusAllCriticalPoints;}'' to you desired value. (Changing only the value of \texttt{RadiusAllCriticalPoints} will change the size of ALL critical points.)
+By default, all critical points are drawn with the same size. For setting different sizes, you can adjust the options ``\texttt{RadiusACP=RadiusAllCriticalPoints;}'' to your desired value. (Changing only the value of \texttt{RadiusAllCriticalPoints} will change the size of ALL critical points.)
 
 The colours of the critical points are given by three numbers, corresponding to the red, green or blue saturation value, and they all must be numbers between 0 and 1.
 
@@ -571,7 +671,7 @@ This program evaluates the electron momentum density (EMD), \textit{i.e.,} the F
    \item \textbf{Point (0D)}: No output is created, instead the value is displayed at the screen. This grid is set by the option \texttt{-0 $\mathtt{P}_\mathtt{x}$ $\mathtt{P}_\mathtt{y}$ $\mathtt{P}_\mathtt{z}$}, where \texttt{$\mathtt{P}_\mathtt{i}$} are the values at which the EMD is evaluated.
    \item \textbf{Line (1D)}: The output is written to a \texttt{dat} file and, in the current version, only lines parallel to the axis are implemented. This grid is accessible through the option \texttt{-1 x}, where ``\texttt{x}'' indicates the axis to be evaluated and can take the values ``\texttt{x}'', ``\texttt{y}'' or ``\texttt{z}''. Creation of gnuplot scripts is enabled for this grid (option \texttt{-P}).
    \item{\textbf{Plane (2D)}}: The data is saved into a \texttt{tsv} file, and in the present version, only planes normal to the axis are implemented (the planes contain the origin of the momentum space coordinates). To evaluate the EMD in a plane, one must use the option \texttt{-2 xy}, where \texttt{xy} are two non-spaced characters that indicates the plane whereat the EMD will be evaluated, and can be \texttt{xy}, \texttt{xz}, or \texttt{yz}. Creation of gnuplot scripts is also enabled for this grid (option \texttt{-P}).
-   \item{\textbf{Cube (3D)}}: The values of the EMD are stored in a \texttt{cub} file (standard Gaussian cube file), and this grid is set by using option \texttt{-3}. For this grid, there is no immediate visualization, but it needs to be produced through other programs such as VMD.
+   \item{\textbf{Cube (3D)}}: The values of the EMD are stored in a \texttt{cub} file (standard Gaussian cube file), and this grid is set by using option \texttt{-3}. For this grid, there is no immediate visualisation, but it needs to be produced through other programs such as VMD.
 \end{itemize}
 %
 \begin{figure}[hb!]
@@ -599,7 +699,9 @@ This program evaluates the electron momentum density (EMD), \textit{i.e.,} the F
 This program evaluates the density matrix of order 1 (DM1) along a line, which can be the line that joins two atoms, or the bond path that connects those two ACPs. In this version, only the electron density bond path can be selected. 
 
 \texttt{dtkdemat1} can be called, for example, by\\
-\progusg{dtkdemat1}{-P -l -c -s 0.02}
+\begin{lstlisting}
+$dtkdemat1 ciclopropano_pbe6311.wfx -P -l -c -s 0.02
+\end{lstlisting}
 
 The above command was used for evaluating the data shown in Fig. \ref{fig:dtkdemat1usex}. The output of the program consists of four files. The data for generating the three-dimensional and two-dimensional plots is saved in a \texttt{tsv} file. The data for the main and secondary diagonal (white solid and dashed line of figure \ref{fig:md12d}) are saved in two \texttt{dat} files. In addition, a \texttt{log} file is created, where some information about the position of the critical point (or the minimum of the ED) is located, etc.
 %
@@ -638,10 +740,11 @@ For increasing the number of points within the bond path line, you may want to l
 
 This program seeks the bond path between two atoms and then evaluates the requested scalar/vector field at the points belonging to the bond path. This is specially meaningful when the bond path is not the straight line that joins the atoms, and especially in cases where they differ considerable such as in hydrogen bonds.
 
-The data for producing Figure \ref{fig:dtkbpdensusex} was obtained by typing the two following commands.\\
-\phantom{M}\\
-\texttt{\phantom{MMM}\$dtkbpdens ciclopropano\_pbe6311.wfx -P -l -s 0.02 -p M}\\\phantom{M}\\
-\texttt{\phantom{MMM}\$dtkbpdens ciclopropano\_pbe6311.wfx -P -l -n 200 -p M -L}\\\phantom{M}\\
+The data for producing Figure \ref{fig:dtkbpdensusex} was obtained by typing the two following commands.
+\begin{lstlisting}
+$dtkbpdens ciclopropano\_pbe6311.wfx -P -l -s 0.02 -p M
+$dtkbpdens ciclopropano\_pbe6311.wfx -P -l -n 200 -p M -L
+\end{lstlisting}
 %
 \begin{figure}[ht!]
 \centering
@@ -654,9 +757,16 @@ Plots will be generated by using option \texttt{-P}, and the labels of the atoms
 
 The step for the Runge-Kutta integrator can be set with the option \texttt{s step}, and the maximum number of points for the bond path is set with option \texttt{-n dim}. Here \texttt{dim} is the number of points requested for the arrays that contains the coordinates of the points belonging to the bond path.
 
-If the property is evaluated at the line that join the atoms (activating the switch \texttt{-L}), then the variable \texttt{step} is no longer used (whose default value is \texttt{step=0.03}), and instead the value of \texttt{dim} is used to divide the line (the default value for this variable is \texttt{dim=200}). The output will differ from the data obtained with \texttt{dtkline} in the length of the line: \texttt{dtkbpdens} evaluates a field between the atoms, while \texttt{dtkline} evaluates the property upon a longer line that passes through the same atoms.
+If the property is evaluated at the line that join the atoms (activating the switch
+\texttt{-L}), then the variable \texttt{step} is not used (whose default value is \texttt{step=0.03}).
+Instead the value of \texttt{dim} is used to divide the line (the default value
+for this variable is \texttt{dim=200}). The output will differ from the data obtained
+with \texttt{dtkline} in the length of the line: \texttt{dtkbpdens} evaluates a field
+between the atoms, while \texttt{dtkline} evaluates the property upon a longer line
+that passes through the same atoms.
 
-To choose the scalar field to plot, one simply uses the option \texttt{-p c}, where \texttt{c} is a character that can be one of those included in the list shown in the menu (below).
+To choose the scalar field to plot, one simply uses the option \texttt{-p c}, where
+\texttt{c} is a character that can be one of those included in the list shown in the menu (below).
 
 \rule{\textwidth}{1pt}
 {\center\texttt{dtkbpdens} help menu.\\}
@@ -674,12 +784,14 @@ As we can see in the help menu, the output file has a distinctive format. It con
 
 The purpose of this program is to provide a quick view of the molecule through the gnuplot interactive terminal. This is particularly useful for viewing the labels of the atoms, and to produce simple diagrams, such as the Figures \ref{fig:cyclopmolline} and \ref{fig:cyclopmolplane}.
 
-\texttt{dtkqdmol} is \textit{not} intended to replace more powerful visualization tools such as JMol, or the viewers included in the \textit{ab initio} calculation programs, but to serve as a command line program to improve the workflow of analyzing and evaluating properties, and also to adjust the view angles to be parsed to povray (see \texttt{dtkfindcp} section). In fact the name is a mnemonic name from \texttt{dtk quick draw molecule}.
+\texttt{dtkqdmol} is \textit{not} intended to replace more powerful visualisation tools such as JMol, or the viewers included in the \textit{ab initio} calculation programs, but to serve as a command line program to improve the workflow of analyzing and evaluating properties, and also to adjust the view angles to be parsed to povray (see \texttt{dtkfindcp} section). In fact the name is a mnemonic name from \texttt{dtk quick draw molecule}.
 
-The visualization of the molecule is carried out using the stable and powerful interactive terminals of gnuplot. Usually the standard terminal under Unix-like and MacOSX systems is \texttt{x11} (chosen by default by \texttt{dtkqdmol}), and \texttt{windows} under Windows (also default when \texttt{dtkqdmol} is compiled with cygwin). However, one can specify a custom terminal by using the option \texttt{-t term}, where \texttt{term} is the desired terminal. We use quite regularly the terminals \texttt{x11} and \texttt{qt}; please ensure that \texttt{term} is working properly in your system and that is recognized by gnuplot.
+The visualisation of the molecule is carried out using the stable and powerful interactive terminals of gnuplot. Usually the standard terminal under Unix-like and MacOSX systems is \texttt{x11} (chosen by default by \texttt{dtkqdmol}), and \texttt{windows} under Windows (also default when \texttt{dtkqdmol} is compiled with cygwin). However, one can specify a custom terminal by using the option \texttt{-t term}, where \texttt{term} is the desired terminal. We use quite regularly the terminals \texttt{x11} and \texttt{qt}; please ensure that \texttt{term} is working properly in your system and that is recognized by gnuplot.
 
 The following command line should create a \texttt{gnp} file and immediately call gnuplot, which in turn opens an interactive window with the cyclopropane molecule. A snapshot of the opened window is shown in Fig. \ref{fig:dtkqdmolusex}\\
-\progusg{dtkqdmol}{-t qt -r}
+\begin{lstlisting}
+$dtkqdmol ciclopropano_pbe6311.wfx -t qt -r
+\end{lstlisting}
 The option \texttt{-t qt} only works when the Qt terminal is installed in your system and properly linked to gnuplot.
 
 To immediately call gnuplot, use the option \texttt{-r}. If this switch is not activated, the program will create the \texttt{gnp} file, which can be run later with gnuplot.
@@ -701,6 +813,96 @@ To close the interactive window, select it (if it is not active), and press any 
 \end{footnotesize}
 \rule{\textwidth}{1pt}
 
+%----------------------------------------------------------------------------------------------
+\section{\label{sec:dtknci}dtknci}
+%----------------------------------------------------------------------------------------------
+
+The Non-Covalent Interaction (NCI) index consists of visualising isosurfaces of the
+reduced density gradient, coloured with the field $\Lambda_2\equiv\textrm{sign}(\lambda_2)\rho$.
+Here $\lambda_2$ is the second eigenvalue of the Hessian (in ascending or descending order).
+
+This index is useful to study weak non-covalent interactions between atoms in a molecule, especially
+when there is no BCPs. $\Lambda_2<0$ indicates the interaction is attractive, and repulsive otherwise.
+
+In the current version of \DTK, we have included this program (\texttt{dtknci}) to compute
+one cube of cut-off reduced density gradient (see also the script \texttt{dtkgetnciplot}, in
+\S\ref{sec:dtkgetnciplotdesc}). Subsequently, the program extracts an isosurface of this cube,
+and computes $\Lambda_2$ upon the mesh of the isosurface. This information is used to
+generate a povray script.
+
+This program is recommended to be used together with the script \texttt{dtkgetnciplot}. The recommended workflow is as follows:
+\begin{enumerate}
+	\item Using \texttt{dtkgetnicplot}, generate the plot $s$ \textit{vs} $\rho$ (Fig. \ref{fig:svsrho}) with
+	\begin{lstlisting}
+$dtkgetnciplot -w h2oh2o.wfx -S 80
+	\end{lstlisting}
+	\item From the $s$ \textit{vs} $\rho$ plot, select the cut-off values for $\rho$ and $s$. In this case,
+	the values were chosen as $s=0.5$, and  $-0.02\leq\Lambda_w\leq0.2$. This can be done with the command:
+	\begin{lstlisting}
+$dtknci.x h2oh2o.wfx -P -k -S 200 -I 0.5 -A 0 0 0 -l moreland
+	\end{lstlisting}
+\end{enumerate}
+%
+\begin{figure}[hb!]
+\centering
+\subfigure[$s$ \textit{vs} $\rho$]{\includegraphics[width=0.45\textwidth]{h2oh2oNCISvsRho}\label{fig:svsrho}}\quad
+\subfigure[NCI]{\includegraphics[width=0.45\textwidth]{h2oh2oNCI}\label{fig:nciiso}}
+\caption{The NCI index of a two water molecules complex.}\label{fig:dtknci}
+\end{figure}
+%
+
+After the step 2, you can experiment with the visualisation angles (through the option \texttt{-A}
+or \texttt{-a}), withouth re-computing the cube: the option \texttt{-c} skips the cube computation.
+
+This program needs to compute only the cube of the reduced density gradient, and internally computes
+$\Lambda_2$ only at the vertices of the isosurface mesh. The number of vertices is much smaller
+than the number of points of a relatively small grid. \textit{E.g.}, a cube of 80 points per side
+requires evaluating a field ar 512000 points, and the isosurface usually contains a few thousand
+vertices. Furthermore, the field $s$ is approximately three times faster to compute, relative to
+the Hessian. Hence, this program reduces the CPU cost by avoiding the
+computation of a Hessian cube, and only computing $\Lambda_2$ at the vertices of the isosurface.
+If, in addition, the grid is set to be a \DTK{} smart cuboid, the computing time can be further reduced.
+
+There are several colour schemes implemented in the current version,
+which were generated from the data found in:\\
+\url{https://github.com/Gnuplotting/gnuplot-palettes}.
+
+
+\rule{\textwidth}{1pt}
+{\center\texttt{dtknci} help menu.\\}
+\rule{\textwidth}{1pt}
+\begin{footnotesize}
+\VerbatimInput{hmdtknci.tex}
+\end{footnotesize}
+\rule{\textwidth}{1pt}
+
+%----------------------------------------------------------------------------------------------
+\section{\label{sec:dtkview}dtkview}
+%----------------------------------------------------------------------------------------------
+
+In this version, we include an experimental visualisation program (\textit{dtkview}) which
+reads \texttt{cpx} files (obtained with \texttt{dtkfindcp}) and renders
+the interactive visualisation of critical points and gradient paths.
+
+A MacOSX bundle can be downloaded from:\\
+\url{https://sites.google.com/site/jmsolanoalt/home/software/denstoolkit/downloads}.
+
+This program can be used to select the view angles for the povray script.
+
+%
+\begin{figure}[hb!]
+\centering
+\subfigure[Viewing all gradient paths.]{\includegraphics[width=0.45\textwidth]{dtkview01}\label{fig:dtkviewsn01}}%
+\quad%
+\subfigure[Viewing only bond gradient paths.]{%
+\includegraphics[width=0.45\textwidth]{dtkview02}\label{fig:dtkviewsn02}%
+}\\
+\subfigure[Toolbar]{%
+\includegraphics[width=0.75\textwidth]{dtkview03trim}\label{fig:dtkviewsn03}%
+}
+\caption{Snapshots of DTKView.}\label{fig:dtkviewsnapshots}
+\end{figure}
+%
 
 %**********************************************************************************************
 %**********************************************************************************************
@@ -758,33 +960,24 @@ for more information about this fabulous programs.
 \end{footnotesize}
 \rule{\textwidth}{1pt}
 
-\textbf{Tip:} Use a small value of width when testing the view, and use the final resolution once you have chosen the final visualization options.
+\textbf{Tip:} Use a small value of width when testing the view, and use the final resolution once you have chosen the final visualisation options.
 
 %----------------------------------------------------------------------------------------------
 \section{dtkgetnciplot}\label{sec:dtkgetnciplotdesc}
 %----------------------------------------------------------------------------------------------
-This script generates cubes (Electron Density times the second Hessian eigenvalue, $\Lambda$,
+This script generates cubes (Electron Density times the second Hessian eigenvalue, $\Lambda_2$,
 and the reduced density gradient, $s$, both with
-a cutoff) and a graph of Non Covalent Interactions, NCI (see \cite{bib:contreras2011} for further details).
-
-\rule{\textwidth}{1pt}
-{\center\texttt{dtkgetnciplot} help menu.\\}
-\rule{\textwidth}{1pt}
-\begin{footnotesize}
-\VerbatimInput{hmdtkgetnciplot.tex}
-\end{footnotesize}
-\rule{\textwidth}{1pt}
+a cutoff) and a graph of Non Covalent Interactions, NCI (see \cite{bib:contreras2011}
+for further details). We thank Luis Alfredo Nu\~nez Meneses, who was the main developer and current
+maintainer of this script. Luis Alfredo developed \texttt{dtkgetnciplot} during his stay at our Lab
+while he was developing his B.Sc. Thesis.
 
 An example of how to use this script is as follows. First generate the cubes and the NCI plot
 (here we assume the input wavefunction file is named ``wfname''):
 
-\rule{\textwidth}{1pt}
-\begin{footnotesize}
-\begin{verbatim}
+\begin{lstlisting}
    $ dtkgetnciplot -w wfname.wfx
-\end{verbatim}
-\end{footnotesize}
-\rule{\textwidth}{1pt}
+\end{lstlisting}
 
 This instruction will generate a set of files, whose names are described in
 Table \ref{tab:ncilistfiles}.
@@ -798,15 +991,15 @@ Table \ref{tab:ncilistfiles}.
 {\it wfname}NCIRedDensGrad.cub& Cube file of the Reduced Density Gradient ($s$). \\
  & \\
 {\it wfname}NCIRho.cub& Cube file of the Density times the sign \\ 
-                                 & of the second Hessian eingevalue ($\Lambda$). \\
+                                 & of the second Hessian eingevalue ($\Lambda_2$). \\
  & \\
 {\it wfname}NCI.vmd& VMD file with default presets for visualizing\\
                    & the NCI field (using VMD). \\
  & \\
- {\it wfname}NCISvsRho.dat& Two-column version of both cubes $\Lambda$ (column 1)\\
+ {\it wfname}NCISvsRho.dat& Two-column version of both cubes $\Lambda_2$ (column 1)\\
                                     & and $s$ (column 2).\\
  & \\
- {\it wfname}NCISvsRho.pdf& \texttt{pdf} of $\Lambda$ \textit{vs} $s$ (for instance
+ {\it wfname}NCISvsRho.pdf& \texttt{pdf} of $\Lambda_2$ \textit{vs} $s$ (for instance
  Fig. \ref{fig:formicAcidPlotNCI}). Data shown\\ 
   & in this plot is saved in file {\it wfname}NCISvsRho.dat.\\
  & \\\hline
@@ -818,38 +1011,44 @@ The default VMD-generated and pdf files will look as in figure \ref{fig:dtkgetnc
 option ``\texttt{-k}'' keeps the gnuplot file used to generate figure \ref{fig:formicAcidPlotNCI},
 which can be modified by the user to change the style).
 %
-\begin{figure}[hb!]
+\begin{figure}[ht!]
 \centering
-\subfigure[$\rho vs \ S$]{\includegraphics[width=0.45\textwidth]{NCISvsRho}\label{fig:formicAcidPlotNCI}}\quad
-\subfigure[VMD visualization]{\includegraphics[width=0.45\textwidth]{NCIvmd}\label{fig:formicAcidVMDNCI}}
+\subfigure[$\Lambda_2 vs \ S$]{\includegraphics[width=0.45\textwidth]%
+{NCISvsRho}\label{fig:formicAcidPlotNCI}}\quad
+\subfigure[VMD visualisation]{\includegraphics[width=0.45\textwidth]{NCIvmd}\label{fig:formicAcidVMDNCI}}
 \caption{\texttt{dtkgetnciplot} output with default cutoffs.}\label{fig:dtkgetnciplot}
 \end{figure}
 %
 
-From the figure generated using default cutoffs, the user can refine the visualization range and
+From the figure generated using default cutoffs, the user can refine the visualisation range and
 cutoffs, such that the NCI can be better defined, as in figure \ref{fig:formicAcidVMDNCIcutoff}.
 In version \dtkversion, the cubes must be re-computed.
 \texttt{dtkgetnciplot} provides options to pass the custom cutoffs within the command line, as well
 as to use the \textit{smart} features of \texttt{dtkcube} (see Section \ref{sec:dtkcube}).
 For instance, the final data used to render figure \ref{fig:formicAcidVMDNCIcutoff} was
 computed with the following command line:
-
-\rule{\textwidth}{1pt}
-\begin{footnotesize}
-\begin{verbatim}
-   dtkgetnciplot -w wfname.wfx -S 250 -r 0.0 -R 0.06 -G 0.6
-\end{verbatim}
-\end{footnotesize}
-\rule{\textwidth}{1pt}
-
-
 %
-\begin{figure}[hb!]
+\begin{lstlisting}
+   dtkgetnciplot -w wfname.wfx -S 250 -r 0.0 -R 0.06 -G 0.6
+\end{lstlisting}
+%
+\begin{figure}[hbt!]
 \centering
 \subfigure[$\rho vs \ S$]{\includegraphics[width=0.45\textwidth]{NCISvsRho-Cutoff}\label{fig:formicAcidPlotNCIcutoff}}\quad
-\subfigure[VMD visualization]{\includegraphics[width=0.45\textwidth]{NCIvmd-Cutoff}\label{fig:formicAcidVMDNCIcutoff}}
+\subfigure[VMD visualisation]{\includegraphics[width=0.45\textwidth]{NCIvmd-Cutoff}\label{fig:formicAcidVMDNCIcutoff}}
 \caption{\texttt{dtkgetnciplot} output, after refining cutoffs.}\label{fig:dtkgetnciplotCutoff}
 \end{figure}
 %
 
+Also, after the first pass, \textit{i.e.} after obtaining the data for rendering
+Fig.~\ref{fig:dtkgetnciplot}, you can use the program \texttt{dtknci} (see \S\ref{sec:dtknci})
+to reduce the CPU cost of computing the final NCI plot (cutting-off $s$ and $\Lambda_2$).
 
+\newpage
+\rule{\textwidth}{1pt}
+{\center\texttt{dtkgetnciplot} help menu.\\}
+\rule{\textwidth}{1pt}
+\begin{footnotesize}
+\VerbatimInput{hmdtkgetnciplot.tex}
+\end{footnotesize}
+\rule{\textwidth}{1pt}

@@ -6,11 +6,11 @@
 %% 
 %%              Contributors: Juan Manuel Solano-Altamirano
 %%                            Julio Manuel Hernandez-Perez
-%%         Copyright (c) 2013-2015, Juan Manuel Solano-Altamirano
+%%         Copyright (c) 2013-2020, Juan Manuel Solano-Altamirano
 %%                                  <jmsolanoalt@gmail.com>
 %% 
 %%  -------------------------------------------------------------------
-%%  Copyright (c) 2013-2015 Juan Manuel Solano Altamirano.
+%%  Copyright (c) 2013-2020 Juan Manuel Solano Altamirano.
 %%  Permission is granted to copy, distribute and/or modify this document
 %%  under the terms of the GNU Free Documentation License, Version 1.3
 %%  or any later version published by the Free Software Foundation;
@@ -40,25 +40,33 @@
 %**********************************************************************************************
 %**********************************************************************************************
 
-Implementing a new field in \DTK{} is an easy task. The file \texttt{src/\-com\-mon/\-cust\-fld-wfn\-class.\-cpp}
+Implementing a new field in \DTK{} is an easy task. The file \texttt{src/\-com\-mon/\-cust\-fld-wfn\-class.\-cxx}
 contains the implementation of a dummy field, which can be easily changed in order to implement
 the new field.
 
 \begin{figure}
-\lstinputlisting[language=C++, firstline=4, lastline=64]{custfld-wfnclass.cpp}
-\caption{Implementation of the scalar dummy field $\rho^2$, and the vector dummy field
-$\nabla\rho/\rho$.}
+\lstinputlisting[language=C++, firstline=53, lastline=82]{custfld-wfnclass.cpp}
+\caption{Implementation of the scalar dummy field $\rho^2$.}
 \label{fig:codecustfld}
 \end{figure}
 
+\begin{figure}
+\lstinputlisting[language=C++, firstline=84, lastline=109]{custfld-wfnclass.cpp}
+\caption{Implementation of the vector dummy field
+$\nabla\rho/\rho$.}
+\label{fig:codecustvecfld}
+\end{figure}
+
 For instance, in Fig. \ref{fig:codecustfld} we show how to implement the scalar field $\rho^2$
-and the vector field $\nabla\rho/\rho$. The functions evalCustomScalarField and evalCustomVectorField
+and in Fig. \ref{fig:codecustvecfld} the vector field $\nabla\rho/\rho$. The functions evalCustomScalarField and evalCustomVectorField
 are already integrated with \DTK's programs. Therefore, computing new user-implemented fields
 is, after re-compilation of the suite, almost straightforward. 
 
-In version \dtkversion, this easy implementation of new fields is limited to the type of
-new field. If the new field is derivative of any combination of the already implemented fields,
-then the implementation is almost trivial. Otherwise, it requires a bit more time and effort to
+In version \dtkversion, this easy implementation of new fields is limited to the
+already implemented. 
+If the new field is derivative of any combination of the already implemented fields,
+then the implementation is almost trivial. Otherwise, it requires a bit more time
+and effort to
 implement it.
 
 More information about the complete set of functions of the gaussWaveFunc class can be found by

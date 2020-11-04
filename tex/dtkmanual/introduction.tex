@@ -6,11 +6,11 @@
 %% 
 %%              Contributors: Juan Manuel Solano-Altamirano
 %%                            Julio Manuel Hernandez-Perez
-%%         Copyright (c) 2013-2015, Juan Manuel Solano-Altamirano
+%%         Copyright (c) 2013-2020, Juan Manuel Solano-Altamirano
 %%                                  <jmsolanoalt@gmail.com>
 %% 
 %%  -------------------------------------------------------------------
-%%  Copyright (c) 2013-2015 Juan Manuel Solano Altamirano.
+%%  Copyright (c) 2013-2020 Juan Manuel Solano Altamirano.
 %%  Permission is granted to copy, distribute and/or modify this document
 %%  under the terms of the GNU Free Documentation License, Version 1.3
 %%  or any later version published by the Free Software Foundation;
@@ -39,22 +39,23 @@
 
 \section{About \DTK}
 
-DensToolKit (DTK) is a suite of programs designed to analyze scalar and vector fields related to the 
+DensToolKit (DTK) is a suite of programs designed to analyze scalar
+and vector fields related to the 
 electron density of a molecule. The purpose of breaking down the computational tasks into a 
-set of small programs 
-is having a group of programs, which can be used in scripts. The philosophy behind this
+set of small programs, as opposed use a big single complex program, 
+is having a group of programs that can be used in scripts. The philosophy behind this
 approach was learned from Linux OS.
 
 While producing a high quality plot, for scientific publishing purposes, requires a reasonable
-amount of effort, spending time on doing plots to view intermediate results often results
+amount of effort, spending time on doing plots to visualise intermediate results often results
 in a waste of time. After using \texttt{gnuplot} for a couple of years, we realized that
 it is more efficient to build small scripts exploiting the Linux OS tools' capabilities, and
-the scripting capabilities of \texttt{gnuplot}. This very frequently reduces the effort and
+the scripting capabilities of \texttt{gnuplot}. This, very frequently, reduces the effort and
 the time invested in producing plots and reviewing them. In addition, by increasing the amount
-of analyzed data, one may find information that would had not been possible to found with 
-smaller amounts of data. 
+of analysed data, one may find information that would had not been possible to find 
+by analysing smaller amounts of data. 
 
-On another hand, there is a considerable variety of programs written in fortran (especially in
+On the hand, there is a considerable variety of programs written in fortran (especially in
 fortran 77) in the computational chemistry field (here we are referring to the programs
 designed to study the electron density and its derived fields). However, in order to maintain the
 compatibility with fortran compilers, the programmers are not taking the advantage of one of
@@ -63,14 +64,14 @@ We aim to fill part of this gap by providing a seed code, which can be used to s
 open-source project. \DTK{} is written in \texttt{C++}, and it has some object-oriented 
 design (we will keep working on improving the design).
 
-Another feature of \DTK{} consists of its portability. It can be compiled in at least three of the major
+Another important feature of \DTK{} is its portability. \DTK{} can be compiled in at least three of the major
 operative systems, namely Linux/Unix, Darwin(Mac OSX) and Windows (cygwin), using the gnu-gcc compiler.
 In addition, the pure numerical capabilities of \DTK{} do not require any library, nor any other
 program to be installed. However, many of the programs are able to produce script files
-which can be parsed to \texttt{gnuplot} and \texttt{povray}. This method is chosen as a
-medium to provide a simple method for visualizing the data obtained by the suite, without
+which can be parsed to \texttt{gnuplot}, \texttt{VMD}, and \texttt{povray}. This method is chosen as a
+medium to provide a simple method for visualising the data obtained by the suite, without
 re-inventing the wheel: we cannot (and will not) compete with the amazing results that can 
-be obtained with these programs (and others like \texttt{GraphicsMagick, VMD,} etc.
+be obtained with these programs (and others such as \texttt{GraphicsMagick, VMD,} etc.)
 
 \section{Installation guide}
 
@@ -91,8 +92,12 @@ Additionally, \DTK{} can perform calls to third party programs to generate some 
 Most of the programs use \texttt{gnuplot}, but some times \texttt{povray} is also called.
 As a general rule, the programs create a small script that can be passed directly to
 \texttt{gnuplot}/\texttt{povray}. The idea is to facilitate the creation of
-high-quality plots using those programs, by having a tool that easily and quickly creates plots
+high-quality plots using those programs, by having a tool that easily and 
+quickly creates plots
 of what has been calculated, skipping the time-wasting use of graphical interfaces.
+In addition, a few scripts are provided in order to further the automatisation of
+rendering plots. These scripts uses third party programs such as \texttt{epstool},
+\texttt{epstopdf}, etc.
 
 That being said, before you compile \DTK{}, we recommend the installation of the following packages
 in your system:
@@ -127,68 +132,73 @@ Below there is a list of the additional programs required to fully exploit the c
    \item \textbf{gzip 1.6 or later} \url{http://www.gzip.org}
 \end{itemize}
 
-None of the listed programs are required to perform the calculations nor for generating *.log, *.dat, *.tsv, nor *.cub files. If you do not wish to install them (although we strongly recommend it), you can still run the programs and all the data files will be generated anyway (perhaps with several error messages). Later you can generate plots with your preferred software.
+None of the listed programs are required to perform the calculations nor for generating *.log, *.dat, *.tsv, nor *.cub files. If you do not wish to install them (although we strongly recommend it), you can still run the programs and all the data files will be generated anyway (perhaps with several error or warning messages). Later you can generate plots using your preferred software.
 
 \section{Installation from source archive}
 
-This section assumes you have basic knowledge of how to install simple programs in Linux through the command line (same applies for MacOSX and MS Windows ---cygwin---).
+In this section, we assume you have basic knowledge of how to install simple programs in Linux through the command line (the same applies to MacOSX and MS Windows ---cygwin---).
 
 \begin{itemize}
-\item After you have received a copy of the source file, unpack the distributed .tar.gz:
-\begin{verbatim}
-   $tar zxvf denstoolkit-YYYYMMDD-HHMM.tar.gz
-   $cd denstoolkit-YYYYMMDD-HHMM/src
-\end{verbatim}
+\item After obtaining a copy of the source file, unpack the distributed *.tar.gz:
+\begin{lstlisting}[language=bash]
+$tar zxvf denstoolkit-YYYYMMDD-HHMM.tar.gz
+$cd denstoolkit-YYYYMMDD-HHMM/src
+\end{lstlisting}
 \item Just to verify that you have all the required packages installed, run
-\begin{verbatim}
-   $./checkdependencies
-\end{verbatim}
- If some package is missing, you will receive a message. You can skip this step, however, if this simple script works, then the remaining of the installation should be easy.
+\begin{lstlisting}[language=bash]
+$./checkdependencies
+\end{lstlisting}
+ If a recommended package is missing, you will see a message. You can skip this step, however, if this simple script works, then the remaining of the installation should be easy.
  
  Especial attention must be paid to the \texttt{povray} program if you are using cygwin: After installing the \texttt{povray} binaries, look at the direct access created by the installer and (after right-clicking) check properties. In the properties window, you can see the full path of the program. You must add the path to your local \texttt{.bashrc} by adding at the end of this file the line
-\begin{verbatim}
-   PATH=$PATH:/directory/where/povray/is
-\end{verbatim}
+\begin{lstlisting}[language=bash]
+PATH=$PATH:/directory/where/povray/is
+\end{lstlisting}
 After this is done, type from the command line
-\begin{verbatim}
-   $pvengine.exe
-\end{verbatim}
-(if you use the new pvengine64.exe, then that is what you should type.) If \texttt{povray} opens, then you have configured right.
+\begin{lstlisting}[language=bash]
+$pvengine.exe
+\end{lstlisting}
+(if you use the new pvengine64.exe, then that is what you should type.) If \texttt{povray} opens, then you have configured it right.
 
-When all the required programs are installed, the script \texttt{checkdependencies} will display the message: \texttt{All required packages are installed, you can proceed to build and install \DTK!}
-\item Set the \texttt{INSTALL\_PATH}. By default, the final binaries of \DTK{} will be installed in \texttt{/usr/local/bin}. You can change this by editing the Makefile file; in the first non empty line of Makefile, change \texttt{/usr/local/bin} by the directory of your choice.
+After all the required programs have been installed, the script \texttt{checkdependencies} will display the message: \texttt{All required packages are installed, you can proceed to build and install \DTK!}
 \item Set the correct command for \texttt{povray} (MS Windows only): Please, make yourself sure that you can call \texttt{povray} from the command line (if you have successfully run the script \texttt{checkdependencies}, see above, then the next step is straightforward). Modify the Makefile by changing the line
-\begin{verbatim}
-   USERPOVCMD = povray
-\end{verbatim}
+\begin{lstlisting}[language=make]
+USERPOVCMD = povray
+\end{lstlisting}
 by
-\begin{verbatim}
-   USERPOVCMD = pvengine.exe
-\end{verbatim}
+\begin{lstlisting}[language=bash]
+USERPOVCMD = pvengine.exe
+\end{lstlisting}
 (or ``\texttt{USERPOVCMD = pvengine64.exe}'').
 \item Build the \DTK{} binaries:
-\begin{verbatim}
-   $make
-\end{verbatim}
+\begin{lstlisting}[language=bash]
+$make
+\end{lstlisting}
 \item Install the binaries into the \texttt{INSTALL\_PATH} directory
-\begin{verbatim}
-   $sudo make install
-\end{verbatim}
+  \begin{lstlisting}[language=bash]
+$sudo make install
+\end{lstlisting}
+   By default, the final binaries of \DTK{} will be installed in \texttt{/usr/local/bin}.
+   You can change this by defining the variable \texttt{INSTAPP\_PATH} when running make:
+\begin{lstlisting}
+$sudo make INSTALL_PATH=/the/custom/install/path install
+\end{lstlisting}
 \item Run some tests (optional).
-\begin{verbatim}
-   $make runtest
-\end{verbatim}
- You can review the sample output files in the directory 
- 
- \texttt{denstoolkit-YYYYMMDD-HHMM/outputs}
+\begin{lstlisting}[language=bash]
+$make runtest
+\end{lstlisting}
+ You can review the sample output files in the directory\\
+\texttt{denstoolkit-YYYYMMDD-HHMM/outputs}
 \end{itemize}
 
 \section{Uninstalling \DTK}
 
 In the source directory \texttt{denstoolkit-YYYYMMDD-HHMM/src} type:
-\begin{verbatim}
-   $sudo make distclean
-\end{verbatim}
+\begin{lstlisting}[language=bash]
+$sudo make fullclean
+$sudo rm /usr/local/bin/dtk*
+\end{lstlisting}
+Change \texttt{/usr/local/bin} by the install path you used during installation.
 This will remove all the intermediate files used during compilation, all the binaries, and all the outputs produced (if you ran \texttt{\$make runtest}). After this, you can safely remove the entire directory \texttt{denstoolkit-YYYYMMDD-HHMM}.
 
 

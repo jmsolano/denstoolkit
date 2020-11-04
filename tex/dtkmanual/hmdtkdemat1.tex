@@ -12,6 +12,16 @@ Where wf?name is the input wfx(wfn) name, and options can be:
             	  set a1=1, a2=2.
             	  Note: if the *.wfn (*.wfx) file has only one atom
             	  the program will exit and no output will be generated.
+
+  -P        	Create a plot using gnuplot.
+  -c        	Show contour lines in the plot.
+  -C s i e  	Set the contour values (incremental style).
+            	  s, i, and e are real numbers. s is the first
+            	  contour value, i is the increment, and 
+            	  e is the last contour value.
+  -k     	Keeps the *.gnp files to be used later by gnuplot.
+  -l     	Show labels of atoms (those set in option -a) in the plot.
+
   -L        	Calculate MD1 upon the straight line that joins the atoms
             	  instead of upon the bond path.
   -n  dim   	Set the number of points for the tsv file per direction.
@@ -29,15 +39,9 @@ Where wf?name is the input wfx(wfn) name, and options can be:
             	  use this name as well --but different extension--).
   -s step   	Set the stepsize for the bond path to be 'step'.
             	  Default value: 0.03
+  -t        	Translate the plot to the geometrical center of the
+            	  requested atoms.
   -T        	Perform the Topological analysis (find critical points).
-
-  -P        	Create a plot using gnuplot.
-  -c        	Show contour lines in the plot.
-  -C s i e  	Set the contour values (incremental style).
-            	  s, i, and e are real numbers. s is the first
-            	  contour value, i is the increment, and 
-            	  e is the last contour value.
-  -l     	Show labels of atoms (those set in option -a) in the plot.
 
   -v     	Verbose (display extra information, usually output from third-
          	  party sofware such as gnuplot, etc.)

@@ -6,11 +6,11 @@
 %% 
 %%              Contributors: Juan Manuel Solano-Altamirano
 %%                            Julio Manuel Hernandez-Perez
-%%         Copyright (c) 2013-2015, Juan Manuel Solano-Altamirano
+%%         Copyright (c) 2013-2020, Juan Manuel Solano-Altamirano
 %%                                  <jmsolanoalt@gmail.com>
 %% 
 %%  -------------------------------------------------------------------
-%%  Copyright (c) 2013-2015 Juan Manuel Solano Altamirano.
+%%  Copyright (c) 2013-2020 Juan Manuel Solano Altamirano.
 %%  Permission is granted to copy, distribute and/or modify this document
 %%  under the terms of the GNU Free Documentation License, Version 1.3
 %%  or any later version published by the Free Software Foundation;
@@ -50,8 +50,8 @@
 
 \usepackage{listings}
 \usepackage{xcolor}
-\lstset{language=C++%
-,basicstyle=\scriptsize\ttfamily%
+\lstset{language=bash%
+,basicstyle=\ttfamily%
 ,backgroundcolor=\color{black!10}%
 ,breaklines=true%
 ,keywordstyle=\bfseries\color{magenta!90}%
@@ -146,22 +146,22 @@
 \author{J. M. Solano-Altamirano \& J. M. Hern\'andez-P\'erez}
 \begin{document}
 
-
 \frontmatter
 \maketitle
 
 \newpage
 \thispagestyle{empty}
 \phantom{as}
+
 \vspace{5cm}
-Copyright (C) 2013-2015  Juan Manuel Solano Altamirano, Julio Manuel Hern\'andez P\'erez.
+Copyright (C) 2013-2020  Juan Manuel Solano Altamirano, Julio Manuel Hern\'andez P\'erez.
 
     Permission is granted to copy, distribute and/or modify this document
     under the terms of the GNU Free Documentation License, Version 1.3
     or any later version published by the Free Software Foundation;
     with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
-    A copy of the license is included in the section entitled "GNU
-    Free Documentation License".
+    A copy of the license is included in the section entitled ``GNU
+    Free Documentation License''.
 \newpage
 \thispagestyle{empty}
 \phantom{asf}
@@ -182,7 +182,7 @@ Copyright (C) 2013-2015  Juan Manuel Solano Altamirano, Julio Manuel Hern\'andez
 \end{center}
 
 \vspace{8cm}
-\copyright{} 2013-2015: J. M. Solano-Altamirano, J. M. Hern\'andez-P\'erez
+\copyright{} 2013-2020: J. M. Solano-Altamirano, J. M. Hern\'andez-P\'erez
 
 \newpage\thispagestyle{empty}
 \phantom{asd}
@@ -202,42 +202,81 @@ This manual is not complete and for the time being it will continue to be so. Th
 
 \section*{Acknowledgements}
 
-We are grateful to the University of Guelph for providing us access to its library, \DTK{} 
-had not been possible without it. JMSA is also thankful to the International Centre for 
-Theoretical Physics for financial support. Many computational aspects of the \DTK's code, including its performance and the 
-git setup, are result of JMSA's attendance to the \textit{Advanced School on High Performance 
-and Grid Computing}, 2011, and to the \textit{Workshop on Advanced Techniques for Scientific 
+We are grateful to the University of Guelph and the Meritorious
+Autonomous University of Puebla for granting us access to their libraries, \DTK{} 
+had not been possible without these resources.
+JMSA is also thankful to the International Centre for 
+Theoretical Physics for financial support to attend several workshops and
+schools over the last years. Many computational aspects of the \DTK's code, including its performance and the 
+git setup, are result of JMSA's attendance to the following academic events.
+\textit{Advanced School on High Performance 
+and Grid Computing}, 2011. \textit{Workshop on Advanced Techniques for Scientific 
 Programming and Management of Open Source Software Packages}, 2014.
+\textit{Latin American Introductory School on Parallel Programming and
+Parallel Architecture for High Performance Computing}, 2018.
+
+Special acknowledgements are due to Ivan Girotto (International Center for
+Theoretical Physics) and Richard Berger (Temple University).
 
 \newpage\thispagestyle{empty}
 \phantom{asdf}
 
+%------------------------------------------------
 \tableofcontents
+%------------------------------------------------
 
+
+%------------------------------------------------
 \mainmatter
+%------------------------------------------------
 
+
+%------------------------------------------------
 \include{introduction}
+%------------------------------------------------
+
 
 %\include{densfieldsandqtaim}
-
 %\include{defsandunits}
 
+
+%------------------------------------------------
 \include{availablefields}
+%------------------------------------------------
 
+
+%------------------------------------------------
 \include{topology}
+%------------------------------------------------
 
+
+%------------------------------------------------
+\lstset{language=bash%
+,basicstyle=\footnotesize\ttfamily%
+}
 \include{programsscripts}
+%------------------------------------------------
 
+
+%------------------------------------------------
 \include{impnewfld}
+%------------------------------------------------
 
 
+%------------------------------------------------
 \bibliography{dtkbibliography}
 \bibliographystyle{ieeetr}
+%------------------------------------------------
 
+
+%------------------------------------------------
 \appendix
+%------------------------------------------------
 
+
+%------------------------------------------------
 \include{fdl-1.3}
-
+%------------------------------------------------
 
 \end{document}
 \end

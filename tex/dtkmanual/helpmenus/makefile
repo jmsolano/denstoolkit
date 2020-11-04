@@ -3,12 +3,13 @@ TOP_DIR=../../..
 
 all: helpmenus codecps
 
-DTKBINS= dtkbpdens dtkdemat1 dtkfindcp dtkmomd dtkpoint dtkqdmol \
-			dtkcube dtkline dtkplane 
+DTKBINS= dtkbpdens dtkcube dtkdemat1 dtkfindcp\
+			dtkline dtkmomd dtknci dtkplane\
+			dtkpoint dtkqdmol
 
 DTKSCRIPTS= dtkeps2pdf dtkpov2png dtkgetnciplot
 
-DTKCODES= $(TOP_DIR)/src/common/custfld-wfnclass.cpp
+DTKCODES= $(TOP_DIR)/src/common/custfld-wfnclass.cxx
 
 helpmenus: 
 	@for i in $(DTKBINS); do $$i -h | sed 's/\[1m//p' |  sed 's/\[m//p' |\

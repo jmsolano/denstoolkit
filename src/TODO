@@ -1,3 +1,5 @@
+--> Add the compiler option:  CXX="g++-mp-9 -isysroot`xcrun --show-sdk-path`"
+	to compile in MacOSX >= Catalina
 --> Finish implementation of gradDeMat1
 --> Parallelize DM1, and Momentum density for programs dtkdemat1, dtkmomd
 --> Parallelize Hessians for Rho and LOL for program dtkfindcp

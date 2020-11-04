@@ -36,10 +36,17 @@ Where wf?name is the input wfx(wfn) name, and options can be:
   -h		Display the help menu.
 
   --force-bcp-connectivity bcp acp1 acp2 	Try to force the connectivity
-            		  of the bcp to be acp1 and acp2. Needed to correct some
+            		  of the bcp to be acpA and acpB. Needed to correct some
             		  cases wherein bond paths are not properly drawn.
             		  The option will try to force the bond path to be
-            		  connected between acp1-bcp-acp2.
+            		  connected between acpA-bcp-acpB.
+  --force-bcp-connectivities n bcp1 acp1A acp1B bcp2 acp2A acp2B
+            		  Try to connect more than one bcp (see --force-bcp-connectivity)
+            		  n is the number of bcp that will be tested for connection.
+            		  Connectibities will be tried to be acpiA-bcpi-acpiB,
+            		  here i is the number 1, 2, ..., n.
+  --add-seed-twoacps acp1 acp2 	 Perform a critical point search around
+            		  the middle point between acp1 and acp2.
   --help    		Same as -h
   --version 		Same as -V
 ********************************************************************************

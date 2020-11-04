@@ -6,11 +6,11 @@
 %% 
 %%              Contributors: Juan Manuel Solano-Altamirano
 %%                            Julio Manuel Hernandez-Perez
-%%         Copyright (c) 2013-2015, Juan Manuel Solano-Altamirano
+%%         Copyright (c) 2013-2020, Juan Manuel Solano-Altamirano
 %%                                  <jmsolanoalt@gmail.com>
 %% 
 %%  -------------------------------------------------------------------
-%%  Copyright (c) 2013-2015 Juan Manuel Solano Altamirano.
+%%  Copyright (c) 2013-2020 Juan Manuel Solano Altamirano.
 %%  Permission is granted to copy, distribute and/or modify this document
 %%  under the terms of the GNU Free Documentation License, Version 1.3
 %%  or any later version published by the Free Software Foundation;
@@ -43,10 +43,10 @@
 As is well known from Quantum Mechanics theory, all the information of a quantum system is
 contained in the wave function. For a molecular system,  the wave function, $\psi(\boldsymbol{r})$,
 can be spanned by $M$ molecular orbitals $\chi_m(\boldsymbol{r})$ ($m=1,\dots,M$, and these
-molecular orbitals can be obtained by any of the self consistent field methods available)
+molecular orbitals can be obtained by any of the self consistent field methods available):
 %
 \begin{equation}
-   \psi(\boldsymbol{r})=\sum_{m=1}^{M}\sqrt{C_m}\chi_m(\boldsymbol{r}).
+   \psi(\boldsymbol{r})=\sum_{m=1}^{M}C_m\chi_m(\boldsymbol{r}).
 \end{equation}
 %
 In turn, each molecular orbital can be spanned by a linear combination of Gaussian basis functions:
@@ -55,16 +55,16 @@ In turn, each molecular orbital can be spanned by a linear combination of Gaussi
 \end{equation}
 %
 We have used here a slightly different notation (as opposed to the traditional notation) to denote
-primitives in order to clearly separate the different index types that one encounters while handling
+primitives, in order to clearly separate the different index types that one encounters while handling
 molecular wave functions. We use upper case dotted indices for identifying Gaussian basis functions.
 Under our notation, each individual basis function is uniquely identified with a dotted index, and
 each basis function has associated three integers ($a^1_{\dA}$, $a^2_{\dA}$, and $a^3_{\dA}$), and a
-point which denotes the centre of the primitive $\boldsymbol{R}_{\dA}$ (with this notation a
-primitive centre $\boldsymbol{R}_{\dA}$ can be the same than another primitive centre
+vector which sets the centre of the primitive $\boldsymbol{R}_{\dA}$ (with this notation, a
+primitive centre $\boldsymbol{R}_{\dA}$ can be equal to another primitive centre
 $\boldsymbol{R}_{\dB}$, \textit{i.e.} the index associates the Cartesian coordinates of a nucleus
-to a particular basis function, rather than associating a basis function with a nucleus;
+to a particular basis function, as opposed to associate a basis function with a nucleus;
 similar behaviour is observed for the integers $a^i_{\dA}$). This index naming is actually more
-natural for reading and understanding the \texttt{wfn} and \texttt{wfx} files. 
+practical for reading and understanding the \texttt{wfn} and \texttt{wfx} files. 
 
 Each Gaussian basis function (or primitive) is given by
 %
@@ -75,7 +75,8 @@ Each Gaussian basis function (or primitive) is given by
 %
 and the normalization constants are already included in the coefficients $D_{m\dA}$.
 
-Finally, unless otherwise specified, we will assume that Im$(\phi_{\dA})=0$. While this is not true in general, it does hold for the Gaussian basis sets we will be interested in (\textit{i.e.,} those obtained as \texttt{wfn} or \texttt{wfx} files from Gaussian, Gamess, MolPro, NWChem, etc.)
+Finally, unless otherwise specified, we will assume that Im$(\phi_{\dA})=0$. While this is not universally true,
+it is so for the Gaussian basis, whereof we will be interested in (\textit{i.e.,} those obtained from \texttt{wfn} or \texttt{wfx} files, which in turn can be obtained from Gaussian, Gamess, MolPro, NWChem, etc.)
 
 
 %..............................................................................................
@@ -83,7 +84,7 @@ Finally, unless otherwise specified, we will assume that Im$(\phi_{\dA})=0$. Whi
 %..............................................................................................
 
 In the current version of \DTK{}, the wavefunctions with pseudopotentials can be
-input. However, the wavefunction file is restricted to have \texttt{wfx} format
+input. However, the wavefunction file is restricted to be in \texttt{wfx} format,
 and the Gaussian primitives used for describing the core electrons must be in a
 single \texttt{<Additional Electron Density Function (EDF)>} block (see
 \cite{bib:webwfxformat} for more details).
@@ -119,8 +120,8 @@ In the \texttt{wfx} file, the coefficients $C_{\bA}$ are referred to as the
 \texttt{``EDF Primitive Coefficients''}, and $\beta_{\bA}$ are the so-called
 \texttt{``EDF Primitive Exponents''}.
 Clearly, there exists a very close relationship between dotted functions, and barred
-functions, however we keep the barred index to remind the subtle differences 
-in how each part of the total electron density must be treated.
+functions, however we keep the barred index to remind us the subtle differences 
+stemming from how each part of the total electron density must be treated.
 
 Another feature (noteworthy to our purposes) is that pseudopotentials are 
 spanned by $s$-type primitives, which reduces many mathematical developments.
@@ -136,7 +137,7 @@ spanned by $s$-type primitives, which reduces many mathematical developments.
 %..............................................................................................
 
 Hereafter, we will use the term ``Regular Expansion'' whenever we are describing
-the standard Gaussian-type orbital expansions, \textit{ie.e} the wavefunction
+the standard Gaussian-type orbital expansions, \textit{i.e.} when the wavefunction
 does not use pseudopotentials.
 
 The electron density is therefore given by
@@ -177,7 +178,7 @@ In what follows, unless stated otherwise, we will follow the Einstein summation 
 \end{equation}
 %
 
-While this notation is not customary in chemistry fields, it allows oneself to perform all the tensor gymnastics developed in other fields of physics, as we will see below.
+While this notation is not customary in the chemistry field, it allows for performing all the tensor gymnastics developed in other fields of physics, as we will see below.
 
 Also, we will use latin indices to denote the Cartesian components of a vector. Therefore the $i$-th component of a vector $\boldsymbol{A}$ is
 %
@@ -193,8 +194,8 @@ and the $i$-th partial derivative of a function $\varphi$ is denoted as follows:
 %
 
 The Einstein summation convention is also implied every time a latin index appears twice in the
-same term. The limits of the summation should be obvious depending on the index type. For
-instance upper case, dotted indices will run from $\dot{1}$ to the number of primitives in
+same term. The limits of the summation should be obvious from the index type. For
+instance, upper case dotted indices will run from $\dot{1}$ to the number of primitives in
 the expansion ($\dot{P}$); while latin, lower case indices will run from 1 to 3 (since they
 are used for cartesian components). This is one of the advantages of introducing such an
 index naming system.
@@ -218,7 +219,8 @@ in a $C_{\bA\bB}$ form as follows:
 The above definition will serve to closely follow mathematical developments used with
 dotted indices (regular primitives), since most of the field definitions will have
 a direct mirror by changing $\dA\to\bA$ (as we will see below). The Einstein
-summation convention also applies for barred indices.
+summation convention also applies for barred indices, and the index runs over the
+number of basis used for spanning the pseudopotential part.
 
 The electron density is thus given by
 %
@@ -240,7 +242,7 @@ difference between using $\rho_{\bA}$ or $\phi_{\bA}$, as they differ each
 other only by the exponent value ($\beta_{\bA}$ \textit{vs} $\alpha_{\bA}$).
 However, in computational terms, the difference is huge because all
 non-diagonal terms of $C_{\bA\bB}$ are zero, which reduces the number
-of operations to be proportional to $\bar E$. This feature, along with the
+of operations to be proportional to $\bar E$. This feature, together with the
 $s$-type character of the primitives/density will be often
 exploited below, and the primitive product (last equality of Eq.
 (\ref{eq:rhowithpsdpot})) will be avoided wherever we can.
@@ -332,7 +334,7 @@ Therefore, higher derivatives of the electron density, such as the Hessian, can 
   \partial_i\partial_j\phi_{\dA}=D_{i\dA}^1D_{j\dA}^1D^0_{k\dA}, \qquad\textrm{(no summation)}
 \end{equation}
 %
-While this notation may seem cumbersome, it simplifies the implementation of higher derivatives of the electron density by the use of arrays. For example, the Hessian of the electron density is given by
+While this notation may seem cumbersome, it simplifies the implementation of higher derivatives of the electron density through the use of arrays. For example, the Hessian of the electron density is given by
 %
 \begin{equation}
    \partial_i\partial_j\rho=2c_{\dA\dB}\left(\phi_{\dA}\partial_i\partial_j\phi_{\dB}+\partial_i\phi_{\dA}\partial_j\phi_{\dB}\right).
@@ -376,7 +378,7 @@ The Laplacian of the electron density is evaluated by means of
    \nabla^2\rho=\partial_k\partial_k\rho=2c_{\dA\dB}\left(\partial_k\phi_{\dA}\partial_k\phi_{\dB}+\phi_{\dA}\partial_k\partial_k\phi_{\dB}\right)
 \end{equation}
 %
-If pseudopotentials are used, the Laplacian is then
+If pseudopotentials are used, then the Laplacian is:
 %
 \begin{equation}%\label{eq:}
    \partial_k\partial_k\rho=
@@ -515,7 +517,7 @@ A table of the Fourier transforms of the cartesian primitives is listed in Ref. 
 \end{center}
 \end{table}
 
-For the evaluation of this field, we must account for the imaginary terms of the Fourier terms. \DTK{} exploit the library \texttt{<complex>} distributed as standard library of \texttt{C++}. 
+For evaluating this field, we must account for the imaginary parts of the Fourier terms. \DTK{} exploit the library \texttt{<complex>} distributed as standard library of \texttt{C++}. 
 
 %..............................................................................................
 \subsection{Pseudopotentials}
@@ -723,8 +725,8 @@ it is directly evaluated using these fields. By definition, LED (denoted as $\ti
 -\tilde{\boldsymbol P}=\frac{\hslash\nabla\rho}{2\rho}.
 \end{equation}
 %
-Since \DTK{} uses atomic units, in Eq. (\ref{eq:LEDDef}) is actually equal to one.
-Furthermore, in \dtkversion, we have no convention to save vector fields on cubes,
+Since \DTK{} uses atomic units, in Eq. (\ref{eq:LEDDef}), $\hslash=1$.
+Furthermore, in version \dtkversion{} of \DTK, we have no convention to save vector fields on cubes,
 thus we only provide the magnitude of $\tilde{\boldsymbol P}$, \textit{i.e.}:
 %
 \begin{equation}\label{eq:MagLEDDef}
@@ -761,7 +763,7 @@ and
 Consequently, this field is computed using the implementations for $G$ and $\rho$.
 
 %----------------------------------------------------------------------------------------------
-\section{Reduced Gradient of Density}
+\section{Reduced Density Gradient}
 %----------------------------------------------------------------------------------------------
 Since the field is derived from the ED ($\rho$) and its gradient, in \DTK{} we
 compute it with no special implementation. According to Johnson \textit{et al.} \cite{bib:johnson2010}, the
@@ -773,12 +775,20 @@ reduced density gradient is defined as
 %
 
 This field is used to characterize Non Covalent Interactions (NCI). In computational terms, the
-NCI is a correlation between $\rho$ and $s$. However, in practice,
+NCI is a correlation between $\rho$, $\partial_i\partial_j\rho$, and $s$. In practice,
 the NCI requires a bit of human intervention for determining appropriate cutoffs.
 To this end, in \DTK, we provide the script \texttt{dtkgetnciplot} to determine
 the cutoffs (see Section \ref{sec:dtkgetnciplotdesc}, and Ref. \cite{bib:contreras2011}
-for further details), as well as to generate VMD templates to visualize the NCI
-index.
+for further details).
+\subsection{Gradient of the Reduced Density Gradient}
+In the current version, we implemented the gradient of the field $s$ using the implementation
+for $\rho$, $\partial_i\rho$, and $\partial_i\partial_j\rho$:
+\begin{equation}
+	\partial_ks=\frac{1}{2(3\pi^2)^{1/3}\rho^{4/3}}\left\{
+		\frac{\left(\partial_i\rho\cdot\partial_k\partial_i\rho\right)}{\sqrt{\partial_i\rho\cdot\partial_i\rho}}
+		-\frac{4}{3}\frac{\sqrt{\partial_i\rho\cdot\partial_i\rho}}{\rho}\partial_k\rho
+	\right\}.
+\end{equation}
 
 %----------------------------------------------------------------------------------------------
 \section{Ellipticity}

@@ -28,17 +28,6 @@ cachegrind.*
 *.tga
 
 #binaries
-src/dtkbpdens/dtkbpdens
-src/dtkcube/dtkcube
-src/dtkdemat1/dtkdemat1
-src/dtkfindcp/dtkfindcp
-src/dtkcharcicp/dtkcharcicp
-src/dtkline/dtkline
-src/dtkmomd/dtkmomd
-src/dtkplane/dtkplane
-src/dtkpoint/dtkpoint
-src/dtkqdmol/dtkqdmol
-src/dtkintegobondpath/dtkintegobondpath
 
 #Trash and system files
 *~
@@ -66,6 +55,7 @@ tex/*.*
 tex/dtkmanual/plots/*
 tex/dtkmanual/tmp/*
 tex/ejemplos/*
+tex/dtkmanual/snapshots/
 wavefiles/*
 arts/*
 src/dtkview/build
@@ -81,6 +71,8 @@ src/testMEP
 src/dtkview/oldbuid
 src/dtk*/tmp
 src/common/bkpOld
+src/dtknci/vmdPlot
+src/dtkcube/images
 
 #specific files
 namefiglet.txt
