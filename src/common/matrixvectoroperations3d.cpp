@@ -84,6 +84,18 @@ vector<vector<double> > MatrixVectorOperations3D::Zeros() {
    }
    return m;
 }
+void MatrixVectorOperations3D::Add(const vector<double> &a,\
+        const vector<double> &b,vector<double> &c) {
+   c[0]=a[0]+b[0];
+   c[1]=a[1]+b[1];
+   c[2]=a[2]+b[2];
+}
+void MatrixVectorOperations3D::AminusB(const vector<double> &a,\
+        const vector<double> &b,vector<double> &c) {
+   c[0]=a[0]-b[0];
+   c[1]=a[1]-b[1];
+   c[2]=a[2]-b[2];
+}
 vector<double> MatrixVectorOperations3D::UnitVector(size_t idx) {
    vector<double> res={0.0e0,0.0e0,0.0e0};
    res[idx]=1.0e0;

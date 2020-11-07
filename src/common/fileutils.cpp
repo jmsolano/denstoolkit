@@ -3,9 +3,12 @@
 #include <iostream>
 using std::cout;
 using std::endl;
-using std::cerr;
 #include <fstream>
 using std::ifstream;
+using std::ofstream;
+#include <iomanip>
+using std::scientific;
+using std::setprecision;
 #include "fileutils.h"
 #include "screenutils.h"
 #include "stringtools.h"
@@ -272,7 +275,7 @@ void FileUtils::WriteHappyStart(char ** (&argv),ofstream &ofil,string vers,strin
 }
 void FileUtils::WriteV3Components(ofstream &ofil,const double (&v)[3]) {
    for (int i=0; i<3; i++) {ofil << v[i] << " ";}
-   ofil << endl;
+   ofil << '\n';
 }
 void FileUtils::WriteV3Components(ofstream &ofil,const std::string &s,const double (&v)[3]){
    ofil << s;
@@ -295,6 +298,32 @@ bool FileUtils::ExtensionMatches(const string &fname,const string ext) {
    size_t nExt=ext.size();
    size_t pos=fname.find_last_of('.')+1;
    return (fname.substr(pos,nExt)==ext);
+}
+void FileUtils::SaveMatrix(const string &fname,const vector<vector<double> > &mat,\
+         const string &hdr,const bool scient,const char sep) {
+   if ( mat.size()<1 ) {
+      ScreenUtils::DisplayWarningMessage("Empty matrix, nothing to save.");
+      cout << __FILE__ << ", line: " << __LINE__ << '\n';
+      return;
+   }
+   ofstream ofil(fname);
+   if ( !ofil.good() ) {
+      ScreenUtils::DisplayErrorFileNotOpen(fname);
+      cout << __FILE__ << ", line: " << __LINE__ << '\n';
+      ofil.close();
+      return;
+   }
+   if ( hdr.size()>0 ) { ofil << '#' << hdr << '\n'; }
+   if ( scient ) { ofil << scientific << setprecision(12); }
+   int ncm1;
+   for ( size_t i=0 ; i<mat.size() ; ++i ) {
+      ncm1=int(mat[i].size())-1;
+      for ( int j=0 ; j<ncm1 ; ++j ) {
+         ofil << mat[i][j] << sep;
+      }
+      ofil << mat[i][ncm1] << '\n';
+   }
+   ofil.close();
 }
 
 

@@ -445,7 +445,7 @@ bool HelpersIsosurface::AddIsosurfacePOVMeshWithNormals(ofstream &ofil,Isosurfac
       ofil << ",";
       if ( (i%3) == 2 ) { ofil << '\n' << thetabs; }
    }
-   HelpersPOVRay::WriteVector(ofil,iso.vertices[nvm1][0],iso.vertices[nvm1][1],iso.vertices[nvm1][2]);
+   HelpersPOVRay::WriteVector(ofil,iso.normals[nvm1][0],iso.normals[nvm1][1],iso.normals[nvm1][2]);
    thetabs=HelpersPOVRay::IndTabsStr(--indlev);
    ofil << thetabs << "}" << endl;//end of normal_vectors
    thetabs=HelpersPOVRay::IndTabsStr(indlev++);

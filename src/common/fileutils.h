@@ -53,6 +53,16 @@ public:
 /* ************************************************************************** */
    static void WriteV3Components(ofstream &ofil,const double (&v)[3]);
    static void WriteV3Components(ofstream &ofil,const std::string &s,const double (&v)[3]);
+   /** Writes the matrix into the file named fname.
+    * sep is the character used for separating columns.
+    * scient is a boolean to write the data using scientific notation.
+    * for separating the matrix values.
+    * hdr is a string that will be printed
+    * out at the beginning of the file if it is not empty. Warning: The function
+    * prints a '#' character for the first line of hdr, however, if the hdr contains
+    * newlines, the user must also include the respective '#' after each new line.  */
+   static void SaveMatrix(const string &fname,const vector<vector<double> > &mat,\
+         const string &hdr="",const bool scient=true,const char sep=' ');
 /* ************************************************************************** */
    static void ReplaceExtensionOfFileName(string &orig,const string thenewext);
    static void RemoveExtensionFromFileName(string &str);

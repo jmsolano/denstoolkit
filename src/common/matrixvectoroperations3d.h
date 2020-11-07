@@ -26,6 +26,10 @@ public:
    static double Determinant(const vector<vector<double> > &M);
    static vector<vector<double> > UnitMatrix();
    static vector<vector<double> > Zeros();
+   static void Add(const vector<double> &a,const vector<double> &b,vector<double> &c);
+   static void AminusB(const vector<double> &a,const vector<double> &b,vector<double> &c);
+   inline static void Scale(const double f,vector<double> &v) { v[0]*=f; v[1]*=f; v[2]*=f; };
+   inline static void Scale(vector<double> &v,const double f) { Scale(f,v); };
    /** Returns a unit vector, v, with v[idx]=1.  */
    static vector<double> UnitVector(size_t idx);
    static vector<double> X() {return UnitVector(0);}

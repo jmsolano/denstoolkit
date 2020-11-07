@@ -22,6 +22,23 @@ void CommonHelpers::PutNuclei(ofstream &ofil,BondNetWork &bn,int ntbs,\
    }
    ofil << HelpersPOVRay::IndTabsStr(--nt) << "}\n";
 }
+void CommonHelpers::PutSpecialSpheres(ofstream &ofil,int ntbs,\
+      const vector<vector<double> > &sp,const string trnsmat) {
+   if ( sp[0].size()<7 ) {
+      ScreenUtils::DisplayErrorMessage("CommonHelpers::PutSpecialSpheres needs 7 componets per sp[i] vector!");
+      return;
+   }
+   double atrad;
+   int nt=ntbs;
+   ofil << "//          Special additional points." << '\n';
+   ofil << HelpersPOVRay::IndTabsStr(nt++) << "union {" << '\n';
+   for (int i=0; i<sp.size(); i++) {
+      atrad=sp[i][3];
+      HelpersPOVRay::WriteTransparentSphere(ofil,nt,sp[i][0],sp[i][1],sp[i][2],atrad,
+            sp[i][4],sp[i][5],sp[i][6],trnsmat);
+   }
+   ofil << HelpersPOVRay::IndTabsStr(--nt) << "}\n";
+}
 void CommonHelpers::PutBonds(ofstream &ofil,BondNetWork &bn,const int ntbs,\
          const string trnsmbnd) {
    string pigmstr="transmit ";

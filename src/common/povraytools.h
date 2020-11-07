@@ -96,6 +96,11 @@ public:
    static bool WriteSmoothTriangle(ofstream &ofil,int nt,\
          const vector<vector<double> > &v,const vector<vector<double> > &n,
          double cr,double cg,double cb,const string &pigmentStr="");
+   static bool WriteMesh2SingleRGB(ofstream &ofil,const vector<vector<double> > &v,\
+         const vector<vector<double> > &n,const vector<vector<size_t> > &f,\
+         const int nt,vector<double> rgb);
+   static bool WriteMesh2SingleRGB(ofstream &ofil,const vector<vector<double> > &v,\
+         const vector<vector<size_t> > &f,const int nt,vector<double> rgb);
 /* ************************************************************************** */
 };
 /* ************************************************************************** */
