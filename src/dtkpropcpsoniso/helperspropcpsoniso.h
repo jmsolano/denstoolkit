@@ -33,6 +33,7 @@ public:
    static bool SearchCPs(SymmetricSurfaceGrid &g,GaussWaveFunction &wf,\
          vector<vector<double> > &rcp,vector<size_t> &poscp,vector<int> &sigcp,\
          vector<double> &valcp,const char prop='V');
+   static bool ComputeNormalsAtVertices(SymmetricSurfaceGrid &g,GaussWaveFunction &wf,const char prop='d');
 /* ************************************************************************** */
 protected:
 /* ************************************************************************** */

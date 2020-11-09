@@ -21,6 +21,7 @@ SymmetricSurfaceGrid::SymmetricSurfaceGrid() {
    sface.clear();
    center.resize(3);
    center[0]=center[1]=center[2]=0.0e0;
+   usenormals=false;
 }
 SymmetricSurfaceGrid::SymmetricSurfaceGrid(Shape sh)
    : SymmetricSurfaceGrid() {
@@ -531,6 +532,7 @@ void SymmetricSurfaceGrid::RemoveUnusedVertices() {
       }
    }
    //if ( ctd!=nullptr ) { ResizeMatrix((*ctd),(*f).size(),3); }
+   ResizeMatrix(normal,vertex.size(),3);
 }
 void SymmetricSurfaceGrid::DisplayFaces() {
    if ( shape==Shape::SPHEREICOSAHEDRON ) {

@@ -49,6 +49,8 @@ public:
    //void EraseVertexAndAssociatedFaces(size_t idx);
    void RemoveUnusedVertices();
    void DisplayFaces();
+   void UseNormals(bool un) { usenormals=un; }
+   inline bool UseNormals() { return usenormals; }
 /* ************************************************************************** */
    vector<vector<double> > vertex;
    vector<vector<double> > normal;
@@ -60,6 +62,8 @@ public:
 protected:
 /* ************************************************************************** */
    Shape shape;
+   bool usenormals;
+/* ************************************************************************** */
    void ClearArrays();
    void ResizeMatrix(vector<vector<double> > &m,size_t nr,size_t nc=3);
    void ResizeMatrix(vector<vector<size_t> > &m,size_t nr,size_t nc=3);

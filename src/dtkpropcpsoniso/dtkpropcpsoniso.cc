@@ -192,6 +192,9 @@ int main (int argc, char ** argv) {
    /* Rendering  */
 
    POVRayConfiguration pvp;
+   if ( HelpersPropCPsOnIso::ComputeNormalsAtVertices(grid,gwf,isoprop) ) {
+      grid.UseNormals(true);
+   }
    double cv[3]={0.0e0,0.0e0,0.0e0};
    if ( options.setgnpangles ) {
       cv[0]=std::stod(string(argv[options.setgnpangles]));

@@ -307,12 +307,40 @@ bool HelpersPropCPsOnIso::MakePovFile(const string &povname,OptionFlags &options
    CommonHelpers::PutBonds(ofil,bn,pvp.currIndLev,"TransmitStdBondCylinder");
    ofil << "#end\n//end if DrawStandardBonds" << '\n';
    vector<double> rgb{0.1,0.1,1.0};
-   HelpersPOVRay::WriteMesh2SingleRGB(ofil,grid.vertex,grid.tface,0,rgb,"transmit TransmitIsosurface");
+   if ( grid.UseNormals() ) {
+      HelpersPOVRay::WriteMesh2SingleRGB(ofil,grid.vertex,grid.normal,grid.tface,0,rgb,"transmit TransmitIsosurface");
+   } else {
+      HelpersPOVRay::WriteMesh2SingleRGB(ofil,grid.vertex,grid.tface,0,rgb,"transmit TransmitIsosurface");
+   }
    CommonHelpers::PutSpecialSpheres(ofil,pvp.currIndLev,sp,"TransmitCritPts");
    ofil.close();
    if ( options.mkpng ) {
       string cmd="dtkpov2png "+povname+" 2>/dev/null";
       system(cmd.c_str());
+   }
+   return true;
+}
+bool HelpersPropCPsOnIso::ComputeNormalsAtVertices(SymmetricSurfaceGrid &g,GaussWaveFunction &wf,\
+      const char prop) {
+   void (GaussWaveFunction::* f)(double,double,double,double&,double&,double&,double&);
+   switch ( prop ) {
+      case 'd' :
+         f=&GaussWaveFunction::EvalRhoGradRho;
+         break;
+      default :
+         f=&GaussWaveFunction::EvalRhoGradRho;
+         break;
+   }
+   //double vl=(wf.*f)(rl[0],rl[1],rl[2]);
+   double rho;
+   size_t nv=g.vertex.size();
+   if ( nv!=g.normal.size() ) {
+      ScreenUtils::DisplayWarningMessage("Needs resizing normals!");
+      return false;
+   }
+   for ( size_t i=0 ; i<nv ; ++i ) {
+      (wf.*f)(g.vertex[i][0],g.vertex[i][1],g.vertex[i][2],rho,\
+            g.normal[i][0],g.normal[i][1],g.normal[i][2]);
    }
    return true;
 }
