@@ -74,7 +74,10 @@ OptionFlags::OptionFlags() {
    prop2eval=isoprop=0;
    setcentat=setdirat1=setdirat2=setdirat3=0;
    setviewangles=setgnpangles=0;
+   refinemesh=0;
    mkpov=kppov=mkpng=false;
+   transparentiso=false;
+   drawiso=true;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    string progname;
@@ -114,6 +117,14 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                flags.setcentat=(++i);
                if (i>=argc) {printErrorMsg(argv,'c');}
                break;
+            case 'C' :
+               flags.setdirat3=(++i);
+               if ( (i+2)>=argc ) { printErrorMsg(argv,'C'); }
+               i+=2;
+               break;
+            case 'H' :
+               flags.drawiso=false;
+               break;
             case 'I' :
                flags.isoprop=(++i);
                if ( (i+1)>=argc ) { printErrorMsg(argv,'I'); }
@@ -131,11 +142,6 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                if ( (i+1)>=argc ) { printErrorMsg(argv,'m'); }
                ++i;
                break;
-            case 'C' :
-               flags.setdirat3=(++i);
-               if ( (i+2)>=argc ) { printErrorMsg(argv,'C'); }
-               i+=2;
-               break;
             case 'o':
                flags.outfname=(++i);
                if (i>=argc) {printErrorMsg(argv,'o');}
@@ -147,6 +153,13 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
             case 'P' :
                flags.mkpov=true;
                flags.mkpng=true;
+               break;
+            case 'r' :
+               flags.refinemesh=(++i);
+               if (i>=argc) {printErrorMsg(argv,'r');}
+               break;
+            case 't' :
+               flags.transparentiso=true;
                break;
             case 'h':
                printHelpMenu(argc,argv);
@@ -207,6 +220,7 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "  -A aX aY aZ\tSets the view angles to be aX, aY, and aZ." << '\n';
    cout << "  -c cAtNum \tSets the atom cAtNum to be the center around which the\n"
         << "            \t  cap isosurface is computed." << '\n';
+   cout << "  -H        \tHides the isosurface in png image (pov file)." << '\n';
    cout << "  -k        \tKeeps the pov-ray script (see also option P, below)." << '\n';
    cout << "  -l dAtNum \tSets the direction point to be the coordinates of atom\n"
         << "            \t  dAtNum. See the scheme at the end of this help menu." << '\n';
@@ -241,6 +255,11 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  the base name.)" << '\n';
    cout << "  -P        \tGenerates a pov-ray script and renders it. Notice: this requires" << endl
         << "            \t   povray to be installed in your system." << endl;
+   cout << "  -r rlev   \tRefines the isosurface cap mesh. rlev is a level of refinement\n"
+        << "            \t  (an integer, whose default value is 4). Each level increases\n"
+        << "            \t  the number of triangles by a factor of 4, and it must be >0.\n"
+        << "            \t  rlev>8 is not recommended as it may cause numerical issues." << '\n';
+   cout << "  -t        \tDraw transparent isosurface." << '\n';
    cout << "  -V     \tDisplays the version of this program." << '\n';
    cout << "  -h     \tDisplay the help menu.\n\n";
    //-------------------------------------------------------------------------------------
@@ -284,6 +303,7 @@ void printErrorMsg(char** &argv,char lab) {
          break;
       case 'c':
       case 'l':
+      case 'r':
          cout << "should be followed by an integer." << endl;
          break;
       case 'm':

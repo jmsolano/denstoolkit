@@ -98,9 +98,10 @@ public:
          double cr,double cg,double cb,const string &pigmentStr="");
    static bool WriteMesh2SingleRGB(ofstream &ofil,const vector<vector<double> > &v,\
          const vector<vector<double> > &n,const vector<vector<size_t> > &f,\
-         const int nt,vector<double> rgb);
+         const int nt,vector<double> rgb,const string &trnsmStr="");
    static bool WriteMesh2SingleRGB(ofstream &ofil,const vector<vector<double> > &v,\
-         const vector<vector<size_t> > &f,const int nt,vector<double> rgb);
+         const vector<vector<size_t> > &f,const int nt,vector<double> rgb,\
+         const string &trnsmStr="");
 /* ************************************************************************** */
 };
 /* ************************************************************************** */

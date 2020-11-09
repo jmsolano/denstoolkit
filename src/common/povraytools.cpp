@@ -36,32 +36,32 @@ bool POVRayConfiguration::WriteHeader(ofstream &ofil,bool placecam) {
    if ( setversion36 ) {
       ofil << "#version 3.6; "
            << "//Unless you know what you are doing, do not modify "
-           << "this line..." << endl;
+           << "this line..." << '\n';
    }
    WriteIncColors(ofil);
    if (shine) {
-      ofil << endl << "#default { finish { specular 0.3 roughness 0.03 phong .1 } }" << endl;
+      ofil << '\n' << "#default { finish { specular 0.3 roughness 0.03 phong .1 } }" << '\n';
    }
-   ofil << endl << "global_settings { ambient_light White }" << endl;
-   ofil << endl << "light_source {" << endl;
+   ofil << '\n' << "global_settings { ambient_light White }" << '\n';
+   ofil << '\n' << "light_source {" << '\n';
    currIndLev++; thetabs=HelpersPOVRay::IndTabsStr(currIndLev);
    ofil << thetabs;
    HelpersPOVRay::WriteVector(ofil,lightSource[0][0],lightSource[0][1],lightSource[0][2]);
-   ofil << endl << thetabs << "color White*0.5" << endl;
+   ofil << '\n' << thetabs << "color White*0.5" << '\n';
    currIndLev--; thetabs=HelpersPOVRay::IndTabsStr(currIndLev);
-   ofil << "}" << endl;
+   ofil << '}' << '\n';
    for (int i=1; i<nLightSources; i++) {
-      ofil << endl << "light_source {" << endl;
+      ofil << '\n' << "light_source {" << '\n';
       currIndLev++; thetabs=HelpersPOVRay::IndTabsStr(currIndLev);
       ofil << thetabs;
       HelpersPOVRay::WriteVector(ofil,lightSource[i][0],lightSource[i][1],lightSource[i][2]);
-      ofil << endl << thetabs << "color White*0.5" << endl;
+      ofil << '\n' << thetabs << "color White*0.5" << '\n';
       currIndLev--; thetabs=HelpersPOVRay::IndTabsStr(currIndLev);
-      ofil << "}" << endl;
+      ofil << '}' << '\n';
    }
-   ofil << endl << "background { color ";
+   ofil << '\n' << "background { color ";
    HelpersPOVRay::WriteVector(ofil,backGroundColor[0],backGroundColor[1],backGroundColor[2]);
-   ofil << " }" << endl;
+   ofil << " }" << '\n';
    if (placecam) {WritePlaceCamera(ofil);}
    return false;
 }
@@ -114,36 +114,36 @@ void POVRayConfiguration::AddLightSource(double xx,double yy,double zz) {
 }
 void POVRayConfiguration::WriteIncColors(ofstream &ofil) {
    if (inccolors) {
-      ofil << "//To include colors, textures, etc..." << endl;
-      ofil << "#include \"colors.inc\"" << endl;
+      ofil << "//To include colors, textures, etc..." << '\n';
+      ofil << "#include \"colors.inc\"" << '\n';
    }
    return;
 }
 void POVRayConfiguration::WritePlaceCamera(ofstream &ofil) {
    string thetabs;
-   ofil << endl << "//Place the camera:" << endl << "camera{" << endl;
+   ofil << '\n' << "//Place the camera:" << '\n' << "camera{" << '\n';
    currIndLev++;
    thetabs=HelpersPOVRay::IndTabsStr(currIndLev);
    ofil << thetabs << "sky ";
    HelpersPOVRay::WriteVector(ofil,skyCam[0],skyCam[1],skyCam[2]);
-   ofil << endl << thetabs << "location ";
+   ofil << '\n' << thetabs << "location ";
    HelpersPOVRay::WriteVector(ofil,locCam[0],locCam[1],locCam[2]);
-   ofil << endl << thetabs << "look_at ";
+   ofil << '\n' << thetabs << "look_at ";
    HelpersPOVRay::WriteVector(ofil,lookAtCam[0],lookAtCam[1],lookAtCam[2]);
-   ofil << endl;
+   ofil << '\n';
    currIndLev--;
-   ofil << "}" << endl;
+   ofil << '}' << '\n';
    return;
 }
 void POVRayConfiguration::WriteLightSource(ofstream &ofil,int is,double intens,const char* opts) {
    string thetabs;
-   ofil << endl << "light_source {" << endl;
+   ofil << '\n' << "light_source {" << '\n';
    currIndLev++; thetabs=HelpersPOVRay::IndTabsStr(currIndLev);
    ofil << thetabs;
    HelpersPOVRay::WriteVector(ofil,lightSource[is][0],lightSource[is][1],lightSource[is][2]);
-   ofil << endl << thetabs << "color White*" << intens << endl << thetabs << opts << endl;
+   ofil << '\n' << thetabs << "color White*" << intens << '\n' << thetabs << opts << '\n';
    currIndLev--; thetabs=HelpersPOVRay::IndTabsStr(currIndLev);
-   ofil << "}" << endl;
+   ofil << '}' << '\n';
 }
 void POVRayConfiguration::ScaleLightSources(double scfactor) {
    for ( int i=0 ; i<nLightSources ; i++ ) {
@@ -173,17 +173,17 @@ bool HelpersPOVRay::WriteSphere(ofstream &ofil,int nt,
                     double cr,double cg, double cb) {
    int indlev=nt;
    string thetabs=IndTabsStr(indlev);
-   ofil << thetabs << "sphere { " << endl;
+   ofil << thetabs << "sphere { " << '\n';
    indlev++; thetabs=IndTabsStr(indlev);
    ofil << thetabs;
    ofil << scientific << setprecision(8);
    WriteVector(ofil,xx,yy,zz);
-   ofil << ", " << rr << endl;
+   ofil << ", " << rr << '\n';
    ofil << thetabs << "pigment { rgb ";
    WriteVector(ofil,cr,cg,cb);
-   ofil << "}" << endl;
+   ofil << '}' << '\n';
    indlev--; thetabs=IndTabsStr(indlev);
-   ofil << thetabs << "}" << endl;
+   ofil << thetabs << '}' << '\n';
    ofil.unsetf(ios::scientific);
    return true;
 }
@@ -192,15 +192,15 @@ bool HelpersPOVRay::WriteSphere(ofstream &ofil,int nt,
                     const char * str) {
    int indlev=nt;
    string thetabs=IndTabsStr(indlev);
-   ofil << thetabs << "sphere { " << endl;
+   ofil << thetabs << "sphere { " << '\n';
    indlev++; thetabs=IndTabsStr(indlev);
    ofil << thetabs;
    ofil << scientific << setprecision(8);
    WriteVector(ofil,xx,yy,zz);
-   ofil << ", " << rr << endl;
-   ofil << thetabs << "pigment { " << str << " }" << endl;
+   ofil << ", " << rr << '\n';
+   ofil << thetabs << "pigment { " << str << " }" << '\n';
    indlev--; thetabs=IndTabsStr(indlev);
-   ofil << thetabs << "}" << endl;
+   ofil << thetabs << '}' << '\n';
    ofil.unsetf(ios::scientific);
    return true;
 }
@@ -209,15 +209,15 @@ bool HelpersPOVRay::WriteSphere(ofstream &ofil,int nt,
                     const char * strcol) {
    int indlev=nt;
    string thetabs=IndTabsStr(indlev);
-   ofil << thetabs << "sphere { " << endl;
+   ofil << thetabs << "sphere { " << '\n';
    indlev++; thetabs=IndTabsStr(indlev);
    ofil << thetabs;
    ofil << scientific << setprecision(8);
    WriteVector(ofil,xx,yy,zz);
-   ofil << ", " << strrad << endl;
-   ofil << thetabs << "pigment { " << strcol << " }" << endl;
+   ofil << ", " << strrad << '\n';
+   ofil << thetabs << "pigment { " << strcol << " }" << '\n';
    indlev--; thetabs=IndTabsStr(indlev);
-   ofil << thetabs << "}" << endl;
+   ofil << thetabs << '}' << '\n';
    ofil.unsetf(ios::scientific);
    return true;
 }
@@ -225,14 +225,14 @@ bool HelpersPOVRay::WriteSphere(ofstream &ofil,int nt,
                     double xx,double yy,double zz, double rr) {
    int indlev=nt;
    string thetabs=IndTabsStr(indlev);
-   ofil << thetabs << "sphere { " << endl;
+   ofil << thetabs << "sphere { " << '\n';
    indlev++; thetabs=IndTabsStr(indlev);
    ofil << thetabs;
    ofil << scientific << setprecision(8);
    WriteVector(ofil,xx,yy,zz);
-   ofil << ", " << rr << endl;
+   ofil << ", " << rr << '\n';
    indlev--; thetabs=IndTabsStr(indlev);
-   ofil << thetabs << "}" << endl;
+   ofil << thetabs << '}' << '\n';
    ofil.unsetf(ios::scientific);
    return true;
 }
@@ -241,17 +241,17 @@ bool HelpersPOVRay::WriteTransparentSphere(ofstream &ofil,int nt,
                     double cr,double cg, double cb,double trc) {
    int indlev=nt;
    string thetabs=IndTabsStr(indlev);
-   ofil << thetabs << "sphere { " << endl;
+   ofil << thetabs << "sphere { " << '\n';
    indlev++; thetabs=IndTabsStr(indlev);
    ofil << thetabs;
    ofil << scientific << setprecision(8);
    WriteVector(ofil,xx,yy,zz);
-   ofil << ", " << rr << endl;
+   ofil << ", " << rr << '\n';
    ofil << thetabs << "pigment { rgb ";
    WriteVector(ofil,cr,cg,cb);
-   ofil << "transmit "  << trc << "}" << endl;
+   ofil << "transmit "  << trc << '}' << '\n';
    indlev--; thetabs=IndTabsStr(indlev);
-   ofil << thetabs << "}" << endl;
+   ofil << thetabs << '}' << '\n';
    ofil.unsetf(ios::scientific);
    return true;
 }
@@ -260,24 +260,24 @@ bool HelpersPOVRay::WriteTransparentSphere(ofstream &ofil,int nt,
                     double cr,double cg, double cb,string trnsmStr) {
    int indlev=nt;
    string thetabs=IndTabsStr(indlev);
-   ofil << thetabs << "sphere { " << endl;
+   ofil << thetabs << "sphere { " << '\n';
    indlev++; thetabs=IndTabsStr(indlev);
    ofil << thetabs;
    ofil << scientific << setprecision(8);
    WriteVector(ofil,xx,yy,zz);
-   ofil << ", " << rr << endl;
+   ofil << ", " << rr << '\n';
    ofil << thetabs << "pigment { rgb ";
    WriteVector(ofil,cr,cg,cb);
-   ofil << "transmit "  << trnsmStr << "}" << endl;
+   ofil << "transmit "  << trnsmStr << '}' << '\n';
    indlev--; thetabs=IndTabsStr(indlev);
-   ofil << thetabs << "}" << endl;
+   ofil << thetabs << '}' << '\n';
    ofil.unsetf(ios::scientific);
    return true;
 }
 bool HelpersPOVRay::WriteTriangle(ofstream &ofil,int nt) {
    if (nt==0) {
-      //std::cout << "The function WriteTriangle is under construction, nothing done..." << endl;
-      ofil << "//Attempt to use function WriteTriangle..." << endl;
+      //std::cout << "The function WriteTriangle is under construction, nothing done..." << '\n';
+      ofil << "//Attempt to use function WriteTriangle..." << '\n';
    }
    return false;
 }
@@ -287,20 +287,20 @@ bool HelpersPOVRay::WriteCylinder(ofstream &ofil,int nt,
                       double cr, double cg, double cb,string pigmentStr) {
    int indlev=nt;
    string thetabs=IndTabsStr(indlev);
-   ofil << thetabs << "cylinder { " << endl;
+   ofil << thetabs << "cylinder { " << '\n';
    indlev++; thetabs=IndTabsStr(indlev);
    ofil << thetabs;
    ofil << scientific << setprecision(8);
    WriteVector(ofil,xa,ya,za);
-   ofil << "," << endl << thetabs;
+   ofil << "," << '\n' << thetabs;
    WriteVector(ofil,xb,yb,zb);
-   ofil << ", " << rr << endl;
+   ofil << ", " << rr << '\n';
    ofil << thetabs << "pigment { rgb ";
    WriteVector(ofil,cr,cg,cb);
-   ofil << " " << pigmentStr << " " << endl;
-   ofil << " }" << endl;
+   ofil << " " << pigmentStr << " " << '\n';
+   ofil << " }" << '\n';
    indlev--; thetabs=IndTabsStr(indlev);
-   ofil << thetabs << "}" << endl;
+   ofil << thetabs << '}' << '\n';
    ofil.unsetf(ios::scientific);
    return true;
 }
@@ -310,17 +310,17 @@ bool HelpersPOVRay::WriteCylinder(ofstream &ofil,int nt,
                       const char* str) {
    int indlev=nt;
    string thetabs=IndTabsStr(indlev);
-   ofil << thetabs << "cylinder { " << endl;
+   ofil << thetabs << "cylinder { " << '\n';
    indlev++; thetabs=IndTabsStr(indlev);
    ofil << thetabs;
    ofil << scientific << setprecision(8);
    WriteVector(ofil,xa,ya,za);
-   ofil << "," << endl << thetabs;
+   ofil << "," << '\n' << thetabs;
    WriteVector(ofil,xb,yb,zb);
-   ofil << ", " << rr << endl;
-   ofil << thetabs << "pigment { " << str << " }" << endl;
+   ofil << ", " << rr << '\n';
+   ofil << thetabs << "pigment { " << str << " }" << '\n';
    indlev--; thetabs=IndTabsStr(indlev);
-   ofil << thetabs << "}" << endl;
+   ofil << thetabs << '}' << '\n';
    ofil.unsetf(ios::scientific);
    return true;
 }
@@ -329,23 +329,23 @@ bool HelpersPOVRay::WriteCylinder(ofstream &ofil,int nt,
                       double xb, double yb, double zb, double rr) {
    int indlev=nt;
    string thetabs=IndTabsStr(indlev);
-   ofil << thetabs << "cylinder { " << endl;
+   ofil << thetabs << "cylinder { " << '\n';
    indlev++; thetabs=IndTabsStr(indlev);
    ofil << thetabs;
    ofil << scientific << setprecision(8);
    WriteVector(ofil,xa,ya,za);
-   ofil << "," << endl << thetabs;
+   ofil << "," << '\n' << thetabs;
    WriteVector(ofil,xb,yb,zb);
-   ofil << ", " << rr << endl;
+   ofil << ", " << rr << '\n';
    indlev--; thetabs=IndTabsStr(indlev);
-   ofil << thetabs << "}" << endl;
+   ofil << thetabs << '}' << '\n';
    ofil.unsetf(ios::scientific);
    return true;
 }
 bool HelpersPOVRay::WriteArrow(ofstream &ofil,int nt) {
    if (nt==0) {
-      //std::cout << "The function WriteTriangle is under construction, nothing done..." << endl;
-      ofil << "//Attempt to use function WriteArrow..." << endl;
+      //std::cout << "The function WriteTriangle is under construction, nothing done..." << '\n';
+      ofil << "//Attempt to use function WriteArrow..." << '\n';
    }
    return false;
 }
@@ -355,20 +355,20 @@ bool HelpersPOVRay::WriteTriangle(ofstream &ofil,int nt,\
       const string &pigmentStr) {
    int indlev=nt;
    string thetabs=IndTabsStr(indlev);
-   ofil << thetabs << "triangle { " << endl;
+   ofil << thetabs << "triangle { " << '\n';
    ++indlev; thetabs=IndTabsStr(indlev);
    ofil << scientific << setprecision(8);
    ofil << thetabs;
    WriteVector(ofil,x1,y1,z1);
-   ofil << "," << endl << thetabs;
+   ofil << "," << '\n' << thetabs;
    WriteVector(ofil,x2,y2,z2);
-   ofil << "," << endl << thetabs;
+   ofil << "," << '\n' << thetabs;
    WriteVector(ofil,x3,y3,z3);
-   ofil << endl << thetabs << "pigment { rgb ";
+   ofil << '\n' << thetabs << "pigment { rgb ";
    WriteVector(ofil,cr,cg,cb);
-   ofil << (pigmentStr.size()>0 ? (string(" ")+pigmentStr+string(" ")) : " ") << "}" << endl;
+   ofil << (pigmentStr.size()>0 ? (string(" ")+pigmentStr+string(" ")) : " ") << '}' << '\n';
    indlev--; thetabs=IndTabsStr(indlev);
-   ofil << thetabs << "}" << endl;
+   ofil << thetabs << '}' << '\n';
    ofil.unsetf(ios::scientific);
    return true;
 }
@@ -377,42 +377,44 @@ bool HelpersPOVRay::WriteSmoothTriangle(ofstream &ofil,int nt,\
          double cr,double cg,double cb,const string &pigmentStr) {
    int indlev=nt;
    string thetabs=IndTabsStr(indlev);
-   ofil << thetabs << "smooth_triangle { " << endl;
+   ofil << thetabs << "smooth_triangle { " << '\n';
    ++indlev; thetabs=IndTabsStr(indlev);
    ofil << scientific << setprecision(12);
    ofil << thetabs;
    WriteVector(ofil,v[0][0],v[0][1],v[0][2]);
-   ofil << "," << endl << thetabs;
+   ofil << "," << '\n' << thetabs;
    WriteVector(ofil,n[0][0],n[0][1],n[0][2]);
-   ofil << "," << endl << thetabs;
+   ofil << "," << '\n' << thetabs;
    WriteVector(ofil,v[1][0],v[1][1],v[1][2]);
-   ofil << "," << endl << thetabs;
+   ofil << "," << '\n' << thetabs;
    WriteVector(ofil,n[1][0],n[1][1],n[1][2]);
-   ofil << "," << endl << thetabs;
+   ofil << "," << '\n' << thetabs;
    WriteVector(ofil,v[2][0],v[2][1],v[2][2]);
-   ofil << "," << endl << thetabs;
+   ofil << "," << '\n' << thetabs;
    WriteVector(ofil,n[2][0],n[2][1],n[2][2]);
-   ofil << endl << thetabs << "pigment { rgb ";
+   ofil << '\n' << thetabs << "pigment { rgb ";
    WriteVector(ofil,cr,cg,cb);
-   ofil << (pigmentStr.size()>0 ? (string(" ")+pigmentStr+string(" ")) : " ") << "}" << endl;
+   ofil << (pigmentStr.size()>0 ? (string(" ")+pigmentStr+string(" ")) : " ") << '}' << '\n';
    indlev--; thetabs=IndTabsStr(indlev);
-   ofil << thetabs << "}" << endl;
+   ofil << thetabs << '}' << '\n';
    ofil.unsetf(ios::scientific);
    return true;
 }
 bool HelpersPOVRay::WriteMesh2SingleRGB(ofstream &ofil,const vector<vector<double> > &v,\
-         const vector<vector<size_t> > &f,const int nt,vector<double> rgb) {
+         const vector<vector<size_t> > &f,const int nt,vector<double> rgb,\
+         const string &trnsmStr) {
    vector<vector<double> > n(0);
-   return WriteMesh2SingleRGB(ofil,v,n,f,nt,rgb);
+   return WriteMesh2SingleRGB(ofil,v,n,f,nt,rgb,trnsmStr);
 }
 bool HelpersPOVRay::WriteMesh2SingleRGB(ofstream &ofil,const vector<vector<double> > &v,\
          const vector<vector<double> > &n,const vector<vector<size_t> > &f,\
-         const int nt,vector<double> rgb) {
+         const int nt,vector<double> rgb,const string &trnsmStr) {
    int indlev=nt;
    size_t nvm1=v.size()-1;
    size_t nfm1=f.size()-1;
+   bool writeTransmit=(trnsmStr.size()>0);
    string thetabs=IndTabsStr(indlev++);
-   ofil << thetabs << "mesh2 {" << endl;
+   ofil << thetabs << "mesh2 {" << '\n';
    thetabs=IndTabsStr(indlev++);
    ofil << thetabs << "vertex_vectors {\n";
    thetabs=IndTabsStr(indlev);
@@ -436,7 +438,7 @@ bool HelpersPOVRay::WriteMesh2SingleRGB(ofstream &ofil,const vector<vector<doubl
       }
       WriteVector(ofil,n[nvm1][0],n[nvm1][1],n[nvm1][2]);
       thetabs=IndTabsStr(--indlev);
-      ofil << thetabs << "}" << endl;//end of normal_vectors
+      ofil << thetabs << '}' << '\n';//end of normal_vectors
    }
    thetabs=IndTabsStr(indlev++);
    ofil << thetabs << "face_indices {\n";
@@ -449,14 +451,15 @@ bool HelpersPOVRay::WriteMesh2SingleRGB(ofstream &ofil,const vector<vector<doubl
    }
    WriteVector(ofil,f[nfm1][0],f[nfm1][1],f[nfm1][2]);
    thetabs=IndTabsStr(--indlev);
-   ofil << thetabs << "}" << endl;//end of face_indices
+   ofil << thetabs << '}' << '\n';//end of face_indices
    thetabs=IndTabsStr(indlev++);
    ofil << thetabs << "pigment { rgb ";
    WriteVector(ofil,rgb[0],rgb[1],rgb[2]);
+   if ( writeTransmit ) { ofil << ' ' << trnsmStr << ' '; }
    thetabs=IndTabsStr(--indlev);
-   ofil << thetabs << "}" << endl;//end of pigment
+   ofil << thetabs << '}' << '\n';//end of pigment
    thetabs=IndTabsStr(--indlev);
-   ofil << thetabs << "}" << endl; //end of mesh2
+   ofil << thetabs << '}' << '\n'; //end of mesh2
    return true;
 }
 

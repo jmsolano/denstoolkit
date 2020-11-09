@@ -72,7 +72,7 @@ using std::scientific;
 #include "atomradiicust.h"
 
 #ifndef PROPCPSONISOCPSIZE
-#define PROPCPSONISOCPSIZE 0.25
+#define PROPCPSONISOCPSIZE 0.10
 #endif
 
 int main (int argc, char ** argv) {
@@ -121,7 +121,15 @@ int main (int argc, char ** argv) {
    cout << "xc: " << xc[0] << ' ' << xc[1] << ' ' << xc[2] << '\n';
    cout << "xd: " << xd[0] << ' ' << xd[1] << ' ' << xd[2] << '\n';
    SymmetricSurfaceGrid grid;
-   grid. SetupSphereIcosahedron(4);
+   int refCapMeshLevel=4;
+   if ( options.refinemesh ) {
+      refCapMeshLevel=std::stoi(string(argv[options.refinemesh]));
+      if ( refCapMeshLevel<0 ) { refCapMeshLevel=0; }
+      if ( refCapMeshLevel>8 ) {
+         ScreenUtils::DisplayWarningMessage("This level of refinement may cause numerical issues.");
+      }
+   }
+   grid. SetupSphereIcosahedron(refCapMeshLevel);
    grid.Translate(xc);
    grid.Scale(GetAtomicVDWRadius(bnw.atNum[cAt]));
    /*
@@ -167,14 +175,19 @@ int main (int argc, char ** argv) {
    cout << "Done.\n";
    if ( foundcps ) {
       string cptype;
+      ScreenUtils::PrintScrCharLine('+');
       for ( size_t i=0 ; i<rcp.size() ; ++i ) {
          if ( sigcp[i]==-3 ) { cptype="Maximum"; }
          else if ( sigcp[i]==3 ) { cptype="Minimum"; }
-         else {cptype="Saddle or otherwise critical point";}
+         else {cptype="Saddle critical point";}
+         ScreenUtils::PrintScrCharLine('-');
          cout << cptype << " found at: "
               << rcp[i][0] << ' ' << rcp[i][1] << ' ' <<  rcp[i][2] << ' '
               << " : " << vcp[i] << '\n';
+         ScreenUtils::PrintScrCharLine('-');
+         gwf.DisplayAllFieldProperties(rcp[i][0],rcp[i][1],rcp[i][2]);
       }
+      ScreenUtils::PrintScrCharLine('+');
    }
    /* Rendering  */
 
@@ -201,7 +214,7 @@ int main (int argc, char ** argv) {
       tcp[7]=vcp[i];
       sp.push_back(tcp);
    }
-   HelpersPropCPsOnIso::MakePovFile(povfilnam,pvp,bnw,grid,sp,options.mkpng);
+   HelpersPropCPsOnIso::MakePovFile(povfilnam,options,pvp,bnw,grid,sp);
 
    /* At this point the computation has ended. Usually this means no errors ocurred. */
 

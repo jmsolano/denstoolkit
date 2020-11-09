@@ -15,8 +15,8 @@ public:
    static bool HaveIncompatibleOptions(int argc,char *argv[],OptionFlags &opt);
    static void GetCenterIndexAndVectors(char *argv[],const OptionFlags &options,\
          const BondNetWork &bn,int &cat,vector<double> &xc,vector<double> &xd);
-   static bool MakePovFile(const string &povname,POVRayConfiguration &pvp,BondNetWork &bn,\
-      SymmetricSurfaceGrid &grid,vector<vector<double> > &sp,bool render=false);
+   static bool MakePovFile(const string &povname,OptionFlags &options,POVRayConfiguration &pvp,\
+         BondNetWork &bn,SymmetricSurfaceGrid &grid,vector<vector<double> > &sp);
    static void ProjectGridOntoIsosurface(GaussWaveFunction &wf,SymmetricSurfaceGrid &g,\
          const char prop,const double iso);
    /** Looks for the isovalue along a line. The line passes through c and r0. c is
