@@ -12,12 +12,10 @@ using std::cerr;
 #define SYMMSURFGRIDDEFCOORDSEPS2 1.0e-12
 #endif
 
-SymmetricSurfaceGrid::SymmetricSurfaceGrid() {
+SymmetricSurfaceGrid::SymmetricSurfaceGrid() : MeshGrid() {
    shape=Shape::NONE;
-   vertex.clear();
-   normal.clear();
-   tcentroid.clear();
-   tface.clear();
+   centroid.clear();
+   face.clear();
    sface.clear();
    center.resize(3);
    center[0]=center[1]=center[2]=0.0e0;
@@ -33,8 +31,8 @@ SymmetricSurfaceGrid::~SymmetricSurfaceGrid() {
 void SymmetricSurfaceGrid::ClearArrays() {
    ClearMatrix(vertex);
    ClearMatrix(normal);
-   ClearMatrix(tcentroid);
-   ClearMatrix(tface);
+   ClearMatrix(centroid);
+   ClearMatrix(face);
    ClearMatrix(sface);
 }
 void SymmetricSurfaceGrid::SetupSphereSquares(int it) {
@@ -90,28 +88,28 @@ void SymmetricSurfaceGrid::SetupSphereIcosahedron(const int it) {
    vertex[11]={  V0,  V5,  V8 };
    normal.resize(12);
    for ( size_t i=0 ; i<12 ; ++i ) { normal[i].resize(3); }
-   tface.resize(20);
-   for ( size_t i=0 ; i<20 ; ++i ) { tface[i].resize(3); }
-   tface[ 0]={6,1,2};
-   tface[ 1]={2,1,7};
-   tface[ 2]={5,3,4};
-   tface[ 3]={8,4,3};
-   tface[ 4]={11,6,5};
-   tface[ 5]={10,5,6};
-   tface[ 6]={2,9,10};
-   tface[ 7]={3,10,9};
-   tface[ 8]={9,7,8};
-   tface[ 9]={0,8,7};
-   tface[10]={1,11,0};
-   tface[11]={4,0,11};
-   tface[12]={10,6,2};
-   tface[13]={11,1,6};
-   tface[14]={10,3,5};
-   tface[15]={11,5,4};
-   tface[16]={9,2,7};
-   tface[17]={0,7,1};
-   tface[18]={8,3,9};
-   tface[19]={0,4,8};
+   face.resize(20);
+   for ( size_t i=0 ; i<20 ; ++i ) { face[i].resize(3); }
+   face[ 0]={6,1,2};
+   face[ 1]={2,1,7};
+   face[ 2]={5,3,4};
+   face[ 3]={8,4,3};
+   face[ 4]={11,6,5};
+   face[ 5]={10,5,6};
+   face[ 6]={2,9,10};
+   face[ 7]={3,10,9};
+   face[ 8]={9,7,8};
+   face[ 9]={0,8,7};
+   face[10]={1,11,0};
+   face[11]={4,0,11};
+   face[12]={10,6,2};
+   face[13]={11,1,6};
+   face[14]={10,3,5};
+   face[15]={11,5,4};
+   face[16]={9,2,7};
+   face[17]={0,7,1};
+   face[18]={8,3,9};
+   face[19]={0,4,8};
    for ( int i=1 ; i<it ; ++i ) { SubdivideAllTriangles(); }
    CheckTriangleOrientation();
    shape=Shape::SPHEREICOSAHEDRON;
@@ -129,28 +127,19 @@ void SymmetricSurfaceGrid::SubdivideAllSquares(int it) {
 }
 void SymmetricSurfaceGrid::SubdivideAllTriangles(int it) {
    for ( int j=0 ; j<it ; ++j ) {
-      size_t nt=tface.size();
+      size_t nt=face.size();
       for ( size_t i=0 ; i<nt ; ++i ) { SubdivideTriangle(i); }
    }
    for ( size_t i=0 ; i<normal.size() ; ++i ) { normal[i].clear(); }
-   normal.resize(tface.size());
+   normal.resize(face.size());
    for ( size_t i=0 ; i<normal.size() ; ++i ) { normal[i].resize(3); }
-}
-size_t SymmetricSurfaceGrid::VertexPosition(const vector<double> &t) {
-   for ( size_t i=0 ; i<vertex.size() ; ++i ) {
-      if ( MatrixVectorOperations3D::Distance2(t,vertex[i]) <= SYMMSURFGRIDDEFCOORDSEPS2 ) {
-         return i;
-      }
-   }
-   vertex.push_back(t);
-   return (vertex.size()-1);
 }
 void SymmetricSurfaceGrid::SubdivideTriangle(size_t idx) {
    vector<double> a(3),b(3),c(3),d(3),e(3),f(3);
    size_t iA,iB,iC,iD,iE,iF;
-   iA=tface[idx][0];
-   iB=tface[idx][1];
-   iC=tface[idx][2];
+   iA=face[idx][0];
+   iB=face[idx][1];
+   iC=face[idx][2];
    a=vertex[iA];
    b=vertex[iB];
    c=vertex[iC];
@@ -163,16 +152,16 @@ void SymmetricSurfaceGrid::SubdivideTriangle(size_t idx) {
    iD=VertexPosition(d);
    iE=VertexPosition(e);
    iF=VertexPosition(f);
-   tface[idx][0]=iA;
-   tface[idx][1]=iD;
-   tface[idx][2]=iF;
+   face[idx][0]=iA;
+   face[idx][1]=iD;
+   face[idx][2]=iF;
    vector<size_t> h(3);
    h[0]=iD; h[1]=iB; h[2]=iE;
-   tface.push_back(h);
+   face.push_back(h);
    h[0]=iF; h[1]=iD; h[2]=iE;
-   tface.push_back(h);
+   face.push_back(h);
    h[0]=iF; h[1]=iE; h[2]=iC;
-   tface.push_back(h);
+   face.push_back(h);
 }
 void SymmetricSurfaceGrid::SubdivideSquare(size_t idx) {
    vector<double> A(3),B(3),C(3),D(3);
@@ -257,7 +246,7 @@ void SymmetricSurfaceGrid::SubdivideSquare(size_t idx) {
    sface.push_back(h);
 }
 void SymmetricSurfaceGrid::CheckTriangleOrientation() {
-   size_t nf=tface.size();
+   size_t nf=face.size();
    if ( nf==0 || nf==std::string::npos ) {
       ScreenUtils::DisplayWarningMessage("No triangles to check!");
       cout << __FILE__ << ", line: " << __LINE__ << '\n';
@@ -269,7 +258,7 @@ void SymmetricSurfaceGrid::CheckTriangleOrientation() {
    for ( size_t i=0 ; i<nf ; ++i ) {
       c[0]=c[1]=c[2]=0.0e0;
       for ( size_t j=0 ; j<3 ; ++j ) {
-         k[j]=tface[i][j];
+         k[j]=face[i][j];
          c[0]+=vertex[k[j]][0];
          c[1]+=vertex[k[j]][1];
          c[2]+=vertex[k[j]][2];
@@ -289,58 +278,9 @@ void SymmetricSurfaceGrid::CheckTriangleOrientation() {
       }
    }
 }
-
-void SymmetricSurfaceGrid::Translate(const vector<double> &t) {
-   size_t nv=vertex.size();
-   for ( size_t i=0 ; i<nv ; ++i ) {
-      vertex[i][0]+=t[0];
-      vertex[i][1]+=t[1];
-      vertex[i][2]+=t[2];
-   }
-   for ( size_t i=0 ; i<3 ; ++i ) { center[i]+=t[i]; }
-}
-void SymmetricSurfaceGrid::Scale(const double f) {
-   size_t nv=vertex.size();
-   double dist=MatrixVectorOperations3D::Norm(center);
-   if ( dist>0.0e0 ) {
-      for ( size_t i=0 ; i<nv ; ++i ) {
-         vertex[i][0]-=center[0];
-         vertex[i][1]-=center[1];
-         vertex[i][2]-=center[2];
-      }
-   }
-   for ( size_t i=0 ; i<nv ; ++i ) {
-      vertex[i][0]*=f;
-      vertex[i][1]*=f;
-      vertex[i][2]*=f;
-   }
-   if ( dist>0.0e0 ) {
-      for ( size_t i=0 ; i<nv ; ++i ) {
-         vertex[i][0]+=center[0];
-         vertex[i][1]+=center[1];
-         vertex[i][2]+=center[2];
-      }
-   }
-}
-void SymmetricSurfaceGrid::ScaleSingleVertex(const size_t idx,const double f) {
-   double dist=MatrixVectorOperations3D::Norm(center);
-   if ( dist>0.0e0 ) {
-      vertex[idx][0]-=center[0];
-      vertex[idx][1]-=center[1];
-      vertex[idx][2]-=center[2];
-   }
-   vertex[idx][0]*=f;
-   vertex[idx][1]*=f;
-   vertex[idx][2]*=f;
-   if ( dist>0.0e0 ) {
-      vertex[idx][0]+=center[0];
-      vertex[idx][1]+=center[1];
-      vertex[idx][2]+=center[2];
-   }
-}
 void SymmetricSurfaceGrid::GenerateTrianglesFromSquares() {
-   for ( size_t i=0 ; i<tface.size() ; ++i ) { tface[i].clear(); }
-   tface.clear();
+   for ( size_t i=0 ; i<face.size() ; ++i ) { face[i].clear(); }
+   face.clear();
    for ( size_t i=0 ; i<sface.size() ; ++i ) {
       AddTrianglesFromSquare(i);
    }
@@ -358,13 +298,13 @@ void SymmetricSurfaceGrid::AddTrianglesFromSquare(size_t idx) {
    d=vertex[iD];
    vector<size_t> h(3);
    h[0]=iA; h[1]=iB; h[2]=iC;
-   tface.push_back(h);
+   face.push_back(h);
    h[0]=iA; h[1]=iC; h[2]=iD;
-   tface.push_back(h);
+   face.push_back(h);
 }
 void SymmetricSurfaceGrid::TrimFacesCentroidDotProdGreaterThanZero(const vector<double> &d) {
    //cout << "Entering TrimFacesCentroidDotProdGreaterThanZero" << '\n';
-   size_t count=0,nf=tface.size();
+   size_t count=0,nf=face.size();
    double dot;
    vector<double> c(3);
    vector<vector<size_t> > kf;
@@ -373,22 +313,22 @@ void SymmetricSurfaceGrid::TrimFacesCentroidDotProdGreaterThanZero(const vector<
       TriangleCentroidDir(i,c);
       dot=MatrixVectorOperations3D::InnerProduct(c,d);
       if ( dot>0.0e0 ) {
-         for ( size_t j=0 ; j<3 ; ++j ) { kf[count][j]=tface[i][j]; }
+         for ( size_t j=0 ; j<3 ; ++j ) { kf[count][j]=face[i][j]; }
          ++count;
       }
    }
-   ResizeMatrix(tface,count);
+   ResizeMatrix(face,count);
    for ( size_t i=0 ; i<count ; ++i ) {
-      tface[i][0]=kf[i][0];
-      tface[i][1]=kf[i][1];
-      tface[i][2]=kf[i][2];
+      face[i][0]=kf[i][0];
+      face[i][1]=kf[i][1];
+      face[i][2]=kf[i][2];
    }
    ClearMatrix(kf);
    RemoveUnusedVertices();
 }
 void SymmetricSurfaceGrid::RemoveFacesUsingVertices(const vector<size_t> &v2r) {
    //cout << "Entering RemoveFacesUsingVertices" << '\n';
-   size_t count=0,nf=tface.size();
+   size_t count=0,nf=face.size();
    bool rmme;
    vector<vector<size_t> > kf;
    ResizeMatrix(kf,nf,3);
@@ -397,105 +337,51 @@ void SymmetricSurfaceGrid::RemoveFacesUsingVertices(const vector<size_t> &v2r) {
       rmme=false;
       for ( size_t j=0 ; j<v2r.size() ; ++j ) {
          for ( size_t k=0 ; k<3 ; ++k ) {
-            if ( tface[i][k]==v2r[j] ) { rmme=true; }
+            if ( face[i][k]==v2r[j] ) { rmme=true; }
          }
          if ( rmme ) { break; }
       }
       if ( !rmme ) {
-         for ( size_t k=0 ; k<3 ; ++k ) { kf[count][k]=tface[i][k]; }
+         for ( size_t k=0 ; k<3 ; ++k ) { kf[count][k]=face[i][k]; }
          ++count;
       } else {
          cout << "Removing face " << i << ':' << '\n';
          for ( size_t k=0 ; k<3 ; ++k ) {
-            cout << tface[i][k] << ' ';
+            cout << face[i][k] << ' ';
          }
          cout << '\n';
       }
    }
-   ResizeMatrix(tface,count,3);
+   ResizeMatrix(face,count,3);
    for ( size_t i=0 ; i<count ; ++i ) {
-      tface[i][0]=kf[i][0];
-      tface[i][1]=kf[i][1];
-      tface[i][2]=kf[i][2];
+      face[i][0]=kf[i][0];
+      face[i][1]=kf[i][1];
+      face[i][2]=kf[i][2];
    }
    ClearMatrix(kf);
    RemoveUnusedVertices();
    //cout << "Leaving RemoveFacesUsingVertices" << '\n';
 }
-void SymmetricSurfaceGrid::ResizeMatrix(vector<vector<double> > &m,size_t nr,size_t nc) {
-   size_t neor=m.size();
-   for ( size_t i=0 ; i<neor ; ++i ) { m[i].clear(); }
-   if ( neor!=nr ) { m.resize(nr); }
-   for ( size_t i=0 ; i<nr ; ++i ) { m[i].resize(nc); }
-}
-void SymmetricSurfaceGrid::ResizeMatrix(vector<vector<size_t> > &m,size_t nr,size_t nc) {
-   size_t neor=m.size();
-   for ( size_t i=0 ; i<neor ; ++i ) { m[i].clear(); }
-   if ( neor!=nr ) { m.resize(nr); }
-   for ( size_t i=0 ; i<nr ; ++i ) { m[i].resize(nc); }
-}
-void SymmetricSurfaceGrid::TriangleCentroidDir(size_t tFIdx,vector<double> &c) {
-   size_t p0,p1,p2;
-   const double oo3=1.0e0/3.0e0;
-   p0=tface[tFIdx][0]; p1=tface[tFIdx][1]; p2=tface[tFIdx][2];
-   c[0] =(vertex[p0][0]); c[1] =(vertex[p0][1]); c[2] =(vertex[p0][2]);
-   c[0]+=(vertex[p1][0]); c[1]+=(vertex[p1][1]); c[2]+=(vertex[p1][2]);
-   c[0]+=(vertex[p2][0]); c[1]+=(vertex[p2][1]); c[2]+=(vertex[p2][2]);
-   c[0]*=oo3;             c[1]*=oo3;             c[2]*=oo3;
-   c[0]-=(center[0]);     c[1]-=(center[1]);     c[2]-=(center[2]);
-}
-/*
-void SymmetricSurfaceGrid::EraseVertexAndAssociatedFaces(size_t idx) {
-   size_t pos,pm1;
-   size_t npos=0;
-   --npos;
-   bool iusethisvertex=false;
-   if ( shape==Shape::SPHEREICOSAHEDRON ) {
-      pos=tface.size()-1;
-      pm1=tface.size()-1;
-      while ( pos!=npos ) {
-         iusethisvertex=false;
-         for ( size_t j=0 ; j<3 ; ++j ) {
-            if ( tface[pos][j]==idx ) { iusethisvertex=true; }
-         }
-         if ( !iusethisvertex ) {
-            for ( size_t j=0 ; j<3 ; ++j ) { tface[pos][j]=tface[pm1][j]; }
-            tface.pop_back();
-            --pm1;
-         }
-         --pos;
-      }
-      pm1=vertex.size()-1;
-      for ( size_t i=0 ; i<3 ; ++i ) { vertex[idx][i]=vertex[pm1][i]; }
-      vertex.pop_back();
-      for ( size_t i=0 ; i<tface.size() ; ++i ) {
-         for ( size_t j=0 ; j<3 ; ++j ) {
-            if ( tface[i][j]==pm1 ) { tface[i][j]=idx; }
-         }
-      }
-   } else {
-      ScreenUtils::DisplayWarningMessage("EraseVertexAndAssociatedFaces does not work for this shape!");
-      cout << __FILE__ << ", line: " << __LINE__ << '\n';
-      return;
-   }
-}
-// */
 void SymmetricSurfaceGrid::RemoveUnusedVertices() {
    //ScreenUtils::DisplayWarningMessage("SymmetricSurfaceGrid::RemoveUnusedVertices is not tested.");
    //cout << __FILE__ << ", line: " << __LINE__ << '\n';
-   size_t nvspf=0; //number of vertices per face.
-   size_t nf=0;//number of faces.
-   vector<vector<size_t> > *f=nullptr;
-   vector<vector<double> > *ctd=nullptr;
+   //size_t nvspf=0; //number of vertices per face.
+   //size_t nf=0;//number of faces.
+   //vector<vector<size_t> > *f=nullptr;
+   //vector<vector<double> > *ctd=nullptr;
    if ( shape==Shape::SPHEREICOSAHEDRON ) {
-      f=&tface;
-      ctd=&tcentroid;
-      nf=tface.size();
-      nvspf=3;
+      //f=&face;
+      //ctd=&centroid;
+      //nf=face.size();
+      //nvspf=3;
+      RemoveUnusedVerticesBase(face,size_t(3));
    } else if ( shape==Shape::SPHERESQUARES ) {
-      f=&sface;
-      nf=sface.size();
-      nvspf=4;
+      //f=&sface;
+      //nf=sface.size();
+      //nvspf=4;
+      cout << "This function may need adjustments." << '\n';
+      cout << __FILE__ << ", line: " << __LINE__ << '\n';
+      RemoveUnusedVerticesBase(sface,size_t(4));
    } else {
       ScreenUtils::DisplayWarningMessage("Non valid shape!");
       cout << __FILE__ << ", line: " << __LINE__ << '\n';
@@ -504,8 +390,9 @@ void SymmetricSurfaceGrid::RemoveUnusedVertices() {
    /*
    cout << "Testing face selection" << '\n';
    cout << (*f)[0][0] << ' ' << (*f)[0][1] << ' ' << (*f)[0][2] << '\n';
-   cout << tface[0][0] << ' ' << tface[0][1] << ' ' << tface[0][2] << '\n';
+   cout << face[0][0] << ' ' << face[0][1] << ' ' << face[0][2] << '\n';
    // */
+   /*
    size_t pos=0,tmp;
    bool iamused;
    size_t nv=vertex.size();
@@ -533,11 +420,13 @@ void SymmetricSurfaceGrid::RemoveUnusedVertices() {
    }
    //if ( ctd!=nullptr ) { ResizeMatrix((*ctd),(*f).size(),3); }
    ResizeMatrix(normal,vertex.size(),3);
+   value.resize(vertex.size());
+   // */
 }
 void SymmetricSurfaceGrid::DisplayFaces() {
    if ( shape==Shape::SPHEREICOSAHEDRON ) {
-      for ( size_t i=0 ; i<tface.size() ; ++i ) {
-         for ( size_t j=0 ; j<3 ; ++j ) { cout << tface[i][j] << ' '; }
+      for ( size_t i=0 ; i<face.size() ; ++i ) {
+         for ( size_t j=0 ; j<3 ; ++j ) { cout << face[i][j] << ' '; }
          cout << '\n';
       }
    } else if ( shape==Shape::SPHERESQUARES ) {
@@ -553,15 +442,18 @@ void SymmetricSurfaceGrid::ComputeCentroids() {
       cout << __FILE__ << ", line: " << __LINE__ << '\n';
       return;
    }
-   size_t nf=tface.size(),p0,p1,p2;
+   return ComputeCentroidsBase();
+   /*
+   size_t nf=face.size(),p0,p1,p2;
    const double oo3=1.0e0/3.0e0;
-   ResizeMatrix(tcentroid,nf,3);
+   ResizeMatrix(centroid,nf,3);
    for ( size_t i=0 ; i<nf ; ++i ) {
-      p0=tface[i][0]; p1=tface[i][1]; p2=tface[i][2];
-      tcentroid[i][0] =(vertex[p0][0]); tcentroid[i][1] =(vertex[p0][1]); tcentroid[i][2] =(vertex[p0][2]);
-      tcentroid[i][0]+=(vertex[p1][0]); tcentroid[i][1]+=(vertex[p1][1]); tcentroid[i][2]+=(vertex[p1][2]);
-      tcentroid[i][0]+=(vertex[p2][0]); tcentroid[i][1]+=(vertex[p2][1]); tcentroid[i][2]+=(vertex[p2][2]);
-      tcentroid[i][0]*=oo3;             tcentroid[i][1]*=oo3;             tcentroid[i][2]*=oo3;
+      p0=face[i][0]; p1=face[i][1]; p2=face[i][2];
+      centroid[i][0] =(vertex[p0][0]); centroid[i][1] =(vertex[p0][1]); centroid[i][2] =(vertex[p0][2]);
+      centroid[i][0]+=(vertex[p1][0]); centroid[i][1]+=(vertex[p1][1]); centroid[i][2]+=(vertex[p1][2]);
+      centroid[i][0]+=(vertex[p2][0]); centroid[i][1]+=(vertex[p2][1]); centroid[i][2]+=(vertex[p2][2]);
+      centroid[i][0]*=oo3;             centroid[i][1]*=oo3;             centroid[i][2]*=oo3;
    }
+   // */
 }
 

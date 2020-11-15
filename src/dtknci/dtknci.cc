@@ -169,8 +169,8 @@ int main (int argc, char ** argv) {
    HelpersNCI::ComputeLambdaOnVertices(gwf,iso);
    cout << "Computing Normals at mesh vertices..." << '\n';
    HelpersNCI::ComputeNormalsAtVertices(gwf,iso);
-   iso.NormalizeNormals();
    iso.UseNormals(true);
+
    /* At this point the computation has ended. Usually this means no errors ocurred. */
 
    /* Rendering  */

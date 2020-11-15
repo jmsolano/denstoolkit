@@ -16,7 +16,7 @@ using std::shared_ptr;
 #include "palette.h"
 
 bool HelpersNCI::ComputeLambdaOnCentroids(GaussWaveFunction &wf,Isosurface &iso) {
-   size_t n=iso.TrianglesSize();
+   size_t n=iso.face.size();
    if ( n==0 ) {
       ScreenUtils::DisplayErrorMessage("There are zero triangles in the isosurface!"
             "\nNothing to be done.");
@@ -37,7 +37,7 @@ bool HelpersNCI::ComputeLambdaOnCentroids(GaussWaveFunction &wf,Isosurface &iso)
    return true;
 }
 bool HelpersNCI::ComputeLambdaOnVertices(GaussWaveFunction &wf,Isosurface &iso) {
-   size_t n=iso.vertices.size();
+   size_t n=iso.vertex.size();
    if ( n==0 ) {
       ScreenUtils::DisplayErrorMessage("There are zero triangles in the isosurface!"
             "\nNothing to be done.");
@@ -47,9 +47,9 @@ bool HelpersNCI::ComputeLambdaOnVertices(GaussWaveFunction &wf,Isosurface &iso) 
    vector<double> v(n);
    double x,y,z;
    for ( size_t i=0 ; i<n ; ++i ) {
-      x=iso.vertices[i][0];
-      y=iso.vertices[i][1];
-      z=iso.vertices[i][2];
+      x=iso.vertex[i][0];
+      y=iso.vertex[i][1];
+      z=iso.vertex[i][2];
       v[i]=wf.EvalNCILambda(x,y,z);
    }
    iso.SetProperty2Map(v);
@@ -57,51 +57,44 @@ bool HelpersNCI::ComputeLambdaOnVertices(GaussWaveFunction &wf,Isosurface &iso) 
    return true;
 }
 bool HelpersNCI::ComputeNormalsAtVertices(GaussWaveFunction &wf,Isosurface &iso) {
-   size_t n=iso.vertices.size();
+   size_t n=iso.vertex.size();
    if ( n==0 ) {
       ScreenUtils::DisplayErrorMessage("There are zero triangles in the isosurface!"
             "\nNothing to be done.");
       cout << __FILE__ << ", line: " << __LINE__ << '\n';
       return false;
    }
-   if ( iso.vertices.size()!=iso.normals.size() ) {
-      for ( size_t i=0 ; i<iso.normals.size() ; ++i ) { iso.normals[i].clear(); }
-      iso.normals.resize(iso.vertices.size());
-      for ( size_t i=0 ; i<iso.normals.size() ; ++i ) { iso.normals[i].resize(3); }
+   if ( iso.vertex.size()!=iso.normal.size() ) {
+      for ( size_t i=0 ; i<iso.normal.size() ; ++i ) { iso.normal[i].clear(); }
+      iso.normal.resize(iso.vertex.size());
+      for ( size_t i=0 ; i<iso.normal.size() ; ++i ) { iso.normal[i].resize(3); }
    }
    vector<double> x(3);
    double gs[3];
    for ( size_t i=0 ; i<n ; ++i ) {
-      for ( size_t j=0 ; j<3 ; ++j ) {
-         x=iso.vertices[i];
-         wf.EvalGradReducedDensityGradient(x[0],x[1],x[2],gs);
-         iso.normals[i][0]=gs[0];
-         iso.normals[i][1]=gs[1];
-         iso.normals[i][2]=gs[2];
-         //cout << sqrt(gs[0]*gs[0]+gs[1]*gs[1]+gs[2]*gs[2]) << '\n';
-      }
+      x[0]=iso.vertex[i][0]; x[1]=iso.vertex[i][1]; x[2]=iso.vertex[i][2];
+      wf.EvalGradReducedDensityGradient(x[0],x[1],x[2],gs);
+      iso.normal[i][0]=gs[0]; iso.normal[i][1]=gs[1]; iso.normal[i][2]=gs[2];
    }
+   iso.NormaliseNormals();
    return true;
 }
 bool HelpersNCI::ComputeTriangleNormals(GaussWaveFunction &wf,Isosurface &iso) {
-   size_t n=iso.TrianglesSize();
-   if ( n==0 ) {
+   size_t nv=iso.vertex.size();
+   if ( nv==0 ) {
       ScreenUtils::DisplayErrorMessage("There are zero triangles in the isosurface!"
             "\nNothing to be done.");
       cout << __FILE__ << ", line: " << __LINE__ << '\n';
       return false;
    }
-   vector<double> x(3),nv(3);
-   double gs[3];
-   for ( size_t i=0 ; i<n ; ++i ) {
-      for ( size_t j=0 ; j<3 ; ++j ) {
-         x=iso.Vertex(i,j);
-         wf.EvalGradReducedDensityGradient(x[0],x[1],x[2],gs);
-         nv[0]=gs[0]; nv[1]=gs[1]; nv[2]=gs[2];
-         iso.SetNormal(i,j,nv);
-         //cout << sqrt(gs[0]*gs[0]+gs[1]*gs[1]+gs[2]*gs[2]) << '\n';
-      }
+   double x[3],gs[3];
+   for ( size_t i=0 ; i<nv ; ++i ) {
+      x[0]=iso.vertex[i][0]; x[1]=iso.vertex[i][1]; x[2]=iso.vertex[i][2];
+      wf.EvalGradReducedDensityGradient(x[0],x[1],x[2],gs);
+      iso.normal[i][0]=gs[0]; iso.normal[i][1]=gs[1]; iso.normal[i][2]=gs[2];
+      //cout << sqrt(gs[0]*gs[0]+gs[1]*gs[1]+gs[2]*gs[2]) << '\n';
    }
+   iso.NormaliseNormals();
    return true;
 }
 bool HelpersNCI::MakePovFile(const string &povname,POVRayConfiguration &pvp,BondNetWork &bn,Isosurface &iso,\
@@ -136,7 +129,7 @@ bool HelpersNCI::MakePovFile(const string &povname,POVRayConfiguration &pvp,Bond
    ofil << "#declare DrawStandardBonds=" << tmpbool << ";" << endl;
    ofil << "#declare TransmitAtomSphere=0.0;" << endl;
    ofil << "#declare TransmitStdBondCylinder=0.0;" << endl;
-   ofil << "#default { finish { specular 0.2 roughness 0.03 phong .1 } }" << endl;
+   ofil << "#default { finish { specular 0.3 roughness 0.03 phong 0.1 } }" << endl;
    FileUtils::WriteScrCharLine(ofil,'/',false);
    ofil << "// END OF CUSTOM OPTIONS" << endl;
    FileUtils::WriteScrCharLine(ofil ,'/',false);
@@ -153,6 +146,9 @@ bool HelpersNCI::MakePovFile(const string &povname,POVRayConfiguration &pvp,Bond
    double camdist=2.5e0;
    for (int i=0; i<3; i++) {pvp.locCam[i]=0.0e0;}
    pvp.locCam[2]=camdist;
+   //cout << "loccam: " << pvp.locCam[2] << '\n';
+   //cout << "Do not forget to readjust the camera position after correcting translation of vertices." << '\n';
+   //cout << __FILE__ << ", line: " << __LINE__ << '\n';
    for (int i=0; i<3; i++) {
       pvp.locCam[i]*=bn.rView;
       for (int j=0; j<2; j++) {
@@ -163,20 +159,24 @@ bool HelpersNCI::MakePovFile(const string &povname,POVRayConfiguration &pvp,Bond
    //pvp.writeHeader(ofil,false);
    ofil << "global_settings { ambient_light White }" << endl;
    ofil << "\nbackground { color < 0, 0.5, 0.7 > }\n" << endl;
-   double zsep=0.5e0;
-   pvp.lightSource[1][0]=zsep;
-   pvp.lightSource[1][1]=zsep;
-   pvp.lightSource[1][2]=1.0e0;
-   pvp.AddLightSource(zsep,-zsep,1.0e0);
-   pvp.AddLightSource(-zsep,zsep,1.0e0);
-   pvp.AddLightSource(-zsep,-zsep,1.0e0);
-   pvp.AddLightSource(0.0e0,1.0e0,0.0e0);
-   pvp.AddLightSource(-1.0e0,0.0e0,0.0e0);
+   double zsep=10.75e0;
+   pvp.lightSource[1][0]=0.0e0;
+   pvp.lightSource[1][1]=0.0e0;
+   pvp.lightSource[1][2]=zsep;
+   pvp.AddLightSource(0.0e0,zsep,zsep);
+   pvp.AddLightSource(0.0e0,-zsep,zsep);
+   pvp.AddLightSource(zsep,0.0e0,zsep);
+   pvp.AddLightSource(-zsep,0.0e0,zsep);
+   pvp.AddLightSource(zsep,zsep,zsep);
+   pvp.AddLightSource(zsep,-zsep,zsep);
+   pvp.AddLightSource(-zsep,zsep,zsep);
+   pvp.AddLightSource(-zsep,-zsep,zsep);
    for (int i=1; i<pvp.nLightSources; i++) {
       for (int j=0; j<3; j++) {pvp.lightSource[i][j]*=(bn.rView*4.0e0);}
    }
-   for (int i=0; i<pvp.nLightSources; i++) {
-      pvp.WriteLightSource(ofil,i,0.5,"  rotate < GNUPlotAngle1, YAngle, GNUPlotAngle2 >\n");
+   pvp.WriteLightSource(ofil,0,0.75," rotate < GNUPlotAngle1, YAngle, GNUPlotAngle2 >\n");
+   for (int i=1; i<pvp.nLightSources; i++) {
+      pvp.WriteLightSource(ofil,i,0.15," rotate < GNUPlotAngle1, YAngle, GNUPlotAngle2 >\n");
    }
    ofil << "camera {" << endl;
    //ofil << "  orthographic" << '\n';

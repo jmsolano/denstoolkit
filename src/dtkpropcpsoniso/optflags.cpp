@@ -74,7 +74,9 @@ OptionFlags::OptionFlags() {
    prop2eval=isoprop=0;
    setcentat=setdirat1=setdirat2=setdirat3=0;
    setviewangles=setgnpangles=0;
+   setisovalue=0;
    refinemesh=0;
+   isofromcube=0;
    mkpov=kppov=mkpng=false;
    transparentiso=false;
    drawiso=true;
@@ -199,10 +201,15 @@ void printHelpMenu(int &argc, char** &argv) {
    ScreenUtils::CenterString("evaluated at an isosurface.");
    ScreenUtils::CenterString("Both property evaluated and the isosurface can be");
    ScreenUtils::CenterString("any of the fields implemented in DTK.");
-   ScreenUtils::CenterString("The isosurface is evaluated around a single atom");
+   ScreenUtils::CenterString("The isosurface can be constructed in two forms.");
+   ScreenUtils::CenterString("a) The isosurface is evaluated around a single atom");
    ScreenUtils::CenterString("chosen through options (see below), and only on");
-   ScreenUtils::CenterString("a cap pointing backwards another point. The point");
-   ScreenUtils::CenterString("is also selected through several options, below.");
+   ScreenUtils::CenterString("a cap pointing backwards another point; this point");
+   ScreenUtils::CenterString("is selected through several options, below.");
+   ScreenUtils::CenterString("b) The isosurface is extracted from a guassian cube,");
+   ScreenUtils::CenterString("which can be obtained with dtkcube. In this variant,");
+   ScreenUtils::CenterString("the isosurface is not partitioned, but computed through");
+   ScreenUtils::CenterString("the complete volume contained in the cube file.");
    cout << endl;
    ScreenUtils::CenterString((string("Compilation date: ")+string(__DATE__)));
    cout << endl;
@@ -255,20 +262,29 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  the base name.)" << '\n';
    cout << "  -P        \tGenerates a pov-ray script and renders it. Notice: this requires" << endl
         << "            \t   povray to be installed in your system." << endl;
-   cout << "  -r rlev   \tRefines the isosurface cap mesh. rlev is a level of refinement\n"
-        << "            \t  (an integer, whose default value is 4). Each level increases\n"
+   cout << "  -r rlev   \tRefines the isosurface cap mesh. rlev is a number used to\n"
+        << "            \t  perform a series of subdivisions of an initial icosahedron \n"
+        << "            \t  (rlev=4 by default). Each iteration increases\n"
         << "            \t  the number of triangles by a factor of 4, and it must be >0.\n"
         << "            \t  rlev>8 is not recommended as it may cause numerical issues." << '\n';
    cout << "  -t        \tDraw transparent isosurface." << '\n';
    cout << "  -V     \tDisplays the version of this program." << '\n';
    cout << "  -h     \tDisplay the help menu.\n\n";
    //-------------------------------------------------------------------------------------
+   cout << "  --use-cube cub \t\tUses the cube file 'cub' to generate the isosurface,\n"
+        << "                 \t\t  as opposed to generate a cap around a selected atom\n"
+        << "                 \t\t  and direction. This option overrides all options\n"
+        << "                 \t\t  related to the cap. E.g. the mesh cannot be refined,\n"
+        << "                 \t\t  because the mesh is determined from the cube sampling;\n"
+        << "                 \t\t  " << '\n';
    cout << "  --help    \t\tSame as -h" << '\n';
    cout << "  --version \t\tSame as -V" << '\n';
    //-------------------------------------------------------------------------------------
    ScreenUtils::PrintScrStarLine();
    ScreenUtils::PrintScrCharLine('-');
-   cout << "Scheme of the cap drawn. Below, r(c) is the radius vector" << '\n';
+   cout << "Scheme of the cap drawn when the isosurface is option a).\n"
+        <<"(See description of the program following DTK logo, above.)\n"
+        << "Below, r(c) is the radius vector" << '\n';
    cout << "of the center atom (given through option -c), and r(d)" << '\n'
         << "is the radius vector of the direction point (given through options\n"
         << "-l, -m, or -C).\n"
@@ -295,6 +311,9 @@ void printErrorMsg(char** &argv,char lab) {
    ScreenUtils::SetScrRedBoldFont();
    cout << "\nError: the option \"" << lab << "\" ";
    switch (lab) {
+      case '2' :
+         cout << "should be followed by a real number." << '\n';
+         break;
       case 'A' :
          cout << "should be followed by three real numbers." << '\n';
          break;
@@ -314,6 +333,7 @@ void printErrorMsg(char** &argv,char lab) {
          break;
       case 'i':
       case 'o':
+      case '1': // see long option "use-cube"
          cout << "should be followed by a string." << endl;
          break;
       case 'p':
@@ -341,6 +361,12 @@ void processDoubleDashOptions(int &argc,char** &argv,OptionFlags &flags,int pos)
    if (str==string("version")) {
       cout << progname << " " << CURRENTVERSION << endl;
       exit(0);
+   } else if (str==string("use-cube")) {
+      flags.isofromcube=(++pos);
+      if (pos>=argc) {printErrorMsg(argv,'1');}
+   } else if (str==string("set-isovalue")) {
+      flags.setisovalue=(++pos);
+      if (pos>=argc) {printErrorMsg(argv,'2');}
    } else if (str==string("help")) {
       printHelpMenu(argc,argv);
       exit(0);

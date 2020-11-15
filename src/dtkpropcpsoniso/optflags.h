@@ -74,7 +74,9 @@ public:
    unsigned short int infname,outfname,prop2eval,isoprop;
    unsigned short int setcentat,setdirat1,setdirat2,setdirat3;
    unsigned short int setviewangles,setgnpangles;
+   unsigned short int setisovalue;
    unsigned short int refinemesh;
+   unsigned short int isofromcube;
    bool mkpov,kppov,mkpng;
    bool drawiso,transparentiso;
 };//end class optsFlags

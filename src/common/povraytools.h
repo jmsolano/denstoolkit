@@ -99,6 +99,14 @@ public:
    static bool WriteMesh2SingleRGB(ofstream &ofil,const vector<vector<double> > &v,\
          const vector<vector<double> > &n,const vector<vector<size_t> > &f,\
          const int nt,vector<double> rgb,const string &trnsmStr="");
+   /** Writes a mesh2 povray object with (v)ertices, (n)normals, (t)extures,
+    * and (f)aces.  */
+   static bool WriteMesh2WithTextures(ofstream &ofil,const vector<vector<double> > &v,\
+         const vector<vector<double> > &n,const vector<vector<double> > &t,const vector<vector<size_t> > &f,\
+         const int nt,const string &trnsmStr="");
+   static bool WriteMesh2WithTextures(ofstream &ofil,const vector<vector<double> > &v,\
+         const vector<vector<double> > &t,const vector<vector<size_t> > &f,\
+         const int nt,const string &trnsmStr="");
    static bool WriteMesh2SingleRGB(ofstream &ofil,const vector<vector<double> > &v,\
          const vector<vector<size_t> > &f,const int nt,vector<double> rgb,\
          const string &trnsmStr="");

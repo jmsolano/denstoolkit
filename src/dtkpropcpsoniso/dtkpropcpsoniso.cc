@@ -59,6 +59,8 @@ using std::string;
 #include <iomanip>
 using std::setprecision;
 using std::scientific;
+#include <memory>
+using std::shared_ptr;
 #include <ctime>
 #include "screenutils.h"
 #include "fileutils.h"
@@ -115,56 +117,13 @@ int main (int argc, char ** argv) {
 
    if ( HelpersPropCPsOnIso::HaveIncompatibleOptions(argc,argv,options) ) { return EXIT_FAILURE; }
 
-   int cAt;
-   vector<double> xc(3),xd(3);
-   HelpersPropCPsOnIso::GetCenterIndexAndVectors(argv,options,bnw,cAt,xc,xd);
-   cout << "xc: " << xc[0] << ' ' << xc[1] << ' ' << xc[2] << '\n';
-   cout << "xd: " << xd[0] << ' ' << xd[1] << ' ' << xd[2] << '\n';
-   SymmetricSurfaceGrid grid;
-   int refCapMeshLevel=4;
-   if ( options.refinemesh ) {
-      refCapMeshLevel=std::stoi(string(argv[options.refinemesh]));
-      if ( refCapMeshLevel<0 ) { refCapMeshLevel=0; }
-      if ( refCapMeshLevel>8 ) {
-         ScreenUtils::DisplayWarningMessage("This level of refinement may cause numerical issues.");
-      }
-   }
-   grid. SetupSphereIcosahedron(refCapMeshLevel);
-   grid.Translate(xc);
-   grid.Scale(GetAtomicVDWRadius(bnw.atNum[cAt]));
-   /*
-      cout << "Meshgrid contains " << grid.vertex.size() << " vertices and "
-      << grid.tface.size() << " before trimming." << '\n'; // */
-   grid.TrimFacesCentroidDotProdGreaterThanZero(xd);
-   /*
-      cout << "Meshgrid contains " << grid.vertex.size() << " vertices and "
-      << grid.tface.size() << " after trimming." << '\n'; // */
+   /* Building the mesh  */
 
-   /*
-      for ( size_t i=0 ; i<grid.vertex.size() ; ++i ) {
-      cout << grid.vertex[i][0] << ' ' << grid.vertex[i][1] << ' ' << grid.vertex[i][2] << ' '
-      << gwf.EvalMolElecPot(grid.vertex[i][0],grid.vertex[i][1],grid.vertex[i][2]) << '\n';
-      }
-   // */
+   shared_ptr<MeshGrid> grid=HelpersPropCPsOnIso::BuildMesh(argc,\
+         argv,options,gwf,bnw);
 
-   /* Looking for partial isosurface  */
-   //grid.DisplayFaces();
+   /* Computing critical points on the isosurface.  */
 
-   /*
-      cout << "Meshgrid contains " << grid.vertex.size() << " vertices and "
-      << grid.tface.size() <<  " faces before projecting." << '\n'; // */
-   cout << "Computing cap isosurface...\n";
-   HelpersPropCPsOnIso::ProjectGridOntoIsosurface(gwf,grid,isoprop,0.001);
-   cout << "Done\n";
-   /*cout << "Meshgrid contains " << grid.vertex.size() << " vertices and "
-     << grid.tface.size() <<  " faces after projecting." << '\n'; // */
-
-   /*
-      for ( size_t i=0 ; i<grid.vertex.size() ; ++i ) {
-      cout << grid.vertex[i][0] << ' ' << grid.vertex[i][1] << ' ' << grid.vertex[i][2] << ' '
-      << gwf.EvalMolElecPot(grid.vertex[i][0],grid.vertex[i][1],grid.vertex[i][2]) << '\n';
-      }
-   // */
    cout << "Seeking critical points on cap isosurface...\n";
    vector<vector<double> > rcp;
    vector<double> vcp;
@@ -189,11 +148,14 @@ int main (int argc, char ** argv) {
       }
       ScreenUtils::PrintScrCharLine('+');
    }
+   double vmin=-0.01;
+   double vmax=0.01;
+   string palettename="moreland";
    /* Rendering  */
 
    POVRayConfiguration pvp;
    if ( HelpersPropCPsOnIso::ComputeNormalsAtVertices(grid,gwf,isoprop) ) {
-      grid.UseNormals(true);
+      grid->UseNormals(true);
    }
    double cv[3]={0.0e0,0.0e0,0.0e0};
    if ( options.setgnpangles ) {
@@ -217,7 +179,7 @@ int main (int argc, char ** argv) {
       tcp[7]=vcp[i];
       sp.push_back(tcp);
    }
-   HelpersPropCPsOnIso::MakePovFile(povfilnam,options,pvp,bnw,grid,sp);
+   HelpersPropCPsOnIso::MakePovFile(povfilnam,options,pvp,bnw,grid,sp,palettename);
 
    /* At this point the computation has ended. Usually this means no errors ocurred. */
 

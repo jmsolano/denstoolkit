@@ -406,6 +406,12 @@ bool HelpersPOVRay::WriteMesh2SingleRGB(ofstream &ofil,const vector<vector<doubl
    vector<vector<double> > n(0);
    return WriteMesh2SingleRGB(ofil,v,n,f,nt,rgb,trnsmStr);
 }
+bool HelpersPOVRay::WriteMesh2WithTextures(ofstream &ofil,const vector<vector<double> > &v,\
+         const vector<vector<double> > &t,const vector<vector<size_t> > &f,\
+         const int nt,const string &trnsmStr) {
+   vector<vector<double> > n(0);
+   return WriteMesh2WithTextures(ofil,v,n,t,f,nt,trnsmStr);
+}
 bool HelpersPOVRay::WriteMesh2SingleRGB(ofstream &ofil,const vector<vector<double> > &v,\
          const vector<vector<double> > &n,const vector<vector<size_t> > &f,\
          const int nt,vector<double> rgb,const string &trnsmStr) {
@@ -462,4 +468,75 @@ bool HelpersPOVRay::WriteMesh2SingleRGB(ofstream &ofil,const vector<vector<doubl
    ofil << thetabs << '}' << '\n'; //end of mesh2
    return true;
 }
+bool HelpersPOVRay::WriteMesh2WithTextures(ofstream &ofil,const vector<vector<double> > &v,\
+         const vector<vector<double> > &n,const vector<vector<double> > &t,const vector<vector<size_t> > &f,\
+         const int nt,const string &trnsmStr) {
+   int indlev=nt;
+   size_t nvm1=v.size()-1;
+   size_t nfm1=f.size()-1;
+   bool writeTransmit=(trnsmStr.size()>0);
+   string thetabs=IndTabsStr(indlev++);
+   ofil << thetabs << "mesh2 {" << '\n';
+   thetabs=IndTabsStr(indlev++);
+   ofil << thetabs << "vertex_vectors {\n";
+   thetabs=IndTabsStr(indlev);
+   ofil << thetabs << (nvm1+1) << ",\n" << thetabs;
+   for ( size_t i=0 ; i<nvm1 ; ++i ) {
+      WriteVector(ofil,v[i][0],v[i][1],v[i][2]);
+      ofil << ",";
+      if ( (i%3) == 2 ) { ofil << '\n' << thetabs; }
+   }
+   WriteVector(ofil,v[nvm1][0],v[nvm1][1],v[nvm1][2]);
+   thetabs=IndTabsStr(--indlev);
+   ofil << thetabs << "}\n";//end of vertex_vectors
+   if ( n.size()>0 ) {
+      ofil << thetabs << "normal_vectors {\n";
+      thetabs=IndTabsStr(indlev);
+      ofil << thetabs << (nvm1+1) << ",\n" << thetabs;
+      for ( size_t i=0 ; i<nvm1 ; ++i ) {
+         WriteVector(ofil,n[i][0],n[i][1],n[i][2]);
+         ofil << ",";
+         if ( (i%3) == 2 ) { ofil << '\n' << thetabs; }
+      }
+      WriteVector(ofil,n[nvm1][0],n[nvm1][1],n[nvm1][2]);
+      thetabs=IndTabsStr(--indlev);
+      ofil << thetabs << '}' << '\n';//end of normal_vectors
+   }
+   ofil << thetabs << "texture_list {\n";
+   thetabs=IndTabsStr(indlev);
+   size_t nnvv=nvm1+1;
+   ofil << thetabs << (nnvv) << ",\n";
+   for ( size_t i=0 ; i<nnvv ; ++i ) {
+      ofil << thetabs << "texture{pigment{rgb ";
+      HelpersPOVRay::WriteVector(ofil,t[i][0],t[i][1],t[i][2]);
+      if ( writeTransmit ) { ofil << ' ' << trnsmStr; }
+      ofil << " }}" << (i<nvm1? ',' : ' ') << "\n";
+   }
+   thetabs=HelpersPOVRay::IndTabsStr(--indlev);
+   ofil << thetabs << "}" << endl;//end of texture_list
+   thetabs=IndTabsStr(indlev++);
+   ofil << thetabs << "face_indices {\n";
+   thetabs=IndTabsStr(indlev);
+   ofil << thetabs << (nfm1+1) << ",\n" << thetabs;
+   for ( size_t i=0 ; i<nfm1 ; ++i ) {
+      WriteVector(ofil,f[i][0],f[i][1],f[i][2]);
+      ofil << ", " << f[i][0] << ',' << f[i][1] << ',' << f[i][2] << ", ";
+      if ( (i%5) == 4 ) { ofil << '\n' << thetabs; }
+   }
+   WriteVector(ofil,f[nfm1][0],f[nfm1][1],f[nfm1][2]);
+   ofil << ", " <<  f[nfm1][0] << ',' << f[nfm1][1] << ',' << f[nfm1][2] << '\n';
+   thetabs=IndTabsStr(--indlev);
+   ofil << thetabs << '}' << '\n';//end of face_indices
+   thetabs=IndTabsStr(indlev++);
+   thetabs=IndTabsStr(--indlev);
+   ofil << thetabs << '}' << '\n'; //end of mesh2
+   return true;
+}
+
+
+
+
+
+
+
 

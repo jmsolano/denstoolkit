@@ -13,6 +13,9 @@ using std::vector;
 #include "fileutils.h"
 #include "commonhelpers.h"
 #include "matrixvectoroperations3d.h"
+#include "palette.h"
+#include "atomradiicust.h"
+#include "gaussiancube.h"
 
 #ifndef PROPCPSONISOCOORDSEPS2
 #define PROPCPSONISOCOORDSEPS2 1.0e-12
@@ -69,16 +72,16 @@ bool HelpersPropCPsOnIso::HaveIncompatibleOptions(int argc,char *argv[],OptionFl
    return false;
 }
 void HelpersPropCPsOnIso::ProjectGridOntoIsosurface(GaussWaveFunction &wf,\
-      SymmetricSurfaceGrid &g,const char prop,const double iso) {
+      shared_ptr<SymmetricSurfaceGrid> g,const char prop,const double iso) {
    double f;
    vector<double> r(3);
    vector<size_t> v2erase;
    v2erase.clear();
-   for ( size_t i=0 ; i<g.vertex.size() ; ++i ) {
-      //cout << "(" << wf.EvalDensity(g.vertex[i][0],g.vertex[i][1],g.vertex[i][2]) << ")";
-      f=SearchValueAlongLineDescending(g.center,g.vertex[i],wf,r,prop,iso);
+   for ( size_t i=0 ; i<g->vertex.size() ; ++i ) {
+      //cout << "(" << wf.EvalDensity(g->vertex[i][0],g->vertex[i][1],g->vertex[i][2]) << ")";
+      f=SearchValueAlongLineDescending(g->center,g->vertex[i],wf,r,prop,iso);
       if ( f>0.0e0 ) {
-         g.vertex[i][0]=r[0]; g.vertex[i][1]=r[1]; g.vertex[i][2]=r[2];
+         g->vertex[i][0]=r[0]; g->vertex[i][1]=r[1]; g->vertex[i][2]=r[2];
       } else {
          //ScreenUtils::DisplayWarningMessage(string("Erasing vertex ")+std::to_string(i));
          v2erase.push_back(i);
@@ -87,12 +90,12 @@ void HelpersPropCPsOnIso::ProjectGridOntoIsosurface(GaussWaveFunction &wf,\
    for ( size_t i=0 ; i<v2erase.size() ; ++i ) {
       cout <<  v2erase[i] << '\n';
    }
-   g.RemoveFacesUsingVertices(v2erase);
-   g.ComputeCentroids();
-   for ( size_t i=0 ; i<g.tcentroid.size() ; ++i ) {
-      f=SearchValueAlongLineDescending(g.center,g.tcentroid[i],wf,r,prop,iso);
+   g->RemoveFacesUsingVertices(v2erase);
+   g->ComputeCentroids();
+   for ( size_t i=0 ; i<g->centroid.size() ; ++i ) {
+      f=SearchValueAlongLineDescending(g->center,g->centroid[i],wf,r,prop,iso);
       if ( f>0.0e0 ) {
-         g.tcentroid[i][0]=r[0]; g.tcentroid[i][1]=r[1]; g.tcentroid[i][2]=r[2];
+         g->centroid[i][0]=r[0]; g->centroid[i][1]=r[1]; g->centroid[i][2]=r[2];
       }
    }
 }
@@ -164,7 +167,7 @@ double HelpersPropCPsOnIso::SearchValueAlongLineDescending(const vector<double> 
    for ( size_t i=0 ; i<3 ; ++i ) { r[i]=rm[i]-c[i]; }
    return MatrixVectorOperations3D::Norm(r);
 }
-bool HelpersPropCPsOnIso::SearchCPs(SymmetricSurfaceGrid &g,\
+bool HelpersPropCPsOnIso::SearchCPs(shared_ptr<MeshGrid> g,\
       GaussWaveFunction &wf,vector<vector<double> > &rcp,vector<size_t>  &poscp,\
       vector<int> &sigcp,vector<double> &valcp,const char prop) {
    double (GaussWaveFunction::* f)(double,double,double);
@@ -179,15 +182,16 @@ bool HelpersPropCPsOnIso::SearchCPs(SymmetricSurfaceGrid &g,\
          f=&GaussWaveFunction::EvalDensity;
          break;
    }
-   size_t nf=g.tface.size(),nv=g.vertex.size();
+   size_t nf=g->face.size(),nv=g->vertex.size();
    vector<double> propAtCentroid(nf);
    vector<double> propAtVertex(nv);
    for ( size_t i=0 ; i<nf ; ++i ) {
-      propAtCentroid[i]=(wf.*f)(g.tcentroid[i][0],g.tcentroid[i][1],g.tcentroid[i][2]);
+      propAtCentroid[i]=(wf.*f)(g->centroid[i][0],g->centroid[i][1],g->centroid[i][2]);
    }
    for ( size_t i=0 ; i<nv ; ++i ) {
-      propAtVertex[i]=(wf.*f)(g.vertex[i][0],g.vertex[i][1],g.vertex[i][2]);
+      propAtVertex[i]=(wf.*f)(g->vertex[i][0],g->vertex[i][1],g->vertex[i][2]);
    }
+   for ( size_t i=0 ; i<nv ; ++i ) { g->value[i]=propAtVertex[i]; }
    size_t p0,p1,p2;
    double v0,v1,v2,vc;
    for ( size_t i=0 ; i<rcp.size() ; ++i ) { rcp[i].clear(); }
@@ -196,16 +200,16 @@ bool HelpersPropCPsOnIso::SearchCPs(SymmetricSurfaceGrid &g,\
    valcp.clear();
    sigcp.clear();
    for ( size_t i=0 ; i<nf ; ++i ) {
-      p0=g.tface[i][0]; p1=g.tface[i][1]; p2=g.tface[i][2];
+      p0=g->face[i][0]; p1=g->face[i][1]; p2=g->face[i][2];
       vc=propAtCentroid[i]; v0=propAtVertex[p0]; v1=propAtVertex[p1]; v2=propAtVertex[p2];
       if ( vc>=v0 && vc>=v1 && vc>=v2 ) {
-         rcp.push_back(g.tcentroid[i]);
+         rcp.push_back(g->centroid[i]);
          poscp.push_back(i);
          valcp.push_back(propAtCentroid[i]);
          sigcp.push_back(-3);
       }
       if ( vc<=v0 && vc<=v1 && vc<=v2 ) {
-         rcp.push_back(g.tcentroid[i]);
+         rcp.push_back(g->centroid[i]);
          poscp.push_back(i);
          valcp.push_back(propAtCentroid[i]);
          sigcp.push_back(3);
@@ -215,7 +219,7 @@ bool HelpersPropCPsOnIso::SearchCPs(SymmetricSurfaceGrid &g,\
    return true;
 }
 bool HelpersPropCPsOnIso::MakePovFile(const string &povname,OptionFlags &options,POVRayConfiguration &pvp,\
-      BondNetWork &bn,SymmetricSurfaceGrid &grid,vector<vector<double> > &sp) {
+      BondNetWork &bn,shared_ptr<MeshGrid> grid,vector<vector<double> > &sp,const string &palname) {
    ofstream ofil(povname.c_str());
    if ( !ofil.good() ) {
       string msg="The file '";
@@ -249,7 +253,7 @@ bool HelpersPropCPsOnIso::MakePovFile(const string &povname,OptionFlags &options
    ofil << "#declare TransmitAtomSphere=0.0;" << '\n';
    ofil << "#declare TransmitStdBondCylinder=0.0;" << '\n';
    ofil << "#declare TransmitCritPts=0.0;" << '\n';
-   ofil << "#declare TransmitIsosurface=0.4;" << '\n';
+   ofil << "#declare TransmitIsosurface=0.2;" << '\n';
    ofil << "#default { finish { specular 0.2 roughness 0.03 phong .1 } }" << '\n';
    FileUtils::WriteScrCharLine(ofil,'/',false);
    ofil << "// END OF CUSTOM OPTIONS" << '\n';
@@ -307,10 +311,12 @@ bool HelpersPropCPsOnIso::MakePovFile(const string &povname,OptionFlags &options
    CommonHelpers::PutBonds(ofil,bn,pvp.currIndLev,"TransmitStdBondCylinder");
    ofil << "#end\n//end if DrawStandardBonds" << '\n';
    vector<double> rgb{0.1,0.1,1.0};
-   if ( grid.UseNormals() ) {
-      HelpersPOVRay::WriteMesh2SingleRGB(ofil,grid.vertex,grid.normal,grid.tface,0,rgb,"transmit TransmitIsosurface");
+   vector<vector<double> > textures=ComputeTextures(grid,-0.025,0.01,palname);
+   if ( grid->UseNormals() ) {
+      //HelpersPOVRay::WriteMesh2SingleRGB(ofil,grid->vertex,grid->normal,grid->face,0,rgb,"transmit TransmitIsosurface");
+      HelpersPOVRay::WriteMesh2WithTextures(ofil,grid->vertex,grid->normal,textures,grid->face,0,"transmit TransmitIsosurface");
    } else {
-      HelpersPOVRay::WriteMesh2SingleRGB(ofil,grid.vertex,grid.tface,0,rgb,"transmit TransmitIsosurface");
+      HelpersPOVRay::WriteMesh2SingleRGB(ofil,grid->vertex,grid->face,0,rgb,"transmit TransmitIsosurface");
    }
    CommonHelpers::PutSpecialSpheres(ofil,pvp.currIndLev,sp,"TransmitCritPts");
    ofil.close();
@@ -320,7 +326,7 @@ bool HelpersPropCPsOnIso::MakePovFile(const string &povname,OptionFlags &options
    }
    return true;
 }
-bool HelpersPropCPsOnIso::ComputeNormalsAtVertices(SymmetricSurfaceGrid &g,GaussWaveFunction &wf,\
+bool HelpersPropCPsOnIso::ComputeNormalsAtVertices(shared_ptr<MeshGrid> g,GaussWaveFunction &wf,\
       const char prop) {
    void (GaussWaveFunction::* f)(double,double,double,double&,double&,double&,double&);
    switch ( prop ) {
@@ -333,14 +339,122 @@ bool HelpersPropCPsOnIso::ComputeNormalsAtVertices(SymmetricSurfaceGrid &g,Gauss
    }
    //double vl=(wf.*f)(rl[0],rl[1],rl[2]);
    double rho;
-   size_t nv=g.vertex.size();
-   if ( nv!=g.normal.size() ) {
+   size_t nv=g->vertex.size();
+   if ( nv!=g->normal.size() ) {
       ScreenUtils::DisplayWarningMessage("Needs resizing normals!");
       return false;
    }
    for ( size_t i=0 ; i<nv ; ++i ) {
-      (wf.*f)(g.vertex[i][0],g.vertex[i][1],g.vertex[i][2],rho,\
-            g.normal[i][0],g.normal[i][1],g.normal[i][2]);
+      (wf.*f)(g->vertex[i][0],g->vertex[i][1],g->vertex[i][2],rho,\
+            g->normal[i][0],g->normal[i][1],g->normal[i][2]);
    }
+   g->NormaliseNormals();
    return true;
 }
+vector<vector<double> > HelpersPropCPsOnIso::ComputeTextures(shared_ptr<MeshGrid> g,const double valmin,\
+      const double valmax,const string &palname) {
+   size_t nv=g->vertex.size();
+   double tmp;
+   double vmin=1.0e+50,vmax=-1.0e+50;
+   double mean=0.0e0l;
+   for ( size_t i=0 ; i<g->value.size() ; ++i ) {
+      tmp=g->value[i];
+      mean+=tmp;
+      if ( tmp<vmin ) { vmin=tmp; }
+      if ( tmp>vmax ) { vmax=tmp; }
+   }
+   cout << "vecvmin: " << vmin << ", vecvmax: " << vmax << ", mean: " << (mean/double(nv)) << '\n';
+   if ( valmin>vmin ) { vmin=valmin; }
+   if ( valmax<vmax ) { vmax=valmax; }
+   cout << "valmin: " << valmin << ", valmax: " << valmax << '\n';
+   cout << "vmin: " << vmin << ", vmax: " << vmax << '\n';
+   double oodeltatimes255=255.0e0/(vmax-vmin);
+   vector<vector<double> > t(nv);
+   for ( size_t i=0 ; i<nv ; ++i ) { t[i].resize(3); }
+   Palette pal;
+   pal.SelectPalette(palname);
+   size_t pos;
+   for ( size_t i=0 ; i<nv ; ++i ) {
+      tmp=g->value[i];
+      tmp-=vmin;
+      tmp*=oodeltatimes255;
+      if ( tmp<0.0e0 ) { tmp=0.0e0; }
+      if ( tmp>255.0e0 ) { tmp=255.0e0; }
+      pos=size_t(tmp);
+      pal.GetRGB(pos,t[i][0],t[i][1],t[i][2]);
+      //cout << tmp << ", rgb: " << t[i][0] << ' ' << t[i][1] << ' ' << t[i][2] << '\n';
+   }
+   return t;
+}
+shared_ptr<MeshGrid> HelpersPropCPsOnIso::BuildCapMesh(int argc,\
+      char *argv[],const OptionFlags &opt,GaussWaveFunction &wf,\
+      BondNetWork &bn) {
+   char isoprop='d';
+   if ( opt.isoprop ) { isoprop=argv[opt.isoprop][0]; }
+   int cAt;
+   vector<double> xc(3),xd(3);
+   HelpersPropCPsOnIso::GetCenterIndexAndVectors(argv,opt,bn,cAt,xc,xd);
+   cout << "xc: " << xc[0] << ' ' << xc[1] << ' ' << xc[2] << '\n';
+   cout << "xd: " << xd[0] << ' ' << xd[1] << ' ' << xd[2] << '\n';
+   shared_ptr<SymmetricSurfaceGrid> grid=shared_ptr<SymmetricSurfaceGrid>(new SymmetricSurfaceGrid);
+   int refCapMeshLevel=4;
+   if ( opt.refinemesh ) {
+      refCapMeshLevel=std::stoi(string(argv[opt.refinemesh]));
+      if ( refCapMeshLevel<0 ) {
+         ScreenUtils::DisplayWarningMessage("Requesting a negative number of refining iterations.");
+         refCapMeshLevel=0;
+      }
+      if ( refCapMeshLevel>8 ) {
+         ScreenUtils::DisplayWarningMessage("This level of refinement may cause numerical issues.");
+      }
+   }
+   grid-> SetupSphereIcosahedron(refCapMeshLevel);
+   grid->Translate(xc);
+   grid->ScaleVertices(GetAtomicVDWRadius(bn.atNum[cAt]));
+   grid->TrimFacesCentroidDotProdGreaterThanZero(xd);
+
+   /* Looking for partial isosurface  */
+   cout << "Computing cap isosurface...\n";
+   HelpersPropCPsOnIso::ProjectGridOntoIsosurface(wf,grid,isoprop,0.001);
+   cout << "Done\n";
+   return grid;
+}
+shared_ptr<MeshGrid> HelpersPropCPsOnIso::BuildMeshFromCube(int argc,\
+      char *argv[],const OptionFlags &opt,GaussWaveFunction &wf,\
+      BondNetWork &bn) {
+   if ( !opt.isofromcube ) {
+      ScreenUtils::DisplayErrorMessage("Requesting isofromcube when isofromcube==false.");
+      cout << __FILE__ << ", line: " << __LINE__ << '\n';
+      return nullptr;
+   }
+   string cubfnam=argv[opt.isofromcube];
+   cout << "Extracting isosurface..." << std::endl;
+   GaussianCube gc(cubfnam);
+   if ( !gc.CubeLoaded() ) {
+      ScreenUtils::DisplayErrorMessage(string("The file '")+cubfnam\
+            +string("' could not be opened."));
+      cout << __FILE__ << ", line: " << __LINE__ << '\n';
+      return nullptr;
+   }
+   shared_ptr<Isosurface> iso=shared_ptr<Isosurface>(new Isosurface);
+   //iso.UseTetrahedrons(true);
+   double isovalue=0.001e0;
+   if ( opt.setisovalue ) {
+      isovalue=std::stod(string(argv[opt.setisovalue]));
+   }
+   iso->ExtractMarchingCubes(gc,isovalue);
+   return iso;
+}
+shared_ptr<MeshGrid> HelpersPropCPsOnIso::BuildMesh(int argc,\
+      char *argv[],const OptionFlags &opt,GaussWaveFunction &wf,\
+      BondNetWork &bn) {
+   if ( opt.isofromcube ) {
+      return BuildMeshFromCube(argc,argv,opt,wf,bn);
+   } else {
+      return BuildCapMesh(argc,argv,opt,wf,bn);
+   }
+   ScreenUtils::DisplayErrorMessage("For some reason, HelpersPropCPsOnIso::BuildMesh failed!");
+   cout << __FILE__ << ", line: " << __LINE__ << '\n';
+   return nullptr;
+}
+
