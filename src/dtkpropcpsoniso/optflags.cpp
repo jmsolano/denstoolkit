@@ -71,7 +71,7 @@ using std::string;
 OptionFlags::OptionFlags() {
    infname=0;
    outfname=0;
-   prop2eval=isoprop=0;
+   prop2eval=isoprop=verboselevel=0;
    setcentat=setdirat1=setdirat2=setdirat3=0;
    setviewangles=setgnpangles=0;
    setisovalue=0;
@@ -80,6 +80,7 @@ OptionFlags::OptionFlags() {
    mkpov=kppov=mkpng=false;
    transparentiso=false;
    drawiso=true;
+   cpkview=true;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    string progname;
@@ -160,12 +161,19 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                flags.refinemesh=(++i);
                if (i>=argc) {printErrorMsg(argv,'r');}
                break;
+            case 's' :
+               flags.cpkview=false;
+               break;
             case 't' :
                flags.transparentiso=true;
                break;
             case 'h':
                printHelpMenu(argc,argv);
                exit(EXIT_SUCCESS);
+               break;
+            case 'v' :
+               flags.verboselevel=(++i);
+               if (i>=argc) {printErrorMsg(argv,'v');}
                break;
             case 'V':
                progname=argv[0];
@@ -267,7 +275,11 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  (rlev=4 by default). Each iteration increases\n"
         << "            \t  the number of triangles by a factor of 4, and it must be >0.\n"
         << "            \t  rlev>8 is not recommended as it may cause numerical issues." << '\n';
+   cout << "  -s        \tSets spacefilling mode. This mode activates the spacefilling\n"
+        << "            \t  view of the atoms (uses VdW atomic radius to draw the atoms)." << '\n';
    cout << "  -t        \tDraw transparent isosurface." << '\n';
+   cout << "  -v vrbslev\tSets the verbose level to be vrbslev. This prints information according to\n"
+        << "            \t  the level chosen. Default: vrbslev=0." << '\n';
    cout << "  -V     \tDisplays the version of this program." << '\n';
    cout << "  -h     \tDisplay the help menu.\n\n";
    //-------------------------------------------------------------------------------------
@@ -323,6 +335,7 @@ void printErrorMsg(char** &argv,char lab) {
       case 'c':
       case 'l':
       case 'r':
+      case 'v':
          cout << "should be followed by an integer." << endl;
          break;
       case 'm':

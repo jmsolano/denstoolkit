@@ -71,14 +71,14 @@ using std::string;
 class OptionFlags {
 public: 
    OptionFlags();//default constructor, initialize all the flags to convenient (default) values.
-   unsigned short int infname,outfname,prop2eval,isoprop;
+   unsigned short int infname,outfname,prop2eval,isoprop,verboselevel;
    unsigned short int setcentat,setdirat1,setdirat2,setdirat3;
    unsigned short int setviewangles,setgnpangles;
    unsigned short int setisovalue;
    unsigned short int refinemesh;
    unsigned short int isofromcube;
    bool mkpov,kppov,mkpng;
-   bool drawiso,transparentiso;
+   bool drawiso,transparentiso,cpkview;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);
 void printHelpMenu(int &argc, char** &argv);//self-described

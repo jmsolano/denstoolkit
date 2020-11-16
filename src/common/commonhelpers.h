@@ -11,7 +11,7 @@ public:
     * trnsmat is the string to be passed for the transparency of
     * the atoms. */
    static void PutNuclei(ofstream &ofil,BondNetWork &bn,const int ntbs,\
-         const string trnsmat);
+         const string trnsmat,bool cpkview=false);
    /** Adds the bond cylinders to ofil. ntbs is the number of tabulators
     * that are added at the beginning of each line.
     * trnsmbnd is the string to be passed for the transparency of

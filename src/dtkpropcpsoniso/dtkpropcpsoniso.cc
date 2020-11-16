@@ -64,8 +64,10 @@ using std::shared_ptr;
 #include <ctime>
 #include "screenutils.h"
 #include "fileutils.h"
+#include "stringtools.h"
 #include "mymath.h"
 #include "gausswavefunction.h"
+#include "fldtypesdef.h"
 #include "bondnetwork.h"
 #include "optflags.h"
 #include "crtflnms.h"
@@ -87,6 +89,8 @@ int main (int argc, char ** argv) {
    ofstream ofile;
 
    getOptions(argc,argv,options); //This processes the options from the command line.
+   int verboseLevel=0;
+   if ( options.verboselevel ) { verboseLevel=std::stoi(string(argv[options.verboselevel])); }
    mkFileNames(argv,options,infilnam,logfilnam,povfilnam); //This creates the names used.
    ScreenUtils::PrintHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS);
    //Just to let the user know that the initial configuration is OK
@@ -118,9 +122,12 @@ int main (int argc, char ** argv) {
    if ( HelpersPropCPsOnIso::HaveIncompatibleOptions(argc,argv,options) ) { return EXIT_FAILURE; }
 
    /* Building the mesh  */
-
+   double isovalue=0.001;
+   if ( options.setisovalue ) {
+      isovalue=std::stod(string(argv[options.setisovalue]));
+   }
    shared_ptr<MeshGrid> grid=HelpersPropCPsOnIso::BuildMesh(argc,\
-         argv,options,gwf,bnw);
+         argv,options,gwf,bnw,isovalue);
 
    /* Computing critical points on the isosurface.  */
 
@@ -131,15 +138,9 @@ int main (int argc, char ** argv) {
    vector<double> vcp;
    vector<size_t> poscp;
    vector<int> sigcp;
-   bool foundcps=false;
-   if ( options.isofromcube ) {
-      HelpersPropCPsOnIso::SearchCPsIso(grid,gwf,rcp,poscp,sigcp,vcp,'V');
-   } else {
-      //HelpersPropCPsOnIso::SearchCPsCap(grid,gwf,rcp,poscp,sigcp,vcp,'V');
-      HelpersPropCPsOnIso::SearchCPsIso(grid,gwf,rcp,poscp,sigcp,vcp,'V');
-   }
+   bool foundcps=HelpersPropCPsOnIso::SearchCPsIso(grid,gwf,rcp,poscp,sigcp,vcp,'V');
    cout << "Done.\n";
-   if ( foundcps ) {
+   if ( foundcps && verboseLevel>0 ) {
       string cptype;
       ScreenUtils::PrintScrCharLine('+');
       for ( size_t i=0 ; i<rcp.size() ; ++i ) {
@@ -147,16 +148,22 @@ int main (int argc, char ** argv) {
          else if ( sigcp[i]==3 ) { cptype="Minimum"; }
          else {cptype="Saddle critical point";}
          ScreenUtils::PrintScrCharLine('-');
+         cout << scientific << setprecision(12);
          cout << cptype << " found at: "
               << rcp[i][0] << ' ' << rcp[i][1] << ' ' <<  rcp[i][2] << ' '
-              << " : " << vcp[i] << '\n';
+              << " : " << vcp[i] << " a.u., " << vcp[i]*627.5 << " kcal/mol, "
+              << vcp[i]*2625.5 << " kJ/mol";
+         if ( verboseLevel>1 ) {
+            cout << " (" << grid->vneigh2v[poscp[i]].size() << " neighbs)" << '\n';
+         }
+         cout << '\n';
          ScreenUtils::PrintScrCharLine('-');
-         //gwf.DisplayAllFieldProperties(rcp[i][0],rcp[i][1],rcp[i][2]);
+         if ( verboseLevel>2 ) {
+            gwf.DisplayAllFieldProperties(rcp[i][0],rcp[i][1],rcp[i][2]);
+         }
       }
       ScreenUtils::PrintScrCharLine('+');
    }
-   double vmin=-0.01;
-   double vmax=0.01;
    string palettename="moreland";
    /* Rendering  */
 
@@ -179,16 +186,47 @@ int main (int argc, char ** argv) {
    vector<vector<double> > sp(0);
    vector<double> tcp(8);
    for ( size_t i=0 ; i<rcp.size() ; ++i ) {
-      tcp[0]=rcp[i][0]; tcp[1]=rcp[i][1]; tcp[2]=rcp[i][2]; tcp[3]=PROPCPSONISOCPSIZE;
-      tcp[4]=(sigcp[i]==3 ? 0.5529412 : 0.00000e0);
-      tcp[5]=0.00000e0;
-      tcp[6]=(sigcp[i]==-3 ? 0.5529412 : 0.00000e0);
-      tcp[7]=vcp[i];
-      sp.push_back(tcp);
+      tcp[0]=rcp[i][0]; tcp[1]=rcp[i][1]; tcp[2]=rcp[i][2]; tcp[3]=PROPCPSONISOCPSIZE; // sphere coords and radius
+      tcp[4]=(sigcp[i]==3 ? 0.5529412 : 0.00000e0); // red component (RGB)
+      tcp[5]=0.00000e0; // green component (RGB)
+      tcp[6]=(sigcp[i]==-3 ? 0.5529412 : 0.00000e0); // blue component (RGB)
+      tcp[7]=vcp[i]; //field value at the sphere centre.
+      sp.push_back(tcp); 
    }
    HelpersPropCPsOnIso::MakePovFile(povfilnam,options,pvp,bnw,grid,sp,palettename);
 
    /* At this point the computation has ended. Usually this means no errors ocurred. */
+   //HelpersPropCPsOnIso::SearchCPsCap(grid,gwf,rcp,poscp,sigcp,vcp,'V');
+   if ( rcp.size()!=poscp.size() || rcp.size()!=sigcp.size() || rcp.size() !=vcp.size() ) {
+      ScreenUtils::DisplayErrorMessage("Incorrect sizes!");
+      cout << __FILE__ << ", line: " << __LINE__ << '\n';
+   } else {
+      ofstream ofil(logfilnam);
+      int atnum;
+      FileUtils::WriteHappyStart(argv,ofil,CURRENTVERSION,PROGRAMCONTRIBUTORS,true);
+      ofil << scientific << setprecision(12);
+      ofil << "#The isosurface was computed using ";
+      if ( options.isofromcube ) {
+         ofil << "the cube file '" << argv[options.isofromcube]
+              << "',\n#  with a " << GetFieldTypeKeyLong(isoprop) << " isovalue of " << isovalue << '\n';
+      } else {
+         ofil << "a cap surrounding atom " << argv[options.setcentat] << '\n';
+      }
+      ofil << "#Below, (x,y,z) is the position of each critical point (CP) found upon the surface.\n"
+           << "#sigma is the signature of the CP; +3 indicates a local minimum, and -3 indicates a local maximum.\n"
+           << "#atomIdxInWF? is the atom index in the wfn (or wfx) file, i.e. the number of\n"
+           << "#  the atom in the list of atoms, of the closest atom to the CP.\n"
+           << "#atomSymbol is the atomic symbol of the closest atom to the CP." << '\n';
+      ofil << "#        x                  y                  z        sigma       "
+           << GetFieldTypeKeyShort(evprop) << "   atomIdxInWF? atomSymbol" << '\n';
+      for ( size_t i=0 ; i<sp.size() ; ++i ) {
+         atnum=HelpersPropCPsOnIso::FindClosestAtom(bnw,rcp[i]);
+         ofil << rcp[i][0] << ' ' << rcp[i][1] << ' ' << rcp[i][2] << (sigcp[i]>0 ? " +" : " ")
+              << sigcp[i] << ' ' << vcp[i] << ' '
+              << (atnum+1) << ' ' << StringTools::RemoveAllDigits(gwf.atLbl[atnum]) << '\n';
+      }
+      ofil.close();
+   }
 
    ScreenUtils::PrintHappyEnding();
    ScreenUtils::SetScrGreenBoldFont();

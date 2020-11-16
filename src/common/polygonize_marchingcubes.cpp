@@ -437,12 +437,20 @@ int PolygonizeMarchingCubes::PolygonizeVoxel(GRIDCELL &g,const double iso) {
 }
 int PolygonizeMarchingCubes::PolygonizeVoxelTetrahedrons(GRIDCELL &g,const double iso) {
    int kk=0;
+   kk+=PolygoniseTri(g,iso,&auxtriangles[kk],6,0,3,2);
+   kk+=PolygoniseTri(g,iso,&auxtriangles[kk],6,0,3,7);
+   kk+=PolygoniseTri(g,iso,&auxtriangles[kk],6,0,4,7);
+   kk+=PolygoniseTri(g,iso,&auxtriangles[kk],6,0,4,5);
+   kk+=PolygoniseTri(g,iso,&auxtriangles[kk],6,0,1,5);
+   kk+=PolygoniseTri(g,iso,&auxtriangles[kk],6,0,1,2);
+   /*
    kk+=PolygoniseTri(g,iso,&auxtriangles[kk],0,2,3,7);
    kk+=PolygoniseTri(g,iso,&auxtriangles[kk],0,2,6,7);
    kk+=PolygoniseTri(g,iso,&auxtriangles[kk],0,4,6,7);
    kk+=PolygoniseTri(g,iso,&auxtriangles[kk],0,6,1,2);
    kk+=PolygoniseTri(g,iso,&auxtriangles[kk],0,6,1,4);
    kk+=PolygoniseTri(g,iso,&auxtriangles[kk],5,6,1,4);
+   // */
    return kk;
 }
 /*

@@ -90,7 +90,8 @@ void mkFileNames(char ** (&argv), OptionFlags &opts, string &i_fn, string &l_fn,
    if ( opts.prop2eval ) { prope=argv[opts.prop2eval][0]; }
    if ( opts.isoprop ) { propiso=argv[opts.isoprop][0]; }
    l_fn=basename;
-   string plbl=GetFieldTypeKeyShort(prope)+"CPs"+"On"+GetFieldTypeKeyShort(propiso)+"Iso";
+   string plbl=GetFieldTypeKeyShort(prope)+"CPs"+"On"+GetFieldTypeKeyShort(propiso);
+   plbl+=(opts.isofromcube ? "Iso" : "Cap");
    FileUtils::InsertAtEndOfFileName(l_fn,plbl);
    FileUtils::ReplaceExtensionOfFileName(l_fn,"log");
 

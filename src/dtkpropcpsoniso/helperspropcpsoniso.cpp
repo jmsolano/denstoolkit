@@ -311,7 +311,8 @@ bool HelpersPropCPsOnIso::MakePovFile(const string &povname,OptionFlags &options
    ofil << "#declare TransmitAtomSphere=0.0;" << '\n';
    ofil << "#declare TransmitStdBondCylinder=0.0;" << '\n';
    ofil << "#declare TransmitCritPts=0.0;" << '\n';
-   ofil << "#declare TransmitIsosurface=0.2;" << '\n';
+   ofil << "#declare TransmitIsosurface=" << ( options.transparentiso ? "0.4" : "0.0")
+        << "; // set this between 0 (opaque) and 1 (completely transparent)." << '\n';
    ofil << "#default { finish { specular 0.2 roughness 0.03 phong .1 } }" << '\n';
    FileUtils::WriteScrCharLine(ofil,'/',false);
    ofil << "// END OF CUSTOM OPTIONS" << '\n';
@@ -364,18 +365,20 @@ bool HelpersPropCPsOnIso::MakePovFile(const string &povname,OptionFlags &options
    HelpersPOVRay::WriteVector(ofil,pvp.lookAtCam[0],pvp.lookAtCam[1],pvp.lookAtCam[2]);
    ofil << '\n' << "  rotate < GNUPlotAngle1, YAngle, GNUPlotAngle2 >";
    ofil << '\n' << "}" << '\n';
-   CommonHelpers::PutNuclei(ofil,bn,pvp.currIndLev,"TransmitAtomSphere");
+   CommonHelpers::PutNuclei(ofil,bn,pvp.currIndLev,"TransmitAtomSphere",!options.cpkview);
    ofil << "#if(DrawStandardBonds)" << '\n';
    CommonHelpers::PutBonds(ofil,bn,pvp.currIndLev,"TransmitStdBondCylinder");
    ofil << "#end\n//end if DrawStandardBonds" << '\n';
    vector<double> rgb{0.1,0.1,1.0};
    vector<vector<double> > textures=ComputeTextures(grid,-0.025,0.01,palname);
+   ofil << "#if(DrawIsosurface)" << '\n';
    if ( grid->UseNormals() ) {
       //HelpersPOVRay::WriteMesh2SingleRGB(ofil,grid->vertex,grid->normal,grid->face,0,rgb,"transmit TransmitIsosurface");
       HelpersPOVRay::WriteMesh2WithTextures(ofil,grid->vertex,grid->normal,textures,grid->face,0,"transmit TransmitIsosurface");
    } else {
       HelpersPOVRay::WriteMesh2SingleRGB(ofil,grid->vertex,grid->face,0,rgb,"transmit TransmitIsosurface");
    }
+   ofil << "#end\n//end if DrawIsosurface" << '\n';
    CommonHelpers::PutSpecialSpheres(ofil,pvp.currIndLev,sp,"TransmitCritPts");
    ofil.close();
    if ( options.mkpng ) {
@@ -421,11 +424,13 @@ vector<vector<double> > HelpersPropCPsOnIso::ComputeTextures(shared_ptr<MeshGrid
       if ( tmp<vmin ) { vmin=tmp; }
       if ( tmp>vmax ) { vmax=tmp; }
    }
-   cout << "vecvmin: " << vmin << ", vecvmax: " << vmax << ", mean: " << (mean/double(nv)) << '\n';
+   cout << "MinValOnSurf: " << vmin << " a.u.\n";
+   cout << "MaxValOnSurf: " << vmax << " a.u.\n";
+   cout << "SurfMean: " << (mean/double(nv)) << " a.u.\n";
    if ( valmin>vmin ) { vmin=valmin; }
    if ( valmax<vmax ) { vmax=valmax; }
-   cout << "valmin: " << valmin << ", valmax: " << valmax << '\n';
-   cout << "vmin: " << vmin << ", vmax: " << vmax << '\n';
+   //cout << "valmin: " << valmin << ", valmax: " << valmax << '\n';
+   //cout << "vmin: " << vmin << ", vmax: " << vmax << '\n';
    double oodeltatimes255=255.0e0/(vmax-vmin);
    vector<vector<double> > t(nv);
    for ( size_t i=0 ; i<nv ; ++i ) { t[i].resize(3); }
@@ -446,7 +451,7 @@ vector<vector<double> > HelpersPropCPsOnIso::ComputeTextures(shared_ptr<MeshGrid
 }
 shared_ptr<MeshGrid> HelpersPropCPsOnIso::BuildCapMesh(int argc,\
       char *argv[],const OptionFlags &opt,GaussWaveFunction &wf,\
-      BondNetWork &bn) {
+      BondNetWork &bn,const double isovalue) {
    char isoprop='d';
    if ( opt.isoprop ) { isoprop=argv[opt.isoprop][0]; }
    int cAt;
@@ -469,17 +474,17 @@ shared_ptr<MeshGrid> HelpersPropCPsOnIso::BuildCapMesh(int argc,\
    grid-> SetupSphereIcosahedron(refCapMeshLevel);
    grid->Translate(xc);
    grid->ScaleVertices(GetAtomicVDWRadius(bn.atNum[cAt]));
-   grid->TrimFacesCentroidDotProdGreaterThanZero(xd);
+   grid->TrimFacesCentroidDotProdBetweenVals(xd,0.25,1.0);
 
    /* Looking for partial isosurface  */
    cout << "Computing cap isosurface...\n";
-   HelpersPropCPsOnIso::ProjectGridOntoIsosurface(wf,grid,isoprop,0.001);
+   HelpersPropCPsOnIso::ProjectGridOntoIsosurface(wf,grid,isoprop,isovalue);
    cout << "Done\n";
    return grid;
 }
 shared_ptr<MeshGrid> HelpersPropCPsOnIso::BuildMeshFromCube(int argc,\
       char *argv[],const OptionFlags &opt,GaussWaveFunction &wf,\
-      BondNetWork &bn) {
+      BondNetWork &bn,const double isovalue) {
    if ( !opt.isofromcube ) {
       ScreenUtils::DisplayErrorMessage("Requesting isofromcube when isofromcube==false.");
       cout << __FILE__ << ", line: " << __LINE__ << '\n';
@@ -496,23 +501,30 @@ shared_ptr<MeshGrid> HelpersPropCPsOnIso::BuildMeshFromCube(int argc,\
    }
    shared_ptr<Isosurface> iso=shared_ptr<Isosurface>(new Isosurface);
    //iso->UseTetrahedrons(true);
-   double isovalue=0.001e0;
-   if ( opt.setisovalue ) {
-      isovalue=std::stod(string(argv[opt.setisovalue]));
-   }
    iso->ExtractMarchingCubes(gc,isovalue);
    return iso;
 }
 shared_ptr<MeshGrid> HelpersPropCPsOnIso::BuildMesh(int argc,\
       char *argv[],const OptionFlags &opt,GaussWaveFunction &wf,\
-      BondNetWork &bn) {
+      BondNetWork &bn,const double isovalue) {
    if ( opt.isofromcube ) {
-      return BuildMeshFromCube(argc,argv,opt,wf,bn);
+      return BuildMeshFromCube(argc,argv,opt,wf,bn,isovalue);
    } else {
-      return BuildCapMesh(argc,argv,opt,wf,bn);
+      return BuildCapMesh(argc,argv,opt,wf,bn,isovalue);
    }
    ScreenUtils::DisplayErrorMessage("For some reason, HelpersPropCPsOnIso::BuildMesh failed!");
    cout << __FILE__ << ", line: " << __LINE__ << '\n';
    return nullptr;
+}
+int HelpersPropCPsOnIso::FindClosestAtom(const BondNetWork &bn,const vector<double> &usrr) {
+   vector<double> ri(3);
+   double r2min=1.0e+50,d2;
+   int pos=-1;
+   for ( int i=0 ; i<bn.nNuc ; ++i ) {
+      ri[0]=bn.R[i][0]; ri[1]=bn.R[i][1]; ri[2]=bn.R[i][2];
+      d2=MatrixVectorOperations3D::Distance2(usrr,ri);
+      if ( d2<r2min ) { r2min=d2; pos=i; }
+   }
+   return pos;
 }
 

@@ -7,7 +7,7 @@ using std::cout;
 #include "povraytools.h"
 
 void CommonHelpers::PutNuclei(ofstream &ofil,BondNetWork &bn,int ntbs,\
-      const string trnsmat) {
+      const string trnsmat,bool cpkview) {
    int atomn;
    double atrad;
    int nt=ntbs;
@@ -15,7 +15,11 @@ void CommonHelpers::PutNuclei(ofstream &ofil,BondNetWork &bn,int ntbs,\
    ofil << HelpersPOVRay::IndTabsStr(nt++) << "union {" << '\n';
    for (int i=0; i<bn.nNuc; i++) {
       atomn=bn.atNum[i];
-      atrad=bn.drawAtSize;
+      if ( cpkview ) {
+         atrad=GetAtomicVDWRadius(atomn)*AUTOMATICSPACEFILLINGRATIO;
+      } else {
+         atrad=bn.drawAtSize;
+      }
       HelpersPOVRay::WriteTransparentSphere(ofil,nt,bn.R[i][0],bn.R[i][1],bn.R[i][2],atrad,
             GetAtomicRColorReal(atomn),GetAtomicGColorReal(atomn),
             GetAtomicBColorReal(atomn),trnsmat);

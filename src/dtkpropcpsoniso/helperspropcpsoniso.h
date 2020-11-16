@@ -44,11 +44,12 @@ public:
    static vector<vector<double> > ComputeTextures(shared_ptr<MeshGrid> g,\
          const double valmin,const double valmax,const string &palname="blues");
    static shared_ptr<MeshGrid> BuildCapMesh(int argc,char *argv[],const OptionFlags &opt,\
-         GaussWaveFunction &wf,BondNetWork &bn);
+         GaussWaveFunction &wf,BondNetWork &bn,const double isovalue);
    static shared_ptr<MeshGrid> BuildMeshFromCube(int argc,char *argv[],const OptionFlags &opt,\
-         GaussWaveFunction &wf,BondNetWork &bn);
+         GaussWaveFunction &wf,BondNetWork &bn,const double isovalue);
    static shared_ptr<MeshGrid> BuildMesh(int argc,char *argv[],const OptionFlags &opt,\
-         GaussWaveFunction &wf,BondNetWork &bn);
+         GaussWaveFunction &wf,BondNetWork &bn,const double isovalue);
+   static int FindClosestAtom(const BondNetWork &bn,const vector<double> &usrr);
 /* ************************************************************************** */
 protected:
 /* ************************************************************************** */

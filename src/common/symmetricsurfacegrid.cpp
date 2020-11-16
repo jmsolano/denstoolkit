@@ -302,17 +302,19 @@ void SymmetricSurfaceGrid::AddTrianglesFromSquare(size_t idx) {
    h[0]=iA; h[1]=iC; h[2]=iD;
    face.push_back(h);
 }
-void SymmetricSurfaceGrid::TrimFacesCentroidDotProdGreaterThanZero(const vector<double> &d) {
+void SymmetricSurfaceGrid::TrimFacesCentroidDotProdBetweenVals(const vector<double> &d,const double val1,const double val2) {
    //cout << "Entering TrimFacesCentroidDotProdGreaterThanZero" << '\n';
    size_t count=0,nf=face.size();
-   double dot;
+   double dot,oodnorm,cnorm;
+   oodnorm=1.0e0/MatrixVectorOperations3D::Norm(d);
    vector<double> c(3);
    vector<vector<size_t> > kf;
    ResizeMatrix(kf,nf,3);
    for ( size_t i=0 ; i<nf ; ++i ) {
       TriangleCentroidDir(i,c);
-      dot=MatrixVectorOperations3D::InnerProduct(c,d);
-      if ( dot>0.0e0 ) {
+      cnorm=MatrixVectorOperations3D::Norm(c);
+      dot=MatrixVectorOperations3D::InnerProduct(c,d)*oodnorm/cnorm;
+      if ( dot>val1 && dot<=val2 ) {
          for ( size_t j=0 ; j<3 ; ++j ) { kf[count][j]=face[i][j]; }
          ++count;
       }

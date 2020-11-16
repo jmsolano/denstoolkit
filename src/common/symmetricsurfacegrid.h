@@ -38,7 +38,8 @@ public:
    /** Returns the position of t within vertex. If t is not
     * in vertex, the function appends t to vertex and returns
     * vertex.size() before insertion [=vertex.size()-1 after insertion].  */
-   void TrimFacesCentroidDotProdGreaterThanZero(const vector<double> &d);
+   void TrimFacesCentroidDotProdGreaterThanZero(const vector<double> &d) {return TrimFacesCentroidDotProdBetweenVals(d,0.0e0,1.0e0); }
+   void TrimFacesCentroidDotProdBetweenVals(const vector<double> &d,const double val1,const double val2);
    void RemoveFacesUsingVertices(const vector<size_t> &v2r);
    void ComputeCentroids();
    void RemoveUnusedVertices();
