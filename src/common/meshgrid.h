@@ -52,11 +52,16 @@ public:
    void RemoveUnusedVerticesBase(vector<vector<size_t> > &f,\
          const size_t nvspf=3 /** number of vertices per face  */);
    virtual void RemoveUnusedVertices() { return RemoveUnusedVerticesBase(face,3); }
+   virtual void DetermineEdges() {return DetermineEdgesBase(face,3); }
+   void DetermineEdgesBase(const vector<vector<size_t> > &f,size_t nvspf);
+   void FindAllVertexNeighbours();
 /* ************************************************************************** */
    vector<vector<double> > vertex;/*!< Vertices container.  */
    vector<vector<double> > normal;/*!< Normals container.  */
    vector<vector<double> > centroid;/*!< Centroids container.  */
    vector<vector<size_t> > face; /*!< Faces container.  */
+   vector<vector<size_t> > edge;/*!< Edges container.  */
+   vector<vector<size_t> > vneigh2v;/*!< The neighbour vertices associated with each vertex.  */
    vector<double> value;/*!< The field values container (values at vertices).  */
    vector<double> cvalue;/*!< Another field values container (values at centroids).  */
    vector<double> center;/*!< The center of the mesh.  */

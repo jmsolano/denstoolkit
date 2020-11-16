@@ -72,6 +72,7 @@ bool Isosurface::ExtractMarchingCubes(const GaussianCube &g,const double isoval)
    vector<double> t=g.X0();
    GenerateMesh();
    Translate(t);
+   ComputeCentroids();
    return true;
 }
 void Isosurface::ScaleTriangles(vector<double> dx) {
@@ -148,6 +149,10 @@ void Isosurface::GenerateMesh() {
       }
       face[i]=fc;
    }
+   value.resize(vertex.size());
+   ResizeMatrix(normal,vertex.size(),3);
+   ResizeMatrix(centroid,face.size(),3);
+   RemoveUnusedVertices();
 }
 /* ************************************************************************** */
 /* ************************************************************************** */

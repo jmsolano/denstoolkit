@@ -167,7 +167,7 @@ double HelpersPropCPsOnIso::SearchValueAlongLineDescending(const vector<double> 
    for ( size_t i=0 ; i<3 ; ++i ) { r[i]=rm[i]-c[i]; }
    return MatrixVectorOperations3D::Norm(r);
 }
-bool HelpersPropCPsOnIso::SearchCPs(shared_ptr<MeshGrid> g,\
+bool HelpersPropCPsOnIso::SearchCPsCap(shared_ptr<MeshGrid> g,\
       GaussWaveFunction &wf,vector<vector<double> > &rcp,vector<size_t>  &poscp,\
       vector<int> &sigcp,vector<double> &valcp,const char prop) {
    double (GaussWaveFunction::* f)(double,double,double);
@@ -202,16 +202,74 @@ bool HelpersPropCPsOnIso::SearchCPs(shared_ptr<MeshGrid> g,\
    for ( size_t i=0 ; i<nf ; ++i ) {
       p0=g->face[i][0]; p1=g->face[i][1]; p2=g->face[i][2];
       vc=propAtCentroid[i]; v0=propAtVertex[p0]; v1=propAtVertex[p1]; v2=propAtVertex[p2];
-      if ( vc>=v0 && vc>=v1 && vc>=v2 ) {
+      if ( vc>v0 && vc>v1 && vc>v2 ) {
          rcp.push_back(g->centroid[i]);
          poscp.push_back(i);
          valcp.push_back(propAtCentroid[i]);
          sigcp.push_back(-3);
       }
-      if ( vc<=v0 && vc<=v1 && vc<=v2 ) {
+      if ( vc<v0 && vc<v1 && vc<v2 ) {
          rcp.push_back(g->centroid[i]);
          poscp.push_back(i);
          valcp.push_back(propAtCentroid[i]);
+         sigcp.push_back(3);
+      }
+   }
+   if ( valcp.size()==0 ) { return false; }
+   return true;
+}
+bool HelpersPropCPsOnIso::SearchCPsIso(shared_ptr<MeshGrid> g,GaussWaveFunction &wf,\
+      vector<vector<double> > &rcp,vector<size_t> &poscp,vector<int> &sigcp,\
+      vector<double> &valcp,const char prop) {
+   g->FindAllVertexNeighbours();
+   double (GaussWaveFunction::* f)(double,double,double);
+   switch ( prop ) {
+      case 'd' :
+         f=&GaussWaveFunction::EvalDensity;
+         break;
+      case 'V' :
+         f=&GaussWaveFunction::EvalMolElecPot;
+         break;
+      default :
+         f=&GaussWaveFunction::EvalDensity;
+         break;
+   }
+   size_t nv=g->vertex.size();
+   for ( size_t i=0 ; i<nv ; ++i ) {
+      g->value[i]=(wf.*f)(g->vertex[i][0],g->vertex[i][1],g->vertex[i][2]);
+   }
+   for ( size_t i=0 ; i<rcp.size() ; ++i ) { rcp[i].clear(); }
+   rcp.clear();
+   poscp.clear();
+   valcp.clear();
+   sigcp.clear();
+   bool immax,immin;
+   size_t nnei,pos;
+   double valatvtx,valatnei;
+   for ( size_t i=0 ; i<nv ; ++i ) {
+      immax=immin=true;
+      nnei=g->vneigh2v[i].size();
+      //cout << "nnei(" << i << "): " << nnei;
+      valatvtx=g->value[i];
+      if ( nnei<4 ) { continue; }
+      for ( size_t j=0 ; j<nnei ; ++j ) {
+         pos=g->vneigh2v[i][j];
+         //cout << ' ' << pos;
+         valatnei=g->value[pos];
+         immax=immax&&(valatnei<valatvtx);
+         immin=immin&&(valatnei>valatvtx);
+      }
+      //cout << '\n';
+      if ( immax ) {
+         rcp.push_back(g->vertex[i]);
+         poscp.push_back(i);
+         valcp.push_back(valatvtx);
+         sigcp.push_back(-3);
+      }
+      if ( immin ) {
+         rcp.push_back(g->vertex[i]);
+         poscp.push_back(i);
+         valcp.push_back(valatvtx);
          sigcp.push_back(3);
       }
    }
@@ -437,7 +495,7 @@ shared_ptr<MeshGrid> HelpersPropCPsOnIso::BuildMeshFromCube(int argc,\
       return nullptr;
    }
    shared_ptr<Isosurface> iso=shared_ptr<Isosurface>(new Isosurface);
-   //iso.UseTetrahedrons(true);
+   //iso->UseTetrahedrons(true);
    double isovalue=0.001e0;
    if ( opt.setisovalue ) {
       isovalue=std::stod(string(argv[opt.setisovalue]));

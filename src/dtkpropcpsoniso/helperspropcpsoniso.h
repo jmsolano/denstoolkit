@@ -34,7 +34,10 @@ public:
     * using the centroid of each face (projected onto the isosurface) and
     * the vertices of each face to determine whether v(rctd) is a critical point.
     * This function must be called after calling ProjectGridOntoIsosurface  */
-   static bool SearchCPs(shared_ptr<MeshGrid> g,GaussWaveFunction &wf,\
+   static bool SearchCPsCap(shared_ptr<MeshGrid> g,GaussWaveFunction &wf,\
+         vector<vector<double> > &rcp,vector<size_t> &poscp,vector<int> &sigcp,\
+         vector<double> &valcp,const char prop='V');
+   static bool SearchCPsIso(shared_ptr<MeshGrid> g,GaussWaveFunction &wf,\
          vector<vector<double> > &rcp,vector<size_t> &poscp,vector<int> &sigcp,\
          vector<double> &valcp,const char prop='V');
    static bool ComputeNormalsAtVertices(shared_ptr<MeshGrid> g,GaussWaveFunction &wf,const char prop='d');

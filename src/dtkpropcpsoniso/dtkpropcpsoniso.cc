@@ -124,13 +124,20 @@ int main (int argc, char ** argv) {
 
    /* Computing critical points on the isosurface.  */
 
-   cout << "Seeking critical points on cap isosurface...\n";
+   cout << "Seeking critical points on" << (options.isofromcube? " " : " cap " ) << "isosurface...\n";
+   cout << "The isosurface has " << grid->vertex.size() << " vertices and "
+        << grid->face.size() << " faces." << '\n';
    vector<vector<double> > rcp;
    vector<double> vcp;
    vector<size_t> poscp;
    vector<int> sigcp;
-   bool foundcps=HelpersPropCPsOnIso::SearchCPs(grid,gwf,\
-         rcp,poscp,sigcp,vcp,'V');
+   bool foundcps=false;
+   if ( options.isofromcube ) {
+      HelpersPropCPsOnIso::SearchCPsIso(grid,gwf,rcp,poscp,sigcp,vcp,'V');
+   } else {
+      //HelpersPropCPsOnIso::SearchCPsCap(grid,gwf,rcp,poscp,sigcp,vcp,'V');
+      HelpersPropCPsOnIso::SearchCPsIso(grid,gwf,rcp,poscp,sigcp,vcp,'V');
+   }
    cout << "Done.\n";
    if ( foundcps ) {
       string cptype;
@@ -144,7 +151,7 @@ int main (int argc, char ** argv) {
               << rcp[i][0] << ' ' << rcp[i][1] << ' ' <<  rcp[i][2] << ' '
               << " : " << vcp[i] << '\n';
          ScreenUtils::PrintScrCharLine('-');
-         gwf.DisplayAllFieldProperties(rcp[i][0],rcp[i][1],rcp[i][2]);
+         //gwf.DisplayAllFieldProperties(rcp[i][0],rcp[i][1],rcp[i][2]);
       }
       ScreenUtils::PrintScrCharLine('+');
    }
