@@ -248,10 +248,14 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  See scheme at the end of this menu." << '\n';
    cout << "  -p prop   \tSets the property evaluated at the isosurface to be\n"
         << "            \t  prop, which is a char that can be any of the listed\n"
-        << "            \t  fields enumerated below for option -I." << '\n';
+        << "            \t  fields enumerated below for option -I." << '\n'
+        << "            \t  (This option is included for future implementations,\n"
+        << "            \t  and in this version, only rho[d] is implemented).\n";
    cout << "  -I prop v \tSets the field to compute the isosurface to be prop,\n"
         << "            \t  and the isosurface value to be v. prop is a char,\n"
-        << "            \t  which can be (this is valid for options -I and -p):\n"
+        << "            \t  which can be (this is valid for options -I and -p)\n"
+        << "            \t  (This option is included for future implementations,\n"
+        << "            \t  and in this version, only MEP[V] is implemented):\n"
         << "         \t\td (Density)\n"
         << "         \t\tg (Magnitude of the Gradient of the Density)\n"
         << "         \t\tl (Laplacian of density)\n"

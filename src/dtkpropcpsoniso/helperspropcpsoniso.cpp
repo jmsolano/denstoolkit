@@ -264,13 +264,13 @@ bool HelpersPropCPsOnIso::SearchCPsIso(shared_ptr<MeshGrid> g,GaussWaveFunction 
          rcp.push_back(g->vertex[i]);
          poscp.push_back(i);
          valcp.push_back(valatvtx);
-         sigcp.push_back(-3);
+         sigcp.push_back(-2);
       }
       if ( immin ) {
          rcp.push_back(g->vertex[i]);
          poscp.push_back(i);
          valcp.push_back(valatvtx);
-         sigcp.push_back(3);
+         sigcp.push_back(2);
       }
    }
    if ( valcp.size()==0 ) { return false; }

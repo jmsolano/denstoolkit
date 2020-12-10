@@ -213,7 +213,7 @@ int main (int argc, char ** argv) {
          ofil << "a cap surrounding atom " << argv[options.setcentat] << '\n';
       }
       ofil << "#Below, (x,y,z) is the position of each critical point (CP) found upon the surface.\n"
-           << "#sigma is the signature of the CP; +3 indicates a local minimum, and -3 indicates a local maximum.\n"
+           << "#sigma is the signature of the CP; +2 indicates a local minimum, and -2 indicates a local maximum.\n"
            << "#atomIdxInWF? is the atom index in the wfn (or wfx) file, i.e. the number of\n"
            << "#  the atom in the list of atoms, of the closest atom to the CP.\n"
            << "#atomSymbol is the atomic symbol of the closest atom to the CP." << '\n';
