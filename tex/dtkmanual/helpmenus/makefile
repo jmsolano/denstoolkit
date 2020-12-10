@@ -5,7 +5,7 @@ all: helpmenus codecps
 
 DTKBINS= dtkbpdens dtkcube dtkdemat1 dtkfindcp\
 			dtkline dtkmomd dtknci dtkplane\
-			dtkpoint dtkqdmol
+			dtkpoint dtkpropcpsoniso dtkqdmol
 
 DTKSCRIPTS= dtkeps2pdf dtkpov2png dtkgetnciplot
 

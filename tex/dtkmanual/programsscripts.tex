@@ -876,6 +876,113 @@ which were generated from the data found in:\\
 \end{footnotesize}
 \rule{\textwidth}{1pt}
 
+\newpage
+%----------------------------------------------------------------------------------------------
+\section{\label{sec:dtkpropcpsoniso}dtkpropcpsoniso}
+%----------------------------------------------------------------------------------------------
+
+In this version, the program \texttt{dtkpropcpsoniso} computes an electron density isosurface,
+and a field evaluated at this isosurface. Subsequently, the program determines the surface
+critical points of the evaluated field. There are two variants: a) the isosurface is
+determined from a previous cube, and b) the isosurface is computed using a semisphere traced
+around a requested atom (\textit{i.e.} a cap), and directed towards a direction vector
+(also requested by the user).
+
+
+Numerical information is saved in \texttt{*.log} files according to the
+following convention:\\
+\texttt{wfbasename{\color{blue}MEPCPsOnRho}{\color{red}III}.log}\\
+\texttt{wfbasename} is the name of the wf? file (in this example \texttt{ccl2h}.\\
+\texttt{\color{red}III} is either \texttt{Iso} or \texttt{Cap} depending on the method
+used to compute the isosurface.
+
+\subsection{Cap isosurface}
+Figure \ref{fig:vsmaxcapopaq} was obtained with the command:
+\begin{lstlisting}
+$dtkpropcpsoniso ccl2h.wfn -P -k -c 13 -l 11 -r 4
+\end{lstlisting}
+In the above command, the option \texttt{-P} requests to render an image using \texttt{povray},
+and the option \texttt{-k} requests to keep the pov script on disk. The option \texttt{-c 13} sets
+the atom 13 to be the center around which the semisphere will be constructed, and the option
+\texttt{-l 11} requests that the line that joins atoms 11 and 13 is used to direct the cap.
+Figure \ref{fig:vsmaxcaptransp} was obtained by adding option \texttt{-t} to the above command.
+%
+\begin{figure}[ht!]
+\centering
+\subfigure[Opaque isosurface]{%
+	\includegraphics[width=0.45\textwidth]{ccl2hMEPCPsOnRhoCap}\label{fig:vsmaxcapopaq}%
+	}
+\subfigure[Transparent Isosurface]{%
+	\includegraphics[width=0.45\textwidth]{ccl2hMEPCPsOnRhoCapTransp}\label{fig:vsmaxcaptransp}%
+}
+\caption{$V_{S,max}$}\label{fig:vsmaxcap}
+\end{figure}
+%
+
+The contents of the \texttt{ccl2hMEPCPsOnRhoCap.log} file is:
+\begin{scriptsize}
+\begin{verbatim}
+#The isosurface was computed using a cap surrounding atom 13
+#Below, (x,y,z) is the position of each critical point (CP) found upon the surface.
+#sigma is the signature of the CP; +2 indicates a local minimum, and -2 indicates a local maximum.
+#atomIdxInWF? is the atom index in the wfn (or wfx) file, i.e. the number of
+#  the atom in the list of atoms, of the closest atom to the CP.
+#atomSymbol is the atomic symbol of the closest atom to the CP.
+#        x                  y                  z        sigma       MEP   atomIdxInWF? atomSymbol
+8.482728694798e+00 -8.552925506261e-01 6.058109512427e+00 -2 -1.163965454609e-02 13 Cl
+\end{verbatim}
+\end{scriptsize}
+
+\subsection{Isosurface from cube}
+Figure \ref{fig:vsmaxiso} was obtained with the commands:
+\begin{lstlisting}
+$dtkcube ccl2h.wfn -S 80 -p d
+$dtkpropcpsoniso ccl2h.wfn -P -k --use-cube ccl2hRho.cub
+\end{lstlisting}
+Here, the first command generates the cube \texttt{ccl2hRho.cub}, and
+the second computes the $\rho$ isosurface, followed by the computation
+of the Molecular Electrostatic Potential at the isosurface.
+%
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=0.45\textwidth]{ccl2hMEPCPsOnRhoIso}
+\caption{$V_{S,max}$}\label{fig:vsmaxiso}
+\end{figure}
+%
+
+Some of the contents of the \texttt{ccl2hMEPCPsOnRhoIso.log} file is:
+\begin{scriptsize}
+\begin{verbatim}
+#The isosurface was computed using the cube file 'ccl2hRho.cub',
+#  with a Electron Density --Rho-- isovalue of 1.000000000000e-03
+#Below, (x,y,z) is the position of each critical point (CP) found upon the surface.
+#sigma is the signature of the CP; +2 indicates a local minimum, and -2 indicates a local maximum.
+#atomIdxInWF? is the atom index in the wfn (or wfx) file, i.e. the number of
+#  the atom in the list of atoms, of the closest atom to the CP.
+#atomSymbol is the atomic symbol of the closest atom to the CP.
+#        x                  y                  z        sigma       MEP   atomIdxInWF? atomSymbol
+-1.184826100000e+01 -3.182546602049e+00 1.585815000000e+00 -2 3.135848907095e-02 21 H
+-1.184826100000e+01 -2.916626000000e+00 2.310138698297e+00 -2 3.119924845964e-02 21 H
+-1.184826100000e+01 -5.264674213910e-01 2.994279000000e+00 -2 3.544923265817e-02 21 H
+-1.150685600000e+01 -3.955226000000e+00 2.229970014041e+00 -2 3.069102095252e-02 20 H
+-1.150685600000e+01 -2.916626000000e+00 -1.748131469672e+00 -2 2.683806322978e-02 19 H
+-1.150685600000e+01 -1.470260000000e-01 3.365023105471e+00 -2 3.635923050497e-02 21 H
+-1.131601269655e+01 -4.301426000000e+00 2.642163000000e+00 +2 2.960343075560e-02 20 H
+-1.116545100000e+01 -4.301426000000e+00 2.951492919169e+00 -2 2.980264705150e-02 20 H
+-1.116545100000e+01 -2.570426000000e+00 -2.278870540533e+00 -2 2.642229619955e-02 19 H
+\end{verbatim}
+\end{scriptsize}
+
+
+\newpage
+\rule{\textwidth}{1pt}
+{\center\texttt{dtkpropcpsoniso} help menu.\\}
+\rule{\textwidth}{1pt}
+\begin{footnotesize}
+\VerbatimInput{hmdtkpropcpsoniso.tex}
+\end{footnotesize}
+\rule{\textwidth}{1pt}
+
 %----------------------------------------------------------------------------------------------
 \section{\label{sec:dtkview}dtkview}
 %----------------------------------------------------------------------------------------------

@@ -1,0 +1,103 @@
+                         Compilation date: Nov 19 2020
+
+                                 Version: 1.2.0
+
+                         :-) Created by: JMSA/JMHP (-:
+
+********************************************************************************
+
+
+Usage:
+
+	dtkpropcpsoniso wf?name [option [value(s)]] ... [option [value(s)]]
+
+Where wf?name is the input wfx(wfn) name, and options can be:
+Where wf?name is the input wfx(wfn) name, and options can be:
+
+  -a aG1 aG2	Sets the gnuplot angles to be aG1 and aG2.
+            	  Use dtkqdmol to check and set these angles.
+  -A aX aY aZ	Sets the view angles to be aX, aY, and aZ.
+  -c cAtNum 	Sets the atom cAtNum to be the center around which the
+            	  cap isosurface is computed.
+  -H        	Hides the isosurface in png image (pov file).
+  -k        	Keeps the pov-ray script (see also option P, below).
+  -l dAtNum 	Sets the direction point to be the coordinates of atom
+            	  dAtNum. See the scheme at the end of this help menu.
+  -m a1 a2  	Sets the direction point to be the middle point located
+            	  between the coordinates of atoms a1 and a2.
+            	  See scheme at the end of this menu.
+  -C a1 a2 a3	Sets the direction point to be the centroid of the
+            	  triangle formed by the coordinates of atoms
+            	  a1, a2, and a3.
+            	  See scheme at the end of this menu.
+  -p prop   	Sets the property evaluated at the isosurface to be
+            	  prop, which is a char that can be any of the listed
+            	  fields enumerated below for option -I.
+  -I prop v 	Sets the field to compute the isosurface to be prop,
+            	  and the isosurface value to be v. prop is a char,
+            	  which can be (this is valid for options -I and -p):
+         		d (Density)
+         		g (Magnitude of the Gradient of the Density)
+         		l (Laplacian of density)
+         		K (Kinetic Energy Density K)
+         		G (Kinetic Energy Density G)
+         		E (Electron Localization Function -ELF-)
+         		L (Localized Orbital Locator -LOL-)
+         		M (Magnitude of the Gradient of LOL)
+         		P (Magnitude of the Localized Electrons Detector -LED-)
+         		r (Region of Slower Electrons -RoSE-)
+         		s (Reduced Density Gradient -s-)
+         		S (Shannon Entropy Density)
+         		V (Molecular Electrostatic Potential)
+  -o basename	Set the base name for the output files to be basename.
+            	  (If not given the program will use the wf?name as the
+            	  the base name.)
+  -P        	Generates a pov-ray script and renders it. Notice: this requires
+            	   povray to be installed in your system.
+  -r rlev   	Refines the isosurface cap mesh. rlev is a number used to
+            	  perform a series of subdivisions of an initial icosahedron 
+            	  (rlev=4 by default). Each iteration increases
+            	  the number of triangles by a factor of 4, and it must be >0.
+            	  rlev>8 is not recommended as it may cause numerical issues.
+  -s        	Sets spacefilling mode. This mode activates the spacefilling
+            	  view of the atoms (uses VdW atomic radius to draw the atoms).
+  -t        	Draw transparent isosurface.
+  -v vrbslev	Sets the verbose level to be vrbslev. This prints information according to
+            	  the level chosen. Default: vrbslev=0.
+  -V     	Displays the version of this program.
+  -h     	Display the help menu.
+
+  --use-cube cub 		Uses the cube file 'cub' to generate the isosurface,
+                 		  as opposed to generate a cap around a selected atom
+                 		  and direction. This option overrides all options
+                 		  related to the cap. E.g. the mesh cannot be refined,
+                 		  because the mesh is determined from the cube sampling;
+                 		  
+  --help    		Same as -h
+  --version 		Same as -V
+********************************************************************************
+--------------------------------------------------------------------------------
+Scheme of the cap drawn when the isosurface is option a).
+(See description of the program following DTK logo, above.)
+Below, r(c) is the radius vector
+of the center atom (given through option -c), and r(d)
+is the radius vector of the direction point (given through options
+-l, -m, or -C).
+The vector r(c)-r(d) is used to determine the orientation of the
+isosurface cap, which is located in the opposite direction of r(d),
+relative to r(c), i.e. the cap points in the same direction as
+r(c)-r(d):
+--------------------------------------------------------------------------------
+                                     _
+                                       -
+                                         \
+                                           \
+                                            |
+       o  -------[r(c)-r(d)]------> o        |<---Isosurface CAP
+       |                            |       |
+       |                   r(c)_____|      /
+       |                                 /
+     r(d)                            _ -
+
+--------------------------------------------------------------------------------
+********************************************************************************
