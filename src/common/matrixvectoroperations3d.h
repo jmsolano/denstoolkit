@@ -17,6 +17,9 @@ public:
    MatrixVectorOperations3D() {srand(long(std::chrono::high_resolution_clock::now().time_since_epoch().count()));}
    static vector<vector<double> > GetMatrixToAlignXToV(vector<double> &ix,vector<double> &iv);
    static vector<vector<double> > GetMatrixToAlignVToZ(vector<double> &v);
+   static vector<vector<double> > GetRotationMatrixAroundX(const double angle);
+   static vector<vector<double> > GetRotationMatrixAroundY(const double angle);
+   static vector<vector<double> > GetRotationMatrixAroundZ(const double angle);
    static vector<double> CrossProduct(const vector<double> &a,const vector<double> &b);
    static double InnerProduct(const vector<double> &a,const vector<double> &b);
    inline static double Norm(const vector<double> &a) {return sqrt(InnerProduct(a,a));}
@@ -49,6 +52,8 @@ public:
    static void RotateAroundXAxis(vector<double> &v,double angle=M_PI);
    static void RotateAroundYAxis(vector<double> &v,double angle=M_PI);
    static void RotateAroundZAxis(vector<double> &v,double angle=M_PI);
+   static void Transpose(vector<vector<double> > &m);
+   static vector<vector<double> > Transpose(const vector<vector<double> > &m);
 /* ************************************************************************** */
 };
 /* ************************************************************************** */

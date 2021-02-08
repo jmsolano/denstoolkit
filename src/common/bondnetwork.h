@@ -65,6 +65,7 @@ public:
    ~BondNetWork(); /* Destructor */
    bool ReadFromFileWFX(string inname);
    bool ReadFromFileWFN(string inname);
+   bool ReadFromFileXYZ(string inname);
    bool ReadFromFile(string inname);
    /* ************************************************************************** */
    double **R;         //Contains the atoms' radius-vectors.
@@ -72,7 +73,7 @@ public:
                      //  not be allocated by its own, but rather one needs to call some setup
                      //  function.
    int nNuc;         //The number of nuclei.
-   int *atNum;       //The atomic number of each nuclei
+   int *atNum;       //The atomic number of each nuclei atNum(H)=0
    string *atLbl;    //The atom labels
    int **bNet;       //The bonding network, contains the labels of the
                      //   atoms that each atom is bonded to.

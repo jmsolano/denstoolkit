@@ -129,6 +129,30 @@ vector<vector<double> > MatrixVectorOperations3D::GetMatrixToAlignVToZ(vector<do
    vector<double> z={0.0e0,0.0e0,1.0e0};
    return GetMatrixToAlignXToV(v,z);
 }
+vector<vector<double> > MatrixVectorOperations3D::GetRotationMatrixAroundX(const double angle) {
+   double ct=cos(angle),st=sin(angle);
+   vector<vector<double> > m=Zeros();
+   m[0][0]=1.0e0;
+   m[1][1]=ct; m[1][2]=-st;
+   m[2][1]=st; m[2][2]=ct;
+   return m;
+}
+vector<vector<double> > MatrixVectorOperations3D::GetRotationMatrixAroundY(const double angle) {
+   double ct=cos(angle),st=sin(angle);
+   vector<vector<double> > m=Zeros();
+   m[0][0]=ct; m[0][2]=st;
+   m[1][1]=1.0e0;
+   m[2][0]=-st; m[2][2]=ct;
+   return m;
+}
+vector<vector<double> > MatrixVectorOperations3D::GetRotationMatrixAroundZ(const double angle) {
+   double ct=cos(angle),st=sin(angle);
+   vector<vector<double> > m=Zeros();
+   m[0][0]=ct; m[0][1]=-st;
+   m[1][0]=st; m[1][1]=ct;
+   m[2][2]=1.0e0;
+   return m;
+}
 vector<double> MatrixVectorOperations3D::MatrixVectorProduct(
       const vector<vector<double> > &m,vector<double> &v) {
    vector<double> res=v;
@@ -214,4 +238,23 @@ vector<double> MatrixVectorOperations3D::RandomVector(const double mag) {
 vector<double> MatrixVectorOperations3D::RandomVector() {
    double mag=1.0e0+2.0e0*(double(rand())/double(RAND_MAX));
    return RandomVector(mag);
+}
+void MatrixVectorOperations3D::Transpose(vector<vector<double> > &m) {
+   double tmp=m[0][1];
+   m[0][1]=m[1][0];
+   m[1][0]=tmp;
+   tmp=m[0][2];
+   m[0][2]=m[2][0];
+   m[2][0]=tmp;
+   tmp=m[1][2];
+   m[1][2]=m[2][1];
+   m[2][1]=tmp;
+}
+vector<vector<double> > MatrixVectorOperations3D::Transpose(const vector<vector<double> > &m) {
+   vector<vector<double> > res=Zeros();
+   for ( size_t i=0 ; i<3 ; ++i ) {
+      for ( size_t j=0 ; j<3 ; ++j ) { res[i][j]=m[i][j]; }
+   }
+   Transpose(res);
+   return res;
 }

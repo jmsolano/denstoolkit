@@ -15,6 +15,9 @@ POVRayConfiguration::POVRayConfiguration() {
    skyCam[0]=0.0e0; skyCam[1]=0.0e0; skyCam[2]=1.0e0;
    locCam[0]=0.0e0; locCam[1]=0.0e0; locCam[2]=2.3e0;
    lookAtCam[0]=0.0e0; lookAtCam[1]=0.0e0; lookAtCam[2]=0.0e0;
+   vecUp[0]=0.0e0; vecUp[1]=1.0e0; vecUp[2]=0.0e0;
+   vecRight[0]=-4.0e0/3.0e0; vecRight[1]=0.0e0; vecRight[2]=0.0e0;
+   vecDir[0]=0.0e0; vecDir[1]=0.0e0; vecDir[2]=1.0e0;
    nLightSources=2;
    MyMemory::Alloc2DRealArray("lightSource",nLightSources,3,lightSource);
    defLightSource[0]=1.0; defLightSource[1]=1.0; defLightSource[2]=1.0;

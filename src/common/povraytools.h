@@ -40,6 +40,9 @@ public:
    double skyCam[3];
    double locCam[3];
    double lookAtCam[3];
+   double vecUp[3];
+   double vecRight[3];
+   double vecDir[3];
    int currIndLev;
    double defLightSource[3];
    bool shine,inccolors,setversion36;

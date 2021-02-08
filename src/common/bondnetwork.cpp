@@ -54,6 +54,7 @@ using std::endl;
 #include "iofuncts-wfn.h"
 #include "iofuncts-wfx.h"
 #include "atomradiicust.h"
+#include "inputmolecule_xyz.h"
 // The first 94 atomic radii are given,
 //  the rest are set to be 0.80e0
 //
@@ -143,6 +144,27 @@ bool BondNetWork::ReadFromFileWFN(string inname) {
    tif.close();
    return true;
 }
+bool BondNetWork::ReadFromFileXYZ(string inname) {
+   InputMoleculeXYZ mol(inname);
+   nTit=1;
+   MyMemory::Alloc1DStringArray("title",nTit,title);
+   title[0]=mol.title;
+   nNuc=int(mol.Size());
+   MyMemory::Alloc1DStringArray("atLbl",nNuc,atLbl);
+   MyMemory::Alloc2DRealArray(string("R"),nNuc,3,R);
+   MyMemory::Alloc1DIntArray(string("atNum"),nNuc,atNum);
+   for ( size_t i=0 ; i<mol.Size() ; ++i ) {
+      atLbl[i]=mol.atom[i].symbol+std::to_string(i+1);
+   }
+   for ( size_t i=0 ; i<mol.Size() ; ++i ) {
+      for ( size_t j=0 ; j<3 ; ++j ) {
+         R[i][j]=mol.atom[i].x[j];
+         R[i][j]/=(BOHRTOANGSTROM);
+      }
+   }
+   for ( size_t i=0 ; i<mol.Size() ; ++i ) { atNum[i]=mol.atom[i].num-1; }
+   return true;
+}
 bool BondNetWork::ReadFromFile(string inname) {
    string extension;
    extension=inname.substr(inname.length()-3,3);
@@ -150,6 +172,8 @@ bool BondNetWork::ReadFromFile(string inname) {
       return ReadFromFileWFN(inname);
    } else if ((extension=="wfx")||(extension=="WFX")) {
       return ReadFromFileWFX(inname);
+   } else if ( (extension=="xyz") || extension=="XYZ" ) {
+     return ReadFromFileXYZ(inname);
    } else {
       cout << "Error: unknown extension!(" << inname << ")\nNothig to do, returning false...\n";
       cout << __FILE__ << ", line: " << __LINE__ << endl;
@@ -248,9 +272,6 @@ bool BondNetWork::MakePOVFile(string pnam,POVRayConfiguration &pvp) {
          pvp.lightSource[j][i]*=(rView*2.0e0);
       }
    }
-#if CHOOSEPOVVERSION36
-   pof << "#version 3.6;" << endl;
-#endif
    pvp.WriteHeader(pof);
    pof << endl;
    if (spaceFillingMode) {
