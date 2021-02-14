@@ -98,10 +98,8 @@ bool BondNetWork::ReadFromFileWFX(string inname) {
    ifstream tif;
    tif.open(inname.c_str(),std::ios::in);
    if (!(tif.good())) {
-      cout << "Error: File " << inname << "could not be opened...\n";
-#if DEBUG
+      ScreenUtils::DisplayErrorFileNotOpen(inname);
       cout << __FILE__ << ", line: " << __LINE__ << endl;
-#endif
       return false;
    }
    GetTitleFromFileWFX(tif,nTit,title);
@@ -121,10 +119,8 @@ bool BondNetWork::ReadFromFileWFN(string inname) {
    int nmo,npr;
    tif.open(inname.c_str(),std::ios::in);
    if (!(tif.good())) {
-      cout << "Error: File " << inname << "could not be opened...\n";
-#if DEBUG
+      ScreenUtils::DisplayErrorFileNotOpen(inname);
       cout << __FILE__ << ", line: " << __LINE__ << endl;
-#endif
       return false;
    }
    tif.seekg(tif.beg);
@@ -270,10 +266,8 @@ bool BondNetWork::MakePOVFile(string pnam,POVRayConfiguration &pvp) {
    ofstream pof;
    pof.open(pnam.c_str(),std::ios::out);
    if (!(pof.good())) {
-      cout << "Error: File " << pnam << "could not be opened...\n";
-#if DEBUG
+      ScreenUtils::DisplayErrorFileNotOpen(pnam);
       cout << __FILE__ << ", line: " << __LINE__ << endl;
-#endif
       return false;
    }
    //POVRayConfiguration pvp;
