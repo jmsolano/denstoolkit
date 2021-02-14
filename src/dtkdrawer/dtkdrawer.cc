@@ -73,7 +73,7 @@ int main (int argc, char *argv[]) {
    cout << "\nLoading data from file: " << infilnam << "...\n";
    
    BondNetWork bnw;
-   bnw.ReadFromFile(infilnam); //Loading the bond-network (if the wavefunction
+   if (!bnw.ReadFromFile(infilnam)) { return EXIT_FAILURE; } //Loading the bond-network (if the wavefunction
                                // or xyz file
                                //was read, there souldn't be problems here).
    bnw.SetUpBNW();             //To setup the bond network.
