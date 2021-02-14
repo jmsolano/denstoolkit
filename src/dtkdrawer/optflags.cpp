@@ -71,9 +71,9 @@ OptionFlags::OptionFlags() {
    verboseLevel=0;
    rotatemol=align3at=rotX=rotY=rotZ=0;
    cpkview=false;
-   setzoom=selectcps2draw=0;
-   drawnuc=drawcps=mkpng=true;
-
+   setzoom=selectcps2draw=selectgps2draw=0;
+   drawnuc=drawcps=drawgps=mkpng=true;
+   tubestyle=false;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    string progname;
@@ -107,6 +107,11 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                flags.drawcps=true;
                if (i>=argc) {printErrorMsg(argv,'c');}
                break;
+            case 'g' :
+               flags.selectgps2draw=(++i);
+               flags.drawgps=true;
+               if (i>=argc) {printErrorMsg(argv,'g');}
+               break;
             case 'o':
                flags.outfname=(++i);
                if (i>=argc) {printErrorMsg(argv,'o');}
@@ -117,6 +122,9 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                break;
             case 's' :
                flags.cpkview=true;
+               break;
+            case 'T' :
+               flags.tubestyle=true;
                break;
             case 'h':
                printHelpMenu(argc,argv);
@@ -197,6 +205,12 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t\tb: include BCPs\n"
         << "            \t\tr: include RCPs\n"
         << "            \t\tc: include CCPs\n" << '\n';
+   cout << "  -g  gpt   \tSelects the Gradient paths to include (by default,\n"
+        << "            \t  all GPs are included. gpt is a series of letters\n"
+        << "            \t  that can be:\n"
+        << "            \t\tb: include BGPs\n"
+        << "            \t\tr: include RGPs\n"
+        << "            \t\tc: include CGPs\n" << '\n';
    cout << "  -o outname\tSets the output file name.\n"
         << "            \t  (If not given the program will create one out of\n"
         << "            \t  the input name; if given, the gnp file and the pdf will\n"
@@ -211,6 +225,8 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  look as in scheme 1, below.\n";
    cout << "  -s        \tSets spacefilling mode. This mode activates the spacefilling\n"
         << "            \t  view of the atoms (uses VdW atomic radius to draw the atoms)." << '\n';
+   cout << "  -T        \tDraws the gradient paths as tubes (as opposed to as a series\n"
+        << "            \t  of small spheres." << '\n';
    cout << "  -v verbLev\tSets the verbose level to be verboseLevel. The greater\n" 
         << "            \t  verbLev is, the greater the information displayed on the\n"
         << "            \t  screen. verboseLevel=0 minimizes the information."  << '\n';
@@ -253,6 +269,7 @@ void printErrorMsg(char** &argv,char lab) {
    cout << "\nError: the option \"" << lab << "\" ";
    switch (lab) {
       case 'c' :
+      case 'g' :
          cout << "should be followed by a string." << '\n';
          break;
       case 'v':

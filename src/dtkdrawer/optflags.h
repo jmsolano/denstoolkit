@@ -37,9 +37,7 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-
 /*
-
    optsflags.h
    The actual implementation of the code is in the file optsflags.cpp
    
@@ -64,12 +62,10 @@
    University of Guelph,
    Guelph, Ontario, Canada.
    May 2013
- ----------------------
+   ----------------------
 */
-
 #ifndef _OPTSFLAGS_H
 #define _OPTSFLAGS_H
-
 #include <string>
 using std::string;
 
@@ -79,8 +75,9 @@ public:
    unsigned short int infname,outfname;
    unsigned short int verboseLevel;
    unsigned short int rotatemol,align3at,rotX,rotY,rotZ;
-   unsigned short int setzoom,selectcps2draw;
-   bool cpkview,mkpng,drawnuc,drawcps;
+   unsigned short int setzoom,selectcps2draw,selectgps2draw;
+   bool cpkview,mkpng,drawnuc,drawcps,drawgps;
+   bool tubestyle;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);
 void printHelpMenu(int &argc, char** &argv);//self-described

@@ -27,6 +27,7 @@ public:
    static void WriteBondNetworkElements(ofstream &ofil,BondNetWork &bn,\
          POVRayConfiguration &pvc,const OptionFlags &options,char *argv[]);
    static bool DrawCPofType(char t,const OptionFlags &options,char *argv[]);
+   static bool DrawGPofType(char t,const OptionFlags &options,char *argv[]);
 /* ************************************************************************** */
 protected:
 /* ************************************************************************** */

@@ -90,14 +90,17 @@ bool HelpersDrawer::MakeCriticalPointsPovFile(const string &basename,\
    bool drawbcps=DrawCPofType('b',options,argv);
    bool drawrcps=DrawCPofType('r',options,argv);
    bool drawccps=DrawCPofType('c',options,argv);
+   bool drawbgps=DrawGPofType('b',options,argv);
+   bool drawrgps=DrawGPofType('r',options,argv);
+   bool drawcgps=DrawGPofType('c',options,argv);
+
    ofil << "#declare DrawAttractorCriticalPoints=" << (drawacps?"true":"false") << ';' << '\n';
    ofil << "#declare DrawBondCriticalPoints=" << (drawbcps?"true":"false") << ';' << '\n';
    ofil << "#declare DrawRingCriticalPoints=" << (drawrcps?"true":"false") << ';' << '\n';
    ofil << "#declare DrawCageCriticalPoints=" << (drawccps?"true":"false") << ';' << '\n';
-   //if (drawBGPs&&(!tubeBGPStyle)) {tmpbool="true";} else {tmpbool="false";}
-   //ofil << "#declare DrawGradientPathSpheres=" << tmpbool << ";" << '\n';
-   //if (drawBGPs&&tubeBGPStyle) {tmpbool="true";} else {tmpbool="false";}
-   //ofil << "#declare DrawGradientPathTubes=" << tmpbool << ";" << '\n';
+   tmpbool=((options.drawgps)&&(options.tubestyle));
+   ofil << "#declare DrawGradientPathSpheres=" << (tmpbool? "false":"true") << ";" << '\n';
+   ofil << "#declare DrawGradientPathTubes=" << (tmpbool? "true":"false") << ";" << '\n';
    ofil << "//  Activation of \"DrawGradientPathSpheres\" requires deactivation of "
       << "\n//  \"DrawGradientPathTubes\", and vice versa." << '\n';
    double allcprad=bn.drawAtSize*CPNW_ATOMCRITICALPOINTSIZEFACTOR;
@@ -105,18 +108,15 @@ bool HelpersDrawer::MakeCriticalPointsPovFile(const string &basename,\
    ofil << "#declare RadiusAllCriticalPoints=" << allcprad << ";" << '\n';
    ofil << "#declare ColorACP=rgb <0.0,0.0,0.0>;" << '\n';
    ofil << "#declare RadiusACP=RadiusAllCriticalPoints;" << '\n';
-   //ofil << "#declare ColorBCP=rgb <0.3,0.3,0.3>;" << '\n';
    ofil << "#declare ColorBCP=rgb <0.0,0.6,1.0>;" << '\n';
    ofil << "#declare RadiusBCP=RadiusAllCriticalPoints;" << '\n';
-   //ofil << "#declare ColorRCP=rgb <0.6,0.6,0.6>;" << '\n';
    ofil << "#declare ColorRCP=rgb <1.0,1.0,0.0>;" << '\n';
    ofil << "#declare RadiusRCP=RadiusAllCriticalPoints;" << '\n';
-   //ofil << "#declare ColorCCP=rgb <0.9,0.9,0.9>;" << '\n';
    ofil << "#declare ColorCCP=rgb <1.0,0.0,0.0>;" << '\n';
    ofil << "#declare RadiusCCP=RadiusAllCriticalPoints;" << '\n';
-   ofil << "#declare ColorABGradPath=rgb <0.0,0.2,1.0>;" << '\n';
-   ofil << "#declare ColorARGradPath=rgb <0.0,0.8,0.0>;" << '\n';
-   ofil << "#declare ColorACGradPath=rgb <1.0,0.5,0.0>;" << '\n';
+   ofil << "#declare ColorBGradPath=rgb <0.0,0.2,1.0>;" << '\n';
+   ofil << "#declare ColorRGradPath=rgb <0.0,0.8,0.0>;" << '\n';
+   ofil << "#declare ColorCGradPath=rgb <1.0,0.5,0.0>;" << '\n';
    ofil << "#default { finish { specular 0.3 roughness 0.03 phong .1 } }" << '\n';
    FileUtils::WriteScrCharLine(ofil,'/',false);
    ofil << "//For the colors, instead of rgb < ... >, you may want to try Red, Yellow, ..." << '\n';
@@ -177,84 +177,66 @@ bool HelpersDrawer::MakeCriticalPointsPovFile(const string &basename,\
       FileUtils::WriteScrCharLine(ofil,'/',false);
    }
 
-   ofil.close();
-   //Rendering
-   tmpbool=options.verboseLevel && std::stoi(string(argv[options.verboseLevel]))>0;
-   CommonHelpers::RenderPovfile(povname,tmpbool);
-#if 0
-   if (drawBGPs&&(!tubeBGPStyle)) {tmpbool="true";} else {tmpbool="false";}
-   ofil << "#declare DrawGradientPathSpheres=" << tmpbool << ";" << '\n';
-   if (drawBGPs&&tubeBGPStyle) {tmpbool="true";} else {tmpbool="false";}
-   ofil << "#declare DrawGradientPathTubes=" << tmpbool << ";" << '\n';
-   ofil << "//  Activation of \"DrawGradientPathSpheres\" requires deactivation of "
-      << "\n//  \"DrawGradientPathTubes\", and vice versa." << '\n';
-
-
-   if (iknowbgps) {
+   FileUtils::WriteScrCharLine(ofil,'/',false);
+   if (drawbgps&&cp.IKnowBGPs()) {
       double gprad=0.06;
-      int npts;
+      int npts,nBCP=cp.nBCP;
       ofil << "#if(DrawGradientPathSpheres)" << '\n';
       ofil << "union {" << '\n';
-      for (int i=0; i<nBCP; i++) {
-         npts=conBCP[i][2];
-         HelpersPOVRay::WriteSphere(ofil,1,RBGP[i][0][0],RBGP[i][0][1],RBGP[i][0][2], \
-               gprad,"ColorABGradPath");
+      for (int i=0; i<nBCP; ++i) {
+         npts=cp.conBCP[i][2];
+         HelpersPOVRay::WriteSphere(ofil,1,cp.RBGP[i][0][0],cp.RBGP[i][0][1],cp.RBGP[i][0][2], \
+               gprad,"ColorBGradPath");
          for (int j=1; j<npts; j++) {
-            HelpersPOVRay::WriteSphere(ofil,1,RBGP[i][j][0],RBGP[i][j][1],RBGP[i][j][2], \
-                  gprad,"ColorABGradPath");
+            HelpersPOVRay::WriteSphere(ofil,1,cp.RBGP[i][j][0],cp.RBGP[i][j][1],cp.RBGP[i][j][2], \
+                  gprad,"ColorBGradPath");
          }
       }
       ofil << "}" << '\n';
       ofil << "#end\n//end if DrawGradientPathSpheres" << '\n';
-   }
-   if (iknowbgps) {
-      double gprad=0.06;
-      int npts;
       ofil << "#if(DrawGradientPathTubes)" << '\n';
       ofil << "union {" << '\n';
       for (int i=0; i<nBCP; i++) {
-         npts=conBCP[i][2];
-         HelpersPOVRay::WriteSphere(ofil,1,RBGP[i][0][0],RBGP[i][0][1],RBGP[i][0][2], \
-               gprad,"ColorABGradPath");
+         npts=cp.conBCP[i][2];
+         HelpersPOVRay::WriteSphere(ofil,1,cp.RBGP[i][0][0],cp.RBGP[i][0][1],cp.RBGP[i][0][2], \
+               gprad,"ColorBGradPath");
          for (int j=1; j<npts; j++) {
-            HelpersPOVRay::WriteSphere(ofil,1,RBGP[i][j][0],RBGP[i][j][1],RBGP[i][j][2], \
-                  gprad,"ColorABGradPath");
-            //if (tubeBGPStyle) {
+            HelpersPOVRay::WriteSphere(ofil,1,cp.RBGP[i][j][0],cp.RBGP[i][j][1],cp.RBGP[i][j][2], \
+                  gprad,"ColorBGradPath");
             HelpersPOVRay::WriteCylinder(ofil,1,\
-                  RBGP[i][j][0],RBGP[i][j][1],RBGP[i][j][2], \
-                  RBGP[i][j-1][0],RBGP[i][j-1][1],RBGP[i][j-1][2], \
-                  gprad,"ColorABGradPath");
-            //}
+                  cp.RBGP[i][j][0],cp.RBGP[i][j][1],cp.RBGP[i][j][2], \
+                  cp.RBGP[i][j-1][0],cp.RBGP[i][j-1][1],cp.RBGP[i][j-1][2], \
+                  gprad,"ColorBGradPath");
          }
       }
       ofil << "}" << '\n';
       ofil << "#end\n//end if DrawGradientPathTubes" << '\n';
    }
-   if ( iknowrgps ) {
+   if ( drawrgps&&cp.IKnowRGPs() ) {
       double gprad=0.045;
-      int npts,currBcpPos;
+      int npts,currBcpPos,nRCP=cp.nRCP;
       ofil << "#if(DrawGradientPathTubes)" << '\n';
       ofil << "union {" << '\n';
       for (int rcpIdx=0; rcpIdx<nRCP; ++rcpIdx) {
          currBcpPos=0;
-         while ( conRCP[rcpIdx][1][currBcpPos]>0 ) {
-            npts=conRCP[rcpIdx][1][currBcpPos];
-            HelpersPOVRay::WriteSphere(ofil,1,RRGP[rcpIdx][currBcpPos][0][0],\
-                  RRGP[rcpIdx][currBcpPos][0][1],\
-                  RRGP[rcpIdx][currBcpPos][0][2],gprad,"ColorARGradPath");
+         while ( cp.conRCP[rcpIdx][1][currBcpPos]>0 ) {
+            npts=cp.conRCP[rcpIdx][1][currBcpPos];
+            HelpersPOVRay::WriteSphere(ofil,1,cp.RRGP[rcpIdx][currBcpPos][0][0],\
+                  cp.RRGP[rcpIdx][currBcpPos][0][1],\
+                  cp.RRGP[rcpIdx][currBcpPos][0][2],gprad,"ColorRGradPath");
             for ( int j=1 ; j<npts ; ++j ) {
-               HelpersPOVRay::WriteSphere(ofil,1,RRGP[rcpIdx][currBcpPos][j][0],\
-                     RRGP[rcpIdx][currBcpPos][j][1],\
-                     RRGP[rcpIdx][currBcpPos][j][2],gprad,"ColorARGradPath");
+               HelpersPOVRay::WriteSphere(ofil,1,cp.RRGP[rcpIdx][currBcpPos][j][0],\
+                     cp.RRGP[rcpIdx][currBcpPos][j][1],\
+                     cp.RRGP[rcpIdx][currBcpPos][j][2],gprad,"ColorRGradPath");
                if ( j%2 ==0 ) {
                HelpersPOVRay::WriteCylinder(ofil,1,\
-                     RRGP[rcpIdx][currBcpPos][j][0],\
-                     RRGP[rcpIdx][currBcpPos][j][1],\
-                     RRGP[rcpIdx][currBcpPos][j][2],\
-                     RRGP[rcpIdx][currBcpPos][j-1][0],\
-                     RRGP[rcpIdx][currBcpPos][j-1][1],\
-                     RRGP[rcpIdx][currBcpPos][j-1][2],\
-                     gprad,"ColorARGradPath");
+                     cp.RRGP[rcpIdx][currBcpPos][j][0],\
+                     cp.RRGP[rcpIdx][currBcpPos][j][1],\
+                     cp.RRGP[rcpIdx][currBcpPos][j][2],\
+                     cp.RRGP[rcpIdx][currBcpPos][j-1][0],\
+                     cp.RRGP[rcpIdx][currBcpPos][j-1][1],\
+                     cp.RRGP[rcpIdx][currBcpPos][j-1][2],\
+                     gprad,"ColorRGradPath");
                }
             }
             ++currBcpPos;
@@ -267,47 +249,46 @@ bool HelpersDrawer::MakeCriticalPointsPovFile(const string &basename,\
       ofil << "union {" << '\n';
       for (int rcpIdx=0; rcpIdx<nRCP; ++rcpIdx) {
          currBcpPos=0;
-         while ( conRCP[rcpIdx][1][currBcpPos]>0 ) {
-            npts=conRCP[rcpIdx][1][currBcpPos];
+         while ( cp.conRCP[rcpIdx][1][currBcpPos]>0 ) {
+            npts=cp.conRCP[rcpIdx][1][currBcpPos];
             for ( int j=0 ; j<npts ; ++j ) {
-               HelpersPOVRay::WriteSphere(ofil,1,RRGP[rcpIdx][currBcpPos][j][0],\
-                     RRGP[rcpIdx][currBcpPos][j][1],\
-                     RRGP[rcpIdx][currBcpPos][j][2],gprad,"ColorARGradPath");
+               HelpersPOVRay::WriteSphere(ofil,1,cp.RRGP[rcpIdx][currBcpPos][j][0],\
+                     cp.RRGP[rcpIdx][currBcpPos][j][1],\
+                     cp.RRGP[rcpIdx][currBcpPos][j][2],gprad,"ColorRGradPath");
             }
             ++currBcpPos;
          }
       }
       ofil << "}" << '\n';
       ofil << "#end\n//end if DrawGradientPathSpheres" << '\n';
- 
    }
-   if ( iknowcgps ) {
+   if ( drawcgps&&cp.IKnowCGPs() ) {
       double gprad=0.045;
-      int npts,currRcpPos;
+      int npts,currRcpPos,nCCP=cp.nCCP;
       ofil << "#if(DrawGradientPathTubes)" << '\n';
       ofil << "union {" << '\n';
       for (int ccpIdx=0; ccpIdx<nCCP; ++ccpIdx) {
          currRcpPos=0;
-         while ( conCCP[ccpIdx][1][currRcpPos]>0 ) {
-            npts=conCCP[ccpIdx][1][currRcpPos];
-            HelpersPOVRay::WriteSphere(ofil,1,RCGP[ccpIdx][currRcpPos][0][0],\
-                  RCGP[ccpIdx][currRcpPos][0][1],\
-                  RCGP[ccpIdx][currRcpPos][0][2],gprad,"ColorACGradPath");
+         while ( cp.conCCP[ccpIdx][1][currRcpPos]>0 ) {
+            npts=cp.conCCP[ccpIdx][1][currRcpPos];
+            HelpersPOVRay::WriteSphere(ofil,1,cp.RCGP[ccpIdx][currRcpPos][0][0],\
+                  cp.RCGP[ccpIdx][currRcpPos][0][1],\
+                  cp.RCGP[ccpIdx][currRcpPos][0][2],gprad,"ColorCGradPath");
             for ( int j=1 ; j<npts ; ++j ) {
                if (j%3 != 1) {
-               HelpersPOVRay::WriteSphere(ofil,1,RCGP[ccpIdx][currRcpPos][j][0],\
-                     RCGP[ccpIdx][currRcpPos][j][1],\
-                     RCGP[ccpIdx][currRcpPos][j][2],gprad,"ColorACGradPath");
+               HelpersPOVRay::WriteSphere(ofil,1,cp.RCGP[ccpIdx][currRcpPos][j][0],\
+                     cp.RCGP[ccpIdx][currRcpPos][j][1],\
+                     cp.RCGP[ccpIdx][currRcpPos][j][2],gprad,"ColorCGradPath");
                }
                if (j%3 ==0) {
                HelpersPOVRay::WriteCylinder(ofil,1,\
-                     RCGP[ccpIdx][currRcpPos][j][0],\
-                     RCGP[ccpIdx][currRcpPos][j][1],\
-                     RCGP[ccpIdx][currRcpPos][j][2],\
-                     RCGP[ccpIdx][currRcpPos][j-1][0],\
-                     RCGP[ccpIdx][currRcpPos][j-1][1],\
-                     RCGP[ccpIdx][currRcpPos][j-1][2],\
-                     gprad,"ColorACGradPath");
+                     cp.RCGP[ccpIdx][currRcpPos][j][0],\
+                     cp.RCGP[ccpIdx][currRcpPos][j][1],\
+                     cp.RCGP[ccpIdx][currRcpPos][j][2],\
+                     cp.RCGP[ccpIdx][currRcpPos][j-1][0],\
+                     cp.RCGP[ccpIdx][currRcpPos][j-1][1],\
+                     cp.RCGP[ccpIdx][currRcpPos][j-1][2],\
+                     gprad,"ColorCGradPath");
                }
             }
             ++currRcpPos;
@@ -320,23 +301,23 @@ bool HelpersDrawer::MakeCriticalPointsPovFile(const string &basename,\
       ofil << "union {" << '\n';
       for (int ccpIdx=0; ccpIdx<nCCP; ++ccpIdx) {
          currRcpPos=0;
-         while ( conCCP[ccpIdx][1][currRcpPos]>0 ) {
-            npts=conCCP[ccpIdx][1][currRcpPos];
+         while ( cp.conCCP[ccpIdx][1][currRcpPos]>0 ) {
+            npts=cp.conCCP[ccpIdx][1][currRcpPos];
             for ( int j=0 ; j<npts ; ++j ) {
-               HelpersPOVRay::WriteSphere(ofil,1,RCGP[ccpIdx][currRcpPos][j][0],\
-                     RCGP[ccpIdx][currRcpPos][j][1],\
-                     RCGP[ccpIdx][currRcpPos][j][2],gprad,"ColorACGradPath");
+               HelpersPOVRay::WriteSphere(ofil,1,cp.RCGP[ccpIdx][currRcpPos][j][0],\
+                     cp.RCGP[ccpIdx][currRcpPos][j][1],\
+                     cp.RCGP[ccpIdx][currRcpPos][j][2],gprad,"ColorCGradPath");
             }
             ++currRcpPos;
          }
       }
       ofil << "}" << '\n';
       ofil << "#end\n//end if DrawGradientPathSpheres" << '\n';
- 
    }
+
    ofil.close();
-#endif
-   //Complete blocc
+
+   //Rendering
    tmpbool=options.verboseLevel && std::stoi(string(argv[options.verboseLevel]))>0;
    CommonHelpers::RenderPovfile(povname,tmpbool);
 }
@@ -463,6 +444,23 @@ bool HelpersDrawer::DrawCPofType(char t,const OptionFlags &options,char *argv[])
          return true;
       } else {
          string list=argv[options.selectcps2draw];
+         char c=std::tolower(t);
+         for ( size_t i=0 ; i<list.size() ; ++i ) { list[i]=std::tolower(list[i]); }
+         if ( list.find(c)==string::npos ) {
+            return false;
+         } else {
+            return true;
+         }
+      }
+   }
+   return false;
+}
+bool HelpersDrawer::DrawGPofType(char t,const OptionFlags &options,char *argv[]) {
+   if ( options.drawgps ) {
+      if ( !options.selectgps2draw ) {
+         return true;
+      } else {
+         string list=argv[options.selectgps2draw];
          char c=std::tolower(t);
          for ( size_t i=0 ; i<list.size() ; ++i ) { list[i]=std::tolower(list[i]); }
          if ( list.find(c)==string::npos ) {
