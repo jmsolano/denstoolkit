@@ -70,7 +70,7 @@ int main (int argc, char *argv[]) {
    if (options.verboseLevel && std::stoi(string(argv[options.verboseLevel]))>0)
    ScreenUtils::PrintHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS); //Just to let the user know that the initial configuration is OK
    
-   cout << "\nLoading wave function from file: " << infilnam << "...\n";
+   cout << "\nLoading data from file: " << infilnam << "...\n";
    
    BondNetWork bnw;
    bnw.ReadFromFile(infilnam); //Loading the bond-network (if the wavefunction

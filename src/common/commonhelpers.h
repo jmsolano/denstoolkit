@@ -1,6 +1,7 @@
 #ifndef _COMMONHELPERS_H_
 #define _COMMONHELPERS_H_
 #include "bondnetwork.h"
+#include "povraytools.h"
 /* ************************************************************************** */
 class CommonHelpers {
 /* ************************************************************************** */
@@ -30,6 +31,8 @@ public:
     * the rgb colour that will be used to colour the ith sphere.  */
    static void PutSpecialSpheres(ofstream &ofil,const int ntbs,\
          const vector<vector<double> > &sp,const string trnsmbnd);
+   static void WriteAngleDeclarations(ofstream &ofil,POVRayConfiguration &pvc);
+   static void RenderPovfile(const string &povname,bool verbose=false);
 /* ************************************************************************** */
 protected:
 /* ************************************************************************** */

@@ -66,12 +66,14 @@ using std::string;
 #include "../common/screenutils.h"
 
 OptionFlags::OptionFlags() {
-   infname=0;
+   infname=1;
    outfname=0;
    verboseLevel=0;
    rotatemol=align3at=rotX=rotY=rotZ=0;
    cpkview=false;
-   mkpng=true;
+   setzoom=selectcps2draw=0;
+   drawnuc=drawcps=mkpng=true;
+
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    string progname;
@@ -97,13 +99,21 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    for (int i=1; i<argc; i++){
       if (argv[i][0] == '-'){
          switch (argv[i][1]){
-            case 'A' :
-               flags.align3at=(++i);
-               if ((i+2)>=argc) {printErrorMsg(argv,'A');}
+            case 'a' :
+               flags.drawnuc=true;
+               break;
+            case 'c' :
+               flags.selectcps2draw=(++i);
+               flags.drawcps=true;
+               if (i>=argc) {printErrorMsg(argv,'c');}
                break;
             case 'o':
                flags.outfname=(++i);
                if (i>=argc) {printErrorMsg(argv,'o');}
+               break;
+            case 'O' :
+               flags.align3at=(++i);
+               if ((i+2)>=argc) {printErrorMsg(argv,'O');}
                break;
             case 's' :
                flags.cpkview=true;
@@ -179,7 +189,19 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "\nUsage:\n\n\t" << progname << " inputmolecule [option [value(s)]] ... [option [value(s)]]\n\n";
    ScreenUtils::SetScrNormalFont();
    cout << "Where inputmolecule is the input file name, and options can be:\n\n";
-   cout << "  -A a b c  \tAligns the molecule using three atoms (indices: a, b, c\n"
+   cout << "  -a        \tDraw transparent spheres around each nucleus." << '\n';
+   cout << "  -c  cpt   \tSelects the Critical points to include (by default,\n"
+        << "            \t  all CPs are included. cpt is a series\n"
+        << "            \t  of letters that can be:\n"
+        << "            \t\ta: include ACPs\n"
+        << "            \t\tb: include BCPs\n"
+        << "            \t\tr: include RCPs\n"
+        << "            \t\tc: include CCPs\n" << '\n';
+   cout << "  -o outname\tSets the output file name.\n"
+        << "            \t  (If not given the program will create one out of\n"
+        << "            \t  the input name; if given, the gnp file and the pdf will\n"
+        << "            \t  use this name as well --but different extension--)." << '\n';
+   cout << "  -O a b c  \tOrients the molecule using three atoms (indices: a, b, c\n"
         << "            \t according to the molecule's input geometry). The order is\n"
         << "            \t  important, as the align vectors are defined as follows\n"
         << "            \t  (x, y, and z are, here, the vectors left-right,\n"
@@ -187,10 +209,6 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  x=(c-b), y=a-dotProduct(c,(b-a)), and z=crossproduct(x,y).\n"
         << "            \t  The atoms will be placed in the screen plane, and they will\n"
         << "            \t  look as in scheme 1, below.\n";
-   cout << "  -o outname\tSets the output file name.\n"
-        << "            \t  (If not given the program will create one out of\n"
-        << "            \t  the input name; if given, the gnp file and the pdf will\n"
-        << "            \t  use this name as well --but different extension--)." << '\n';
    cout << "  -s        \tSets spacefilling mode. This mode activates the spacefilling\n"
         << "            \t  view of the atoms (uses VdW atomic radius to draw the atoms)." << '\n';
    cout << "  -v verbLev\tSets the verbose level to be verboseLevel. The greater\n" 
@@ -227,21 +245,24 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t           / b       x       \n"
         << "            \t          /\n"
         << "            \t       z / \n"
-        << "  Scheme 1: View of the aligned atoms (see option -A)." << '\n';
+        << "  Scheme 1: View of the aligned atoms (see option -O)." << '\n';
    ScreenUtils::PrintScrCharLine('-');
 }
 void printErrorMsg(char** &argv,char lab) {
    ScreenUtils::SetScrRedBoldFont();
    cout << "\nError: the option \"" << lab << "\" ";
    switch (lab) {
-      case 'A' :
-         cout << "should be followed by three integers (>0 and <nAtoms)" << '\n';
+      case 'c' :
+         cout << "should be followed by a string." << '\n';
          break;
       case 'v':
          cout << "should be followed by an integer (>=0)." << endl;
          break;
       case 'o':
          cout << "should be followed by a name." << endl;
+         break;
+      case 'O' :
+         cout << "should be followed by three integers (>0 and <nAtoms)." << '\n';
          break;
       case 'x' :
       case 'y' :

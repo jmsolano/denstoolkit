@@ -83,4 +83,6 @@
 #define DISPLAYDEBUGINFOFILELINE (std::cout << __FILE__ << ", line: " << __LINE__ << std::endl)
 #endif
 
+#define CPNW_ATOMCRITICALPOINTSIZEFACTOR (0.25e0)
+
 #endif /* _GLOBALDEFS_H_ */

@@ -66,6 +66,7 @@ public:
    bool ReadFromFileWFX(string inname);
    bool ReadFromFileWFN(string inname);
    bool ReadFromFileXYZ(string inname);
+   bool ReadFromFileCPX(string inname);
    bool ReadFromFile(string inname);
    /* ************************************************************************** */
    double **R;         //Contains the atoms' radius-vectors.

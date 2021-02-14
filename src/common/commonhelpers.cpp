@@ -4,7 +4,6 @@ using std::cout;
 #include "commonhelpers.h"
 #include "atomcolschjmol.h"
 #include "atomradiicust.h"
-#include "povraytools.h"
 
 void CommonHelpers::PutNuclei(ofstream &ofil,BondNetWork &bn,int ntbs,\
       const string trnsmat,bool cpkview) {
@@ -81,5 +80,20 @@ void CommonHelpers::PutBonds(ofstream &ofil,BondNetWork &bn,const int ntbs,\
             GetAtomicBColorReal(atni));
    }
    ofil << HelpersPOVRay::IndTabsStr(--nt) << "}" << '\n';
+}
+void CommonHelpers::WriteAngleDeclarations(ofstream &ofil,POVRayConfiguration &pvc) {
+   ofil << "#declare GNUPlotAngle1=" << pvc.vecAngView[0]
+        << "; // Equivalent to XAngle." << '\n';
+   ofil << "#declare GNUPlotAngle2=" << pvc.vecAngView[2]
+        << "; // Equivalent to ZAngle." << '\n';
+   ofil << "#declare YAngle=" << pvc.vecAngView[1] << ";" << '\n';
+}
+void CommonHelpers::RenderPovfile(const string &povname,bool verbose) {
+   string cmd="dtkpov2png "+povname;
+   if ( !verbose ) { cmd+=" 2>/dev/null"; }
+   system(cmd.c_str());
+   if (verbose) {
+      cout << "Rendering done." << '\n';
+   }
 }
 

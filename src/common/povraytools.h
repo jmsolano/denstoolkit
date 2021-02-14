@@ -31,6 +31,9 @@ public:
    void WriteLightSource(ofstream &ofil,int is,double intens,const char* opts);
    void ScaleLightSources(double scfactor);
    void UnsetVersion36() {setversion36=false;};
+   /** This function multiply locCam, up, right, dir, and lightSources by M.
+    * Hence, this function should be called AFTER setting these vectors.  */
+   void ApplyRotationMatrixToCameraAndLightSources(const vector<vector<double> > &M);
 /* ************************************************************************** */
    int nLightSources;
    double **lightSource;
@@ -113,6 +116,7 @@ public:
    static bool WriteMesh2SingleRGB(ofstream &ofil,const vector<vector<double> > &v,\
          const vector<vector<size_t> > &f,const int nt,vector<double> rgb,\
          const string &trnsmStr="");
+   static void ApplyRotationMatrix(const vector<vector<double> > &M,double*v);
 /* ************************************************************************** */
 };
 /* ************************************************************************** */

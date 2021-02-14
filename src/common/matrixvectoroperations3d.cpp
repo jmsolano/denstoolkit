@@ -6,6 +6,7 @@ using std::endl;
 using std::cerr;
 #include <cmath>
 #include "matrixvectoroperations3d.h"
+#include "screenutils.h"
 
 
 vector<vector<double> > MatrixVectorOperations3D::GetMatrixToAlignXToV(vector<double> &ix,vector<double> &iv) {
@@ -258,3 +259,49 @@ vector<vector<double> > MatrixVectorOperations3D::Transpose(const vector<vector<
    Transpose(res);
    return res;
 }
+vector<vector<double> > MatrixVectorOperations3D::GetRotationMatrix2AlignActive(\
+      const vector<double> &A,const vector<double> &B,const vector<double> &C) {
+   if ( A.size()!=3 || B.size()!=3||C.size()!=3 ) {
+      ScreenUtils::DisplayErrorMessage("The input vectors have not the correct size!");
+      cout << __FILE__ << ", line: " << __LINE__ << '\n';
+      return Zeros();
+   }
+   vector<double> y=ZeroVector();
+   AminusB(A,B,y);
+   vector<double> tmp=ZeroVector();
+   AminusB(C,B,tmp);
+   vector<double> z=CrossProduct(tmp,y);
+   vector<double> x=CrossProduct(y,z);
+   Normalize(x);
+   Normalize(y);
+   Normalize(z);
+   vector<vector<double> > m1=GetMatrixToAlignVToZ(z);
+   TransformByMatrixMultiplication(m1,x);
+   TransformByMatrixMultiplication(m1,y);
+   TransformByMatrixMultiplication(m1,z);
+   vector<double> yu=Y();
+   double angle=-acos(InnerProduct(yu,y));
+   vector<double> zu=Z();
+   vector<double> cross=CrossProduct(yu,y);
+   if ( InnerProduct(cross,zu) < 0.0e0 ) { angle=-angle; }
+   vector<vector<double> > m2=GetRotationMatrixAroundZ(angle);
+   return MatrixProduct(m2,m1);
+}
+vector<vector<double> > MatrixVectorOperations3D::GetRotationMatrix2AlignPassive(\
+      const vector<double> &A,const vector<double> &B,const vector<double> &C) {
+   vector<vector<double> > M=GetRotationMatrix2AlignActive(A,B,C);
+   Transpose(M);
+   return M;
+}
+void MatrixVectorOperations3D::TransformByMatrixMultiplication(\
+      const vector<vector<double> > &M, vector<double> &v) {
+   double tmp[3];
+   tmp[0]=v[0]; tmp[1]=v[1]; tmp[2]=v[2];
+   for ( size_t i=0 ; i<3 ; ++i ) {
+      v[i]=0.0e0;
+      v[i]+=M[i][0]*tmp[0];
+      v[i]+=M[i][1]*tmp[1];
+      v[i]+=M[i][2]*tmp[2];
+   }
+}
+

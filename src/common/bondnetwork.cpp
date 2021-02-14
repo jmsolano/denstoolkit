@@ -53,6 +53,7 @@ using std::endl;
 #include "povraytools.h"
 #include "iofuncts-wfn.h"
 #include "iofuncts-wfx.h"
+#include "iofuncts-cpx.h"
 #include "atomradiicust.h"
 #include "inputmolecule_xyz.h"
 // The first 94 atomic radii are given,
@@ -165,6 +166,19 @@ bool BondNetWork::ReadFromFileXYZ(string inname) {
    for ( size_t i=0 ; i<mol.Size() ; ++i ) { atNum[i]=mol.atom[i].num-1; }
    return true;
 }
+bool BondNetWork::ReadFromFileCPX(string inname) {
+   ifstream ifil(inname);
+   string wfname=cpxGetWFXFileName(ifil);
+   ifil.close();
+   cout << "wfname: '" << wfname << "'" << '\n';
+   string extension=wfname.substr(wfname.length()-3,3);
+   if ((extension=="wfn")||(extension=="WFN")) {
+      return ReadFromFileWFN(wfname);
+   } else if ((extension=="wfx")||(extension=="WFX")) {
+      return ReadFromFileWFX(wfname);
+   }
+   return false;
+}
 bool BondNetWork::ReadFromFile(string inname) {
    string extension;
    extension=inname.substr(inname.length()-3,3);
@@ -172,8 +186,10 @@ bool BondNetWork::ReadFromFile(string inname) {
       return ReadFromFileWFN(inname);
    } else if ((extension=="wfx")||(extension=="WFX")) {
       return ReadFromFileWFX(inname);
-   } else if ( (extension=="xyz") || extension=="XYZ" ) {
+   } else if ((extension=="xyz")||(extension=="XYZ")) {
      return ReadFromFileXYZ(inname);
+   } else if ((extension=="cpx")||(extension=="CPX")) {
+     return ReadFromFileCPX(inname);
    } else {
       cout << "Error: unknown extension!(" << inname << ")\nNothig to do, returning false...\n";
       cout << __FILE__ << ", line: " << __LINE__ << endl;

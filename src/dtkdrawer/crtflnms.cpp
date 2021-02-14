@@ -75,10 +75,13 @@ void mkFileNames(char ** (&argv), OptionFlags &opts, string &i_fn, string &raw_f
             (i_fn.find("wfx")!=string::npos)||
             (i_fn.find("WFX")!=string::npos)||
             (i_fn.find("xyz")!=string::npos)||
-            (i_fn.find("XYZ")!=string::npos)
+            (i_fn.find("XYZ")!=string::npos)||
+            (i_fn.find("cpx")!=string::npos)||
+            (i_fn.find("CPX")!=string::npos)
         )) {
       ScreenUtils::SetScrRedBoldFont();
-      cout << "\nError: the file " << i_fn << " is not a valid wave function file." << endl << endl;
+      cout << "\nError: the file " << i_fn << " is not a valid input file." << endl << endl;
+      cout << __FILE__ << ", line: " << __LINE__ << '\n';
       ScreenUtils::SetScrNormalFont();
       exit(1);
    }

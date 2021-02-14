@@ -86,8 +86,8 @@ OptionFlags::OptionFlags() {
    configspecialnci=0;
    setsisovalue=0;
    setcolorscalesingle=setcolorscaleboth=0;
-   selectpalette=setgnpangles=setviewangles=0;
-   skipcube=kppov=mkpov=mkpng=false;
+   selectpalette=setgnpangles=setviewangles=orientcam3ats=0;
+   skipcube=kppov=mkpov=mkpng=rotcam=false;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    string progname;
@@ -158,6 +158,11 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
             case 'o':
                flags.outfname=(++i);
                if (i>=argc) {printErrorMsg(argv,'o');}
+               break;
+            case 'O' :
+               if ((i+3)>=argc) {printErrorMsg(argv,'O');}
+               flags.orientcam3ats=(++i);
+               flags.rotcam=true;
                break;
             case 'p' :
                flags.mkpov=true;
@@ -235,6 +240,7 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "  -B vMin vMax\tSets the color scale to be [vMin,vMax]." << '\n';
    cout << "  -c        \tSkips the cube calculation. Notice this will assume that the\n"
         << "            \t  cube was previously computed." << '\n';
+   cout << "  -I isoval \tSets the isovalue of s to be isoval" << '\n';
    cout << "  -k        \tKeeps the pov-ray script (see also option P, below)." << '\n';
    cout << "  -l palette\tSelects the color scheme 'palette', which can be any of:\n"
         << "            \t  bentcoolwarm blues bugn gnbu greens greys inferno\n"
@@ -248,6 +254,9 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "  -o outname\tSets the output file names to use 'outname' as a basename,\n"
         << "            \t  i.e., the pov and png files will be named:\n"
         << "            \t  outnameNCI.pov and outnameNCI.png, respectively." << endl;
+   cout << "  -O a b c  \tOrients the POV camera, so that the atoms a, b, and c (numbering\n"
+        << "            \t  according to the wf? file) are placed over the screen. The\n"
+        << "            \t  final view should look like Scheme 1, below." << '\n';
    cout << "  -s        \tUses a smart cuboid for the s-cube. The number of points for the" <<endl
         << "            \t  largest direction will be " << DEFAULTPOINTSPERDIRECTION << "." << endl;
    cout << "  -S ln     \tUses a smart cuboid for the s-cube. ln is the number of points" << endl
@@ -264,6 +273,18 @@ void printHelpMenu(int &argc, char** &argv) {
         << "             \t\t  rhoMax=" << NCIRHOMAX << ", and redGradMax=" <<  NCISMAX << ".\n";
    cout << "  --help    \t\tSame as -h" << endl;
    cout << "  --version \t\tSame as -V" << endl;
+   //-------------------------------------------------------------------------------------
+   ScreenUtils::PrintScrCharLine('-');
+   cout << "            \t           a\n"
+        << "            \t           |\n"
+        << "            \t          y|\n"
+        << "            \t           |--------c\n"
+        << "            \t           |________|______\n"
+        << "            \t           / b      x       \n"
+        << "            \t          /\n"
+        << "            \t       z / \n"
+        << "  Scheme 1: View of the aligned atoms (see option -O)." << '\n';
+   ScreenUtils::PrintScrCharLine('-');
    //-------------------------------------------------------------------------------------
 }
 void printErrorMsg(char** &argv,char lab) {

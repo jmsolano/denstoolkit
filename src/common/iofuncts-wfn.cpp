@@ -69,6 +69,7 @@ void ProcessFirstDataStringinWFNFile(ifstream &ifil,string* &tit,string &orbdesc
    orbdesc=line.substr(0,pos);
    if (line.substr(0,pos)!="GAUSSIAN") {
       cout << "Error: only gaussian orbitals are implemented in this version...\n";
+      cout << __FILE__ << ", line: " << __LINE__ << '\n';
       ifil.close();
       exit(1);
    }

@@ -207,7 +207,7 @@ int main (int argc, char ** argv) {
    if ( options.selectpalette ) {
       palname=argv[options.selectpalette];
    }
-   HelpersNCI::MakePovFile(povfnam,pvp,bnw,iso,palname,options.mkpng);
+   HelpersNCI::MakePovFile(povfnam,pvp,bnw,iso,options,argv);
 
    /* In principle, everything went OK. Exiting.  */
    ScreenUtils::PrintHappyEnding();

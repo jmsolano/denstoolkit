@@ -29,6 +29,7 @@ public:
    static double Determinant(const vector<vector<double> > &M);
    static vector<vector<double> > UnitMatrix();
    static vector<vector<double> > Zeros();
+   static vector<double> ZeroVector() {return vector<double>(3);}
    static void Add(const vector<double> &a,const vector<double> &b,vector<double> &c);
    static void AminusB(const vector<double> &a,const vector<double> &b,vector<double> &c);
    inline static void Scale(const double f,vector<double> &v) { v[0]*=f; v[1]*=f; v[2]*=f; };
@@ -54,6 +55,14 @@ public:
    static void RotateAroundZAxis(vector<double> &v,double angle=M_PI);
    static void Transpose(vector<vector<double> > &m);
    static vector<vector<double> > Transpose(const vector<vector<double> > &m);
+   /** The result matrix should be used to rotate the particles of the system. */
+   static vector<vector<double> > GetRotationMatrix2AlignActive(const vector<double> &A,
+         const vector<double> &B,const vector<double> &C);
+   /** The result matrix should be used to rotate the frame reference (it also works
+    * for rotating position and view/right/up vectors of povray cameras.  */
+   static vector<vector<double> > GetRotationMatrix2AlignPassive(const vector<double> &A,
+         const vector<double> &B,const vector<double> &C);
+   static void TransformByMatrixMultiplication(const vector<vector<double> > &M,vector<double> &v);
 /* ************************************************************************** */
 };
 /* ************************************************************************** */

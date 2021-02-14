@@ -79,8 +79,8 @@ public:
    unsigned short int infname,outfname;
    unsigned short int verboseLevel;
    unsigned short int rotatemol,align3at,rotX,rotY,rotZ;
-   unsigned short int setzoom;
-   bool cpkview,mkpng;
+   unsigned short int setzoom,selectcps2draw;
+   bool cpkview,mkpng,drawnuc,drawcps;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);
 void printHelpMenu(int &argc, char** &argv);//self-described

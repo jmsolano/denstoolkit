@@ -81,6 +81,12 @@ LIBSOURCES=$(shell ls common/*.cpp)
 ALLSOURCES= $(CCSOURCES) $(CPPSOURCES)
 ALLHEADERS= $(HEADERS) $(LIBHEADERS)
 
+#RunTest directories:
+
+LCL_OUTDIR = $(TOP)/outputsRunTest
+LCL_WFDIR = $(TOP)/../wavefiles
+
+
 .PHONY: all
 all: $(BINDIR) compileexecs ## Compile every executable '*cc'
 
@@ -146,10 +152,46 @@ install: all ## Installs the binaries (after compiling). Usually requires sudo m
 	@if test -e $(INSTALL_PATH)/dtkpoint; then (dtkpoint -V; dtkline -V; \
 		dtkplane -V; dtkcube -V; dtkfindcp -V; dtkmomd -V; dtkdemat1 -V; \
 		dtkqdmol -V; dtkbpdens -V; dtkcharcicp -V; dtkintegobondpath -V; \
+		dtkpropcpsoniso -V; dtknci -V; dtkdrawer -V; \
           cd $(INSTALL_PATH); ls -1 dtk*2*; ls dtkget*) fi
 	@echo "\033[0m"
 
 .PHONY: doc
 doc: ## Compiles the documentation (using doxygen)
 	@cd devdoc; doxygen; cd $(TOP)
+
+.PHONY: runtest
+runtest: all
+	mkdir -p $(LCL_OUTDIR)
+	cd $(LCL_OUTDIR); cp $(LCL_WFDIR)/benzene.wfn .; \
+          $(BINDIR)/dtkpoint benzene.wfn -a 1; rm -f benzene.wfn
+	cd $(LCL_OUTDIR); cp $(LCL_WFDIR)/ethanol.wfn .; \
+          $(BINDIR)/dtkline ethanol.wfn -a 2 5 -p K -P -z; rm -f ethanol.wfn
+	cd $(LCL_OUTDIR); cp $(LCL_WFDIR)/cubano_sto3g.wfx .; \
+          $(BINDIR)/dtkplane cubano_sto3g.wfx -a 1 2 3 -p g -P -c -z -n 200; \
+          rm -f cubano_sto3g.wfx
+	cd $(LCL_OUTDIR); cp $(LCL_WFDIR)/ch4.wfx .; \
+          $(BINDIR)/dtkcube ch4.wfx -s 100 -p d -z; rm ch4.wfx
+	cd $(LCL_OUTDIR); cp $(LCL_WFDIR)/cyclopropane.wfx .; \
+          $(BINDIR)/dtkfindcp cyclopropane.wfx -P -g -T -k -m -a; \
+          rm -f cyclopropane.wfx
+	cd $(LCL_OUTDIR); cp $(LCL_WFDIR)/benzene.wfn .; \
+          $(BINDIR)/dtkmomd benzene.wfn -2 xy -P; rm benzene.wfn
+	cd $(LCL_OUTDIR); cp $(LCL_WFDIR)/cubano_sto3g.wfx .; \
+          $(BINDIR)/dtkqdmol cubano_sto3g.wfx; \
+          rm -f cubano_sto3g.wfx
+	@echo "Note: The actual gnp file (dtkqdmol) is $(LCL_OUTDIR)/cubano_sto3g*.gnp"
+	cd $(LCL_OUTDIR); cp $(LCL_WFDIR)/cubano_sto3g.wfx .; \
+          $(BINDIR)/dtkdemat1 cubano_sto3g.wfx -P -l -c -a 5 6 -s 0.02e0; \
+          rm -f cubano_sto3g.wfx
+	cd $(LCL_OUTDIR); cp $(LCL_WFDIR)/cyclopropane.wfx .; \
+          $(BINDIR)/dtkbpdens cyclopropane.wfx -P -p M -n 160 -s 0.02e0 -l; \
+          $(BINDIR)/dtkbpdens cyclopropane.wfx -P -p M -n 145 -l -L; \
+          rm -f cyclopropane.wfx
+	cd $(LCL_OUTDIR); cp $(LCL_WFDIR)/benzene.wfn .; \
+          $(BINDIR)/dtkcharcicp benzene.wfn -v; \
+          rm -f benzene.wfn
+	cd $(LCL_OUTDIR); cp $(LCL_WFDIR)/benzene.wfn .; \
+          $(BINDIR)/dtkintegobondpath benzene.wfn; \
+          rm -f benzene.wfn
 

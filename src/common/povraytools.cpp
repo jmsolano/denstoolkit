@@ -153,19 +153,21 @@ void POVRayConfiguration::ScaleLightSources(double scfactor) {
       for ( int k=0 ; k<3 ; k++ ) {lightSource[i][k]*=scfactor;}
    }
 }
+void POVRayConfiguration::ApplyRotationMatrixToCameraAndLightSources(
+      const vector<vector<double> > &M) {
+   HelpersPOVRay::ApplyRotationMatrix(M,&locCam[0]);
+   HelpersPOVRay::ApplyRotationMatrix(M,&vecUp[0]);
+   HelpersPOVRay::ApplyRotationMatrix(M,&vecRight[0]);
+   HelpersPOVRay::ApplyRotationMatrix(M,&vecDir[0]);
+   for ( int i=0 ; i<nLightSources ; ++i ) {
+      HelpersPOVRay::ApplyRotationMatrix(M,&lightSource[i][0]);
+   }
+}
 void HelpersPOVRay::WriteIndTabs(ofstream &ofil, int nt) {
    for (int i=0; i<nt; i++) {
       for (int j=0; j<SPTSIZEINDENT; j++) {ofil << ' ';}
    }
 }
-/*
-void HelpersPOVRay::WriteVector(ofstream &ofil,double xx,double yy, double zz) {
-   ofil << "< " << xx << ", " << yy << ", " << zz << " >";
-}
-void WriteVector(ofstream &ofil,int xx,int yy, int zz) {
-   ofil << "< " << xx << ", " << yy << ", " << zz << " >";
-}
-// */
 string HelpersPOVRay::IndTabsStr(int nt) {
    string s="";
    for (int i=0; i<nt; i++) {s.append("  ");}
@@ -184,7 +186,7 @@ bool HelpersPOVRay::WriteSphere(ofstream &ofil,int nt,
    ofil << ", " << rr << '\n';
    ofil << thetabs << "pigment { rgb ";
    WriteVector(ofil,cr,cg,cb);
-   ofil << '}' << '\n';
+   ofil << " }\n";
    indlev--; thetabs=IndTabsStr(indlev);
    ofil << thetabs << '}' << '\n';
    ofil.unsetf(ios::scientific);
@@ -271,7 +273,7 @@ bool HelpersPOVRay::WriteTransparentSphere(ofstream &ofil,int nt,
    ofil << ", " << rr << '\n';
    ofil << thetabs << "pigment { rgb ";
    WriteVector(ofil,cr,cg,cb);
-   ofil << "transmit "  << trnsmStr << '}' << '\n';
+   ofil << " transmit "  << trnsmStr << " }\n";
    indlev--; thetabs=IndTabsStr(indlev);
    ofil << thetabs << '}' << '\n';
    ofil.unsetf(ios::scientific);
@@ -300,8 +302,7 @@ bool HelpersPOVRay::WriteCylinder(ofstream &ofil,int nt,
    ofil << ", " << rr << '\n';
    ofil << thetabs << "pigment { rgb ";
    WriteVector(ofil,cr,cg,cb);
-   ofil << " " << pigmentStr << " " << '\n';
-   ofil << " }" << '\n';
+   ofil << ' ' << pigmentStr << " }\n";
    indlev--; thetabs=IndTabsStr(indlev);
    ofil << thetabs << '}' << '\n';
    ofil.unsetf(ios::scientific);
@@ -535,11 +536,14 @@ bool HelpersPOVRay::WriteMesh2WithTextures(ofstream &ofil,const vector<vector<do
    ofil << thetabs << '}' << '\n'; //end of mesh2
    return true;
 }
-
-
-
-
-
-
-
+void HelpersPOVRay::ApplyRotationMatrix(const vector<vector<double> > &M,double *v) {
+   double tmp[3];
+   tmp[0]=v[0]; tmp[1]=v[1]; tmp[2]=v[2];
+   for ( size_t i=0 ; i<3 ; ++i ) {
+      v[i]=0.0e0;
+      v[i]+=tmp[0]*M[i][0];
+      v[i]+=tmp[1]*M[i][1];
+      v[i]+=tmp[2]*M[i][2];
+   }
+}
 
