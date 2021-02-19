@@ -304,4 +304,27 @@ void MatrixVectorOperations3D::TransformByMatrixMultiplication(\
       v[i]+=M[i][2]*tmp[2];
    }
 }
+vector<vector<double> > MatrixVectorOperations3D::GetRotationMatrixAroundAxis(\
+      const vector<double> &omega,const double angle) {
+   vector<double> u=omega;
+   Normalize(u);
+   double ux=u[0],uy=u[1],uz=u[2];
+   double st=sin(angle),ct=cos(angle);
+   double omct=1.0e0-ct;
+   vector<vector<double> > R=Zeros();
+
+   R[0][0]=ct+ux*ux*omct;
+   R[0][1]=ux*uy*omct-uz*st;
+   R[0][2]=ux*uz*omct+uy*st;
+
+   R[1][0]=uy*ux*omct+uz*st;
+   R[1][1]=ct+uy*uy*omct;
+   R[1][2]=uy*uz*omct-ux*st;
+
+   R[2][0]=uz*ux*omct-uy*st;
+   R[2][1]=uz*uy*omct+ux*st;
+   R[2][2]=ct+uz*uz*omct;
+
+   return R;
+}
 

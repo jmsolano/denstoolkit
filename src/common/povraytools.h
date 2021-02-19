@@ -31,6 +31,7 @@ public:
    void WriteLightSource(ofstream &ofil,int is,double intens,const char* opts);
    void ScaleLightSources(double scfactor);
    void UnsetVersion36() {setversion36=false;};
+   void SelectStandardCameraVectors();
    /** This function multiply locCam, up, right, dir, and lightSources by M.
     * Hence, this function should be called AFTER setting these vectors.  */
    void ApplyRotationMatrixToCameraAndLightSources(const vector<vector<double> > &M);

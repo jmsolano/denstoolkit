@@ -163,6 +163,12 @@ void POVRayConfiguration::ApplyRotationMatrixToCameraAndLightSources(
       HelpersPOVRay::ApplyRotationMatrix(M,&lightSource[i][0]);
    }
 }
+void POVRayConfiguration::SelectStandardCameraVectors() {
+   locCam[0]=0.0e0; locCam[1]=0.0e0; locCam[2]=1.0e0;
+   vecDir[0]=0.0e0; vecDir[1]=0.0e0; vecDir[2]=-1.0e0;
+   vecUp[0]=0.0e0;  vecUp[1]=1.0e0;  vecUp[2]=0.0e0;
+   vecRight[0]=4.0e0/3.0e0; vecRight[1]=0.0e0; vecRight[2]=0.0e0;
+}
 void HelpersPOVRay::WriteIndTabs(ofstream &ofil, int nt) {
    for (int i=0; i<nt; i++) {
       for (int j=0; j<SPTSIZEINDENT; j++) {ofil << ' ';}

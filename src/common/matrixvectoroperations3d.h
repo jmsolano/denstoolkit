@@ -63,6 +63,7 @@ public:
    static vector<vector<double> > GetRotationMatrix2AlignPassive(const vector<double> &A,
          const vector<double> &B,const vector<double> &C);
    static void TransformByMatrixMultiplication(const vector<vector<double> > &M,vector<double> &v);
+   static vector<vector<double> > GetRotationMatrixAroundAxis(const vector<double> &omega,const double angle);
 /* ************************************************************************** */
 };
 /* ************************************************************************** */

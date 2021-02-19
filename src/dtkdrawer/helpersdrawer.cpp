@@ -337,10 +337,7 @@ bool HelpersDrawer::AlignMolecule3Atoms(POVRayConfiguration &pvp,BondNetWork &bn
    for ( size_t i=0 ; i<3 ; ++i ) { c[i]=bn.R[cIdx][i]; }
 #if 1
    vector<vector<double> > M=MatrixVectorOperations3D::GetRotationMatrix2AlignPassive(a,b,c);
-   pvp.locCam[0]=0.0e0; pvp.locCam[1]=0.0e0; pvp.locCam[2]=1.0e0;
-   pvp.vecDir[0]=0.0e0; pvp.vecDir[1]=0.0e0; pvp.vecDir[2]=-1.0e0;
-   pvp.vecUp[0]=0.0e0;  pvp.vecUp[1]=1.0e0;  pvp.vecUp[2]=0.0e0;
-   pvp.vecRight[0]=4.0e0/3.0e0; pvp.vecRight[1]=0.0e0; pvp.vecRight[2]=0.0e0;
+   pvp.SelectStandardCameraVectors();
    pvp.ApplyRotationMatrixToCameraAndLightSources(M);
 #else
    vector<vector<double> > M=MatrixVectorOperations3D::GetRotationMatrix2AlignActive(a,b,c);
@@ -374,10 +371,20 @@ void HelpersDrawer::SetupPovConf(POVRayConfiguration &pvp,BondNetWork &bn,\
    }
    for ( size_t i=0 ; i<3 ; ++i ) { pvp.vecAngView[i]=0.0e0; }
    if ( options.rotatemol ) {
-      HelpersDrawer::AlignMolecule(pvp,bn,options,argv);
-      if ( options.rotX ) { pvp.vecAngView[0]=std::stod(string(argv[options.rotX])); }
-      if ( options.rotY ) { pvp.vecAngView[1]=std::stod(string(argv[options.rotY])); }
-      if ( options.rotZ ) { pvp.vecAngView[2]=std::stod(string(argv[options.rotZ])); }
+      AlignMolecule(pvp,bn,options,argv);
+      double angle;
+      if ( options.rotX ) {
+         angle=std::stod(string(argv[options.rotX]));
+         CommonHelpers::RotateCameraAroundRight(pvp,angle);
+      }
+      if ( options.rotY ) {
+         angle=std::stod(string(argv[options.rotY]));
+         CommonHelpers::RotateCameraAroundUp(pvp,angle);
+      }
+      if ( options.rotZ ) {
+         angle=std::stod(string(argv[options.rotZ]));
+         CommonHelpers::RotateCameraAroundLocCam(pvp,angle);
+      }
    }
    for (int i=0; i<3; i++) {
       pvp.locCam[i]*=bn.rView*camdist;

@@ -4,6 +4,7 @@ using std::cout;
 #include "commonhelpers.h"
 #include "atomcolschjmol.h"
 #include "atomradiicust.h"
+#include "matrixvectoroperations3d.h"
 
 void CommonHelpers::PutNuclei(ofstream &ofil,BondNetWork &bn,int ntbs,\
       const string trnsmat,bool cpkview) {
@@ -95,5 +96,26 @@ void CommonHelpers::RenderPovfile(const string &povname,bool verbose) {
    if (verbose) {
       cout << "Rendering done." << '\n';
    }
+}
+void CommonHelpers::RotateCameraAroundLocCam(POVRayConfiguration &pvc,double angle) {
+   vector<double> u(3);
+   u[0]=pvc.locCam[0]; u[1]=pvc.locCam[1]; u[2]=pvc.locCam[2];
+   double angrad=angle*M_PI/180.0e0;
+   vector<vector<double> > R=MatrixVectorOperations3D::GetRotationMatrixAroundAxis(u,angrad);
+   pvc.ApplyRotationMatrixToCameraAndLightSources(R);
+}
+void CommonHelpers::RotateCameraAroundUp(POVRayConfiguration &pvc,double angle) {
+   vector<double> u(3);
+   u[0]=pvc.vecUp[0]; u[1]=pvc.vecUp[1]; u[2]=pvc.vecUp[2];
+   double angrad=angle*M_PI/180.0e0;
+   vector<vector<double> > R=MatrixVectorOperations3D::GetRotationMatrixAroundAxis(u,angrad);
+   pvc.ApplyRotationMatrixToCameraAndLightSources(R);
+}
+void CommonHelpers::RotateCameraAroundRight(POVRayConfiguration &pvc,double angle) {
+   vector<double> u(3);
+   u[0]=pvc.vecRight[0]; u[1]=pvc.vecRight[1]; u[2]=pvc.vecRight[2];
+   double angrad=angle*M_PI/180.0e0;
+   vector<vector<double> > R=MatrixVectorOperations3D::GetRotationMatrixAroundAxis(u,angrad);
+   pvc.ApplyRotationMatrixToCameraAndLightSources(R);
 }
 
