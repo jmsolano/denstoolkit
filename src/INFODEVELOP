@@ -2,9 +2,12 @@
 =======================================================================
 Setting up a new release (bump version)
 =======================================================================
-Just run bump_version.sh
-This will add the new version (which will be asked interactively),
-and push a new branch (with a tag).
+Use the script preprelease if there are files without the license.
+   Usually this is needed only if you added new code files.
+Run bump_version.sh
+   This will add the new version (which will be asked interactively),
+   and push a new branch.
+Add the tag to the repository: git push origin --tags
 
 =======================================================================
 Adding a new field:

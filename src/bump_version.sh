@@ -17,8 +17,9 @@ SRC_DIR=$(pwd)
 TOP_DIR=$SRC_DIR/..
 SCRIPT_DIR=$SRC_DIR/scripts
 TEX_DIR=$TOP_DIR/tex/dtkmanual
-SOURCES=$(ls $SRC_DIR/dtk*/*.h $SRC_DIR/dtk*/*.cpp $SRC_DIR/common/*.h\
-          $SRC_DIR/common/*.cpp | sed '/eig2/d')
+SOURCES=$(ls $SRC_DIR/dtk*/*.h $SRC_DIR/dtk*/*.cpp \
+   $SRC_DIR/dtk*/*.cc $SRC_DIR/common/*.h $SRC_DIR/common/*.cpp \
+   $SRC_DIR/common/*.cxx | sed '/eig2/d')
 TEXES=$(ls $TEX_DIR/*.tex | sed '/hmdtk/d')
 
 if [ -f VERSION ]; then
@@ -50,7 +51,7 @@ if [ -f VERSION ]; then
    for i in $TEXES; do git add $i;done
    git commit -m "Version bump to $INPUT_STRING"
    git tag -a -m "Tagging version $INPUT_STRING" "v$INPUT_STRING"
-   git push origin --tags
+   #git push origin --tags
 else
    echo "Could not find a VERSION file"
    read -p "Do you want to create a version file and start from scratch? [y]" RESPONSE
