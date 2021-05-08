@@ -3,9 +3,12 @@
   
                     D  E  N  S  T  O  O  L  K  I  T
   
+                           VERSION: 1.5.0
+  
                Contributors: Juan Manuel Solano-Altamirano
                              Julio Manuel Hernandez-Perez
-          Copyright (c) 2013-2020, Juan Manuel Solano-Altamirano
+                             Luis Alfredo Nunez-Meneses
+          Copyright (c) 2013-2021, Juan Manuel Solano-Altamirano
                                    <jmsolanoalt@gmail.com>
   
    -------------------------------------------------------------------
