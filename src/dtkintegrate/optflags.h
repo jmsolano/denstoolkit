@@ -8,7 +8,7 @@ class OptionFlags {
 public: 
    OptionFlags();//default constructor, initialize all the flags to convenient (default) values.
    unsigned short int infname,outfname;
-   unsigned short int setpoints,setiterations,setconvergencerate,setincrements;
+   unsigned short int setpoints,setiterations,setconvergenceRate,setintervals,settermalization,settolerance,setstopRefinement;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);
 void printHelpMenu(int &argc, char** &argv);//self-described

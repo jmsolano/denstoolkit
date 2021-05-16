@@ -68,10 +68,13 @@ using std::string;
 OptionFlags::OptionFlags() {
    infname=0;
    outfname=0;
-   setconvergencerate=0;
+   setconvergenceRate=0;
    setpoints=0;
    setiterations=0;
-   setincrements=0;
+   setintervals=0;
+   settermalization=0;
+   settolerance=0;
+   setstopRefinement=0;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    string progname;
@@ -104,7 +107,7 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                if (i>=argc) {printErrorMsg(argv,'o');}
                break;
             case 'n':
-               flags.setincrements=(++i);
+               flags.setintervals=(++i);
                if (i>=argc) {printErrorMsg(argv,'n');}
 	       break;
             case 'p':
@@ -112,12 +115,24 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                if (i>=argc) {printErrorMsg(argv,'p');}
 	       break;
             case 'r' :
-               flags.setconvergencerate=(++i);
+               flags.setconvergenceRate=(++i);
                if (i>=argc) {printErrorMsg(argv,'r');}
                break;
             case 'i' :
                flags.setiterations=(++i);
                if (i>=argc) {printErrorMsg(argv,'i');}
+               break;
+            case 'e' :
+               flags.settermalization=(++i);
+               if (i>=argc) {printErrorMsg(argv,'e');}
+               break;
+            case 't' :
+               flags.settolerance=(++i);
+               if (i>=argc) {printErrorMsg(argv,'t');}
+               break;
+            case 's' :
+               flags.setstopRefinement=(++i);
+               if (i>=argc) {printErrorMsg(argv,'s');}
                break;
             case 'h':
                printHelpMenu(argc,argv);
@@ -154,7 +169,7 @@ void printHelpMenu(int &argc, char** &argv) {
    ScreenUtils::CenterString((string(":-) ")+progname+string(" (-:")));
    cout << endl;
    ScreenUtils::CenterString("This program computes the integral of a property,");
-   ScreenUtils::CenterString("using the method Vegas-MonteCarlo");
+   ScreenUtils::CenterString("using the method Las Vegas+");
    cout << endl;
    ScreenUtils::CenterString((string("Compilation date: ")+string(__DATE__)));
    cout << endl;
@@ -167,7 +182,20 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "\nUsage:\n\n\t" << progname << " wf?name [option [value(s)]] ... [option [value(s)]]\n\n";
    ScreenUtils::SetScrNormalFont();
    cout << "Where wf?name is the input wfx(wfn) name, and options can be:\n\n";
-   cout << "  -t tol    \tSets the tolerance to be tol." << '\n';
+   cout << "  -n intervals       \tSets the grid size." << '\n';
+   cout << "                     \t  Typically 10." << '\n';
+   cout << "  -p points          \tSets the MC-points to sample per iteration." << '\n';
+   cout << "                     \t  Typycally 10,000." << '\n';
+   cout << "  -i iterations      \tSets the maximum number of iterations." << '\n';
+   cout << "                     \t  Typycally 20." << '\n';
+   cout << "  -r convergence rate\tSets the damping parameter." << '\n';
+   cout << "                     \t  Typycally 1." << '\n';
+   cout << "  -e termalization   \tSets the first iterations to be ignored for computing the expected integral." << '\n';
+   cout << "                     \t  Typycally 0." << '\n';
+   cout << "  -t tolerance       \tSets the tolerance for considering an optimal grid." << '\n';
+   cout << "                     \t  It depends a lot on the integrand, so usually it is not set." << '\n';
+   cout << "  -s stop refinement \tSets the num. of iterations where the grid will be refined." << '\n';
+   cout << "                     \t  Usually it is not set." << '\n';
    cout << "  -o outname\tSet the output file name." << endl
         << "            \t  (If not given the program will create one out of" << endl
         << "            \t  the input name; if given, the gnp file and the pdf will" << endl

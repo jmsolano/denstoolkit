@@ -60,6 +60,8 @@ using std::setprecision;
 using std::scientific;
 #include <ctime>
 #include <unordered_map>
+using std::unordered_map;
+#include <climits>
 
 #include "../common/screenutils.h"
 #include "../common/fileutils.h"
@@ -105,18 +107,20 @@ int main (int argc, char ** argv) {
    //Setting integration boundaries.
    double intRmin[3],intRmax[3];
    double uncertainty = 3;
-   for (int i=0;i<3;++i){
+   for (int i=0;i<3;++i) {
       intRmin[i] = bnw.rmin[i]-uncertainty;
       intRmax[i] = bnw.rmax[i]+uncertainty;
-      
    }
    integrator.SetDimensions(intRmin[0],intRmin[1],intRmin[2],
 			    intRmax[0],intRmax[1],intRmax[2]);
 
    //Setting configuration parameters
-   double convergence_rate=1.0;
-   int increments=10;
+   double convRate=1.0;
+   int intervals=10;
    int nelectrons=0;
+   int terma=0;
+   int tol=100;
+   int stopRef=INT_MAX;
    size_t points=1000;
    size_t fmol;
    size_t iterations=20;
@@ -127,8 +131,8 @@ int main (int argc, char ** argv) {
    molecule["cyclopropane"] = 24;
    molecule["ethanol"] = 26;
    
-   if ( options.setincrements ) { 
-      increments=std::stod(string(argv[options.setincrements]));
+   if ( options.setintervals ) { 
+      intervals=std::stod(string(argv[options.setintervals]));
    }
    if ( options.setpoints ) { 
       points=std::stod(string(argv[options.setpoints]));
@@ -136,8 +140,17 @@ int main (int argc, char ** argv) {
    if ( options.setiterations ) { 
       iterations=std::stod(string(argv[options.setiterations]));
    }
-   if ( options.setconvergencerate ) { 
-      convergence_rate=std::stod(string(argv[options.setconvergencerate]));
+   if ( options.setconvergenceRate ) { 
+      convRate=std::stod(string(argv[options.setconvergenceRate]));
+   }
+   if ( options.settermalization ) { 
+      terma=std::stod(string(argv[options.settermalization]));
+   }
+   if ( options.settolerance ) { 
+      tol=std::stod(string(argv[options.settolerance]));
+   }
+   if ( options.setstopRefinement ) { 
+      stopRef=std::stod(string(argv[options.setstopRefinement]));
    }
    for ( auto x: molecule ) {
       fmol = infilnam.find(x.first);
@@ -147,11 +160,14 @@ int main (int argc, char ** argv) {
       }
    }
 
-   integrator.SetIncrements(increments);
+   integrator.SetIntervals(intervals);
    integrator.SetNumOfPoints(points);
    integrator.SetIterations(iterations);
    integrator.AnalyticIntegral(nelectrons);
-   integrator.SetConvergenceRate(convergence_rate);
+   integrator.SetConvergenceRate(convRate);
+   integrator.SetTermalization(terma);
+   integrator.SetTolerance(tol);
+   integrator.SetStopRefinement(stopRef);
    integrator.DisplayProperties();
 
    //Numeric integral
@@ -161,12 +177,12 @@ int main (int argc, char ** argv) {
    aTim.End();
    aTim.PrintElapsedTimeSec(string("integration time"));
    
-   cout << "Relerr(%)= " << integrator.RelativeError() << endl; 
+   cout << "Relerr(%) = " << integrator.RelativeError() << endl; 
    cout << "N Integrand evaluations: " << integrator.CountEvaluations() << endl;
    cout << "N Iterations: " << integrator.CountIterations() << endl;
 
    cout << scientific << setprecision(8);
-   cout << "Integral=" << integrator.Integral() << '\n';
+   cout << "Integral = " << integrator.Integral() << '\n';
    cout << "N. Electrons (Integrated): " 
         << (integrator.Integral()-0.5 >= int(integrator.Integral()) ? int(integrator.Integral()+1) : int(integrator.Integral())) 
 	<< endl; 
