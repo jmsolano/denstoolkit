@@ -55,6 +55,7 @@ using std::ofstream;
 using std::exit;
 #include <cmath>
 #include <string>
+using std::string;
 #include <iomanip>
 using std::setprecision;
 using std::scientific;
@@ -124,6 +125,7 @@ int main (int argc, char ** argv) {
    size_t points=1000;
    size_t fmol;
    size_t iterations=20;
+   string func="rho";
    unordered_map<string,int> molecule;
    molecule["benzene"] = 42;
    molecule["ch4"] = 10;
@@ -152,6 +154,9 @@ int main (int argc, char ** argv) {
    if ( options.setstopRefinement ) { 
       stopRef=std::stod(string(argv[options.setstopRefinement]));
    }
+   if ( options.setfunction ) {
+      func=string(argv[options.setfunction]);
+   }
    for ( auto x: molecule ) {
       fmol = infilnam.find(x.first);
       if (fmol != std::string::npos) {
@@ -160,10 +165,11 @@ int main (int argc, char ** argv) {
       }
    }
 
+   integrator.SetFunction(func);
    integrator.SetIntervals(intervals);
    integrator.SetNumOfPoints(points);
    integrator.SetIterations(iterations);
-   integrator.AnalyticIntegral(nelectrons);
+   if (func == "rho") integrator.AnalyticIntegral(nelectrons);
    integrator.SetConvergenceRate(convRate);
    integrator.SetTermalization(terma);
    integrator.SetTolerance(tol);
@@ -177,15 +183,18 @@ int main (int argc, char ** argv) {
    aTim.End();
    aTim.PrintElapsedTimeSec(string("integration time"));
    
-   cout << "Relerr(%) = " << integrator.RelativeError() << endl; 
-   cout << "N Integrand evaluations: " << integrator.CountEvaluations() << endl;
-   cout << "N Iterations: " << integrator.CountIterations() << endl;
+   cout << "N Integrand evaluations: " << integrator.CountEvaluations() << '\n';
+   cout << "N Iterations: " << integrator.CountIterations() << '\n';
 
    cout << scientific << setprecision(8);
    cout << "Integral = " << integrator.Integral() << '\n';
-   cout << "N. Electrons (Integrated): " 
-        << (integrator.Integral()-0.5 >= int(integrator.Integral()) ? int(integrator.Integral()+1) : int(integrator.Integral())) 
-	<< endl; 
+   if (func == "rho") {
+      cout << "N. Electrons (Integrated): " 
+	   << (integrator.Integral()-0.5 >= int(integrator.Integral()) ? int(integrator.Integral()+1) : int(integrator.Integral())) 
+	   << '\n'; 
+      cout << "Relerr(%) = " << integrator.RelativeError() << '\n'; 
+   } 
+   cout << "Variance: " << integrator.Variance() << '\n';
 
    
    /* At this point the computation has ended. Usually this means no errors ocurred. */

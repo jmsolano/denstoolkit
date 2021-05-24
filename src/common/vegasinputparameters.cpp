@@ -2,6 +2,8 @@
 using std::cout;
 using std::endl;
 #include <climits>
+#include <string>
+using std::string;
 
 #include "vegasinputparameters.h"
 
@@ -13,6 +15,7 @@ VegasInputParameters::VegasInputParameters() {
       width[j] = xMax[j]-xMin[j];
    }
 
+   param.function = "rho";
    param.iterations = 20;
    param.numOfIntervals = 10;
    param.numOfPoints = 1000;
@@ -46,6 +49,7 @@ void VegasInputParameters::SetDimensions(double xLeft,double yLeft,double zLeft,
 void VegasInputParameters::DisplayProperties(void) {
    printf("\nLeft limit: (%lf,%lf,%lf)",xMin[0],xMin[1],xMin[2]);
    printf("\nRight limit: (%lf,%lf,%lf)",xMax[0],xMax[1],xMax[2]);
+   cout << "\nIntegrand: " << param.function;
    printf("\nConvergence rate: %lf",param.convergenceRate);
    printf("\nNumber of intervals: %d",param.numOfIntervals);
    printf("\nNumber of points to sample: %ld",param.numOfPoints);

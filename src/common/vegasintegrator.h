@@ -56,6 +56,7 @@ protected:
    double ChiSquare(double integralPerIteration,double variancePerIteration,double estimatedIntegral);
    double ComputesRelativeError(double analyticIntegral,double estimatedIntegral);
    double VariancePerIteration(double sample,double squareSample);
+   double Function(double x,double y,double z);
    void MonteCarloIntegration(vector<vector<double> > interval,vector<vector<double> > &meanIntegral);
    void AlteratesIncrements(vector<vector<double> > &interval,vector<vector<double> > meanIntegral);
    bool AlteratesAverageIntegral(vector<vector<double> > &meanIntegral);

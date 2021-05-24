@@ -1,6 +1,9 @@
 #ifndef _INPUTPARAMETERS_H
 #define _INPUTPARAMETERS_H
 
+#include <string>
+using std::string;
+
 /* *********************************************************************************** */
 class VegasInputParameters {
 /* *********************************************************************************** */
@@ -10,6 +13,8 @@ public:
    /* *********************************************************************************** */
    /** Sets the integration region limits for a function \f$f\f$ of type \f$f:R^3 -> R\f$. */
    void SetDimensions(double xLeft,double yLeft,double zLeft,double xRight,double yRight,double zRight);
+   /**  */
+   void SetFunction(string func){param.function = func;}
    /** Sets the iterations limit. */
    void SetIterations(double it){param.iterations = it;}
    /** Sets the grid size (number of intervals for the integration grid). */
@@ -61,6 +66,7 @@ protected:
       long int iterations,numOfPoints,termalization,noMoreRefinement;
       double analyticInt,convergenceRate,tolerance;
       bool relativeError,printVar,printNumPoints;
+      string function;
    }param;
 		
    double xMin[3],xMax[3],width[3];

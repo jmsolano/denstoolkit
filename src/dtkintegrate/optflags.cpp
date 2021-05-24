@@ -75,6 +75,7 @@ OptionFlags::OptionFlags() {
    settermalization=0;
    settolerance=0;
    setstopRefinement=0;
+   setfunction=0;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    string progname;
@@ -134,6 +135,10 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                flags.setstopRefinement=(++i);
                if (i>=argc) {printErrorMsg(argv,'s');}
                break;
+            case 'f' :
+               flags.setfunction=(++i);
+               if (i>=argc) {printErrorMsg(argv,'f');}
+               break;
             case 'h':
                printHelpMenu(argc,argv);
                exit(1);
@@ -182,6 +187,29 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "\nUsage:\n\n\t" << progname << " wf?name [option [value(s)]] ... [option [value(s)]]\n\n";
    ScreenUtils::SetScrNormalFont();
    cout << "Where wf?name is the input wfx(wfn) name, and options can be:\n\n";
+   cout << "  -f function        \tSets function to integrate." << '\n';
+   cout << "                     \t  By default \"rho\"." << '\n';
+   cout << "                     \t  Available options:" << '\n';
+   cout << "                     \t    \"rho\":                  Electronic density." << '\n';
+   cout << "                     \t    \"lap_rho\":              Laplacian of the density." << '\n';
+   cout << "                     \t    \"ELF\":                  Electron Localization Function." << '\n';
+   cout << "                     \t    \"shannon_rho\":          Shannon entropy of density in position space." << '\n';
+   cout << "                     \t    \"shannon_ftrho\":        Shannon entropy in momentum space." << '\n';
+   cout << "                     \t    \"maggrad_rho\":          Magnitud of the density gradient." << '\n';
+   cout << "                     \t    \"LOL\":                  Localized Orbital Locator." << '\n';
+   cout << "                     \t    \"kineticdens_g\":        Kinetic Energy Density G." << '\n';
+   cout << "                     \t    \"kineticdens_k\":        Kinetic Energy Density K." << '\n';
+   cout << "                     \t    \"ellipticity\"." << '\n';
+   cout << "                     \t    \"ftrho\":                Density in momentum space." << '\n';
+   cout << "                     \t    \"ftkinetic_k\":          Kinetic Energy Density K in momentum space." << '\n';
+   cout << "                     \t    \"maggrad_LOL\":          Magnitude of the gradient of LOL." << '\n';
+   cout << "                     \t    \"MEP\":                  Molecular Electrostatic Potential." << '\n';
+   cout << "                     \t    \"mag_LED\":              Magnitude of the vector LED (see DTK-manual for more details)." << '\n';
+   cout << "                     \t    \"reduced_dens_grad\":    Reduced Density Gradient (see DTK-manual for more details)." << '\n';
+   cout << "                     \t    \"RoSE\":                 Region of Slow Electron index (see DTK-manual for more details)." << '\n';
+   cout << "                     \t    \"customfield\":          Custom Scalar Field (implemented by the final user)." << '\n';
+   cout << "                     \t    \"potentialdens\":        Potential Energy Density." << '\n';
+   cout << "                     \t    \"reduced_densgrad_NCI\": Reduced Density Gradient applying NCI conditions." << '\n';
    cout << "  -n intervals       \tSets the grid size." << '\n';
    cout << "                     \t  Typically 10." << '\n';
    cout << "  -p points          \tSets the MC-points to sample per iteration." << '\n';
