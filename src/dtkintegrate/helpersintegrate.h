@@ -1,8 +1,8 @@
-#ifndef _HELPERS_H_
-#define _HELPERS_H_
+#ifndef _HELPERSINTEGRATE_H_
+#define _HELPERSINTEGRATE_H_
 
 /* ************************************************************************** */
-class Helpers {
+class HelpersIntegrate {
 /* ************************************************************************** */
 public:
    void AHelper();
@@ -13,6 +13,6 @@ protected:
 /* ************************************************************************** */
 
 
-#endif  /* _HELPERS_H_ */
+#endif  /* _HELPERSINTEGRATE_H_ */
 
 

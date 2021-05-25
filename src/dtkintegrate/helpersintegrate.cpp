@@ -3,9 +3,9 @@
 using std::cout;
 using std::endl;
 using std::cerr;
-#include "helpers.h"
+#include "helpersintegrate.h"
 
-void Helpers::AHelper() {
+void HelpersIntegrate::AHelper() {
    cout << "Just a test..." << endl;
 }
 

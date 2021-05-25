@@ -5,9 +5,12 @@ using std::vector;
 using std::numeric_limits;
 #include <iostream>
 using std::cout;
+using std::endl;
+#include <climits>
 
 #include "vegasintegrator.h"
 #include "gausswavefunction.h"
+#include "fldtypesdef.h"
 
 
 VegasIntegrator::VegasIntegrator() {
@@ -15,32 +18,106 @@ VegasIntegrator::VegasIntegrator() {
    integral=0.0e0;
    countIter=countEval=0;
    stopIterating=false;
+
+   for (int j=0; j<3; j++){
+      xMin[j] = 0; 
+      xMax[j] = 1;
+      width[j] = xMax[j]-xMin[j];
+   }
+
+   param.integrand = 'd';
+   param.iterations = 20;
+   param.numOfIntervals = 10;
+   param.numOfPoints = 1000;
+   param.analyticInt = 0;
+   param.relativeError = false;
+   param.convergenceRate = 1.0;
+   param.termalization = 0; 
+   param.tolerance = 100;
+   param.noMoreRefinement = INT_MAX;
 }
 VegasIntegrator::VegasIntegrator(GaussWaveFunction &uwf) : VegasIntegrator() {
    wf=&uwf;
 }
-double VegasIntegrator::Function(double x,double y,double z){
-   if (param.function == "rho") return wf->EvalDensity(x,y,z);
-   else if (param.function == "lap_rho") return wf->EvalLapRho(x,y,z);
-   else if (param.function == "ELF") return wf->EvalELF(x,y,z);
-   else if (param.function == "shannon_rho") return wf->EvalShannonEntropy(x,y,z);
-   else if (param.function == "shannon_ftrho") return wf->EvalMomentumShannonEntropy(x,y,z);
-   else if (param.function == "maggrad_rho") return wf->EvalMagGradRho(x,y,z);
-   else if (param.function == "LOL") return wf->EvalLOL(x,y,z);
-   else if (param.function == "kineticdens_g") return wf->EvalKineticEnergyG(x,y,z);
-   else if (param.function == "kineticdens_k") return wf->EvalKineticEnergyK(x,y,z);
-   else if (param.function == "ellipticity") return wf->EvalEllipticity(x,y,z);
-   else if (param.function == "ftrho") return wf->EvalFTDensity(x,y,z);
-   else if (param.function == "ftkinetic_k") return wf->EvalFTKineticEnergy(x,y,z);
-   else if (param.function == "maggrad_LOL") return wf->EvalMagGradLOL(x,y,z);
-   else if (param.function == "MEP") return wf->EvalMolElecPot(x,y,z);
-   else if (param.function == "mag_LED") return wf->EvalMagLED(x,y,z);
-   else if (param.function == "reduced_densgrad") return wf->EvalReducedDensityGradient(x,y,z);
-   else if (param.function == "RoSE") return wf->EvalRoSE(x,y,z);
-   else if (param.function == "customfield") return wf->EvalCustomScalarField(x,y,z);
-   else if (param.function == "potentialdens") return wf->EvalVirialPotentialEnergyDensity(x,y,z);
-   else if (param.function == "reduced_densgrad_NCI") return wf->EvalNCIs(x,y,z);
-   else return wf->EvalDensity(x,y,z);
+void VegasIntegrator::AnalyticIntegral(double analyticResult) {
+   param.analyticInt = analyticResult;
+   param.relativeError = true;
+}
+void VegasIntegrator::SetDimensions(double xLeft,double yLeft,double zLeft,double xRight,double yRight,double zRight) {
+   if (xLeft >= xRight || yLeft >= yRight || zLeft >= zRight) {
+      cout << "Dimensions added in wrong order or limits are equal." << endl;
+      exit (1);
+   }
+
+   xMin[0] = xLeft;
+   xMin[1] = yLeft;
+   xMin[2] = zLeft;
+
+   xMax[0] = xRight;
+   xMax[1] = yRight;
+   xMax[2] = zRight;
+
+   for (int j=0; j<3; j++) width[j] = xMax[j]-xMin[j];
+}
+void VegasIntegrator::DisplayProperties(void) {
+   printf("\nLeft limit: (%lf,%lf,%lf)",xMin[0],xMin[1],xMin[2]);
+   printf("\nRight limit: (%lf,%lf,%lf)",xMax[0],xMax[1],xMax[2]);
+   cout << "\nIntegrand: " << GetFieldTypeKeyLong(param.integrand);
+   printf("\nConvergence rate: %lf",param.convergenceRate);
+   printf("\nNumber of intervals: %d",param.numOfIntervals);
+   printf("\nNumber of points to sample: %ld",param.numOfPoints);
+   printf("\nMax number of iterations: %ld",param.iterations);
+   printf("\nTermalization: %ld",param.termalization);
+   printf("\nStop refinement after iteration: %ld",param.noMoreRefinement);
+   printf("\nTolerance: %lf",param.tolerance);
+   if (param.relativeError == true) printf("\nAnalytic integral: %lf",param.analyticInt);
+   cout << "\n" << endl;
+}
+double VegasIntegrator::Integrand(double x,double y,double z){
+   switch ( param.integrand ) {
+      case 'd' : /* Electron density (Rho)  */
+	 return wf->EvalDensity(x,y,z);
+      case 'g' : /* MagGradRho Density  */
+	 return wf->EvalMagGradRho(x,y,z);
+      case 'l' : /* Laplacian Density  */
+	 return wf->EvalLapRho(x,y,z);
+      case 'L' : /* LOL Density  */
+	 return wf->EvalLOL(x,y,z);
+      case 'E' : /* ELF Density  */
+	 return wf->EvalELF(x,y,z);
+      case 'S' : /* Shannon Entropy Density  */
+	 return wf->EvalShannonEntropy(x,y,z);
+      case 'K' : /* Kinetic Energy Density K  */
+	 return wf->EvalKineticEnergyK(x,y,z);
+      case 'G' : /* Kinetic Energy Density G  */
+	 return wf->EvalKineticEnergyG(x,y,z);
+      case 'M' : /* MagGradLOL Density  */
+	 return wf->EvalMagGradLOL(x,y,z);
+      case 'V' : /* Molecular Electrostatic Potential Density  */
+	 return wf->EvalMolElecPot(x,y,z);
+      case 'P' : /* MagLEDVector  */
+	 return wf->EvalMagLED(x,y,z);
+      case 's' : /* Reduced Density Gradient  */
+	 return wf->EvalReducedDensityGradient(x,y,z);
+      case 'r' : /* Region of Slow Electrons  */
+	 return wf->EvalRoSE(x,y,z);
+      case 'v' : /* Potential Energy Density */
+	 return wf->EvalVirialPotentialEnergyDensity(x,y,z);
+      case 'z' : /* Non Covalent Interactions (NCI) -- Reduced Density Gradient */
+	 return wf->EvalNCIs(x,y,z);
+      case 'Z' : /* Non Covalent Interactions (NCI) -- Rho */
+	 return wf->EvalNCILambda(x,y,z);
+      case 'e' : /*!< Ellipticity  */
+	 return wf->EvalEllipticity(x,y,z);
+      case 'u' : /* Scalar Custom Field Density */
+	 return wf->EvalCustomScalarField(x,y,z);
+      default :
+	 return wf->EvalDensity(x,y,z);
+   }
+   // Missing scalar fields:
+   // "shannon entropy in momentum space" wf->EvalMomentumShannonEntropy(x,y,z);
+   // "density in momentum space" wf->EvalFTDensity(x,y,z);
+   // "Kinetic Energy K in momentum space" wf->EvalFTKineticEnergy(x,y,z);
 }
 void VegasIntegrator::Integrate(void) {
    vector<vector<double> > interval(3,vector<double>(param.numOfIntervals+1));
@@ -116,12 +193,9 @@ void VegasIntegrator::MonteCarloIntegration(vector<vector<double> > interval,vec
 	 countPointsSampled[j][floorYNg[j]]++;
       }
 
-      sampling.simple += Function(xi[0],xi[1],xi[2])*jacobian;
-      sampling.square += Power(Function(xi[0],xi[1],xi[2])*jacobian,2);
-      for (int j=0; j<3; j++) meanIntegral[j][floorYNg[j]] += Power(Function(xi[0],xi[1],xi[2])*jacobian,2);
-      // sampling.simple += wf->EvalDensity(xi[0],xi[1],xi[2])*jacobian;
-      // sampling.square += Power(wf->EvalDensity(xi[0],xi[1],xi[2])*jacobian,2);
-      // for (int j=0; j<3; j++) meanIntegral[j][floorYNg[j]] += Power(wf->EvalDensity(xi[0],xi[1],xi[2])*jacobian,2);
+      sampling.simple += Integrand(xi[0],xi[1],xi[2])*jacobian;
+      sampling.square += Power(Integrand(xi[0],xi[1],xi[2])*jacobian,2);
+      for (int j=0; j<3; j++) meanIntegral[j][floorYNg[j]] += Power(Integrand(xi[0],xi[1],xi[2])*jacobian,2);
    }
 
    sampling.simple /= param.numOfPoints;
