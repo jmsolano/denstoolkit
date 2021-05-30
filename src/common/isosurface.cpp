@@ -334,7 +334,7 @@ bool HelpersIsosurface::AddIsosurfacePOVMeshNoNormals(ofstream &ofil,Isosurface 
       pal->GetRGB(pos,r,g,b);
       ofil << thetabs << "texture{pigment{rgb ";
       HelpersPOVRay::WriteVector(ofil,r,g,b);
-      ofil << " }}" << (i<nvm1? ',' : ' ') << "\n";
+      ofil << " } finish {ambient 0 emission 0.6}}" << (i<nvm1? ',' : ' ') << "\n";
    }
    thetabs=HelpersPOVRay::IndTabsStr(--indlev);
    ofil << thetabs << "}" << endl;//end of texture_list
@@ -425,7 +425,7 @@ bool HelpersIsosurface::AddIsosurfacePOVMeshWithNormals(ofstream &ofil,Isosurfac
       pal->GetRGB(pos,r,g,b);
       ofil << thetabs << "texture{pigment{rgb ";
       HelpersPOVRay::WriteVector(ofil,r,g,b);
-      ofil << " }}" << (i<nvm1? ',' : ' ') << "\n";
+      ofil << " } finish {ambient 0 emission  0.6}}" << (i<nvm1? ',' : ' ') << "\n";
    }
    thetabs=HelpersPOVRay::IndTabsStr(--indlev);
    ofil << thetabs << "}" << endl;//end of texture_list

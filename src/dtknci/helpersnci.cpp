@@ -216,6 +216,19 @@ bool HelpersNCI::MakePovFile(const string &povname,POVRayConfiguration &pvp,Bond
    }
    if ( options.rotcam ) {
       HelpersNCI::AlignMolecule(pvp,bn,options,argv);
+      double angle;
+      if ( options.rotX ) {
+         angle=std::stod(string(argv[options.rotX]));
+         CommonHelpers::RotateCameraAroundRight(pvp,angle);
+      }
+      if ( options.rotY ) {
+         angle=std::stod(string(argv[options.rotY]));
+         CommonHelpers::RotateCameraAroundUp(pvp,angle);
+      }
+      if ( options.rotZ ) {
+         angle=std::stod(string(argv[options.rotZ]));
+         CommonHelpers::RotateCameraAroundLocCam(pvp,angle);
+      }
       //if ( options.rotX ) { pvp.vecAngView[0]=std::stod(string(argv[options.rotX])); }
       //if ( options.rotY ) { pvp.vecAngView[1]=std::stod(string(argv[options.rotY])); }
       //if ( options.rotZ ) { pvp.vecAngView[2]=std::stod(string(argv[options.rotZ])); }
