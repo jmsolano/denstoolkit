@@ -22,7 +22,7 @@ public:
    /* *********************************************************************************** */
    /** Sets the integration region limits for a function \f$f\f$ of type \f$f:R^3 -> R\f$. */
    void SetDimensions(double xLeft,double yLeft,double zLeft,double xRight,double yRight,double zRight);
-   /**  Sets de integrand. */
+   /**  Sets the integrand. */
    void SetIntegrand(char func){param.integrand = func;}
    /** Sets the iterations limit. */
    void SetIterations(double it){param.iterations = it;}
@@ -69,9 +69,12 @@ public:
    */
    void DisplayProperties(void);
    /** Shows the integral variance (Las Vegas method). */
+   void NormalizedEDF(void);
+   /** Computes the normalization constant of the Electron Density, so that functions related with the
+    * normalized Electron Density can be integrated.*/
    double Variance(void) {return fabs(variance);}
    /** Shows the integral (expected value) once Las Vegas integration has ended. */
-   double Integral(void) {return integral;}
+   double Integral(void);
    /** Shows the total number of evaluations during Las Vegas integration. */
    long int CountEvaluations(void) {return countEval;}
    /** Shows the number of iterations runned during Las Vegas integration. */
@@ -95,8 +98,9 @@ protected:
    double integral,variance;
    double weightedAverage,inverseVariance,chiSquare,varPerIt;
    double xMin[3],xMax[3],width[3];
+   int normConstant=0;
    long int countEval,countIter;
-   bool stopIterating,repeatIntegral;
+   bool stopIterating,repeatIntegral,normalizedEDF;
 
    struct Parameters{
       int numOfIntervals;

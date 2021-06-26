@@ -122,7 +122,7 @@ int main (int argc, char ** argv) {
    int terma=0;
    int tol=100;
    int stopRef=INT_MAX;
-   size_t points=1000;
+   size_t points=10000;
    size_t fmol;
    size_t iterations=20;
    char func='d';
@@ -169,12 +169,13 @@ int main (int argc, char ** argv) {
    integrator.SetIntervals(intervals);
    integrator.SetNumOfPoints(points);
    integrator.SetIterations(iterations);
-   if (func == 'd') integrator.AnalyticIntegral(nelectrons);
+   if (func == 'd' && nelectrons > 0) integrator.AnalyticIntegral(nelectrons);
    integrator.SetConvergenceRate(convRate);
    integrator.SetTermalization(terma);
    integrator.SetTolerance(tol);
    integrator.SetStopRefinement(stopRef);
    integrator.DisplayProperties();
+   integrator.NormalizedEDF();
 
    //Numeric integral
    MyTimer aTim;
