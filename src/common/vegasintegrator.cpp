@@ -73,7 +73,33 @@ void VegasIntegrator::DisplayProperties(void) {
    if (param.relativeError == true) printf("\nAnalytic integral: %lf",param.analyticInt);
    cout << "\n" << endl;
 }
+void VegasIntegrator::NormalizedEDF(void){
+   normalizedEDF = true;
+
+   Integrate();
+   normConstant = ( integral-0.5 >= int(integral) ) ? int(integral+1) : int(integral);
+
+   normalizedEDF = false;
+}
+double VegasIntegrator::Integral(void){
+   if ( normConstant > 0 ){
+      switch ( param.integrand ) {
+	 case 'd' : /* Electron density (Rho)  */
+	    integral = ( integral-0.5 >= int(integral) ) ? int(integral+1) : int(integral);
+	    return integral*1./normConstant;
+	 case 'S' : /* Shannon Entropy Density  */
+	    return integral*1./normConstant-log(normConstant);
+	 default :
+	    integral = ( integral-0.5 >= int(integral) ) ? int(integral+1) : int(integral);
+	    return integral*1./normConstant; 
+      }
+   }
+
+   return integral;
+}
 double VegasIntegrator::Integrand(double x,double y,double z){
+   if ( normalizedEDF ) return wf->EvalDensity(x,y,z);
+
    switch ( param.integrand ) {
       case 'd' : /* Electron density (Rho)  */
 	 return wf->EvalDensity(x,y,z);
