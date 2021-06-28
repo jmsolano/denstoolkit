@@ -90,6 +90,7 @@ OptionFlags::OptionFlags() {
    setsisovalue=0;
    setcolorscalesingle=setcolorscaleboth=0;
    selectpalette=setgnpangles=setviewangles=orientcam3ats=0;
+   rotX=rotY=rotZ=0;
    skipcube=kppov=mkpov=mkpng=rotcam=false;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
@@ -188,6 +189,18 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                cout << progname << " " << CURRENTVERSION << endl;
                exit(0);
                break;
+            case 'x' :
+               flags.rotX=(++i);
+               flags.rotcam=true;
+               break;
+            case 'y' :
+               flags.rotY=(++i);
+               flags.rotcam=true;
+               break;
+            case 'z' :
+               flags.rotZ=(++i);
+               flags.rotcam=true;
+               break;
             case 'h':
                printHelpMenu(argc,argv);
                exit(1);
@@ -267,6 +280,9 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  a number of points proportional to the molecule dimensions." << endl;
    cout << "  -P        \tGenerates a pov-ray script and renders it. Notice: this requires" << endl
         << "            \t   povray to be installed in your system." << endl;
+   cout << "  -x alpha  \tRotates the final view by alpha degrees around the x-axis." << '\n';
+   cout << "  -y beta   \tRotates the final view by beta  degrees around the y-axis." << '\n';
+   cout << "  -z gamma  \tRotates the final view by gamma degrees around the z-axis." << '\n';
    cout << "  -V        \tDisplays the version of this program." << endl;
    cout << "  -h\t\tDisplay the help menu.\n\n";
    //-------------------------------------------------------------------------------------

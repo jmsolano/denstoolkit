@@ -80,6 +80,7 @@ public:
    unsigned short int configspecialnci;
    unsigned short int setsisovalue,setcolorscalesingle,setcolorscaleboth;
    unsigned short int selectpalette,setviewangles,setgnpangles,orientcam3ats;
+   unsigned short int rotX,rotY,rotZ;
    bool mkpov,kppov,mkpng,skipcube,rotcam;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);
