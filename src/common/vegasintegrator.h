@@ -98,7 +98,7 @@ protected:
    double integral,variance;
    double weightedAverage,inverseVariance,chiSquare,varPerIt;
    double xMin[3],xMax[3],width[3];
-   int normConstant=0;
+   int normConstant;
    long int countEval,countIter;
    bool stopIterating,repeatIntegral,normalizedEDF;
 

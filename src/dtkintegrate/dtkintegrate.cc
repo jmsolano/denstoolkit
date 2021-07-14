@@ -169,13 +169,13 @@ int main (int argc, char ** argv) {
    integrator.SetIntervals(intervals);
    integrator.SetNumOfPoints(points);
    integrator.SetIterations(iterations);
-   if (func == 'd' && nelectrons > 0) integrator.AnalyticIntegral(nelectrons);
+   if ((func == 'd' || func == 'm') && nelectrons > 0) integrator.AnalyticIntegral(nelectrons);
    integrator.SetConvergenceRate(convRate);
    integrator.SetTermalization(terma);
    integrator.SetTolerance(tol);
    integrator.SetStopRefinement(stopRef);
    integrator.DisplayProperties();
-   integrator.NormalizedEDF();
+   // integrator.NormalizedEDF();
 
    //Numeric integral
    MyTimer aTim;
@@ -189,11 +189,11 @@ int main (int argc, char ** argv) {
 
    cout << scientific << setprecision(8);
    cout << "Integral: " << integrator.Integral() << '\n';
-   if (func == 'd') {
+   if (func == 'd' || func == 'm') {
       cout << "N. Electrons (Integrated): " 
 	   << (integrator.Integral()-0.5 >= int(integrator.Integral()) ? int(integrator.Integral()+1) : int(integrator.Integral())) 
 	   << '\n'; 
-      cout << "Relerr(%) = " << integrator.RelativeError() << '\n'; 
+      if (nelectrons > 0) cout << "Relerr(%) = " << integrator.RelativeError() << '\n'; 
    } 
    cout << "Variance: " << integrator.Variance() << '\n';
 
