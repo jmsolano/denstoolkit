@@ -18,8 +18,8 @@ VegasIntegrator::VegasIntegrator() {
    integral=0.0e0;
    countIter=countEval=0;
    stopIterating=false;
-   normalizedEDF = false;
-   normConstant = 0;
+   normalizedEDF=false;
+   normConstant=maxDensity=0;
 
    for (int j=0; j<3; j++){
       xMin[j] = 0; 
@@ -76,15 +76,28 @@ void VegasIntegrator::DisplayProperties(void) {
    cout << "\n" << endl;
 }
 void VegasIntegrator::NormalizedEDF(void){
-   normalizedEDF = true;
+   if ( normConstant == 0 ){
+      normalizedEDF = true;
 
-   Integrate();
-   normConstant = ( integral-0.5 >= int(integral) ) ? int(integral+1) : int(integral);
+      Integrate();
+      // normConstant = ( integral-0.5 >= int(integral) ) ? int(integral+1) : int(integral);
+      normConstant = integral;
 
-   normalizedEDF = false;
+      normalizedEDF = false;
+   }
+}
+void VegasIntegrator::Relative2MaxDensity(void){
+   if ( normConstant == 0 ) NormalizedEDF();
+
+   for (int i=0; i<3; i++){
+      xMean[i] = (xMin[i]+xMax[i])/2;
+   }
+   if ( param.integrand == 'm' || param.integrand == 'T' || param.integrand == 'k' ) {
+	 maxDensity = wf->EvalFTDensity(xMean[0],xMean[1],xMean[2]);
+   }else maxDensity = wf->EvalDensity(xMean[0],xMean[1],xMean[2]);
 }
 double VegasIntegrator::Integral(void){
-   if ( normConstant > 0 ){
+   if ( normConstant > 0 && maxDensity == 0 ){
       switch ( param.integrand ) {
 	 case 'd' : /* Electron density (Rho)  */
 	    integral = ( integral-0.5 >= int(integral) ) ? int(integral+1) : int(integral);
@@ -99,6 +112,19 @@ double VegasIntegrator::Integral(void){
 	 default :
 	    integral = ( integral-0.5 >= int(integral) ) ? int(integral+1) : int(integral);
 	    return integral*1./normConstant; 
+      }
+   }else if ( maxDensity > 0 ){
+      switch ( param.integrand ) {
+	 case 'd' : /* Electron density (Rho)  */
+	    return integral*1./maxDensity;
+	 case 'm' : /* Electron density (Rho) in Momentum Space  */
+	    return integral*1./maxDensity;
+	 case 'S' : /* Shannon Entropy Density  */
+	    return integral*1./normConstant+log(maxDensity);
+	 case 'T' : /* Shannon Entropy Density in Momentum Space  */
+	    return integral*1./normConstant+log(maxDensity);
+	 default :
+	    return integral*1./maxDensity; 
       }
    }
 

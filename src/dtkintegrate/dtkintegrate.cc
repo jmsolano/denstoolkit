@@ -176,6 +176,7 @@ int main (int argc, char ** argv) {
    integrator.SetStopRefinement(stopRef);
    integrator.DisplayProperties();
    // integrator.NormalizedEDF();
+   // integrator.Relative2MaxDensity();
 
    //Numeric integral
    MyTimer aTim;
@@ -195,6 +196,8 @@ int main (int argc, char ** argv) {
 	   << '\n'; 
       if (nelectrons > 0) cout << "Relerr(%) = " << integrator.RelativeError() << '\n'; 
    } 
+   cout << "Normalization Constant: " << integrator.NormConstant() << endl;
+   cout << "Maximum value of density: " << integrator.MaxDensity() << endl;
    cout << "Variance: " << integrator.Variance() << '\n';
 
    
