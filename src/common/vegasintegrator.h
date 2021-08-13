@@ -11,6 +11,7 @@ using std::uniform_real_distribution;
 
 #include "gausswavefunction.h"
 #include "fldtypesdef.h"
+#include "bondnetwork.h"
 
 /* *********************************************************************************** */
 class VegasIntegrator {
@@ -18,7 +19,7 @@ class VegasIntegrator {
 public:
 /* *********************************************************************************** */
    VegasIntegrator();
-   VegasIntegrator(GaussWaveFunction &uwf);
+   VegasIntegrator(GaussWaveFunction &uwf,BondNetWork &ubnw);
    /* *********************************************************************************** */
    /** Sets the integration region limits for a function \f$f\f$ of type \f$f:R^3 -> R\f$. */
    void SetDimensions(double xLeft,double yLeft,double zLeft,double xRight,double yRight,double zRight);
@@ -68,21 +69,31 @@ public:
     * and refinement tolerance.
    */
    void DisplayProperties(void);
-   /** Shows the integral variance (Las Vegas method). */
-   void NormalizedEDF(void);
    /** Computes the normalization constant of the Electron Density, so that functions related with the
-    * normalized Electron Density can be integrated.*/
+    * normalized Electron Density can be integrated. Note that if you ask for the Electron Density,
+    * DTK will give you approximately 1. */
+   void NormalizedEDF(void);
+   /** Computes the global maximum/maxima of the Electron Density (choice = 'g') or an average of the 
+    * maxima (choice = 'a') in position space. In momentum space, its critical point is found near the 
+    * origin or in it, so it is set in the origin.
+    * Note that if you ask for the Electron Density, DTK will give you \f$\rho/\rho_{max}\f$. */
+   void Relative2MaxDensity(char choice);
+   /** Shows the integral variance (Las Vegas method). */
    double Variance(void) {return fabs(variance);}
    /** Shows the integral (expected value) once Las Vegas integration has ended. */
    double Integral(void);
+   /** Shows the maximum value of electron density. */
+   double MaxDensity(void) {return maxDensity;}
+   /** Shows the normalization constant of integrand. */
+   double NormConstant(void) {return normConstant;}
    /** Shows the total number of evaluations during Las Vegas integration. */
    long int CountEvaluations(void) {return countEval;}
    /** Shows the number of iterations runned during Las Vegas integration. */
    long int CountIterations(void) {return countIter;}
    /** Computes integral through Las Vegas method. */
    void Integrate(void);
-   void AnalyticIntegral(double analyticResult);
    double RelativeError(void);
+   void AnalyticIntegral(double analyticResult);
 /* *********************************************************************************** */
 protected:
 /* *********************************************************************************** */
@@ -95,10 +106,10 @@ protected:
    uniform_real_distribution<double> dis{0.0,0.9999};
 
    GaussWaveFunction* wf;
-   double integral,variance;
+   BondNetWork* bnw;
+   double integral,variance,maxDensity,normConstant;
    double weightedAverage,inverseVariance,chiSquare,varPerIt;
    double xMin[3],xMax[3],width[3];
-   int normConstant=0;
    long int countEval,countIter;
    bool stopIterating,repeatIntegral,normalizedEDF;
 

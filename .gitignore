@@ -26,6 +26,7 @@ cachegrind.*
 *.x
 *.sh
 *.tga
+*.swp
 
 #binaries
 
@@ -36,6 +37,7 @@ cachegrind.*
 #Directories
 bin
 bib
+html
 pres
 taring
 mathematica/*

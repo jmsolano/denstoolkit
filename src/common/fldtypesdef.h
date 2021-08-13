@@ -47,12 +47,15 @@ using std::string;
 enum ScalarFieldType {
    NONE,\
    DENS,/* Electron density (Rho)  */\
+   DENSM,/* Electron density (Rho) in Momentum Space  */\
    MGRD,/* MagGradRho Density  */\
    LAPD,/* Laplacian Density  */\
    LOLD,/* LOL Density  */\
    ELFD,/* ELF Density  */\
    SENT,/* Shannon Entropy Density  */\
+   SENTM,/* Shannon Entropy Density in Momentum Space  */\
    KEDK,/* Kinetic Energy Density K  */\
+   KEDKM,/* Kinetic Energy Density K in Momentum Space  */\
    KEDG,/* Kinetic Energy Density G  */\
    MGLD,/* MagGradLOL Density  */\
    GLOL,/* Grad LOL  */\
@@ -75,6 +78,9 @@ inline char ConvertScalarFieldType2Char(ScalarFieldType fftt) {
       case DENS :
          res='d';
          break;
+      case DENSM :
+         res='m';
+         break;
       case MGRD :
          res='g';
          break;
@@ -93,8 +99,14 @@ inline char ConvertScalarFieldType2Char(ScalarFieldType fftt) {
       case SENT :
          res='S';
          break;
+      case SENTM :
+         res='T';
+         break;
       case KEDK :
          res='K';
+         break;
+      case KEDKM :
+         res='k';
          break;
       case KEDG :
          res='G';
@@ -148,6 +160,9 @@ inline ScalarFieldType Char2ScalarFieldType(const char prop) {
       case 'd':
          res=DENS;
          break;
+      case 'm':
+         res=DENSM;
+         break;
       case 'g' :
          res=MGRD;
          break;
@@ -169,8 +184,14 @@ inline ScalarFieldType Char2ScalarFieldType(const char prop) {
       case 'S' :
          res=SENT;
          break;
+      case 'T' :
+         res=SENTM;
+         break;
       case 'K' :
          res=KEDK;
+         break;
+      case 'k' :
+         res=KEDKM;
          break;
       case 'G' :
          res=KEDG;
@@ -223,6 +244,9 @@ inline string GetFieldTypeKeyShort(const char prop) {
       case 'd':
          plbl="Rho";
          break;
+      case 'm':
+         plbl="RhoMom";
+         break;
       case 'g':
          plbl="MagGradRho";
          break;
@@ -259,11 +283,17 @@ inline string GetFieldTypeKeyShort(const char prop) {
       case 'S':
          plbl="ShannEnt";
          break;
+      case 'T':
+         plbl="ShannEntMom";
+         break;
       case 'G':
          plbl="KinEnerDensG";
          break;
       case 'K':
          plbl="KinEnerDensK";
+         break;
+      case 'k':
+         plbl="KinEnerDensKMom";
          break;
       case 'a' :
          plbl="ExDFTa";
@@ -297,6 +327,9 @@ inline string GetFieldTypeKeyLong(const char prop) {
    switch (prop) {
       case 'd':
          plbl="Electron Density --Rho--";
+         break;
+      case 'm':
+         plbl="Electron Density --Rho-- in Momentum Space";
          break;
       case 'g':
          plbl="Magnitude of the Gradient of the Electron Density";
@@ -334,11 +367,17 @@ inline string GetFieldTypeKeyLong(const char prop) {
       case 'S':
          plbl="Shannon-Entropy Density";
          break;
+      case 'T':
+         plbl="Shannon-Entropy Density in Momentum Space";
+         break;
       case 'G':
          plbl="Kinetic Energy Density G";
          break;
       case 'K':
          plbl="Kinetic Energy Density K";
+         break;
+      case 'k':
+         plbl="Kinetic Energy Density K in Momentum Space";
          break;
       case 'a' :
          plbl="Exchange And Correlation Energy DFTa";
@@ -373,6 +412,9 @@ inline string GnuplotFieldTitle(const char p2p) {
       case 'd':
          plbl=string("{/Symbol r}");
          break;
+      case 'm':
+         plbl=string("{/Symbol r}_P");
+         break;
       case 'g':
          plbl=string("|{/Symbol \\321 r}|");
          break;
@@ -400,6 +442,9 @@ inline string GnuplotFieldTitle(const char p2p) {
       case 'S':
          plbl=string("S_{/Symbol r}");
          break;
+      case 'T':
+         plbl=string("{/Symbol P}_{/Symbol r}");
+         break;
       case 'L':
          plbl=string("LOL");
          break;
@@ -411,6 +456,9 @@ inline string GnuplotFieldTitle(const char p2p) {
          break;
       case 'K':
          plbl=string("{/Bold K}");
+         break;
+      case 'k':
+         plbl=string("{/Bold K}_P");
          break;
       case 'a' :
          plbl="E_{x}(DFT a)";
