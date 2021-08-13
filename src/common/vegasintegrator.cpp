@@ -7,10 +7,12 @@ using std::numeric_limits;
 using std::cout;
 using std::endl;
 #include <climits>
+// #include <cstdlib>
 
 #include "vegasintegrator.h"
 #include "gausswavefunction.h"
 #include "fldtypesdef.h"
+#include "bondnetwork.h"
 
 
 VegasIntegrator::VegasIntegrator() {
@@ -35,11 +37,12 @@ VegasIntegrator::VegasIntegrator() {
    param.relativeError = false;
    param.convergenceRate = 1.0;
    param.termalization = 0; 
-   param.tolerance = 100;
+   param.tolerance = 0;
    param.noMoreRefinement = INT_MAX;
 }
-VegasIntegrator::VegasIntegrator(GaussWaveFunction &uwf) : VegasIntegrator() {
+VegasIntegrator::VegasIntegrator(GaussWaveFunction &uwf,BondNetWork &ubnw) : VegasIntegrator() {
    wf=&uwf;
+   bnw=&ubnw;
 }
 void VegasIntegrator::AnalyticIntegral(double analyticResult) {
    param.analyticInt = analyticResult;
@@ -80,21 +83,32 @@ void VegasIntegrator::NormalizedEDF(void){
       normalizedEDF = true;
 
       Integrate();
-      // normConstant = ( integral-0.5 >= int(integral) ) ? int(integral+1) : int(integral);
-      normConstant = integral;
+      normConstant = ( integral-0.5 >= int(integral) ) ? int(integral+1) : int(integral);
+      // normConstant = integral;
+      // cout << integral << endl;
 
       normalizedEDF = false;
    }
 }
-void VegasIntegrator::Relative2MaxDensity(void){
-   if ( normConstant == 0 ) NormalizedEDF();
+void VegasIntegrator::Relative2MaxDensity(char choice){
+   double evalDensity;
 
-   for (int i=0; i<3; i++){
-      xMean[i] = (xMin[i]+xMax[i])/2;
+   if ( normConstant == 0 ) NormalizedEDF(); //Define normConstant
+
+   if ( (param.integrand == 'm') || (param.integrand == 'T') | (param.integrand == 'k') ){
+      maxDensity = wf->EvalFTDensity(0,0,0);
+   }else{
+      switch ( choice ) {
+	 case 'a': /* Average of rho max */
+	    for (int i=0; i<bnw->nNuc; i++) maxDensity += wf->EvalDensity(bnw->R[i][0],bnw->R[i][1],bnw->R[i][2]);
+	    maxDensity /= bnw->nNuc;
+	 case 'g': /* Value of global maximum/maxima */
+	    for (int i=0; i<bnw->nNuc; i++) {
+	       evalDensity = wf->EvalDensity(bnw->R[i][0],bnw->R[i][1],bnw->R[i][2]);
+	       if ( evalDensity  >= maxDensity ) maxDensity = evalDensity;
+	    }
+      }
    }
-   if ( param.integrand == 'm' || param.integrand == 'T' || param.integrand == 'k' ) {
-	 maxDensity = wf->EvalFTDensity(xMean[0],xMean[1],xMean[2]);
-   }else maxDensity = wf->EvalDensity(xMean[0],xMean[1],xMean[2]);
 }
 double VegasIntegrator::Integral(void){
    if ( normConstant > 0 && maxDensity == 0 ){

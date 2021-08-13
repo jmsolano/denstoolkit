@@ -11,6 +11,7 @@ using std::uniform_real_distribution;
 
 #include "gausswavefunction.h"
 #include "fldtypesdef.h"
+#include "bondnetwork.h"
 
 /* *********************************************************************************** */
 class VegasIntegrator {
@@ -18,7 +19,7 @@ class VegasIntegrator {
 public:
 /* *********************************************************************************** */
    VegasIntegrator();
-   VegasIntegrator(GaussWaveFunction &uwf);
+   VegasIntegrator(GaussWaveFunction &uwf,BondNetWork &ubnw);
    /* *********************************************************************************** */
    /** Sets the integration region limits for a function \f$f\f$ of type \f$f:R^3 -> R\f$. */
    void SetDimensions(double xLeft,double yLeft,double zLeft,double xRight,double yRight,double zRight);
@@ -72,9 +73,11 @@ public:
     * normalized Electron Density can be integrated. Note that if you ask for the Electron Density,
     * DTK will give you approximately 1. */
    void NormalizedEDF(void);
-   /** Computes the maximum value of the Electron Density, be either in momentum or position space. 
+   /** Computes the global maximum/maxima of the Electron Density (choice = 'g') or an average of the 
+    * maxima (choice = 'a') in position space. In momentum space, its critical point is found near the 
+    * origin or in it, so it is set in the origin.
     * Note that if you ask for the Electron Density, DTK will give you \f$\rho/\rho_{max}\f$. */
-   void Relative2MaxDensity(void);
+   void Relative2MaxDensity(char choice);
    /** Shows the integral variance (Las Vegas method). */
    double Variance(void) {return fabs(variance);}
    /** Shows the integral (expected value) once Las Vegas integration has ended. */
@@ -103,9 +106,10 @@ protected:
    uniform_real_distribution<double> dis{0.0,0.9999};
 
    GaussWaveFunction* wf;
+   BondNetWork* bnw;
    double integral,variance,maxDensity,normConstant;
    double weightedAverage,inverseVariance,chiSquare,varPerIt;
-   double xMin[3],xMax[3],xMean[3],width[3];
+   double xMin[3],xMax[3],width[3];
    long int countEval,countIter;
    bool stopIterating,repeatIntegral,normalizedEDF;
 
