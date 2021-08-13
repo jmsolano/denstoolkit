@@ -103,24 +103,14 @@ int main (int argc, char ** argv) {
    bnw.SetUpBNW();
    cout << "Done." << endl;
    
-   VegasIntegrator integrator(gwf);
-
-   //Setting integration boundaries.
-   double intRmin[3],intRmax[3];
-   double uncertainty = 3;
-   for (int i=0;i<3;++i) {
-      intRmin[i] = bnw.rmin[i]-uncertainty;
-      intRmax[i] = bnw.rmax[i]+uncertainty;
-   }
-   integrator.SetDimensions(intRmin[0],intRmin[1],intRmin[2],
-			    intRmax[0],intRmax[1],intRmax[2]);
+   VegasIntegrator integrator(gwf,bnw);
 
    //Setting configuration parameters
    double convRate=1.0;
+   double tol=0;
    int intervals=10;
    int nelectrons=0;
    int terma=0;
-   int tol=100;
    int stopRef=INT_MAX;
    size_t points=10000;
    size_t fmol;
@@ -165,17 +155,38 @@ int main (int argc, char ** argv) {
       }
    }
 
+   //Setting integration boundaries.
+   double intRmin[3]={0,0,0},intRmax[3]={0,0,0};
+   double uncertainty = 3;
+   if ( (func == 'm') || (func == 'T') || (func == 'k') ){
+      while ( gwf.EvalFTDensity(intRmax[0],intRmax[1],intRmax[2]) >= 1e-12 ){
+	 for (int i=0; i<3; i++) intRmax[i] += 0.5;
+      }
+      for (int i=0; i<3; i++) intRmin[i] = -intRmax[i];
+      integrator.SetDimensions(intRmin[0],intRmin[1],intRmin[2],
+   			       intRmax[0],intRmax[1],intRmax[2]);
+   }else{
+      for (int i=0;i<3;++i) {
+	 intRmin[i] = bnw.rmin[i]-uncertainty;
+	 intRmax[i] = bnw.rmax[i]+uncertainty;
+      }
+      integrator.SetDimensions(intRmin[0],intRmin[1],intRmin[2],
+   			       intRmax[0],intRmax[1],intRmax[2]);
+   }
+
+   //Setting integration properties.
    integrator.SetIntegrand(func);
    integrator.SetIntervals(intervals);
    integrator.SetNumOfPoints(points);
    integrator.SetIterations(iterations);
-   if (func == 'd' && nelectrons > 0) integrator.AnalyticIntegral(nelectrons);
+   if ((func == 'd' || func == 'm') && nelectrons > 0) integrator.AnalyticIntegral(nelectrons);
    integrator.SetConvergenceRate(convRate);
    integrator.SetTermalization(terma);
    integrator.SetTolerance(tol);
    integrator.SetStopRefinement(stopRef);
    integrator.DisplayProperties();
-   integrator.NormalizedEDF();
+   // integrator.NormalizedEDF();
+   integrator.Relative2MaxDensity('a'); //Average of maxima.
 
    //Numeric integral
    MyTimer aTim;
@@ -183,21 +194,22 @@ int main (int argc, char ** argv) {
    integrator.Integrate();
    aTim.End();
    aTim.PrintElapsedTimeSec(string("integration time"));
-   
+
    cout << "N Integrand evaluations: " << integrator.CountEvaluations() << '\n';
    cout << "N Iterations: " << integrator.CountIterations() << '\n';
 
    cout << scientific << setprecision(8);
    cout << "Integral: " << integrator.Integral() << '\n';
-   if (func == 'd') {
+   if (func == 'd' || func == 'm') {
       cout << "N. Electrons (Integrated): " 
 	   << (integrator.Integral()-0.5 >= int(integrator.Integral()) ? int(integrator.Integral()+1) : int(integrator.Integral())) 
 	   << '\n'; 
-      cout << "Relerr(%) = " << integrator.RelativeError() << '\n'; 
+      if (nelectrons > 0) cout << "Relerr(%) = " << integrator.RelativeError() << '\n'; 
    } 
+   cout << "Normalization Constant: " << integrator.NormConstant() << endl;
+   cout << "Maximum value of density: " << integrator.MaxDensity() << endl;
    cout << "Variance: " << integrator.Variance() << '\n';
 
-   
    /* At this point the computation has ended. Usually this means no errors ocurred. */
    
    ScreenUtils::PrintHappyEnding();

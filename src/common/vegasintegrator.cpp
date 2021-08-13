@@ -7,10 +7,12 @@ using std::numeric_limits;
 using std::cout;
 using std::endl;
 #include <climits>
+// #include <cstdlib>
 
 #include "vegasintegrator.h"
 #include "gausswavefunction.h"
 #include "fldtypesdef.h"
+#include "bondnetwork.h"
 
 
 VegasIntegrator::VegasIntegrator() {
@@ -18,6 +20,8 @@ VegasIntegrator::VegasIntegrator() {
    integral=0.0e0;
    countIter=countEval=0;
    stopIterating=false;
+   normalizedEDF=false;
+   normConstant=maxDensity=0;
 
    for (int j=0; j<3; j++){
       xMin[j] = 0; 
@@ -33,11 +37,12 @@ VegasIntegrator::VegasIntegrator() {
    param.relativeError = false;
    param.convergenceRate = 1.0;
    param.termalization = 0; 
-   param.tolerance = 100;
+   param.tolerance = 0;
    param.noMoreRefinement = INT_MAX;
 }
-VegasIntegrator::VegasIntegrator(GaussWaveFunction &uwf) : VegasIntegrator() {
+VegasIntegrator::VegasIntegrator(GaussWaveFunction &uwf,BondNetWork &ubnw) : VegasIntegrator() {
    wf=&uwf;
+   bnw=&ubnw;
 }
 void VegasIntegrator::AnalyticIntegral(double analyticResult) {
    param.analyticInt = analyticResult;
@@ -74,24 +79,66 @@ void VegasIntegrator::DisplayProperties(void) {
    cout << "\n" << endl;
 }
 void VegasIntegrator::NormalizedEDF(void){
-   normalizedEDF = true;
+   if ( normConstant == 0 ){
+      normalizedEDF = true;
 
-   Integrate();
-   normConstant = ( integral-0.5 >= int(integral) ) ? int(integral+1) : int(integral);
+      Integrate();
+      normConstant = ( integral-0.5 >= int(integral) ) ? int(integral+1) : int(integral);
+      // normConstant = integral;
+      // cout << integral << endl;
 
-   normalizedEDF = false;
+      normalizedEDF = false;
+   }
+}
+void VegasIntegrator::Relative2MaxDensity(char choice){
+   double evalDensity;
+
+   if ( normConstant == 0 ) NormalizedEDF(); //Define normConstant
+
+   if ( (param.integrand == 'm') || (param.integrand == 'T') | (param.integrand == 'k') ){
+      maxDensity = wf->EvalFTDensity(0,0,0);
+   }else{
+      switch ( choice ) {
+	 case 'a': /* Average of rho max */
+	    for (int i=0; i<bnw->nNuc; i++) maxDensity += wf->EvalDensity(bnw->R[i][0],bnw->R[i][1],bnw->R[i][2]);
+	    maxDensity /= bnw->nNuc;
+	 case 'g': /* Value of global maximum/maxima */
+	    for (int i=0; i<bnw->nNuc; i++) {
+	       evalDensity = wf->EvalDensity(bnw->R[i][0],bnw->R[i][1],bnw->R[i][2]);
+	       if ( evalDensity  >= maxDensity ) maxDensity = evalDensity;
+	    }
+      }
+   }
 }
 double VegasIntegrator::Integral(void){
-   if ( normConstant > 0 ){
+   if ( normConstant > 0 && maxDensity == 0 ){
       switch ( param.integrand ) {
 	 case 'd' : /* Electron density (Rho)  */
 	    integral = ( integral-0.5 >= int(integral) ) ? int(integral+1) : int(integral);
 	    return integral*1./normConstant;
+	 case 'm' : /* Electron density (Rho) in Momentum Space  */
+	    integral = ( integral-0.5 >= int(integral) ) ? int(integral+1) : int(integral);
+	    return integral*1./normConstant;
 	 case 'S' : /* Shannon Entropy Density  */
-	    return integral*1./normConstant-log(normConstant);
+	    return integral*1./normConstant+log(normConstant);
+	 case 'T' : /* Shannon Entropy Density in Momentum Space  */
+	    return integral*1./normConstant+log(normConstant);
 	 default :
 	    integral = ( integral-0.5 >= int(integral) ) ? int(integral+1) : int(integral);
 	    return integral*1./normConstant; 
+      }
+   }else if ( maxDensity > 0 ){
+      switch ( param.integrand ) {
+	 case 'd' : /* Electron density (Rho)  */
+	    return integral*1./maxDensity;
+	 case 'm' : /* Electron density (Rho) in Momentum Space  */
+	    return integral*1./maxDensity;
+	 case 'S' : /* Shannon Entropy Density  */
+	    return integral*1./normConstant+log(maxDensity);
+	 case 'T' : /* Shannon Entropy Density in Momentum Space  */
+	    return integral*1./normConstant+log(maxDensity);
+	 default :
+	    return integral*1./maxDensity; 
       }
    }
 
@@ -103,6 +150,8 @@ double VegasIntegrator::Integrand(double x,double y,double z){
    switch ( param.integrand ) {
       case 'd' : /* Electron density (Rho)  */
 	 return wf->EvalDensity(x,y,z);
+      case 'm' : /* Electron density (Rho) in Momentum Space  */
+	 return wf->EvalFTDensity(x,y,z);
       case 'g' : /* MagGradRho Density  */
 	 return wf->EvalMagGradRho(x,y,z);
       case 'l' : /* Laplacian Density  */
@@ -113,8 +162,12 @@ double VegasIntegrator::Integrand(double x,double y,double z){
 	 return wf->EvalELF(x,y,z);
       case 'S' : /* Shannon Entropy Density  */
 	 return wf->EvalShannonEntropy(x,y,z);
+      case 'T' : /* Shannon Entropy Density in Momentum Space  */
+	 return wf->EvalMomentumShannonEntropy(x,y,z);
       case 'K' : /* Kinetic Energy Density K  */
 	 return wf->EvalKineticEnergyK(x,y,z);
+      case 'k' : /* Kinetic Energy Density K in Momentum Space  */
+	 return wf->EvalFTKineticEnergy(x,y,z);
       case 'G' : /* Kinetic Energy Density G  */
 	 return wf->EvalKineticEnergyG(x,y,z);
       case 'M' : /* MagGradLOL Density  */
@@ -140,10 +193,6 @@ double VegasIntegrator::Integrand(double x,double y,double z){
       default :
 	 return wf->EvalDensity(x,y,z);
    }
-   // Missing scalar fields:
-   // "shannon entropy in momentum space" wf->EvalMomentumShannonEntropy(x,y,z);
-   // "density in momentum space" wf->EvalFTDensity(x,y,z);
-   // "Kinetic Energy K in momentum space" wf->EvalFTKineticEnergy(x,y,z);
 }
 void VegasIntegrator::Integrate(void) {
    vector<vector<double> > interval(3,vector<double>(param.numOfIntervals+1));
