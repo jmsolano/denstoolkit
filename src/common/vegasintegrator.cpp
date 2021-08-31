@@ -7,7 +7,9 @@ using std::numeric_limits;
 using std::cout;
 using std::endl;
 #include <climits>
-// #include <cstdlib>
+#include <cstdlib>
+#include <string>
+using std::string;
 
 #include "vegasintegrator.h"
 #include "gausswavefunction.h"
@@ -68,6 +70,8 @@ void VegasIntegrator::DisplayProperties(void) {
    printf("\nLeft limit: (%lf,%lf,%lf)",xMin[0],xMin[1],xMin[2]);
    printf("\nRight limit: (%lf,%lf,%lf)",xMax[0],xMax[1],xMax[2]);
    cout << "\nIntegrand: " << GetFieldTypeKeyLong(param.integrand);
+   printf("\nNormalization constant: %s",normConstant ? std::to_string(normConstant).c_str() : "Function not normalized.");
+   printf("\nMaximum of density: %s",maxDensity ? std::to_string(maxDensity).c_str() : "There is no chosen value.");
    printf("\nConvergence rate: %lf",param.convergenceRate);
    printf("\nNumber of intervals: %d",param.numOfIntervals);
    printf("\nNumber of points to sample: %ld",param.numOfPoints);
@@ -350,6 +354,44 @@ void VegasIntegrator::AlteratesIncrements(vector<vector<double> > &interval,vect
       // cout << endl;
    }
    interval = intervalCopy;
+}
+void VegasIntegrator::PrintInLogFile(string inFileName,string outFileName) {
+   outFileName.replace(outFileName.end()-11,outFileName.end()-4,"AllIntegralData");
+   cout << "\nPrinting integrand data into file " << outFileName << endl;
+   cout << "..." << endl;
+   ofstream outFile(outFileName);
+      outFile << "File read: " << inFileName
+	      << "\n***********************************************************************************"
+	      << "\n***********************************************************************************"
+	      << "\nIntegral properties\n"
+	      << "\nLeft limit: (" << xMin[0] << "," << xMin[1] << "," << xMin[2] << ")"
+	      << "\nRight limit: (" << xMax[0] << "," << xMax[1] << "," << xMax[2] << ")"
+	      << "\nIntegrand: " << GetFieldTypeKeyLong(param.integrand)
+	      << "\nNormalization constant: " << normConstant ? std::to_string(normConstant).c_str() : "Function not normalized.";
+      outFile << "\nMaximum of density: " << maxDensity ? std::to_string(maxDensity).c_str() : "There is no chosen value.";
+      outFile << "\nConvergence rate: " << param.convergenceRate
+	      << "\nN. intervals: " << param.numOfIntervals
+	      << "\nN. points to sample: " << param.numOfPoints
+	      << "\nMaximum number of iterations: " << param.iterations
+	      << "\nTermalization: " << param.termalization
+	      << "\nStop refinement after iteration: " << param.noMoreRefinement
+	      << "\nTolerance: " << param.tolerance;
+      if (param.relativeError == true) outFile << "\nAnalytic integral: " << param.analyticInt;
+      outFile << "\n***********************************************************************************"
+	      << "\nResults\n"
+	      << "\nN. integrand evaluations: " << CountEvaluations()
+	      << "\nN. iterations: " << CountIterations()
+	      << "\nIntegral: " << integral;
+      if (param.integrand == 'd' || param.integrand == 'm') {
+	 outFile << "\nN. Electrons (Integrated): " 
+	         << (integral-0.5 >= int(integral) ? int(integral+1) : int(integral));
+	 // if (nelectrons > 0) cout << "Relerr(%) = " << integrator.RelativeError() << '\n';
+      } 
+      outFile << "\nVariance: " << Variance()
+	      << "\n***********************************************************************************"
+	      << "\n";
+   outFile.close();
+   cout << "Finished printing." << endl;
 }
 double VegasIntegrator::ChiSquare(double integralPerIteration,double variancePerIteration,double estimatedIntegral) {
    double chiSq;
