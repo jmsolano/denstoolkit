@@ -8,6 +8,8 @@ using std::random_device;
 using std::mt19937_64;
 using std::uniform_real_distribution;
 #include <cmath>
+#include <string>
+using std::string;
 
 #include "gausswavefunction.h"
 #include "fldtypesdef.h"
@@ -92,6 +94,7 @@ public:
    long int CountIterations(void) {return countIter;}
    /** Computes integral through Las Vegas method. */
    void Integrate(void);
+   void PrintInLogFile(string inFileName,string outFileName);
    double RelativeError(void);
    void AnalyticIntegral(double analyticResult);
 /* *********************************************************************************** */

@@ -105,7 +105,7 @@ int main (int argc, char ** argv) {
    
    VegasIntegrator integrator(gwf,bnw);
 
-   //Setting configuration parameters
+   //Setting configuration parameters.
    double convRate=1.0;
    double tol=0;
    int intervals=10;
@@ -184,21 +184,20 @@ int main (int argc, char ** argv) {
    integrator.SetTermalization(terma);
    integrator.SetTolerance(tol);
    integrator.SetStopRefinement(stopRef);
-   integrator.DisplayProperties();
    // integrator.NormalizedEDF();
-   integrator.Relative2MaxDensity('a'); //Average of maxima.
+   // integrator.Relative2MaxDensity('a'); //Average of maxima.
+   integrator.DisplayProperties();
 
-   //Numeric integral
+   //Numeric integral.
    MyTimer aTim;
    aTim.Start();
    integrator.Integrate();
    aTim.End();
    aTim.PrintElapsedTimeSec(string("integration time"));
 
+   //Print results on screen.
    cout << "N Integrand evaluations: " << integrator.CountEvaluations() << '\n';
    cout << "N Iterations: " << integrator.CountIterations() << '\n';
-
-   cout << scientific << setprecision(8);
    cout << "Integral: " << integrator.Integral() << '\n';
    if (func == 'd' || func == 'm') {
       cout << "N. Electrons (Integrated): " 
@@ -206,9 +205,12 @@ int main (int argc, char ** argv) {
 	   << '\n'; 
       if (nelectrons > 0) cout << "Relerr(%) = " << integrator.RelativeError() << '\n'; 
    } 
-   cout << "Normalization Constant: " << integrator.NormConstant() << endl;
-   cout << "Maximum value of density: " << integrator.MaxDensity() << endl;
    cout << "Variance: " << integrator.Variance() << '\n';
+
+   //Print results in a log file.
+   integrator.PrintInLogFile(infilnam,outfilnam);
+
+   cout << scientific << setprecision(8);
 
    /* At this point the computation has ended. Usually this means no errors ocurred. */
    
