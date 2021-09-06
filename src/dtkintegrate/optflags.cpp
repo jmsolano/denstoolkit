@@ -76,6 +76,7 @@ OptionFlags::OptionFlags() {
    settolerance=0;
    setstopRefinement=0;
    setfunction=0;
+   setNPntsForMax=0;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    string progname;
@@ -139,6 +140,10 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                flags.setfunction=(++i);
                if (i>=argc) {printErrorMsg(argv,'f');}
                break;
+            case 'm' :
+               flags.setNPntsForMax=(++i);
+               if (i>=argc) {printErrorMsg(argv,'m');}
+               break;
             case 'h':
                printHelpMenu(argc,argv);
                exit(1);
@@ -187,49 +192,52 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "\nUsage:\n\n\t" << progname << " wf?name [option [value(s)]] ... [option [value(s)]]\n\n";
    ScreenUtils::SetScrNormalFont();
    cout << "Where wf?name is the input wfx(wfn) name, and options can be:\n\n";
-   cout << "  -f function        \tSets function to integrate." << '\n';
-   cout << "                     \t  By default \"rho\"." << '\n';
-   cout << "                     \t  Available options:" << '\n';
-   cout << "                     \t    \'d\': Electronic density in position space." << '\n';
-   cout << "                     \t    \'m\': Density in momentum space." << '\n';
-   cout << "                     \t    \'i\': Laplacian of the density." << '\n';
-   cout << "                     \t    \'E\': Electron Localization Function." << '\n';
-   cout << "                     \t    \'S\': Shannon entropy of density in position space." << '\n';
-   cout << "                     \t    \'T\': Shannon entropy in momentum space." << '\n';
-   cout << "                     \t    \'g\': Magnitud of the density gradient." << '\n';
-   cout << "                     \t    \'L\': Localized Orbital Locator." << '\n';
-   cout << "                     \t    \'G\': Kinetic Energy Density G." << '\n';
-   cout << "                     \t    \'K\': Kinetic Energy Density K." << '\n';
-   cout << "                     \t    \'e\': Ellipticity." << '\n';
-   cout << "                     \t    \'k\': Kinetic Energy Density K in momentum space." << '\n';
-   cout << "                     \t    \'M\': Magnitude of the gradient of LOL." << '\n';
-   cout << "                     \t    \'V\': Molecular Electrostatic Potential." << '\n';
-   cout << "                     \t    \'P\': Magnitude of the vector LED (see DTK-manual for more details)." << '\n';
-   cout << "                     \t    \'s\': Reduced Density Gradient (see DTK-manual for more details)." << '\n';
-   cout << "                     \t    \'r\': Region of Slow Electron index (see DTK-manual for more details)." << '\n';
-   cout << "                     \t    \'u\': Custom Scalar Field (implemented by the final user)." << '\n';
-   cout << "                     \t    \'v\': Potential Energy Density." << '\n';
-   cout << "                     \t    \'z\': Reduced Density Gradient applying NCI conditions." << '\n';
-   cout << "  -n intervals       \tSets the grid size." << '\n';
-   cout << "                     \t  Typically 10." << '\n';
-   cout << "  -p points          \tSets the MC-points to sample per iteration." << '\n';
-   cout << "                     \t  Typycally 10,000." << '\n';
-   cout << "  -i iterations      \tSets the maximum number of iterations." << '\n';
-   cout << "                     \t  Typycally 20." << '\n';
-   cout << "  -r convergence rate\tSets the damping parameter." << '\n';
-   cout << "                     \t  Typycally 1." << '\n';
-   cout << "  -e termalization   \tSets the first iterations to be ignored for computing the expected integral." << '\n';
-   cout << "                     \t  Typycally 0." << '\n';
-   cout << "  -t tolerance       \tSets the tolerance for considering an optimal grid." << '\n';
-   cout << "                     \t  It depends a lot on the integrand, so usually it is not set." << '\n';
-   cout << "  -s stop refinement \tSets the num. of iterations where the grid will be refined." << '\n';
-   cout << "                     \t  Usually it is not set." << '\n';
-   cout << "  -o outname\tSet the output file name." << endl
-        << "            \t  (If not given the program will create one out of" << endl
-        << "            \t  the input name; if given, the gnp file and the pdf will" << endl
-        << "            \t  use this name as well --but different extension--)." << endl;
-   cout << "  -V        \tDisplays the version of this program." << endl;
-   cout << "  -h     \tDisplay the help menu.\n\n";
+   cout << "  -f function        	\tSets function to integrate." << '\n';
+   cout << "                     	\t  By default \"rho\"." << '\n';
+   cout << "                     	\t  Available options:" << '\n';
+   cout << "                     	\t    \'d\': Electronic density in position space." << '\n';
+   cout << "                     	\t    \'m\': Density in momentum space." << '\n';
+   cout << "                     	\t    \'i\': Laplacian of the density." << '\n';
+   cout << "                     	\t    \'E\': Electron Localization Function." << '\n';
+   cout << "                     	\t    \'S\': Shannon entropy of density in position space." << '\n';
+   cout << "                     	\t    \'T\': Shannon entropy in momentum space." << '\n';
+   cout << "                     	\t    \'g\': Magnitud of the density gradient." << '\n';
+   cout << "                     	\t    \'L\': Localized Orbital Locator." << '\n';
+   cout << "                     	\t    \'G\': Kinetic Energy Density G." << '\n';
+   cout << "                     	\t    \'K\': Kinetic Energy Density K." << '\n';
+   cout << "                     	\t    \'e\': Ellipticity." << '\n';
+   cout << "                     	\t    \'k\': Kinetic Energy Density K in momentum space." << '\n';
+   cout << "                     	\t    \'M\': Magnitude of the gradient of LOL." << '\n';
+   cout << "                     	\t    \'V\': Molecular Electrostatic Potential." << '\n';
+   cout << "                     	\t    \'P\': Magnitude of the vector LED (see DTK-manual for more details)." << '\n';
+   cout << "                     	\t    \'s\': Reduced Density Gradient (see DTK-manual for more details)." << '\n';
+   cout << "                     	\t    \'r\': Region of Slow Electron index (see DTK-manual for more details)." << '\n';
+   cout << "                     	\t    \'u\': Custom Scalar Field (implemented by the final user)." << '\n';
+   cout << "                     	\t    \'v\': Potential Energy Density." << '\n';
+   cout << "                     	\t    \'z\': Reduced Density Gradient applying NCI conditions." << '\n';
+   cout << "  -n intervals       	\tSets the grid size." << '\n';
+   cout << "                     	\t  Typically 10." << '\n';
+   cout << "  -p points          	\tSets the MC-points to sample per iteration." << '\n';
+   cout << "                     	\t  Typycally 10,000." << '\n';
+   cout << "  -i iterations      	\tSets the maximum number of iterations." << '\n';
+   cout << "                     	\t  Typycally 20." << '\n';
+   cout << "  -r convergence rate	\tSets the damping parameter." << '\n';
+   cout << "                     	\t  Typycally 1." << '\n';
+   cout << "  -e termalization   	\tSets the first iterations to be ignored for computing the expected integral." << '\n';
+   cout << "                     	\t  Typycally 0." << '\n';
+   cout << "  -t tolerance       	\tSets the tolerance for considering an optimal grid." << '\n';
+   cout << "                     	\t  It depends a lot on the integrand, so usually it is not set." << '\n';
+   cout << "  -s stop refinement 	\tSets the num. of iterations where the grid will be refined." << '\n';
+   cout << "                     	\t  Usually it is not set." << '\n';
+   cout << "  -m points to find maximum \tSets the number of points to sample to find the global maximum." << '\n';
+   cout << "			\t  This flag only works for functions in momentum space." << '\n';
+   cout << "                     	\t  Typically 1,000,000, but as greater as better." << '\n';
+   cout << "  -o outname		\tSets the output file name." << endl
+        << "            		\t  (If not given the program will create one out of" << endl
+        << "            		\t  the input name; if given, the gnp file and the pdf will" << endl
+        << "            		\t  use this name as well --but different extension--)." << endl;
+   cout << "  -V        		\tDisplays the version of this program." << endl;
+   cout << "  -h     			\tDisplays the help menu.\n\n";
    //-------------------------------------------------------------------------------------
    cout << "  --help    \t\tSame as -h" << endl;
    cout << "  --version \t\tSame as -V" << endl;
