@@ -63,6 +63,15 @@ vector<vector<double> > MatrixVectorOperations3D::GetMatrixToAlignXToV(vector<do
    vector<double> vv=CrossProduct(ix,z);
    double v0=vv[0],v1=vv[1],v2=vv[2];
    double s=Norm(vv);
+   if ( fabs(s)<0.000001 ) {
+      vector<vector<double> > mm=UnitMatrix();
+      if ( s>0.0e0 ) {
+         return mm;
+      } else {
+         mm[2][2]=mm[1][1]=-1.0e0;
+      }
+      return mm;
+   }
    double c=InnerProduct(z,ix);
    vector<vector<double> > vm=Zeros();
    vm[0][0]=0.0e0; vm[0][1]=-v2;   vm[0][2]=v1;
@@ -308,15 +317,10 @@ vector<vector<double> > MatrixVectorOperations3D::GetRotationMatrix2AlignActive(
       cout << __FILE__ << ", line: " << __LINE__ << '\n';
       return Zeros();
    }
+   vector<double> x=ZeroVector();
    vector<double> y=ZeroVector();
-   AminusB(A,B,y);
-   vector<double> tmp=ZeroVector();
-   AminusB(C,B,tmp);
-   vector<double> z=CrossProduct(tmp,y);
-   vector<double> x=CrossProduct(y,z);
-   Normalize(x);
-   Normalize(y);
-   Normalize(z);
+   vector<double> z=ZeroVector();
+   GetCartesianSystemFrom3Vectors(A,B,C,x,y,z);
    vector<vector<double> > m1=GetMatrixToAlignVToZ(z);
    TransformByMatrixMultiplication(m1,x);
    TransformByMatrixMultiplication(m1,y);
@@ -368,5 +372,38 @@ vector<vector<double> > MatrixVectorOperations3D::GetRotationMatrixAroundAxis(\
    R[2][2]=ct+uz*uz*omct;
 
    return R;
+}
+void MatrixVectorOperations3D::GetCartesianSystemFrom3Vectors(\
+      const vector<double> &A,const vector<double> &B,const vector<double> &C,\
+      vector<double> &xx,vector<double> &yy,vector<double> &zz) {
+   AminusB(A,B,yy);
+   vector<double> tmp=ZeroVector();
+   AminusB(C,B,tmp);
+   zz=CrossProduct(tmp,yy);
+   /*
+   cout << '\n' << '\n';
+   xx=CrossProduct(yy,zz);
+   cout << xx[0] << ' ' << xx[1] << ' ' << xx[2] << '\n';
+   cout << yy[0] << ' ' << yy[1] << ' ' << yy[2] << '\n';
+   cout << zz[0] << ' ' << zz[1] << ' ' << zz[2] << '\n';
+   cout << '\n' << '\n';
+   double znorm=MatrixVectorOperations3D::Norm(xx);
+   cout << "XNorm: " << znorm << '\n';
+   znorm=MatrixVectorOperations3D::Norm(yy);
+   cout << "YNorm: " << znorm << '\n';
+   znorm=MatrixVectorOperations3D::Norm(zz);
+   cout << "ZNorm: " << znorm << '\n';
+   // */
+   Normalize(xx);
+   Normalize(yy);
+   Normalize(zz);
+   /*
+   znorm=MatrixVectorOperations3D::Norm(xx);
+   cout << "XNorm: " << znorm << '\n';
+   znorm=MatrixVectorOperations3D::Norm(yy);
+   cout << "YNorm: " << znorm << '\n';
+   znorm=MatrixVectorOperations3D::Norm(zz);
+   cout << "ZNorm: " << znorm << '\n';
+   // */
 }
 
