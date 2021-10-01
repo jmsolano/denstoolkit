@@ -73,12 +73,14 @@ public:
    void DisplayProperties(void);
    /** Computes the normalization constant of the Electron Density, so that functions related with the
     * normalized Electron Density can be integrated. Note that if you ask for the Electron Density,
-    * DTK will give you approximately 1. */
-   void NormalizedEDF(void);
+    * DTK will give you approximately 1. 
+   */
+   void NormalizedEDF(void){if ( normConstant == 0 ) normConstant = round(wf->IntegralRho());}
    /** Computes the global maximum/maxima of the Electron Density (choice = 'g') or an average of the 
     * maxima (choice = 'a') in position space. In momentum space, its critical point is found near the 
     * origin or in it, so it is set in the origin.
-    * Note that if you ask for the Electron Density, DTK will give you \f$\rho/\rho_{max}\f$. */
+    * Note that if you ask for the Electron Density, DTK will give you \f$\rho/\rho_{max}\f$. 
+   */
    void Relative2MaxDensity(char choice);
    /** Shows the integral variance (Las Vegas method). */
    double Variance(void) {return fabs(variance);}
@@ -94,6 +96,11 @@ public:
    long int CountIterations(void) {return countIter;}
    /** Computes integral through Las Vegas method. */
    void Integrate(void);
+   /** Sets the number of points to find the global maximum of the electron density. This method only 
+    * works for functions in momentum space (Shannon Entropy, Electron Density and Kinnetic Energy). 
+   */
+   void SetNSamplesToFindMaximum(double NSamples){param.nPointsForMax = NSamples;}
+   /** Print all information related to the integral: Input data and output data. */
    void PrintInLogFile(string inFileName,string outFileName);
    double RelativeError(void);
    void AnalyticIntegral(double analyticResult);
@@ -110,15 +117,15 @@ protected:
 
    GaussWaveFunction* wf;
    BondNetWork* bnw;
-   double integral,variance,maxDensity,normConstant;
+   double integral,variance,maxDensity,maxMomDensity,normConstant;
    double weightedAverage,inverseVariance,chiSquare,varPerIt;
-   double xMin[3],xMax[3],width[3];
+   double xMin[3],xMax[3],width[3],criticalPoint[3];
    long int countEval,countIter;
-   bool stopIterating,repeatIntegral,normalizedEDF;
+   bool stopIterating,repeatIntegral;
 
    struct Parameters{
       int numOfIntervals;
-      long int iterations,numOfPoints,termalization,noMoreRefinement;
+      long int iterations,numOfPoints,termalization,noMoreRefinement,nPointsForMax;
       double analyticInt,convergenceRate,tolerance;
       bool relativeError,printVar,printNumPoints;
       char integrand;
@@ -132,6 +139,7 @@ protected:
    double ComputesRelativeError(double analyticIntegral,double estimatedIntegral);
    double VariancePerIteration(double sample,double squareSample);
    double Integrand(double x,double y,double z);
+   void SearchForMaximum(void);
    void MonteCarloIntegration(vector<vector<double> > interval,vector<vector<double> > &meanIntegral);
    void AlteratesIncrements(vector<vector<double> > &interval,vector<vector<double> > meanIntegral);
    bool AlteratesAverageIntegral(vector<vector<double> > &meanIntegral);

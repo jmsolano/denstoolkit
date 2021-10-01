@@ -10,6 +10,7 @@ using std::endl;
 #include <cstdlib>
 #include <string>
 using std::string;
+#include <cmath>
 
 #include "vegasintegrator.h"
 #include "gausswavefunction.h"
@@ -22,13 +23,14 @@ VegasIntegrator::VegasIntegrator() {
    integral=0.0e0;
    countIter=countEval=0;
    stopIterating=false;
-   normalizedEDF=false;
-   normConstant=maxDensity=0;
+   normConstant=maxDensity=maxMomDensity=0;
 
    for (int j=0; j<3; j++){
       xMin[j] = 0; 
       xMax[j] = 1;
       width[j] = xMax[j]-xMin[j];
+
+      criticalPoint[j] = 0;
    }
 
    param.integrand = 'd';
@@ -41,6 +43,7 @@ VegasIntegrator::VegasIntegrator() {
    param.termalization = 0; 
    param.tolerance = 0;
    param.noMoreRefinement = INT_MAX;
+   param.nPointsForMax = 100000;
 }
 VegasIntegrator::VegasIntegrator(GaussWaveFunction &uwf,BondNetWork &ubnw) : VegasIntegrator() {
    wf=&uwf;
@@ -70,8 +73,14 @@ void VegasIntegrator::DisplayProperties(void) {
    printf("\nLeft limit: (%lf,%lf,%lf)",xMin[0],xMin[1],xMin[2]);
    printf("\nRight limit: (%lf,%lf,%lf)",xMax[0],xMax[1],xMax[2]);
    cout << "\nIntegrand: " << GetFieldTypeKeyLong(param.integrand);
-   printf("\nNormalization constant: %s",normConstant ? std::to_string(normConstant).c_str() : "Function not normalized.");
-   printf("\nMaximum of density: %s",maxDensity ? std::to_string(maxDensity).c_str() : "There is no chosen value.");
+   if ( param.integrand == 'u' ) printf("\nNormalization constant: %s",normConstant ? std::to_string(normConstant).c_str() : "Function not normalized.");
+   else printf("\nN electrons (integrated): %s",normConstant ? std::to_string(normConstant).c_str() : "No electrons calculated.");
+   if ( param.integrand == 'm' || param.integrand == 'T' || param.integrand == 'k' ) {
+      printf("\nDensity in (0,0,0): %lf",wf->EvalFTDensity(0,0,0)); 
+      printf("\nMaximum of density (computed): %s",maxMomDensity ? std::to_string(maxMomDensity).c_str() : "There is no chosen value.");
+      printf("\nOne critical point (computed): (%lf,%lf,%lf)",criticalPoint[0],criticalPoint[1],criticalPoint[2]);
+      printf("\nNum of points to find global maximum: %ld",param.nPointsForMax);
+   }else printf("\nMaximum of density (computed): %s",maxDensity ? std::to_string(maxDensity).c_str() : "There is no chosen value.");
    printf("\nConvergence rate: %lf",param.convergenceRate);
    printf("\nNumber of intervals: %d",param.numOfIntervals);
    printf("\nNumber of points to sample: %ld",param.numOfPoints);
@@ -82,39 +91,51 @@ void VegasIntegrator::DisplayProperties(void) {
    if (param.relativeError == true) printf("\nAnalytic integral: %lf",param.analyticInt);
    cout << "\n" << endl;
 }
-void VegasIntegrator::NormalizedEDF(void){
-   if ( normConstant == 0 ){
-      normalizedEDF = true;
-
-      Integrate();
-      normConstant = ( integral-0.5 >= int(integral) ) ? int(integral+1) : int(integral);
-      // normConstant = integral;
-      // cout << integral << endl;
-
-      normalizedEDF = false;
-   }
-}
-void VegasIntegrator::Relative2MaxDensity(char choice){
+void VegasIntegrator::Relative2MaxDensity(char choice) {
    double evalDensity;
 
    if ( normConstant == 0 ) NormalizedEDF(); //Define normConstant
 
-   if ( (param.integrand == 'm') || (param.integrand == 'T') | (param.integrand == 'k') ){
-      maxDensity = wf->EvalFTDensity(0,0,0);
-   }else{
-      switch ( choice ) {
-	 case 'a': /* Average of rho max */
-	    for (int i=0; i<bnw->nNuc; i++) maxDensity += wf->EvalDensity(bnw->R[i][0],bnw->R[i][1],bnw->R[i][2]);
-	    maxDensity /= bnw->nNuc;
-	 case 'g': /* Value of global maximum/maxima */
-	    for (int i=0; i<bnw->nNuc; i++) {
-	       evalDensity = wf->EvalDensity(bnw->R[i][0],bnw->R[i][1],bnw->R[i][2]);
-	       if ( evalDensity  >= maxDensity ) maxDensity = evalDensity;
-	    }
+   if ( maxDensity == 0 ){
+      if ( (param.integrand == 'm') || (param.integrand == 'T') | (param.integrand == 'k') ){
+	 SearchForMaximum();
+	 maxDensity = ( wf->EvalFTDensity(0,0,0) > maxMomDensity ) ? wf->EvalFTDensity(0,0,0) : maxMomDensity;
+      }else{
+	 switch ( choice ) {
+	    case 'a': /* Average of rho max */
+	       for (int i=0; i<bnw->nNuc; i++) maxDensity += wf->EvalDensity(bnw->R[i][0],bnw->R[i][1],bnw->R[i][2]);
+	       maxDensity /= bnw->nNuc;
+	    case 'g': /* Value of global maximum/maxima */
+	       for (int i=0; i<bnw->nNuc; i++) {
+		  evalDensity = wf->EvalDensity(bnw->R[i][0],bnw->R[i][1],bnw->R[i][2]);
+		  if ( evalDensity  >= maxDensity ) maxDensity = evalDensity;
+	       }
+	 }
       }
    }
 }
-double VegasIntegrator::Integral(void){
+void VegasIntegrator::SearchForMaximum(void) {
+   double functionImage;
+   double radialFactor=0.5*width[0];
+   double azimuthalFactor=2*M_PI+1e-4; //1e-4 because random numbers appear from 0 to 0.9999 and we want an inclusive interval.
+   double polarFactor=M_PI+1e-4;
+   double point[3]={dis(engine)*radialFactor,dis(engine)*azimuthalFactor,dis(engine)*polarFactor};
+
+   for ( int i=0; i<param.nPointsForMax; i++ ) {
+      functionImage = wf->EvalFTDensity(point[0]*cos(point[1])*sin(point[2]),
+					point[0]*sin(point[1])*sin(point[2]),
+					point[0]*cos(point[2]));
+      if ( functionImage > maxMomDensity ) {
+	 maxMomDensity = functionImage;
+	 for ( int j=0; j<3; j++ ) criticalPoint[j] = point[j];
+	 radialFactor = point[0]+1e-4;
+      }
+      point[0] = dis(engine)*radialFactor;
+      point[1] = dis(engine)*azimuthalFactor;
+      point[2] = dis(engine)*polarFactor;
+   }
+}
+double VegasIntegrator::Integral(void) {
    if ( normConstant > 0 && maxDensity == 0 ){
       switch ( param.integrand ) {
 	 case 'd' : /* Electron density (Rho)  */
@@ -148,9 +169,7 @@ double VegasIntegrator::Integral(void){
 
    return integral;
 }
-double VegasIntegrator::Integrand(double x,double y,double z){
-   if ( normalizedEDF ) return wf->EvalDensity(x,y,z);
-
+double VegasIntegrator::Integrand(double x,double y,double z) {
    switch ( param.integrand ) {
       case 'd' : /* Electron density (Rho)  */
 	 return wf->EvalDensity(x,y,z);
@@ -245,6 +264,7 @@ void VegasIntegrator::Integrate(void) {
    }
 
    countEval = param.numOfPoints*countIter;
+   repeatIntegral = true;
 }
 void VegasIntegrator::MonteCarloIntegration(vector<vector<double> > interval,vector<vector<double> > &meanIntegral) {
    int floorYNg[3];
@@ -366,11 +386,17 @@ void VegasIntegrator::PrintInLogFile(string inFileName,string outFileName) {
 	      << "\nIntegral properties\n"
 	      << "\nLeft limit: (" << xMin[0] << "," << xMin[1] << "," << xMin[2] << ")"
 	      << "\nRight limit: (" << xMax[0] << "," << xMax[1] << "," << xMax[2] << ")"
-	      << "\nIntegrand: " << GetFieldTypeKeyLong(param.integrand)
-	      << "\nNormalization constant: " << normConstant ? std::to_string(normConstant).c_str() : "Function not normalized.";
-      outFile << "\nMaximum of density: " << maxDensity ? std::to_string(maxDensity).c_str() : "There is no chosen value.";
-      outFile << "\nConvergence rate: " << param.convergenceRate
-	      << "\nN. intervals: " << param.numOfIntervals
+	      << "\nIntegrand: " << GetFieldTypeKeyLong(param.integrand);
+      if ( param.integrand == 'u' ) outFile << "\nNormalization constant: " << normConstant ? std::to_string(normConstant).c_str() : "Function not normalized";
+      else outFile << "\nN electrons (integrated): " << normConstant ? std::to_string(normConstant).c_str() : "No electrons calculated.";
+      outFile << "\nConvergence rate: " << param.convergenceRate;
+      if ( param.integrand == 'm' || param.integrand == 'T' || param.integrand == 'k' ) {
+         outFile << "\nDensity in (0,0,0): " << wf->EvalFTDensity(0,0,0);
+         outFile << "\nMaximum of Density (computed): " << maxMomDensity ? std::to_string(maxMomDensity).c_str() : "There is no chosen value";
+	 outFile << "\nOne critical point (computed): (" << criticalPoint[0] << "," << criticalPoint[1] << "," << criticalPoint[2] << ")"
+		 << "\nNum of points to find global maximum: " << param.nPointsForMax;
+      } else outFile << "\nMaximum of Density (computed): " << maxDensity ? std::to_string(maxDensity).c_str() : "There is no chosen value";
+      outFile << "\nN. intervals: " << param.numOfIntervals
 	      << "\nN. points to sample: " << param.numOfPoints
 	      << "\nMaximum number of iterations: " << param.iterations
 	      << "\nTermalization: " << param.termalization
@@ -381,10 +407,10 @@ void VegasIntegrator::PrintInLogFile(string inFileName,string outFileName) {
 	      << "\nResults\n"
 	      << "\nN. integrand evaluations: " << CountEvaluations()
 	      << "\nN. iterations: " << CountIterations()
-	      << "\nIntegral: " << integral;
+	      << "\nIntegral: " << Integral();
       if (param.integrand == 'd' || param.integrand == 'm') {
 	 outFile << "\nN. Electrons (Integrated): " 
-	         << (integral-0.5 >= int(integral) ? int(integral+1) : int(integral));
+	         << (Integral()-0.5 >= int(Integral()) ? int(Integral()+1) : int(Integral()));
 	 // if (nelectrons > 0) cout << "Relerr(%) = " << integrator.RelativeError() << '\n';
       } 
       outFile << "\nVariance: " << Variance()

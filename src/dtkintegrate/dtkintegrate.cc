@@ -113,6 +113,7 @@ int main (int argc, char ** argv) {
    int terma=0;
    int stopRef=INT_MAX;
    size_t points=10000;
+   size_t nPntsForMax=100000;
    size_t fmol;
    size_t iterations=20;
    char func='d';
@@ -146,6 +147,9 @@ int main (int argc, char ** argv) {
    }
    if ( options.setfunction ) {
       func=*argv[options.setfunction];
+   }
+   if ( options.setNPntsForMax ) {
+      nPntsForMax=std::stod(string(argv[options.setNPntsForMax]));;
    }
    for ( auto x: molecule ) {
       fmol = infilnam.find(x.first);
@@ -184,6 +188,7 @@ int main (int argc, char ** argv) {
    integrator.SetTermalization(terma);
    integrator.SetTolerance(tol);
    integrator.SetStopRefinement(stopRef);
+   integrator.SetNSamplesToFindMaximum(nPntsForMax);
    // integrator.NormalizedEDF();
    // integrator.Relative2MaxDensity('a'); //Average of maxima.
    integrator.DisplayProperties();
