@@ -91,12 +91,6 @@ void VegasIntegrator::DisplayProperties(void) {
    if (param.relativeError == true) printf("\nAnalytic integral: %lf",param.analyticInt);
    cout << "\n" << endl;
 }
-void VegasIntegrator::NormalizedEDF(void) {
-   if ( normConstant == 0 ){
-      normConstant = wf->IntegralRho();
-      normConstant = ( normConstant-0.5 >= int(normConstant) ) ? int(normConstant+1) : int(normConstant);
-   }
-}
 void VegasIntegrator::Relative2MaxDensity(char choice) {
    double evalDensity;
 

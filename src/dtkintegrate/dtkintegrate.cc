@@ -190,7 +190,7 @@ int main (int argc, char ** argv) {
    integrator.SetStopRefinement(stopRef);
    integrator.SetNSamplesToFindMaximum(nPntsForMax);
    // integrator.NormalizedEDF();
-   integrator.Relative2MaxDensity('a'); //Average of maxima.
+   // integrator.Relative2MaxDensity('a'); //Average of maxima.
    integrator.DisplayProperties();
 
    //Numeric integral.

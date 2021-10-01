@@ -75,7 +75,7 @@ public:
     * normalized Electron Density can be integrated. Note that if you ask for the Electron Density,
     * DTK will give you approximately 1. 
    */
-   void NormalizedEDF(void);
+   void NormalizedEDF(void){if ( normConstant == 0 ) normConstant = round(wf->IntegralRho());}
    /** Computes the global maximum/maxima of the Electron Density (choice = 'g') or an average of the 
     * maxima (choice = 'a') in position space. In momentum space, its critical point is found near the 
     * origin or in it, so it is set in the origin.
