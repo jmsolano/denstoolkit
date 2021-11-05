@@ -106,6 +106,11 @@ public:
          const vector<double> &B,const vector<double> &C);
    static void TransformByMatrixMultiplication(const vector<vector<double> > &M,vector<double> &v);
    static vector<vector<double> > GetRotationMatrixAroundAxis(const vector<double> &omega,const double angle);
+   /** Creates the unit vectors to form a Cartesian system, with the following definitions:
+    * Y=(A-B); Z=(C-B)xY, X=YxZ. Here X, Y, and Z are NOT aligned with the standard x, y, and z, but
+    * are aligned according to A, B, and C. The function DOES NOT check vector sizes of A, B, or C.  */
+   static void GetCartesianSystemFrom3Vectors(const vector<double> &A,const vector<double> &B,const vector<double> &C,\
+         vector<double> &xx,vector<double> &yy,vector<double> &zz);
 /* ************************************************************************** */
 };
 /* ************************************************************************** */
