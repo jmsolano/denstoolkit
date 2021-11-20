@@ -171,8 +171,8 @@ int main (int argc, char ** argv) {
    			       intRmax[0],intRmax[1],intRmax[2]);
    }else{
       for (int i=0;i<3;++i) {
-	 intRmin[i] = bnw.rmin[i]-uncertainty;
-	 intRmax[i] = bnw.rmax[i]+uncertainty;
+	 intRmin[i] = bnw.bbmin[i]-uncertainty;
+	 intRmax[i] = bnw.bbmax[i]+uncertainty;
       }
       integrator.SetDimensions(intRmin[0],intRmin[1],intRmin[2],
    			       intRmax[0],intRmax[1],intRmax[2]);
