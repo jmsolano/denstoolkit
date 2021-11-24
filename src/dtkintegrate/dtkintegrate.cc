@@ -108,6 +108,7 @@ int main (int argc, char ** argv) {
    //Setting configuration parameters.
    double convRate=1.0;
    double tol=0;
+   double boxLimits[2]={0,0};
    int intervals=10;
    int nelectrons=0;
    int terma=0;
@@ -149,7 +150,11 @@ int main (int argc, char ** argv) {
       func=*argv[options.setfunction];
    }
    if ( options.setNPntsForMax ) {
-      nPntsForMax=std::stod(string(argv[options.setNPntsForMax]));;
+      nPntsForMax=std::stod(string(argv[options.setNPntsForMax]));
+   }
+   if ( options.setSupBoxLimits ) {
+      boxLimits[0]={std::stod(string(argv[options.setInfBoxLimits]))};
+      boxLimits[1]={std::stod(string(argv[options.setSupBoxLimits]))};
    }
    for ( auto x: molecule ) {
       fmol = infilnam.find(x.first);
@@ -162,21 +167,26 @@ int main (int argc, char ** argv) {
    //Setting integration boundaries.
    double intRmin[3]={0,0,0},intRmax[3]={0,0,0};
    double uncertainty = 3;
-   if ( (func == 'm') || (func == 'T') || (func == 'k') ){
-      while ( gwf.EvalFTDensity(intRmax[0],intRmax[1],intRmax[2]) >= 1e-12 ){
-	 for (int i=0; i<3; i++) intRmax[i] += 0.5;
+   if ( boxLimits[0] == 0 && boxLimits[1] == 0 ){
+      if ( (func == 'm') || (func == 'T') || (func == 'k') ){
+	 while ( gwf.EvalFTDensity(intRmax[0],intRmax[1],intRmax[2]) >= 1e-12 ){
+	    for (int i=0; i<3; i++) intRmax[i] += 0.5;
+	 }
+	 for (int i=0; i<3; i++) intRmin[i] = -intRmax[i];
+      }else{
+	 for (int i=0;i<3;++i) {
+	    intRmin[i] = bnw.bbmin[i]-uncertainty;
+	    intRmax[i] = bnw.bbmax[i]+uncertainty;
+	 }
       }
-      for (int i=0; i<3; i++) intRmin[i] = -intRmax[i];
-      integrator.SetDimensions(intRmin[0],intRmin[1],intRmin[2],
-   			       intRmax[0],intRmax[1],intRmax[2]);
    }else{
       for (int i=0;i<3;++i) {
-	 intRmin[i] = bnw.bbmin[i]-uncertainty;
-	 intRmax[i] = bnw.bbmax[i]+uncertainty;
+	 intRmin[i] = boxLimits[0];
+	 intRmax[i] = boxLimits[1];
       }
-      integrator.SetDimensions(intRmin[0],intRmin[1],intRmin[2],
-   			       intRmax[0],intRmax[1],intRmax[2]);
    }
+   integrator.SetDimensions(intRmin[0],intRmin[1],intRmin[2],
+			    intRmax[0],intRmax[1],intRmax[2]);
 
    //Setting integration properties.
    integrator.SetIntegrand(func);
