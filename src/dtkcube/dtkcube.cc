@@ -264,6 +264,12 @@ int main (int argc, char ** argv) {
            << grid.GetNPts(0) << " " << grid.GetNPts(1) << " " << grid.GetNPts(2) << endl;
       lfil << "#Total number of points in the cube:" << endl
            << (grid.GetNPts(0)*grid.GetNPts(1)*grid.GetNPts(2)) << endl;
+      if ( prop=='z' || prop=='Z' ) {
+         lfil << "#NCI Configuration:" << endl;
+         lfil << "#nciRhoMin:\n" << gwf.nciRhoMin << endl;
+         lfil << "#nciRhoMax:\n" << gwf.nciRhoMax << endl;
+         lfil << "#nciSMax:\n" << gwf.nciSMax << endl;
+      }
       lfil << "#CPU Time (sec):" << endl;
       lfil << scientific << setprecision(4)
            <<  double( clock () - begin_time ) / CLOCKS_PER_SEC << endl;

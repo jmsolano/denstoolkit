@@ -192,17 +192,6 @@ bool HelpersNCI::MakePovFile(const string &povname,POVRayConfiguration &pvp,Bond
    for (int i=0; i<3; i++) {pvp.locCam[i]=0.0e0;}
    pvp.locCam[2]=1.0e0;
    double zsep=1.5e0;
-   //pvp.lightSource[1][0]=0.0e0;
-   //pvp.lightSource[1][1]=0.0e0;
-   //pvp.lightSource[1][2]=zsep;
-   //pvp.AddLightSource(0.0e0,zsep,zsep);
-   //pvp.AddLightSource(0.0e0,-zsep,zsep);
-   //pvp.AddLightSource(zsep,0.0e0,zsep);
-   //pvp.AddLightSource(-zsep,0.0e0,zsep);
-   //pvp.AddLightSource(zsep,zsep,zsep);
-   //pvp.AddLightSource(zsep,-zsep,zsep);
-   //pvp.AddLightSource(-zsep,zsep,zsep);
-   //pvp.AddLightSource(-zsep,-zsep,zsep);
    pvp.lightSource[1][0]=zsep;
    pvp.lightSource[1][1]=zsep;
    pvp.lightSource[1][2]=1.0e0;
@@ -214,6 +203,7 @@ bool HelpersNCI::MakePovFile(const string &povname,POVRayConfiguration &pvp,Bond
    for (int i=1; i<pvp.nLightSources; i++) {
       for (int j=0; j<3; j++) {pvp.lightSource[i][j]*=(bn.rView*4.0e0);}
    }
+   for ( size_t i=0 ; i<3 ; ++i ) { pvp.vecAngView[i]=0.0e0; }
    if ( options.rotcam ) {
       HelpersNCI::AlignMolecule(pvp,bn,options,argv);
       double angle;
@@ -229,9 +219,6 @@ bool HelpersNCI::MakePovFile(const string &povname,POVRayConfiguration &pvp,Bond
          angle=std::stod(string(argv[options.rotZ]));
          CommonHelpers::RotateCameraAroundLocCam(pvp,angle);
       }
-      //if ( options.rotX ) { pvp.vecAngView[0]=std::stod(string(argv[options.rotX])); }
-      //if ( options.rotY ) { pvp.vecAngView[1]=std::stod(string(argv[options.rotY])); }
-      //if ( options.rotZ ) { pvp.vecAngView[2]=std::stod(string(argv[options.rotZ])); }
    }
    for (int i=0; i<3; i++) {
       pvp.locCam[i]*=bn.rView*camdist;
@@ -255,7 +242,7 @@ bool HelpersNCI::MakePovFile(const string &povname,POVRayConfiguration &pvp,Bond
    HelpersPOVRay::WriteVector(ofil,pvp.vecUp[0],pvp.vecUp[1],pvp.vecUp[2]);
    ofil << '\n' << "  right ";
    HelpersPOVRay::WriteVector(ofil,pvp.vecRight[0],pvp.vecRight[1],pvp.vecRight[2]);
-   if ( options.rotcam ) {
+   if ( options.orientcam3ats ) {
       ofil << '\n' << "  direction ";
       HelpersPOVRay::WriteVector(ofil,pvp.vecDir[0],pvp.vecDir[1],pvp.vecDir[2]);
    } else {
@@ -308,10 +295,7 @@ bool HelpersNCI::AlignMolecule3Atoms(POVRayConfiguration &pvp,BondNetWork &bn,\
    for ( size_t i=0 ; i<3 ; ++i ) { b[i]=bn.R[bIdx][i]; }
    for ( size_t i=0 ; i<3 ; ++i ) { c[i]=bn.R[cIdx][i]; }
    vector<vector<double> > M=MatrixVectorOperations3D::GetRotationMatrix2AlignPassive(a,b,c);
-   pvp.locCam[0]=0.0e0; pvp.locCam[1]=0.0e0; pvp.locCam[2]=1.0e0;
-   pvp.vecDir[0]=0.0e0; pvp.vecDir[1]=0.0e0; pvp.vecDir[2]=-1.0e0;
-   pvp.vecUp[0]=0.0e0;  pvp.vecUp[1]=1.0e0;  pvp.vecUp[2]=0.0e0;
-   pvp.vecRight[0]=4.0e0/3.0e0; pvp.vecRight[1]=0.0e0; pvp.vecRight[2]=0.0e0;
+   pvp.SelectStandardCameraVectors();
    pvp.ApplyRotationMatrixToCameraAndLightSources(M);
    return true;
 }

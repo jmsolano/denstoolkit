@@ -104,7 +104,6 @@ int main (int argc, char ** argv) {
    if (options.setn1) {
       sscanf(argv[options.setn1],"%d",&nn); //same number of points per direction
       grid.SetNPts(nn);
-   ScreenUtils::DisplayGreenMessage("Checkpoint");
    } else if (options.setn3) {
       int ny,nz;
       sscanf(argv[options.setn3],"%d",&nn);  //different number of points per direction
@@ -125,11 +124,6 @@ int main (int argc, char ** argv) {
       grid.SetUpSimpleGrid(gwf,bnw);
    }
    
-   cout << "The size of the grid will be: " << grid.GetNPts(0) << " x " 
-        << grid.GetNPts(1) << " x " << grid.GetNPts(2) << '\n';
-   cout << "Total number of points that will be computed: " 
-        << (grid.GetNPts(0)*grid.GetNPts(1)*grid.GetNPts(2)) << '\n';
-   
    /* Special configurations  */
    if ( options.configspecialnci ) {
       double ttt=std::stod(string(argv[options.configspecialnci]));
@@ -149,6 +143,10 @@ int main (int argc, char ** argv) {
 
    /* Computes cube (if requested). */
    if ( !options.skipcube ) {
+      cout << "The size of the grid will be: " << grid.GetNPts(0) << " x "
+           << grid.GetNPts(1) << " x " << grid.GetNPts(2) << '\n';
+      cout << "Total number of points that will be computed: "
+           << (grid.GetNPts(0)*grid.GetNPts(1)*grid.GetNPts(2)) << '\n';
       cout << "Evaluating and writing " << GetFieldTypeKeyLong(prop) << ")." << '\n' << '\n';
       grid.MakeCube(cubfnam,gwf,NCIS);
    }
