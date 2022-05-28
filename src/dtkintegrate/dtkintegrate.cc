@@ -43,7 +43,6 @@
    Guelph, Ontario, Canada.
    May 2013
 */
-
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -60,10 +59,7 @@ using std::string;
 using std::setprecision;
 using std::scientific;
 #include <ctime>
-#include <unordered_map>
-using std::unordered_map;
 #include <climits>
-
 #include "../common/screenutils.h"
 #include "../common/fileutils.h"
 #include "../common/mymath.h"
@@ -82,14 +78,14 @@ int main (int argc, char ** argv) {
    OptionFlags options;
    ifstream ifile;
    ofstream ofile;
-   
+  
    getOptions(argc,argv,options); //This processes the options from the command line.
    mkFileNames(argv,options,infilnam,outfilnam); //This creates the names used.
    ScreenUtils::PrintHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS);
    //Just to let the user know that the initial configuration is OK
-   
+  
    cout << endl << "Loading wave function from file: " << infilnam << "... ";
-   
+  
    GaussWaveFunction gwf;
 
    if (!(gwf.ReadFromFile(infilnam))) { //Loading the wave function
@@ -102,98 +98,67 @@ int main (int argc, char ** argv) {
    bnw.ReadFromFile(infilnam);
    bnw.SetUpBNW();
    cout << "Done." << endl;
-   
+  
    VegasIntegrator integrator(gwf,bnw);
 
    //Setting configuration parameters.
-   double convRate=1.0;
-   double tol=0;
-   double boxLimits[2]={0,0};
    int intervals=10;
-   int nelectrons=0;
-   int terma=0;
-   int stopRef=INT_MAX;
+   if ( options.setintervals ) { intervals=std::stod(string(argv[options.setintervals])); }
    size_t points=10000;
-   size_t nPntsForMax=100000;
-   size_t fmol;
+   if ( options.setpoints ) { points=std::stod(string(argv[options.setpoints])); }
    size_t iterations=20;
+   if ( options.setiterations ) { iterations=std::stod(string(argv[options.setiterations])); }
+   double convRate=1.0e0;
+   if ( options.setconvergenceRate ) { convRate=std::stod(string(argv[options.setconvergenceRate])); }
+   int terma=0;
+   if ( options.settermalization ) { terma=std::stod(string(argv[options.settermalization])); }
+   double tol=0.0e0;
+   if ( options.settolerance ) { tol=std::stod(string(argv[options.settolerance])); }
+   int stopRef=INT_MAX;
+   if ( options.setstopRefinement ) { stopRef=std::stod(string(argv[options.setstopRefinement])); }
    char func='d';
-   unordered_map<string,int> molecule;
-   molecule["benzene"] = 42;
-   molecule["ch4"] = 10;
-   molecule["cubano"] = 56;
-   molecule["cyclopropane"] = 24;
-   molecule["ethanol"] = 26;
-   
-   if ( options.setintervals ) { 
-      intervals=std::stod(string(argv[options.setintervals]));
+   if ( options.setfunction ) { func=*argv[options.setfunction]; }
+   double nelectrons=0.0e0;
+   if ( func == 'd' || func == 'm' ) {
+      nelectrons=gwf.IntegralRho();
+      integrator.AnalyticIntegral(nelectrons);
    }
-   if ( options.setpoints ) { 
-      points=std::stod(string(argv[options.setpoints]));
-   }
-   if ( options.setiterations ) { 
-      iterations=std::stod(string(argv[options.setiterations]));
-   }
-   if ( options.setconvergenceRate ) { 
-      convRate=std::stod(string(argv[options.setconvergenceRate]));
-   }
-   if ( options.settermalization ) { 
-      terma=std::stod(string(argv[options.settermalization]));
-   }
-   if ( options.settolerance ) { 
-      tol=std::stod(string(argv[options.settolerance]));
-   }
-   if ( options.setstopRefinement ) { 
-      stopRef=std::stod(string(argv[options.setstopRefinement]));
-   }
-   if ( options.setfunction ) {
-      func=*argv[options.setfunction];
-   }
-   if ( options.setNPntsForMax ) {
-      nPntsForMax=std::stod(string(argv[options.setNPntsForMax]));
-   }
+   size_t nPntsForMax=100000;
+   if ( options.setNPntsForMax ) { nPntsForMax=std::stod(string(argv[options.setNPntsForMax])); }
+   double boxLimits[2]={0.0e0,0.0e0};
    if ( options.setSupBoxLimits ) {
       boxLimits[0]={std::stod(string(argv[options.setInfBoxLimits]))};
       boxLimits[1]={std::stod(string(argv[options.setSupBoxLimits]))};
    }
-   for ( auto x: molecule ) {
-      fmol = infilnam.find(x.first);
-      if (fmol != std::string::npos) {
-	 nelectrons = x.second;
-	 break;
-      }
-   }
 
    //Setting integration boundaries.
-   double intRmin[3]={0,0,0},intRmax[3]={0,0,0};
-   double uncertainty = 3;
-   if ( boxLimits[0] == 0 && boxLimits[1] == 0 ){
+   double intRmin[3]={0.0e0,0.0e0,0.0e0},intRmax[3]={0.0e0,0.0e0,0.0e0};
+   double uncertainty = 3.0e0;
+   if ( boxLimits[0] == 0.0e0 && boxLimits[1] == 0.0e0 ){
       if ( (func == 'm') || (func == 'T') || (func == 'k') ){
-	 while ( gwf.EvalFTDensity(intRmax[0],intRmax[1],intRmax[2]) >= 1e-12 ){
-	    for (int i=0; i<3; i++) intRmax[i] += 0.5;
-	 }
-	 for (int i=0; i<3; i++) intRmin[i] = -intRmax[i];
-      }else{
-	 for (int i=0;i<3;++i) {
-	    intRmin[i] = bnw.bbmin[i]-uncertainty;
-	    intRmax[i] = bnw.bbmax[i]+uncertainty;
-	 }
+         while ( gwf.EvalFTDensity(intRmax[0],intRmax[1],intRmax[2]) >= 1.0e-12 ) {
+            for (int i=0; i<3; ++i) { intRmax[i] += 0.5e0; }
+         }
+         for (int i=0; i<3; ++i) { intRmin[i] = -intRmax[i]; }
+      } else {
+         for (int i=0;i<3;++i) {
+            intRmin[i] = bnw.bbmin[i]-uncertainty;
+            intRmax[i] = bnw.bbmax[i]+uncertainty;
+         }
       }
-   }else{
+   } else {
       for (int i=0;i<3;++i) {
-	 intRmin[i] = boxLimits[0];
-	 intRmax[i] = boxLimits[1];
+         intRmin[i] = boxLimits[0];
+         intRmax[i] = boxLimits[1];
       }
    }
-   integrator.SetDimensions(intRmin[0],intRmin[1],intRmin[2],
-			    intRmax[0],intRmax[1],intRmax[2]);
+   integrator.SetDimensions(intRmin[0],intRmin[1],intRmin[2],intRmax[0],intRmax[1],intRmax[2]);
 
    //Setting integration properties.
    integrator.SetIntegrand(func);
    integrator.SetIntervals(intervals);
    integrator.SetNumOfPoints(points);
    integrator.SetIterations(iterations);
-   if ((func == 'd' || func == 'm') && nelectrons > 0) integrator.AnalyticIntegral(nelectrons);
    integrator.SetConvergenceRate(convRate);
    integrator.SetTermalization(terma);
    integrator.SetTolerance(tol);
@@ -201,6 +166,7 @@ int main (int argc, char ** argv) {
    integrator.SetNSamplesToFindMaximum(nPntsForMax);
    // integrator.NormalizedEDF();
    // integrator.Relative2MaxDensity('a'); //Average of maxima.
+   cout << scientific << setprecision(10);
    integrator.DisplayProperties();
 
    //Numeric integral.
@@ -215,11 +181,9 @@ int main (int argc, char ** argv) {
    cout << "N Iterations: " << integrator.CountIterations() << '\n';
    cout << "Integral: " << integrator.Integral() << '\n';
    if (func == 'd' || func == 'm') {
-      cout << "N. Electrons (Integrated): " 
-	   << (integrator.Integral()-0.5 >= int(integrator.Integral()) ? int(integrator.Integral()+1) : int(integrator.Integral())) 
-	   << '\n'; 
-      if (nelectrons > 0) cout << "Relerr(%) = " << integrator.RelativeError() << '\n'; 
-   } 
+      cout << "N. Electrons (Integrated): " << nelectrons << '\n';
+      if (nelectrons > 0) cout << "Relerr(%) = " << integrator.RelativeError() << '\n';
+   }
    cout << "Variance: " << integrator.Variance() << '\n';
 
    //Print results in a log file.
@@ -228,12 +192,12 @@ int main (int argc, char ** argv) {
    cout << scientific << setprecision(8);
 
    /* At this point the computation has ended. Usually this means no errors ocurred. */
-   
+
    ScreenUtils::PrintHappyEnding();
    ScreenUtils::SetScrGreenBoldFont();
    ScreenUtils::PrintScrStarLine();
    cout << setprecision(3) << "CPU Time: "
-        << double( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
+      << double( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
    double end_walltime=time(NULL);
    cout << "Wall-clock time: " << double (end_walltime-begin_walltime) << "s" << endl;
 #if DEBUG

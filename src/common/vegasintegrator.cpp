@@ -88,7 +88,7 @@ void VegasIntegrator::DisplayProperties(void) {
    printf("\nTermalization: %ld",param.termalization);
    printf("\nStop refinement after iteration: %ld",param.noMoreRefinement);
    printf("\nTolerance: %lf",param.tolerance);
-   if (param.relativeError == true) printf("\nAnalytic integral: %lf",param.analyticInt);
+   if (param.relativeError == true) printf("\nAnalytic integral: %lg",param.analyticInt);
    cout << "\n" << endl;
 }
 void VegasIntegrator::Relative2MaxDensity(char choice) {
