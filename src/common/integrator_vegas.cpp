@@ -11,16 +11,13 @@ using std::endl;
 #include <string>
 using std::string;
 #include <cmath>
-
-#include "vegasintegrator.h"
-#include "gausswavefunction.h"
 #include "fldtypesdef.h"
+#include "gausswavefunction.h"
 #include "bondnetwork.h"
+#include "integrator_vegas.h"
 
 
-VegasIntegrator::VegasIntegrator() {
-   wf=nullptr;
-   integral=0.0e0;
+IntegratorVegas::IntegratorVegas() : Integrator() {
    countIter=countEval=0;
    stopIterating=false;
    normConstant=maxDensity=maxMomDensity=0;
@@ -45,15 +42,15 @@ VegasIntegrator::VegasIntegrator() {
    param.noMoreRefinement = INT_MAX;
    param.nPointsForMax = 100000;
 }
-VegasIntegrator::VegasIntegrator(GaussWaveFunction &uwf,BondNetWork &ubnw) : VegasIntegrator() {
+IntegratorVegas::IntegratorVegas(GaussWaveFunction &uwf,BondNetWork &ubnw) : IntegratorVegas() {
    wf=&uwf;
    bnw=&ubnw;
 }
-void VegasIntegrator::AnalyticIntegral(double analyticResult) {
+void IntegratorVegas::AnalyticIntegral(double analyticResult) {
    param.analyticInt = analyticResult;
    param.relativeError = true;
 }
-void VegasIntegrator::SetDimensions(double xLeft,double yLeft,double zLeft,double xRight,double yRight,double zRight) {
+void IntegratorVegas::SetDimensions(double xLeft,double yLeft,double zLeft,double xRight,double yRight,double zRight) {
    if (xLeft >= xRight || yLeft >= yRight || zLeft >= zRight) {
       cout << "Dimensions added in wrong order or limits are equal." << endl;
       exit (1);
@@ -69,7 +66,7 @@ void VegasIntegrator::SetDimensions(double xLeft,double yLeft,double zLeft,doubl
 
    for (int j=0; j<3; j++) width[j] = xMax[j]-xMin[j];
 }
-void VegasIntegrator::DisplayProperties(void) {
+void IntegratorVegas::DisplayProperties(void) {
    printf("\nLeft limit: (%lf,%lf,%lf)",xMin[0],xMin[1],xMin[2]);
    printf("\nRight limit: (%lf,%lf,%lf)",xMax[0],xMax[1],xMax[2]);
    cout << "\nIntegrand: " << GetFieldTypeKeyLong(param.integrand);
@@ -91,7 +88,7 @@ void VegasIntegrator::DisplayProperties(void) {
    if (param.relativeError == true) printf("\nAnalytic integral: %lg",param.analyticInt);
    cout << "\n" << endl;
 }
-void VegasIntegrator::Relative2MaxDensity(char choice) {
+void IntegratorVegas::Relative2MaxDensity(char choice) {
    double evalDensity;
 
    if ( normConstant == 0 ) NormalizedEDF(); //Define normConstant
@@ -114,7 +111,7 @@ void VegasIntegrator::Relative2MaxDensity(char choice) {
       }
    }
 }
-void VegasIntegrator::SearchForMaximum(void) {
+void IntegratorVegas::SearchForMaximum(void) {
    double functionImage;
    double radialFactor=0.5*width[0];
    double azimuthalFactor=2*M_PI+1e-4; //1e-4 because random numbers appear from 0 to 0.9999 and we want an inclusive interval.
@@ -135,7 +132,7 @@ void VegasIntegrator::SearchForMaximum(void) {
       point[2] = dis(engine)*polarFactor;
    }
 }
-double VegasIntegrator::Integral(void) {
+double IntegratorVegas::Integral(void) {
    if ( normConstant > 0 && maxDensity == 0 ){
       switch ( param.integrand ) {
 	 case 'd' : /* Electron density (Rho)  */
@@ -169,7 +166,7 @@ double VegasIntegrator::Integral(void) {
 
    return integral;
 }
-double VegasIntegrator::Integrand(double x,double y,double z) {
+double IntegratorVegas::Integrand(double x,double y,double z) {
    switch ( param.integrand ) {
       case 'd' : /* Electron density (Rho)  */
 	 return wf->EvalDensity(x,y,z);
@@ -217,7 +214,7 @@ double VegasIntegrator::Integrand(double x,double y,double z) {
 	 return wf->EvalDensity(x,y,z);
    }
 }
-void VegasIntegrator::Integrate(void) {
+void IntegratorVegas::Integrate(void) {
    vector<vector<double> > interval(3,vector<double>(param.numOfIntervals+1));
    vector<vector<double> > meanIntegral(3,vector<double>(param.numOfIntervals));
 
@@ -266,7 +263,7 @@ void VegasIntegrator::Integrate(void) {
    countEval = param.numOfPoints*countIter;
    repeatIntegral = true;
 }
-void VegasIntegrator::MonteCarloIntegration(vector<vector<double> > interval,vector<vector<double> > &meanIntegral) {
+void IntegratorVegas::MonteCarloIntegration(vector<vector<double> > interval,vector<vector<double> > &meanIntegral) {
    int floorYNg[3];
    double decimalYNg,yNg,deltaXi,jacobian;
    double xi[3];
@@ -314,7 +311,7 @@ void VegasIntegrator::MonteCarloIntegration(vector<vector<double> > interval,vec
       // cout << endl;
    // }
 }
-bool VegasIntegrator::AlteratesAverageIntegral(vector<vector<double> > &meanIntegral) {
+bool IntegratorVegas::AlteratesAverageIntegral(vector<vector<double> > &meanIntegral) {
    double sumInferior=0,sumSuperior=0,convRate=param.convergenceRate;
    double sumMeanIntegral=0;
    vector<double> meanIntegralCopy(param.numOfIntervals);
@@ -348,7 +345,7 @@ bool VegasIntegrator::AlteratesAverageIntegral(vector<vector<double> > &meanInte
       return false;
    }
 }
-void VegasIntegrator::AlteratesIncrements(vector<vector<double> > &interval,vector<vector<double> > meanIntegral) {
+void IntegratorVegas::AlteratesIncrements(vector<vector<double> > &interval,vector<vector<double> > meanIntegral) {
    int k;
    double deltaMeanIntegral,accumMeanIntegral,deltaXk,sumMeanIntegral;
    vector<vector<double> > intervalCopy(interval);
@@ -375,10 +372,7 @@ void VegasIntegrator::AlteratesIncrements(vector<vector<double> > &interval,vect
    }
    interval = intervalCopy;
 }
-void VegasIntegrator::PrintInLogFile(string inFileName,string outFileName) {
-   outFileName.replace(outFileName.end()-11,outFileName.end()-4,"AllIntegralData");
-   cout << "\nPrinting integrand data into file " << outFileName << endl;
-   cout << "..." << endl;
+void IntegratorVegas::PrintInLogFile(string inFileName,string outFileName) {
    ofstream outFile(outFileName);
       outFile << "File read: " << inFileName
 	      << "\n***********************************************************************************"
@@ -417,9 +411,8 @@ void VegasIntegrator::PrintInLogFile(string inFileName,string outFileName) {
 	      << "\n***********************************************************************************"
 	      << "\n";
    outFile.close();
-   cout << "Finished printing." << endl;
 }
-double VegasIntegrator::ChiSquare(double integralPerIteration,double variancePerIteration,double estimatedIntegral) {
+double IntegratorVegas::ChiSquare(double integralPerIteration,double variancePerIteration,double estimatedIntegral) {
    double chiSq;
 
    chiSq = Power(integralPerIteration-estimatedIntegral,2)/variancePerIteration;
@@ -427,16 +420,16 @@ double VegasIntegrator::ChiSquare(double integralPerIteration,double variancePer
 
    return chiSq;
 }
-double VegasIntegrator::VariancePerIteration(double sample,double squareSample) {
+double IntegratorVegas::VariancePerIteration(double sample,double squareSample) {
    return (squareSample-sample*sample)/param.numOfPoints;
 }
-double VegasIntegrator::ComputesRelativeError(double analyticIntegral,double estimatedIntegral) {
+double IntegratorVegas::ComputesRelativeError(double analyticIntegral,double estimatedIntegral) {
    return fabs((analyticIntegral-estimatedIntegral)/analyticIntegral)*100;
 }
-double VegasIntegrator::RelativeError(void) {
+double IntegratorVegas::RelativeError(void) {
    return ComputesRelativeError(param.analyticInt,integral);
 }
-double VegasIntegrator::Power(double x,int n) {
+double IntegratorVegas::Power(double x,int n) {
    double y;
    if (n == 0) return 1;
    else {

@@ -1,5 +1,5 @@
-#ifndef _VEGASINTEGRATOR_H_
-#define _VEGASINTEGRATOR_H_
+#ifndef _INTEGRATOR_VEGAS_H_
+#define _INTEGRATOR_VEGAS_H_
 
 #include <vector>
 using std::vector;
@@ -14,15 +14,26 @@ using std::string;
 #include "gausswavefunction.h"
 #include "fldtypesdef.h"
 #include "bondnetwork.h"
+#include "integrator.h"
 
 /* *********************************************************************************** */
-class VegasIntegrator {
+class IntegratorVegas : public Integrator {
 /* *********************************************************************************** */
 public:
 /* *********************************************************************************** */
-   VegasIntegrator();
-   VegasIntegrator(GaussWaveFunction &uwf,BondNetWork &ubnw);
+   IntegratorVegas();
+   IntegratorVegas(GaussWaveFunction &uwf,BondNetWork &ubnw);
    /* *********************************************************************************** */
+   /** Computes integral through Las Vegas method. */
+   void Integrate(void);
+   /** Shows the integral (expected value) once Las Vegas integration has ended. */
+   double Integral(void);
+   /** Displays Las Vegas method's parameters: Integration region, integrand, convergence rate, grid size 
+    * (number of intervals), number of Monte Carlo points, maximum number of iterations, termalization
+    * (num. of iterations to ignore statistical computing), num. of iterations before stopping refinement 
+    * and refinement tolerance.
+   */
+   void DisplayProperties(void);
    /** Sets the integration region limits for a function \f$f\f$ of type \f$f:R^3 -> R\f$. */
    void SetDimensions(double xLeft,double yLeft,double zLeft,double xRight,double yRight,double zRight);
    /**  Sets the integrand. */
@@ -64,13 +75,6 @@ public:
     * accumulated expected value starts to beheave as a normal distribution.
    */
    void SetStopRefinement(double stopRef){param.noMoreRefinement = stopRef;}
-   /**
-    * Displays Las Vegas method's parameters: Integration region, integrand, convergence rate, grid size 
-    * (number of intervals), number of Monte Carlo points, maximum number of iterations, termalization
-    * (num. of iterations to ignore statistical computing), num. of iterations before stopping refinement 
-    * and refinement tolerance.
-   */
-   void DisplayProperties(void);
    /** Computes the normalization constant of the Electron Density, so that functions related with the
     * normalized Electron Density can be integrated. Note that if you ask for the Electron Density,
     * DTK will give you approximately 1. 
@@ -84,8 +88,6 @@ public:
    void Relative2MaxDensity(char choice);
    /** Shows the integral variance (Las Vegas method). */
    double Variance(void) {return fabs(variance);}
-   /** Shows the integral (expected value) once Las Vegas integration has ended. */
-   double Integral(void);
    /** Shows the maximum value of electron density. */
    double MaxDensity(void) {return maxDensity;}
    /** Shows the normalization constant of integrand. */
@@ -94,8 +96,6 @@ public:
    long int CountEvaluations(void) {return countEval;}
    /** Shows the number of iterations runned during Las Vegas integration. */
    long int CountIterations(void) {return countIter;}
-   /** Computes integral through Las Vegas method. */
-   void Integrate(void);
    /** Sets the number of points to find the global maximum of the electron density. This method only 
     * works for functions in momentum space (Shannon Entropy, Electron Density and Kinnetic Energy). 
    */
@@ -145,5 +145,5 @@ protected:
    bool AlteratesAverageIntegral(vector<vector<double> > &meanIntegral);
 };
 
-#endif /* _VEGASINTEGRATOR_H_ */
+#endif /* _INTEGRATOR_VEGAS_H_ */
 

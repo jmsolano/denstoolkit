@@ -83,7 +83,7 @@ void mkFileNames(char ** (&argv), OptionFlags &opts, string &i_fn, string &o_fn)
    o_fn.append("log");
    pos=o_fn.find_last_of('.');
    if (pos!=string::npos) {
-      string plbl="AllProp";
+      string plbl="AllIntegralData";
       o_fn.insert(pos,plbl);
    }
    if (opts.outfname) {

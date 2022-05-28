@@ -64,11 +64,11 @@ using std::scientific;
 #include "../common/fileutils.h"
 #include "../common/mymath.h"
 #include "../common/gausswavefunction.h"
-#include "../common/vegasintegrator.h"
+#include "../common/integrator_vegas.h"
 #include "optflags.h"
 #include "../common/bondnetwork.h"
 #include "mytimer.h"
-#include "../dtkpoint/crtflnms.h"
+#include "crtflnms.h"
 
 int main (int argc, char ** argv) {
    const clock_t begin_time = clock();
@@ -99,7 +99,7 @@ int main (int argc, char ** argv) {
    bnw.SetUpBNW();
    cout << "Done." << endl;
   
-   VegasIntegrator integrator(gwf,bnw);
+   IntegratorVegas integrator(gwf,bnw);
 
    //Setting configuration parameters.
    int intervals=10;
@@ -187,6 +187,7 @@ int main (int argc, char ** argv) {
    cout << "Variance: " << integrator.Variance() << '\n';
 
    //Print results in a log file.
+   cout << "\nPrinting integrand data into file " << outfilnam << " ...\n";
    integrator.PrintInLogFile(infilnam,outfilnam);
 
    cout << scientific << setprecision(8);
