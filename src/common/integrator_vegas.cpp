@@ -151,30 +151,30 @@ double IntegratorVegas::Integral(void) {
       switch ( param.integrand ) {
 	 case 'd' : /* Electron density (Rho)  */
 	    integral = ( integral-0.5 >= int(integral) ) ? int(integral+1) : int(integral);
-	    return integral*1./normConstant;
+	    return integral/normConstant;
 	 case 'm' : /* Electron density (Rho) in Momentum Space  */
 	    integral = ( integral-0.5 >= int(integral) ) ? int(integral+1) : int(integral);
-	    return integral*1./normConstant;
+	    return integral/normConstant;
 	 case 'S' : /* Shannon Entropy Density  */
-	    return integral*1./normConstant+log(normConstant);
+	    return integral/normConstant+log(normConstant);
 	 case 'T' : /* Shannon Entropy Density in Momentum Space  */
-	    return integral*1./normConstant+log(normConstant);
+	    return integral/normConstant+log(normConstant);
 	 default :
 	    integral = ( integral-0.5 >= int(integral) ) ? int(integral+1) : int(integral);
-	    return integral*1./normConstant;
+	    return integral/normConstant;
       }
    }else if ( maxDensity > 0 ){
       switch ( param.integrand ) {
 	 case 'd' : /* Electron density (Rho)  */
-	    return integral*1./maxDensity;
+	    return integral/maxDensity;
 	 case 'm' : /* Electron density (Rho) in Momentum Space  */
-	    return integral*1./maxDensity;
+	    return integral/maxDensity;
 	 case 'S' : /* Shannon Entropy Density  */
-	    return integral*1./normConstant+log(maxDensity);
+	    return integral/normConstant+log(maxDensity);
 	 case 'T' : /* Shannon Entropy Density in Momentum Space  */
-	    return integral*1./normConstant+log(maxDensity);
+	    return integral/normConstant+log(maxDensity);
 	 default :
-	    return integral*1./maxDensity;
+	    return integral/maxDensity;
       }
    }
 
@@ -183,49 +183,49 @@ double IntegratorVegas::Integral(void) {
 double IntegratorVegas::Integrand(double x,double y,double z) {
    switch ( param.integrand ) {
       case 'd' : /* Electron density (Rho)  */
-	 return wf->EvalDensity(x,y,z);
+         return wf->EvalDensity(x,y,z);
       case 'm' : /* Electron density (Rho) in Momentum Space  */
-	 return wf->EvalFTDensity(x,y,z);
+         return wf->EvalFTDensity(x,y,z);
       case 'g' : /* MagGradRho Density  */
-	 return wf->EvalMagGradRho(x,y,z);
+         return wf->EvalMagGradRho(x,y,z);
       case 'l' : /* Laplacian Density  */
-	 return wf->EvalLapRho(x,y,z);
+         return wf->EvalLapRho(x,y,z);
       case 'L' : /* LOL Density  */
-	 return wf->EvalLOL(x,y,z);
+         return wf->EvalLOL(x,y,z);
       case 'E' : /* ELF Density  */
-	 return wf->EvalELF(x,y,z);
+         return wf->EvalELF(x,y,z);
       case 'S' : /* Shannon Entropy Density  */
-	 return wf->EvalShannonEntropy(x,y,z);
+         return wf->EvalShannonEntropy(x,y,z);
       case 'T' : /* Shannon Entropy Density in Momentum Space  */
-	 return wf->EvalMomentumShannonEntropy(x,y,z);
+         return wf->EvalMomentumShannonEntropy(x,y,z);
       case 'K' : /* Kinetic Energy Density K  */
-	 return wf->EvalKineticEnergyK(x,y,z);
+         return wf->EvalKineticEnergyK(x,y,z);
       case 'k' : /* Kinetic Energy Density K in Momentum Space  */
-	 return wf->EvalFTKineticEnergy(x,y,z);
+         return wf->EvalFTKineticEnergy(x,y,z);
       case 'G' : /* Kinetic Energy Density G  */
-	 return wf->EvalKineticEnergyG(x,y,z);
+         return wf->EvalKineticEnergyG(x,y,z);
       case 'M' : /* MagGradLOL Density  */
-	 return wf->EvalMagGradLOL(x,y,z);
+         return wf->EvalMagGradLOL(x,y,z);
       case 'V' : /* Molecular Electrostatic Potential Density  */
-	 return wf->EvalMolElecPot(x,y,z);
+         return wf->EvalMolElecPot(x,y,z);
       case 'P' : /* MagLEDVector  */
-	 return wf->EvalMagLED(x,y,z);
+         return wf->EvalMagLED(x,y,z);
       case 's' : /* Reduced Density Gradient  */
-	 return wf->EvalReducedDensityGradient(x,y,z);
+         return wf->EvalReducedDensityGradient(x,y,z);
       case 'r' : /* Region of Slow Electrons  */
-	 return wf->EvalRoSE(x,y,z);
+         return wf->EvalRoSE(x,y,z);
       case 'v' : /* Potential Energy Density */
-	 return wf->EvalVirialPotentialEnergyDensity(x,y,z);
+         return wf->EvalVirialPotentialEnergyDensity(x,y,z);
       case 'z' : /* Non Covalent Interactions (NCI) -- Reduced Density Gradient */
-	 return wf->EvalNCIs(x,y,z);
+         return wf->EvalNCIs(x,y,z);
       case 'Z' : /* Non Covalent Interactions (NCI) -- Rho */
-	 return wf->EvalNCILambda(x,y,z);
+         return wf->EvalNCILambda(x,y,z);
       case 'e' : /*!< Ellipticity  */
-	 return wf->EvalEllipticity(x,y,z);
+         return wf->EvalEllipticity(x,y,z);
       case 'u' : /* Scalar Custom Field Density */
-	 return wf->EvalCustomScalarField(x,y,z);
+         return wf->EvalCustomScalarField(x,y,z);
       default :
-	 return wf->EvalDensity(x,y,z);
+         return wf->EvalDensity(x,y,z);
    }
 }
 void IntegratorVegas::Integrate(void) {
@@ -237,7 +237,7 @@ void IntegratorVegas::Integrate(void) {
       countIter=0;
       repeatIntegral = stopIterating = false;
       for (int j=0; j<3; j++) {
-	 for (int i=0; i<param.numOfIntervals+1; i++) interval[j][i] = xMin[j]+i*1./param.numOfIntervals*width[j];
+	 for (int i=0; i<param.numOfIntervals+1; i++) interval[j][i] = xMin[j]+i/param.numOfIntervals*width[j];
       }
 
       while (repeatIntegral == false && stopIterating == false && countIter < param.iterations) {
@@ -314,7 +314,7 @@ void IntegratorVegas::MonteCarloIntegration(vector<vector<double> > interval,vec
    for (int j=0; j<3; j++) {
       for (int i=0; i<param.numOfIntervals; i++) {
 	 if (countPointsSampled[j][i] > 0) meanIntegral[j][i] /= countPointsSampled[j][i];
-	 // if (countPointsSampled[j][i] > 0) meanIntegral[j][i] /= param.numOfPoints*1./param.numOfIntervals;
+	 // if (countPointsSampled[j][i] > 0) meanIntegral[j][i] /= param.numOfPoints/param.numOfIntervals;
 	 // if (meanIntegral[j][i] == 0) meanIntegral[j][i] = numeric_limits<double>::min();
       }
    }

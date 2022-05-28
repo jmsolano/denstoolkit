@@ -204,7 +204,7 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "                     	   \t  Available options:" << '\n';
    cout << "                     	   \t\td (Electronic density in position space)" << '\n';
    cout << "                     	   \t\tm (Density in momentum space)" << '\n';
-   cout << "                     	   \t\ti (Laplacian of the density)" << '\n';
+   cout << "                     	   \t\tl (Laplacian of the density)" << '\n';
    cout << "                     	   \t\tE (Electron Localization Function)" << '\n';
    cout << "                     	   \t\tS (Shannon entropy of density in position space)" << '\n';
    cout << "                     	   \t\tT (Shannon entropy in momentum space)" << '\n';
