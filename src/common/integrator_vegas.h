@@ -34,6 +34,8 @@ public:
     * and refinement tolerance.
    */
    void DisplayProperties(void);
+   /** Displays the results of the integration, as well as additional information  */
+   void DisplayResults();
    /** Sets the integration region limits for a function \f$f\f$ of type \f$f:R^3 -> R\f$. */
    void SetDimensions(double xLeft,double yLeft,double zLeft,double xRight,double yRight,double zRight);
    /**  Sets the integrand. */
@@ -101,7 +103,7 @@ public:
    */
    void SetNSamplesToFindMaximum(double NSamples){param.nPointsForMax = NSamples;}
    /** Print all information related to the integral: Input data and output data. */
-   void PrintInLogFile(string inFileName,string outFileName);
+   void PrintInLogFile(ofstream &ofil,string inFileName);
    double RelativeError(void);
    void AnalyticIntegral(double analyticResult);
 /* *********************************************************************************** */

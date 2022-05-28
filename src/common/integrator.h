@@ -12,6 +12,7 @@ public:
    virtual void Integrate() = 0;
    virtual double Integral() = 0;
    virtual void DisplayProperties();
+   virtual void DisplayResults();
 /* ************************************************************************** */
 protected:
 /* ************************************************************************** */

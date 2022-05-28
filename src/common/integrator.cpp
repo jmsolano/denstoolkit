@@ -11,5 +11,8 @@ Integrator::Integrator() {
 void Integrator::DisplayProperties() {
    cout << "Base integrator, nothing to display..." << '\n';
 }
+void Integrator::DisplayResults() {
+   DisplayProperties();
+}
 
 

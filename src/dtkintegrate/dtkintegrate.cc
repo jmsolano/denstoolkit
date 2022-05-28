@@ -177,18 +177,19 @@ int main (int argc, char ** argv) {
    aTim.PrintElapsedTimeSec(string("integration time"));
 
    //Print results on screen.
-   cout << "N Integrand evaluations: " << integrator.CountEvaluations() << '\n';
-   cout << "N Iterations: " << integrator.CountIterations() << '\n';
-   cout << "Integral: " << integrator.Integral() << '\n';
-   if (func == 'd' || func == 'm') {
-      cout << "N. Electrons (Integrated): " << nelectrons << '\n';
-      if (nelectrons > 0) cout << "Relerr(%) = " << integrator.RelativeError() << '\n';
-   }
-   cout << "Variance: " << integrator.Variance() << '\n';
+   integrator.DisplayResults();
 
    //Print results in a log file.
    cout << "\nPrinting integrand data into file " << outfilnam << " ...\n";
-   integrator.PrintInLogFile(infilnam,outfilnam);
+   ofstream ofil(outfilnam);
+   if ( !ofil.good() ) {
+      ScreenUtils::DisplayErrorFileNotOpen(outfilnam);
+      ofil.close();
+      return EXIT_FAILURE;
+   }
+   FileUtils::WriteHappyStart(argv,ofil,CURRENTVERSION,"JMSA/JMHP/SAFR");
+   integrator.PrintInLogFile(ofil,infilnam);
+   ofil.close();
 
    cout << scientific << setprecision(8);
 

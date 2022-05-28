@@ -7,6 +7,9 @@ using std::numeric_limits;
 using std::cout;
 using std::endl;
 #include <climits>
+#include <iomanip>
+using std::scientific;
+using std::setprecision;
 #include <cstdlib>
 #include <string>
 using std::string;
@@ -15,6 +18,7 @@ using std::string;
 #include "gausswavefunction.h"
 #include "bondnetwork.h"
 #include "integrator_vegas.h"
+#include "fileutils.h"
 
 
 IntegratorVegas::IntegratorVegas() : Integrator() {
@@ -23,7 +27,7 @@ IntegratorVegas::IntegratorVegas() : Integrator() {
    normConstant=maxDensity=maxMomDensity=0;
 
    for (int j=0; j<3; j++){
-      xMin[j] = 0; 
+      xMin[j] = 0;
       xMax[j] = 1;
       width[j] = xMax[j]-xMin[j];
 
@@ -37,7 +41,7 @@ IntegratorVegas::IntegratorVegas() : Integrator() {
    param.analyticInt = 0;
    param.relativeError = false;
    param.convergenceRate = 1.0;
-   param.termalization = 0; 
+   param.termalization = 0;
    param.tolerance = 0;
    param.noMoreRefinement = INT_MAX;
    param.nPointsForMax = 100000;
@@ -67,26 +71,36 @@ void IntegratorVegas::SetDimensions(double xLeft,double yLeft,double zLeft,doubl
    for (int j=0; j<3; j++) width[j] = xMax[j]-xMin[j];
 }
 void IntegratorVegas::DisplayProperties(void) {
-   printf("\nLeft limit: (%lf,%lf,%lf)",xMin[0],xMin[1],xMin[2]);
-   printf("\nRight limit: (%lf,%lf,%lf)",xMax[0],xMax[1],xMax[2]);
-   cout << "\nIntegrand: " << GetFieldTypeKeyLong(param.integrand);
-   if ( param.integrand == 'u' ) printf("\nNormalization constant: %s",normConstant ? std::to_string(normConstant).c_str() : "Function not normalized.");
-   else printf("\nN electrons (integrated): %s",normConstant ? std::to_string(normConstant).c_str() : "No electrons calculated.");
+   cout << "\nLeft limit: (" << xMin[0] << ',' << xMin[1] << ',' << xMin[2] << ")\n";
+   cout << "Right limit: (" << xMax[0] << ',' << xMax[1] << ',' << xMax[2] << ")\n";
+   cout << "Integrand: " << GetFieldTypeKeyLong(param.integrand) << '\n';
+   if ( param.integrand == 'u' ) printf("Normalization constant: %s\n",normConstant ? std::to_string(normConstant).c_str() : "Function not normalized.");
+   else printf("N electrons (integrated): %s\n",normConstant ? std::to_string(normConstant).c_str() : "No electrons calculated.");
    if ( param.integrand == 'm' || param.integrand == 'T' || param.integrand == 'k' ) {
-      printf("\nDensity in (0,0,0): %lf",wf->EvalFTDensity(0,0,0)); 
-      printf("\nMaximum of density (computed): %s",maxMomDensity ? std::to_string(maxMomDensity).c_str() : "There is no chosen value.");
-      printf("\nOne critical point (computed): (%lf,%lf,%lf)",criticalPoint[0],criticalPoint[1],criticalPoint[2]);
-      printf("\nNum of points to find global maximum: %ld",param.nPointsForMax);
-   }else printf("\nMaximum of density (computed): %s",maxDensity ? std::to_string(maxDensity).c_str() : "There is no chosen value.");
-   printf("\nConvergence rate: %lf",param.convergenceRate);
-   printf("\nNumber of intervals: %d",param.numOfIntervals);
-   printf("\nNumber of points to sample: %ld",param.numOfPoints);
-   printf("\nMax number of iterations: %ld",param.iterations);
-   printf("\nTermalization: %ld",param.termalization);
-   printf("\nStop refinement after iteration: %ld",param.noMoreRefinement);
-   printf("\nTolerance: %lf",param.tolerance);
-   if (param.relativeError == true) printf("\nAnalytic integral: %lg",param.analyticInt);
+      printf("Density in (0,0,0): %lf\n",wf->EvalFTDensity(0,0,0));
+      printf("Maximum of density (computed): %s\n",maxMomDensity ? std::to_string(maxMomDensity).c_str() : "There is no chosen value.");
+      printf("One critical point (computed): (%lf,%lf,%lf)\n",criticalPoint[0],criticalPoint[1],criticalPoint[2]);
+      printf("Num of points to find global maximum: %ld\n",param.nPointsForMax);
+   }else printf("Maximum of density (computed): %s\n",maxDensity ? std::to_string(maxDensity).c_str() : "There is no chosen value.");
+   printf("Convergence rate: %lf\n",param.convergenceRate);
+   printf("Number of intervals: %d\n",param.numOfIntervals);
+   printf("Number of points to sample: %ld\n",param.numOfPoints);
+   printf("Max number of iterations: %ld\n",param.iterations);
+   printf("Termalization: %ld\n",param.termalization);
+   printf("Stop refinement after iteration: %ld\n",param.noMoreRefinement);
+   printf("Tolerance: %lf\n",param.tolerance);
+   if (param.relativeError == true) printf("Analytic integral: %lg\n",param.analyticInt);
    cout << "\n" << endl;
+}
+void IntegratorVegas::DisplayResults() {
+   cout << "N Integrand evaluations: " << CountEvaluations() << '\n';
+   cout << "N Iterations: " << CountIterations() << '\n';
+   cout << "Integral: " << Integral() << '\n';
+   if ( param.integrand == 'd' || param.integrand == 'm') {
+      cout << "N. Electrons (Integrated): " << param.analyticInt << '\n';
+      if ( param.analyticInt>0.0e0 ) cout << "Relerr(%) = " << RelativeError() << '\n';
+   }
+   cout << "Variance: " << Variance() << '\n';
 }
 void IntegratorVegas::Relative2MaxDensity(char choice) {
    double evalDensity;
@@ -147,7 +161,7 @@ double IntegratorVegas::Integral(void) {
 	    return integral*1./normConstant+log(normConstant);
 	 default :
 	    integral = ( integral-0.5 >= int(integral) ) ? int(integral+1) : int(integral);
-	    return integral*1./normConstant; 
+	    return integral*1./normConstant;
       }
    }else if ( maxDensity > 0 ){
       switch ( param.integrand ) {
@@ -160,7 +174,7 @@ double IntegratorVegas::Integral(void) {
 	 case 'T' : /* Shannon Entropy Density in Momentum Space  */
 	    return integral*1./normConstant+log(maxDensity);
 	 default :
-	    return integral*1./maxDensity; 
+	    return integral*1./maxDensity;
       }
    }
 
@@ -372,45 +386,52 @@ void IntegratorVegas::AlteratesIncrements(vector<vector<double> > &interval,vect
    }
    interval = intervalCopy;
 }
-void IntegratorVegas::PrintInLogFile(string inFileName,string outFileName) {
-   ofstream outFile(outFileName);
-      outFile << "File read: " << inFileName
-	      << "\n***********************************************************************************"
-	      << "\n***********************************************************************************"
-	      << "\nIntegral properties\n"
-	      << "\nLeft limit: (" << xMin[0] << "," << xMin[1] << "," << xMin[2] << ")"
-	      << "\nRight limit: (" << xMax[0] << "," << xMax[1] << "," << xMax[2] << ")"
-	      << "\nIntegrand: " << GetFieldTypeKeyLong(param.integrand);
-      if ( param.integrand == 'u' ) outFile << "\nNormalization constant: " << normConstant ? std::to_string(normConstant).c_str() : "Function not normalized";
-      else outFile << "\nN electrons (integrated): " << normConstant ? std::to_string(normConstant).c_str() : "No electrons calculated.";
-      outFile << "\nConvergence rate: " << param.convergenceRate;
-      if ( param.integrand == 'm' || param.integrand == 'T' || param.integrand == 'k' ) {
-         outFile << "\nDensity in (0,0,0): " << wf->EvalFTDensity(0,0,0);
-         outFile << "\nMaximum of Density (computed): " << maxMomDensity ? std::to_string(maxMomDensity).c_str() : "There is no chosen value";
-	 outFile << "\nOne critical point (computed): (" << criticalPoint[0] << "," << criticalPoint[1] << "," << criticalPoint[2] << ")"
-		 << "\nNum of points to find global maximum: " << param.nPointsForMax;
-      } else outFile << "\nMaximum of Density (computed): " << maxDensity ? std::to_string(maxDensity).c_str() : "There is no chosen value";
-      outFile << "\nN. intervals: " << param.numOfIntervals
-	      << "\nN. points to sample: " << param.numOfPoints
-	      << "\nMaximum number of iterations: " << param.iterations
-	      << "\nTermalization: " << param.termalization
-	      << "\nStop refinement after iteration: " << param.noMoreRefinement
-	      << "\nTolerance: " << param.tolerance;
-      if (param.relativeError == true) outFile << "\nAnalytic integral: " << param.analyticInt;
-      outFile << "\n***********************************************************************************"
-	      << "\nResults\n"
-	      << "\nN. integrand evaluations: " << CountEvaluations()
-	      << "\nN. iterations: " << CountIterations()
-	      << "\nIntegral: " << Integral();
-      if (param.integrand == 'd' || param.integrand == 'm') {
-	 outFile << "\nN. Electrons (Integrated): " 
-	         << (Integral()-0.5 >= int(Integral()) ? int(Integral()+1) : int(Integral()));
-	 // if (nelectrons > 0) cout << "Relerr(%) = " << integrator.RelativeError() << '\n';
-      } 
-      outFile << "\nVariance: " << Variance()
-	      << "\n***********************************************************************************"
-	      << "\n";
-   outFile.close();
+void IntegratorVegas::PrintInLogFile(ofstream &ofil,string inFileName) {
+   FileUtils::WriteScrStarLine(ofil);
+   ofil << "Wavefunction file: " << inFileName << '\n';
+   FileUtils::WriteScrStarLine(ofil);
+   ofil << "#Integral properties:\n\n";
+   ofil << "Left limit: " << xMin[0] << " " << xMin[1] << " " << xMin[2] << '\n';
+   ofil << "Right limit: " << xMax[0] << " " << xMax[1] << " " << xMax[2] << '\n';
+   ofil << "Integrand: " << GetFieldTypeKeyLong(param.integrand) << '\n';
+   if ( param.integrand == 'u' ) {
+      ofil << "Normalization constant: "
+         << (normConstant ? std::to_string(normConstant).c_str() : "Function not normalized") << '\n';
+   } else {
+      ofil << "N electrons (integrated): "
+         << (normConstant ? std::to_string(normConstant).c_str() : "No electrons calculated.") << '\n';
+   }
+   ofil << "Convergence rate: " << param.convergenceRate << '\n';
+   if ( param.integrand == 'm' || param.integrand == 'T' || param.integrand == 'k' ) {
+      ofil << "Density in (0,0,0): " << wf->EvalFTDensity(0,0,0) << '\n';
+      ofil << "Maximum of Density (computed): "
+         << (maxMomDensity ? std::to_string(maxMomDensity).c_str() : "There is no chosen value") << '\n';
+      ofil << "One critical point (computed): ("
+         << criticalPoint[0] << "," << criticalPoint[1] << "," << criticalPoint[2] << ")\n"
+         << "Num of points to find global maximum: " << param.nPointsForMax << '\n';
+   } else {
+      ofil << "Maximum of Density (computed): "
+         << (maxDensity ? std::to_string(maxDensity).c_str() : "There is no chosen value") << '\n';
+   }
+   ofil << "N. intervals: " << param.numOfIntervals << '\n';
+   ofil << "N. points to sample: " << param.numOfPoints << '\n';
+   ofil << "Maximum number of iterations: " << param.iterations << '\n';
+   ofil << "Termalization: " << param.termalization << '\n';
+   ofil << "Stop refinement after iteration: " << param.noMoreRefinement << '\n';
+   ofil << "Tolerance: " << param.tolerance << '\n';
+   if (param.relativeError == true) { ofil << "Analytic integral: " << param.analyticInt << '\n'; }
+   FileUtils::WriteScrStarLine(ofil);
+   ofil << "#Results\n";
+   FileUtils::WriteScrStarLine(ofil);
+   ofil << "N. integrand evaluations: " << CountEvaluations() << '\n';
+   ofil << "N. iterations: " << CountIterations() << '\n';
+   ofil << "Integral: " << Integral() << '\n';
+   if (param.integrand == 'd' || param.integrand == 'm') {
+      ofil << "N. Electrons (Integrated): "
+         << (Integral()-0.5 >= int(Integral()) ? int(Integral()+1) : int(Integral())) << '\n';
+   }
+   ofil << "Variance: " << Variance() << '\n';
+   FileUtils::WriteScrStarLine(ofil);
 }
 double IntegratorVegas::ChiSquare(double integralPerIteration,double variancePerIteration,double estimatedIntegral) {
    double chiSq;
