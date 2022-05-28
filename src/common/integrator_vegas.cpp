@@ -386,11 +386,9 @@ void IntegratorVegas::AlteratesIncrements(vector<vector<double> > &interval,vect
    }
    interval = intervalCopy;
 }
-void IntegratorVegas::PrintInLogFile(ofstream &ofil,string inFileName) {
+void IntegratorVegas::WriteResults(ofstream &ofil) {
+   ofil << "#Integral properties:\n";
    FileUtils::WriteScrStarLine(ofil);
-   ofil << "Wavefunction file: " << inFileName << '\n';
-   FileUtils::WriteScrStarLine(ofil);
-   ofil << "#Integral properties:\n\n";
    ofil << "Left limit: " << xMin[0] << " " << xMin[1] << " " << xMin[2] << '\n';
    ofil << "Right limit: " << xMax[0] << " " << xMax[1] << " " << xMax[2] << '\n';
    ofil << "Integrand: " << GetFieldTypeKeyLong(param.integrand) << '\n';

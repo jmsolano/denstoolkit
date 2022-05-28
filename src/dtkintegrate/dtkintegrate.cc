@@ -188,7 +188,10 @@ int main (int argc, char ** argv) {
       return EXIT_FAILURE;
    }
    FileUtils::WriteHappyStart(argv,ofil,CURRENTVERSION,"JMSA/JMHP/SAFR");
-   integrator.PrintInLogFile(ofil,infilnam);
+   FileUtils::WriteScrStarLine(ofil);
+   ofil << "Wavefunction file: " << infilnam << '\n';
+   FileUtils::WriteScrStarLine(ofil);
+   integrator.WriteResults(ofil);
    ofil.close();
 
    cout << scientific << setprecision(8);

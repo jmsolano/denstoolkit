@@ -103,7 +103,7 @@ public:
    */
    void SetNSamplesToFindMaximum(double NSamples){param.nPointsForMax = NSamples;}
    /** Print all information related to the integral: Input data and output data. */
-   void PrintInLogFile(ofstream &ofil,string inFileName);
+   void WriteResults(ofstream &ofil);
    double RelativeError(void);
    void AnalyticIntegral(double analyticResult);
 /* *********************************************************************************** */

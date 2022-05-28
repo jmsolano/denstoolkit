@@ -13,6 +13,7 @@ public:
    virtual double Integral() = 0;
    virtual void DisplayProperties();
    virtual void DisplayResults();
+   virtual void WriteResults(ofstream &ofil);
 /* ************************************************************************** */
 protected:
 /* ************************************************************************** */
