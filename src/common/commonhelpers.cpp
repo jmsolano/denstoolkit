@@ -78,7 +78,7 @@ void CommonHelpers::PutSpecialSpheres(ofstream &ofil,int ntbs,\
    int nt=ntbs;
    ofil << "//          Special additional points." << '\n';
    ofil << HelpersPOVRay::IndTabsStr(nt++) << "union {" << '\n';
-   for (int i=0; i<sp.size(); i++) {
+   for (size_t i=0; i<sp.size(); i++) {
       atrad=sp[i][3];
       HelpersPOVRay::WriteTransparentSphere(ofil,nt,sp[i][0],sp[i][1],sp[i][2],atrad,
             sp[i][4],sp[i][5],sp[i][6],trnsmat);
