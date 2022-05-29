@@ -7,9 +7,9 @@ using std::string;
 class OptionFlags {
 public: 
    OptionFlags();//default constructor, initialize all the flags to convenient (default) values.
-   unsigned short int infname,outfname;
+   unsigned short int infname,outfname,integrand,setlowerdombox,setupperdombox;
    unsigned short int vegassetpoints,vegassetiter,vegassetconvrat,vegassetinterv,vegassetnpts4max;
-   unsigned short int vegassettherm,vegassettol,vegassetstopref,integrand,setlowerdombox,setupperdombox;
+   unsigned short int vegassettherm,vegassettol,vegassetstopref;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);
 void printHelpMenu(int &argc, char** &argv);//self-described

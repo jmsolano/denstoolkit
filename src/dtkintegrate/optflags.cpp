@@ -110,41 +110,9 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                flags.outfname=(++i);
                if (i>=argc) {printErrorMsg(argv,'o');}
                break;
-            case 'n':
-               flags.vegassetinterv=(++i);
-               if (i>=argc) {printErrorMsg(argv,'n');}
-	       break;
-            case 'p':
-               flags.vegassetpoints=(++i);
-               if (i>=argc) {printErrorMsg(argv,'p');}
-	       break;
-            case 'r' :
-               flags.vegassetconvrat=(++i);
-               if (i>=argc) {printErrorMsg(argv,'r');}
-               break;
-            case 'i' :
-               flags.vegassetiter=(++i);
-               if (i>=argc) {printErrorMsg(argv,'i');}
-               break;
-            case 'e' :
-               flags.vegassettherm=(++i);
-               if (i>=argc) {printErrorMsg(argv,'e');}
-               break;
-            case 't' :
-               flags.vegassettol=(++i);
-               if (i>=argc) {printErrorMsg(argv,'t');}
-               break;
-            case 's' :
-               flags.vegassetstopref=(++i);
-               if (i>=argc) {printErrorMsg(argv,'s');}
-               break;
-            case 'f' :
+            case 'p' :
                flags.integrand=(++i);
-               if (i>=argc) {printErrorMsg(argv,'f');}
-               break;
-            case 'm' :
-               flags.vegassetnpts4max=(++i);
-               if (i>=argc) {printErrorMsg(argv,'m');}
+               if (i>=argc) {printErrorMsg(argv,'p');}
                break;
             case 'b' :
                flags.setlowerdombox=(++i);
@@ -199,70 +167,76 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "\nUsage:\n\n\t" << progname << " wf?name [option [value(s)]] ... [option [value(s)]]\n\n";
    ScreenUtils::SetScrNormalFont();
    cout << "Where wf?name is the input wfx(wfn) name, and options can be:\n\n";
-   cout << "  -f function        	   \tSets function to integrate." << '\n';
-   cout << "                     	   \t  By default d." << '\n';
-   cout << "                     	   \t  Available options:" << '\n';
-   cout << "                     	   \t\td (Electronic density in position space)" << '\n';
-   cout << "                     	   \t\tm (Density in momentum space)" << '\n';
-   cout << "                     	   \t\tl (Laplacian of the density)" << '\n';
-   cout << "                     	   \t\tE (Electron Localization Function)" << '\n';
-   cout << "                     	   \t\tS (Shannon entropy of density in position space)" << '\n';
-   cout << "                     	   \t\tT (Shannon entropy in momentum space)" << '\n';
-   cout << "                     	   \t\tg (Magnitud of the density gradient)" << '\n';
-   cout << "                     	   \t\tL (Localized Orbital Locator)" << '\n';
-   cout << "                     	   \t\tG (Kinetic Energy Density G)" << '\n';
-   cout << "                     	   \t\tK (Kinetic Energy Density K)" << '\n';
-   cout << "                     	   \t\te (Ellipticity)" << '\n';
-   cout << "                     	   \t\tk (Kinetic Energy Density K in momentum space)" << '\n';
-   cout << "                     	   \t\tM (Magnitude of the gradient of LOL)" << '\n';
-   cout << "                     	   \t\tV (Molecular Electrostatic Potential)" << '\n';
-   cout << "                     	   \t\tP (Magnitude of the vector LED (see DTK-manual for more details))" << '\n';
-   cout << "                     	   \t\ts (Reduced Density Gradient (see DTK-manual for more details))" << '\n';
-   cout << "                     	   \t\tr (Region of Slow Electron index (see DTK-manual for more details))" << '\n';
-   cout << "                     	   \t\tu (Custom Scalar Field (implemented by the final user))" << '\n';
-   cout << "                     	   \t\tv (Potential Energy Density)" << '\n';
-   cout << "                     	   \t\tz (Reduced Density Gradient applying NCI conditions)" << '\n';
-   cout << "  -n intervals       	   \tSets the grid size." << '\n';
-   cout << "                     	   \t  Typically 10." << '\n';
-   cout << "  -p points          	   \tSets the MC-points to sample per iteration." << '\n';
-   cout << "                     	   \t  Typycally 10,000." << '\n';
-   cout << "  -i iterations      	   \tSets the maximum number of iterations." << '\n';
-   cout << "                     	   \t  Typycally 20." << '\n';
-   cout << "  -r convergence rate	   \tSets the damping parameter." << '\n';
-   cout << "                     	   \t  Typycally 1." << '\n';
-   cout << "  -e thermalization   	   \tSets the first iterations to be ignored for computing the expected integral." << '\n';
-   cout << "                     	   \t  Typycally 0." << '\n';
-   cout << "  -t tolerance       	   \tSets the tolerance for considering an optimal grid." << '\n';
-   cout << "                     	   \t  It depends a lot on the integrand, so usually it is not set." << '\n';
-   cout << "  -s stop refinement 	   \tSets the num. of iterations where the grid will be refined." << '\n';
-   cout << "                     	   \t  Usually it is not set." << '\n';
-   cout << "  -m points to find maximum    \tSets the number of points to sample to find the global maximum." << '\n';
-   cout << "                               \t  This flag only works for functions in momentum space." << '\n';
-   cout << "                     	   \t  Typically 1,000,000, but as greater as better." << '\n';
-   cout << "  -b Integration region limits \tSets the integration region boundaries, which compose the diagonal of a cube." << '\n';
-   cout << "                               \t  Usage: -b [left limit] [right limit]" << '\n';
-   cout << "                               \t  If the boudaries are given, the integration region (R) will be strctured as" << '\n';
-   cout << "                               \t  R = [left limit, left limit, left limit] x [right limit, right limit, right limit]." << '\n';
-   cout << "                               \t  If user enters 0 in both limits, then the program computes the boundaries automatically," << '\n';
-   cout << "                               \t  else the program defines the boundaries with the information given." << '\n';
-   cout << "                               \t  By default, both limits are set to 0." << '\n';
-   cout << "  -o outname		   \tSets the output file name." << endl
-        << "            		   \t  (If not given the program will create one out of" << endl
-        << "            		   \t  the input name; if given, the gnp file and the pdf will" << endl
-        << "            		   \t  use this name as well --but different extension--)." << endl;
-   cout << "  -V        		   \tDisplays the version of this program." << endl;
-   cout << "  -h     			   \tDisplays the help menu.\n\n";
+   cout << "  -p prop   \tChoose the property to be integrated. prop is a character,\n";
+   cout << "            \t  which can be (d is the default value):" << '\n';
+   cout << "            \t\td (Electronic density in position space)" << '\n';
+   cout << "     	      \t\tm (Density in momentum space)" << '\n';
+   cout << "     	      \t\tl (Laplacian of the density)" << '\n';
+   cout << "            \t\tE (Electron Localization Function)" << '\n';
+   cout << "            \t\tS (Shannon entropy of density in position space)" << '\n';
+   cout << "            \t\tT (Shannon entropy in momentum space)" << '\n';
+   cout << "            \t\tg (Magnitud of the density gradient)" << '\n';
+   cout << "            \t\tL (Localized Orbital Locator)" << '\n';
+   cout << "            \t\tG (Kinetic Energy Density G)" << '\n';
+   cout << "            \t\tK (Kinetic Energy Density K)" << '\n';
+   cout << "            \t\te (Ellipticity)" << '\n';
+   cout << "            \t\tk (Kinetic Energy Density K in momentum space)" << '\n';
+   cout << "            \t\tM (Magnitude of the gradient of LOL)" << '\n';
+   cout << "            \t\tV (Molecular Electrostatic Potential)" << '\n';
+   cout << "            \t\tP (Magnitude of the vector LED)" << '\n';
+   cout << "            \t\ts (Reduced Density Gradient)" << '\n';
+   cout << "            \t\tr (Region of Slow Electron index)" << '\n';
+   cout << "            \t\tu (Custom Scalar Field (implemented by the final user))" << '\n';
+   cout << "            \t\tv (Potential Energy Density)" << '\n';
+   cout << "            \t\tz (Reduced Density Gradient applying NCI conditions)" << '\n';
+   cout << "  -b L U \tSet the integration domain to be a cube, whose" << '\n';
+   cout << "            \t  left,lower,back corner is (L,L,L) and right,upper,front corner" << '\n';
+   cout << "            \t  is (U,U,U). Setting L=U=0 instruct the program to" << '\n';
+   cout << "            \t  set the boundaries automatically." << '\n';
+   cout << "  -o outname \tSet the output file name." << endl
+        << "             \t  (If not given, the program will create one out of" << endl
+        << "             \t  the input name; if given, the gnp file and the pdf will" << endl
+        << "             \t  use this name as well --but different extension--)." << endl;
+   cout << "  -V         \tDisplay the version of this program." << endl;
+   cout << "  -h         \tDisplay the help menu.\n\n";
+   ScreenUtils::PrintScrCharLine('-');
+   ScreenUtils::CenterString("Specific options for Vegas-Monte Carlo integrator.");
+   ScreenUtils::PrintScrCharLine('-');
    //-------------------------------------------------------------------------------------
    cout << "  --help    \t\tSame as -h" << endl;
    cout << "  --version \t\tSame as -V" << endl;
+   cout << "  --vegas-interv  N  \tSet the number of intervals to be N. N is the number of\n"
+        << "                     \t  subregions (intervals) to which the original domain is divided.\n"
+        <<"                      \t  Default: N=10." << '\n';
+   cout << "  --vegas-npts NMCP  \tSet the number of MC-points to sample per iteration to be NMCP." << '\n';
+   cout << "                     \t  Default: NMCP=10,000." << '\n';
+   cout << "  --vegas-iter I     \tSet the maximum number of iterations to be I." << '\n';
+   cout << "                     \t  Default: I=20." << '\n';
+   cout << "  --vegas-conv-rat A \tSets the damping parameter to be A." << '\n';
+   cout << "                     \t  Default: A=1.0." << '\n';
+   cout << "  --vegas-therm T    \tSet the first T iterations to be ignored for computing the expected integral." << '\n';
+   cout << "                     \t  Default value: T=0." << '\n';
+   cout << "  --vegas-tol tol    \tSet the tolerance for considering an optimal grid to be tol." << '\n';
+   cout << "                     \t  Default value: tol=0.0." << '\n';
+   cout << "  --vegas-stop-ref X \tSet the num. of iterations where the grid will be refined." << '\n';
+   cout << "                     \t  Usually, X is not defined." << '\n';
+   cout << "  --vegas-searchmax N\tUse N sample points to find the global maximum of prop." << '\n';
+   cout << "                     \t  This option is applied only momentum space functions." << '\n';
+   cout << "                     \t  Default: N=1,000,000." << '\n';
    //-------------------------------------------------------------------------------------
 }
 void printErrorMsg(char** &argv,char lab) {
    ScreenUtils::SetScrRedBoldFont();
    cout << "\nError: the option \"" << lab << "\" ";
    switch (lab) {
+      case 'b' :
+         cout << " should be followed by two real numbers." << '\n';
+         break;
       case 'o':
-         cout << "should be followed by a name." << endl;
+         cout << " should be followed by a name." << endl;
+         break;
+      case 'p' :
+         cout << " should be followed by a char." << '\n';
          break;
       case 't' :
          cout << "should be followed by a small real number." << '\n';
@@ -289,6 +263,54 @@ void processDoubleDashOptions(int &argc,char** &argv,OptionFlags &flags,int pos)
    } else if (str==string("help")) {
       printHelpMenu(argc,argv);
       exit(0);
+   } else if ( str==string("vegas-interv") ) {
+      flags.vegassetinterv=(++pos);
+      if (pos>=argc) {
+         ScreenUtils::DisplayErrorMessage(string("vegas-interv must be followed by a real number!"));
+         exit(1);
+      }
+   } else if ( str==string("vegas-npts") ) {
+      flags.vegassetpoints=(++pos);
+      if (pos>=argc) {
+         ScreenUtils::DisplayErrorMessage(str+string(" must be followed by an integer!"));
+         exit(1);
+      }
+   } else if ( str==string("vegas-iter") ) {
+      flags.vegassetiter=(++pos);
+      if (pos>=argc) {
+         ScreenUtils::DisplayErrorMessage(str+string(" must be followed by an integer!"));
+         exit(1);
+      }
+   } else if ( str==string("vegas-conv-rat") ) {
+      flags.vegassetconvrat=(++pos);
+      if (pos>=argc) {
+         ScreenUtils::DisplayErrorMessage(str+string(" must be followed by a real number!"));
+         exit(1);
+      }
+   } else if ( str==string("vegas-therm") ) {
+      flags.vegassettherm=(++pos);
+      if (pos>=argc) {
+         ScreenUtils::DisplayErrorMessage(str+string(" must be followed by an integer!"));
+         exit(1);
+      }
+   } else if ( str==string("vegas-tol") ) {
+      flags.vegassettol=(++pos);
+      if (pos>=argc) {
+         ScreenUtils::DisplayErrorMessage(str+string(" must be followed by a real number!"));
+         exit(1);
+      }
+   } else if ( str==string("vegas-stop-ref") ) {
+      flags.vegassetstopref=(++pos);
+      if (pos>=argc) {
+         ScreenUtils::DisplayErrorMessage(str+string(" must be followed by an integer!"));
+         exit(1);
+      }
+   } else if ( str==string("vegas-searchmax") ) {
+      flags.vegassetnpts4max=(++pos);
+      if (pos>=argc) {
+         ScreenUtils::DisplayErrorMessage(str+string(" must be followed by an integer!"));
+         exit(1);
+      }
    } else {
       ScreenUtils::SetScrRedBoldFont();
       cout << "Error: Unrecognized option '" << argv[pos] << "'" << endl;
