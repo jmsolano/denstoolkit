@@ -58,6 +58,8 @@ using std::string;
 #include <iomanip>
 using std::setprecision;
 using std::scientific;
+#include <memory>
+using std::shared_ptr;
 #include <ctime>
 #include <climits>
 #include "../common/screenutils.h"
@@ -99,7 +101,8 @@ int main (int argc, char ** argv) {
    bnw.SetUpBNW();
    cout << "Done." << endl;
   
-   IntegratorVegas integrator(gwf,bnw);
+   shared_ptr<IntegratorVegas> vegas=shared_ptr<IntegratorVegas>(new IntegratorVegas(gwf,bnw));
+   shared_ptr<Integrator> integrator=shared_ptr<Integrator>(vegas);
 
    //Setting configuration parameters.
    int intervals=10;
@@ -121,7 +124,7 @@ int main (int argc, char ** argv) {
    double nelectrons=0.0e0;
    if ( func == 'd' || func == 'm' ) {
       nelectrons=gwf.IntegralRho();
-      integrator.AnalyticIntegral(nelectrons);
+      vegas->AnalyticIntegral(nelectrons);
    }
    size_t nPntsForMax=100000;
    if ( options.setNPntsForMax ) { nPntsForMax=std::stod(string(argv[options.setNPntsForMax])); }
@@ -152,32 +155,32 @@ int main (int argc, char ** argv) {
          intRmax[i] = boxLimits[1];
       }
    }
-   integrator.SetDimensions(intRmin[0],intRmin[1],intRmin[2],intRmax[0],intRmax[1],intRmax[2]);
+   vegas->SetDimensions(intRmin[0],intRmin[1],intRmin[2],intRmax[0],intRmax[1],intRmax[2]);
 
    //Setting integration properties.
-   integrator.SetIntegrand(func);
-   integrator.SetIntervals(intervals);
-   integrator.SetNumOfPoints(points);
-   integrator.SetIterations(iterations);
-   integrator.SetConvergenceRate(convRate);
-   integrator.SetTermalization(terma);
-   integrator.SetTolerance(tol);
-   integrator.SetStopRefinement(stopRef);
-   integrator.SetNSamplesToFindMaximum(nPntsForMax);
-   // integrator.NormalizedEDF();
-   // integrator.Relative2MaxDensity('a'); //Average of maxima.
+   vegas->SetIntegrand(func);
+   vegas->SetIntervals(intervals);
+   vegas->SetNumOfPoints(points);
+   vegas->SetIterations(iterations);
+   vegas->SetConvergenceRate(convRate);
+   vegas->SetTermalization(terma);
+   vegas->SetTolerance(tol);
+   vegas->SetStopRefinement(stopRef);
+   vegas->SetNSamplesToFindMaximum(nPntsForMax);
+   // vegas->NormalizedEDF();
+   // vegas->Relative2MaxDensity('a'); //Average of maxima.
    cout << scientific << setprecision(10);
-   integrator.DisplayProperties();
+   integrator->DisplayProperties();
 
    //Numeric integral.
    MyTimer aTim;
    aTim.Start();
-   integrator.Integrate();
+   integrator->Integrate();
    aTim.End();
    aTim.PrintElapsedTimeSec(string("integration time"));
 
    //Print results on screen.
-   integrator.DisplayResults();
+   integrator->DisplayResults();
 
    //Print results in a log file.
    cout << "\nPrinting integrand data into file " << outfilnam << " ...\n";
@@ -191,7 +194,7 @@ int main (int argc, char ** argv) {
    FileUtils::WriteScrStarLine(ofil);
    ofil << "Wavefunction file: " << infilnam << '\n';
    FileUtils::WriteScrStarLine(ofil);
-   integrator.WriteResults(ofil);
+   integrator->WriteResults(ofil);
    ofil.close();
 
    cout << scientific << setprecision(8);
