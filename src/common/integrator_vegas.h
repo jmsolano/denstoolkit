@@ -29,7 +29,7 @@ public:
    /** Shows the integral (expected value) once Las Vegas integration has ended. */
    double Integral(void);
    /** Displays Las Vegas method's parameters: Integration region, integrand, convergence rate, grid size 
-    * (number of intervals), number of Monte Carlo points, maximum number of iterations, termalization
+    * (number of intervals), number of Monte Carlo points, maximum number of iterations, thermalization
     * (num. of iterations to ignore statistical computing), num. of iterations before stopping refinement 
     * and refinement tolerance.
    */
@@ -61,7 +61,7 @@ public:
     * possible poor expected values. In order not to bias the expected value, it can be computed afer the
     * grid has been optimally refined (after 10-20 iterations).
    */
-   void SetTermalization(double terma){param.termalization = terma;}
+   void SetThermalization(double therm){param.thermalization = therm;}
    /**
     * Sets the confidence interval limits related to the optimal grid. 
     * The reliable meassurement to use for finding the optimal grid is the average value for each
@@ -127,7 +127,7 @@ protected:
 
    struct Parameters{
       int numOfIntervals;
-      long int iterations,numOfPoints,termalization,noMoreRefinement,nPointsForMax;
+      long int iterations,numOfPoints,thermalization,noMoreRefinement,nPointsForMax;
       double analyticInt,convergenceRate,tolerance;
       bool relativeError,printVar,printNumPoints;
       char integrand;

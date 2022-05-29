@@ -14,32 +14,32 @@ shared_ptr<Integrator> FactoryIntegrator::CreateIntegrator(OptionFlags &options,
 
    //Setting configuration parameters.
    int intervals=10;
-   if ( options.setintervals ) { intervals=std::stod(string(argv[options.setintervals])); }
+   if ( options.vegassetinterv ) { intervals=std::stod(string(argv[options.vegassetinterv])); }
    size_t points=10000;
-   if ( options.setpoints ) { points=std::stod(string(argv[options.setpoints])); }
+   if ( options.vegassetpoints ) { points=std::stod(string(argv[options.vegassetpoints])); }
    size_t iterations=20;
-   if ( options.setiterations ) { iterations=std::stod(string(argv[options.setiterations])); }
+   if ( options.vegassetiter ) { iterations=std::stod(string(argv[options.vegassetiter])); }
    double convRate=1.0e0;
-   if ( options.setconvergenceRate ) { convRate=std::stod(string(argv[options.setconvergenceRate])); }
-   int terma=0;
-   if ( options.settermalization ) { terma=std::stod(string(argv[options.settermalization])); }
+   if ( options.vegassetconvrat ) { convRate=std::stod(string(argv[options.vegassetconvrat])); }
+   int therm=0;
+   if ( options.vegassettherm ) { therm=std::stod(string(argv[options.vegassettherm])); }
    double tol=0.0e0;
-   if ( options.settolerance ) { tol=std::stod(string(argv[options.settolerance])); }
+   if ( options.vegassettol ) { tol=std::stod(string(argv[options.vegassettol])); }
    int stopRef=INT_MAX;
-   if ( options.setstopRefinement ) { stopRef=std::stod(string(argv[options.setstopRefinement])); }
+   if ( options.vegassetstopref ) { stopRef=std::stod(string(argv[options.vegassetstopref])); }
    char func='d';
-   if ( options.setfunction ) { func=*argv[options.setfunction]; }
+   if ( options.integrand ) { func=*argv[options.integrand]; }
    double nelectrons=0.0e0;
    if ( func == 'd' || func == 'm' ) {
       nelectrons=ugwf.IntegralRho();
       vegas->AnalyticIntegral(nelectrons);
    }
    size_t nPntsForMax=100000;
-   if ( options.setNPntsForMax ) { nPntsForMax=std::stod(string(argv[options.setNPntsForMax])); }
+   if ( options.vegassetnpts4max ) { nPntsForMax=std::stod(string(argv[options.vegassetnpts4max])); }
    double boxLimits[2]={0.0e0,0.0e0};
-   if ( options.setSupBoxLimits ) {
-      boxLimits[0]={std::stod(string(argv[options.setInfBoxLimits]))};
-      boxLimits[1]={std::stod(string(argv[options.setSupBoxLimits]))};
+   if ( options.setupperdombox ) {
+      boxLimits[0]={std::stod(string(argv[options.setlowerdombox]))};
+      boxLimits[1]={std::stod(string(argv[options.setupperdombox]))};
    }
 
    //Setting integration boundaries.
@@ -71,7 +71,7 @@ shared_ptr<Integrator> FactoryIntegrator::CreateIntegrator(OptionFlags &options,
    vegas->SetNumOfPoints(points);
    vegas->SetIterations(iterations);
    vegas->SetConvergenceRate(convRate);
-   vegas->SetTermalization(terma);
+   vegas->SetThermalization(therm);
    vegas->SetTolerance(tol);
    vegas->SetStopRefinement(stopRef);
    vegas->SetNSamplesToFindMaximum(nPntsForMax);

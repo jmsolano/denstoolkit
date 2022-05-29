@@ -68,17 +68,17 @@ using std::string;
 OptionFlags::OptionFlags() {
    infname=0;
    outfname=0;
-   setconvergenceRate=0;
-   setpoints=0;
-   setiterations=0;
-   setintervals=0;
-   settermalization=0;
-   settolerance=0;
-   setstopRefinement=0;
-   setfunction=0;
-   setNPntsForMax=0;
-   setInfBoxLimits=0;
-   setSupBoxLimits=0;
+   vegassetconvrat=0;
+   vegassetpoints=0;
+   vegassetiter=0;
+   vegassetinterv=0;
+   vegassettherm=0;
+   vegassettol=0;
+   vegassetstopref=0;
+   integrand=0;
+   vegassetnpts4max=0;
+   setlowerdombox=0;
+   setupperdombox=0;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    string progname;
@@ -111,44 +111,44 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                if (i>=argc) {printErrorMsg(argv,'o');}
                break;
             case 'n':
-               flags.setintervals=(++i);
+               flags.vegassetinterv=(++i);
                if (i>=argc) {printErrorMsg(argv,'n');}
 	       break;
             case 'p':
-               flags.setpoints=(++i);
+               flags.vegassetpoints=(++i);
                if (i>=argc) {printErrorMsg(argv,'p');}
 	       break;
             case 'r' :
-               flags.setconvergenceRate=(++i);
+               flags.vegassetconvrat=(++i);
                if (i>=argc) {printErrorMsg(argv,'r');}
                break;
             case 'i' :
-               flags.setiterations=(++i);
+               flags.vegassetiter=(++i);
                if (i>=argc) {printErrorMsg(argv,'i');}
                break;
             case 'e' :
-               flags.settermalization=(++i);
+               flags.vegassettherm=(++i);
                if (i>=argc) {printErrorMsg(argv,'e');}
                break;
             case 't' :
-               flags.settolerance=(++i);
+               flags.vegassettol=(++i);
                if (i>=argc) {printErrorMsg(argv,'t');}
                break;
             case 's' :
-               flags.setstopRefinement=(++i);
+               flags.vegassetstopref=(++i);
                if (i>=argc) {printErrorMsg(argv,'s');}
                break;
             case 'f' :
-               flags.setfunction=(++i);
+               flags.integrand=(++i);
                if (i>=argc) {printErrorMsg(argv,'f');}
                break;
             case 'm' :
-               flags.setNPntsForMax=(++i);
+               flags.vegassetnpts4max=(++i);
                if (i>=argc) {printErrorMsg(argv,'m');}
                break;
             case 'b' :
-               flags.setInfBoxLimits=(++i);
-               flags.setSupBoxLimits=(++i);
+               flags.setlowerdombox=(++i);
+               flags.setupperdombox=(++i);
                if (i>=argc) {printErrorMsg(argv,'b');}
                break;
             case 'h':
@@ -230,7 +230,7 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "                     	   \t  Typycally 20." << '\n';
    cout << "  -r convergence rate	   \tSets the damping parameter." << '\n';
    cout << "                     	   \t  Typycally 1." << '\n';
-   cout << "  -e termalization   	   \tSets the first iterations to be ignored for computing the expected integral." << '\n';
+   cout << "  -e thermalization   	   \tSets the first iterations to be ignored for computing the expected integral." << '\n';
    cout << "                     	   \t  Typycally 0." << '\n';
    cout << "  -t tolerance       	   \tSets the tolerance for considering an optimal grid." << '\n';
    cout << "                     	   \t  It depends a lot on the integrand, so usually it is not set." << '\n';

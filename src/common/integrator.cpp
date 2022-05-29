@@ -14,5 +14,8 @@ void Integrator::DisplayProperties() {
 void Integrator::DisplayResults() {
    DisplayProperties();
 }
+void Integrator::WriteResults(ofstream &ofil) {
+   ofil << "#Base integrator, nothing to write!..." << '\n';
+}
 
 

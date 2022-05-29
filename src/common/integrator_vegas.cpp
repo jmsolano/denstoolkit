@@ -41,7 +41,7 @@ IntegratorVegas::IntegratorVegas() : Integrator() {
    param.analyticInt = 0;
    param.relativeError = false;
    param.convergenceRate = 1.0;
-   param.termalization = 0;
+   param.thermalization = 0;
    param.tolerance = 0;
    param.noMoreRefinement = INT_MAX;
    param.nPointsForMax = 100000;
@@ -86,7 +86,7 @@ void IntegratorVegas::DisplayProperties(void) {
    printf("Number of intervals: %d\n",param.numOfIntervals);
    printf("Number of points to sample: %ld\n",param.numOfPoints);
    printf("Max number of iterations: %ld\n",param.iterations);
-   printf("Termalization: %ld\n",param.termalization);
+   printf("Thermalization: %ld\n",param.thermalization);
    printf("Stop refinement after iteration: %ld\n",param.noMoreRefinement);
    printf("Tolerance: %lf\n",param.tolerance);
    if (param.relativeError == true) printf("Analytic integral: %lg\n",param.analyticInt);
@@ -249,7 +249,7 @@ void IntegratorVegas::Integrate(void) {
 
 	 varPerIt = VariancePerIteration(sampling.simple,sampling.square);
 
-	 if (countIter > param.termalization) {
+	 if (countIter > param.thermalization) {
 	    weightedAverage += sampling.simple/varPerIt;
 	    inverseVariance += 1./varPerIt;
 
@@ -263,7 +263,7 @@ void IntegratorVegas::Integrate(void) {
 	 stopIterating = AlteratesAverageIntegral(meanIntegral);
 	 AlteratesIncrements(interval,meanIntegral);
 
-	 if (countIter > param.termalization) {
+	 if (countIter > param.thermalization) {
 	    chiSquare += ChiSquare(sampling.simple,varPerIt,integral);
 	    if (chiSquare > countIter) {
 	       // cout << "Chi Square" << endl;
@@ -339,7 +339,7 @@ bool IntegratorVegas::AlteratesAverageIntegral(vector<vector<double> > &meanInte
    sumInferior /= 3;
    sumSuperior /= 3;
 
-   if (fabs(sumSuperior-sumInferior) <= param.tolerance && countIter > param.termalization) return true;
+   if (fabs(sumSuperior-sumInferior) <= param.tolerance && countIter > param.thermalization) return true;
    else {
       for (int j=0; j<3; j++) {
 	 for (int i=0; i<param.numOfIntervals; i++) sumMeanIntegral += meanIntegral[j][i];
@@ -414,7 +414,7 @@ void IntegratorVegas::WriteResults(ofstream &ofil) {
    ofil << "N. intervals: " << param.numOfIntervals << '\n';
    ofil << "N. points to sample: " << param.numOfPoints << '\n';
    ofil << "Maximum number of iterations: " << param.iterations << '\n';
-   ofil << "Termalization: " << param.termalization << '\n';
+   ofil << "Thermalization: " << param.thermalization << '\n';
    ofil << "Stop refinement after iteration: " << param.noMoreRefinement << '\n';
    ofil << "Tolerance: " << param.tolerance << '\n';
    if (param.relativeError == true) { ofil << "Analytic integral: " << param.analyticInt << '\n'; }
