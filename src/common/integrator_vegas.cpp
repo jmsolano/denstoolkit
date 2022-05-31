@@ -317,7 +317,7 @@ void IntegratorVegas::Integrate(void) {
       }
    }
 
-   countEval = param.numOfPoints*countIter;
+   //countEval = param.numOfPoints*countIter;
    repeatIntegral = true;
 }
 void IntegratorVegas::MonteCarloIntegration(vector<vector<double> > interval,vector<vector<double> > &meanIntegral) {
@@ -331,24 +331,27 @@ void IntegratorVegas::MonteCarloIntegration(vector<vector<double> > interval,vec
       for (int i=0; i<param.numOfIntervals; i++) meanIntegral[j][i] = 0;
    }
 
+   double fjac;
    for (long int k=0; k<param.numOfPoints; k++) {
       jacobian = 1;
       for (int j=0; j<3; j++) {
-	 yNg = dis(engine)*param.numOfIntervals;
-	 floorYNg[j] = int(yNg);
-	 decimalYNg = yNg-floorYNg[j];
+         yNg = dis(engine)*param.numOfIntervals;
+         floorYNg[j] = int(yNg);
+         decimalYNg = yNg-floorYNg[j];
 
-	 deltaXi = interval[j][floorYNg[j]+1]-interval[j][floorYNg[j]];
-	 xi[j] = interval[j][floorYNg[j]]+deltaXi*decimalYNg;
+         deltaXi = interval[j][floorYNg[j]+1]-interval[j][floorYNg[j]];
+         xi[j] = interval[j][floorYNg[j]]+deltaXi*decimalYNg;
 
-	 jacobian *= deltaXi*param.numOfIntervals;
+         jacobian *= deltaXi*param.numOfIntervals;
 
-	 countPointsSampled[j][floorYNg[j]]++;
+         countPointsSampled[j][floorYNg[j]]++;
       }
 
-      sampling.simple += Integrand(xi[0],xi[1],xi[2])*jacobian;
-      sampling.square += Power(Integrand(xi[0],xi[1],xi[2])*jacobian,2);
-      for (int j=0; j<3; j++) meanIntegral[j][floorYNg[j]] += Power(Integrand(xi[0],xi[1],xi[2])*jacobian,2);
+      fjac=Integrand(xi[0],xi[1],xi[2])*jacobian;
+      sampling.simple += fjac;
+      sampling.square += Power(fjac,2);
+      for (int j=0; j<3; j++) meanIntegral[j][floorYNg[j]] += Power(fjac,2);
+      ++countEval;
    }
 
    sampling.simple /= param.numOfPoints;
@@ -356,16 +359,16 @@ void IntegratorVegas::MonteCarloIntegration(vector<vector<double> > interval,vec
 
    for (int j=0; j<3; j++) {
       for (int i=0; i<param.numOfIntervals; i++) {
-	 if (countPointsSampled[j][i] > 0) meanIntegral[j][i] /= countPointsSampled[j][i];
-	 // if (countPointsSampled[j][i] > 0) meanIntegral[j][i] /= param.numOfPoints/param.numOfIntervals;
-	 // if (meanIntegral[j][i] == 0) meanIntegral[j][i] = numeric_limits<double>::min();
+         if (countPointsSampled[j][i] > 0) meanIntegral[j][i] /= countPointsSampled[j][i];
+         // if (countPointsSampled[j][i] > 0) meanIntegral[j][i] /= param.numOfPoints/param.numOfIntervals;
+         // if (meanIntegral[j][i] == 0) meanIntegral[j][i] = numeric_limits<double>::min();
       }
    }
 
    // cout << "points sampled per interval: ";
    // for (int j=0; j<3; j++) {
-      // for (int i=0; i<param.numOfIntervals; i++) cout << countPointsSampled[j][i] << " ";
-      // cout << endl;
+   // for (int i=0; i<param.numOfIntervals; i++) cout << countPointsSampled[j][i] << " ";
+   // cout << endl;
    // }
 }
 bool IntegratorVegas::AlteratesAverageIntegral(vector<vector<double> > &meanIntegral) {
