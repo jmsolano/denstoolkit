@@ -61,9 +61,9 @@ using std::string;
 
 /* *********************************************************************************** */
 class IntegratorVegas : public Integrator {
-/* *********************************************************************************** */
+   /* *********************************************************************************** */
 public:
-/* *********************************************************************************** */
+   /* *********************************************************************************** */
    IntegratorVegas();
    IntegratorVegas(GaussWaveFunction &uwf,BondNetWork &ubnw);
    /* *********************************************************************************** */
@@ -74,8 +74,7 @@ public:
    /** Displays Las Vegas method's parameters: Integration region, integrand, convergence rate, grid size 
     * (number of intervals), number of Monte Carlo points, maximum number of iterations, thermalization
     * (num. of iterations to ignore statistical computing), num. of iterations before stopping refinement 
-    * and refinement tolerance.
-   */
+    * and refinement tolerance. */
    void DisplayProperties(void);
    /** Displays the results of the integration, as well as additional information  */
    void DisplayResults();
@@ -87,49 +86,40 @@ public:
    void SetIterations(double it){param.iterations = it;}
    /** Sets the grid size (number of intervals for the integration grid). */
    void SetIntervals(int intervals){param.numOfIntervals = intervals;}
-   /**
-    * Sets the convergence rate (damping parameter).
+   /** Sets the convergence rate (damping parameter).
     * If one doesn't know its optimal value, one can set it to 1.
     * To set it to 0 means there is no refinement.
     * This parameter helps Las Vegas method to smooth the grid refinement each iteration. However,
     * its value, set typically between 0 and 2, depends a lot on the integrand and it is
-    * established after trials and errors.
-   */
+    * established after trials and errors. */
    void SetConvergenceRate(double conv){param.convergenceRate = conv;}
    /** Number of Monte Carlo points to sample randomly over the integrand each iteration. */
    void SetNumOfPoints(double nPoints){param.numOfPoints = nPoints;}
-   /**
-    * Sets the number of iterations where the cumulative expected value (integral) is not computed.
+   /** Sets the number of iterations where the cumulative expected value (integral) is not computed.
     * During the first iterations, Las Vegas Method receives few information about the integrand, causing
     * possible poor expected values. In order not to bias the expected value, it can be computed afer the
-    * grid has been optimally refined (after 10-20 iterations).
-   */
+    * grid has been optimally refined (after 10-20 iterations). */
    void SetThermalization(double therm){param.thermalization = therm;}
-   /**
-    * Sets the confidence interval limits related to the optimal grid. 
+   /** Sets the confidence interval limits related to the optimal grid. 
     * The reliable meassurement to use for finding the optimal grid is the average value for each
     * interval: All of them have to tend to a same equal value.
-    * The tolerance established the minimum distance between the maximum and minimum average values before 
-    * the grid gets refined, so that if both values reach the tolerance, the grid reaches its optimal form.
-   */
+    * The tolerance established the minimum distance between the
+    * maximum and minimum average values before the grid gets refined,
+    * so that if both values reach the tolerance, the grid reaches its optimal form. */
    void SetTolerance(double tol){param.tolerance = tol;}
-   /**
-    * Sets the number of iterations where the grid will be continually refined.
+   /** Sets the number of iterations where the grid will be continually refined.
     * As the accumulated expected value might get biased, one can avoid that happening by making 
     * MC integrations without refinement (after the grid becomes refined enough), so as the 
-    * accumulated expected value starts to beheave as a normal distribution.
-   */
+    * accumulated expected value starts to beheave as a normal distribution. */
    void SetStopRefinement(double stopRef){param.noMoreRefinement = stopRef;}
    /** Computes the normalization constant of the Electron Density, so that functions related with the
     * normalized Electron Density can be integrated. Note that if you ask for the Electron Density,
-    * DTK will give you approximately 1. 
-   */
+    * DTK will give you approximately 1. */
    void NormalizedEDF(void){if ( normConstant == 0 ) normConstant = round(wf->IntegralRho());}
    /** Computes the global maximum/maxima of the Electron Density (choice = 'g') or an average of the 
     * maxima (choice = 'a') in position space. In momentum space, its critical point is found near the 
     * origin or in it, so it is set in the origin.
-    * Note that if you ask for the Electron Density, DTK will give you \f$\rho/\rho_{max}\f$. 
-   */
+    * Note that if you ask for the Electron Density, DTK will give you \f$\rho/\rho_{max}\f$. */
    void Relative2MaxDensity(char choice);
    /** Shows the integral variance (Las Vegas method). */
    double Variance(void) {return fabs(variance);}
@@ -141,17 +131,17 @@ public:
    long int CountEvaluations(void) {return countEval;}
    /** Shows the number of iterations runned during Las Vegas integration. */
    long int CountIterations(void) {return countIter;}
-   /** Sets the number of points to find the global maximum of the electron density. This method only 
-    * works for functions in momentum space (Shannon Entropy, Electron Density and Kinnetic Energy). 
-   */
+   /** Sets the number of points to find the global maximum of the electron density.
+    * This method only works for functions in momentum space (Shannon Entropy, Electron
+    * Density and Kinnetic Energy). */
    void SetNSamplesToFindMaximum(double NSamples){param.nPointsForMax = NSamples;}
    /** Print all information related to the integral: Input data and output data. */
    void WriteResults(ofstream &ofil);
    double RelativeError(void);
    void AnalyticIntegral(double analyticResult);
-/* *********************************************************************************** */
+   /* *********************************************************************************** */
 protected:
-/* *********************************************************************************** */
+   /* *********************************************************************************** */
    // Use random_device to generate a seed for Mersenne twister engine.
    random_device rd{};
    // Use Mersenne twister engine to generate pseudo-random numbers.
@@ -174,11 +164,10 @@ protected:
       double analyticInt,convergenceRate,tolerance;
       bool relativeError,printVar,printNumPoints;
       char integrand;
-   }param;
+   } param;
    struct Sampling{
       double simple,square;
-   }sampling;
-
+   } sampling;
    double ChiSquare(double integralPerIteration,double variancePerIteration,double estimatedIntegral);
    double ComputesRelativeError(double analyticIntegral,double estimatedIntegral);
    double VariancePerIteration(double sample,double squareSample);

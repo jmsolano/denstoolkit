@@ -152,19 +152,19 @@ void IntegratorVegas::Relative2MaxDensity(char choice) {
 
    if ( maxDensity == 0 ){
       if ( (param.integrand == 'm') || (param.integrand == 'T') | (param.integrand == 'k') ){
-	 SearchForMaximum();
-	 maxDensity = ( wf->EvalFTDensity(0,0,0) > maxMomDensity ) ? wf->EvalFTDensity(0,0,0) : maxMomDensity;
+         SearchForMaximum();
+         maxDensity = ( wf->EvalFTDensity(0,0,0) > maxMomDensity ) ? wf->EvalFTDensity(0,0,0) : maxMomDensity;
       }else{
-	 switch ( choice ) {
-	    case 'a': /* Average of rho max */
-	       for (int i=0; i<bnw->nNuc; i++) maxDensity += wf->EvalDensity(bnw->R[i][0],bnw->R[i][1],bnw->R[i][2]);
-	       maxDensity /= bnw->nNuc;
-	    case 'g': /* Value of global maximum/maxima */
-	       for (int i=0; i<bnw->nNuc; i++) {
-		  evalDensity = wf->EvalDensity(bnw->R[i][0],bnw->R[i][1],bnw->R[i][2]);
-		  if ( evalDensity  >= maxDensity ) maxDensity = evalDensity;
-	       }
-	 }
+         switch ( choice ) {
+            case 'a': /* Average of rho max */
+               for (int i=0; i<bnw->nNuc; i++) maxDensity += wf->EvalDensity(bnw->R[i][0],bnw->R[i][1],bnw->R[i][2]);
+               maxDensity /= bnw->nNuc;
+            case 'g': /* Value of global maximum/maxima */
+               for (int i=0; i<bnw->nNuc; i++) {
+                  evalDensity = wf->EvalDensity(bnw->R[i][0],bnw->R[i][1],bnw->R[i][2]);
+                  if ( evalDensity  >= maxDensity ) maxDensity = evalDensity;
+               }
+         }
       }
    }
 }
@@ -177,12 +177,12 @@ void IntegratorVegas::SearchForMaximum(void) {
 
    for ( int i=0; i<param.nPointsForMax; i++ ) {
       functionImage = wf->EvalFTDensity(point[0]*cos(point[1])*sin(point[2]),
-					point[0]*sin(point[1])*sin(point[2]),
-					point[0]*cos(point[2]));
+            point[0]*sin(point[1])*sin(point[2]),
+            point[0]*cos(point[2]));
       if ( functionImage > maxMomDensity ) {
-	 maxMomDensity = functionImage;
-	 for ( int j=0; j<3; j++ ) criticalPoint[j] = point[j];
-	 radialFactor = point[0]+1e-4;
+         maxMomDensity = functionImage;
+         for ( int j=0; j<3; j++ ) criticalPoint[j] = point[j];
+         radialFactor = point[0]+1e-4;
       }
       point[0] = dis(engine)*radialFactor;
       point[1] = dis(engine)*azimuthalFactor;
@@ -192,32 +192,32 @@ void IntegratorVegas::SearchForMaximum(void) {
 double IntegratorVegas::Integral(void) {
    if ( normConstant > 0 && maxDensity == 0 ){
       switch ( param.integrand ) {
-	 case 'd' : /* Electron density (Rho)  */
-	    integral = ( integral-0.5 >= int(integral) ) ? int(integral+1) : int(integral);
-	    return integral/normConstant;
-	 case 'm' : /* Electron density (Rho) in Momentum Space  */
-	    integral = ( integral-0.5 >= int(integral) ) ? int(integral+1) : int(integral);
-	    return integral/normConstant;
-	 case 'S' : /* Shannon Entropy Density  */
-	    return integral/normConstant+log(normConstant);
-	 case 'T' : /* Shannon Entropy Density in Momentum Space  */
-	    return integral/normConstant+log(normConstant);
-	 default :
-	    integral = ( integral-0.5 >= int(integral) ) ? int(integral+1) : int(integral);
-	    return integral/normConstant;
+         case 'd' : /* Electron density (Rho)  */
+            integral = ( integral-0.5 >= int(integral) ) ? int(integral+1) : int(integral);
+            return integral/normConstant;
+         case 'm' : /* Electron density (Rho) in Momentum Space  */
+            integral = ( integral-0.5 >= int(integral) ) ? int(integral+1) : int(integral);
+            return integral/normConstant;
+         case 'S' : /* Shannon Entropy Density  */
+            return integral/normConstant+log(normConstant);
+         case 'T' : /* Shannon Entropy Density in Momentum Space  */
+            return integral/normConstant+log(normConstant);
+         default :
+            integral = ( integral-0.5 >= int(integral) ) ? int(integral+1) : int(integral);
+            return integral/normConstant;
       }
    }else if ( maxDensity > 0 ){
       switch ( param.integrand ) {
-	 case 'd' : /* Electron density (Rho)  */
-	    return integral/maxDensity;
-	 case 'm' : /* Electron density (Rho) in Momentum Space  */
-	    return integral/maxDensity;
-	 case 'S' : /* Shannon Entropy Density  */
-	    return integral/normConstant+log(maxDensity);
-	 case 'T' : /* Shannon Entropy Density in Momentum Space  */
-	    return integral/normConstant+log(maxDensity);
-	 default :
-	    return integral/maxDensity;
+         case 'd' : /* Electron density (Rho)  */
+            return integral/maxDensity;
+         case 'm' : /* Electron density (Rho) in Momentum Space  */
+            return integral/maxDensity;
+         case 'S' : /* Shannon Entropy Density  */
+            return integral/normConstant+log(maxDensity);
+         case 'T' : /* Shannon Entropy Density in Momentum Space  */
+            return integral/normConstant+log(maxDensity);
+         default :
+            return integral/maxDensity;
       }
    }
 
@@ -280,40 +280,40 @@ void IntegratorVegas::Integrate(void) {
       countIter=0;
       repeatIntegral = stopIterating = false;
       for (int j=0; j<3; j++) {
-	 for (int i=0; i<param.numOfIntervals+1; i++) interval[j][i] = xMin[j]+i/param.numOfIntervals*width[j];
+         for (int i=0; i<param.numOfIntervals+1; i++) interval[j][i] = xMin[j]+i/param.numOfIntervals*width[j];
       }
 
       while (repeatIntegral == false && stopIterating == false && countIter < param.iterations) {
-	 countIter++;
-	 // cout << "Iteration: " << countIter << endl;
+         countIter++;
+         // cout << "Iteration: " << countIter << endl;
 
-	 MonteCarloIntegration(interval,meanIntegral);
-	 // cout << sampling.simple << " " << sampling.square << endl;
+         MonteCarloIntegration(interval,meanIntegral);
+         // cout << sampling.simple << " " << sampling.square << endl;
 
-	 varPerIt = VariancePerIteration(sampling.simple,sampling.square);
+         varPerIt = VariancePerIteration(sampling.simple,sampling.square);
 
-	 if (countIter > param.thermalization) {
-	    weightedAverage += sampling.simple/varPerIt;
-	    inverseVariance += 1./varPerIt;
+         if (countIter > param.thermalization) {
+            weightedAverage += sampling.simple/varPerIt;
+            inverseVariance += 1./varPerIt;
 
-	    integral = weightedAverage/inverseVariance;
-	    variance = 1./inverseVariance;
-	 }
+            integral = weightedAverage/inverseVariance;
+            variance = 1./inverseVariance;
+         }
 
-	 // cout << "sampling= " << sampling.simple << endl;
-	 // cout << "integral= " << integral << endl;
+         // cout << "sampling= " << sampling.simple << endl;
+         // cout << "integral= " << integral << endl;
 
-	 stopIterating = AlteratesAverageIntegral(meanIntegral);
-	 AlteratesIncrements(interval,meanIntegral);
+         stopIterating = AlteratesAverageIntegral(meanIntegral);
+         AlteratesIncrements(interval,meanIntegral);
 
-	 if (countIter > param.thermalization) {
-	    chiSquare += ChiSquare(sampling.simple,varPerIt,integral);
-	    if (chiSquare > countIter) {
-	       // cout << "Chi Square" << endl;
-	       // getchar();
-	       repeatIntegral = true;
-	    }
-	 }
+         if (countIter > param.thermalization) {
+            chiSquare += ChiSquare(sampling.simple,varPerIt,integral);
+            if (chiSquare > countIter) {
+               // cout << "Chi Square" << endl;
+               // getchar();
+               repeatIntegral = true;
+            }
+         }
       }
    }
 
@@ -389,18 +389,18 @@ bool IntegratorVegas::AlteratesAverageIntegral(vector<vector<double> > &meanInte
    if (fabs(sumSuperior-sumInferior) <= param.tolerance && countIter > param.thermalization) return true;
    else {
       for (int j=0; j<3; j++) {
-	 for (int i=0; i<param.numOfIntervals; i++) sumMeanIntegral += meanIntegral[j][i];
+         for (int i=0; i<param.numOfIntervals; i++) sumMeanIntegral += meanIntegral[j][i];
 
-	 for (int i=0; i<param.numOfIntervals; i++) {
-	    if (i == 0) meanIntegralCopy[i] = (7*meanIntegral[j][i]+meanIntegral[j][i+1])/8;
-	    else if (i == param.numOfIntervals-1) meanIntegralCopy[i] = (meanIntegral[j][i-1]+7*meanIntegral[j][i])/8;
-	    else meanIntegralCopy[i] = (meanIntegral[j][i-1]+6*meanIntegral[j][i]+meanIntegral[j][i+1])/8;
+         for (int i=0; i<param.numOfIntervals; i++) {
+            if (i == 0) meanIntegralCopy[i] = (7*meanIntegral[j][i]+meanIntegral[j][i+1])/8;
+            else if (i == param.numOfIntervals-1) meanIntegralCopy[i] = (meanIntegral[j][i-1]+7*meanIntegral[j][i])/8;
+            else meanIntegralCopy[i] = (meanIntegral[j][i-1]+6*meanIntegral[j][i]+meanIntegral[j][i+1])/8;
 
-	    meanIntegralCopy[i] /= sumMeanIntegral;
-	 }
+            meanIntegralCopy[i] /= sumMeanIntegral;
+         }
 
-	 if (countIter > param.noMoreRefinement) convRate = 0;
-	 for (int i=0; i<param.numOfIntervals; i++) meanIntegral[j][i] = pow((1-meanIntegralCopy[i])/log(1./meanIntegralCopy[i]),convRate);
+         if (countIter > param.noMoreRefinement) convRate = 0;
+         for (int i=0; i<param.numOfIntervals; i++) meanIntegral[j][i] = pow((1-meanIntegralCopy[i])/log(1./meanIntegralCopy[i]),convRate);
       }
 
       return false;
@@ -419,15 +419,15 @@ void IntegratorVegas::AlteratesIncrements(vector<vector<double> > &interval,vect
       accumMeanIntegral = k = 0;
       deltaMeanIntegral = sumMeanIntegral/param.numOfIntervals;
       for (int i=1; i<param.numOfIntervals; i++) {
-	 while (accumMeanIntegral < deltaMeanIntegral) {
-	    accumMeanIntegral += meanIntegral[j][k];
-	    k++;
-	 }
-	 accumMeanIntegral -= deltaMeanIntegral;
-	 deltaXk = interval[j][k]-interval[j][k-1];
+         while (accumMeanIntegral < deltaMeanIntegral) {
+            accumMeanIntegral += meanIntegral[j][k];
+            k++;
+         }
+         accumMeanIntegral -= deltaMeanIntegral;
+         deltaXk = interval[j][k]-interval[j][k-1];
 
-	 intervalCopy[j][i] = interval[j][k]-accumMeanIntegral/meanIntegral[j][k-1]*deltaXk;
-	 // cout << k << " ";
+         intervalCopy[j][i] = interval[j][k]-accumMeanIntegral/meanIntegral[j][k-1]*deltaXk;
+         // cout << k << " ";
       }
       // cout << endl;
    }
