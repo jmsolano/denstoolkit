@@ -179,7 +179,6 @@ protected:
       double simple,square;
    }sampling;
 
-   double Power(double x,int n);
    double ChiSquare(double integralPerIteration,double variancePerIteration,double estimatedIntegral);
    double ComputesRelativeError(double analyticIntegral,double estimatedIntegral);
    double VariancePerIteration(double sample,double squareSample);

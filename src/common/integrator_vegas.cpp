@@ -333,7 +333,7 @@ void IntegratorVegas::MonteCarloIntegration(vector<vector<double> > interval,vec
 
    double fjac;
    for (long int k=0; k<param.numOfPoints; k++) {
-      jacobian = 1;
+      jacobian = 1.0e0;
       for (int j=0; j<3; j++) {
          yNg = dis(engine)*param.numOfIntervals;
          floorYNg[j] = int(yNg);
@@ -349,8 +349,9 @@ void IntegratorVegas::MonteCarloIntegration(vector<vector<double> > interval,vec
 
       fjac=Integrand(xi[0],xi[1],xi[2])*jacobian;
       sampling.simple += fjac;
-      sampling.square += Power(fjac,2);
-      for (int j=0; j<3; j++) meanIntegral[j][floorYNg[j]] += Power(fjac,2);
+      fjac*=fjac;
+      sampling.square += fjac;
+      for (int j=0; j<3; j++) { meanIntegral[j][floorYNg[j]] += fjac; }
       ++countEval;
    }
 
@@ -478,12 +479,8 @@ void IntegratorVegas::WriteResults(ofstream &ofil) {
    FileUtils::WriteScrStarLine(ofil);
 }
 double IntegratorVegas::ChiSquare(double integralPerIteration,double variancePerIteration,double estimatedIntegral) {
-   double chiSq;
-
-   chiSq = Power(integralPerIteration-estimatedIntegral,2)/variancePerIteration;
-   // chi_sq = Power(integralPerIteration-estimatedIntegral,2)*Power(integralPerIteration,2)/(Power(estimatedIntegral,2)*variancePerIteration);
-
-   return chiSq;
+   double tmp=integralPerIteration-estimatedIntegral;
+   return tmp*tmp/variancePerIteration;
 }
 double IntegratorVegas::VariancePerIteration(double sample,double squareSample) {
    return (squareSample-sample*sample)/param.numOfPoints;
@@ -494,12 +491,4 @@ double IntegratorVegas::ComputesRelativeError(double analyticIntegral,double est
 double IntegratorVegas::RelativeError(void) {
    return ComputesRelativeError(param.analyticInt,integral);
 }
-double IntegratorVegas::Power(double x,int n) {
-   double y;
-   if (n == 0) return 1;
-   else {
-      y = x;
-      for (int i=1; i<n; i++) y *= x;
-      return y;
-   }
-}
+
