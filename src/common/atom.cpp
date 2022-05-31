@@ -213,6 +213,10 @@ bool Atom::IsMyPosition(vector<double> &xp) {
 int Atom::GetAtomicNumberFromSymbol(string smb) {
    int k=0;
    while(smb!=tab_symbol[k] && k<MAXATNUMDEF) { ++k; }
+   if ( k==MAXATNUMDEF ) {
+      ScreenUtils::DisplayErrorMessage(string("Unknown atom! ")+smb);
+      return -1;
+   }
    return k+1;
 }
 void Atom::DisplayProperties() {

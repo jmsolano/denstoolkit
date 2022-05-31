@@ -152,7 +152,7 @@ install: all ## Installs the binaries (after compiling). Usually requires sudo m
 	@if test -e $(INSTALL_PATH)/dtkpoint; then (dtkpoint -V; dtkline -V; \
 		dtkplane -V; dtkcube -V; dtkfindcp -V; dtkmomd -V; dtkdemat1 -V; \
 		dtkqdmol -V; dtkbpdens -V; dtkcharcicp -V; dtkintegobondpath -V; \
-		dtkpropcpsoniso -V; dtknci -V; dtkdrawer -V; \
+		dtkpropcpsoniso -V; dtknci -V; dtkdrawer -V; dtkintegrate -V \
           cd $(INSTALL_PATH); ls -1 dtk*2*; ls dtkget*) fi
 	@echo "\033[0m"
 

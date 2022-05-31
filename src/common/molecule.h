@@ -71,16 +71,26 @@ public:
    int CountAtomsOfType(string ss);
    int CountAtomsOfType(int nn);
    void SortCoordinates();
-   bool ImSetup() {return imsetup;}
+   void ComputeCenterOfMass();
+   void ComputeCentroid();
+   void CenterAtCentroid();
+   void CenterAtCenterOfMass();
+   /** Sets the center of the coordinate system as in the original reading/loading
+    * (the molecule is translated to origCent).  */
+   void ResetOriginOfCoordinates();
 /* ************************************************************************** */
    vector<Atom> atom;
+   vector<double> cm; /*!< Center of mass  */
+   vector<double> cd; /*!< Centroid  */
 /* ************************************************************************** */
 protected:
 /* ************************************************************************** */
    void Init();
    void QuickSort(int srtIdx) {return QuickSort((atom.size()-1),0,srtIdx);}
    void QuickSort(int high, int low,int srtIdx=0);
+   bool ImSetup();
    bool imsetup;
+   vector<double> origCent; /*!< Saves the initial origin of the coordinate system.  */
 /* ************************************************************************** */
    friend bool operator== (const Molecule &m1, const Molecule &m2);
 /* ************************************************************************** */

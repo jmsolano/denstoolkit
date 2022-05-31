@@ -41,9 +41,6 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-#ifndef _MOLECULE_CPP_
-#define _MOLECULE_CPP_
-
 #include <cstdlib>
 #include <iostream>
 using std::cout;
@@ -52,6 +49,7 @@ using std::cerr;
 #include <algorithm>
 #include <cmath>
 #include <cassert>
+#include "screenutils.h"
 #include "molecule.h"
 #include "matrixvectoroperations3d.h"
 
@@ -60,6 +58,9 @@ Molecule::Molecule() {
 }
 void Molecule::Init() {
    atom.clear();
+   cm.resize(3);
+   cd.resize(3);
+   origCent.resize(3);
    imsetup=false;
 }
 Molecule::~Molecule() {
@@ -160,6 +161,58 @@ int Molecule::CountAtomsOfType(int nn) {
    }
    return count;
 }
+void Molecule::ComputeCenterOfMass() {
+   if ( !ImSetup() ) { cout << __FILE__ << ", line: " << __LINE__ << '\n'; return; }
+   for ( size_t i=0 ; i<3 ; ++i ) { cm[i]=0.0e0; }
+   double m,totmass=0.0e0;
+   for ( size_t i=0 ; i<atom.size() ; ++i ) {
+      m=atom[i].weight;
+      totmass+=m;
+      for ( size_t j=0 ; j<3 ; ++j ) { cm[j]+= (m*atom[i].x[j]); }
+   }
+   for ( size_t i=0 ; i<3 ; ++i ) { cm[i]/=totmass; }
+}
+void Molecule::ComputeCentroid() {
+   if ( !ImSetup() ) { cout << __FILE__ << ", line: " << __LINE__ << '\n'; return; }
+   for ( size_t i=0 ; i<3 ; ++i ) { cd[i]=0.0e0; }
+   for ( size_t i=0 ; i<atom.size() ; ++i ) {
+      for ( size_t j=0 ; j<3 ; ++j ) { cd[j]+=atom[i].x[j]; }
+   }
+   double f=1.0e0/double(atom.size());
+   for ( size_t i=0 ; i<3 ; ++i ) { cd[i]*=f; }
+}
+bool Molecule::ImSetup() {
+   if ( !imsetup ) {
+      ScreenUtils::DisplayErrorMessage("The molecule is not setup!");
+   }
+   return imsetup;
+}
+void Molecule::CenterAtCentroid() {
+   ComputeCentroid();
+   for ( size_t i=0 ; i<atom.size() ; ++i ) {
+      atom[i].x[0]-=cd[0];
+      atom[i].x[1]-=cd[1];
+      atom[i].x[2]-=cd[2];
+   }
+   for ( size_t i=0 ; i<3 ; ++i ) { origCent[i]-=cd[i]; cd[i]=0.0e0; }
+}
+void Molecule::CenterAtCenterOfMass() {
+   ComputeCenterOfMass();
+   for ( size_t i=0 ; i<atom.size() ; ++i ) {
+      atom[i].x[0]-=cm[0];
+      atom[i].x[1]-=cm[1];
+      atom[i].x[2]-=cm[2];
+   }
+   for ( size_t i=0 ; i<3 ; ++i ) { origCent[i]-=cm[i]; cm[i]=0.0e0; }
+}
+void Molecule::ResetOriginOfCoordinates() {
+   for ( size_t i=0 ; i<atom.size() ; ++i ) {
+      atom[i].x[0]-=origCent[0];
+      atom[i].x[1]-=origCent[1];
+      atom[i].x[2]-=origCent[2];
+   }
+   for ( size_t i=0 ; i<3 ; ++i ) { origCent[i]=0.0e0; }
+}
 std::ostream &operator<<(std::ostream &out,const Molecule (&mol)) {
    out << "The molecule has " << mol.Size() << " atoms." << endl;
    for ( size_t i=0 ; i<(mol.Size()-1) ; ++i ) {
@@ -212,6 +265,4 @@ void DuplicateAtomOrder(Molecule &m1,Molecule &m2) {
       }
    }
 }
-
-#endif  /* _MOLECULE_CPP_ */
 

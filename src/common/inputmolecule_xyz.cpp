@@ -41,9 +41,6 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-#ifndef _INPUTMOLECULE_XYZ_CPP_
-#define _INPUTMOLECULE_XYZ_CPP_
-
 #include <cstdlib>
 #include <iostream>
 using std::cout;
@@ -133,6 +130,4 @@ std::ostream &operator<<(std::ostream &out,const InputMoleculeXYZ (&mol)) {
    out << pmol;
    return out;
 }
-
-#endif  /* _INPUTMOLECULE_XYZ_CPP_ */
 

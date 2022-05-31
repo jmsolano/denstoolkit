@@ -228,10 +228,12 @@ vector<double> FileUtils::ReadSingleColumn(const string &fname,\
       int nocol) {
    int nr=CountNumberOfNonCommentLines(fname);
    int nc=CountColumnsInFile(fname);
-   vector<vector<double> > m(nr);
+   vector<vector<string> > m(nr);
    if ( nocol<1 || nocol>nc ) {
       ScreenUtils::DisplayErrorMessage("Invalid column number");
       cout << __FILE__ << ", line: " << __LINE__ << endl;
+      vector<double> t(0);
+      return t;
    }
    for ( int i=0 ; i<nr ; ++i ) { m[i].resize(nc); }
    ifstream ifil(fname.c_str());
@@ -249,7 +251,7 @@ vector<double> FileUtils::ReadSingleColumn(const string &fname,\
    }
    ifil.close();
    col.resize(nr);
-   for ( int i=0 ; i<nr ; ++i ) { col[i]=m[i][nocol-1]; }
+   for ( int i=0 ; i<nr ; ++i ) { col[i]=std::stod(m[i][nocol-1]); }
    return col;
 }
 vector<vector<double> > FileUtils::ReadDataMultiColumsFromFile(string fname,\

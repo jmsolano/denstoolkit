@@ -154,5 +154,10 @@ string StringTools::RemoveAllDigits(const string &line) {
    res.erase(std::remove_if(res.begin(), res.end(), &isdigit),res.end());
    return res;
 }
+bool StringTools::StartsWith(const string &line,const string &begword) {
+   size_t n=begword.size();
+   if ( n>line.size() ) { return false; }
+   return line.substr(0,n)==begword;
+}
 
 
