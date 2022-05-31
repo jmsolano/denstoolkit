@@ -5,6 +5,8 @@ Setting up a new release (bump version)
 Commit all files that are supposed to be part of the new release.
 If new dtkprograms are added in the release, follow the instructions
   given below ("Adding a new dtk program").
+Manually, change the current version in globaldefs.h (replace
+  the old version --CURRENTVERSION-- by the version of the release)
 Use the script preprelease if there are files without the license.
    In addition, this step is needed in the following cases:
       --> you added new code files (need to add the license)
