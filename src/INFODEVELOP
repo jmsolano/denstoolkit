@@ -2,8 +2,12 @@
 =======================================================================
 Setting up a new release (bump version)
 =======================================================================
+Commit all files that are supposed to be part of the new release.
 Use the script preprelease if there are files without the license.
-   Usually this is needed only if you added new code files.
+   In addition, this step is needed in the following cases:
+      --> you added new code files (need to add the license)
+      --> copyright is updated to the current year
+      --> A new CODE contributor is added
 Run bump_version.sh
    This will add the new version (which will be asked interactively),
    and push a new branch.
