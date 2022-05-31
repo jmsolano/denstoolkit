@@ -1,3 +1,45 @@
+Version 1.6.0:
+ - Refactor helpmenu: Make specific vegas options double-dash
+ - Refactor: rename OptionFlags internal variables, vegas specific names
+ - Refactor: Move Integrator pointer creation to HelpersIntegrate.
+ - Refactor: Add shared pointers to vegas and integrator.
+ - Refactor: Replace "1.*/" --> "/", fix typo in helpmenu.
+ - Refactor: Add virtual Integrator::WriteResults.
+ - Refactor: Reorganize displayresults, outFile->ofil,...
+ - Refactor: Make VegasIntegrator a derived class, use crtflnms
+ - Fixbug: remove a warning in commonhelpers
+ - Refactor dtkintegrate: clean up code and match dtk code-style.
+ - Improve dtknci info and dtkcube log
+ - Merged in dtkintegrate (pull request #20)
+ - Now the user can define arbitrary integration boundaries for any function.
+ - Merged jmsolano/denstoolkitdevbb/dtkintegrate into dtkintegrate
+ - Merged in dtkintegrate (pull request #19)
+ - Correction made: Integration region bounds in position space.
+ - Merged jmsolano/denstoolkitdevbb/dtkintegrate into dtkintegrate
+ - Merge branch 'develop' into dtkintegrate
+ - Bugfix: aligning of molecules works if molecule is already algined.
+ - Merged in dtkintegrate (pull request #18)
+ - Round function belonging to cmath std library has been implemented to round the number of electrons. Apostrophes in the help menu were removed.
+ - As not all the global maxima are found in the origin (in momentum space), the algorithm looks for this value before integrating the chosen function, along with it, one can choose arbitrarily the number of points to sample and find the maxima. Also, some corrections were applied.
+ - Merged jmsolano/denstoolkitdevbb/dtkintegrate into dtkintegrate
+ - Merged in dtkintegrate (pull request #16)
+ - All info related to the integral can be printed into a log file (except for the time consumed).
+ - Merged jmsolano/denstoolkitdevbb/dtkintegrate into dtkintegrate
+ - Merge branch 'dtkintegrate' of bitbucket.org:jmsolano/denstoolkitdevbb into dtkintegrate
+ - Merged in dtkintegrate (pull request #15)
+ - Corrections were made. User can choice between calculating global maxima or an average of maxima. dtkintegrate now calculates the integration region in momentum space and utilizes BondNetWork class to obtain information about the nuclei.
+ - Corrections were made. Relative Shannon Entropy can be computed and user can know max value of rho, as well as the normalization constant of the integrand.
+ - Added Normalized Shannon Entropy in momentum space; some corrections have been made
+ - Merge branch 'develop' into dtkintegrate
+ - Merged in dtkintegrate (pull request #14)
+ - Added normalization constant for Shannon Entropy over normalized electron density and little other changes have been made.
+ - Improved NCI plates colouring.
+ - VegasIntegrator and VegasInputParameters classes are merged. Integrand is chosen via switch command. "helpers" are renamed to helpersIntegrate.
+ - Final user can chose among different functions to integrate. Variance is printed on screen.
+ - Merged in dtkintegrate (pull request #12)
+ - Naming in "dtkintegrate" programme has changed to DTK standard naming.
+ - "dtkintegrate" installed on DTK.
+
 Version 1.5.0:
  - Added ChangeLog of dtkdrawer
  - Updated bump scripts
