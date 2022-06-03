@@ -46,14 +46,22 @@
 using std::cout;
 using std::endl;
 using std::cerr;
-#include "helpersintegrate.h"
-#include "integrator_vegas.h"
 #include <climits>
+#include "helpersintegrate.h"
+#include "../common/dtkscalarfunction3d.h"
+#include "../common/integrator_vegas.h"
 
-shared_ptr<Integrator> FactoryIntegrator::CreateIntegrator(OptionFlags &options,\
+shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegrator(OptionFlags &options,\
       int argc,char* argv[],GaussWaveFunction &ugwf,BondNetWork &ubnw) {
-   shared_ptr<IntegratorVegas> vegas=shared_ptr<IntegratorVegas>(new IntegratorVegas(ugwf,ubnw));
-   shared_ptr<Integrator> integrator=shared_ptr<Integrator>(vegas);
+   char ft='d';
+   if ( options.integrand ) { ft=*argv[options.integrand]; }
+   shared_ptr<DTKScalarFunction> dtkfield=shared_ptr<DTKScalarFunction>(new DTKScalarFunction(ugwf));
+   dtkfield->SetScalarFunction(ft);
+   shared_ptr<Function3D> the_function=shared_ptr<Function3D>(dtkfield);
+   shared_ptr<IntegratorVegas> vegas=shared_ptr<IntegratorVegas>(new IntegratorVegas(the_function));
+   shared_ptr<Integrator3D> integrator=shared_ptr<Integrator3D>(vegas);
+
+   cout << "Integrand test: " << dtkfield->f(0.1,0.0,0.0) << '\n';
 
    //Setting configuration parameters.
    int intervals=10;
@@ -70,10 +78,8 @@ shared_ptr<Integrator> FactoryIntegrator::CreateIntegrator(OptionFlags &options,
    if ( options.vegassettol ) { tol=std::stod(string(argv[options.vegassettol])); }
    int stopRef=INT_MAX;
    if ( options.vegassetstopref ) { stopRef=std::stod(string(argv[options.vegassetstopref])); }
-   char func='d';
-   if ( options.integrand ) { func=*argv[options.integrand]; }
    double nelectrons=0.0e0;
-   if ( func == 'd' || func == 'm' ) {
+   if ( ft == 'd' || ft == 'm' ) {
       nelectrons=ugwf.IntegralRho();
       vegas->AnalyticIntegral(nelectrons);
    }
@@ -89,7 +95,7 @@ shared_ptr<Integrator> FactoryIntegrator::CreateIntegrator(OptionFlags &options,
    double intRmin[3]={0.0e0,0.0e0,0.0e0},intRmax[3]={0.0e0,0.0e0,0.0e0};
    double uncertainty = 3.0e0;
    if ( boxLimits[0] == 0.0e0 && boxLimits[1] == 0.0e0 ){
-      if ( (func == 'm') || (func == 'T') || (func == 'k') ){
+      if ( (ft == 'm') || (ft == 'T') || (ft == 'k') ){
          while ( ugwf.EvalFTDensity(intRmax[0],intRmax[1],intRmax[2]) >= 1.0e-12 ) {
             for (int i=0; i<3; ++i) { intRmax[i] += 0.5e0; }
          }
@@ -109,7 +115,7 @@ shared_ptr<Integrator> FactoryIntegrator::CreateIntegrator(OptionFlags &options,
    vegas->SetDimensions(intRmin[0],intRmin[1],intRmin[2],intRmax[0],intRmax[1],intRmax[2]);
 
    //Setting integration properties.
-   vegas->SetIntegrand(func);
+   //vegas->SetIntegrand(ft);
    vegas->SetIntervals(intervals);
    vegas->SetNumOfPoints(points);
    vegas->SetIterations(iterations);

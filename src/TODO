@@ -1,3 +1,4 @@
+--> Add EDFTA field (grep -e EDFT integrateoverbondpath.cpp)
 --> Add the compiler option:  CXX="g++-mp-9 -isysroot`xcrun --show-sdk-path`"
 	to compile in MacOSX >= Catalina
 --> Finish implementation of gradDeMat1

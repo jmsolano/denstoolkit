@@ -62,13 +62,13 @@ using std::string;
 #include "bondnetwork.h"
 #include "integrator_vegas.h"
 #include "fileutils.h"
+#include "function3d.h"
 
 
-IntegratorVegas::IntegratorVegas() : Integrator() {
+IntegratorVegas::IntegratorVegas() : Integrator3D() {
    countIter=countEval=0;
    stopIterating=false;
    normConstant=maxDensity=maxMomDensity=0;
-
    for (int j=0; j<3; j++){
       xMin[j] = 0;
       xMax[j] = 1;
@@ -76,7 +76,6 @@ IntegratorVegas::IntegratorVegas() : Integrator() {
 
       criticalPoint[j] = 0;
    }
-
    param.integrand = 'd';
    param.iterations = 20;
    param.numOfIntervals = 10;
@@ -88,6 +87,9 @@ IntegratorVegas::IntegratorVegas() : Integrator() {
    param.tolerance = 0;
    param.noMoreRefinement = INT_MAX;
    param.nPointsForMax = 100000;
+}
+IntegratorVegas::IntegratorVegas(shared_ptr<Function3D> i) : IntegratorVegas() {
+   SetIntegrand(i);
 }
 IntegratorVegas::IntegratorVegas(GaussWaveFunction &uwf,BondNetWork &ubnw) : IntegratorVegas() {
    wf=&uwf;
@@ -223,55 +225,7 @@ double IntegratorVegas::Integral(void) {
 
    return integral;
 }
-double IntegratorVegas::Integrand(double x,double y,double z) {
-   switch ( param.integrand ) {
-      case 'd' : /* Electron density (Rho)  */
-         return wf->EvalDensity(x,y,z);
-      case 'm' : /* Electron density (Rho) in Momentum Space  */
-         return wf->EvalFTDensity(x,y,z);
-      case 'g' : /* MagGradRho Density  */
-         return wf->EvalMagGradRho(x,y,z);
-      case 'l' : /* Laplacian Density  */
-         return wf->EvalLapRho(x,y,z);
-      case 'L' : /* LOL Density  */
-         return wf->EvalLOL(x,y,z);
-      case 'E' : /* ELF Density  */
-         return wf->EvalELF(x,y,z);
-      case 'S' : /* Shannon Entropy Density  */
-         return wf->EvalShannonEntropy(x,y,z);
-      case 'T' : /* Shannon Entropy Density in Momentum Space  */
-         return wf->EvalMomentumShannonEntropy(x,y,z);
-      case 'K' : /* Kinetic Energy Density K  */
-         return wf->EvalKineticEnergyK(x,y,z);
-      case 'k' : /* Kinetic Energy Density K in Momentum Space  */
-         return wf->EvalFTKineticEnergy(x,y,z);
-      case 'G' : /* Kinetic Energy Density G  */
-         return wf->EvalKineticEnergyG(x,y,z);
-      case 'M' : /* MagGradLOL Density  */
-         return wf->EvalMagGradLOL(x,y,z);
-      case 'V' : /* Molecular Electrostatic Potential Density  */
-         return wf->EvalMolElecPot(x,y,z);
-      case 'P' : /* MagLEDVector  */
-         return wf->EvalMagLED(x,y,z);
-      case 's' : /* Reduced Density Gradient  */
-         return wf->EvalReducedDensityGradient(x,y,z);
-      case 'r' : /* Region of Slow Electrons  */
-         return wf->EvalRoSE(x,y,z);
-      case 'v' : /* Potential Energy Density */
-         return wf->EvalVirialPotentialEnergyDensity(x,y,z);
-      case 'z' : /* Non Covalent Interactions (NCI) -- Reduced Density Gradient */
-         return wf->EvalNCIs(x,y,z);
-      case 'Z' : /* Non Covalent Interactions (NCI) -- Rho */
-         return wf->EvalNCILambda(x,y,z);
-      case 'e' : /*!< Ellipticity  */
-         return wf->EvalEllipticity(x,y,z);
-      case 'u' : /* Scalar Custom Field Density */
-         return wf->EvalCustomScalarField(x,y,z);
-      default :
-         return wf->EvalDensity(x,y,z);
-   }
-}
-void IntegratorVegas::Integrate(void) {
+void IntegratorVegas::ComputeIntegral(void) {
    vector<vector<double> > interval(3,vector<double>(param.numOfIntervals+1));
    vector<vector<double> > meanIntegral(3,vector<double>(param.numOfIntervals));
 
@@ -323,7 +277,7 @@ void IntegratorVegas::Integrate(void) {
 void IntegratorVegas::MonteCarloIntegration(vector<vector<double> > interval,vector<vector<double> > &meanIntegral) {
    int floorYNg[3];
    double decimalYNg,yNg,deltaXi,jacobian;
-   double xi[3];
+   vector<double> xi(3);
    vector<vector<int> > countPointsSampled(3,vector<int>(param.numOfIntervals,0));
 
    sampling.simple = sampling.square = 0;
@@ -347,7 +301,7 @@ void IntegratorVegas::MonteCarloIntegration(vector<vector<double> > interval,vec
          countPointsSampled[j][floorYNg[j]]++;
       }
 
-      fjac=Integrand(xi[0],xi[1],xi[2])*jacobian;
+      fjac=(integrand->f(xi))*jacobian;
       sampling.simple += fjac;
       fjac*=fjac;
       sampling.square += fjac;

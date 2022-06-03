@@ -103,14 +103,14 @@ int main (int argc, char ** argv) {
    bnw.SetUpBNW();
    cout << "Done." << endl;
 
-   shared_ptr<Integrator> integrator=FactoryIntegrator::CreateIntegrator(options,argc,argv,gwf,bnw);
+   shared_ptr<Integrator3D> integrator=FactoryIntegrator::CreateIntegrator(options,argc,argv,gwf,bnw);
    cout << scientific << setprecision(10);
    integrator->DisplayProperties();
 
    //Numeric integral.
    MyTimer aTim;
    aTim.Start();
-   integrator->Integrate();
+   integrator->ComputeIntegral();
    aTim.End();
    aTim.PrintElapsedTimeSec(string("Integration time"));
 

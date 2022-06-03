@@ -48,13 +48,13 @@ using std::shared_ptr;
 #include "optflags.h"
 #include "gausswavefunction.h"
 #include "bondnetwork.h"
-#include "integrator.h"
+#include "integrator3d.h"
 
 /* ************************************************************************** */
 class FactoryIntegrator {
 /* ************************************************************************** */
 public:
-   static shared_ptr<Integrator> CreateIntegrator(OptionFlags &options,\
+   static shared_ptr<Integrator3D> CreateIntegrator(OptionFlags &options,\
          int argc, char *argv[],GaussWaveFunction &ugwf,\
          BondNetWork &ubnw);
 /* ************************************************************************** */

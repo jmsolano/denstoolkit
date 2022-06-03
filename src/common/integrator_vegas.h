@@ -43,7 +43,6 @@
 */
 #ifndef _INTEGRATOR_VEGAS_H_
 #define _INTEGRATOR_VEGAS_H_
-
 #include <vector>
 using std::vector;
 #include <random>
@@ -53,22 +52,22 @@ using std::uniform_real_distribution;
 #include <cmath>
 #include <string>
 using std::string;
-
 #include "gausswavefunction.h"
 #include "fldtypesdef.h"
 #include "bondnetwork.h"
-#include "integrator.h"
+#include "integrator3D.h"
 
 /* *********************************************************************************** */
-class IntegratorVegas : public Integrator {
+class IntegratorVegas : public Integrator3D {
    /* *********************************************************************************** */
 public:
    /* *********************************************************************************** */
    IntegratorVegas();
+   IntegratorVegas(shared_ptr<Function3D> i);
    IntegratorVegas(GaussWaveFunction &uwf,BondNetWork &ubnw);
    /* *********************************************************************************** */
    /** Computes integral through Las Vegas method. */
-   void Integrate(void);
+   void ComputeIntegral(void);
    /** Shows the integral (expected value) once Las Vegas integration has ended. */
    double Integral(void);
    /** Displays Las Vegas method's parameters: Integration region, integrand, convergence rate, grid size 
@@ -80,8 +79,6 @@ public:
    void DisplayResults();
    /** Sets the integration region limits for a function \f$f\f$ of type \f$f:R^3 -> R\f$. */
    void SetDimensions(double xLeft,double yLeft,double zLeft,double xRight,double yRight,double zRight);
-   /**  Sets the integrand. */
-   void SetIntegrand(char func){param.integrand = func;}
    /** Sets the iterations limit. */
    void SetIterations(double it){param.iterations = it;}
    /** Sets the grid size (number of intervals for the integration grid). */
@@ -171,7 +168,7 @@ protected:
    double ChiSquare(double integralPerIteration,double variancePerIteration,double estimatedIntegral);
    double ComputesRelativeError(double analyticIntegral,double estimatedIntegral);
    double VariancePerIteration(double sample,double squareSample);
-   double Integrand(double x,double y,double z);
+   //double Integrand(double x,double y,double z);
    void SearchForMaximum(void);
    void MonteCarloIntegration(vector<vector<double> > interval,vector<vector<double> > &meanIntegral);
    void AlteratesIncrements(vector<vector<double> > &interval,vector<vector<double> > meanIntegral);
