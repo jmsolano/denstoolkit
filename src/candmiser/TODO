@@ -1,0 +1,8 @@
+(*) Setup Function3D so that it can choose GaussWaveFunction scalar functions
+using pointers to class functions.
+
+(**) After (*) is done, refactor IntegratorVegas so as to make it a derived class of
+Integrator3D. IntegratorVegas::Integrand should be replaced by 
+a derived class of Function3D. This should be compatible with the
+design implemented in (*).
+

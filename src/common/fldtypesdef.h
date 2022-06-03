@@ -65,7 +65,7 @@ enum ScalarFieldType {
    MLED,/* MagLEDVector  */\
    REDG,/* Reduced Density Gradient  */\
    ROSE,/* Region of Slow Electrons  */\
-   VPED,/* Potential Energy Density */\
+   VPED,/* Virial Potential Energy Density */\
    NCIS,/* Non Covalent Interactions (NCI) -- Reduced Density Gradient */\
    NCIL,/* Non Covalent Interactions (NCI) -- Rho */\
    EDFTA, /* DFT Exchange and Corrrelation Energy ($(-3/4)(3\rho/\pi)^{1/3}$) */\
