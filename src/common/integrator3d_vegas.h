@@ -41,8 +41,8 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-#ifndef _INTEGRATOR_VEGAS_H_
-#define _INTEGRATOR_VEGAS_H_
+#ifndef _INTEGRATOR3D_VEGAS_H_
+#define _INTEGRATOR3D_VEGAS_H_
 #include <vector>
 using std::vector;
 #include <random>
@@ -58,13 +58,13 @@ using std::string;
 #include "integrator3D.h"
 
 /* *********************************************************************************** */
-class IntegratorVegas : public Integrator3D {
+class Integrator3DVegas : public Integrator3D {
    /* *********************************************************************************** */
 public:
    /* *********************************************************************************** */
-   IntegratorVegas();
-   IntegratorVegas(shared_ptr<Function3D> i);
-   IntegratorVegas(GaussWaveFunction &uwf,BondNetWork &ubnw);
+   Integrator3DVegas();
+   Integrator3DVegas(shared_ptr<Function3D> i);
+   Integrator3DVegas(GaussWaveFunction &uwf,BondNetWork &ubnw);
    /* *********************************************************************************** */
    /** Computes integral through Las Vegas method. */
    void ComputeIntegral(void);
@@ -117,7 +117,7 @@ public:
     * maxima (choice = 'a') in position space. In momentum space, its critical point is found near the 
     * origin or in it, so it is set in the origin.
     * Note that if you ask for the Electron Density, DTK will give you \f$\rho/\rho_{max}\f$. */
-   void Relative2MaxDensity(char choice);
+   //void Relative2MaxDensity(char choice);
    /** Shows the integral variance (Las Vegas method). */
    double Variance(void) {return fabs(variance);}
    /** Shows the maximum value of electron density. */
@@ -175,5 +175,5 @@ protected:
    bool AlteratesAverageIntegral(vector<vector<double> > &meanIntegral);
 };
 
-#endif /* _INTEGRATOR_VEGAS_H_ */
+#endif /* _INTEGRATOR3D_VEGAS_H_ */
 

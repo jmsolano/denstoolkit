@@ -58,6 +58,8 @@ public:
          int argc, char *argv[],GaussWaveFunction &ugwf,\
          BondNetWork &ubnw);
 /* ************************************************************************** */
+   static void FindIntegralLimits(OptionFlags &options,char*argv[],\
+         GaussWaveFunction &wf,BondNetWork &bn,char ft,double (&rmin)[3],double (&rmax)[3]);
 protected:
 /* ************************************************************************** */
 };

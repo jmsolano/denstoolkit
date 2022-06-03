@@ -65,15 +65,14 @@ using std::scientific;
 #include <memory>
 using std::shared_ptr;
 #include <ctime>
-#include "../common/screenutils.h"
-#include "../common/fileutils.h"
-#include "../common/mymath.h"
-#include "../common/gausswavefunction.h"
-#include "../common/integrator_vegas.h"
-#include "optflags.h"
-#include "../common/bondnetwork.h"
+#include "screenutils.h"
+#include "fileutils.h"
 #include "mytimer.h"
+#include "integrator3d.h"
+#include "gausswavefunction.h"
+#include "bondnetwork.h"
 #include "crtflnms.h"
+#include "optflags.h"
 #include "helpersintegrate.h"
 
 int main (int argc, char ** argv) {
