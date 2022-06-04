@@ -72,6 +72,8 @@ using std::string;
 OptionFlags::OptionFlags() {
    infname=0;
    outfname=0;
+   integrator=0;
+   integrand=0;
    vegassetconvrat=0;
    vegassetpoints=0;
    vegassetiter=0;
@@ -79,8 +81,9 @@ OptionFlags::OptionFlags() {
    vegassettherm=0;
    vegassettol=0;
    vegassetstopref=0;
-   integrand=0;
    vegassetnpts4max=0;
+   misersetpoints=0;
+   misersetdith=0;
    setlowerdombox=0;
    setupperdombox=0;
 }
@@ -94,22 +97,24 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    if (!(pos==string::npos)) {
       progname.erase(pos,2);
    }
-   //if (argc<2) { //orig line (in DTK)
-   if (argc<1) {
+   if (argc<2) {
       ScreenUtils::SetScrRedBoldFont();
       cout << "\nError: Not enough arguments." << endl;
       ScreenUtils::SetScrNormalFont();
       cout << "\nTry: \n\t" << argv[0] << " -h\n" << endl << "to view the help menu.\n\n";
       exit(1);
    }
-   //if ( string(argv[1])==string("-h")) { //Orig line (in DTK)
-   if (argc>1 && string(argv[1])==string("-h")) {
+   if ( string(argv[1])==string("-h")) {
       printHelpMenu(argc,argv);
       exit(1);
    }
    for (int i=1; i<argc; i++){
       if (argv[i][0] == '-'){
          switch (argv[i][1]){
+            case 'i' :
+               flags.integrator=(++i);
+               if (i>=argc) {printErrorMsg(argv,'i');}
+               break;
             case 'o':
                flags.outfname=(++i);
                if (i>=argc) {printErrorMsg(argv,'o');}
@@ -193,22 +198,25 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "            \t\tu (Custom Scalar Field (implemented by the final user))" << '\n';
    cout << "            \t\tv (Potential Energy Density)" << '\n';
    cout << "            \t\tz (Reduced Density Gradient applying NCI conditions)" << '\n';
-   cout << "  -b L U \tSet the integration domain to be a cube, whose" << '\n';
+   cout << "  -b L U    \tSet the integration domain to be a cube, whose" << '\n';
    cout << "            \t  left,lower,back corner is (L,L,L) and right,upper,front corner" << '\n';
    cout << "            \t  is (U,U,U). Setting L=U=0 instruct the program to" << '\n';
    cout << "            \t  set the boundaries automatically." << '\n';
+   cout << "  -i t      \tSet the integrator type to be t. Here, t is a char of the following list:\n"
+        << "            \t\tv Vegas-Monte Carlo\n"
+        << "            \t\tm Miser-Monte Carlo" << '\n';
    cout << "  -o outname \tSet the output file name." << endl
         << "             \t  (If not given, the program will create one out of" << endl
         << "             \t  the input name; if given, the gnp file and the pdf will" << endl
         << "             \t  use this name as well --but different extension--)." << endl;
    cout << "  -V         \tDisplay the version of this program." << endl;
    cout << "  -h         \tDisplay the help menu.\n\n";
+   cout << "  --help    \t\tSame as -h" << endl;
+   cout << "  --version \t\tSame as -V" << endl;
    ScreenUtils::PrintScrCharLine('-');
    ScreenUtils::CenterString("Specific options for Vegas-Monte Carlo integrator.");
    ScreenUtils::PrintScrCharLine('-');
    //-------------------------------------------------------------------------------------
-   cout << "  --help    \t\tSame as -h" << endl;
-   cout << "  --version \t\tSame as -V" << endl;
    cout << "  --vegas-interv  N  \tSet the number of intervals to be N. N is the number of\n"
         << "                     \t  subregions (intervals) to which the original domain is divided.\n"
         <<"                      \t  Default: N=10." << '\n';
@@ -216,7 +224,7 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "                     \t  Default: NMCP=10,000." << '\n';
    cout << "  --vegas-iter I     \tSet the maximum number of iterations to be I." << '\n';
    cout << "                     \t  Default: I=20." << '\n';
-   cout << "  --vegas-conv-rat A \tSets the damping parameter to be A." << '\n';
+   cout << "  --vegas-conv-rat A \tSet the damping parameter to be A." << '\n';
    cout << "                     \t  Default: A=1.0." << '\n';
    cout << "  --vegas-therm T    \tSet the first T iterations to be ignored for computing the expected integral." << '\n';
    cout << "                     \t  Default value: T=0." << '\n';
@@ -227,6 +235,14 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "  --vegas-searchmax N\tUse N sample points to find the global maximum of prop." << '\n';
    cout << "                     \t  This option is applied only momentum space functions." << '\n';
    cout << "                     \t  Default: N=1,000,000." << '\n';
+   //-------------------------------------------------------------------------------------
+   ScreenUtils::PrintScrCharLine('-');
+   ScreenUtils::CenterString("Specific options for Miser-Monte Carlo integrator.");
+   ScreenUtils::PrintScrCharLine('-');
+   cout << "  --miser-npts NMCP  \tSet the number of MC-points to sample per iteration to be NMCP." << '\n';
+   cout << "                     \t  Default: NMCP=500,000." << '\n';
+   cout << "  --miser-dith d     \tSet dith=d. Default: d=0.05." << '\n';
+   ScreenUtils::PrintScrCharLine('-');
    //-------------------------------------------------------------------------------------
 }
 void printErrorMsg(char** &argv,char lab) {
@@ -259,6 +275,7 @@ void processDoubleDashOptions(int &argc,char** &argv,OptionFlags &flags,int pos)
    string progname=argv[0];
    size_t progpos=progname.find("./");
    if (progpos!=string::npos) {progname.erase(progpos,2);}
+   static const string mstbf=" must be followed by ";
    string str=argv[pos];
    str.erase(0,2);
    if (str==string("version")) {
@@ -270,49 +287,61 @@ void processDoubleDashOptions(int &argc,char** &argv,OptionFlags &flags,int pos)
    } else if ( str==string("vegas-interv") ) {
       flags.vegassetinterv=(++pos);
       if (pos>=argc) {
-         ScreenUtils::DisplayErrorMessage(string("vegas-interv must be followed by a real number!"));
+         ScreenUtils::DisplayErrorMessage(str+mstbf+string("a real number!"));
          exit(1);
       }
    } else if ( str==string("vegas-npts") ) {
       flags.vegassetpoints=(++pos);
       if (pos>=argc) {
-         ScreenUtils::DisplayErrorMessage(str+string(" must be followed by an integer!"));
+         ScreenUtils::DisplayErrorMessage(str+mstbf+string("an integer!"));
          exit(1);
       }
    } else if ( str==string("vegas-iter") ) {
       flags.vegassetiter=(++pos);
       if (pos>=argc) {
-         ScreenUtils::DisplayErrorMessage(str+string(" must be followed by an integer!"));
+         ScreenUtils::DisplayErrorMessage(str+mstbf+string("an integer!"));
          exit(1);
       }
    } else if ( str==string("vegas-conv-rat") ) {
       flags.vegassetconvrat=(++pos);
       if (pos>=argc) {
-         ScreenUtils::DisplayErrorMessage(str+string(" must be followed by a real number!"));
+         ScreenUtils::DisplayErrorMessage(str+mstbf+string("a real number!"));
          exit(1);
       }
    } else if ( str==string("vegas-therm") ) {
       flags.vegassettherm=(++pos);
       if (pos>=argc) {
-         ScreenUtils::DisplayErrorMessage(str+string(" must be followed by an integer!"));
+         ScreenUtils::DisplayErrorMessage(str+mstbf+string("an integer!"));
          exit(1);
       }
    } else if ( str==string("vegas-tol") ) {
       flags.vegassettol=(++pos);
       if (pos>=argc) {
-         ScreenUtils::DisplayErrorMessage(str+string(" must be followed by a real number!"));
+         ScreenUtils::DisplayErrorMessage(str+mstbf+string("a real number!"));
          exit(1);
       }
    } else if ( str==string("vegas-stop-ref") ) {
       flags.vegassetstopref=(++pos);
       if (pos>=argc) {
-         ScreenUtils::DisplayErrorMessage(str+string(" must be followed by an integer!"));
+         ScreenUtils::DisplayErrorMessage(str+mstbf+string("an integer!"));
          exit(1);
       }
    } else if ( str==string("vegas-searchmax") ) {
       flags.vegassetnpts4max=(++pos);
       if (pos>=argc) {
-         ScreenUtils::DisplayErrorMessage(str+string(" must be followed by an integer!"));
+         ScreenUtils::DisplayErrorMessage(str+mstbf+string("an integer!"));
+         exit(1);
+      }
+   } else if ( str==string("miser-npts") ) {
+      flags.misersetpoints=(++pos);
+      if (pos>=argc) {
+         ScreenUtils::DisplayErrorMessage(str+mstbf+string("an integer!"));
+         exit(1);
+      }
+   } else if ( str==string("miser-dith") ) {
+      flags.misersetdith=(++pos);
+      if (pos>=argc) {
+         ScreenUtils::DisplayErrorMessage(str+mstbf+string("a real number!"));
          exit(1);
       }
    } else {

@@ -50,8 +50,27 @@ using std::cerr;
 #include "helpersintegrate.h"
 #include "../common/dtkscalarfunction3d.h"
 #include "../common/integrator3d_vegas.h"
+#include "../common/integrator3d_miser.h"
 
 shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegrator(OptionFlags &options,\
+      int argc,char* argv[],GaussWaveFunction &ugwf,BondNetWork &ubnw) {
+   char integtype='v';
+   if ( options.integrator ) { integtype=argv[options.integrator][0]; }
+   switch ( integtype ) {
+      case 'm' :
+         return CreateIntegratorMiser(options,argc,argv,ugwf,ubnw);
+         break;
+      case 'v' :
+         return CreateIntegratorVegas(options,argc,argv,ugwf,ubnw);
+         break;
+      default :
+         ScreenUtils::DisplayWarningMessage("Unknown integrator! Setting up Vegas integrator.");
+         cout << __FILE__ << ", line: " << __LINE__ << '\n';
+         break;
+   }
+   return CreateIntegratorVegas(options,argc,argv,ugwf,ubnw);
+}
+shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegratorVegas(OptionFlags &options,\
       int argc,char* argv[],GaussWaveFunction &ugwf,BondNetWork &ubnw) {
    char ft='d';
    if ( options.integrand ) { ft=*argv[options.integrand]; }
@@ -90,7 +109,8 @@ shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegrator(OptionFlags &option
    size_t nPntsForMax=100000;
    if ( options.vegassetnpts4max ) { nPntsForMax=std::stod(string(argv[options.vegassetnpts4max])); }
    vegas->SetNSamplesToFindMaximum(nPntsForMax);
-   double intRmin[3]={0.0e0,0.0e0,0.0e0},intRmax[3]={0.0e0,0.0e0,0.0e0};
+   vector<double> intRmin(3),intRmax(3);
+   for ( size_t i=0 ; i<3 ; ++i ) { intRmin[i]=0.0e0; intRmax[i]=0.0e0; }
    FindIntegralLimits(options,argv,ugwf,ubnw,ft,intRmin,intRmax);
    vegas->SetDimensions(intRmin[0],intRmin[1],intRmin[2],intRmax[0],intRmax[1],intRmax[2]);
 
@@ -100,7 +120,7 @@ shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegrator(OptionFlags &option
 }
 void FactoryIntegrator::FindIntegralLimits(OptionFlags &options,char*argv[],\
          GaussWaveFunction &wf,BondNetWork &bn,char ft,\
-         double (&rmin)[3],double (&rmax)[3]) {
+         vector<double> &rmin,vector<double> &rmax) {
    double boxLimits[2]={0.0e0,0.0e0};
    if ( options.setupperdombox ) {
       boxLimits[0]={std::stod(string(argv[options.setlowerdombox]))};
@@ -125,5 +145,32 @@ void FactoryIntegrator::FindIntegralLimits(OptionFlags &options,char*argv[],\
          rmax[i] = boxLimits[1];
       }
    }
+}
+shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegratorMiser(OptionFlags &options,\
+      int argc,char* argv[],GaussWaveFunction &ugwf,BondNetWork &ubnw) {
+   char ft='d';
+   if ( options.integrand ) { ft=argv[options.integrand][0]; }
+   shared_ptr<DTKScalarFunction> dtkfield=shared_ptr<DTKScalarFunction>(new DTKScalarFunction(ugwf));
+   dtkfield->SetScalarFunction(ft);
+   shared_ptr<Function3D> the_function=shared_ptr<Function3D>(dtkfield);
+   shared_ptr<Integrator3DMiser> miser=shared_ptr<Integrator3DMiser>(new Integrator3DMiser(the_function));
+   shared_ptr<Integrator3D> integrator=shared_ptr<Integrator3D>(miser);
+   cout << "Using " << GetFieldTypeKeyShort(ft) << '\n';
+
+
+   //Setting configuration parameters.
+   size_t points=500000;
+   if ( options.misersetpoints ) { points=std::stoull(string(argv[options.misersetpoints])); }
+   miser->SetNumPts(points);
+   double tmp=0.05;
+   if ( options.misersetdith ) { tmp=std::stod(string(argv[options.misersetdith])); }
+   miser->SetDith(tmp);
+   vector<double> intRmin(3),intRmax(3);
+   for ( size_t i=0 ; i<3 ; ++i ) { intRmin[i]=0.0e0; intRmax[i]=0.0e0; }
+   FindIntegralLimits(options,argv,ugwf,ubnw,ft,intRmin,intRmax);
+   miser->SetXMin(intRmin);
+   miser->SetXMax(intRmax);
+
+   return integrator;
 }
 

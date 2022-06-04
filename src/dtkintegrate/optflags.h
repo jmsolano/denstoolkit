@@ -51,8 +51,10 @@ class OptionFlags {
 public: 
    OptionFlags();//default constructor, initialize all the flags to convenient (default) values.
    unsigned short int infname,outfname,integrand,setlowerdombox,setupperdombox;
+   unsigned short int integrator;
    unsigned short int vegassetpoints,vegassetiter,vegassetconvrat,vegassetinterv,vegassetnpts4max;
    unsigned short int vegassettherm,vegassettol,vegassetstopref;
+   unsigned short int misersetpoints,misersetdith;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);
 void printHelpMenu(int &argc, char** &argv);//self-described

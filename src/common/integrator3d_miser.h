@@ -41,37 +41,57 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-#ifndef _HELPERSINTEGRATE_H_
-#define _HELPERSINTEGRATE_H_
+#ifndef _INTEGRATOR3D_MISER_H_
+#define _INTEGRATOR3D_MISER_H_
+#include <vector>
+using std::vector;
 #include <memory>
 using std::shared_ptr;
-#include "optflags.h"
-#include "gausswavefunction.h"
-#include "bondnetwork.h"
+#include "myrandom.h"
+#include "function3d.h"
 #include "integrator3d.h"
 
+#ifndef DEFAULTMISERINTEGNPTS
+#define DEFAULTMISERINTEGNPTS 262144
+#endif
+
 /* ************************************************************************** */
-class FactoryIntegrator {
+/** The Miser Monte Carlo integral estimator. This implementation is based on
+ * the original miser algorithm proposed in:
+ * W. H. Press and G. R. Farrar, Recursive Stratified Sampling for
+ * Multidimensional Monte Carlo Integration, Computers in Physics,
+ * ?? (1990) 180 - 185.  */
+
+class Integrator3DMiser : public Integrator3D {
 /* ************************************************************************** */
 public:
-   static shared_ptr<Integrator3D> CreateIntegrator(OptionFlags &options,\
-         int argc, char *argv[],GaussWaveFunction &ugwf,\
-         BondNetWork &ubnw);
-   static shared_ptr<Integrator3D> CreateIntegratorVegas(OptionFlags &options,\
-         int argc, char *argv[],GaussWaveFunction &ugwf,\
-         BondNetWork &ubnw);
-   static shared_ptr<Integrator3D> CreateIntegratorMiser(OptionFlags &options,\
-         int argc, char *argv[],GaussWaveFunction &ugwf,\
-         BondNetWork &ubnw);
 /* ************************************************************************** */
-   static void FindIntegralLimits(OptionFlags &options,char*argv[],\
-         GaussWaveFunction &wf,BondNetWork &bn,char ft,vector<double> &rmin,vector<double> &rmax);
+   Integrator3DMiser();
+   virtual ~Integrator3DMiser() {}
+   Integrator3DMiser(shared_ptr<Function3D> i);
+   void ComputeIntegral();
+   void DisplayResults();
+   void Miser(const vector<double> &xa,const vector<double> &xb,const size_t npts,double &mean,double &var);
+   double Variance() {return variance;}
+   void SetDith(double d) {dith=d;}
+  /** Sets the number of points to be evaluated during the integration  */
+   void SetNumPts(const size_t nnn) {totalnpts=nnn;} 
+   void SetXMin(const vector<double> &xm);
+   void SetXMax(const vector<double> &xm);
+   size_t GetTotalEvaluations() {return neval;}
+/* ************************************************************************** */
 protected:
+/* ************************************************************************** */
+   MyRandom rg;
+   double variance;
+   double dith;
+   vector<double> xa,xb;
+   size_t totalnpts;
+   static size_t neval;
 /* ************************************************************************** */
 };
 /* ************************************************************************** */
 
 
-#endif  /* _HELPERSINTEGRATE_H_ */
-
+#endif  /* _INTEGRATOR3D_MISER_H_ */
 

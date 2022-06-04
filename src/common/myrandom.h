@@ -41,37 +41,27 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-#ifndef _HELPERSINTEGRATE_H_
-#define _HELPERSINTEGRATE_H_
-#include <memory>
-using std::shared_ptr;
-#include "optflags.h"
-#include "gausswavefunction.h"
-#include "bondnetwork.h"
-#include "integrator3d.h"
-
+#ifndef _MYRANDOM_H_
+#define _MYRANDOM_H_
+#include <cstdlib>
 /* ************************************************************************** */
-class FactoryIntegrator {
+/** Random number generator. The original recipe for rannr can be found in Numerical
+ * recipes in C++, 3rd ed.  */
+class MyRandom {
 /* ************************************************************************** */
 public:
-   static shared_ptr<Integrator3D> CreateIntegrator(OptionFlags &options,\
-         int argc, char *argv[],GaussWaveFunction &ugwf,\
-         BondNetWork &ubnw);
-   static shared_ptr<Integrator3D> CreateIntegratorVegas(OptionFlags &options,\
-         int argc, char *argv[],GaussWaveFunction &ugwf,\
-         BondNetWork &ubnw);
-   static shared_ptr<Integrator3D> CreateIntegratorMiser(OptionFlags &options,\
-         int argc, char *argv[],GaussWaveFunction &ugwf,\
-         BondNetWork &ubnw);
+   MyRandom();
+   MyRandom(long seed);
 /* ************************************************************************** */
-   static void FindIntegralLimits(OptionFlags &options,char*argv[],\
-         GaussWaveFunction &wf,BondNetWork &bn,char ft,vector<double> &rmin,vector<double> &rmax);
+   double rannr();
+   double gaussdev();
+/* ************************************************************************** */
 protected:
+/* ************************************************************************** */
+   static long idum;
 /* ************************************************************************** */
 };
 /* ************************************************************************** */
 
-
-#endif  /* _HELPERSINTEGRATE_H_ */
-
+#endif  /* _MYRANDOM_H_ */
 
