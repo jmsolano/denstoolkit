@@ -41,40 +41,44 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-#ifndef _HELPERSINTEGRATE_H_
-#define _HELPERSINTEGRATE_H_
+#ifndef _INTEGRATOR3D_LEGSPHTD_H_
+#define _INTEGRATOR3D_LEGSPHTD_H_
+#include <vector>
+using std::vector;
 #include <memory>
 using std::shared_ptr;
-#include "optflags.h"
-#include "gausswavefunction.h"
-#include "bondnetwork.h"
 #include "integrator3d.h"
 
 /* ************************************************************************** */
-class FactoryIntegrator {
+class Integrator3DLegSphtDes : public Integrator3D {
 /* ************************************************************************** */
 public:
-   static shared_ptr<Integrator3D> CreateIntegrator(OptionFlags &options,\
-         int argc, char *argv[],GaussWaveFunction &ugwf,\
-         BondNetWork &ubnw);
-   static shared_ptr<Integrator3D> CreateIntegratorVegas(OptionFlags &options,\
-         int argc, char *argv[],GaussWaveFunction &ugwf,\
-         BondNetWork &ubnw);
-   static shared_ptr<Integrator3D> CreateIntegratorCubLegSphtDes(OptionFlags &options,\
-         int argc, char *argv[],GaussWaveFunction &ugwf,\
-         BondNetWork &ubnw);
-   static shared_ptr<Integrator3D> CreateIntegratorMiser(OptionFlags &options,\
-         int argc, char *argv[],GaussWaveFunction &ugwf,\
-         BondNetWork &ubnw);
 /* ************************************************************************** */
-   static void FindIntegralLimits(OptionFlags &options,char*argv[],\
-         GaussWaveFunction &wf,BondNetWork &bn,char ft,vector<double> &rmin,vector<double> &rmax);
+   Integrator3DLegSphtDes();
+   Integrator3DLegSphtDes(shared_ptr<Function3D> i);
+   virtual ~Integrator3DLegSphtDes();
+   void ComputeIntegral();
+   void DisplayResults();
+   void DisplayProperties();
+   size_t NGaussLegendre() { return xl.size(); }
+   size_t NSpherTDes() { return xs.size(); }
+/* ************************************************************************** */
+   bool SetupCubature(const double a,const double b,\
+         const int glord,const int sphtord);
+/* ************************************************************************** */
 protected:
+/* ************************************************************************** */
+   vector<vector<double> > xs;/*!< Spherical-t design abscissas.  */
+   vector<vector<double> > xt;/*!< Internal temporary abscissas.  */
+   vector<double> ws;/*!< Spherical-t design weights.  */
+   vector<double> xl;/*!< Gauss-Legendre abscissas.  */
+   vector<double> wl;/*!< Gauss-Legendre weights.  */
+   void ScaleAbscissas(const double a);
+   bool imsetup;
 /* ************************************************************************** */
 };
 /* ************************************************************************** */
 
 
-#endif  /* _HELPERSINTEGRATE_H_ */
-
+#endif  /* _INTEGRATOR3D_LEGSPHTD_H_ */
 

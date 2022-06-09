@@ -68,24 +68,17 @@ using std::string;
 #include "figname.h"
 #include "optflags.h"
 #include "../common/screenutils.h"
+#include "../common/basegausslegendredata.h"
+#include "../common/basesphertdesdata.h"
 
 OptionFlags::OptionFlags() {
-   infname=0;
-   outfname=0;
-   integrator=0;
-   integrand=0;
-   vegassetconvrat=0;
-   vegassetpoints=0;
-   vegassetiter=0;
-   vegassetinterv=0;
-   vegassettherm=0;
-   vegassettol=0;
-   vegassetstopref=0;
-   vegassetnpts4max=0;
-   misersetpoints=0;
-   misersetdith=0;
-   setlowerdombox=0;
-   setupperdombox=0;
+   infname = outfname = 0;
+   integrator = integrand = 0;
+   vegassetconvrat = vegassetpoints = vegassetiter    = vegassetinterv = 0;
+   vegassettherm   = vegassettol    = vegassetstopref = vegassetnpts4max = 0;
+   misersetpoints = misersetdith = 0;
+   lsptdsetol = lsptdsetos = 0;
+   setlowerdombox = setupperdombox = 0;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    string progname;
@@ -204,7 +197,11 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "            \t  set the boundaries automatically." << '\n';
    cout << "  -i t      \tSet the integrator type to be t. Here, t is a char of the following list:\n"
         << "            \t\tv Vegas-Monte Carlo\n"
-        << "            \t\tm Miser-Monte Carlo" << '\n';
+        << "            \t\tm Miser-Monte Carlo\n"
+        << "            \t\ts Gauss-Legendre-Spherical-t design cubature.\n"
+        << "            \t\t    Warning: this only works for single atoms when the field's\n"
+        << "            \t\t    domain is real space, or for any molecule if the field's\n"
+        << "            \t\t    domain is momentum space." << '\n';
    cout << "  -o outname \tSet the output file name." << endl
         << "             \t  (If not given, the program will create one out of" << endl
         << "             \t  the input name; if given, the gnp file and the pdf will" << endl
@@ -218,20 +215,20 @@ void printHelpMenu(int &argc, char** &argv) {
    ScreenUtils::PrintScrCharLine('-');
    //-------------------------------------------------------------------------------------
    cout << "  --vegas-interv  N  \tSet the number of intervals to be N. N is the number of\n"
-        << "                     \t  subregions (intervals) to which the original domain is divided.\n"
-        <<"                      \t  Default: N=10." << '\n';
-   cout << "  --vegas-npts NMCP  \tSet the number of MC-points to sample per iteration to be NMCP." << '\n';
-   cout << "                     \t  Default: NMCP=10,000." << '\n';
+        << "                     \t  subregions (intervals) to which the original domain is\n"
+        << "                     \t  divided. Default: N=10." << '\n';
+   cout << "  --vegas-npts NMCP  \tSet the number of MC-points to sample per iteration\n"
+        << "                     \t  to be NMCP. Default: NMCP=10,000." << '\n';
    cout << "  --vegas-iter I     \tSet the maximum number of iterations to be I." << '\n';
    cout << "                     \t  Default: I=20." << '\n';
    cout << "  --vegas-conv-rat A \tSet the damping parameter to be A." << '\n';
    cout << "                     \t  Default: A=1.0." << '\n';
-   cout << "  --vegas-therm T    \tSet the first T iterations to be ignored for computing the expected integral." << '\n';
-   cout << "                     \t  Default value: T=0." << '\n';
-   cout << "  --vegas-tol tol    \tSet the tolerance for considering an optimal grid to be tol." << '\n';
-   cout << "                     \t  Default value: tol=0.0." << '\n';
-   cout << "  --vegas-stop-ref X \tSet the num. of iterations where the grid will be refined." << '\n';
-   cout << "                     \t  Usually, X is not defined." << '\n';
+   cout << "  --vegas-therm T    \tSet the first T iterations to be ignored for computing\n"
+        << "                     \t  the expected integral. Default value: T=0." << '\n';
+   cout << "  --vegas-tol tol    \tSet the tolerance for considering an optimal grid to be\n"
+        << "                     \t  tol. Default value: tol=0.0." << '\n';
+   cout << "  --vegas-stop-ref X \tSet the num. of iterations where the grid will be\n"
+        << "                     \t  refined. Usually, X is not defined." << '\n';
    cout << "  --vegas-searchmax N\tUse N sample points to find the global maximum of prop." << '\n';
    cout << "                     \t  This option is applied only momentum space functions." << '\n';
    cout << "                     \t  Default: N=1,000,000." << '\n';
@@ -239,9 +236,17 @@ void printHelpMenu(int &argc, char** &argv) {
    ScreenUtils::PrintScrCharLine('-');
    ScreenUtils::CenterString("Specific options for Miser-Monte Carlo integrator.");
    ScreenUtils::PrintScrCharLine('-');
-   cout << "  --miser-npts NMCP  \tSet the number of MC-points to sample per iteration to be NMCP." << '\n';
-   cout << "                     \t  Default: NMCP=500,000." << '\n';
+   cout << "  --miser-npts NMCP  \tSet the number of MC-points to sample per iteration\n"
+        << "                     \t  to be NMCP. Default: NMCP=500,000." << '\n';
    cout << "  --miser-dith d     \tSet dith=d. Default: d=0.05." << '\n';
+   ScreenUtils::PrintScrCharLine('-');
+   //-------------------------------------------------------------------------------------
+   ScreenUtils::CenterString("Specific options for Gauss-Legendre-Spherical-t Cubature integrator.");
+   ScreenUtils::PrintScrCharLine('-');
+   cout << "  --lsptd-ol OGL     \tUse OLG order for the Gauss-Legendre terms (radial)." << '\n';
+   cout << "                     \t  Options: " << BaseGaussLegendreData::GetAvailableOrders() << '\n';
+   cout << "  --lsptd-os OSTD    \tSet dith=d. Default: d=0.05." << '\n';
+   cout << "                     \t  Options: " << BaseSphericalTDesignsData::GetAvailableOrders() << '\n';
    ScreenUtils::PrintScrCharLine('-');
    //-------------------------------------------------------------------------------------
 }
@@ -342,6 +347,18 @@ void processDoubleDashOptions(int &argc,char** &argv,OptionFlags &flags,int pos)
       flags.misersetdith=(++pos);
       if (pos>=argc) {
          ScreenUtils::DisplayErrorMessage(str+mstbf+string("a real number!"));
+         exit(1);
+      }
+   } else if ( str==string("lsptd-ol") ) {
+      flags.lsptdsetol=(++pos);
+      if (pos>=argc) {
+         ScreenUtils::DisplayErrorMessage(str+mstbf+string("an integer!"));
+         exit(1);
+      }
+   } else if ( str==string("lsptd-os") ) {
+      flags.lsptdsetos=(++pos);
+      if (pos>=argc) {
+         ScreenUtils::DisplayErrorMessage(str+mstbf+string("an integer!"));
          exit(1);
       }
    } else {

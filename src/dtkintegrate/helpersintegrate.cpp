@@ -51,6 +51,7 @@ using std::cerr;
 #include "../common/dtkscalarfunction3d.h"
 #include "../common/integrator3d_vegas.h"
 #include "../common/integrator3d_miser.h"
+#include "../common/integrator3d_legsphtd.h"
 
 shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegrator(OptionFlags &options,\
       int argc,char* argv[],GaussWaveFunction &ugwf,BondNetWork &ubnw) {
@@ -59,6 +60,9 @@ shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegrator(OptionFlags &option
    switch ( integtype ) {
       case 'm' :
          return CreateIntegratorMiser(options,argc,argv,ugwf,ubnw);
+         break;
+      case 's' :
+         return CreateIntegratorCubLegSphtDes(options,argc,argv,ugwf,ubnw);
          break;
       case 'v' :
          return CreateIntegratorVegas(options,argc,argv,ugwf,ubnw);
@@ -121,29 +125,24 @@ shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegratorVegas(OptionFlags &o
 void FactoryIntegrator::FindIntegralLimits(OptionFlags &options,char*argv[],\
          GaussWaveFunction &wf,BondNetWork &bn,char ft,\
          vector<double> &rmin,vector<double> &rmax) {
-   double boxLimits[2]={0.0e0,0.0e0};
    if ( options.setupperdombox ) {
+      double boxLimits[2]={0.0e0,0.0e0};
       boxLimits[0]={std::stod(string(argv[options.setlowerdombox]))};
       boxLimits[1]={std::stod(string(argv[options.setupperdombox]))};
+      for ( size_t i=0 ; i<3 ; ++i ) { rmin[i]=boxLimits[0]; }
+      for ( size_t i=0 ; i<3 ; ++i ) { rmax[i]=boxLimits[1]; }
+      return;
    }
-   double uncertainty = 3.0e0;
-   if ( boxLimits[0] == 0.0e0 && boxLimits[1] == 0.0e0 ){
-      if ( (ft == 'm') || (ft == 'T') || (ft == 'k') ){
-         while ( wf.EvalFTDensity(rmax[0],rmax[1],rmax[2]) >= 1.0e-12 ) {
-            for (int i=0; i<3; ++i) { rmax[i] += 0.5e0; }
-         }
-         for (int i=0; i<3; ++i) { rmin[i]=-rmax[i]; }
-      } else {
-         for (int i=0;i<3;++i) {
-            rmin[i] = bn.bbmin[i]-uncertainty;
-            rmax[i] = bn.bbmax[i]+uncertainty;
-         }
+   if ( (ft == 'm') || (ft == 'T') || (ft == 'k') ) {
+      while ( wf.EvalFTDensity(rmax[0],rmax[1],rmax[2]) >= 1.0e-14 ) {
+         for (int i=0; i<3; ++i) { rmax[i] += 0.5e0; }
       }
+      for (int i=0; i<3; ++i) { rmin[i]=-rmax[i]; }
    } else {
-      for (int i=0;i<3;++i) {
-         rmin[i] = boxLimits[0];
-         rmax[i] = boxLimits[1];
+      while ( wf.EvalDensity(rmax[0],rmax[1],rmax[2]) >= 1.0e-14 ) {
+         for (int i=0; i<3; ++i) { rmax[i] += 0.5e0; }
       }
+      for (int i=0; i<3; ++i) { rmin[i]=-rmax[i]; }
    }
 }
 shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegratorMiser(OptionFlags &options,\
@@ -171,6 +170,43 @@ shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegratorMiser(OptionFlags &o
    miser->SetXMin(intRmin);
    miser->SetXMax(intRmax);
 
+   return integrator;
+}
+shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegratorCubLegSphtDes(OptionFlags &options,\
+         int argc, char *argv[],GaussWaveFunction &ugwf,\
+         BondNetWork &ubnw) {
+   if ( ugwf.nNuc !=1 ) {
+      ScreenUtils::DisplayWarningMessage("Legendre-SphericaltDesign cubature only works with\n"
+            "single atoms! The result may be mistaken.");
+   }
+   char ft='d';
+   if ( options.integrand ) { ft=argv[options.integrand][0]; }
+   shared_ptr<DTKScalarFunction> dtkfield=shared_ptr<DTKScalarFunction>(new DTKScalarFunction(ugwf));
+   dtkfield->SetScalarFunction(ft);
+   shared_ptr<Function3D> the_function=shared_ptr<Function3D>(dtkfield);
+   shared_ptr<Integrator3DLegSphtDes> legsphtd=shared_ptr<Integrator3DLegSphtDes>(new Integrator3DLegSphtDes(the_function));
+   shared_ptr<Integrator3D> integrator=shared_ptr<Integrator3D>(legsphtd);
+   cout << "Using " << GetFieldTypeKeyShort(ft) << '\n';
+
+   vector<double> intRmin(3),intRmax(3);
+   for ( size_t i=0 ; i<3 ; ++i ) { intRmin[i]=0.0e0; intRmax[i]=0.0e0; }
+   FindIntegralLimits(options,argv,ugwf,ubnw,ft,intRmin,intRmax);
+   double a=-1.0e+50;
+   for ( size_t i=0 ; i<3 ; ++i ) { if ( fabs(intRmin[i])>a ) { a=fabs(intRmin[i]); } }
+   for ( size_t i=0 ; i<3 ; ++i ) { if ( fabs(intRmax[i])>a ) { a=fabs(intRmax[i]); } }
+   cout << "a: " << a << '\n';
+
+   int glord=16;
+   if ( options.lsptdsetol ) { glord=std::stoi(string(argv[options.lsptdsetol])); }
+   int sptdord=21;
+   if ( options.lsptdsetos ) { sptdord=std::stoi(string(argv[options.lsptdsetos])); }
+
+   if ( !(legsphtd->SetupCubature(0.0e0,a,glord,sptdord)) ) {
+      ScreenUtils::DisplayWarningMessage("Cubature could not be setup!");
+      cout << __FILE__ << ", line: " << __LINE__ << '\n';
+      return nullptr;
+   }
+   //legsphtd->SetVerbosityLevel(1);
    return integrator;
 }
 

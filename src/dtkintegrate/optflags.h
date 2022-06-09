@@ -55,6 +55,7 @@ public:
    unsigned short int vegassetpoints,vegassetiter,vegassetconvrat,vegassetinterv,vegassetnpts4max;
    unsigned short int vegassettherm,vegassettol,vegassetstopref;
    unsigned short int misersetpoints,misersetdith;
+   unsigned short int lsptdsetol,lsptdsetos;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);
 void printHelpMenu(int &argc, char** &argv);//self-described
