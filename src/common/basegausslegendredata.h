@@ -69,6 +69,8 @@ public:
    static void GetWeightsAndAbscissas(vector<double> &ww,vector<double> &xx,int nn);
    static void GetWeightsAndAbscissas(vector<double> &ww,vector<double> &xx,\
          const double xmin,const double xmax,int nn);
+   static void GetZero2InfWeightsAndAbscissas(vector<double> &ww,vector<double> &xx,\
+         int nn);
    static string GetAvailableOrders();
    /** Returns the size of the internal data arrays. This is
     * not to be confused with the number of abscissas/weights.  */

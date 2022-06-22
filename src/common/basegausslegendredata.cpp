@@ -420,6 +420,18 @@ void BaseGaussLegendreData::GetWeightsAndAbscissas(vector<double> &ww,vector<dou
    }
    for ( size_t i=0 ; i<k ; ++i ) { ww[i]*=(0.5e0*(xmax-xmin)); }
 }
+void BaseGaussLegendreData::GetZero2InfWeightsAndAbscissas(\
+      vector<double> &ww,vector<double> &xx,int nn) {
+   GetWeightsAndAbscissas(ww,xx,0.0e0,1.0e0,nn);
+   size_t k=ww.size();
+   double tmp,xi;
+   for ( size_t i=0 ; i<k ; ++i ) {
+      xi=xx[i];
+      tmp=1.0e0/(1.0e0-xi);
+      xx[i]=xi*tmp;
+      ww[i]*=(tmp*tmp);
+   }
+}
 /* The function gauss_legendre_tbl was obtained from the open source:
  * http://www.holoborodko.com/pavel/numerical-methods/numerical-integration/ */
 /* Look up table for fast calculation of Legendre polynomial for n<1024 */
