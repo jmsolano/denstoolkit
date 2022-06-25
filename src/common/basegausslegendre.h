@@ -42,7 +42,7 @@
    README file.
 */
 //
-//  basegausslegendredata.h
+//  basegausslegendre.h
 //  
 //
 //  Created by Juan Manuel Solano on 2013-10-18.
@@ -53,19 +53,19 @@
 //  e-mail: jmsolanoalt@gmail.com
 //
 //
-#ifndef _BASEGAUSSLEGENDREDATA_H_
-#define _BASEGAUSSLEGENDREDATA_H_
+#ifndef _BASEGAUSSLEGENDRE_H_
+#define _BASEGAUSSLEGENDRE_H_
 #include <vector>
 using std::vector;
 #include <string>
 using std::string;
 
 /* ************************************************************************** */
-class BaseGaussLegendreData {
+class BaseGaussLegendre {
 /* ************************************************************************** */
 public:
-   BaseGaussLegendreData();
-   ~BaseGaussLegendreData();
+   BaseGaussLegendre();
+   ~BaseGaussLegendre();
    static void GetWeightsAndAbscissas(vector<double> &ww,vector<double> &xx,int nn);
    static void GetWeightsAndAbscissas(vector<double> &ww,vector<double> &xx,\
          const double xmin,const double xmax,int nn);
@@ -121,4 +121,4 @@ protected:
 };
 /* ************************************************************************** */
 #endif
-//_BASEGAUSSLEGENDREDATA_H_
+//_BASEGAUSSLEGENDRE_H_

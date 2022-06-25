@@ -50,8 +50,8 @@ using std::setprecision;
 #include <cmath>
 #include "screenutils.h"
 #include "integrator3d_legsphtd.h"
-#include "basegausslegendredata.h"
-#include "basesphertdesdata.h"
+#include "basegausslegendre.h"
+#include "basesphtdesign.h"
 
 Integrator3DLegSphtDes::Integrator3DLegSphtDes() : Integrator3D() {
    for ( size_t i=0 ; i<xs.size() ; ++i ) { xs[i].clear(); }
@@ -97,9 +97,9 @@ void Integrator3DLegSphtDes::ComputeIntegral() {
 bool Integrator3DLegSphtDes::SetupCubature(const double a,const double b,\
       const int glord,const int sphtord) {
    bool havevecs=true;
-   xs=BaseSphericalTDesignsData::GetAbscissas(sphtord);
-   ws=BaseSphericalTDesignsData::GetWeights(sphtord);
-   BaseGaussLegendreData::GetWeightsAndAbscissas(wl,xl,a,b,glord);
+   xs=BaseSphericalTDesign::GetAbscissas(sphtord);
+   ws=BaseSphericalTDesign::GetWeights(sphtord);
+   BaseGaussLegendre::GetWeightsAndAbscissas(wl,xl,a,b,glord);
    xt.resize(xs.size());
    for ( size_t i=0 ; i<xt.size() ; ++i ) { xt[i].resize(3); }
    imsetup=true;

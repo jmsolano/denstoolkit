@@ -44,13 +44,14 @@
 #include <cstdlib>
 #include <iostream>
 using std::cout;
+using std::cerr;
 #include <string>
 using std::string;
 #include <cmath>
 #include "screenutils.h"
-#include "basesphertdesdata.h"
+#include "basesphtdesign.h"
 
-const double* BaseSphericalTDesignsData::GetBaseAbscissas(int nn) {
+const double* BaseSphericalTDesign::GetBaseAbscissas(int nn) {
    const double *data=nullptr;
    switch ( nn ) {
    /* read !cat ../gentsphdess/CASESARRAYASSIGN  */
@@ -121,7 +122,7 @@ const double* BaseSphericalTDesignsData::GetBaseAbscissas(int nn) {
    }
    return data;
 }
-size_t BaseSphericalTDesignsData::GetSizeArray(int nn) {
+size_t BaseSphericalTDesign::GetSizeArray(int nn) {
    switch ( nn ) {
    /* read !cat ../gentsphdess/CASESDIMASSIGN  */
       case   3 :
@@ -191,7 +192,7 @@ size_t BaseSphericalTDesignsData::GetSizeArray(int nn) {
    }
    return 0;
 }
-vector<vector<double> > BaseSphericalTDesignsData::GetAbscissas(int nn) {
+vector<vector<double> > BaseSphericalTDesign::GetAbscissas(int nn) {
    const double *data=GetBaseAbscissas(nn);
    vector<vector<double> > res(0);
    if ( data==nullptr ) { return res; }
@@ -214,7 +215,7 @@ vector<vector<double> > BaseSphericalTDesignsData::GetAbscissas(int nn) {
    }
    return res;
 }
-vector<double> BaseSphericalTDesignsData::GetWeights(int nn) {
+vector<double> BaseSphericalTDesign::GetWeights(int nn) {
    size_t kk=2*GetSizeArray(nn);
    double ww=4.0e0*M_PI;
    ww/=double(kk);
@@ -222,41 +223,126 @@ vector<double> BaseSphericalTDesignsData::GetWeights(int nn) {
    for ( size_t i=0 ; i<kk ; ++i ) {res[i]=ww; }
    return res;
 }
-string BaseSphericalTDesignsData::GetAvailableOrders() {
+string BaseSphericalTDesign::GetAvailableOrders() {
    string res="";
-   /* read !cat ../gentsphdess/DIMBASESPHTDESDEFS
-    * Replace 188 and 207 by the appropriate lines, below.
-    * 188,207s/\(.*\)dim_ss\([0]*\)\(.*\)_\(.*\);/res+=std::to_string(\3); res+=',';/g
-    * Vim it and remove last comma before return res */
-   res+=std::to_string(3); res+=',';
-   res+=std::to_string(5); res+=',';
-   res+=std::to_string(7); res+=',';
-   res+=std::to_string(9); res+=',';
-   res+=std::to_string(11); res+=',';
-   res+=std::to_string(13); res+=',';
-   res+=std::to_string(15); res+=',';
-   res+=std::to_string(17); res+=',';
-   res+=std::to_string(19); res+=',';
-   res+=std::to_string(21); res+=',';
-   res+=std::to_string(31); res+=',';
-   res+=std::to_string(39); res+=',';
-   res+=std::to_string(45); res+=',';
-   res+=std::to_string(55); res+=',';
-   res+=std::to_string(63); res+=',';
-   res+=std::to_string(71); res+=',';
-   res+=std::to_string(77); res+=',';
-   res+=std::to_string(89); res+=',';
-   res+=std::to_string(101); res+=',';
-   res+=std::to_string(111);
+   for ( int i=1 ; i<=SPHERICAL_T_DESIGN_MAX_N_RULES_DEFINED ; ++i ) {
+      if ( available_table(i) ) {
+         res+=std::to_string(order_table(i)); res+=',';
+      }
+   }
+   if ( res[res.size()-1] == ',' ) { res.pop_back(); }
    return res;
 }
+string BaseSphericalTDesign::GetAvailableRules() {
+   string res="";
+   for ( int i=1 ; i<=SPHERICAL_T_DESIGN_MAX_N_RULES_DEFINED ; ++i ) {
+      if ( available_table(i) ) {
+         res+=std::to_string(i); res+=',';
+      }
+   }
+   if ( res[res.size()-1] == ',' ) { res.pop_back(); }
+   return res;
+}
+string BaseSphericalTDesign::GetAvailablePrecisions() {
+   string res="";
+   for ( int i=1 ; i<=SPHERICAL_T_DESIGN_MAX_N_RULES_DEFINED ; ++i ) {
+      if ( available_table(i) ) {
+         res+=std::to_string(precision_table(i)); res+=',';
+      }
+   }
+   if ( res[res.size()-1] == ',' ) { res.pop_back(); }
+   return res;
+}
+bool BaseSphericalTDesign::available_table ( int rule ) {
+   int rule_max = SPHERICAL_T_DESIGN_MAX_N_RULES_DEFINED;
+   //read !cat ../gentsphdess/TABLEAVAILABLERULE
+   bool table[SPHERICAL_T_DESIGN_MAX_N_RULES_DEFINED] = {
+       true,  true,  true,  true,  true,  true,  true,  true,  true,  true,\
+      false, false, false, false,  true, false, false, false,  true, false,\
+      false,  true, false, false, false, false,  true, false, false, false,\
+       true, false, false, false,  true, false, false,  true, false, false,\
+      false, false, false,  true, false, false, false, false, false,  true,\
+      false, false, false, false,  true, false, false, false, false, false
+   };
+   if ( rule < 1 ) {
+      cerr << "\n";
+      cerr << "available_table - Fatal error!\n";
+      cerr << "  rule < 1.\n";
+      cout << __FILE__ << ", line: " << __LINE__ << '\n';
+      return false;
+   }
+   if ( rule_max < rule ) {
+      cerr << "\n";
+      cerr << "available_table - Fatal error!\n";
+      cerr << "  rule_max < rule.\n";
+      cout << __FILE__ << ", line: " << __LINE__ << '\n';
+      return false;
+   }
+   return table[rule-1];
+}
+int BaseSphericalTDesign::precision_table ( int rule ) {
+   int rule_max = SPHERICAL_T_DESIGN_MAX_N_RULES_DEFINED;
+   //read !cat ../gentsphdess/TABLEPRECISIONS
+   // remove last ',\' entry
+   int table[SPHERICAL_T_DESIGN_MAX_N_RULES_DEFINED]= {
+        3,   5,   7,   9,  11,  13,  15,  17,  19,  21,\
+       23,  25,  27,  29,  31,  33,  35,  37,  39,  41,\
+       43,  45,  47,  49,  51,  53,  55,  57,  59,  61,\
+       63,  65,  67,  69,  71,  73,  75,  77,  79,  81,\
+       83,  85,  87,  89,  91,  93,  95,  97,  99, 101,\
+      103, 105, 107, 109, 111, 113, 115, 117, 119, 121
+   };
+   if ( rule < 1 ) {
+      cerr << "\n";
+      cerr << "precision_table - Fatal error!\n";
+      cerr << "  rule < 1.\n";
+      cout << __FILE__ << ", line: " << __LINE__ << '\n';
+      return 0;
+   }
+   if ( rule_max < rule ) {
+      cerr << "\n";
+      cerr << "precision_table - Fatal error!\n";
+      cerr << "  rule_max < rule.\n";
+      cout << __FILE__ << ", line: " << __LINE__ << '\n';
+      return 0;
+   }
+   return table[rule-1];
+}
+int BaseSphericalTDesign::order_table ( int rule ) {
+   int rule_max = SPHERICAL_T_DESIGN_MAX_N_RULES_DEFINED;
+   //read !cat ../gentsphdess/TABLEORDERS
+   // remove last ',\' entry
+   int table[SPHERICAL_T_DESIGN_MAX_N_RULES_DEFINED]= {
+          6,    12,    32,    48,    70,    94,   120,   156,   192,   234,\
+        278,   328,   380,   438,   498,   564,   632,   706,   782,   864,\
+        948,  1038,  1130,  1228,  1328,  1434,  1542,  1656,  1772,  1894,\
+       2018,  2148,  2280,  2418,  2558,  2704,  2852,  3006,  3162,  3324,\
+       3488,  3658,  3830,  4008,  4188,  4374,  4562,  4756,  4952,  5154,\
+       5358,  5568,  5780,  5998,  6218,  6444,  6672,  6906,  7142,  7384
+   };
+   if ( rule < 1 ) {
+      cerr << "\n";
+      cerr << __func__ << " - Fatal error!\n";
+      cerr << "  rule < 1.\n";
+      cerr << __FILE__ << ", line: " << __LINE__ << '\n';
+      return 0;
+   }
+   else if ( rule_max < rule ) {
+      cerr << "\n";
+      cerr << __func__ << " - Fatal error!\n";
+      cerr << "  rule_max < rule.\n";
+      cerr << __FILE__ << ", line: " << __LINE__ << '\n';
+      return 0;
+   }
+   return table[rule-1];
+}
 /* read !cat ../gentsphdess/PTRBASESPHTDESIMPLS  */
-const double BaseSphericalTDesignsData::ss003_00006[9]={\
+const double BaseSphericalTDesign::ss003_00006[9]={\
    0.0000000000000000e+00,0.0000000000000000e+00,1.0000000000000000e+00,\
    1.0000000000000000e+00,0.0000000000000000e+00,0.0000000000000000e+00,\
    0.0000000000000000e+00,1.0000000000000000e+00,0.0000000000000000e+00\
 };
-const double BaseSphericalTDesignsData::ss005_00012[18]={\
+const double BaseSphericalTDesign::ss005_00012[18]={\
    0.0000000000000000e+00,0.0000000000000000e+00,1.0000000000000000e+00,\
    8.9442719099991586e-01,0.0000000000000000e+00,4.4721359549995804e-01,\
    2.7639320225002084e-01,-8.5065080835203999e-01,4.4721359549995804e-01,\
@@ -264,7 +350,7 @@ const double BaseSphericalTDesignsData::ss005_00012[18]={\
    -7.2360679774997883e-01,-5.2573111211913381e-01,4.4721359549995804e-01,\
    2.7639320225002106e-01,8.5065080835203999e-01,4.4721359549995782e-01\
 };
-const double BaseSphericalTDesignsData::ss007_00032[48]={\
+const double BaseSphericalTDesign::ss007_00032[48]={\
    0.0000000000000000e+00,0.0000000000000000e+00,1.0000000000000000e+00,\
    6.4610592166519332e-01,0.0000000000000000e+00,7.6324775662242927e-01,\
    -3.5471744491163054e-01,-6.1835452560962756e-01,7.0129395757660484e-01,\
@@ -282,7 +368,7 @@ const double BaseSphericalTDesignsData::ss007_00032[48]={\
    8.4934478465605845e-01,4.0360748739643526e-01,3.4016824204368351e-01,\
    9.3557958470569913e-01,-2.6063842072206805e-01,2.3824032892316474e-01\
 };
-const double BaseSphericalTDesignsData::ss009_00048[72]={\
+const double BaseSphericalTDesign::ss009_00048[72]={\
    0.0000000000000000e+00,0.0000000000000000e+00,1.0000000000000000e+00,\
    4.4497842872855070e-01,0.0000000000000000e+00,8.9554128769491703e-01,\
    2.9311257360207071e-01,6.5146206858307154e-01,6.9977295774689385e-01,\
@@ -308,7 +394,7 @@ const double BaseSphericalTDesignsData::ss009_00048[72]={\
    8.9211101260730374e-01,-1.1748339308197656e-01,4.3627467670576175e-01,\
    9.4351990489908177e-01,2.8582171040955268e-01,1.6755935938581693e-01\
 };
-const double BaseSphericalTDesignsData::ss011_00070[105]={\
+const double BaseSphericalTDesign::ss011_00070[105]={\
    0.0000000000000000e+00,0.0000000000000000e+00,1.0000000000000000e+00,\
    3.8280509015945718e-01,0.0000000000000000e+00,9.2382913081803708e-01,\
    3.2311849608414916e-01,4.2509462020083927e-01,8.4551108884781745e-01,\
@@ -345,7 +431,7 @@ const double BaseSphericalTDesignsData::ss011_00070[105]={\
    7.2205325790083608e-01,-6.8703156998254489e-01,8.1404635016123467e-02,\
    9.3134103404177648e-01,-3.0148104331668213e-01,2.0423775074818906e-01\
 };
-const double BaseSphericalTDesignsData::ss013_00094[141]={\
+const double BaseSphericalTDesign::ss013_00094[141]={\
    0.0000000000000000e+00,0.0000000000000000e+00,1.0000000000000000e+00,\
    3.3486964667745112e-01,0.0000000000000000e+00,9.4226446379671935e-01,\
    1.3919290716353905e-01,3.6485859026669865e-01,9.2059955664988224e-01,\
@@ -394,7 +480,7 @@ const double BaseSphericalTDesignsData::ss013_00094[141]={\
    8.6765295626149119e-01,-4.2988122109939469e-01,2.4976085209013096e-01,\
    9.8257644922692255e-01,-1.0784049410706616e-01,1.5137354212462881e-01\
 };
-const double BaseSphericalTDesignsData::ss015_00120[180]={\
+const double BaseSphericalTDesign::ss015_00120[180]={\
    0.0000000000000000e+00,0.0000000000000000e+00,1.0000000000000000e+00,\
    7.9338475274129683e-01,0.0000000000000000e+00,6.0872048931971334e-01,\
    9.7686239243730544e-01,2.1043708684020276e-01,3.8158861668986264e-02,\
@@ -456,7 +542,7 @@ const double BaseSphericalTDesignsData::ss015_00120[180]={\
    -8.3241509838515682e-01,-5.3124278151028803e-01,1.5769023772460397e-01,\
    8.8564809535644384e-01,-4.5549140107185437e-01,9.0305230973087153e-02\
 };
-const double BaseSphericalTDesignsData::ss017_00156[234]={\
+const double BaseSphericalTDesign::ss017_00156[234]={\
    0.0000000000000000e+00,0.0000000000000000e+00,1.0000000000000000e+00,\
    2.7871755157383943e-01,0.0000000000000000e+00,9.6037311834759520e-01,\
    2.1910257978662073e-01,2.6604172136623766e-01,9.3873098490639828e-01,\
@@ -536,7 +622,7 @@ const double BaseSphericalTDesignsData::ss017_00156[234]={\
    8.2903660907769716e-01,-5.4845562741233744e-01,1.0906294315069984e-01,\
    9.4880704968039642e-01,-2.9232731762569930e-01,1.1962408556200263e-01\
 };
-const double BaseSphericalTDesignsData::ss019_00192[288]={\
+const double BaseSphericalTDesign::ss019_00192[288]={\
    0.0000000000000000e+00,0.0000000000000000e+00,1.0000000000000000e+00,\
    2.6041600954978000e-01,0.0000000000000000e+00,9.6549650541582432e-01,\
    2.8231490548239774e-01,2.2204557732839184e-01,9.3327062298744090e-01,\
@@ -634,7 +720,7 @@ const double BaseSphericalTDesignsData::ss019_00192[288]={\
    -4.0864321675155080e-01,-9.0926082179469325e-01,7.9091588378185182e-02,\
    6.4004171963424028e-01,-7.6831855340861499e-01,5.7617372152497853e-03\
 };
-const double BaseSphericalTDesignsData::ss021_00234[351]={\
+const double BaseSphericalTDesign::ss021_00234[351]={\
    0.0000000000000000e+00,0.0000000000000000e+00,1.0000000000000000e+00,\
    2.1431132914577350e-01,0.0000000000000000e+00,9.7676540387125299e-01,\
    1.5712633551817637e-01,2.5075498843396737e-01,9.5521371978322756e-01,\
@@ -753,7 +839,7 @@ const double BaseSphericalTDesignsData::ss021_00234[351]={\
    -4.2519981141874108e-01,9.0447963901232620e-01,3.3491834551113743e-02,\
    -6.4384454781893841e-01,7.6512970754481968e-01,6.3819179096422920e-03\
 };
-const double BaseSphericalTDesignsData::ss031_00498[747]={\
+const double BaseSphericalTDesign::ss031_00498[747]={\
    0.0000000000000000e+00,0.0000000000000000e+00,1.0000000000000000e+00,\
    1.7046484213413482e-01,0.0000000000000000e+00,9.8536375902312567e-01,\
    1.0065793225613456e-01,1.4954128210856268e-01,9.8361851630560859e-01,\
@@ -1004,7 +1090,7 @@ const double BaseSphericalTDesignsData::ss031_00498[747]={\
    9.6479709414232884e-01,-2.6298336594323057e-01,2.5132392817603000e-03,\
    9.9206363029223710e-01,-1.1119326984594205e-01,5.8701023776039002e-02\
 };
-const double BaseSphericalTDesignsData::ss039_00782[1173]={\
+const double BaseSphericalTDesign::ss039_00782[1173]={\
    0.0000000000000000e+00,0.0000000000000000e+00,1.0000000000000000e+00,\
    1.2667690652410737e-01,0.0000000000000000e+00,9.9194403136138809e-01,\
    9.8433645427659713e-02,1.1769791178513619e-01,9.8815890372411264e-01,\
@@ -1397,7 +1483,7 @@ const double BaseSphericalTDesignsData::ss039_00782[1173]={\
    9.9435854881506058e-01,-8.8359939173818389e-02,5.8682174019083037e-02,\
    -9.8770059184160908e-01,-1.5617239848419706e-01,7.5975540424766752e-03\
 };
-const double BaseSphericalTDesignsData::ss045_01038[1557]={\
+const double BaseSphericalTDesign::ss045_01038[1557]={\
    0.0000000000000000e+00,0.0000000000000000e+00,1.0000000000000000e+00,\
    1.1136231690747726e-01,0.0000000000000000e+00,9.9377987219152242e-01,\
    7.6575728318956759e-02,1.0833944304618245e-01,9.9116029123087068e-01,\
@@ -1918,7 +2004,7 @@ const double BaseSphericalTDesignsData::ss045_01038[1557]={\
    5.0828448812897709e-01,-8.6114429014855076e-01,8.7971968269612583e-03,\
    6.0245668067938618e-01,-7.9813751070941408e-01,4.7393990500845971e-03\
 };
-const double BaseSphericalTDesignsData::ss055_01542[2313]={\
+const double BaseSphericalTDesign::ss055_01542[2313]={\
    0.0000000000000000e+00,0.0000000000000000e+00,1.0000000000000000e+00,\
    8.0602760775704746e-02,0.0000000000000000e+00,9.9674630420951871e-01,\
    6.2100913550436239e-02,9.0756992568953782e-02,9.9393492988024124e-01,\
@@ -2691,7 +2777,7 @@ const double BaseSphericalTDesignsData::ss055_01542[2313]={\
    9.7991292662518847e-01,-1.9380365395509930e-01,4.7019144468081156e-02,\
    9.9309459368955277e-01,-1.1065519403583438e-01,3.8968654293855168e-02\
 };
-const double BaseSphericalTDesignsData::ss063_02018[3027]={\
+const double BaseSphericalTDesign::ss063_02018[3027]={\
    0.0000000000000000e+00,0.0000000000000000e+00,1.0000000000000000e+00,\
    7.9444538450335028e-02,0.0000000000000000e+00,9.9683928760378082e-01,\
    5.7636607102361750e-02,7.3452200822379951e-02,9.9563185752369177e-01,\
@@ -3702,7 +3788,7 @@ const double BaseSphericalTDesignsData::ss063_02018[3027]={\
    9.9856573500676249e-01,-2.1350011537479639e-02,4.9098369400151116e-02,\
    -6.2365542529445117e-01,7.8169824737967997e-01,1.3268550538721067e-03\
 };
-const double BaseSphericalTDesignsData::ss071_02558[3837]={\
+const double BaseSphericalTDesign::ss071_02558[3837]={\
    0.0000000000000000e+00,0.0000000000000000e+00,1.0000000000000000e+00,\
    6.7586882505486084e-02,0.0000000000000000e+00,9.9771339236936663e-01,\
    4.1749462778337118e-02,6.9022455841390787e-02,9.9674113136126952e-01,\
@@ -4983,7 +5069,7 @@ const double BaseSphericalTDesignsData::ss071_02558[3837]={\
    9.9506780167839493e-01,-9.7975940350268395e-02,1.5517254119439354e-02,\
    9.9896988241744045e-01,-3.1097934932683095e-02,3.3046822325420014e-02\
 };
-const double BaseSphericalTDesignsData::ss077_03006[4509]={\
+const double BaseSphericalTDesign::ss077_03006[4509]={\
    0.0000000000000000e+00,0.0000000000000000e+00,1.0000000000000000e+00,\
    6.7288193695950752e-02,0.0000000000000000e+00,9.9773358116740574e-01,\
    5.3329316689284013e-02,6.1248142601179049e-02,9.9669686916803335e-01,\
@@ -6488,7 +6574,7 @@ const double BaseSphericalTDesignsData::ss077_03006[4509]={\
    9.9350359635398744e-01,-1.0536126840895331e-01,4.3007059315299870e-02,\
    9.9897037654170406e-01,-3.6084661105449674e-02,2.7496982107694041e-02\
 };
-const double BaseSphericalTDesignsData::ss089_04008[6012]={\
+const double BaseSphericalTDesign::ss089_04008[6012]={\
    0.0000000000000000e+00,0.0000000000000000e+00,1.0000000000000000e+00,\
    6.5864575944281148e-02,0.0000000000000000e+00,9.9782857126646762e-01,\
    3.2086761074798624e-02,4.5644297821935423e-02,9.9844230571429171e-01,\
@@ -8494,7 +8580,7 @@ const double BaseSphericalTDesignsData::ss089_04008[6012]={\
    9.9660890325814866e-01,-7.8206888007526135e-02,2.5580786046727606e-02,\
    9.9947122035284319e-01,-2.1211312499045079e-02,2.4644673024128053e-02\
 };
-const double BaseSphericalTDesignsData::ss101_05154[7731]={\
+const double BaseSphericalTDesign::ss101_05154[7731]={\
    0.0000000000000000e+00,0.0000000000000000e+00,1.0000000000000000e+00,\
    5.3772768338084233e-02,0.0000000000000000e+00,9.9855319807472387e-01,\
    4.2737685984243400e-02,4.6152286210211328e-02,9.9801976767711520e-01,\
@@ -11073,7 +11159,7 @@ const double BaseSphericalTDesignsData::ss101_05154[7731]={\
    9.9454106116442453e-01,-9.9860249579016083e-02,3.0265627565886796e-02,\
    9.9844307676521482e-01,-4.7937009420283179e-02,2.8521318122606134e-02\
 };
-const double BaseSphericalTDesignsData::ss111_06218[9327]={\
+const double BaseSphericalTDesign::ss111_06218[9327]={\
    0.0000000000000000e+00,0.0000000000000000e+00,1.0000000000000000e+00,\
    5.6570086406836903e-02,0.0000000000000000e+00,9.9839863046977528e-01,\
    2.7046872883249029e-02,3.3869459802320943e-02,9.9906022158823660e-01,\

@@ -41,12 +41,13 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-#ifndef _BASESPHERTDESDATA_H_
-#define _BASESPHERTDESDATA_H_
+#ifndef _BASESPHTDESIGN_H_
+#define _BASESPHTDESIGN_H_
 #include <vector>
 using std::vector;
 #include <string>
 using std::string;
+#define SPHERICAL_T_DESIGN_MAX_N_RULES_DEFINED 60
 
 /* ************************************************************************** */
 /** This class provides abscissas and weigths of symmetrical spherical t-designs.
@@ -55,7 +56,7 @@ using std::string;
    *  Some information and details can be found in
    *  ---> Beentjes, C. H. L., Quadrature on a Spherical Surface, Mathematical
    *         Institute, University of Oxford, UK, 2015. */
-class BaseSphericalTDesignsData {
+class BaseSphericalTDesign {
 /* ************************************************************************** */
 public:
 /* ************************************************************************** */
@@ -66,6 +67,11 @@ public:
     * with the number of abscissas/weigths.  */
    static size_t GetSizeArray(int nn);
    static string GetAvailableOrders();
+   static string GetAvailableRules();
+   static string GetAvailablePrecisions();
+   static int order_table (int rule);
+   static int precision_table(int rule);
+   static bool available_table (int rule);
 /* ************************************************************************** */
 protected:
 /* ************************************************************************** */
@@ -117,5 +123,5 @@ protected:
 /* ************************************************************************** */
 
 
-#endif  /* _BASESPHERTDESDATA_H_ */
+#endif  /* _BASESPHTDESIGN_H_ */
 
