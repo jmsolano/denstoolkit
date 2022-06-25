@@ -68,8 +68,8 @@ using std::string;
 #include "figname.h"
 #include "optflags.h"
 #include "../common/screenutils.h"
-#include "../common/basegausslegendredata.h"
-#include "../common/basesphertdesdata.h"
+#include "../common/basegausslegendre.h"
+#include "../common/basesphtdesign.h"
 
 OptionFlags::OptionFlags() {
    infname = outfname = 0;
@@ -244,9 +244,9 @@ void printHelpMenu(int &argc, char** &argv) {
    ScreenUtils::CenterString("Specific options for Gauss-Legendre-Spherical-t Cubature integrator.");
    ScreenUtils::PrintScrCharLine('-');
    cout << "  --lsptd-ol OGL     \tUse OLG order for the Gauss-Legendre terms (radial)." << '\n';
-   cout << "                     \t  Options: " << BaseGaussLegendreData::GetAvailableOrders() << '\n';
+   cout << "                     \t  Options: " << BaseGaussLegendre::GetAvailableOrders() << '\n';
    cout << "  --lsptd-os OSTD    \tSet dith=d. Default: d=0.05." << '\n';
-   cout << "                     \t  Options: " << BaseSphericalTDesignsData::GetAvailableOrders() << '\n';
+   cout << "                     \t  Options: " << BaseSphericalTDesign::GetAvailableOrders() << '\n';
    ScreenUtils::PrintScrCharLine('-');
    //-------------------------------------------------------------------------------------
 }
