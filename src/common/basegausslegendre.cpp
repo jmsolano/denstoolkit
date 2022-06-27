@@ -73,7 +73,7 @@ BaseGaussLegendre::~BaseGaussLegendre() {
    memory.Dealloc1DRealArray(x);
    memory.Dealloc1DRealArray(w);
 }
-bool BaseGaussLegendre::SelectAbscissasAndWeigths(int nn) {
+bool BaseGaussLegendre::SelectAbscissasAndWeights(int nn) {
    MyMemory memory;
    if (x!=NULL) {
 #if DEBUG

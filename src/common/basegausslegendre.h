@@ -82,7 +82,7 @@ public:
    static void gauss_legendre_tbl(int n, double* x, double* w, double eps);
    /** This function selects the number of points used in the quadrature, and
     * it copies the respective values into the internal arrays.  */
-   bool SelectAbscissasAndWeigths(int nn);
+   bool SelectAbscissasAndWeights(int nn);
    /** This function assign absisas and weights onto the internal arrays
     * (x and w, respectively).  */
    bool AssignValues(const double* origx,const double* origw);
