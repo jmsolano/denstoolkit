@@ -47,6 +47,7 @@
 #include "atomradiicust.h"
 
 double GetAtomicVDWRadius(int atn) {
+   //Table units: angstroms.
    static const double atomicRadius[MAXDEFINEDATOMICRADII]={
       0.37e0, 0.70e0, 1.23e0, 0.89e0, 0.80e0,
       0.79e0, 0.74e0, 0.74e0, 0.72e0, 0.70e0,

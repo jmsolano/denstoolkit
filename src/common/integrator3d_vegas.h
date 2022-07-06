@@ -55,7 +55,7 @@ using std::string;
 #include "gausswavefunction.h"
 #include "fldtypesdef.h"
 #include "bondnetwork.h"
-#include "integrator3D.h"
+#include "integrator3d.h"
 
 /* *********************************************************************************** */
 class Integrator3DVegas : public Integrator3D {
