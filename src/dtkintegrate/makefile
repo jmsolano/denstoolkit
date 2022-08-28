@@ -31,7 +31,7 @@ else
   CXX          := g++
 endif
 
-CXXFLAGS       += -std=c++11 -fPIC -Wall -pedantic -pg
+CXXFLAGS       += -std=c++11 -fPIC -Wall -pedantic
 OPTIMFLAGS      = -O2 -funroll-loops -falign-loops=8 #-ffast-math
 
 ARCHIVE      := ar
