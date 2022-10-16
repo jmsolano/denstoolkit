@@ -563,6 +563,7 @@ protected:
    static int prTy[MAXPRIMTYPEDEFINED*3];
    bool usescustfld,usevcustfld;
    int maxPrimType;
+   static bool prntHermiCoeffWrn;
 /* ************************************************************************************ */
 };
 /* *********************************************************************************** */

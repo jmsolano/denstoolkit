@@ -158,6 +158,7 @@ int GaussWaveFunction::prTy[]={
    3, 0, 2,   3, 1, 1,   3, 2, 0,   4, 0, 1,   4, 1, 0,
    5, 0, 0
 };
+bool GaussWaveFunction::prntHermiCoeffWrn=true;
 GaussWaveFunction::~GaussWaveFunction() {
    MyMemory::Dealloc1DStringArray(title);
    MyMemory::Dealloc1DRealArray(R);
@@ -244,7 +245,7 @@ bool GaussWaveFunction::ReadFromFileWFN(string inname) {
    }
    if (liend.substr(0,8)!="END DATA") {
       cout << "Error, expecting \"END DATA\" in file " << inname << endl;
-      cout << "Line: " << liend << endl;
+      cout << "Line: '" << liend << "'\n";
       return false;
    }
    GetEnergyAndVirial(tif,totener,virial);
@@ -353,11 +354,13 @@ bool GaussWaveFunction::SanityChecks(void) {
       if ( primType[i]>maxPrimType ) { maxPrimType=primType[i]; }
    }
    if ( maxPrimType>19 ) {
+      cout << '\n';
       ScreenUtils::DisplayWarningMessage("Unfortunately, in current version ("
             CURRENTVERSION
-            "),\nfunctions requiring computation of Boys Function"
-            "\nterms are not implemented for"
-            "\nprimitives with high angular momenta (i.e., primitive type > 20)");
+            "),\nfunctions requiring computation of Boys Function related to high"
+            "\nangular momentum primitives (i.e., primitive type > 20)"
+            "\nare not implemented. E.g., MEP or one-electron integrals.");
+      ScreenUtils::DisplayGreenMessage("However Rho and its derivatives and CP search are OK.");
    }
    return ret;
 }
@@ -4743,7 +4746,11 @@ void GaussWaveFunction::EvalHermiteCoefs(int (&aia)[3],int (&aib)[3],double &alp
             Eijl[i][6]=eta3*eta3;
             break;
          default:
-            cout << "Underconstruction..." << endl;
+            if ( prntHermiCoeffWrn ) {
+               cout << "Under construction..." << endl;
+               cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+               prntHermiCoeffWrn=false;
+            }
             break;
       }
    }
@@ -4860,8 +4867,8 @@ double GaussWaveFunction::EvalMolElecPot(double x,double y,double z) {
    if ( maxPrimType>19 ) {
 #if DEBUG
       if (showmsg) {
-         ScreenUtils::DisplayErrorMessage(string("Non supported angular momenta of"
-            "primitives, requesting type: ")\
+         ScreenUtils::DisplayErrorMessage(string("Non supported angular momentum of"
+            "primitives, requested type: ")\
             +getStringFromInt(maxPrimType));
          showmsg=false;
 
@@ -4947,8 +4954,8 @@ double GaussWaveFunction::EvalMolElecPot(double x,double y,double z) {
    if ( maxPrimType>19 ) {
 #if DEBUG
       if (showmsg) {
-         ScreenUtils::DisplayErrorMessage(string("Non supported angular momenta of"
-            "primitives, requesting type: ")\
+         ScreenUtils::DisplayErrorMessage(string("Non supported angular momentum of"
+            "primitives, requested type: ")\
             +getStringFromInt(maxPrimType));
          showmsg=false;
 
