@@ -45,7 +45,7 @@ MYMAKEFLAGS = SETDTKNPROC=$(SETDTKNPROC)
 
 # COMPILERS OPTIONS
 ifneq ($(DARWIN),)
-  CXX          := g++-mp-6
+  CXX          := g++-12
 else
   CXX          := g++
 endif
@@ -65,7 +65,7 @@ endif
 
 BINDIR = $(TOP)/bin
 #EXECUTABLE_DIRECTORIES
-DIRSWITHEXES=$(shell ls */*.cc | grep -v test | sed -e 's;\(.*\)/\(.*\).cc;\1;g' | uniq)
+DIRSWITHEXES=$(shell ls dtk*/*.cc | grep -v test | sed -e 's;\(.*\)/\(.*\).cc;\1;g' | uniq)
 
 
 

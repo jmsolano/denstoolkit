@@ -26,7 +26,7 @@ MYMAKEFLAGS :=
 
 # COMPILERS OPTIONS
 ifneq ($(DARWIN),)
-  CXX          := g++-mp-9
+  CXX          := g++-12
 else
   CXX          := g++
 endif

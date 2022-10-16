@@ -29,7 +29,7 @@ endif
 
 # COMPILERS OPTIONS
 ifneq ($(DARWIN),)
-  CXX          := g++-mp-6
+  CXX          := g++-12
 else
   CXX          := g++
 endif
