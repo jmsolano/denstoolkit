@@ -363,6 +363,7 @@ bool HelpersDrawer::MakeCriticalPointsPovFile(const string &basename,\
    //Rendering
    tmpbool=options.verboseLevel && std::stoi(string(argv[options.verboseLevel]))>0;
    CommonHelpers::RenderPovfile(povname,tmpbool);
+   return true;
 }
 bool HelpersDrawer::AlignMolecule(POVRayConfiguration &pvp,BondNetWork &bn,\
          const OptionFlags &options,char *argv[]) {
