@@ -146,7 +146,7 @@ fullclean: clean ## Removes executables and static library (common/*)
 
 .PHONY: install
 install: all ## Installs the binaries (after compiling). Usually requires sudo mode.
-	@cp bin/* $(INSTALL_PATH)/
+	@mv bin/* $(INSTALL_PATH)/
 	@cp scripts/dtk* $(INSTALL_PATH)/
 	@echo "\033[32m\nInstalled programs:\n"
 	@if test -e $(INSTALL_PATH)/dtkpoint; then (dtkpoint -V; dtkline -V; \
