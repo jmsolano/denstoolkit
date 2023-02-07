@@ -126,7 +126,7 @@ bool HelpersDrawer::MakeCriticalPointsPovFile(const string &basename,\
    bool tmpbool=true;
    if (options.drawnuc) {tmpbool=true;} else {tmpbool=false;}
    ofil << "#declare DrawAtomTranspSpheres=" << (tmpbool?"true":"false") << ";" << '\n';
-   tmpbool=false;
+   tmpbool=options.cylbond;
    ofil << "#declare DrawStandardBonds=" << (tmpbool?"true":"false") << ';' << '\n';
    ofil << "#declare TransmitStdBondCylinder=0.7;" << '\n';
    bool drawacps=DrawCPofType('a',options,argv);

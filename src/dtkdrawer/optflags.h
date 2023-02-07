@@ -81,7 +81,7 @@ public:
    unsigned short int rotatemol,align3at,rotX,rotY,rotZ;
    unsigned short int setzoom,selectcps2draw,selectgps2draw;
    bool cpkview,mkpng,drawnuc,drawcps,drawgps;
-   bool tubestyle;
+   bool tubestyle,cylbond;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);
 void printHelpMenu(int &argc, char** &argv);//self-described

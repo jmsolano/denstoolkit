@@ -77,7 +77,7 @@ OptionFlags::OptionFlags() {
    cpkview=false;
    setzoom=selectcps2draw=selectgps2draw=0;
    drawnuc=drawcps=drawgps=mkpng=true;
-   tubestyle=false;
+   tubestyle=cylbond=false;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    string progname;
@@ -110,6 +110,9 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                flags.selectcps2draw=(++i);
                flags.drawcps=true;
                if (i>=argc) {printErrorMsg(argv,'c');}
+               break;
+            case 'C' :
+               flags.cylbond=true;
                break;
             case 'g' :
                flags.selectgps2draw=(++i);
@@ -202,6 +205,7 @@ void printHelpMenu(int &argc, char** &argv) {
    ScreenUtils::SetScrNormalFont();
    cout << "Where inputmolecule is the input file name, and options can be:\n\n";
    cout << "  -a        \tDraw transparent spheres around each nucleus." << '\n';
+   cout << "  -C        \tDraw bonds as cylinders." << '\n';
    cout << "  -c  cpt   \tSelects the Critical points to include (by default,\n"
         << "            \t  all CPs are included. cpt is a series\n"
         << "            \t  of letters that can be:\n"
