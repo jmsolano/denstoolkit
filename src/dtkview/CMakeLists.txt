@@ -27,6 +27,10 @@ set(the_usr_moc_hdrs
    ../common/mymath.h 
    #../common/solfileutils.h 
    ../common/fileutils.h 
+   ../common/matrixvectoroperations3d.h
+   ../common/atom.h
+   ../common/molecule.h
+   ../common/inputmolecule_xyz.h
    localdefs.h 
    dtkmainwindow.h
    dtkglwidget.h
@@ -81,6 +85,10 @@ set(the_usr_srcs
    ../common/mymath.cpp 
    #../common/solfileutils.cpp 
    ../common/fileutils.cpp 
+   ../common/matrixvectoroperations3d.cpp
+   ../common/atom.cpp
+   ../common/molecule.cpp
+   ../common/inputmolecule_xyz.cpp
    ../common/figname.cpp
    dtkglbondnetwork.cpp 
    dtkglutils.cpp
@@ -224,7 +232,7 @@ qt5_use_modules(${the_usr_bin_name} ${the_usr_qt5_modules})
 #   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 #   )
 
-ADD_DEFINITIONS(-include localdefs.h)
+ADD_DEFINITIONS(-include localdefs.h -include ../common/globaldefs.h)
 
 if (CMAKE_COMPILER_IS_GNUCXX)
    set(CMAKE_CXX_FLAGS "-Wall -O2 -m64 -funroll-loops -falign-loops=16")
