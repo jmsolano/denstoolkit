@@ -464,7 +464,7 @@ bool CritPtNetWork::SetRhoACPs() {
             for ( int k=0 ; k<3 ; k++ ) {xs[k]=0.5e0*(bn->R[i][k]+bn->R[j][k]);}
             lbl="NNACP";
             rad*=0.3e0;
-            SeekRhoACPsAroundAPoint(xs,rad,lbl,8);
+            SeekRhoACPsAroundAPoint(xs,rad,lbl,nIHV);
          }
       }
 #if USEPROGRESSBAR
