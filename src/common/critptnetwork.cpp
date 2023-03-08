@@ -2860,7 +2860,7 @@ int CritPtNetWork::FindSingleRhoRingGradientPathRK5(int rcpIdx,\
 #endif
    int count;
    double xm[3],xb[3],xr[3],xn[3],xrmxb[3]; //,xmmxr[3];
-   double magd=0.0e0,maxalllen=maxBondDist*1.5e0;
+   double magd=0.0e0,maxalllen=bn->maxBondDist*1.5e0;
    for ( int i=0 ; i<3 ; ++i ) {
       xb[i]=RBCP[bcpGlobIdx][i];
       xr[i]=RRCP[rcpIdx][i];
@@ -3004,7 +3004,7 @@ int CritPtNetWork::FindSingleRhoCageGradientPathRK5(int ccpIdx,\
       xn[i]=xr[i]+hstep*dir2min[i];
    }
    int count;
-   double maxalllen=maxBondDist;
+   double maxalllen=bn->maxBondDist;
    bool imatccp=WalkGradientPathRK5ToEndPoint(xr,xn,xc,xm,magd,hstep,\
          dima,arrgp,count,maxalllen,false); //uphill=false
    if ( imatccp ) {return count;}
@@ -3016,6 +3016,9 @@ int CritPtNetWork::FindSingleRhoCageGradientPathRK5(int ccpIdx,\
          dima,arrgp,count,maxalllen,false); //uphill=false
    if ( imatccp ) {return count;}
    ScreenUtils::DisplayErrorMessage("Unknown error!");
+   //cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+   //cout << "count: " << count << '\n';
+   //wf->DisplayAllFieldProperties(xn[0],xn[1],xn[2]);
 #if DEBUG
    DISPLAYDEBUGINFOFILELINE;
    wf->DisplayAllFieldProperties(xn[0],xn[1],xn[2]);
@@ -3303,7 +3306,7 @@ void CritPtNetWork::ForceBCPConnectivity(int bcpIdx,int acpIdx1,int acpIdx2) {
 void CritPtNetWork::CorrectRCPConnectivity(void) {
    FindMaxBondDist();
    //double maxallwdd=1.414213562373095e0*maxBCPACPDist;
-   double maxallwdd=0.90*maxBondDist;
+   double maxallwdd=0.90*bn->maxBondDist;
    //cout << "maxallwdd: " << maxallwdd << endl;
    double dd;
    int j,bcpIdx;
