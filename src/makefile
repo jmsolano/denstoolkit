@@ -26,7 +26,11 @@ else
   ifeq ($(OS_SIZE),32)
     CXXFLAGS   := -m32
   else
-    CXXFLAGS   := -m64
+    ifeq ($(OS_ARCH),aarch64)
+      CXXFLAGS   := -march=armv8-a
+    else
+      CXXFLAGS   := -m64
+    endif
   endif
 endif
 
