@@ -46,7 +46,7 @@
 #define DTKGLBONDNETWORK_H
 
 #include <QObject>
-#ifdef __APPLE__
+#if defined(__APPLE__)
 #include <QOpenGLWidget>
 #else
 #include <QGLWidget>

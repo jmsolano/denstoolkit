@@ -1,7 +1,7 @@
 # suppose you have created a ui file called configwin.ui
 cmake_minimum_required (VERSION 2.8)
 
-project(DTKViewer)
+project(DensToolKitViewer)
 
 set(the_usr_moc_hdrs
    ../common/bondnetwork.h 
@@ -95,6 +95,10 @@ set(the_usr_srcs
    dtkglcriticalpointnetwork.cpp
 )
 
+if (NOT DEFINED QT5_LIB_ROOT)
+   set(QT5_LIB_ROOT /opt/homebrew/Cellar/qt@5/5.15.8_2/)
+endif()
+
 set(the_usr_qt5_modules Core Gui Widgets OpenGL)
 
 set(CMAKE_AUTOMOC OFF)
@@ -102,7 +106,7 @@ set(CMAKE_AUTOMOC OFF)
 if(UNIX)
    if(APPLE)
       set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH}
-         /Users/jmsolano/.binsol/Qt5/5.5/clang_64
+         ${QT5_LIB_ROOT}/lib/cmake
       )
    else(APPLE)
       set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH}
@@ -227,7 +231,8 @@ INSTALL(CODE "
 
 # directories to look for dependencies
 SET(DIRS ${QT_LIBRARY_DIRS})
-qt5_use_modules(${the_usr_bin_name} ${the_usr_qt5_modules})
+#qt5_use_modules(${the_usr_bin_name} ${the_usr_qt5_modules})
+TARGET_LINK_LIBRARIES(${the_usr_bin_name} Qt5::Core Qt5::Gui Qt5::Widgets Qt5::OpenGL)
 #execute_process(COMMAND "cat moc_dtkglwidget.cpp | sed 's/QGLWidget/QOpenGLWidget/' > moc_dtkglwidget.cpp"
 #   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 #   )
