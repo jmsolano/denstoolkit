@@ -467,9 +467,12 @@ vector<vector<double> > HelpersPropCPsOnIso::ComputeTextures(shared_ptr<MeshGrid
       if ( tmp<vmin ) { vmin=tmp; }
       if ( tmp>vmax ) { vmax=tmp; }
    }
-   cout << "MinValOnSurf: " << vmin << " a.u.\n";
-   cout << "MaxValOnSurf: " << vmax << " a.u.\n";
-   cout << "SurfMean: " << (mean/double(nv)) << " a.u.\n";
+   cout << "MinValOnSurf: " << vmin << " a.u. " << (vmin*627.5)
+        << " kCal/mol " << (vmin*2625.5) << " kJ/mol\n";
+   cout << "MaxValOnSurf: " << vmax << " a.u. " << (vmax*627.5)
+        << " kCal/mol " << (vmax*2625.5) << " kJ/mol\n";
+   cout << "SurfMean: " << (mean/double(nv)) << " a.u. " << ((mean/double(nv))*627.5)
+        << " kCal/mol " << ((mean/double(nv))*2625.5) << " kJ/mol\n";
    if ( valmin>vmin ) { vmin=valmin; }
    if ( valmax<vmax ) { vmax=valmax; }
    //cout << "valmin: " << valmin << ", valmax: " << valmax << '\n';
