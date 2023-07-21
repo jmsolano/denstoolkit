@@ -36,7 +36,7 @@ wavefiles/* : Some wavefunction files used for testing the installation of DTK.
 
    Usually, typing on the terminal the following commands, should suffice.
    $cd src
-   $make
+   $make -j 4
    $sudo make install
 
 1.1 Testing the build:

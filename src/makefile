@@ -1,5 +1,11 @@
-
+# Set the number of proccesors for OpenMP
 SETDTKNPROC=1
+
+# Set the path of installation 
+INSTALL_PATH := /usr/local/bin
+
+#################################################################################
+#################################################################################
 
 TOP      = $(shell pwd)
 
@@ -23,51 +29,63 @@ ifneq ($(DARWIN),)
 	     CXXFLAGS += -isysroot $(shell xcrun --show-sdk-path)
     endif
 else
-  ifeq ($(OS_SIZE),32)
-    CXXFLAGS   := -m32
-  else
-    CXXFLAGS   := -m64
-  endif
+    ifeq ($(OS_SIZE),32)
+        CXXFLAGS := -m32
+    else
+        CXXFLAGS := -m64
+    endif
 endif
 
-INSTALL_PATH := /usr/local/bin
+# COMPILERS OPTIONS
+ifneq ($(DARWIN),)
+    CXX := g++-12
+else
+    CXX := g++
+endif
+
+# STD of C++
+CXXFLAGS  += -std=c++11 -fPIC
+# General optimization flags
+OPTIMFLAGS = -O2 -funroll-loops -falign-loops=8 -ffast-math
 
 # Use OpenMP
-DTKUSEOPENMP := 0
 ifneq ($(SETDTKNPROC),1)
-      DTKUSEOPENMP=$(SETDTKNPROC)
-      CXXFLAGS   += -DPARALLELISEDTK=$(DTKUSEOPENMP) -fopenmp
+    CXXFLAGS += -DPARALLELISEDTK=$(SETDTKNPROC) -fopenmp
+    lLIBS += -fopenmp
 else
-      CXXFLAGS   += -DPARALLELISEDTK=0
+    CXXFLAGS += -DPARALLELISEDTK=0
 endif
 
 MYMAKEFLAGS = SETDTKNPROC=$(SETDTKNPROC)
 
-# COMPILERS OPTIONS
-ifneq ($(DARWIN),)
-  CXX          := g++-12
-else
-  CXX          := g++
-endif
-
 # Debug build flags
 ifeq ($(DEBUGVERSION),1)
-  CXXFLAGS     += -DDEBUG=1 -ggdb -W -Wno-long-long
-  MYMAKEFLAGS += DEBUGVERSION=1
+    CXXFLAGS    += -DDEBUG=1 -ggdb -W -Wall -pedantic -Wno-long-long
+    MYMAKEFLAGS += DEBUGVERSION=1
 else
-   ifeq ($(PROFILEVERSION),1)
-      CXXFLAGS     += -DDEBUG=1 -g -pg -Wall -pedantic $(OPTIMFLAGS)
-      MYMAKEFLAGS += PROFILEVERSION=1
-   else
-      CXXFLAGS     += -DDEBUG=0 -Wall -pedantic $(OPTIMFLAGS)
-   endif
+    ifeq ($(PROFILEVERSION),1)
+        CXXFLAGS     += -DDEBUG=1 -g -pg -Wall -pedantic $(OPTIMFLAGS)
+        MYMAKEFLAGS  += PROFILEVERSION=1
+    else
+        CXXFLAGS     += -DDEBUG=0 -Wall -pedantic $(OPTIMFLAGS)
+    endif
 endif
+
+# -L: FOLDER LIBRARY
+LFLAGS   +=#-L/usr/lib
+LFLAGS   +=#-L.
+
+# -l: LIBRARY
+lLIBS    +=#-lgfnl_util
+lLIBS    += #-lapr-1 -laprutil-1 -llog4cxx
+
+# -I: INCLUDES
+IFLAGS   +=
 
 BINDIR = $(TOP)/bin
 #EXECUTABLE_DIRECTORIES
 DIRSWITHEXES=$(shell ls dtk*/*.cc | grep -v test | sed -e 's;\(.*\)/\(.*\).cc;\1;g' | uniq)
-
-
+#DIRSWITHEXES=dtkcube
 
 # FILES
 CCSOURCES=$(shell ls */*.cc | grep -v test)
@@ -86,6 +104,9 @@ ALLHEADERS= $(HEADERS) $(LIBHEADERS)
 LCL_OUTDIR = $(TOP)/outputsRunTest
 LCL_WFDIR = $(TOP)/../wavefiles
 
+# Propagate the makefile variables to the sub makes
+MAKE_SRC=1
+export
 
 .PHONY: all
 all: $(BINDIR) compileexecs ## Compile every executable '*cc'
@@ -111,7 +132,9 @@ info: ## Shows information about headers, sources, etc.
 	@echo 'Current headers: $(HEADERS)'
 	@echo 'Current sources (cc): $(CCSOURCES)'
 	@echo 'Current sources (cpp): $(CPPSOURCES)'
+	@echo ''
 	@echo 'Current executables: $(EXECS)'
+	@echo 'Current executables: $(DIRSWITHEXES)'
 	@echo ''
 	@echo 'Current headers (all): $(ALLHEADERS)'
 	@echo 'Current sources (all): $(ALLSOURCES)'
@@ -123,8 +146,16 @@ info: ## Shows information about headers, sources, etc.
 
 compileexecs: $(ALLHEADERS) $(ALLSOURCES)
 	@echo "\033[32mCompiling all execs...\\033[m"
-	@MyList="$(DIRSWITHEXES)";for i in $$MyList;do \
-		echo "\033[32mCompiling in dir $$i\033[m"; cd $$i; make $(MYMAKEFLAGS); for j in $$(ls *.x);do cp $$j ../bin/$${j%.x};done; cd $(TOP) ;done
+	@$(MAKE) -C $(TOP)/common/
+	@MyList="$(DIRSWITHEXES)";\
+	   for i in $$MyList;do \
+		   echo "\033[32mCompiling in dir $$i\033[m"; \
+         $(MAKE) -C $$i $(MYMAKEFLAGS); \
+			for j in $$(ls $$i/*.x);do \
+            dtkfile=$${j##*/};\
+			   cp $$j ./bin/$${dtkfile%.x};\
+         done; cd $(TOP) ;\
+	   done
 
 $(BINDIR):
 	@mkdir -p bin
@@ -195,3 +226,11 @@ runtest: all
           $(BINDIR)/dtkintegobondpath benzene.wfn; \
           rm -f benzene.wfn
 
+loadVarCXX:
+	 @echo $(CXX)
+
+loadVarCXXFLAGS:
+	 @echo $(CXXFLAGS)
+
+loadVarlLIBS:
+	 @echo $(lLIBS)

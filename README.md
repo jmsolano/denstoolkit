@@ -36,7 +36,7 @@ For building the binaries, type:
 
 ~~~~~~~~~~
 $cd denstoolkit/src
-$make
+$make -j 4
 $sudo make install
 ~~~~~~~~~~
 

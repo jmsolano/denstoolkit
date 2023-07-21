@@ -1,65 +1,38 @@
-TOP      = $(shell pwd)
-
-# OS Name (Linux or Darwin)
-OSUPPER = $(shell uname -s 2>/dev/null | tr [:lower:] [:upper:])
-OSLOWER = $(shell uname -s 2>/dev/null | tr [:upper:] [:lower:])
-
-# Flags to detect 32-bit or 64-bit OS platform
-OS_SIZE = $(shell uname -m | sed -e "s/i.86/32/" -e "s/x86_64/64/")
-OS_ARCH = $(shell uname -m | sed -e "s/i386/i686/")
-
-# Flags to detect either a Linux system (linux) or Mac OSX (darwin)
-DARWIN = $(strip $(findstring DARWIN, $(OSUPPER)))
-
-# OS-specific build flags
-ifneq ($(DARWIN),)
-    CXXFLAGS   := -arch $(OS_ARCH)
-    DARWINVERSION=$(shell sw_vers -productVersion | tr '.' ' ' | awk '{print $$2}')
-	 GTTN_14 = $(shell [ $(DARWINVERSION) -gt 14 ] && echo true)
-    ifeq ($(GTTN_14),true)
-	     CXXFLAGS += -isysroot $(shell xcrun --show-sdk-path)
-    endif
-else
-  ifeq ($(OS_SIZE),32)
-    CXXFLAGS   := -m32
-  else
-    CXXFLAGS   := -m64
-  endif
-endif
-
 # COMPILERS OPTIONS
-ifneq ($(DARWIN),)
-  CXX          := g++-12
-else
-  CXX          := g++
-endif
 
-SETDTKNPROC ?= 1
-DTKUSEOPENMP := 0
-MYMAKEFLAGS := 
-ifneq ($(SETDTKNPROC),1)
-		DTKUSEOPENMP = $(SETDTKNPROC)
-      MYMAKEFLAGS   += DTKUSEOPENMP=$(SETDTKNPROC)
-      CXXFLAGS   += -DPARALLELISEDTK=$(DTKUSEOPENMP) -fopenmp
-else
-      CXXFLAGS   += -DPARALLELISEDTK=0
-endif
+# Aditional optimization flags
+LOCAL_OPTIMFLAGS = 
 
-CXXFLAGS       += -std=c++11 -fPIC
-OPTIMFLAGS      = -O2 -funroll-loops -falign-loops=8 -ffast-math
+# Replace flag
+NEW_FLAG = 
+OLD_FLAG = 
 
-ARCHIVE      := ar
-ARCHFLAG     := -rc
-
-# Debug build flags
+# Aditional Debug and Profile build flags
 ifeq ($(DEBUGVERSION),1)
-  CXXFLAGS     += -DDEBUG=1 -g -W -Wall -pedantic -Wno-long-long
+   LOCAL_CXXFLAGS     +=
 else
-  CXXFLAGS     += -DDEBUG=0 -Wall $(OPTIMFLAGS)
+   ifeq ($(PROFILEVERSION),1)
+      LOCAL_CXXFLAGS     += $(LOCAL_OPTIMFLAGS)
+   else
+      LOCAL_CXXFLAGS     += $(LOCAL_OPTIMFLAGS)
+   endif
 endif
-
 
 INCDEFS        := -include globaldefs.h
+# Additional linking and include flags
+# -L: FOLDER LIBRARY
+LFLAGS=#-L/usr/lib
+LFLAGS=#-L.
+
+# -l: LIBRARY
+lLIBS=#-lgfnl_util
+lLIBS= #-lapr-1 -laprutil-1 -llog4cxx
+
+# -I: INCLUDES
+IFLAGS= $(INCDEFS)
+
+#################################################################################
+#################################################################################
 
 # FILES
 CPPOBJS=$(patsubst %.cpp,%.o,$(wildcard *.cpp))
@@ -70,20 +43,23 @@ LIBOBJS=$(shell echo $(OBJS))
 COMMONSTATICLIBNAME=$(shell cd ../..; pwd | sed -e 's;\(.*\)/\(.*\);\2;')
 STATICLIB="lib$(COMMONSTATICLIBNAME).a"
 
-# -L: FOLDER LIBRARY
-	LFLAGS+=#-L/usr/lib
-	LFLAGS+=#-L.
+ARCHIVE      := ar
+ARCHFLAG     := -rc
 
-# -l: LIBRARY
-	lLIBS+=#-lgfnl_util
-	lLIBS+= #-lapr-1 -laprutil-1 -llog4cxx
+ifndef MAKE_SRC
+    CXX = $(shell $(MAKE) -s -C .. loadVarCXX )
+    CXXFLAGS = $(shell $(MAKE) -s -C .. loadVarCXXFLAGS )
+endif
 
-# -I: INCLUDES
-	IFLAGS+= $(INCDEFS)
+CXXFLAGS += $(LOCAL_CXXFLAGS)
+
+# Replace the old flag with the new
+TMPFLAGS := $(filter-out $(OLD_FLAG),$(CXXFLAGS))
+CXXFLAGS := $(TMPFLAGS) $(NEW_FLAG)
 
 TARGET=target
 
-$(TARGET): $(OBJS) $(HEADERS) $(SOURCES)
+$(TARGET): $(OBJS) $(HEADERS) $(SOURCES) 
 	@echo "\033[32mArchiving $(STATICLIB)\\033[m"
 	@$(ARCHIVE) $(ARFLAGS) $(STATICLIB) $(LIBOBJS)
 
