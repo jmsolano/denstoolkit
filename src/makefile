@@ -64,7 +64,7 @@ ifeq ($(DEBUGVERSION),1)
     MYMAKEFLAGS += DEBUGVERSION=1
 else
     ifeq ($(PROFILEVERSION),1)
-        CXXFLAGS     += -DDEBUG=1 -g -pg -Wall -pedantic $(OPTIMFLAGS)
+        CXXFLAGS     += -DDEBUG=0 -g -pg -Wall -pedantic -fno-omit-frame-pointer $(OPTIMFLAGS)
         MYMAKEFLAGS  += PROFILEVERSION=1
     else
         CXXFLAGS     += -DDEBUG=0 -Wall -pedantic $(OPTIMFLAGS)
@@ -122,6 +122,10 @@ help: ## Shows this help
 	@echo ''
 	@echo "The default installation path is '/usr/local/bin', but this can be"
 	@echo "  changed by setting INSTALL_PATH='/custom/install/path'"
+	@echo ""
+	@echo 'Make options:'
+	@echo 'DEBUGVERSION=1     Compiling in debug mode'
+	@echo 'PROFILEVERSION=1   Compiling in profile mode'	
 	@echo '=================================================================================='
 
 .PHONY: info

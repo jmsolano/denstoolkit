@@ -34,6 +34,8 @@ IFLAGS= $(INCDEFS)
 #################################################################################
 #################################################################################
 
+MYMAKEFLAGS := DEBUGVERSION=$(DEBUGVERSION) PROFILEVERSION=$(PROFILEVERSION)
+
 # FILES
 CPPOBJS=$(patsubst %.cpp,%.o,$(wildcard *.cpp))
 OBJS= $(CPPOBJS)
@@ -48,7 +50,7 @@ ARCHFLAG     := -rc
 
 ifndef MAKE_SRC
     CXX = $(shell $(MAKE) -s -C .. loadVarCXX )
-    CXXFLAGS = $(shell $(MAKE) -s -C .. loadVarCXXFLAGS )
+    CXXFLAGS = $(shell $(MAKE) -s -C .. $(MYMAKEFLAGS) loadVarCXXFLAGS )
 endif
 
 CXXFLAGS += $(LOCAL_CXXFLAGS)
