@@ -1,40 +1,78 @@
+TOP      = $(shell pwd)
+
+# OS Name (Linux or Darwin)
+OSUPPER = $(shell uname -s 2>/dev/null | tr [:lower:] [:upper:])
+OSLOWER = $(shell uname -s 2>/dev/null | tr [:upper:] [:lower:])
+
+# Flags to detect 32-bit or 64-bit OS platform
+OS_SIZE = $(shell uname -m | sed -e "s/i.86/32/" -e "s/x86_64/64/")
+OS_ARCH = $(shell uname -m | sed -e "s/i386/i686/")
+
+# Flags to detect either a Linux system (linux) or Mac OSX (darwin)
+DARWIN = $(strip $(findstring DARWIN, $(OSUPPER)))
+
+# OS-specific build flags
+ifneq ($(DARWIN),)
+    CXXFLAGS   := -arch $(OS_ARCH)
+    DARWINVERSION=$(shell sw_vers -productVersion | tr '.' ' ' | awk '{print $$2}')
+	 GTTN_14 = $(shell [ $(DARWINVERSION) -gt 14 ] && echo true)
+    ifeq ($(GTTN_14),true)
+	     CXXFLAGS += -isysroot $(shell xcrun --show-sdk-path)
+    endif
+else
+  ifeq ($(OS_SIZE),32)
+    CXXFLAGS   := -m32
+  else
+    ifeq ($(OS_ARCH),aarch64)
+      CXXFLAGS   := -march=armv8-a
+    else
+      CXXFLAGS   := -m64
+    endif
+  endif
+endif
+
+SETDTKNPROC := 1
+
+# Use OpenMP
+DTKUSEOPENMP := 0
+ifneq ($(SETDTKNPROC),1)
+      DTKUSEOPENMP=$(SETDTKNPROC)
+      CXXFLAGS   += -DPARALLELISEDTK=$(DTKUSEOPENMP) -fopenmp
+      LFLAGS     += -fopenmp
+else
+      CXXFLAGS   += -DPARALLELISEDTK=0
+endif
+
+MYMAKEFLAGS := 
+
 # COMPILERS OPTIONS
+ifneq ($(DARWIN),)
+  CXX          := g++-12
+else
+  CXX          := g++
+endif
 
-# Aditional optimization flags
-LOCAL_OPTIMFLAGS = 
+CXXFLAGS       += -std=c++11 -fPIC -Wall -pedantic
+OPTIMFLAGS      = -O2 -funroll-loops -falign-loops=8 -ffast-math
 
-# Replace flag
-NEW_FLAG = 
-OLD_FLAG = 
+ARCHIVE      := ar
+ARCHFLAG     := -rc
 
-# Aditional Debug and Profile build flags
+# Debug build flags
+DEBUGVERSION := 0
 ifeq ($(DEBUGVERSION),1)
-   LOCAL_CXXFLAGS     +=
+  CXXFLAGS     += -DDEBUG=1 -ggdb -W -Wno-long-long
+  MYMAKEFLAGS += DEBUGVERSION=1
 else
    ifeq ($(PROFILEVERSION),1)
-      LOCAL_CXXFLAGS     += $(LOCAL_OPTIMFLAGS)
+      CXXFLAGS     += -DDEBUG=1 -g -pg -Wall -pedantic $(OPTIMFLAGS)
+      MYMAKEFLAGS += PROFILEVERSION=1
    else
-      LOCAL_CXXFLAGS     += $(LOCAL_OPTIMFLAGS)
+      CXXFLAGS     += -DDEBUG=0 -Wall -pedantic $(OPTIMFLAGS)
    endif
 endif
 
-# Additional linking and include flags
-# -L: FOLDER LIBRARY
-LFLAGS +=  #-L/usr/lib
-LFLAGS +=  #-L.
-
-# -l: LIBRARY
-lLIBS +=   #-lgfnl_util
-lLIBS +=   #-lapr-1 -laprutil-1 -llog4cxx
-
-# -I: INCLUDES
-IFLAGS += 
-
-#################################################################################
-#################################################################################
-TOP      = $(shell pwd)
-
-MYMAKEFLAGS := DEBUGVERSION=$(DEBUGVERSION) PROFILEVERSION=$(PROFILEVERSION) 
+INCDEFS        :=  -include ../common/globaldefs.h -include localdefs.h
 
 # FILES
 CPPOBJS=$(patsubst %.cpp,%.o,$(wildcard *.cpp))
@@ -50,30 +88,16 @@ STATICLIB=$(TOP)/../common/lib$(COMMONSTATICLIBNAME).a
 STATICOBJS=$(shell for i in $$(ls ../common/*cpp);do echo $${i%cpp}o;done)
 TESTEXECS=$(patsubst %.cc,%.x,$(wildcard *.cc))
 
-ARCHIVE      := ar
-ARCHFLAG     := -rc
-
 # -L: FOLDER LIBRARY
 	LFLAGS+=#-L$(TOP)/../common/
 	LFLAGS+=#-L.
 
 # -l: LIBRARY
-	lLIBS+=#-l$(COMMONSTATICLIBNAME)
+	lLIBS+=-l$(COMMONSTATICLIBNAME)
 
 # -I: INCLUDES
-	IFLAGS+=-I. -I$(TOP)/../common/ -include ../common/globaldefs.h -include localdefs.h
+	IFLAGS+=-I. $(INCDEFS) -I$(TOP)/../common/
 
-ifndef MAKE_SRC
-    CXX = $(shell $(MAKE) -s -C .. loadVarCXX )
-    CXXFLAGS = $(shell $(MAKE) -s -C .. $(MYMAKEFLAGS) loadVarCXXFLAGS )
-	 lLIBS += $(shell $(MAKE) -s -C .. $(MYMAKEFLAGS) loadVarlLIBS )
-endif
-
-CXXFLAGS += $(LOCAL_CXXFLAGS)
-
-# Replace the old flag with the new
-TMPFLAGS := $(filter-out $(OLD_FLAG),$(CXXFLAGS))
-CXXFLAGS := $(TMPFLAGS) $(NEW_FLAG)
 TARGET=target
 
 $(TARGET): $(OBJS) $(TESTEXECS) $(STATICLIB)
@@ -88,7 +112,7 @@ $(CCOBJS): %.o: %.cc $(COMMONHEADERS) $(HEADERS)
 
 $(TESTEXECS): %.x: %.o $(STATICLIB) $(CCOBJS) $(CPPOBJS) $(SOURCES) $(HEADERS) $(COMMONHEADERS) $(COMMONSOURCES)
 	@echo "\033[32m   Linking $@\\033[m"
-	$(CXX) $(LFLAGS) $(OPTIMFLAGS) $< $(CPPOBJS) $(STATICOBJS) -o $@ $(lLIBS)
+	$(CXX) $(LFLAGS) $(OPTIMFLAGS) $< $(CPPOBJS) $(STATICOBJS) -o $@
 
 $(STATICLIB): $(COMMONHEADERS) $(COMMONSOURCES)
 	@echo "\033[32mBuilding lib$(COMMONSTATICLIBNAME).a\\033[m"
@@ -98,9 +122,6 @@ $(STATICLIB): $(COMMONHEADERS) $(COMMONSOURCES)
 clean:
 	$(info CLEANING ALL)
 	@$(RM) -f $(TARGET) $(OBJS) $(TESTEXECS) 2>/dev/null || true
-
-fullclean: clean
-	@cd ../common/;make clean
 
 .PHONY: help
 help: ## Shows this help
@@ -112,6 +133,9 @@ help: ## Shows this help
 	@egrep -e '^(.+)\:\ .*##\ (.+)' ${MAKEFILE_LIST} | sed 's/:.*##/#/' | column -t -c 2 -s '#'
 	@echo ''
 	@echo '=================================================================================='
+
+fullclean: clean
+	@cd ../common/;make clean
 
 list:
 	@echo $(OBJS)
