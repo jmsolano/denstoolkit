@@ -48,7 +48,7 @@
 
 #ifndef DTKGLWIDGET_H
 #define DTKGLWIDGET_H
-#ifdef __APPLE__
+#if defined(__APPLE__)
 #include <QOpenGLWidget>
 #else
 #include <QGLWidget>
@@ -65,7 +65,7 @@
 
 /* This factor decreases the speed of rotation when a mouse drag is
  performed. The bigger the factor, the slower the change. */
-#ifdef __APPLE__
+#if (defined(__APPLE__) || defined(__OSX__))
 class DTKGLWidget : public QOpenGLWidget
 #else
 class DTKGLWidget : public QGLWidget

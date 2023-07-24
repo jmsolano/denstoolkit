@@ -375,7 +375,7 @@ bool GaussWaveFunction::WriteToFileWFX(string outname) {
    return true;
 }
 bool GaussWaveFunction::TestSupport() {
-   for (int i=0; i<nMOr; i++) {
+   for (int i=0; i<nPri; i++) {
       if (primType[i]>=MAXPRIMTYPEDEFINED) {
          cout << "Only " << MAXPRIMTYPEDEFINED << " types have been implemented in this version\n";
 #if DEBUG

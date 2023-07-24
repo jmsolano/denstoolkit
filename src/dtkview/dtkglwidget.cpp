@@ -43,7 +43,7 @@
 */
 
 #include "dtkglwidget.h"
-#ifdef __APPLE__
+#if defined(__APPLE__)
 #include <GLUT/glut.h>
 #include <QOpenGLWidget>
 #else
@@ -74,11 +74,11 @@ using std::ifstream;
 #define DTKGL_DISPLACEMENT_CP_LABEL_Y 2
 
 DTKGLWidget::DTKGLWidget(QWidget *parent)
-#ifdef __APPLE__
+#if defined(__APPLE__)
    : QOpenGLWidget(parent)
 #else
    : QGLWidget(parent)
-   #endif
+#endif
 {
    xRot=0;
    yRot=0;
