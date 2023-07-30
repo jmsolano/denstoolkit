@@ -3470,6 +3470,7 @@ void CritPtNetWork::SetRingPaths() {
          bcpIdx=conRCP[rcpIdx][0][currBcpPos];
          if ( bcpIdx>=nBCP || bcpIdx<0 ) {
             ScreenUtils::DisplayErrorMessage("BCP out of bounds!");
+            cout << "bcpIdx: " << bcpIdx << " (nBCP=" << nBCP << ')' << '\n';
             DISPLAYDEBUGINFOFILELINE;
          }
 #endif
@@ -3479,6 +3480,7 @@ void CritPtNetWork::SetRingPaths() {
 #if DEBUG
          if ( npts<0 ) {
             ScreenUtils::DisplayWarningMessage("Catched -1");
+            cout << "bcpIdx: " << bcpIdx << " (nBCP=" << nBCP << ')' << '\n';
             DISPLAYDEBUGINFOFILELINE;
          }
 #endif /* ( DEBUG ) */
@@ -3532,6 +3534,7 @@ void CritPtNetWork::SetCagePaths(void) {
 #if DEBUG
          if ( npts<0 ) {
             ScreenUtils::DisplayWarningMessage("Catched -1");
+            cout << "ccpIdx: " << ccpIdx << " (nCCP=" << nCCP << ')' << '\n';
             DISPLAYDEBUGINFOFILELINE;
          }
 #endif /* ( DEBUG ) */
