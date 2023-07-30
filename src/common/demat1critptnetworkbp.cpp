@@ -147,7 +147,7 @@ void DeMat1CriticalPointNetworkBP::ComputeCoreInteractionCPs2D(void) {
    if ( !imsetup ) {
       ScreenUtils::DisplayErrorMessage("DeMat1CriticalPointNetworkBP object is not setup!");
 #if DEBUG
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
 #endif /* ( DEBUG ) */
       return;
    }
@@ -162,7 +162,7 @@ void DeMat1CriticalPointNetworkBP::ComputeCoreInteractionCPs6D(void) {
    if ( !imsetup ) {
       ScreenUtils::DisplayErrorMessage("DeMat1CriticalPointNetworkBP object is not setup!");
 #if DEBUG
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
 #endif /* ( DEBUG ) */
       return;
    }
@@ -181,7 +181,7 @@ void DeMat1CriticalPointNetworkBP::ComputeSingleCICP2D(int idx) {
    if ( idx>=nCICP ) {
       ScreenUtils::DisplayErrorMessage("Trying to compute non existent CICP!");
       cout << "nCICP: " << nCICP << endl;
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
       return;
    }
 #endif
@@ -223,7 +223,7 @@ void DeMat1CriticalPointNetworkBP::ComputeSingleCICP6D(int idx) {
    if ( idx>=nCICP ) {
       ScreenUtils::DisplayErrorMessage("Trying to compute non existent CICP!");
       cout << "nCICP: " << nCICP << endl;
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
       return;
    }
 #endif

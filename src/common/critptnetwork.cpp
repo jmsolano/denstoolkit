@@ -348,7 +348,7 @@ void CritPtNetWork::SetupBCPs(ScalarFieldType ft) {
    if ( mycptype!=ft ) {
       ScreenUtils::DisplayWarningMessage("Change of field type is not allowed, using previous type!");
 #if DEBUG
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
 #endif /* ( DEBUG ) */
    }
    if (iknowacps) {
@@ -364,7 +364,7 @@ void CritPtNetWork::SetupBCPs(ScalarFieldType ft) {
    } else {
       ScreenUtils::DisplayErrorMessage("First look for ACPs...\n");
 #if DEBUG
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
 #endif
    }
    return;
@@ -1929,7 +1929,7 @@ void CritPtNetWork::FindTwoClosestAtoms(double (&xo)[3],int &idx1st,int &idx2nd)
 #if DEBUG
    if ( idx1st==idx2nd ) {
       ScreenUtils::DisplayWarningMessage("Identical atoms!");
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
    }
 #endif /* ( DEBUG ) */
    return;
@@ -1939,7 +1939,7 @@ void CritPtNetWork::FindTwoClosestAtomsToBCP(const int bcpIdx,int &at1Idx,int&at
 #if DEBUG
    if ( !iknowbcps ) {
       ScreenUtils::DisplayErrorMessage("First look for BCPs!");
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
       at1Idx=at2Idx=0;
       return;
    }
@@ -1980,7 +1980,7 @@ void CritPtNetWork::FindTwoClosestACPs(double (&xo)[3],int &idx1st,int &idx2nd) 
 #if DEBUG
    if ( idx1st==idx2nd ) {
       ScreenUtils::DisplayWarningMessage("Identical ACPs!");
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
    }
 #endif /* ( DEBUG ) */
    return;
@@ -2001,7 +2001,7 @@ void CritPtNetWork::InvertOrderBGPPoints(int dim,double** (&arr)) {
 #if DEBUG
    if (arr==NULL) {
       ScreenUtils::DisplayErrorMessage("The pointer for this array is null!!!");
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
       return;
    }
 #endif
@@ -2658,7 +2658,7 @@ bool CritPtNetWork::ReadFromFile(string inname) {
    } else {
       ScreenUtils::DisplayErrorMessage("First look for ACPs...\nQuiting...");
 #if DEBUG
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
 #endif
    }
    if (iknowbcps) {
@@ -2894,15 +2894,15 @@ int CritPtNetWork::FindSingleRhoRingGradientPathRK5(int rcpIdx,\
 #if DEBUG
    if ( bcpIdxInRRGP>CPNW_MAXBCPSCONNECTEDTORCP || bcpIdxInRRGP < 0 ) {
       ScreenUtils::DisplayErrorMessage("Out of conRCP bounds!");
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
    }
    if ( rcpIdx>nRCP ) {
       ScreenUtils::DisplayErrorMessage("rcpIdx>nRCP");
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
    }
    if ( bcpGlobIdx>nBCP || bcpGlobIdx<0 ) {
       ScreenUtils::DisplayErrorMessage("Non existent bcp!");
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
    }
 #endif
    int count;
@@ -3022,15 +3022,15 @@ int CritPtNetWork::FindSingleRhoCageGradientPathRK5(int ccpIdx,\
 #if DEBUG
    if ( rcpIdxInRCGP>CPNW_MAXRCPSCONNECTEDTOCCP || rcpIdxInRCGP < 0 ) {
       ScreenUtils::DisplayErrorMessage("Out of conCCP bounds!");
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
    }
    if ( ccpIdx>nCCP ) {
       ScreenUtils::DisplayErrorMessage("ccpIdx>nCCP");
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
    }
    if ( rcpGlobIdx>nRCP || rcpGlobIdx<0 ) {
       ScreenUtils::DisplayErrorMessage("Non existent rcp!");
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
    }
 #endif
    double xn[3],xr[3],xc[3],xm[3];
@@ -3067,7 +3067,7 @@ int CritPtNetWork::FindSingleRhoCageGradientPathRK5(int ccpIdx,\
    //cout << "count: " << count << '\n';
    //wf->DisplayAllFieldProperties(xn[0],xn[1],xn[2]);
 #if DEBUG
-   DISPLAYDEBUGINFOFILELINE;
+   cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
    wf->DisplayAllFieldProperties(xn[0],xn[1],xn[2]);
 #endif /* ( DEBUG ) */
    return -1;
@@ -3119,7 +3119,7 @@ bool CritPtNetWork::WalkGradientPathRK5ToEndPoint(\
    if ( count==maxGradPathNPts ) {
       ScreenUtils::DisplayWarningMessage("End or array reached, need larger array?");
 #if DEBUG
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
 #endif /* ( DEBUG ) */
    }
    for ( int i=0 ; i<3 ; ++i ) {xm[i]=xmin[i];}
@@ -3290,7 +3290,7 @@ void CritPtNetWork::AddBCP2ConRCP(const int rcpIdx,const int bcpIdx) {
 #if DEBUG
    if ( conRCP==NULL ) {
       ScreenUtils::DisplayErrorMessage("conRCP is not allocated!");
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
    }
 #endif /* ( DEBUG ) */
    int k=0;
@@ -3301,7 +3301,7 @@ void CritPtNetWork::AddBCP2ConRCP(const int rcpIdx,const int bcpIdx) {
    if ( k==CPNW_MAXBCPSCONNECTEDTORCP ) {
       ScreenUtils::DisplayWarningMessage("Perhaps you need a larger array for conRCP!");
 #if DEBUG
-         DISPLAYDEBUGINFOFILELINE;
+         cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
 #endif /* ( DEBUG ) */
    }
 }
@@ -3309,7 +3309,7 @@ void CritPtNetWork::AddRCP2ConCCP(const int ccpIdx,const int rcpIdx) {
 #if DEBUG
    if ( conCCP==NULL ) {
       ScreenUtils::DisplayErrorMessage("conCCP is not allocated!");
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
    }
 #endif /* ( DEBUG ) */
    int k=0;
@@ -3320,7 +3320,7 @@ void CritPtNetWork::AddRCP2ConCCP(const int ccpIdx,const int rcpIdx) {
    if ( k==CPNW_MAXRCPSCONNECTEDTOCCP ) {
       ScreenUtils::DisplayWarningMessage("Perhaps you need a larger array for conCCP!");
 #if DEBUG
-         DISPLAYDEBUGINFOFILELINE;
+         cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
 #endif /* ( DEBUG ) */
    }
 }
@@ -3420,7 +3420,7 @@ void CritPtNetWork::AddToConRCP(const int rcpIdx,const int bcpIdx) {
       if ( mypos==CPNW_MAXBCPSCONNECTEDTORCP ) {
          ScreenUtils::DisplayWarningMessage("End of array reached, need bigger array!");
 #if DEBUG
-         DISPLAYDEBUGINFOFILELINE;
+         cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
 #endif /* ( DEBUG ) */
          return;
       }
@@ -3435,7 +3435,7 @@ void CritPtNetWork::AddToConCCP(const int ccpIdx,const int rcpIdx) {
       if ( mypos==CPNW_MAXRCPSCONNECTEDTOCCP ) {
          ScreenUtils::DisplayWarningMessage("End of array reached, need bigger array!");
 #if DEBUG
-         DISPLAYDEBUGINFOFILELINE;
+         cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
 #endif /* ( DEBUG ) */
          return;
       }
@@ -3471,7 +3471,7 @@ void CritPtNetWork::SetRingPaths() {
          if ( bcpIdx>=nBCP || bcpIdx<0 ) {
             ScreenUtils::DisplayErrorMessage("BCP out of bounds!");
             cout << "bcpIdx: " << bcpIdx << " (nBCP=" << nBCP << ')' << '\n';
-            DISPLAYDEBUGINFOFILELINE;
+            cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
          }
 #endif
          //for (int k=0; k<3; k++) {rseed[k]=RBCP[bcpIdx][k];}
@@ -3481,7 +3481,7 @@ void CritPtNetWork::SetRingPaths() {
          if ( npts<0 ) {
             ScreenUtils::DisplayWarningMessage("Catched -1");
             cout << "bcpIdx: " << bcpIdx << " (nBCP=" << nBCP << ')' << '\n';
-            DISPLAYDEBUGINFOFILELINE;
+            cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
          }
 #endif /* ( DEBUG ) */
          conRCP[rcpIdx][1][currBcpPos]=npts;
@@ -3525,7 +3525,7 @@ void CritPtNetWork::SetCagePaths(void) {
 #if DEBUG
          if ( ccpIdx>=nCCP || ccpIdx<0 ) {
             ScreenUtils::DisplayErrorMessage("CCP out of bounds!");
-            DISPLAYDEBUGINFOFILELINE;
+            cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
          }
 #endif
          //for (int k=0; k<3; k++) {rseed[k]=RCCP[ccpIdx][k];}
@@ -3535,7 +3535,7 @@ void CritPtNetWork::SetCagePaths(void) {
          if ( npts<0 ) {
             ScreenUtils::DisplayWarningMessage("Catched -1");
             cout << "ccpIdx: " << ccpIdx << " (nCCP=" << nCCP << ')' << '\n';
-            DISPLAYDEBUGINFOFILELINE;
+            cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
          }
 #endif /* ( DEBUG ) */
          conCCP[ccpIdx][1][currRcpPos]=npts;
@@ -3557,7 +3557,7 @@ int CritPtNetWork::GetNofRingPathsOfRCP(int rcpIdx) {
    if ( !iknowrgps ) {
       ScreenUtils::DisplayWarningMessage("First seek for Ring Gradient Paths! Returning 0.");
 #if DEBUG
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
 #endif /* ( DEBUG ) */
    }
    int res=0;
@@ -3568,7 +3568,7 @@ int CritPtNetWork::GetNofCagePathsOfCCP(int ccpIdx) {
    if ( !iknowcgps ) {
       ScreenUtils::DisplayWarningMessage("First seek for Cage Gradient Paths! Returning 0.");
 #if DEBUG
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
 #endif /* ( DEBUG ) */
    }
    int res=0;
@@ -3579,7 +3579,7 @@ int CritPtNetWork::GetTotalNofRingPaths(void) {
 #if DEBUG
    if ( !iknowrgps ) {
       ScreenUtils::DisplayWarningMessage("First seek for Ring Gradient Paths! Returning -1.");
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
       return -1;
    }
 #endif /* ( DEBUG ) */
@@ -3591,7 +3591,7 @@ int CritPtNetWork::GetTotalNofCagePaths(void) {
 #if DEBUG
    if ( !iknowcgps ) {
       ScreenUtils::DisplayWarningMessage("First seek for Cage Gradient Paths! Returning -1.");
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
       return -1;
    }
 #endif /* ( DEBUG ) */

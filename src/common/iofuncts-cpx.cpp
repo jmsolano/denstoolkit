@@ -592,7 +592,7 @@ bool cpxGetPosBetweenKeyInFile(ifstream &ifil,int &aftik,int &befek,string key,b
    }
    if (!iknowthiskey) {
       ScreenUtils::DisplayErrorMessage("Not a CPX valid key!");
-      DISPLAYDEBUGINFOFILELINE;
+      std::cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
       return -1;
    }
 #endif
@@ -634,7 +634,7 @@ int cpxGetPosAfterOpenningKeyInFile(ifstream &ifil,string key,bool frombeg) {
    if (!(cpxGetPosBetweenKeyInFile(ifil,ip,fp,key,frombeg))) {
       ScreenUtils::DisplayErrorMessage("Key not found!");
 #if DEBUG
-      DISPLAYDEBUGINFOFILELINE;
+      std::cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
 #endif
       return -1;
    }
@@ -645,7 +645,7 @@ int cpxGetPosBeforeClosingKeyInFile(ifstream &ifil,string key,bool frombeg) {
    if (!(cpxGetPosBetweenKeyInFile(ifil,ip,fp,key,frombeg))) {
       ScreenUtils::DisplayErrorMessage("Key not found!");
 #if DEBUG
-      DISPLAYDEBUGINFOFILELINE;
+      std::cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
 #endif
       return -1;
    }
@@ -684,7 +684,7 @@ ScalarFieldType cpxGetCriticalPointFieldType(ifstream &ifil) {
       sft=LOLD;
    } else {
       ScreenUtils::DisplayErrorMessage("Unknown Critical Points Field Type!");
-      DISPLAYDEBUGINFOFILELINE;
+      std::cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
       sft=NONE;
    }
    return sft;

@@ -172,7 +172,7 @@ double HelpersPlot::EvalFieldProperty(char prop,double (&x)[3],GaussWaveFunction
       default:
 #if DEBUG
          cout << "Unknown field type! Returning zero..." << endl;
-         DISPLAYDEBUGINFOFILELINE;
+         cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
 #endif
          res=0.0e0;
          break;

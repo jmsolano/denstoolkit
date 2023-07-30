@@ -94,7 +94,7 @@ string GnuplotTools::GetGnuplotRGBColorString(const int r, const int g,\
    ScreenUtils scrut;
    if (r>255||g>255||b>255||r<0||g<0||b<0) {
       scrut.DisplayErrorMessage("Bad rgb component...");
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
       return string("'#000000'");
    }
 #endif

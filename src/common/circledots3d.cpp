@@ -79,7 +79,7 @@ double CircleDots3D::GetCartCoord(const int i,const int j) {
       if ( xx_==NULL ) {
          ScreenUtils::DisplayErrorMessage("First setup this object");
 #if DEBUG
-            DISPLAYDEBUGINFOFILELINE;
+            cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
 #endif /* ( DEBUG ) */
          return 0.0e0;
       }
@@ -87,14 +87,14 @@ double CircleDots3D::GetCartCoord(const int i,const int j) {
          ScreenUtils::DisplayErrorMessage(string("Only ")+StringTools::GetStringFromInt(i)\
                +string(" points in the circle!"));
 #if DEBUG
-            DISPLAYDEBUGINFOFILELINE;
+            cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
 #endif /* ( DEBUG ) */
             return 0.0e0;
       }
       if ( j>2 ) {
          ScreenUtils::DisplayErrorMessage("Non valid cartesian index!");
 #if DEBUG
-            DISPLAYDEBUGINFOFILELINE;
+            cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
 #endif /* ( DEBUG ) */
            return 0.0e0;
       }
@@ -108,7 +108,7 @@ double CircleDots3D::GetPhi(const int i) {
       if ( xx_==NULL ) {
          ScreenUtils::DisplayErrorMessage("First setup this object");
 #if DEBUG
-            DISPLAYDEBUGINFOFILELINE;
+            cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
 #endif /* ( DEBUG ) */
          return 0.0e0;
       }
@@ -116,7 +116,7 @@ double CircleDots3D::GetPhi(const int i) {
          ScreenUtils::DisplayErrorMessage(string("Only ")+StringTools::GetStringFromInt(i)\
                +string(" points in the circle!"));
 #if DEBUG
-            DISPLAYDEBUGINFOFILELINE;
+            cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
 #endif /* ( DEBUG ) */
             return 0.0e0;
       }
@@ -128,7 +128,7 @@ void CircleDots3D::SetE1(const double x,const double y,const double z) {
    if ( sqrt(ue1_[0]*ue1_[0]+ue1_[1]*ue1_[1]+ue1_[2]*ue1_[2])<=0.0e0 ) {
       ScreenUtils::DisplayErrorMessage("Please provide a non-zero vector!");
 #if DEBUG
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
 #endif /* ( DEBUG ) */
       for ( int i=0 ; i<3 ; ++i ) { ue1_[i]=0.0e0; }
       return; 
@@ -140,7 +140,7 @@ void CircleDots3D::SetE2(const double x,const double y,const double z) {
    if ( sqrt(ue2_[0]*ue2_[0]+ue2_[1]*ue2_[1]+ue2_[2]*ue2_[2])<=0.0e0 ) {
       ScreenUtils::DisplayErrorMessage("Please provide a non-zero vector!");
 #if DEBUG
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
 #endif /* ( DEBUG ) */
       for ( int i=0 ; i<3 ; ++i ) { ue2_[i]=0.0e0; }
       return; 
@@ -158,7 +158,7 @@ void CircleDots3D::ComputeUE3(void) {
    if ( !(havee1&&havee2) ) {
       ScreenUtils::DisplayErrorMessage("First set e1 and e2!");
 #if DEBUG
-         DISPLAYDEBUGINFOFILELINE;
+         cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
 #endif /* ( DEBUG ) */
          return;
    }
@@ -199,7 +199,7 @@ void CircleDots3D::DisplayCoordinates(void) {
    if ( !imsetup ) {
       ScreenUtils::DisplayErrorMessage("The circle is not setup!");
 #if DEBUG
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
 #endif /* ( DEBUG ) */
       return;
    }

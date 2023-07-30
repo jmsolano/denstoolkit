@@ -682,7 +682,7 @@ int main (int argc, char ** argv) {
    double range=fabs(md1dmax-md1lmin);
 #if DEBUG
    if ( md1lmin<0.0e0 ) {
-      ScreenUtils::DisplayWarningMessage(string("md1lmin: "+getStringFromReal(md1lmin)));
+      ScreenUtils::DisplayWarningMessage(string("md1lmin: "+StringTools::GetStringFromReal(md1lmin)));
    }
    cout << "gmin: " << gmd1min << ", gmax: " << gmd1max << endl;
    cout << "md1dmax: " << md1dmax << endl;

@@ -160,11 +160,11 @@ void DeMat1CriticalPointNetworkSL::GetXCoordinatesFromUV(double uu,double vv,\
 #if DEBUG
    if ( uu>1.0e0 || uu<0.0e0 ) {
       ScreenUtils::DisplayErrorMessage("u out of range! u should be: 0<=u<=1");
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
    }
    if ( vv>1.0e0 || vv<0.0e0 ) {
       ScreenUtils::DisplayErrorMessage("v out of range! v should be: 0<=v<=1");
-      DISPLAYDEBUGINFOFILELINE;
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
    }
 #endif /* ( DEBUG ) */
    for ( int i=0 ; i<3 ; i++ ) {
