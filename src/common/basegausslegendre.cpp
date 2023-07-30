@@ -64,8 +64,8 @@ using std::endl;
    #define FABS(a) ((a)>=0?(a):-(a))
 #endif
 BaseGaussLegendre::BaseGaussLegendre() {
-   x=w=NULL;
-   myx=myw;
+   x=w=nullptr;
+   myx=myw=nullptr;
    dim=0;
 }
 BaseGaussLegendre::~BaseGaussLegendre() {

@@ -54,7 +54,8 @@ using std::string;
 #endif
 
 MeshGrid::MeshGrid() :
-   vertex(0),normal(0),centroid(0),face(0),value(0),cvalue(0),center(3),edge(0),vneigh2v(0) {
+   vertex(0),normal(0),centroid(0),face(0),edge(0),vneigh2v(0),\
+      value(0),cvalue(0),center(3) {
    verbose=true;
    usenormals=false;
 }

@@ -1440,7 +1440,7 @@ void CritPtNetWork::GetACPStep(double (&g)[3],double (&hess)[3][3],double (&hh)[
       ScreenUtils::DisplayWarningMessage(string("lp<=0!: "+StringTools::GetStringFromReal(lp)));
       for ( int i=0 ; i<4 ; i++ ) {cout << v4[i] << " ";}
       cout << endl;
-      printM3x3Comp("hess:\n",hess);
+      ScreenUtils::PrintM3x3Comp("hess:\n",hess);
    }
 #endif
    double dd;

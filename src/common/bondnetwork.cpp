@@ -398,7 +398,7 @@ void BondNetWork::SetBoundingBox(void) {
 int BondNetWork::CountAtomsOfAtomicNumber(int nat) {
 #if DEBUG
    if (nat<1) {
-      displayErrorMessage("Invalid atomic number!\nReturning zero.");
+      ScreenUtils::DisplayErrorMessage("Invalid atomic number!\nReturning zero.");
       cout << __FILE__ << ", line: " << __LINE__ << endl;
       return 0;
    }

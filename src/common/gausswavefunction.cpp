@@ -4837,8 +4837,9 @@ double GaussWaveFunction::EvalVAB(double (&xx)[3],int (&aa)[3],int (&ab)[3],doub
    static const double twopi=6.2831853071795864769;
    return (twopi*ooalpp*S00*ctmp);
 }
-double GaussWaveFunction::EvalVABCore(double &S00,double (&xx)[3],int idxA,int idxB,int (&aa)[3],int (&ab)[3],double &alpa,double &alpb,
-                               double (&xa)[3],double (&xb)[3]) {
+double GaussWaveFunction::EvalVABCore(double &S00,double (&xx)[3],\
+      int idxA,int idxB,int (&aa)[3],int (&ab)[3],double &alpa,double &alpb,
+      double (&xa)[3],double (&xb)[3]) {
    double alpp=alpa+alpb;
    double xp[3],cp[3],ctmp=0.0e0,ooalpp=1.0e0/alpp;
    for (int i=0; i<3; i++) {
@@ -4869,7 +4870,7 @@ double GaussWaveFunction::EvalMolElecPot(double x,double y,double z) {
       if (showmsg) {
          ScreenUtils::DisplayErrorMessage(string("Non supported angular momentum of"
             "primitives, requested type: ")\
-            +getStringFromInt(maxPrimType));
+            +StringFromInt::GetStringFromInt(maxPrimType));
          showmsg=false;
 
       }
@@ -4956,7 +4957,7 @@ double GaussWaveFunction::EvalMolElecPot(double x,double y,double z) {
       if (showmsg) {
          ScreenUtils::DisplayErrorMessage(string("Non supported angular momentum of"
             "primitives, requested type: ")\
-            +getStringFromInt(maxPrimType));
+            +StringTools::GetStringFromInt(maxPrimType));
          showmsg=false;
 
       }

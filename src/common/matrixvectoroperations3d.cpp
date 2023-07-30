@@ -57,7 +57,7 @@ vector<vector<double> > MatrixVectorOperations3D::GetMatrixToAlignXToV(vector<do
    if ( ix.size()!=3 || iv.size()!=3 ) {
       cerr << "Vectors have incorrect sizes!" << endl;
       cerr << __FILE__ << ", line: " << __LINE__ << endl;
-      return;
+      return Zeros();
    }
 #endif
    vector<double> z=iv;

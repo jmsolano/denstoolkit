@@ -251,10 +251,10 @@ void DeMat1CriticalPointNetworkSL::GetACPStep(double (&g)[2],double (&hess)[2][2
    double lp=v3[2];
 #if DEBUG
    if (lp<=0.0e0) {
-      ScreenUtils::DisplayWarningMessage(string("lp<=0!: "+getStringFromReal(lp)));
+      ScreenUtils::DisplayWarningMessage(string("lp<=0!: "+StringTools::GetStringFromReal(lp)));
       for ( int i=0 ; i<3 ; i++ ) {cout << v3[i] << " ";}
       cout << endl;
-      printM2x2Comp("hess:\n",hess);
+      ScreenUtils::PrintM2x2Comp("hess:\n",hess);
    }
 #endif
    if ( fabs(lp)<DEMAT1EPSEIGENVALUECPSEARCH ) {lp=DEMAT1EPSEIGENVALUECPSEARCH;}
@@ -294,11 +294,11 @@ void DeMat1CriticalPointNetworkSL::GetSCPStep(double (&g)[2],double (&hess)[2][2
    double ln=0.5e0*(b[1]-sqrt(b[1]*b[1]+4.0e0*F[1]*F[1]));
 #if DEBUG
    if (lp<=0.0e0) {
-      ScreenUtils::DisplayWarningMessage(string("lp<=0!: "+getStringFromReal(lp)));
+      ScreenUtils::DisplayWarningMessage(string("lp<=0!: "+StringTools::GetStringFromReal(lp)));
       cout << endl;
    }
    if (ln>=0.0e0) {
-      ScreenUtils::DisplayWarningMessage(string("ln>=0!: "+getStringFromReal(ln)));
+      ScreenUtils::DisplayWarningMessage(string("ln>=0!: "+StringTools::GetStringFromReal(ln)));
       cout << endl;
    }
    if (b[0]==lp) {
@@ -353,10 +353,10 @@ void DeMat1CriticalPointNetworkSL::GetRCPStep(double (&g)[2],double (&hess)[2][2
    double ln=v3[0];
 #if DEBUG
    if (ln<=0.0e0) {
-      ScreenUtils::DisplayWarningMessage(string("ln<=0!: "+getStringFromReal(ln)));
+      ScreenUtils::DisplayWarningMessage(string("ln<=0!: "+StringTools::GetStringFromReal(ln)));
       for ( int i=0 ; i<3 ; i++ ) {cout << v3[i] << " ";}
       cout << endl;
-      printM2x2Comp("hess:\n",hess);
+      ScreenUtils::PrintM2x2Comp("hess:\n",hess);
    }
 #endif
    if ( fabs(ln)<DEMAT1EPSEIGENVALUECPSEARCH ) {ln=DEMAT1EPSEIGENVALUECPSEARCH;}
