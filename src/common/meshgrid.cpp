@@ -48,6 +48,9 @@ using std::cout;
 using std::string;
 #include "meshgrid.h"
 #include "matrixvectoroperations3d.h"
+#include "screenutils.h"
+#include "povraytools.h"
+#include "mymath.h"
 
 #ifndef MESHGRIDDEFCOORDSEPS2
 #define  MESHGRIDDEFCOORDSEPS2 1.0e-12
@@ -207,6 +210,23 @@ void MeshGrid::DetermineEdgesBase(const vector<vector<size_t> > &f,size_t nvspf)
       if ( imnew ) { edge.push_back(tmp); }
    }
 }
+void MeshGrid::ComputeNormal2FaceVectors() {
+   size_t nf=face.size();
+   if ( normal.size() != nf ) { ResizeMatrix(normal,nf,3); }
+   for ( size_t i=0 ; i<nf ; ++i ) { ComputeSingleNormal2Face(i); }
+}
+void MeshGrid::ComputeSingleNormal2Face(size_t idx) {
+   double ra[3],rb[3],rc[3];
+   size_t ia=face[idx][0],ib=face[idx][1],ic=face[idx][2];
+   ra[0]=vertex[ia][0]; ra[1]=vertex[ia][1]; ra[2]=vertex[ia][2];
+   rb[0]=vertex[ib][0]; rb[1]=vertex[ib][1]; rb[2]=vertex[ib][2];
+   rc[0]=vertex[ic][0]; rc[1]=vertex[ic][1]; rc[2]=vertex[ic][2];
+   double v1[3],v2[3];
+   v1[0]=rb[0]-ra[0]; v1[1]=rb[1]-ra[1]; v1[2]=rb[2]-ra[2];
+   v2[0]=rc[0]-ra[0]; v2[1]=rc[1]-ra[1]; v2[2]=rc[2]-ra[2];
+   crossProductV3(v1,v2,rc);
+   normal[idx][0]=rc[0]; normal[idx][1]=rc[1]; normal[idx][2]=rc[2];
+}
 void MeshGrid::FindAllVertexNeighbours() {
    if ( edge.size()==0 || edge.size()==string::npos ) { DetermineEdges(); }
    ClearMatrix(vneigh2v);
@@ -231,5 +251,102 @@ void MeshGrid::FindAllVertexNeighbours() {
       cout << '\n';
    }
    // */
+}
+/* ************************************************************************** */
+/* ************************************************************************** */
+void HelpersMeshGrid::AddFaces2POVAsMesh(ofstream &ofil,\
+      MeshGrid &grid, const double r,const double g,const double b,\
+      const bool usenrmls,int usrntabs) {
+   int indlev=usrntabs;
+   if ( grid.vertex.size() == 0 ) {
+      ScreenUtils::DisplayErrorMessage("No vertices in the mesh!");
+      cout << __FILE__ << ", line: " << __LINE__ << '\n';
+      return;
+   }
+   size_t nvm1=grid.vertex.size()-1;
+   size_t nfm1=grid.face.size()-1;
+   string thetabs=HelpersPOVRay::IndTabsStr(indlev++);
+   ofil << thetabs << "mesh2 {\n";
+   thetabs=HelpersPOVRay::IndTabsStr(indlev++);
+   ofil << thetabs << "vertex_vectors {\n";
+   thetabs=HelpersPOVRay::IndTabsStr(indlev);
+   ofil << thetabs << (nvm1+1) << ",\n" << thetabs;
+   for ( size_t i=0 ; i<nvm1 ; ++i ) {
+      HelpersPOVRay::WriteVector(ofil,grid.vertex[i][0],grid.vertex[i][1],grid.vertex[i][2]);
+      ofil << ",";
+      if ( (i%3) == 2 ) { ofil << '\n' << thetabs; }
+   }
+   HelpersPOVRay::WriteVector(ofil,grid.vertex[nvm1][0],grid.vertex[nvm1][1],grid.vertex[nvm1][2]);
+   thetabs=HelpersPOVRay::IndTabsStr(--indlev);
+   ofil << '\n' << thetabs << "}\n";//end of vertex_vectors
+   if ( usenrmls ) {
+      if ( grid.normal.size()<1 ) {
+         ScreenUtils::DisplayWarningMessage("There are no normals!");
+         cout << __FILE__ << ", line: " << __LINE__ << '\n';
+      } else {
+         ofil << thetabs << "normal_vectors {\n";
+         thetabs=HelpersPOVRay::IndTabsStr(indlev);
+         ofil << thetabs << (nvm1+1) << ",\n" << thetabs;
+         for ( size_t i=0 ; i<nvm1 ; ++i ) {
+            HelpersPOVRay::WriteVector(ofil,grid.normal[i][0],grid.normal[i][1],grid.normal[i][2]);
+            ofil << ",";
+            if ( (i%3) == 2 ) { ofil << '\n' << thetabs; }
+         }
+         HelpersPOVRay::WriteVector(ofil,grid.normal[nvm1][0],grid.normal[nvm1][1],grid.normal[nvm1][2]);
+         thetabs=HelpersPOVRay::IndTabsStr(--indlev);
+         ofil << thetabs << "}\n";//end of normal_vectors
+      }
+   }
+   thetabs=HelpersPOVRay::IndTabsStr(indlev++);
+   ofil << thetabs << "texture_list {\n";
+   thetabs=HelpersPOVRay::IndTabsStr(indlev);
+   size_t nnvv=nvm1+1;
+   ofil << thetabs << (nnvv) << ",\n";
+   for ( size_t i=0 ; i<nnvv ; ++i ) {
+      ofil << thetabs << "texture{pigment{rgb ";
+      HelpersPOVRay::WriteVector(ofil,r,g,b);
+      ofil << " } finish {ambient 0 emission  0.6}}" << (i<nvm1? ',' : ' ') << "\n";
+   }
+   thetabs=HelpersPOVRay::IndTabsStr(--indlev);
+   ofil << thetabs << "}\n";//end of texture_list
+   thetabs=HelpersPOVRay::IndTabsStr(indlev++);
+   ofil << thetabs << "face_indices {\n";
+   thetabs=HelpersPOVRay::IndTabsStr(indlev);
+   ofil << thetabs << (nfm1+1) << ",\n" << thetabs;
+   for ( size_t i=0 ; i<nfm1 ; ++i ) {
+      HelpersPOVRay::WriteVector(ofil,grid.face[i][0],grid.face[i][1],grid.face[i][2]);
+      ofil << ", " << grid.face[i][0] << ',' << grid.face[i][1] << ',' << grid.face[i][2] << ", ";
+      if ( (i%5) == 4 ) { ofil << '\n' << thetabs; }
+   }
+   HelpersPOVRay::WriteVector(ofil,grid.face[nfm1][0],grid.face[nfm1][1],grid.face[nfm1][2]);
+   ofil << ", " <<  grid.face[nfm1][0] << ',' << grid.face[nfm1][1] << ',' << grid.face[nfm1][2] << '\n';
+   thetabs=HelpersPOVRay::IndTabsStr(--indlev);
+   ofil << thetabs << "}\n";//end of face_indices
+   thetabs=HelpersPOVRay::IndTabsStr(indlev++);
+   ofil << thetabs << "pigment { rgb ";
+   HelpersPOVRay::WriteVector(ofil,r,g,b);
+   thetabs=HelpersPOVRay::IndTabsStr(--indlev);
+   ofil << thetabs << "}\n";//end of pigment
+   thetabs=HelpersPOVRay::IndTabsStr(--indlev);
+   ofil << thetabs << "}\n"; //end of mesh2
+}
+void HelpersMeshGrid::AddVertices2POVAsSpheres(ofstream &ofil,\
+         MeshGrid &grid,const double r,const double g,const double b,\
+         const double sr,int usrntabs) {
+   int indlev=usrntabs;
+   if ( grid.vertex.size() == 0 ) {
+      ScreenUtils::DisplayErrorMessage("No vertices in the mesh!");
+      cout << __FILE__ << ", line: " << __LINE__ << '\n';
+      return;
+   }
+   size_t nv=grid.vertex.size();
+   string thetabs=HelpersPOVRay::IndTabsStr(indlev++);
+   ofil << thetabs << "union {\n";
+   for ( size_t i=0 ; i<nv ; ++i ) {
+      HelpersPOVRay::WriteSphere(ofil,indlev,\
+            grid.vertex[i][0],grid.vertex[i][1],grid.vertex[i][2],sr,r,g,b);
+   }
+   thetabs=HelpersPOVRay::IndTabsStr(--indlev);
+   ofil << thetabs << "}\n";//end of union (vertices as spheres).
 }
 

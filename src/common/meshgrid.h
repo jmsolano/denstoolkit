@@ -45,6 +45,8 @@
 #define _MESHGRID_H_
 #include <vector>
 using std::vector;
+#include <fstream>
+using std::ofstream;
 
 /* ************************************************************************** */
 /** Instances of this class contains vertices, faces, centroids,
@@ -96,6 +98,11 @@ public:
          const size_t nvspf=3 /** number of vertices per face  */);
    virtual void RemoveUnusedVertices() { return RemoveUnusedVerticesBase(face,3); }
    virtual void DetermineEdges() {return DetermineEdgesBase(face,3); }
+   void ComputeNormal2FaceVectors();
+   /** Compute the normal vector of a face. It assumes v_0, v_1 and v_2 (the vertices
+    * v_i=face[idx][i]) produce outward normals. The function  < b> does not check < /b>
+    * for idx<normal.size(); this should be checked elsewhere.  */
+   void ComputeSingleNormal2Face(size_t idx);
    void DetermineEdgesBase(const vector<vector<size_t> > &f,size_t nvspf);
    void FindAllVertexNeighbours();
 /* ************************************************************************** */
@@ -125,6 +132,31 @@ protected:
 /* ************************************************************************** */
 };
 /* ************************************************************************** */
+
+/* ************************************************************************** */
+class HelpersMeshGrid {
+/* ************************************************************************** */
+public:
+/* ************************************************************************** */
+   static void AddFaces2POVAsMesh(ofstream &ofil,\
+         MeshGrid &grid,const double r, const double g, const double b,\
+         const bool usenrmls,int usrntabs);
+   static void AddFaces2POVAsMesh(ofstream &ofil,\
+         MeshGrid &grid,const double gg,const bool usenrmls,int usrntabs) {
+      return AddFaces2POVAsMesh(ofil,grid,gg,gg,gg,usenrmls,usrntabs); }
+   static void AddVertices2POVAsSpheres(ofstream &ofil,\
+         MeshGrid &grid,const double r,const double g,const double b,\
+         const double sr,int usrntabs);
+   static void AddVertices2POVAsSpheres(ofstream &ofil,\
+         MeshGrid &grid,const double gg,const double sr,int usrntabs) {
+      return AddVertices2POVAsSpheres(ofil,grid,gg,gg,gg,sr,usrntabs); }
+/* ************************************************************************** */
+protected:
+/* ************************************************************************** */
+/* ************************************************************************** */
+};
+/* ************************************************************************** */
+
 
 
 #endif  /* _MESHGRID_H_ */
