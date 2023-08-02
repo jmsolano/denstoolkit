@@ -88,7 +88,7 @@ int main (int argc, char ** argv) {
    string progname;
    OptionFlags options;
    ifstream ifile;
-   ofstream ofile;
+   ofstream ofil;
    
    getOptions(argc,argv,options); //This processes the options from the command line.
    mkFileNames(argv,options,infilnam,outfilnam,gnpnam,lognam); //This creates the names used.
@@ -229,9 +229,10 @@ int main (int argc, char ** argv) {
    
    /* Opens the dat file */
    
-   ofile.open(outfilnam.c_str(),ios::out);
-   ofile << scientific << setprecision(12);
+   ofil.open(outfilnam.c_str(),ios::out);
+   ofil << scientific << setprecision(12);
    cout << scientific << setprecision(12);
+   ofil << "#PathLen  x     y      z    prop(x,y,z)" << '\n';
    
    cout << "Evaluating " << GetFieldTypeKeyLong(prop) << " upon ";
    if (options.uponbp) {cout << "the bond path:" << endl;}
@@ -250,9 +251,9 @@ int main (int argc, char ** argv) {
    tmpval=HelpersPlot::EvalFieldProperty(prop,xx,gwf);
    if (tmpval<minval) {minval=tmpval; pmin=pp; for(int k=0; k<3; k++) {xmin[k]=xx[k];}}
    if (tmpval>maxval) {maxval=tmpval; pmax=pp; for(int k=0; k<3; k++) {xmax[k]=xx[k];}}
-   ofile << pp << " ";
-   for (int k=0; k<3; k++) {ofile << xx[k] << " ";}
-   ofile << tmpval << endl;
+   ofil << pp << " ";
+   for (int k=0; k<3; k++) {ofil << xx[k] << " ";}
+   ofil << tmpval << endl;
    for (int i=1; i<nbgppts; i++) {
       dist=0.0e0;
       for (int k=0; k<3; k++) {
@@ -261,9 +262,9 @@ int main (int argc, char ** argv) {
       }
       pp+=sqrt(dist);
       tmpval=HelpersPlot::EvalFieldProperty(prop,xx,gwf);
-      ofile << pp << " ";
-      for (int k=0; k<3; k++) {ofile << xx[k] << " ";}
-      ofile << tmpval << endl;
+      ofil << pp << " ";
+      for (int k=0; k<3; k++) {ofil << xx[k] << " ";}
+      ofil << tmpval << endl;
       if (options.uponbp) {
          if ((xx[0]==robcp[0])&&(xx[1]==robcp[1])&&(xx[2]==robcp[2])) {pbcp=pp; bcpval=tmpval;}
       }
@@ -279,7 +280,7 @@ int main (int argc, char ** argv) {
 #endif
    
    /* Closes the dat file */
-   ofile.close();
+   ofil.close();
    
    /* Displays the information of min/max of prop */
    
