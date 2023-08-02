@@ -2769,6 +2769,30 @@ void CritPtNetWork::DisplayStatus(bool lngdesc) {
       if (nBGP!=nBCP) {ScreenUtils::DisplayWarningMessage("For some unknown reason nBGP!=nBCP");}
       else {cout << nBGP << " Bond Gradient Paths found." << endl;}
    } else {ScreenUtils::DisplayWarningMessage("BGPs search needed...");}
+   if (iknowrgps) {
+      //if (nRGP!=nRCP) {ScreenUtils::DisplayWarningMessage("For some unknown reason nRGP!=nRCP");}
+      int nzp=0,npts;
+      for ( size_t i=0 ; i<nRCP ; ++i ) {
+         npts=GetNofRingPathsOfRCP(i);
+         for ( int j=0 ; j<npts ; ++j ) {
+            if ( conRCP[i][1][j]>0 ) { ++nzp; }
+         }
+      }
+      if ( nzp<1 ) { cout << "No Ring Gradient Paths found!" << '\n'; }
+      else {cout << nzp << " Ring Gradient Paths found." << endl;}
+   } else {ScreenUtils::DisplayWarningMessage("RGPs search needed...");}
+   if (iknowcgps) {
+      //if (nRGP!=nRCP) {ScreenUtils::DisplayWarningMessage("For some unknown reason nRGP!=nRCP");}
+      int nzp=0,npts;
+      for ( size_t i=0 ; i<nCCP ; ++i ) {
+         npts=GetNofCagePathsOfCCP(i);
+         for ( int j=0 ; j<npts ; ++j ) {
+            if ( conCCP[i][1][j]>0 ) { ++nzp; }
+         }
+      }
+      if ( nzp<1 ) { cout << "No Cage Gradient Paths found!" << '\n'; }
+      else {cout << nzp << " Cage Gradient Paths found." << endl;}
+   } else {ScreenUtils::DisplayWarningMessage("CGPs search needed...");}
    ScreenUtils::PrintScrCharLine('+');
    return;
 }
@@ -3569,23 +3593,23 @@ void CritPtNetWork::SetCagePaths(void) {
    iknowallgps=(iknowbgps&&iknowrgps&&iknowcgps);
 }
 int CritPtNetWork::GetNofRingPathsOfRCP(int rcpIdx) {
+#if DEBUG
    if ( !iknowrgps ) {
       ScreenUtils::DisplayWarningMessage("First seek for Ring Gradient Paths! Returning 0.");
-#if DEBUG
       cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
-#endif /* ( DEBUG ) */
    }
+#endif
    int res=0;
    while ( conRCP[rcpIdx][0][res]>=0 ) {++res;}
    return res;
 }
 int CritPtNetWork::GetNofCagePathsOfCCP(int ccpIdx) {
+#if DEBUG
    if ( !iknowcgps ) {
       ScreenUtils::DisplayWarningMessage("First seek for Cage Gradient Paths! Returning 0.");
-#if DEBUG
       cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
-#endif /* ( DEBUG ) */
    }
+#endif
    int res=0;
    while ( conCCP[ccpIdx][0][res]>=0 ) {++res;}
    return res;

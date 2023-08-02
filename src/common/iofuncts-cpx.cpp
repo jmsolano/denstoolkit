@@ -87,8 +87,8 @@ void WriteCPXFile(string cpxname,string wfname,CritPtNetWork &cp) {
    WriteCoordinatesRCPs(cpxfil,cp);
    WriteCoordinatesCCPs(cpxfil,cp);
    WriteConnectivityBCPs(cpxfil,cp);
-   if (cp.IKnowRGPs()) {WriteConnectivityRCPs(cpxfil,cp);}
-   if (cp.IKnowCGPs()) {WriteConnectivityCCPs(cpxfil,cp);}
+   WriteConnectivityRCPs(cpxfil,cp);
+   WriteConnectivityCCPs(cpxfil,cp);
    WriteLabelsACPs(cpxfil,cp);
    WriteLabelsBCPs(cpxfil,cp);
    WriteLabelsRCPs(cpxfil,cp);
@@ -96,16 +96,12 @@ void WriteCPXFile(string cpxname,string wfname,CritPtNetWork &cp) {
    WriteNumberOfBondPaths(cpxfil,cp);
    WriteNumberOfPointsPerBondPath(cpxfil,cp);
    WriteBondPathsCoordinates(cpxfil,cp);
-   if ( cp.IKnowRGPs() ) {
-      WriteNumberOfRingPaths(cpxfil,cp);
-      WriteNumberOfPointsPerRingPath(cpxfil,cp);
-      WriteRingPathsCoordinates(cpxfil,cp);
-   }
-   if ( cp.IKnowCGPs() ) {
-      WriteNumberOfCagePaths(cpxfil,cp);
-      WriteNumberOfPointsPerCagePath(cpxfil,cp);
-      WriteCagePathsCoordinates(cpxfil,cp);
-   }
+   WriteNumberOfRingPaths(cpxfil,cp);
+   WriteNumberOfPointsPerRingPath(cpxfil,cp);
+   WriteRingPathsCoordinates(cpxfil,cp);
+   WriteNumberOfCagePaths(cpxfil,cp);
+   WriteNumberOfPointsPerCagePath(cpxfil,cp);
+   WriteCagePathsCoordinates(cpxfil,cp);
    cpxfil.close();
    return;
 }
@@ -266,7 +262,8 @@ void WriteConnectivityBCPs(ofstream &ofil,CritPtNetWork &cp) {
 void WriteConnectivityRCPs(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
    if (!(cp.IKnowRCPs())) {
-      return;
+      ScreenUtils::DisplayWarningMessage("RCPConnectivity unknown!");
+      std::cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
    }
 #endif
    ofil << "#RCPConnectivity format:" << endl
@@ -288,7 +285,8 @@ void WriteConnectivityRCPs(ofstream &ofil,CritPtNetWork &cp) {
 void WriteConnectivityCCPs(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
    if (!(cp.IKnowCCPs())) {
-      return;
+      ScreenUtils::DisplayWarningMessage("CCPConnectivity unknown!");
+      std::cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
    }
 #endif
    ofil << "#CCPConnectivity format:" << endl
@@ -395,7 +393,8 @@ void WriteNumberOfBondPaths(ofstream &ofil,CritPtNetWork &cp) {
 void WriteNumberOfRingPaths(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
    if (!(cp.IKnowRGPs())) {
-      return;
+      ScreenUtils::DisplayWarningMessage("RGPs not known!");
+      std::cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
    }
 #endif
    string key="NumberOfRingPaths";
@@ -409,7 +408,8 @@ void WriteNumberOfRingPaths(ofstream &ofil,CritPtNetWork &cp) {
 void WriteNumberOfCagePaths(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
    if (!(cp.IKnowCGPs())) {
-      return;
+      ScreenUtils::DisplayWarningMessage("CGPs not known!");
+      std::cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
    }
 #endif
    string key="NumberOfCagePaths";
@@ -423,7 +423,8 @@ void WriteNumberOfCagePaths(ofstream &ofil,CritPtNetWork &cp) {
 void WriteNumberOfPointsPerBondPath(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
    if (!(cp.IKnowBGPs())) {
-      return;
+      ScreenUtils::DisplayWarningMessage("BGPs not known!");
+      std::cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
    }
 #endif
    string key="NumbersOfPointsPerBondPath";
@@ -441,7 +442,8 @@ void WriteNumberOfPointsPerBondPath(ofstream &ofil,CritPtNetWork &cp) {
 void WriteNumberOfPointsPerRingPath(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
    if (!(cp.IKnowBGPs())) {
-      return;
+      ScreenUtils::DisplayWarningMessage("RGPs not known!");
+      std::cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
    }
 #endif
    string key="NumbersOfPointsPerRingPath";
@@ -462,7 +464,8 @@ void WriteNumberOfPointsPerRingPath(ofstream &ofil,CritPtNetWork &cp) {
 void WriteNumberOfPointsPerCagePath(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
    if (!(cp.IKnowCGPs())) {
-      return;
+      ScreenUtils::DisplayWarningMessage("CGPs not known!");
+      std::cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
    }
 #endif
    string key="NumbersOfPointsPerCagePath";
@@ -483,7 +486,8 @@ void WriteNumberOfPointsPerCagePath(ofstream &ofil,CritPtNetWork &cp) {
 void WriteBondPathsCoordinates(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
    if (!(cp.IKnowBGPs())) {
-      return;
+      ScreenUtils::DisplayWarningMessage("BGPs not known!");
+      std::cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
    }
 #endif
    string mkey="BondPathsData";
@@ -514,7 +518,8 @@ void WriteBondPathsCoordinates(ofstream &ofil,CritPtNetWork &cp) {
 void WriteRingPathsCoordinates(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
    if (!(cp.IKnowRGPs())) {
-      return;
+      ScreenUtils::DisplayWarningMessage("RGPs not known!");
+      std::cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
    }
 #endif
    string mkey="RingPathsData";
@@ -549,7 +554,8 @@ void WriteRingPathsCoordinates(ofstream &ofil,CritPtNetWork &cp) {
 void WriteCagePathsCoordinates(ofstream &ofil,CritPtNetWork &cp) {
 #if DEBUG
    if (!(cp.IKnowCGPs())) {
-      return;
+      ScreenUtils::DisplayWarningMessage("CGPs not known!");
+      std::cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
    }
 #endif
    string mkey="CagePathsData";
