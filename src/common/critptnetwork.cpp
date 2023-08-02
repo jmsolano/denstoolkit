@@ -1998,13 +1998,11 @@ void CritPtNetWork::InvertOrderBGPPoints(int dim) {
    }
 }
 void CritPtNetWork::InvertOrderBGPPoints(int dim,double** (&arr)) {
-#if DEBUG
-   if (arr==NULL) {
+   if (arr==nullptr) {
       ScreenUtils::DisplayErrorMessage("The pointer for this array is null!!!");
       cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
       return;
    }
-#endif
    int numop=((dim+1)>>1);
    double tmp;
    for (int i=0; i<numop; i++) {
@@ -2895,7 +2893,7 @@ int CritPtNetWork::FindSingleRhoBondGradientPathRK5(int at1,int at2,double hstep
    for (int i=0; i<3; i++) {dist+=((arbgp[0][i]-wf->R[iacp1+i])\
          *(arbgp[0][i]-wf->R[iacp1+i]));}
    dist=sqrt(dist);
-   if ( dist>(2.0e0*stepSizeBGP) ) {
+   if ( dist>(2.0e0*hstep) ) {
       InvertOrderBGPPoints(count,arbgp);
    }
    return count;
