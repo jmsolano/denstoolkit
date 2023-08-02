@@ -2441,8 +2441,9 @@ bool CritPtNetWork::MakePOVFile(string pnam,POVRayConfiguration &pvp,int campos)
       pof << "union {" << endl;
       for (int ccpIdx=0; ccpIdx<nCCP; ++ccpIdx) {
          currRcpPos=0;
-         while ( conCCP[ccpIdx][1][currRcpPos]>0 ) {
+         while ( conCCP[ccpIdx][0][currRcpPos]>=0 ) {
             npts=conCCP[ccpIdx][1][currRcpPos];
+            if ( npts<2 ) { ++currRcpPos; continue; }
             HelpersPOVRay::WriteSphere(pof,1,RCGP[ccpIdx][currRcpPos][0][0],\
                   RCGP[ccpIdx][currRcpPos][0][1],\
                   RCGP[ccpIdx][currRcpPos][0][2],gprad,"ColorACGradPath");
@@ -2473,7 +2474,7 @@ bool CritPtNetWork::MakePOVFile(string pnam,POVRayConfiguration &pvp,int campos)
       pof << "union {" << endl;
       for (int ccpIdx=0; ccpIdx<nCCP; ++ccpIdx) {
          currRcpPos=0;
-         while ( conCCP[ccpIdx][1][currRcpPos]>0 ) {
+         while ( conCCP[ccpIdx][0][currRcpPos]>=0 ) {
             npts=conCCP[ccpIdx][1][currRcpPos];
             for ( int j=0 ; j<npts ; ++j ) {
                HelpersPOVRay::WriteSphere(pof,1,RCGP[ccpIdx][currRcpPos][j][0],\
@@ -2591,6 +2592,18 @@ void CritPtNetWork::CenterMolecule(void) {
             kp=conRCP[rcpIdx][1][j];
             for ( int k=0 ; k<kp ; ++k ) {
                for ( int l=0 ; l<3 ; ++l ) {RRGP[rcpIdx][j][k][l]-=trn[l];}
+            }
+         }
+      }
+   }
+   if ( iknowcgps ) {
+      int kn,kp;
+      for ( int ccpIdx=0 ; ccpIdx<nCCP ; ++ccpIdx ) {
+         kn=GetNofCagePathsOfCCP(ccpIdx);
+         for ( int j=0 ; j<kn ; ++j ) {
+            kp=conCCP[ccpIdx][1][j];
+            for ( int k=0 ; k<kp ; ++k ) {
+               for ( int l=0 ; l<3 ; ++l ) {RCGP[ccpIdx][j][k][l]-=trn[l];}
             }
          }
       }
@@ -2924,6 +2937,8 @@ int CritPtNetWork::FindSingleRhoRingGradientPathRK5(int rcpIdx,\
    bool imatrcp=WalkGradientPathRK5ToEndPoint(xb,xn,xr,xm,magd,hstep,\
          dima,arrgp,count,maxalllen,false /* uphilldir=false  */);
    if ( imatrcp ) {return count;}
+   //cout << "rcpIdx: " << rcpIdx << ", bcpGlobIdx: " << bcpGlobIdx \
+   //<< ", count: " << count << ", magd: " << magd << '\n';
    //if ( magd>maxBCPACPDist ) { return -1; }
    double ux[3],uy[3]; //,xm0mxr[3],uz[3];
    //for ( int i=0 ; i<3 ; ++i ) { xm0mxr[i]=xm[i]-xr[i]; }
@@ -3012,6 +3027,7 @@ int CritPtNetWork::FindSingleRhoRingGradientPathRK5(int rcpIdx,\
    if ( magV3(tmpv)<(5.0e0*hstep) ) {
       return count;
    } else {
+      //cout << "iter: " << iter << ", |tmpv|: " << magV3(tmpv) << endl;
       return -1;
    }
 }
@@ -3062,10 +3078,12 @@ int CritPtNetWork::FindSingleRhoCageGradientPathRK5(int ccpIdx,\
    imatccp=WalkGradientPathRK5ToEndPoint(xr,xn,xc,xm,magd,hstep,\
          dima,arrgp,count,maxalllen,false); //uphill=false
    if ( imatccp ) {return count;}
-   ScreenUtils::DisplayErrorMessage("Unknown error!");
-   //cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
-   //cout << "count: " << count << '\n';
-   //wf->DisplayAllFieldProperties(xn[0],xn[1],xn[2]);
+   if ( magd<0.5e0 ) {
+      ScreenUtils::DisplayErrorMessage("Unknown error!");
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+      cout << "count: " << count << ", magd: " << magd << ", maxalllen: " << maxalllen << '\n';
+      wf->DisplayAllFieldProperties(xn[0],xn[1],xn[2]);
+   }
 #if DEBUG
    cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
    wf->DisplayAllFieldProperties(xn[0],xn[1],xn[2]);
@@ -3124,13 +3142,13 @@ bool CritPtNetWork::WalkGradientPathRK5ToEndPoint(\
    }
    for ( int i=0 ; i<3 ; ++i ) {xm[i]=xmin[i];}
    dm=sqrt(dmin);
-   if ( imatend ) {
+   //if ( imatend ) {
       CopyRGP2Array(arrgp,count);
       npia=count;
-   } else {
-      CopyRGP2Array(arrgp,count);
-      npia=count;
-   }
+   //} else {
+      //CopyRGP2Array(arrgp,count);
+      //npia=count;
+   //}
    return imatend;
 }
 bool CritPtNetWork::SeekSingleRhoBCP(int ata,int atb,double (&x)[3]) {
@@ -3353,8 +3371,7 @@ void CritPtNetWork::ForceBCPConnectivity(int bcpIdx,int acpIdx1,int acpIdx2) {
 void CritPtNetWork::CorrectRCPConnectivity(void) {
    FindMaxBondDist();
    //double maxallwdd=1.414213562373095e0*maxBCPACPDist;
-   double maxallwdd=0.90*bn->maxBondDist;
-   //cout << "maxallwdd: " << maxallwdd << endl;
+   double maxallwdd=0.9*maxBondDist; //This must be CritPtNetWork::maxBondDist.
    double dd;
    int j,bcpIdx;
    for ( int i=0 ; i<nRCP ; ++i ) {
