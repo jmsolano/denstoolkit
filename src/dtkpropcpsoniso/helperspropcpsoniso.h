@@ -65,14 +65,14 @@ public:
          BondNetWork &bn,shared_ptr<MeshGrid> grid,vector<vector<double> > &sp,\
          const string &palname="none");
    static void ProjectGridOntoIsosurface(GaussWaveFunction &wf,shared_ptr<SymmetricSurfaceGrid> g,\
-         const char prop,const double iso);
+         const char prop,const double iso,const int vLvl=0);
    /** Looks for the isovalue along a line. The line passes through c and r0. c is
     * the reference point, and r0 is the first point at which the field is evaluated.
     * Subsequent points are ri=r0+ih(r0-c) (i=1,2,...).
     * This function assumes that the field values decrease as the point
     * moves away from r0 (along the direction r0-c).  */
    static double SearchValueAlongLineDescending(const vector<double> &c,const vector<double> &r0,\
-         GaussWaveFunction &wf,vector<double> &ri,const char prop,const double iso);
+         GaussWaveFunction &wf,vector<double> &ri,const char prop,const double iso,const int vLvl=0);
    /** This function searches the critical points (local minima and local maxima)
     * using the centroid of each face (projected onto the isosurface) and
     * the vertices of each face to determine whether v(rctd) is a critical point.

@@ -115,14 +115,15 @@ bool HelpersPropCPsOnIso::HaveIncompatibleOptions(int argc,char *argv[],OptionFl
    return false;
 }
 void HelpersPropCPsOnIso::ProjectGridOntoIsosurface(GaussWaveFunction &wf,\
-      shared_ptr<SymmetricSurfaceGrid> g,const char prop,const double iso) {
+      shared_ptr<SymmetricSurfaceGrid> g,const char prop,const double iso,\
+      const int vLvl) {
    double f;
    vector<double> r(3);
    vector<size_t> v2erase;
    v2erase.clear();
    for ( size_t i=0 ; i<g->vertex.size() ; ++i ) {
       //cout << "(" << wf.EvalDensity(g->vertex[i][0],g->vertex[i][1],g->vertex[i][2]) << ")";
-      f=SearchValueAlongLineDescending(g->center,g->vertex[i],wf,r,prop,iso);
+      f=SearchValueAlongLineDescending(g->center,g->vertex[i],wf,r,prop,iso,vLvl);
       if ( f>0.0e0 ) {
          g->vertex[i][0]=r[0]; g->vertex[i][1]=r[1]; g->vertex[i][2]=r[2];
       } else {
@@ -130,9 +131,9 @@ void HelpersPropCPsOnIso::ProjectGridOntoIsosurface(GaussWaveFunction &wf,\
          v2erase.push_back(i);
       }
    }
-   for ( size_t i=0 ; i<v2erase.size() ; ++i ) {
-      cout <<  v2erase[i] << '\n';
-   }
+   //for ( size_t i=0 ; i<v2erase.size() ; ++i ) {
+   //   cout <<  v2erase[i]  << '\n';
+   //}
    g->RemoveFacesUsingVertices(v2erase);
    g->ComputeCentroids();
    for ( size_t i=0 ; i<g->centroid.size() ; ++i ) {
@@ -143,7 +144,8 @@ void HelpersPropCPsOnIso::ProjectGridOntoIsosurface(GaussWaveFunction &wf,\
    }
 }
 double HelpersPropCPsOnIso::SearchValueAlongLineDescending(const vector<double> &c,\
-      const vector<double> &r0,GaussWaveFunction &wf,vector<double> &ri,const char prop,const double iso) {
+      const vector<double> &r0,GaussWaveFunction &wf,vector<double> &ri,\
+      const char prop,const double iso,const int vLvl) {
    double (GaussWaveFunction::* f)(double,double,double);
    switch ( prop ) {
       case 'd' :
@@ -176,7 +178,7 @@ double HelpersPropCPsOnIso::SearchValueAlongLineDescending(const vector<double> 
       dv=vr-vl;
       ++count;
    }
-   if ( dv>0.0e0 ) {
+   if ( dv>0.0e0 && vLvl>0 ) {
       ScreenUtils::DisplayWarningMessage("dv>0!");
       cout << "After while(count=" << count << "): vl=" << vl << ", vr="
            << vr << '\n';
@@ -467,7 +469,7 @@ vector<vector<double> > HelpersPropCPsOnIso::ComputeTextures(shared_ptr<MeshGrid
       if ( tmp<vmin ) { vmin=tmp; }
       if ( tmp>vmax ) { vmax=tmp; }
    }
-   cout << "MinValOnSurf: " << vmin << " a.u. " << (vmin*627.5)
+   cout << "\nMinValOnSurf: " << vmin << " a.u. " << (vmin*627.5)
         << " kCal/mol " << (vmin*2625.5) << " kJ/mol\n";
    cout << "MaxValOnSurf: " << vmax << " a.u. " << (vmax*627.5)
         << " kCal/mol " << (vmax*2625.5) << " kJ/mol\n";
@@ -506,6 +508,9 @@ shared_ptr<MeshGrid> HelpersPropCPsOnIso::BuildCapMesh(int argc,\
    cout << "xc: " << xc[0] << ' ' << xc[1] << ' ' << xc[2] << '\n';
    cout << "xd: " << xd[0] << ' ' << xd[1] << ' ' << xd[2] << '\n';
    shared_ptr<SymmetricSurfaceGrid> grid=shared_ptr<SymmetricSurfaceGrid>(new SymmetricSurfaceGrid);
+   int vlvl=0;
+   if ( opt.verboselevel ) { vlvl=std::stoi(string(argv[opt.verboselevel])); }
+   if ( vlvl>0 ) { grid->Verbose(); } else { grid->Quiet(); }
    int refCapMeshLevel=4;
    if ( opt.refinemesh ) {
       refCapMeshLevel=std::stoi(string(argv[opt.refinemesh]));
@@ -524,7 +529,7 @@ shared_ptr<MeshGrid> HelpersPropCPsOnIso::BuildCapMesh(int argc,\
 
    /* Looking for partial isosurface  */
    cout << "Computing cap isosurface...\n";
-   HelpersPropCPsOnIso::ProjectGridOntoIsosurface(wf,grid,isoprop,isovalue);
+   HelpersPropCPsOnIso::ProjectGridOntoIsosurface(wf,grid,isoprop,isovalue,vlvl);
    cout << "Done\n";
    return grid;
 }

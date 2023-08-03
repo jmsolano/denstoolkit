@@ -136,8 +136,10 @@ int main (int argc, char ** argv) {
    /* Computing critical points on the isosurface.  */
 
    cout << "Seeking critical points on" << (options.isofromcube? " " : " cap " ) << "isosurface...\n";
-   cout << "The isosurface has " << grid->vertex.size() << " vertices and "
-        << grid->face.size() << " faces." << '\n';
+   if ( verboseLevel>0 ) {
+      cout << "The isosurface has " << grid->vertex.size() << " vertices and "
+           << grid->face.size() << " faces." << '\n';
+   }
    vector<vector<double> > rcp;
    vector<double> vcp;
    vector<size_t> poscp;

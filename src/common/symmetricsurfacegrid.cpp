@@ -390,11 +390,13 @@ void SymmetricSurfaceGrid::RemoveFacesUsingVertices(const vector<size_t> &v2r) {
          for ( size_t k=0 ; k<3 ; ++k ) { kf[count][k]=face[i][k]; }
          ++count;
       } else {
-         cout << "Removing face " << i << ':' << '\n';
-         for ( size_t k=0 ; k<3 ; ++k ) {
-            cout << face[i][k] << ' ';
+         if ( verbose ) {
+            cout << "Removing face " << i << ':' << '\n';
+            for ( size_t k=0 ; k<3 ; ++k ) {
+               cout << face[i][k] << ' ';
+            }
+            cout << '\n';
          }
-         cout << '\n';
       }
    }
    ResizeMatrix(face,count,3);

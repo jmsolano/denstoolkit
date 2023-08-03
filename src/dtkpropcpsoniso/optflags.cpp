@@ -311,7 +311,11 @@ void printHelpMenu(int &argc, char** &argv) {
         << "The vector r(c)-r(d) is used to determine the orientation of the\n"
         << "isosurface cap, which is located in the opposite direction of r(d),\n"
         << "relative to r(c), i.e. the cap points in the same direction as\n"
-        << "r(c)-r(d):\n";
+        << "r(c)-r(d).\n"
+        << "E.g. 1: if the molecule is a carboxylic acid, the atom c is a hydrogen,\n"
+        << "and atom d is oxygen.\n"
+        << "E.g. 2: if the molecule is CH3Cl and you wish to study the exterior\n"
+        << "cap around the Cl, then the atom c is Cl and atom d is C.\n";
    ScreenUtils::PrintScrCharLine('-');
    cout << "                                     _" << '\n';
    cout << "                                       -" << '\n';

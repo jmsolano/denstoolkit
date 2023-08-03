@@ -239,9 +239,11 @@ void MeshGrid::FindAllVertexNeighbours() {
       //vneigh2v[edge[i][0]].push_back(i);
       //vneigh2v[edge[i][1]].push_back(i);
    }
-   cout << "After finding neighbours, there are " << vertex.size()
-        << " vertices, " << edge.size() << " edges, and " << face.size()
-        << " faces. Euler characteristic: " << (vertex.size()-edge.size()+face.size()) << '\n';
+   if ( verbose ) {
+      cout << "After finding neighbours, there are " << vertex.size()
+           << " vertices, " << edge.size() << " edges, and " << face.size()
+           << " faces. Euler characteristic: " << (vertex.size()-edge.size()+face.size()) << '\n';
+   }
    /*
    for ( size_t i=0 ; i<edge.size() ; ++i ) {
       cout << "Edge (" << i << "): ";
