@@ -612,7 +612,11 @@ void DTKGLWidget::drawText(QVector3D r, QString lbl,int dx,int dy) {
    glMatrixMode(GL_PROJECTION);
    glPushMatrix();
    glLoadIdentity();
-   gluOrtho2D(0.0, float(this->width()), 0.0, float(this->height()));
+   GLfloat pr=this->devicePixelRatio();
+   GLfloat ww=(this->width())*pr;
+   GLfloat hh=(this->height())*pr;
+   //gluOrtho2D(0.0, 2.0*float(this->width()), 0.0, 2.0*float(this->height()));
+   gluOrtho2D(0.0, ww, 0.0, hh);
 
    glMatrixMode(GL_MODELVIEW);
    glPushMatrix();
@@ -622,9 +626,14 @@ void DTKGLWidget::drawText(QVector3D r, QString lbl,int dx,int dy) {
    glColor3f(1.0, 1.0, 1.0); // Green
    glRasterPos2i(GLint(wX),GLint(wY));
    string s=lbl.toStdString();
-   void * font = GLUT_BITMAP_HELVETICA_12;
-   for (string::iterator i = s.begin(); i != s.end(); ++i)
-   {
+   void * font =nullptr;
+   if ( fabs(pr-2.0)<0.01 ) {
+      //font = GLUT_BITMAP_HELVETICA_18;
+      font = GLUT_BITMAP_TIMES_ROMAN_24;
+   } else {
+      font = GLUT_BITMAP_HELVETICA_12;
+   }
+   for (string::iterator i = s.begin(); i != s.end(); ++i) {
        glutBitmapCharacter(font, *i);
    }
    glEnable(GL_LIGHTING);
