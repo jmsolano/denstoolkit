@@ -114,6 +114,7 @@ void mkFileNames(char ** (&argv), OptionFlags &opts, string &i_fn, string &o_fn,
          prop='D';
       }
       if ( prop=='G' ) {plbl+="Grad";}
+      if ( prop=='L' ) { plbl+="Lap"; }
       plbl+="DM1";
       o_fn.insert(pos,plbl);
       d_fn.insert(pos,plbl);

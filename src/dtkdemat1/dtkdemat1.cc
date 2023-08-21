@@ -252,7 +252,9 @@ int main (int argc, char ** argv) {
       coordinates of such min/max. The same for the global min/max.
    */
    
-   cout << (string("Evaluating ")+string(prop=='G' ? "Grad" : "the ")+string("MD1 "));
+   string propstr="the ";
+   if ( prop=='G' ) { propstr="Grad"; } else if ( prop=='L' ) { propstr="Lap"; }
+   cout << (string("Evaluating ")+propstr+string("MD1 "));
    if (options.uponbp) {cout << "upon the bond path... " << endl;}
    if (options.uponsl) {cout << "upon the straight line that joins the selected atoms..." << endl;}
    cout << "Progress: " << endl;
@@ -278,6 +280,8 @@ int main (int argc, char ** argv) {
          if (options.centredats) { p2=-0.5e0*lenline; } else { p2=0.0e0; }
          if ( prop=='G' ) {
             gwf.EvalGradDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2],md1tmp,gg,gp);
+         } else if ( prop=='L' ) {
+            md1tmp=gwf.EvalLapDensityMatrix1(x1,x2);
          } else {
             md1tmp=gwf.EvalDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2]);
          }
@@ -309,6 +313,8 @@ int main (int argc, char ** argv) {
             if ( magproj<ggradmagmin ) {ggradmagmin=magproj;}
             for ( int ss=0 ; ss<2 ; ss++ ) {ofile << "\t" << proj[ss];}
             ofile << endl;
+         } else if ( prop=='L' ) {
+           ofile << endl;
          } else {
             ofile << endl;
          }
@@ -316,6 +322,8 @@ int main (int argc, char ** argv) {
             o1dfile << p1 << " " << md1tmp;
             if ( prop=='G' ) {
                o1dfile << endl;
+            } else if ( prop=='L' ) {
+              o1dfile << endl;
             } else {
                o1dfile << endl;
             }
@@ -330,6 +338,8 @@ int main (int argc, char ** argv) {
             p2+=sqrt(dist);
             if ( prop=='G' ) {
                gwf.EvalGradDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2],md1tmp,gg,gp);
+            } else if ( prop=='L' ) {
+               md1tmp=gwf.EvalLapDensityMatrix1(x1,x2);
             } else {
                md1tmp=gwf.EvalDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2]);
             }
@@ -341,6 +351,8 @@ int main (int argc, char ** argv) {
                o1dfile << p1 << " " << md1tmp;
                if ( prop == 'G' ) {
                   o1dfile << endl;
+               } else if ( prop=='L' ) {
+                 o1dfile << endl;
                } else {
                   o1dfile << endl;
                }
@@ -366,6 +378,8 @@ int main (int argc, char ** argv) {
                if ( magproj<ggradmagmin ) {ggradmagmin=magproj;}
                for ( int ss=0 ; ss<2 ; ss++ ) {ofile << "\t" << proj[ss];}
                ofile << endl;
+            } else if ( prop=='L' ) {
+              ofile << endl;
             } else {
                ofile << endl;
             }
@@ -373,7 +387,9 @@ int main (int argc, char ** argv) {
                o1sfile << p1 << " " << md1tmp;
                if ( prop=='G' ) {
                   o1sfile << endl;
-               } else {
+               } else if ( prop=='L' ) {
+                 o1sfile << endl;
+               } {
                   o1sfile << endl;
                }
             }
@@ -418,6 +434,8 @@ int main (int argc, char ** argv) {
          if (options.centredats) { p2=-0.5e0*lenline; } else { p2=0.0e0; }
          if ( prop=='G' ) {
             gwf.EvalGradDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2],md1tmp,gg,gp);
+         } else if ( prop=='L' ) {
+            md1tmp=gwf.EvalLapDensityMatrix1(x1,x2);
          } else {
             md1tmp=gwf.EvalDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2]);
          }
@@ -449,6 +467,8 @@ int main (int argc, char ** argv) {
             if ( magproj<ggradmagmin ) {ggradmagmin=magproj;}
             for ( int ss=0 ; ss<2 ; ss++ ) {ofile << "\t" << proj[ss];}
             ofile << endl;
+         } else if ( prop=='L' ) {
+           ofile << endl;
          } else {
             ofile << endl;
          }
@@ -456,6 +476,8 @@ int main (int argc, char ** argv) {
             o1dfile << p1 << " " << md1tmp;
             if ( prop=='G' ) {
                o1dfile << endl;
+            } else if ( prop=='L' ) {
+              o1dfile << endl;
             } else {
                o1dfile << endl;
             }
@@ -465,6 +487,8 @@ int main (int argc, char ** argv) {
             p2+=dl;
             if ( prop=='G' ) {
                gwf.EvalGradDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2],md1tmp,gg,gp);
+            } else if ( prop=='L' ) {
+               md1tmp=gwf.EvalLapDensityMatrix1(x1,x2);
             } else {
                md1tmp=gwf.EvalDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2]);
             }
@@ -476,6 +500,8 @@ int main (int argc, char ** argv) {
                o1dfile << p1 << " " << md1tmp;
                if ( prop == 'G' ) {
                   o1dfile << endl;
+               } else if ( prop=='L' ) {
+                 o1dfile << endl;
                } else {
                   o1dfile << endl;
                }
@@ -495,6 +521,8 @@ int main (int argc, char ** argv) {
                o1sfile << p1 << " " << md1tmp;
                if ( prop=='G' ) {
                   o1sfile << endl;
+               } else if ( prop=='L' ) {
+                 o1sfile << endl;
                } else {
                   o1sfile << endl;
                }
@@ -509,6 +537,8 @@ int main (int argc, char ** argv) {
                if ( magproj<ggradmagmin ) {ggradmagmin=magproj;}
                for ( int ss=0 ; ss<2 ; ss++ ) {ofile << "\t" << proj[ss];}
                ofile << endl;
+            } else if ( prop=='L' ) {
+              ofile << endl;
             } else {
                ofile << endl;
             }
@@ -680,6 +710,7 @@ int main (int argc, char ** argv) {
    string line,tmpnam;
    double minval,maxval;
    double range=fabs(md1dmax-md1lmin);
+   if ( prop=='L' ) { range=10.0e0; }
 #if DEBUG
    if ( md1lmin<0.0e0 ) {
       ScreenUtils::DisplayWarningMessage(string("md1lmin: "+StringTools::GetStringFromReal(md1lmin)));
@@ -691,6 +722,10 @@ int main (int argc, char ** argv) {
 #endif
    minval=round(110*gmd1min)/100.0e0;
    maxval=round(110*(md1lmin+range))/100.0e0;
+   if ( prop=='L' ) {
+      minval=-5.0e0;
+      maxval=5.0e0;
+   }
 #if DEBUG
    cout << "minval: " << minval << endl;
    cout << "maxval: " << maxval << endl;

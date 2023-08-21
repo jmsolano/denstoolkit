@@ -4611,6 +4611,15 @@ void GaussWaveFunction::EvalHessDensityMatrix1(double (&xx)[3],double (&xxp)[3],
    }
    return;
 }
+double GaussWaveFunction::EvalLapDensityMatrix1(double (&xx)[3],double (&xxp)[3]) {
+   double gam,gxx[3],gxp[3],hh[3][3],hph[3][3],hp[3][3];
+   EvalHessDensityMatrix1(xx,xxp,gam,gxx,gxp,hh,hph,hp);
+   double res=hh[0][0]+hh[1][1]+hh[2][2];
+   res+=hp[0][0];
+   res+=hp[1][1];
+   res+=hp[2][2];
+   return res;
+}
 void GaussWaveFunction::EvalHermiteCoefs(int (&aia)[3],int (&aib)[3],double &alpab,
       double (&ra)[3],double (&rb)[3],
       double (&rp)[3],

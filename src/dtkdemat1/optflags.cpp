@@ -256,7 +256,8 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "  -p prop   \tChoose the property to be computed. prop is a character," << endl
         << "            \t  which can be (D is the default value):" << endl
         << "            \t      D (Density Matrix of order 1)" << endl
-        << "            \t      G (Gradient of the density Matrix of order 1)" << endl;
+        << "            \t      G (Gradient of the density Matrix of order 1)" << endl
+        << "            \t      L (Laplacian of the density Matrix of order1)" << endl;
    cout << "  -o outname\tSet the output file name." << endl
         << "            \t  (If not given the program will create one out of" << endl
         << "            \t  the input name; if given, the tsv, gnp and pdf files will" << endl

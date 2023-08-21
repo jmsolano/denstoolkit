@@ -489,10 +489,16 @@ public:
          double xp,double yp,double zp,\
          double &gamm,double (&gg)[3],double (&gp)[3]);
    /** This function computes the Hessian of the Density Matrix of Order 1 (second
-    * derivatives), with respect to the primed, non-primed and combined cases.  */
+    * derivatives), with respect to the primed, non-primed and combined cases.
+    * xx is the non primed evaluation point, xxp is the primed evaluation point,
+    * gamm is Gamma, gg is GradGamma, gp is Grad'gamma, hh is \$f\partial_i\partial_jGamma\$f,
+    * hph is \$f\partial_i\{partial'}_jGamma\$f, and hp is
+    * \$f{\partial'}_i{\partial'}_jGamma\$f.
+    * Check DeMat1CriticalPointNetworkBP::AssignHessian6D for more details. */
    void EvalHessDensityMatrix1(double (&xx)[3],double (&xxp)[3],\
          double &gamm,double (&gg)[3],double (&gp)[3],\
          double (&hh)[3][3],double (&hph)[3][3],double (&hp)[3][3]);
+   double EvalLapDensityMatrix1(double (&xx)[3],double (&xxp)[3]);
    /** This function evaluates the magnitude of the grandient of LOL.  */
    double EvalMagGradLOL(double x,double y,double z);
    /** This function returns the Molecular Electrostatic Potential (MEP) at the

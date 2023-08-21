@@ -248,7 +248,7 @@ void DeMat1CriticalPointNetworkSL::GetACPStep(double (&g)[2],double (&hess)[2][2
    h3[0][2]=h3[2][0]=F[0];
    h3[1][2]=h3[2][1]=F[1];
    EigenDecompositionJAMA::EigenDecomposition3(h3, m3, v3);
-   double lp=v3[2];
+   double lp=v3[2],dd=0.0e0;
 #if DEBUG
    if (lp<=0.0e0) {
       ScreenUtils::DisplayWarningMessage(string("lp<=0!: "+StringTools::GetStringFromReal(lp)));
@@ -260,13 +260,14 @@ void DeMat1CriticalPointNetworkSL::GetACPStep(double (&g)[2],double (&hess)[2][2
    if ( fabs(lp)<DEMAT1EPSEIGENVALUECPSEARCH ) {lp=DEMAT1EPSEIGENVALUECPSEARCH;}
    hh[1]=hh[0]=0.00000e0;
    for (int j=0; j<2; j++) {
-      hh[0]-=eive[0][j]*F[j]/(b[j]-lp);
-      hh[1]-=eive[1][j]*F[j]/(b[j]-lp);
+      dd=b[j]-lp; if ( fabs(dd) < 1.0e-15 ) { dd+=1.0e-15; }
+      hh[0]-=eive[0][j]*F[j]/dd;
+      hh[1]-=eive[1][j]*F[j]/dd;
    }
-   for (int i=0; i<2; i++) {
-      if (fabs(hh[i])>DEMAT1MAXSTEPSIZEACPRHOSEARCH) {
-         hh[i]=SIGNF(hh[i])*DEMAT1MAXSTEPSIZEACPRHOSEARCH;
-      }
+   dd=sqrt(hh[0]*hh[0]+hh[1]*hh[1]);
+   if ( dd>DEMAT1MAXSTEPSIZEACPRHOSEARCH ) {
+      hh[0]*=(DEMAT1MAXSTEPSIZEACPRHOSEARCH/dd);
+      hh[1]*=(DEMAT1MAXSTEPSIZEACPRHOSEARCH/dd);
    }
    sig=0;
    for (int i=0; i<2; i++) {
@@ -308,15 +309,18 @@ void DeMat1CriticalPointNetworkSL::GetSCPStep(double (&g)[2],double (&hess)[2][2
 #endif
    if ( fabs(lp)<DEMAT1EPSEIGENVALUECPSEARCH ) {lp=DEMAT1EPSEIGENVALUECPSEARCH;}
    if ( fabs(ln)<DEMAT1EPSEIGENVALUECPSEARCH ) {ln=DEMAT1EPSEIGENVALUECPSEARCH;}
+   double dd=0.0e0;
    hh[1]=hh[0]=0.00000e0;
    for (int j=0; j<2; j++) {
-      hh[0]-=eive[0][j]*F[j]/(b[j]-lp);
-      hh[1]-=eive[1][j]*F[j]/(b[j]-ln);
+      dd=b[j]-lp; if ( fabs(dd) < 1.0e-15 ) { dd+=1.0e-15; }
+      hh[0]-=eive[0][j]*F[j]/dd;
+      dd=b[j]-ln; if ( fabs(dd) < 1.0e-15 ) { dd+=1.0e-15; }
+      hh[1]-=eive[1][j]*F[j]/dd;
    }
-   for (int i=0; i<2; i++) {
-      if (fabs(hh[i])>DEMAT1MAXSTEPSIZEACPRHOSEARCH) {
-         hh[i]=SIGNF(hh[i])*DEMAT1MAXSTEPSIZEACPRHOSEARCH;
-      }
+   dd=sqrt(hh[0]*hh[0]+hh[1]*hh[1]);
+   if ( dd>DEMAT1MAXSTEPSIZESCPRHOSEARCH ) {
+      hh[0]*=(DEMAT1MAXSTEPSIZESCPRHOSEARCH/dd);
+      hh[1]*=(DEMAT1MAXSTEPSIZESCPRHOSEARCH/dd);
    }
    sig=0;
    for (int i=0; i<2; i++) {
@@ -360,15 +364,17 @@ void DeMat1CriticalPointNetworkSL::GetRCPStep(double (&g)[2],double (&hess)[2][2
    }
 #endif
    if ( fabs(ln)<DEMAT1EPSEIGENVALUECPSEARCH ) {ln=DEMAT1EPSEIGENVALUECPSEARCH;}
+   double dd=0.0e0;
    hh[1]=hh[0]=0.00000e0;
    for (int j=0; j<2; j++) {
-      hh[0]-=eive[0][j]*F[j]/(b[j]-ln);
-      hh[1]-=eive[1][j]*F[j]/(b[j]-ln);
+      dd=b[j]-ln; if ( fabs(dd) < 1.0e-15 ) { dd+=1.0e-15; }
+      hh[0]-=eive[0][j]*F[j]/dd;
+      hh[1]-=eive[1][j]*F[j]/dd;
    }
-   for (int i=0; i<2; i++) {
-      if (fabs(hh[i])>DEMAT1MAXSTEPSIZERCPRHOSEARCH) {
-         hh[i]=SIGNF(hh[i])*DEMAT1MAXSTEPSIZERCPRHOSEARCH;
-      }
+   dd=sqrt(hh[0]*hh[0]+hh[1]*hh[1]);
+   if ( dd>DEMAT1MAXSTEPSIZERCPRHOSEARCH ) {
+      hh[0]*=(DEMAT1MAXSTEPSIZERCPRHOSEARCH/dd);
+      hh[1]*=(DEMAT1MAXSTEPSIZERCPRHOSEARCH/dd);
    }
    sig=0;
    for (int i=0; i<2; i++) {
