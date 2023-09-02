@@ -134,7 +134,8 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                break;
             case 'I' :
                flags.isoprop=(++i);
-               if ( (i+1)>=argc ) { printErrorMsg(argv,'I'); }
+               flags.setisovalue=(++i);
+               if ( (i)>=argc ) { printErrorMsg(argv,'I'); }
                ++i;
                break;
             case 'k' :
@@ -211,14 +212,14 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << endl;
    ScreenUtils::CenterString("This program searches for the critical points of a field");
    ScreenUtils::CenterString("evaluated at an isosurface.");
-   ScreenUtils::CenterString("Both property evaluated and the isosurface can be");
+   ScreenUtils::CenterString("Both the property evaluated and the isosurface can be");
    ScreenUtils::CenterString("any of the fields implemented in DTK.");
    ScreenUtils::CenterString("The isosurface can be constructed in two forms.");
    ScreenUtils::CenterString("a) The isosurface is evaluated around a single atom");
    ScreenUtils::CenterString("chosen through options (see below), and only on");
    ScreenUtils::CenterString("a cap pointing backwards another point; this point");
    ScreenUtils::CenterString("is selected through several options, below.");
-   ScreenUtils::CenterString("b) The isosurface is extracted from a guassian cube,");
+   ScreenUtils::CenterString("b) The isosurface is extracted from a gaussian cube,");
    ScreenUtils::CenterString("which can be obtained with dtkcube. In this variant,");
    ScreenUtils::CenterString("the isosurface is not partitioned, but computed through");
    ScreenUtils::CenterString("the complete volume contained in the cube file.");
@@ -254,12 +255,12 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  prop, which is a char that can be any of the listed\n"
         << "            \t  fields enumerated below for option -I." << '\n'
         << "            \t  (This option is included for future implementations,\n"
-        << "            \t  and in this version, only rho[d] is implemented).\n";
+        << "            \t  and in this version, only MEP[V] is implemented).\n";
    cout << "  -I prop v \tSets the field to compute the isosurface to be prop,\n"
         << "            \t  and the isosurface value to be v. prop is a char,\n"
         << "            \t  which can be (this is valid for options -I and -p)\n"
         << "            \t  (This option is included for future implementations,\n"
-        << "            \t  and in this version, only MEP[V] is implemented):\n"
+        << "            \t  and in this version, only rho[d] is implemented):\n"
         << "         \t\td (Density)\n"
         << "         \t\tg (Magnitude of the Gradient of the Density)\n"
         << "         \t\tl (Laplacian of density)\n"
@@ -312,10 +313,16 @@ void printHelpMenu(int &argc, char** &argv) {
         << "isosurface cap, which is located in the opposite direction of r(d),\n"
         << "relative to r(c), i.e. the cap points in the same direction as\n"
         << "r(c)-r(d).\n"
-        << "E.g. 1: if the molecule is a carboxylic acid, the atom c is a hydrogen,\n"
-        << "and atom d is oxygen.\n"
-        << "E.g. 2: if the molecule is CH3Cl and you wish to study the exterior\n"
-        << "cap around the Cl, then the atom c is Cl and atom d is C.\n";
+        << "Example1: if the molecule is a carboxylic acid, the atom c is the -COOH\n"
+        << "  hydrogen, and atom d is the -OH oxygen (of the -COOH group).\n"
+        << "Example2: if the molecule is CH3Cl and you wish to study the exterior\n"
+        << "  cap around the Cl, then the atom c is Cl and atom d is C.\n"
+        << "Example3: If the molecule is CH3NH2 and you wish to analize the\n"
+        << "  nitrogen electron pair, then the atom c is N, and the cap can\n"
+        << "  be oriented through option '-C ha hb ca', where ha and hb are\n"
+        << "  the numbers that identify the -NH2 hydrogens and ca is the number\n"
+        << "  that identify C (according to the atoms order of appearance in\n"
+        << "  the wfx/wfn file).\n";
    ScreenUtils::PrintScrCharLine('-');
    cout << "                                     _" << '\n';
    cout << "                                       -" << '\n';

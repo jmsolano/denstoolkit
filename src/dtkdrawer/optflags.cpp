@@ -203,27 +203,34 @@ void printHelpMenu(int &argc, char** &argv) {
    ScreenUtils::SetScrBoldFont();
    cout << "\nUsage:\n\n\t" << progname << " inputmolecule [option [value(s)]] ... [option [value(s)]]\n\n";
    ScreenUtils::SetScrNormalFont();
-   cout << "Where inputmolecule is the input file name, and options can be:\n\n";
+   cout << "Where inputmolecule is the input file name. Valid input formats:\n"
+        << "            \twfx (draw the molecule)\n"
+        << "            \twfn (draw the molecule)\n"
+        << "            \txyz (draw the molecule)\n"
+        << "            \tcpx (draw the molecule, critical points, and\n"
+        << "            \t      gradient paths)\n";
+   cout << "Options can be:\n\n";
    cout << "  -a        \tDraw transparent spheres around each nucleus." << '\n';
    cout << "  -C        \tDraw bonds as cylinders." << '\n';
-   cout << "  -c  cpt   \tSelects the Critical points to include (by default,\n"
-        << "            \t  all CPs are included. cpt is a series\n"
+   cout << "  -c  cpt   \tSelect the Critical points to include (cpx files only;\n"
+        << "            \t  by default, all CPs are included). cpt is a series\n"
         << "            \t  of letters that can be:\n"
         << "            \t\ta: include ACPs\n"
         << "            \t\tb: include BCPs\n"
         << "            \t\tr: include RCPs\n"
         << "            \t\tc: include CCPs\n" << '\n';
-   cout << "  -g  gpt   \tSelects the Gradient paths to include (by default,\n"
-        << "            \t  all GPs are included. gpt is a series of letters\n"
+   cout << "  -g  gpt   \tSelect the Gradient paths to include (cpx files only;\n"
+        << "            \t  by default, all GPs are included).\n"
+        << "            \t  gpt is a series of letters\n"
         << "            \t  that can be:\n"
         << "            \t\tb: include BGPs\n"
         << "            \t\tr: include RGPs\n"
         << "            \t\tc: include CGPs\n" << '\n';
-   cout << "  -o outname\tSets the output file name.\n"
+   cout << "  -o outname\tSet the output file name.\n"
         << "            \t  (If not given the program will create one out of\n"
         << "            \t  the input name; if given, the gnp file and the pdf will\n"
         << "            \t  use this name as well --but different extension--)." << '\n';
-   cout << "  -O a b c  \tOrients the molecule using three atoms (indices: a, b, c\n"
+   cout << "  -O a b c  \tOrient the molecule using three atoms (indices: a, b, c\n"
         << "            \t according to the molecule's input geometry). The order is\n"
         << "            \t  important, as the align vectors are defined as follows\n"
         << "            \t  (x, y, and z are, here, the vectors left-right,\n"
@@ -231,24 +238,24 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  x=(c-b), y=a-dotProduct(c,(b-a)), and z=crossproduct(x,y).\n"
         << "            \t  The atoms will be placed in the screen plane, and they will\n"
         << "            \t  look as in scheme 1, below.\n";
-   cout << "  -s        \tSets spacefilling mode. This mode activates the spacefilling\n"
+   cout << "  -s        \tSet spacefilling mode. This mode activates the spacefilling\n"
         << "            \t  view of the atoms (uses VdW atomic radius to draw the atoms)." << '\n';
-   cout << "  -T        \tDraws the gradient paths as tubes (as opposed to as a series\n"
+   cout << "  -T        \tDraw the gradient paths as tubes (as opposed to as a series\n"
         << "            \t  of small spheres." << '\n';
-   cout << "  -v verbLev\tSets the verbose level to be verboseLevel. The greater\n" 
+   cout << "  -v verbLev\tSet the verbose level to be verboseLevel. The greater\n" 
         << "            \t  verbLev is, the greater the information displayed on the\n"
         << "            \t  screen. verboseLevel=0 minimizes the information."  << '\n';
-   cout << "  -V        \tDisplays the version of this program." << endl;
-   cout << "  -x alpha  \tSets the angle GNUPlotAngle1=alpha (in povray file)." << '\n';
-   cout << "  -y beta   \tSets the angle YAngle=beta (in povray file)." << '\n';
-   cout << "  -z gamma  \tSets the angle GNUPlotAngle2=gamma (in povray file)." << '\n';
-   cout << "  -Z zmfact \tSets the zoom factor to be zmfact. This will alter the camera\n"
+   cout << "  -V        \tDisplay the version of this program." << endl;
+   cout << "  -x alpha  \tSet the angle GNUPlotAngle1=alpha (in povray file)." << '\n';
+   cout << "  -y beta   \tSet the angle YAngle=beta (in povray file)." << '\n';
+   cout << "  -z gamma  \tSet the angle GNUPlotAngle2=gamma (in povray file)." << '\n';
+   cout << "  -Z zmfact \tSet the zoom factor to be zmfact. This will alter the camera\n"
         << "            \t  position by a factor zmfact." << '\n';
    cout << "  -h     \tDisplay the help menu.\n\n";
    //-------------------------------------------------------------------------------------
    cout << "  --help    \t\tSame as -h" << endl;
    cout << "  --version \t\tSame as -V" << endl;
-   cout << "  --no-png  \t\tPrecludes the png rendering; povray will not be called." << endl;
+   cout << "  --no-png  \t\tPreclude the png rendering; povray will not be called." << endl;
    //-------------------------------------------------------------------------------------
 #if _HAVE_GNUPLOT_
    ScreenUtils::PrintScrStarLine();
