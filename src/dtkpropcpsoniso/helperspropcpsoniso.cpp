@@ -93,7 +93,7 @@ void HelpersPropCPsOnIso::GetCenterIndexAndVectors( char *argv[],\
       int a2=std::stoi(string(argv[options.setdirat3+1]))-1;
       int a3=std::stoi(string(argv[options.setdirat3+2]))-1;
       for ( int i=0 ; i<3 ; ++i ) {
-         xd[i]=(bn.R[cat][i]-(bn.R[a1][i]+bn.R[a2][i])+bn.R[a3][i])/3.0e0;
+         xd[i]=(bn.R[cat][i]-(bn.R[a1][i]+bn.R[a2][i]+bn.R[a3][i])/3.0e0);
       }
    }
    MatrixVectorOperations3D::Normalize(xd);
