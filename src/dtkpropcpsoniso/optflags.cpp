@@ -261,7 +261,7 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  which can be (this is valid for options -I and -p)\n"
         << "            \t  (This option is included for future implementations,\n"
         << "            \t  and in this version, only rho[d] is implemented,\n"
-        << "            \t  and by default the isovalue is v=0.001."):\n"
+        << "            \t  and by default the isovalue is v=0.001.)\n"
         << "         \t\td (Density)\n"
         << "         \t\tg (Magnitude of the Gradient of the Density)\n"
         << "         \t\tl (Laplacian of density)\n"
