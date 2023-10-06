@@ -51,6 +51,8 @@ using std::string;
 using std::ofstream;
 #include <vector>
 using std::vector;
+#include <iomanip>
+using std::setprecision;
 #include "helperspropcpsoniso.h"
 #include "screenutils.h"
 #include "fileutils.h"
@@ -59,6 +61,7 @@ using std::vector;
 #include "palette.h"
 #include "atomradiicust.h"
 #include "gaussiancube.h"
+#include "citations.h"
 
 #ifndef PROPCPSONISOCOORDSEPS2
 #define PROPCPSONISOCOORDSEPS2 1.0e-12
@@ -110,6 +113,15 @@ bool HelpersPropCPsOnIso::HaveIncompatibleOptions(int argc,char *argv[],OptionFl
          msg+=string(argv[i])+string(" ");
       }
       ScreenUtils::DisplayErrorMessage(msg);
+      return true;
+   }
+   if ( opt.estimpkbaminesprim && opt.estimpkbaminessec ) {
+      string msg="pKb can only be estimated on a single amine type\n"
+         "I.e., the amine should be primary, secondary or tertiary,\n"
+         "but not more than one type at the same type.\n"
+         "Please select only one of the options:\n"
+         "   pkb-prim-amine, pkb-sec-amine";
+      ScreenUtils::DisplayWarningMessage(msg);
       return true;
    }
    return false;
@@ -522,6 +534,14 @@ shared_ptr<MeshGrid> HelpersPropCPsOnIso::BuildCapMesh(int argc,\
          ScreenUtils::DisplayWarningMessage("This level of refinement may cause numerical issues.");
       }
    }
+   if ( opt.estimpkbaminesprim || opt.estimpkbaminessec ) {
+      refCapMeshLevel=5;
+      isoprop='d';
+      if ( opt.refinemesh || opt.setisovalue || opt.isoprop ) {
+         ScreenUtils::DisplayWarningMessage("Estimating pKb of an amine, setting\n"
+               "mesh refine level as 5.");
+      }
+   }
    grid-> SetupSphereIcosahedron(refCapMeshLevel);
    grid->Translate(xc);
    grid->ScaleVertices(GetAtomicVDWRadius(bn.atNum[cAt]));
@@ -577,5 +597,56 @@ int HelpersPropCPsOnIso::FindClosestAtom(const BondNetWork &bn,const vector<doub
       if ( d2<r2min ) { r2min=d2; pos=i; }
    }
    return pos;
+}
+void HelpersPropCPsOnIso::EstimatepKbPrimaryAmine(vector<double> &vcp,vector<int> &sigcp) {
+   size_t pos=string::npos;
+   int count=0;
+   for ( size_t i=0 ; i<sigcp.size() ; ++i ) {
+      if ( sigcp[i]>0 ) {
+         ++count;
+         pos=i;
+      }
+   }
+   if ( count>1 ) {
+      ScreenUtils::DisplayErrorMessage("More than 1 V_{S,max} points were found!");
+      cout << "pKb cannot be estimated automatically. Please, manually use the formula:\n\n"
+           << "\t28.363253+0.389698*V_{S,min}(kCal/mol)\n\n";
+      return;
+   }
+   double pKb=28.363253e0+0.389698e0*vcp[pos]*627.5e0;
+   cout << setprecision(5);
+   cout << "\nEstimated_pKb_primary_amine: " << pKb << "\n\n";
+   return;
+}
+void HelpersPropCPsOnIso::EstimatepKbSecondaryAmine(vector<double> &vcp,vector<int> &sigcp) {
+   size_t pos=string::npos;
+   int count=0;
+   for ( size_t i=0 ; i<sigcp.size() ; ++i ) {
+      if ( sigcp[i]>0 ) {
+         ++count;
+         pos=i;
+      }
+   }
+   if ( count>1 ) {
+      ScreenUtils::DisplayErrorMessage("More than 1 V_{S,max} points were found!");
+      cout << "pKb cannot be estimated automatically. Please, manually use the formula:\n\n"
+           << "\t32.706424+0.453966*V_{S,min}(kCal/mol)\n\n";
+      return;
+   }
+   double pKb=32.706424e0+0.453966e0*vcp[pos]*627.5e0;
+   cout << setprecision(5);
+   cout << "\nEstimated_pKb_secondary_amine: " << pKb << "\n\n";
+   return;
+}
+void HelpersPropCPsOnIso::RequestCitation(int argc,char *argv[],OptionFlags &opt) {
+   if ( opt.estimpkbaminesprim || opt.estimpkbaminessec ) {
+      string msg="You are estimating pKb of an amine.\n"
+         "If you publish this estimation, please consider adding the following citations:\n\n";
+      msg+=dtkcitations::dtk2015;
+      msg+=string("\n\n");
+      msg+=dtkcitations::sandovallira2020;
+      msg+=string("\n");
+      ScreenUtils::DisplayGreenMessage(msg);
+   }
 }
 

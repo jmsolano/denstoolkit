@@ -85,6 +85,7 @@ OptionFlags::OptionFlags() {
    transparentiso=false;
    drawiso=true;
    cpkview=true;
+   estimpkbaminesprim=estimpkbaminessec=false;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    string progname;
@@ -136,7 +137,6 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                flags.isoprop=(++i);
                flags.setisovalue=(++i);
                if ( (i)>=argc ) { printErrorMsg(argv,'I'); }
-               ++i;
                break;
             case 'k' :
                flags.kppov=true;
@@ -293,12 +293,16 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "  -V     \tDisplays the version of this program." << '\n';
    cout << "  -h     \tDisplay the help menu.\n\n";
    //-------------------------------------------------------------------------------------
-   cout << "  --use-cube cub \t\tUses the cube file 'cub' to generate the isosurface,\n"
-        << "                 \t\t  as opposed to generate a cap around a selected atom\n"
-        << "                 \t\t  and direction. This option overrides all options\n"
-        << "                 \t\t  related to the cap. E.g. the mesh cannot be refined,\n"
-        << "                 \t\t  because the mesh is determined from the cube sampling;\n"
-        << "                 \t\t  " << '\n';
+   cout << "  --use-cube cub \tUses the cube file 'cub' to generate the isosurface,\n"
+        << "                 \t  as opposed to generate a cap around a selected atom\n"
+        << "                 \t  and direction. This option overrides all options\n"
+        << "                 \t  related to the cap. E.g. the mesh cannot be refined,\n"
+        << "                 \t  because the mesh is determined from the cube sampling;\n"
+        << "                 \t  " << '\n';
+   cout << "  --pkb-prim-amine\tAssume the input molecule is a primary amine and estimate\n"
+        << "                 \t  its pKb. This option overrides options -I, -p, and -r." << '\n';
+   cout << "  --pkb-sec-amine\tAssume the input molecule is a secondary amine and estimate\n"
+        << "                 \t  its pKb. This option overrides options -I, -p, and -r." << '\n';
    cout << "  --help    \t\tSame as -h" << '\n';
    cout << "  --version \t\tSame as -V" << '\n';
    //-------------------------------------------------------------------------------------
@@ -400,6 +404,10 @@ void processDoubleDashOptions(int &argc,char** &argv,OptionFlags &flags,int pos)
    } else if (str==string("set-isovalue")) {
       flags.setisovalue=(++pos);
       if (pos>=argc) {printErrorMsg(argv,'2');}
+   } else if ( str==string("pkb-prim-amine") ) {
+     flags.estimpkbaminesprim=true;
+   } else if ( str==string("pkb-sec-amine") ) {
+     flags.estimpkbaminessec=true;
    } else if (str==string("help")) {
       printHelpMenu(argc,argv);
       exit(0);

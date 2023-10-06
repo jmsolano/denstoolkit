@@ -59,6 +59,7 @@ class HelpersPropCPsOnIso {
 public:
 /* ************************************************************************** */
    static bool HaveIncompatibleOptions(int argc,char *argv[],OptionFlags &opt);
+   static void RequestCitation(int argc,char *argv[],OptionFlags &opt);
    static void GetCenterIndexAndVectors(char *argv[],const OptionFlags &options,\
          const BondNetWork &bn,int &cat,vector<double> &xc,vector<double> &xd);
    static bool MakePovFile(const string &povname,OptionFlags &options,POVRayConfiguration &pvp,\
@@ -93,6 +94,8 @@ public:
    static shared_ptr<MeshGrid> BuildMesh(int argc,char *argv[],const OptionFlags &opt,\
          GaussWaveFunction &wf,BondNetWork &bn,const double isovalue);
    static int FindClosestAtom(const BondNetWork &bn,const vector<double> &usrr);
+   static void EstimatepKbPrimaryAmine(vector<double> &vcp,vector<int> &sigcp);
+   static void EstimatepKbSecondaryAmine(vector<double> &vcp,vector<int> &sigcp);
 /* ************************************************************************** */
 protected:
 /* ************************************************************************** */

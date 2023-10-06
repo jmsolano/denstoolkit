@@ -130,6 +130,24 @@ int main (int argc, char ** argv) {
    if ( options.setisovalue ) {
       isovalue=std::stod(string(argv[options.setisovalue]));
    }
+   if ( options.estimpkbaminesprim ) {
+      isoprop='d';
+      isovalue=0.0062;
+      evprop='V';
+      if ( options.setisovalue || options.isoprop || options.prop2eval ) {
+         ScreenUtils::DisplayWarningMessage("Estimating pKb of a primary amine, setting\n"
+               "isovalue rho=0.0062 a.u. and property evaluated at iso surf: MEP.");
+      }
+   }
+   if ( options.estimpkbaminessec ) {
+      isoprop='d';
+      isovalue=0.0108e0;
+      evprop='V';
+      if ( options.setisovalue || options.isoprop || options.prop2eval ) {
+         ScreenUtils::DisplayWarningMessage("Estimating pKb of a secondary amine, setting\n"
+               "isovalue rho=0.0108 a.u. and property evaluated at iso surf: MEP.");
+      }
+   }
    shared_ptr<MeshGrid> grid=HelpersPropCPsOnIso::BuildMesh(argc,\
          argv,options,gwf,bnw,isovalue);
 
@@ -144,7 +162,7 @@ int main (int argc, char ** argv) {
    vector<double> vcp;
    vector<size_t> poscp;
    vector<int> sigcp;
-   bool foundcps=HelpersPropCPsOnIso::SearchCPsIso(grid,gwf,rcp,poscp,sigcp,vcp,'V');
+   bool foundcps=HelpersPropCPsOnIso::SearchCPsIso(grid,gwf,rcp,poscp,sigcp,vcp,evprop);
    cout << "Done.\n";
    if ( foundcps && verboseLevel>0 ) {
       string cptype;
@@ -232,6 +250,15 @@ int main (int argc, char ** argv) {
               << (atnum+1) << ' ' << StringTools::RemoveAllDigits(gwf.atLbl[atnum]) << '\n';
       }
       ofil.close();
+   }
+
+   if ( options.estimpkbaminesprim ) {
+      HelpersPropCPsOnIso::EstimatepKbPrimaryAmine(vcp,sigcp);
+      HelpersPropCPsOnIso::RequestCitation(argc,argv,options);
+   }
+   if ( options.estimpkbaminessec ) {
+      HelpersPropCPsOnIso::EstimatepKbSecondaryAmine(vcp,sigcp);
+      HelpersPropCPsOnIso::RequestCitation(argc,argv,options);
    }
 
    ScreenUtils::PrintHappyEnding();
