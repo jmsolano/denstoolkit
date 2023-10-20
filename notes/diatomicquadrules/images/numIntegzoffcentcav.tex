@@ -1,0 +1,66 @@
+\documentclass{article}
+\input /Users/jmsolano/.libsol/tmp.inputs
+\usepackage{pst-infixplot,pst-math}
+\usepackage{amsmath}
+\pagestyle{empty}
+\begin{document}
+\input pst-eps
+\TeXtoEPS
+\SpecialCoor
+%\psset{xunit=1in,yunit=1in}
+\begin{pspicture}(-14,-14)(14,14)
+   \psset{linewidth=2pt}
+   %************** Frames *************************
+   \psframe[linecolor=black,linestyle=none,fillstyle=none](0,3.75)(5,-3.5)
+   \psframe[linecolor=black,linestyle=dashed,fillstyle=none](-5,-7)(5,3.75)
+   \pscircle[linecolor=black,linestyle=solid,fillstyle=solid](0,0){3}
+   \pswedge[linecolor=black,fillstyle=solid,fillcolor=lightgray]{3}{-90}{90}
+   \psarc[arcsepB=1pt,linestyle=dashed,fillstyle=solid]{-}(0,-7){2}{0}{180}
+   %\psline[linecolor=black,linestyle=solid,linewidth=4pt]{-}(-5,-3.475)(5,-3.475)
+   %***************  The axis  ***************
+   \psline[linecolor=black,linestyle=solid,linewidth=1.25pt]{c->}(-3.5,0)(3.5,0) %x'
+   \psline[linecolor=black,linestyle=solid,linewidth=1.25pt]{c->}(-4.8,-3.475)(4.8,-3.475) %x'
+   \psline[linecolor=black,linestyle=solid,linewidth=1.25pt]{c->}(0,-7)(0,3.5) %z
+   %*************** Axis labels ****************
+   \rput[bc]{0}(4,0){\huge$x'$}
+   \rput[bc]{0}(4,-3){\huge$x$}
+   \rput[tr]{0}(-0.25,3.6){\huge$z,z'$}
+   %*************** R=a ************************
+   \psline[linecolor=black,linestyle=solid,linewidth=1.5pt]{c-c}(0,0)(-2.0,-2.2)
+   \rput[bc]{0}(-1.2,-0.75){\LARGE$a$}
+   %*************** d=b ************************
+   \psline[linecolor=black,linestyle=solid,linewidth=1.5pt]{|-|}(-4.0,0)(-4.0,-3.5)
+   \rput[mc]{0}(-4.0,-1.75){\psframebox*{\huge$d_u$}}
+   %**************** r vectors ***********************
+   \psline[linecolor=black,linestyle=solid,linewidth=2pt]{c->}(0,0)(2.0,1.6)
+   \psline[linecolor=black,linestyle=solid,linewidth=2pt]{c->}(0,-3.5)(2.0,1.6)
+   \rput[bc]{0}(1.5,1.5){\LARGE$\boldsymbol{\rho}$}
+   \rput[bc]{0}(1.6,-0.2){\LARGE$\boldsymbol{r}$}
+   %*************** theta ****************************
+   \psarc[arcsepB=1pt,linewidth=1pt]{<-}{1}{38.66}{90}
+   \psarc[arcsepB=1pt,linewidth=1pt]{<-}(0.,-3.5){1}{70}{90}
+   \rput[mc]{0}(0.3,0.7){\LARGE$\phi$}
+   \rput[mc]{0}(0.25,-2.2){\LARGE$\theta$}
+   %\rput[tr]{0}(-1.5,-2){\psframebox*{\huge$c_b(R,t)$}}
+   %\pscurve[linewidth=1pt]{->}(-2,0)(-3.5,-1)(-2,-1)(-2.6,-1.9)
+   %\rput[mc]{0}(0,3.5){\psframebox*{\huge Diffusive Region}}
+   %\rput[mc]{0}(0,-0.8){\psframebox*{\huge Gas}}
+   %\psline[linecolor=black]{c-}(0,0)(5,0)
+   %\rput[bc]{0}(3.5,0.4){\psframebox*{\huge$H$}}
+   %\rput[lb]{0}(4,3.6){\psframebox*{\huge$c_m(H,t)$}}
+   %\rput[lb]{0}(4.5,3.6){{\huge$c_m(H,t)$}}
+   %\pscurve[linewidth=1pt]{->}(4.6,2)(6,2.8)(6,3.5)
+   %\rput[br]{0}(-3,-5){\huge WSR}
+   %
+   %\psgrid(0,0)(-7,-7)(7,7)
+   %
+   %\psframe[linewidth=1pt](4.6,-5)(5,-4)
+   %\rput[mc]{90}(4.2,-4.5){{\Huge $\infty$}}
+   %\psline[linecolor=black,linewidth=1.5pt]{-}(4.2,-4.5)(4.6,-4.5)
+   %\rput[bc]{90}(-6.5,0){{\huge Outer boundary}}
+   %\pscurve[linewidth=1pt]{->}(-6.5,2.6)(-5.6,4.2)(-4.2,3)
+   %
+\end{pspicture}
+\endTeXtoEPS
+\end{document}
+

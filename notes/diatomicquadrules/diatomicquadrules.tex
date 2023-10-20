@@ -1,0 +1,153 @@
+\documentclass[11pt]{amsart}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+\usepackage{color}
+
+
+\newcommand{\vecx}{\boldsymbol{x}}
+\newcommand{\tnabla}{\tilde{\nabla}}
+\newcommand{\ds}{\partial_{s}}
+\newcommand{\us}{\hat{s}}
+\newcommand{\dt}{\partial_{t}}
+\newcommand{\ut}{\hat{t}}
+\newcommand{\dA}{\dot{A}}
+\newcommand{\dB}{\dot{B}}
+
+
+\title{Diatomic cubature rules}
+\author{J. M. Solano-Altamirano}
+\date{\today}                                           % Activate to display a given date or no date
+
+\begin{document}
+\begin{abstract}
+We describe how to construct cubature rules for diatomic molecules. In the current version,
+atoms are required to be located along the $z$-axis for the rules to work properly.
+\end{abstract}
+\maketitle
+
+
+%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+\section{Core cubature}
+%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+%----------------------------------------------------------------
+\subsection{Upper domain}
+%----------------------------------------------------------------
+
+If the integration domain is an off-centred sphere of radius $a$, whose centre is displaced along
+the global $z$-axis, denoted here as $\Sigma_0$, then
+the integral of a azimuthally symmetric function can be reduced to twice the integral
+over the two dimensional domain $\Gamma_0$, defined as (see Fig.~\ref{fig:offcentsphdom}
+for its geometry):
+\begin{equation}
+	\Gamma_0\equiv\left\{
+		(\rho,\phi) |a\leq\rho\leq0,0\leq\phi\leq\pi
+	\right\}.
+\end{equation}
+%
+\textit{i.e.,}
+\begin{eqnarray}
+	\int_{\Sigma_0}f(r,\theta,\varphi)dV=4\pi\int_0^{\pi}\sin\phi d\phi\int_0^a%
+	\rho^2f(\rho,\phi)d\rho\equiv4\pi I.
+\end{eqnarray}
+
+\begin{figure}[htb!]
+   \centering
+   \includegraphics[width=0.4\textwidth]{images/numIntegzoffcentcav  }
+   \caption{Scheme of a positively $z$-translated spherical domain, relative to the origin.
+   The domain is rotated and translated in such a manner that the spherical domain is
+   aligned along the $z$-axis. The projection of the system onto the global 
+   $x$-$z$ plane. $a$ is the radius of the spherical domain and $d_u$ is the distance
+   between the upper domain centre and the origin of coordinates. The variables
+   $(r,\theta)$ and $(\rho,\phi)$ are the polar and radial and polar angles
+   relative to the local (primed) and global (non-primed) coordinate systems, respectively.}
+   \label{fig:offcentsphdom}
+\end{figure}
+
+The numerical scheme (cubature) can be build applying the following change of variables:
+\begin{equation}
+	p=\frac{2\rho}{a}-1
+\end{equation}
+and
+\begin{equation}
+	q=\cos\phi.
+\end{equation}
+After applying the changes of variables we get:
+\begin{equation}
+	I=\int_{-1}^1dq\int_{-1}^1\frac{a^3}{8}(p+1)^2f(p,q).
+\end{equation}
+
+The cubature rules can be constructed using standard Gauss-Legendre quadrature rules for
+$p$ and $q$, \textit{i.e.}, the cubature rules for $I$ are:
+%
+\begin{equation}
+	I=\sum_{i,j}W_iw_jf(p_i,q_j),
+\end{equation}
+%
+where
+%
+\begin{equation}
+	W_i\equiv\left(w_i\frac{a^3}{8}(p_i+1)^2\right),
+\end{equation}
+%
+and $w_i$ ($p_i$) and $w_j$ ($q_j$) are the standard Gauss-Legendre weights (abscissas) related to
+$p$ and $q$, respectively.
+
+Finally, the global spherical coordinates are given by:
+%
+\begin{subequations}
+\begin{eqnarray}
+	r^2_{ij} & = & \frac{a^2}{4}(p_i+1)^2+a(p_i+1)q_jd_u+d_u^2,\\
+	\varphi_{ij} & = & 0,\\
+	\theta_{ij} & = & \arcsin\left(\frac{a(p_i+1)}{2r_{ij}}\sqrt{1-q_j^2}\right),
+\end{eqnarray}
+\end{subequations}
+%
+and the global Cartesian coordinates are:
+%
+\begin{subequations}
+\begin{eqnarray}
+	x_{ij} & = & \frac{a}{2}(p_i+1)\sqrt{1-q_j^2},\\
+	y_{ij} & = & 0,\\
+	z_{ij} & = & \frac{a}{2}(p_i+1)q_j+d_u.
+\end{eqnarray}
+%
+\end{subequations}
+
+%----------------------------------------------------------------
+\subsection{Lower domain}
+%----------------------------------------------------------------
+
+The lower cubature rules are obtained by setting $d_u\rightarrow -d_l$,
+$a\rightarrow b$, and $z\rightarrow-z$. Here $b$ is the radius of the lower
+spherical region of integration, and the centre of it is located at $z=-d_l$.
+The weights are the same as for the upper domain, the global spherical coordinates
+are:
+%
+\begin{subequations}
+\begin{eqnarray}
+	r^2_{ij} & = & \frac{b^2}{4}(p_i+1)^2-b(p_i+1)q_jd_l+d_l^2,\\
+	\varphi_{ij} & = & 0,\\
+	\theta_{ij} & = & \arcsin\left(\frac{b(p_i+1)}{2r_{ij}}\sqrt{1-q_j^2}\right),
+\end{eqnarray}
+\end{subequations}
+%
+and the global Cartesian coordinates are:
+%
+\begin{subequations}
+\begin{eqnarray}
+	x_{ij} & = & \frac{b}{2}(p_i+1)\sqrt{1-q_j^2},\\
+	y_{ij} & = & 0,\\
+	z_{ij} & = & -\frac{b}{2}(p_i+1)q_j-d_l.
+\end{eqnarray}
+%
+\end{subequations}
+
+
+\end{document}  
