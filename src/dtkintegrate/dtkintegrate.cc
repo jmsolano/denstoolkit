@@ -103,15 +103,18 @@ int main (int argc, char ** argv) {
    cout << "Done." << endl;
 
    shared_ptr<Integrator3D> integrator=FactoryIntegrator::CreateIntegrator(options,argc,argv,gwf,bnw);
+   if ( integrator == nullptr ) {
+      return EXIT_FAILURE;
+   }
    cout << scientific << setprecision(10);
    integrator->DisplayProperties();
 
-   //Numeric integral.
-   MyTimer aTim;
-   aTim.Start();
+   //Numerical integration
+   MyTimer timer;
+   timer.Start();
    integrator->ComputeIntegral();
-   aTim.End();
-   aTim.PrintElapsedTimeSec(string("Integration time"));
+   timer.End();
+   timer.PrintElapsedTimeSec(string("Integration time"));
 
    //Display results on screen.
    integrator->DisplayResults();

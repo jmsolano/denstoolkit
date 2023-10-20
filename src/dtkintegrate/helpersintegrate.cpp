@@ -48,16 +48,23 @@ using std::endl;
 using std::cerr;
 #include <climits>
 #include "helpersintegrate.h"
-#include "../common/dtkscalarfunction3d.h"
-#include "../common/integrator3d_vegas.h"
-#include "../common/integrator3d_miser.h"
-#include "../common/integrator3d_legsphtd.h"
+#include "mymath.h"
+#include "matrixvectoroperations3d.h"
+#include "atomradiicust.h"
+#include "dtkscalarfunction3d.h"
+#include "integrator3d_vegas.h"
+#include "integrator3d_miser.h"
+#include "integrator3d_legsphtd.h"
+#include "../common/integrator3d_diatomics.h"
 
 shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegrator(OptionFlags &options,\
       int argc,char* argv[],GaussWaveFunction &ugwf,BondNetWork &ubnw) {
    char integtype='v';
    if ( options.integrator ) { integtype=argv[options.integrator][0]; }
    switch ( integtype ) {
+      case 'd' :
+         return CreateIntegratorDiatomics(options,argc,argv,ugwf,ubnw);
+         break;
       case 'm' :
          return CreateIntegratorMiser(options,argc,argv,ugwf,ubnw);
          break;
@@ -145,6 +152,33 @@ void FactoryIntegrator::FindIntegralLimits(OptionFlags &options,char*argv[],\
       for (int i=0; i<3; ++i) { rmin[i]=-rmax[i]; }
    }
 }
+void FactoryIntegrator::DetermineDiatomicIntegralLimits(OptionFlags &options,char*argv[],\
+         GaussWaveFunction &wf,BondNetWork &bn,char ft,\
+         vector<double> &r0mx,vector<double> &r1mx,vector<double> &rmid) {
+   double dir[3];
+   for ( size_t i=0 ; i<3 ; ++i ) {
+      dir[i]=bn.R[1][i]-bn.R[0][i];
+      rmid[i]=0.5e0*(bn.R[1][i]+bn.R[0][i]);
+      r0mx[i]=bn.R[0][i];
+      r1mx[i]=bn.R[1][i];
+   }
+   normalizeV3(dir);
+   if ( (ft == 'm') || (ft == 'T') || (ft == 'k') ) {
+      while ( wf.EvalFTDensity(r1mx[0],r1mx[1],r1mx[2]) >= 1.0e-14 ) {
+         for (int i=0; i<3; ++i) { r1mx[i] += (0.25e0*dir[i]); }
+      }
+      while ( wf.EvalFTDensity(r0mx[0],r0mx[1],r0mx[2]) >= 1.0e-14 ) {
+         for (int i=0; i<3; ++i) { r0mx[i] -= (0.25e0*dir[i]); }
+      }
+   } else {
+      while ( wf.EvalDensity(r1mx[0],r1mx[1],r1mx[2]) >= 1.0e-14 ) {
+         for (int i=0; i<3; ++i) { r1mx[i] += (0.25e0*dir[i]); }
+      }
+      while ( wf.EvalDensity(r0mx[0],r0mx[1],r0mx[2]) >= 1.0e-14 ) {
+         for (int i=0; i<3; ++i) { r0mx[i] -= (0.25e0*dir[i]); }
+      }
+   }
+}
 shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegratorMiser(OptionFlags &options,\
       int argc,char* argv[],GaussWaveFunction &ugwf,BondNetWork &ubnw) {
    char ft='d';
@@ -207,6 +241,65 @@ shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegratorCubLegSphtDes(Option
       return nullptr;
    }
    //legsphtd->SetVerbosityLevel(1);
+   return integrator;
+}
+shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegratorDiatomics(OptionFlags &options,\
+         int argc, char *argv[],GaussWaveFunction &ugwf,\
+         BondNetWork &ubnw) {
+   if ( ugwf.nNuc !=2 ) {
+      ScreenUtils::DisplayErrorMessage("Diatomics cubature only works with\n"
+            "diatomic molelcules! The result would be wrong, thus the\n"
+            "integrator will not be created.");
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+      return nullptr;
+   }
+   char ft='d';
+   if ( options.integrand ) { ft=argv[options.integrand][0]; }
+   vector<double> intRmx0(3),intRmx1(3),intRmid(3);
+   DetermineDiatomicIntegralLimits(options,argv,ugwf,ubnw,ft,intRmx0,intRmx1,intRmid);
+   double rt[3],xy[3];
+   for ( int i=0 ; i<3 ; ++i ) { rt[i]=ubnw.R[1][i]-ubnw.R[0][i]; }
+   if ( fabs(magV3(rt)-fabs(rt[2]))>0.000001 ) {
+      ScreenUtils::DisplayErrorMessage("The atoms are not aligned along the z-axis.\n"
+            "The integrator cannot be constructed...");
+      return nullptr;
+   }
+   shared_ptr<DTKScalarFunction> dtkfield=shared_ptr<DTKScalarFunction>(new DTKScalarFunction(ugwf));
+   dtkfield->SetScalarFunction(ft);
+   shared_ptr<Function3D> the_function=shared_ptr<Function3D>(dtkfield);
+   shared_ptr<Integrator3DDiatomics> diat=shared_ptr<Integrator3DDiatomics>(new Integrator3DDiatomics(the_function));
+   shared_ptr<Integrator3D> integrator=shared_ptr<Integrator3D>(diat);
+   cout << "Using " << GetFieldTypeKeyShort(ft) << '\n';
+
+   int glradord=16;
+   int glangord=16;
+
+   double r0=0.75*GetAtomicVDWRadiusAtomicUnits(ubnw.atNum[0]);
+   for ( int i=0 ; i<3 ; ++i ) { rt[i]=intRmx0[i]-intRmid[i]; }
+   if ( r0>magV3(rt) ) {
+      r0=0.75e0*magV3(rt);
+      ScreenUtils::DisplayWarningMessage("The middle plane is closer than 0.75VDWRad!");
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+   }
+   double r1=0.75*GetAtomicVDWRadiusAtomicUnits(ubnw.atNum[1]);
+   for ( int i=0 ; i<3 ; ++i ) { rt[i]=intRmx1[i]-intRmid[i]; }
+   if ( r1>magV3(rt) ) {
+      r1=0.75e0*magV3(rt);
+      ScreenUtils::DisplayWarningMessage("The middle plane is closer than 0.75VDWRad!");
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+   }
+   for ( int i=0 ; i<3 ; ++i ) { xy[i]=intRmx0[i]-ubnw.R[0][i]; }
+   double RR=magV3(xy);
+   for ( int i=0 ; i<3 ; ++i ) { xy[i]=intRmx1[i]-ubnw.R[1][i]; }
+   if ( RR<magV3(xy) ) { RR=magV3(xy); }
+   for ( int i=0 ; i<3 ; ++i ) { intRmx0[i]=ubnw.R[0][i]; }
+   for ( int i=0 ; i<3 ; ++i ) { intRmx1[i]=ubnw.R[1][i]; }
+   if ( !(diat->SetupCubature(intRmx0,intRmx1,intRmid,r0,r1,RR,glradord,glangord)) ) {
+      ScreenUtils::DisplayWarningMessage("Cubature could not be setup!");
+      cout << __FILE__ << ", line: " << __LINE__ << '\n';
+      return nullptr;
+   }
+   //diat>SetVerbosityLevel(1);
    return integrator;
 }
 

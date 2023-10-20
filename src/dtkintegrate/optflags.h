@@ -62,6 +62,7 @@ void printHelpMenu(int &argc, char** &argv);//self-described
 void getOptions(int &argc, char** &argv, OptionFlags &flags);//this function will assign the values to
                                                            //all the flags. Implementation is in optsflags.cpp
 void processDoubleDashOptions(int &argc,char** &argv,OptionFlags &flags,int pos);
+void checkOptionsConsistency(int &argc,char **&argv,OptionFlags &flags);
 #endif //_OPTSFLAGS_H
 
 

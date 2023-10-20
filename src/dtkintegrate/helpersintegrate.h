@@ -66,9 +66,29 @@ public:
    static shared_ptr<Integrator3D> CreateIntegratorMiser(OptionFlags &options,\
          int argc, char *argv[],GaussWaveFunction &ugwf,\
          BondNetWork &ubnw);
+   static shared_ptr<Integrator3D> CreateIntegratorDiatomics(OptionFlags &options,\
+         int argc, char *argv[],GaussWaveFunction &ugwf,\
+         BondNetWork &ubnw);
 /* ************************************************************************** */
+   /** Determines the integration limits (i.e., the bounding box), if the
+    * system is a single atom.  */
    static void FindIntegralLimits(OptionFlags &options,char*argv[],\
          GaussWaveFunction &wf,BondNetWork &bn,char ft,vector<double> &rmin,vector<double> &rmax);
+   /** Determines the integral limits to be used when the system is a diatomic
+    * molecule.
+    * @param [in]: ft is the field type
+    * @param [out]: r0max is the maximum distance to be included in the
+    *                     integral (away from the first atom).
+    * @param [out]: r1max is the maximum distance to be included in the
+    *                     integral (away from the second atom).
+    * @param [out]: rmid  is the distance from the global coordinate
+    *                     origin where the plane that divides the
+    *                     integration domain is located.
+    * r1max-r0max is directed along the line that joins the two atoms,
+    * which must be along the z-axis. */
+   static void DetermineDiatomicIntegralLimits(OptionFlags &options,char*argv[],\
+         GaussWaveFunction &wf,BondNetWork &bn,char ft,vector<double> &r0mx,\
+         vector<double> &r1mx,vector<double> &rmid);
 protected:
 /* ************************************************************************** */
 };

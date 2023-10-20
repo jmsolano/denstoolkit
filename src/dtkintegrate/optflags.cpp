@@ -369,4 +369,10 @@ void processDoubleDashOptions(int &argc,char** &argv,OptionFlags &flags,int pos)
    }
    return;
 }
+void checkOptionsConsistency(int &argc,char **&argv,OptionFlags &flags) {
+   if ( argv[flags.integrator][0]=='d' && (flags.setlowerdombox || flags.setupperdombox) ) {
+      ScreenUtils::DisplayWarningMessage("Diatomics integrator and option -b is "
+            "not compatible!\nIgnoring option -b...");
+   }
+}
 

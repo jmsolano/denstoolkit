@@ -49,5 +49,8 @@
 #define MAXDEFINEDATOMICRADII 112
 
 double GetAtomicVDWRadius(int atn);
+inline double GetAtomicVDWRadiusAtomicUnits(int atn) {
+   return (GetAtomicVDWRadius(atn)/0.529177249e0);
+}
 
 #endif /* defined(_RADII_SCHEME_JMHP_H_) */
