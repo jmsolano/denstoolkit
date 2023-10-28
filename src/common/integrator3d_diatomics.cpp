@@ -66,6 +66,7 @@ Integrator3DDiatomics::Integrator3DDiatomics() : Integrator3D() {
    wrv.clear();
    wpc.clear();
    wpv.clear();
+   firstisupper=true;
    imsetup=false;
 }
 Integrator3DDiatomics::Integrator3DDiatomics(shared_ptr<Function3D> i)
@@ -91,17 +92,14 @@ void Integrator3DDiatomics::ComputeIntegral() {
       cout << __FILE__ << ", line: " << __LINE__ << '\n';
       return;
    }
-   ScreenUtils::DisplayWarningMessage("Diatomics integration is not complete!\nReturning zero.");
    BuildUpperCubature();
    double sum=0.0e0;
    size_t nn=xt.size();
    for ( size_t i=0 ; i<nn ; ++i ) {
-      //sum+=wt[i];
       sum+=(wt[i]*(integrand->f(xt[i])));
    }
    BuildLowerCubature();
    for ( size_t i=0 ; i<nn ; ++i ) {
-      //sum+=wt[i];
       sum+=(wt[i]*(integrand->f(xt[i])));
    }
    result=2.0e0*M_PI*sum;
@@ -132,23 +130,24 @@ bool Integrator3DDiatomics::SetupCubature(const vector<double> &xx0,const vector
    xt.resize((xrc.size())*(xpc.size())+2*((xrv.size())*(xpv.size())));
    for ( size_t i=0 ; i<xt.size() ; ++i ) { xt[i].resize(3,0e0); }
    for ( int i=0 ; i<3 ; ++i ) { xdir[i]=(xx1[i]-xx0[i]); }
+   for ( int i=0 ; i<3 ; ++i ) { xc[i]=xxc[i]; }
    normalizeV3(xdir);
+   for ( int i=0 ; i<3 ; ++i ) { x0[i]=xx0[i]; }
+   for ( int i=0 ; i<3 ; ++i ) { x1[i]=xx1[i]; }
+   r0=rr0;
+   r1=rr1;
    double zz[3]={0.0e0,0.0e0,1.0e0};
    if ( dotProductV3(xdir,zz)<0.0e0 ) {
-      cout << "The first atom (wfn) is at the top cuadrant." << '\n';
-      for ( int i=0 ; i<3 ; ++i ) { x0[i]=xx0[i]; }
-      for ( int i=0 ; i<3 ; ++i ) { x1[i]=xx1[i]; }
-      r0=rr0;
-      r1=rr1;
+      if ( verbosity>0 ) {
+         cout << "The first atom (wfn) is at the top cuadrant." << '\n';
+      }
+      firstisupper=true;
    } else {
-      cout << "The first atom (wfn) is at the bottom cuadrant." << '\n';
-      for ( int i=0 ; i<3 ; ++i ) { xdir[i]=(xx0[i]-xx1[i]); }
-      for ( int i=0 ; i<3 ; ++i ) { x0[i]=xx1[i]; }
-      for ( int i=0 ; i<3 ; ++i ) { x1[i]=xx0[i]; }
-      r0=rr1;
-      r1=rr0;
+      if ( verbosity>0 ) {
+         cout << "The first atom (wfn) is at the bottom cuadrant." << '\n';
+      }
+      firstisupper=false;
    }
-   for ( int i=0 ; i<3 ; ++i ) { xc[i]=xxc[i]; }
    R=Rout;
    imsetup=true;
    return havevecs;
@@ -170,15 +169,34 @@ void Integrator3DDiatomics::DisplayProperties() {
    cout << "r1: " << r1 << '\n';
    cout << " R: " << R << '\n';
 }
-void Integrator3DDiatomics::BuildUpperCubature() {
+void Integrator3DDiatomics::BuildHalfHemisphereCubature(const bool upper) {
    if ( !imsetup ) {
       ScreenUtils::DisplayErrorMessage("The Integrator3DDiatomics object is not setup!");
       cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
       return;
    }
+   /* Core integral  */
    size_t nrc=wrc.size();
    size_t npc=wpc.size();
-   double twi,apip1o2,du=fabs(x0[2]),a=r0;
+   double twi,apip1o2;
+   double d,a;
+   if ( upper ) {
+      if ( firstisupper ) {
+         d=fabs(x0[2]);
+         a=r0;
+      } else {
+         d=fabs(x1[2]);
+         a=r1;
+      }
+   } else {
+      if ( firstisupper ) {
+         d=fabs(x1[2]);
+         a=r1;
+      } else {
+         d=fabs(x0[2]);
+         a=r0;
+      }
+   }
    for ( size_t i=0 ; i<nrc ; ++i ) {
       apip1o2=0.5e0*a*(xrc[i]+1.0e0);
       twi=0.5e0*a*wrc[i]*apip1o2*apip1o2;
@@ -186,29 +204,81 @@ void Integrator3DDiatomics::BuildUpperCubature() {
          wt[i*npc+j]=wpc[j]*twi;
          xt[i*npc+j][0]=apip1o2*sqrt(1.0e0-xpc[j]*xpc[j]);
          xt[i*npc+j][1]=0.0e0;
-         xt[i*npc+j][2]=apip1o2*xpc[j]+du;
+         xt[i*npc+j][2]=apip1o2*xpc[j]+d;
+         if ( !upper ) { xt[i*npc+j][2]=-xt[i*npc+j][2]; }
+      }
+   }
+   /* Valence M integral...  */
+   size_t offset=nrc*npc;
+   if ( upper ) {
+      if ( firstisupper ) {
+         d=x0[2]-xc[2];
+         a=r0;
+      } else {
+         d=x1[2]-xc[2];
+         a=r1;
+      }
+   } else {
+      if ( firstisupper ) {
+         d=xc[2]-x1[2];
+         a=r1;
+      } else {
+         d=xc[2]-x0[2];
+         a=r0;
+      }
+   }
+   if ( d<0.0e0 ) {
+      ScreenUtils::DisplayErrorMessage("d<0!");
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+      d=fabs(d);
+   }
+   double phi1=M_PI-atan2(R,d);
+   double nu1=cos(phi1);
+   size_t nrv=wrv.size();
+   size_t npv=wpv.size();
+   double onemnu1o4wj,nuj,srterm,rhoij;
+   for ( size_t j=0 ; j<npv ; ++j ) {
+      onemnu1o4wj=wpv[j]*(1.0e0-nu1)*0.25e0;
+      nuj=0.5e0*((1.0e0-nu1)*xpv[j]+nu1+1.0e0);
+      srterm=sqrt(R*R-d*d*(1.0e0-nuj*nuj))-nuj*d;
+      for ( size_t i=0 ; i<nrv ; ++i ) {
+         rhoij=0.5e0*((srterm-a)*xrv[i]+srterm+a);
+         wt[offset+j*npv+i]=onemnu1o4wj*wrv[i]*(srterm-a)*rhoij*rhoij;
+         xt[offset+j*npv+i][0]=rhoij*sqrt(1.0e0-nuj*nuj);
+         xt[offset+j*npv+i][1]=0.0e0;
+         if ( upper ) {
+            xt[offset+j*npv+i][2]=rhoij*nuj+d+xc[2];
+         } else {
+            xt[offset+j*npv+i][2]=-rhoij*nuj-d+xc[2];
+         }
+      }
+   }
+   /* Valence N integral...  */
+   offset=nrc*npc+nrv*npv;
+   double twdoetc;
+   double onepnu1o4wj;
+   for ( size_t j=0 ; j<npv ; ++j ) {
+      onepnu1o4wj=wpv[j]*(1.0e0+nu1)*0.25e0;
+      nuj=0.5e0*((1.0e0+nu1)*xpv[j]+nu1-1.0e0);
+      twdoetc=-a-2.0e0*d/((1.0e0+nu1)*xpv[j]+nu1-1.0e0);
+      for ( size_t i=0 ; i<nrv ; ++i ) {
+         rhoij=0.5e0*((-a-d/nuj)*xrv[i]+a-d/nuj);
+         wt[offset+j*npv+i]=onepnu1o4wj*twdoetc*wrv[i]*rhoij*rhoij;
+         xt[offset+j*npv+i][0]=rhoij*sqrt(1.0e0-nuj*nuj);
+         xt[offset+j*npv+i][1]=0.0e0;
+         if ( upper ) {
+            xt[offset+j*npv+i][2]=rhoij*nuj+d+xc[2];
+         } else {
+            xt[offset+j*npv+i][2]=-rhoij*nuj-d+xc[2];
+         }
       }
    }
 }
+void Integrator3DDiatomics::BuildUpperCubature() {
+   return BuildHalfHemisphereCubature(true);
+}
 void Integrator3DDiatomics::BuildLowerCubature() {
-   if ( !imsetup ) {
-      ScreenUtils::DisplayErrorMessage("The Integrator3DDiatomics object is not setup!");
-      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
-      return;
-   }
-   size_t nrc=wrc.size();
-   size_t npc=wpc.size();
-   double twi,bpip1o2,dl=fabs(x1[2]),b=r1;
-   for ( size_t i=0 ; i<nrc ; ++i ) {
-      bpip1o2=0.5e0*b*(xrc[i]+1.0e0);
-      twi=0.5e0*b*wrc[i]*bpip1o2*bpip1o2;
-      for ( size_t j=0 ; j<npc ; ++j ) {
-         wt[i*npc+j]=wpc[j]*twi;
-         xt[i*npc+j][0]=bpip1o2*sqrt(1.0e0-xpc[j]*xpc[j]);
-         xt[i*npc+j][1]=0.0e0;
-         xt[i*npc+j][2]=-bpip1o2*xpc[j]-dl;
-      }
-   }
+   return BuildHalfHemisphereCubature(false);
    /*
    size_t offset=nrc*rpc;
    size_t nrv=wrv.size();

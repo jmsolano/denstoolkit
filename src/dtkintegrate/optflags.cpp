@@ -79,6 +79,7 @@ OptionFlags::OptionFlags() {
    misersetpoints = misersetdith = 0;
    lsptdsetol = lsptdsetos = 0;
    setlowerdombox = setupperdombox = 0;
+   verboseLevel=0;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    string progname;
@@ -124,6 +125,10 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
             case 'h':
                printHelpMenu(argc,argv);
                exit(1);
+               break;
+            case 'v' :
+               if ((i+1)>=argc) {printErrorMsg(argv,'v');}
+               flags.verboseLevel=std::stoi(string(argv[++i]));
                break;
             case 'V':
                progname=argv[0];
@@ -265,6 +270,9 @@ void printErrorMsg(char** &argv,char lab) {
          break;
       case 't' :
          cout << "should be followed by a small real number." << '\n';
+         break;
+      case 'v' :
+         cout << "should be followed by a positive integer." << '\n';
          break;
       default:
          cout << "is triggering an unknown error." << endl;

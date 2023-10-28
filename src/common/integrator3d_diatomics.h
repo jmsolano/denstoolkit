@@ -84,6 +84,7 @@ public:
 /* ************************************************************************** */
 protected:
 /* ************************************************************************** */
+   void BuildHalfHemisphereCubature(const bool upper);
    void BuildUpperCubature();
    void BuildLowerCubature();
 /* ************************************************************************** */
@@ -106,6 +107,7 @@ protected:
    double r1; /*!< The core-radius of the lower atom.  */
    double R; /*!< The outer radius of integration (the circle of radius
                   R includes both atoms.  */
+   bool firstisupper;
    bool imsetup;
 /* ************************************************************************** */
 };

@@ -156,26 +156,32 @@ void FactoryIntegrator::DetermineDiatomicIntegralLimits(OptionFlags &options,cha
          GaussWaveFunction &wf,BondNetWork &bn,char ft,\
          vector<double> &r0mx,vector<double> &r1mx,vector<double> &rmid) {
    double dir[3];
+   double a0=GetAtomicVDWRadiusAtomicUnits(bn.atNum[0]);
+   double a1=GetAtomicVDWRadiusAtomicUnits(bn.atNum[1]);
    for ( size_t i=0 ; i<3 ; ++i ) {
       dir[i]=bn.R[1][i]-bn.R[0][i];
-      rmid[i]=0.5e0*(bn.R[1][i]+bn.R[0][i]);
+      //rmid[i]=0.5e0*(bn.R[1][i]+bn.R[0][i]);
       r0mx[i]=bn.R[0][i];
       r1mx[i]=bn.R[1][i];
    }
+   double magdir=magV3(dir);
    normalizeV3(dir);
+   for ( size_t i=0 ; i<3 ; ++i ) {
+      rmid[i]=r0mx[i]+(dir[i])*(a0-0.5e0*(a0+a1-magdir));
+   }
    if ( (ft == 'm') || (ft == 'T') || (ft == 'k') ) {
       while ( wf.EvalFTDensity(r1mx[0],r1mx[1],r1mx[2]) >= 1.0e-14 ) {
-         for (int i=0; i<3; ++i) { r1mx[i] += (0.25e0*dir[i]); }
+         for (int i=0; i<3; ++i) { r1mx[i] += (0.10e0*dir[i]); }
       }
       while ( wf.EvalFTDensity(r0mx[0],r0mx[1],r0mx[2]) >= 1.0e-14 ) {
-         for (int i=0; i<3; ++i) { r0mx[i] -= (0.25e0*dir[i]); }
+         for (int i=0; i<3; ++i) { r0mx[i] -= (0.10e0*dir[i]); }
       }
    } else {
       while ( wf.EvalDensity(r1mx[0],r1mx[1],r1mx[2]) >= 1.0e-14 ) {
-         for (int i=0; i<3; ++i) { r1mx[i] += (0.25e0*dir[i]); }
+         for (int i=0; i<3; ++i) { r1mx[i] += (0.10e0*dir[i]); }
       }
       while ( wf.EvalDensity(r0mx[0],r0mx[1],r0mx[2]) >= 1.0e-14 ) {
-         for (int i=0; i<3; ++i) { r0mx[i] -= (0.25e0*dir[i]); }
+         for (int i=0; i<3; ++i) { r0mx[i] -= (0.10e0*dir[i]); }
       }
    }
 }
@@ -255,8 +261,6 @@ shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegratorDiatomics(OptionFlag
    }
    char ft='d';
    if ( options.integrand ) { ft=argv[options.integrand][0]; }
-   vector<double> intRmx0(3),intRmx1(3),intRmid(3);
-   DetermineDiatomicIntegralLimits(options,argv,ugwf,ubnw,ft,intRmx0,intRmx1,intRmid);
    double rt[3],xy[3];
    for ( int i=0 ; i<3 ; ++i ) { rt[i]=ubnw.R[1][i]-ubnw.R[0][i]; }
    if ( fabs(magV3(rt)-fabs(rt[2]))>0.000001 ) {
@@ -264,36 +268,53 @@ shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegratorDiatomics(OptionFlag
             "The integrator cannot be constructed...");
       return nullptr;
    }
+   vector<double> intRmx0(3),intRmx1(3),intRmid(3);
+   DetermineDiatomicIntegralLimits(options,argv,ugwf,ubnw,ft,intRmx0,intRmx1,intRmid);
    shared_ptr<DTKScalarFunction> dtkfield=shared_ptr<DTKScalarFunction>(new DTKScalarFunction(ugwf));
    dtkfield->SetScalarFunction(ft);
    shared_ptr<Function3D> the_function=shared_ptr<Function3D>(dtkfield);
    shared_ptr<Integrator3DDiatomics> diat=shared_ptr<Integrator3DDiatomics>(new Integrator3DDiatomics(the_function));
    shared_ptr<Integrator3D> integrator=shared_ptr<Integrator3D>(diat);
-   cout << "Using " << GetFieldTypeKeyShort(ft) << '\n';
+   cout << "Integrand: " << GetFieldTypeKeyShort(ft) << '\n';
+   if ( options.verboseLevel>0 ) {
+      ScreenUtils::SetScrYellowBoldFont();
+      cout << "intRmx0: " << intRmx0[0] << ' ' << intRmx0[1] << ' ' << intRmx0[2] << '\n';
+      cout << "intRmx1: " << intRmx1[0] << ' ' << intRmx1[1] << ' ' << intRmx1[2] << '\n';
+      cout << "prop(intRmx0): " << the_function->f(intRmx0) << '\n';
+      cout << "prop(intRmx1): " << the_function->f(intRmx1) << '\n';
+      ScreenUtils::SetScrNormalFont();
+   }
 
-   int glradord=16;
-   int glangord=16;
+   int glradord=64;
+   int glangord=64;
 
-   double r0=0.75*GetAtomicVDWRadiusAtomicUnits(ubnw.atNum[0]);
-   for ( int i=0 ; i<3 ; ++i ) { rt[i]=intRmx0[i]-intRmid[i]; }
+   double vdvf=0.75;
+   double r0=vdvf*GetAtomicVDWRadiusAtomicUnits(ubnw.atNum[0]);
+   for ( int i=0 ; i<3 ; ++i ) { rt[i]=ubnw.R[0][i]-intRmid[i]; }
+   if ( options.verboseLevel>0 ) {
+      cout << "Dist(x0-c): " << magV3(rt) << ", r0: " << r0 << ", r0/D: " << (r0/magV3(rt)) << '\n';
+   }
    if ( r0>magV3(rt) ) {
-      r0=0.75e0*magV3(rt);
+      r0=vdvf*magV3(rt);
       ScreenUtils::DisplayWarningMessage("The middle plane is closer than 0.75VDWRad!");
       cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
    }
-   double r1=0.75*GetAtomicVDWRadiusAtomicUnits(ubnw.atNum[1]);
-   for ( int i=0 ; i<3 ; ++i ) { rt[i]=intRmx1[i]-intRmid[i]; }
+   double r1=vdvf*GetAtomicVDWRadiusAtomicUnits(ubnw.atNum[1]);
+   for ( int i=0 ; i<3 ; ++i ) { rt[i]=ubnw.R[1][i]-intRmid[i]; }
+   if ( options.verboseLevel>0 ) {
+      cout << "Dist(x0-c): " << magV3(rt) << ", r1: " << r1 << ", r1/D: " << (r1/magV3(rt)) << '\n';
+   }
    if ( r1>magV3(rt) ) {
-      r1=0.75e0*magV3(rt);
+      r1=vdvf*magV3(rt);
       ScreenUtils::DisplayWarningMessage("The middle plane is closer than 0.75VDWRad!");
       cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
    }
-   for ( int i=0 ; i<3 ; ++i ) { xy[i]=intRmx0[i]-ubnw.R[0][i]; }
+   for ( int i=0 ; i<3 ; ++i ) { xy[i]=intRmx0[i]-intRmid[i]; }
    double RR=magV3(xy);
-   for ( int i=0 ; i<3 ; ++i ) { xy[i]=intRmx1[i]-ubnw.R[1][i]; }
+   for ( int i=0 ; i<3 ; ++i ) { xy[i]=intRmx1[i]-intRmid[i]; }
    if ( RR<magV3(xy) ) { RR=magV3(xy); }
-   for ( int i=0 ; i<3 ; ++i ) { intRmx0[i]=ubnw.R[0][i]; }
-   for ( int i=0 ; i<3 ; ++i ) { intRmx1[i]=ubnw.R[1][i]; }
+   for ( int i=0 ; i<3 ; ++i ) { intRmx0[i]=ubnw.R[0][i]; } //hereon, intRmx0 is x0.
+   for ( int i=0 ; i<3 ; ++i ) { intRmx1[i]=ubnw.R[1][i]; } //hereon, intRmx1 is x1.
    if ( !(diat->SetupCubature(intRmx0,intRmx1,intRmid,r0,r1,RR,glradord,glangord)) ) {
       ScreenUtils::DisplayWarningMessage("Cubature could not be setup!");
       cout << __FILE__ << ", line: " << __LINE__ << '\n';
