@@ -228,8 +228,9 @@ void ProcessMolecularOrbitalPropsAndCoefs(ifstream &ifil,const int norb,const in
       pos=ifil.tellg();
       ifil.seekg(pos+35);
       ifil >> ocn[k];
-      ifil.seekg(pos+63);
+      ifil.seekg(pos+62);
       ifil >> moe[k];
+      ifil.seekg(pos+75);
       count=0;
       for (int i=0; i<nolines; i++) {
          pos=ifil.tellg();

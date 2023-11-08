@@ -108,6 +108,14 @@ void GetPosInFile(ifstream &ifil,bool frombeg,string idkey,int & ist,int &ien) {
    //*
    while (!ifil.eof()) {
       getline(ifil,line);
+      //cout << '"' << line << '"' << std::endl;
+      while ((line.size()>0)&&((line[0]==' ')||(line[0]=='\t'))) {line.erase(0,1);}
+      while ((line.size()>0)&&((line.back()==' ')||(line.back()=='\t'))) {line.pop_back();}
+      if ( line.size()==0 ) { continue; }
+      if ( line.back()=='>' && line[0]!='<' ) {
+         pos=line.find_first_of('<');
+         line=line.substr(pos);
+      }
       pos=ifil.tellg();
       //cout << line << endl;
       if (tk==line) {
@@ -120,7 +128,14 @@ void GetPosInFile(ifstream &ifil,bool frombeg,string idkey,int & ist,int &ien) {
    while (!ifil.eof()) {
       pos=ifil.tellg();
       getline(ifil,line);
-      //cout << line << endl;
+      //cout << '"' << line << '"' << std::endl;
+      while ((line.size()>0)&&((line[0]==' ')||(line[0]=='\t'))) {line.erase(0,1);}
+      while ((line.size()>0)&&((line.back()==' ')||(line.back()=='\t'))) {line.pop_back();}
+      if ( line.size()==0 ) { cout << "c/\n"; continue; }
+      if ( line.back()=='>' && line[0]!='<' ) {
+         pos=line.find_first_of('<');
+         line=line.substr(pos);
+      }
       if (tk==line) {
          //havep1=true;
          //cout << "key found: " << line << endl;
@@ -160,8 +175,14 @@ int GetInitPosOfKeyInFile(ifstream &ifil,bool frombeg,string idkey) {
    while (!ifil.eof()) {
       getline(ifil,line);
       pos=ifil.tellg();
-      while ((line[0]==' ')||(line[0]=='\t')) {line.erase(0,1);}
-      //cout << line << endl;
+      while ((line.size()>0)&&((line[0]==' ')||(line[0]=='\t'))) {line.erase(0,1);}
+      while ((line.size()>0)&&((line.back()==' ')||(line.back()=='\t'))) {line.pop_back();}
+      if ( line.size()==0 ) { continue; }
+      if ( line.back()=='>' && line[0]!='<' ) {
+         pos=line.find_first_of('<');
+         line=line.substr(pos);
+      }
+      //cout << '"' << line << '"' << endl;
       if (tk==line) {
          //cout << "key found: " << line << endl;
          ifil.seekg(orpos);
@@ -196,7 +217,13 @@ int GetFinPosOfKeyInFile(ifstream &ifil,bool frombeg,string idkey) {
    while (!ifil.eof()) {
       getline(ifil,line);
       pos=ifil.tellg();
-      while ((line[0]==' ')||(line[0]=='\t')) {line.erase(0,1);}
+      while ((line.size()>0)&&((line[0]==' ')||(line[0]=='\t'))) {line.erase(0,1);}
+      while ((line.size()>0)&&((line.back()==' ')||(line.back()=='\t'))) {line.pop_back();}
+      if ( line.size()==0 ) { continue; }
+      if ( line.back()=='>' && line[0]!='<' ) {
+         pos=line.find_first_of('<');
+         line=line.substr(pos);
+      }
       //cout << line << endl;
       if (tk==line) {
          //cout << "key found: " << line << endl;

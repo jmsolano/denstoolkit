@@ -238,7 +238,10 @@ bool GaussWaveFunction::ReadFromFileWFN(string inname) {
    ProcessMolecularOrbitalPropsAndCoefs(tif,nMOr,nPri,occN,MOEner,MOCoeff);
    string liend;
    getline(tif,liend);
+   //cout << "liend: '" << liend << '\'' << endl;
    //cout << "nPri%5: " << (nPri%5) << " len: " << liend.length() << endl;
+   while ((liend[0]==' ')||(liend[0]=='\t')) {liend.erase(0,1);}
+   while ((liend.back()==' ')||(liend.back()=='\t')) {liend.pop_back();}
    if (((nPri%5)==0)&&(liend.length()==0)) {
       getline(tif,liend);
       cout << liend << endl;
@@ -246,6 +249,7 @@ bool GaussWaveFunction::ReadFromFileWFN(string inname) {
    if (liend.substr(0,8)!="END DATA") {
       cout << "Error, expecting \"END DATA\" in file " << inname << endl;
       cout << "Line: '" << liend << "'\n";
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
       return false;
    }
    GetEnergyAndVirial(tif,totener,virial);
