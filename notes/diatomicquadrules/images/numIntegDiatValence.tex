@@ -1,0 +1,71 @@
+\documentclass{article}
+\input /Users/jmsolano/.libsol/tmp.inputs
+\usepackage{pst-infixplot,pst-math}
+\usepackage{amsmath}
+\pagestyle{empty}
+\begin{document}
+\input pst-eps
+\TeXtoEPS
+\SpecialCoor
+%\psset{xunit=1in,yunit=1in}
+\begin{pspicture}(-12,-6)(12,6)
+   \psset{linewidth=2pt}
+   %************** Frames *************************
+   %\psframe[linecolor=black,linestyle=none,fillstyle=solid,fillcolor=lightgray](-7,0)(7,7)
+   %\psframe[linecolor=black,linestyle=none,fillstyle=vlines*,hatchsep=10pt](-7,0)(7,7)
+   %\psframe[linecolor=black,linestyle=dashed,fillstyle=none](-7,-7)(7,7)
+   \pscircle[linecolor=black,linestyle=solid,fillstyle=none](0,0){5}
+   \pscircle[linecolor=black,linestyle=dashed,fillstyle=none](0,3){1.5}
+   \pscircle[linecolor=black,linestyle=dashed,fillstyle=none](0,-3){1.0}
+   \pswedge[linecolor=black,linewidth=2pt,fillstyle=solid,fillcolor=jmsaLightGray](0,0){5}{0}{90}
+   \pswedge[linecolor=black,linewidth=2pt,fillstyle=solid,fillcolor=white](0,3){1.5}{-90}{90}
+   \psline[linecolor=black,linestyle=dashed]{-}(-5,0)(0,0)(0,-5)
+   %***************  The axis  ***************
+   \psline[linecolor=black,linestyle=solid,linewidth=1.25pt]{c->}(-2,3)(6,3)
+   \psline[linecolor=black,linestyle=solid,linewidth=1.25pt]{c->}(-3.6,-1.1)(6,-1.1)
+   \psline[linecolor=black,linestyle=solid,linewidth=1.25pt]{c->}(0,3)(0,6)
+   \psline[linecolor=black,linestyle=solid,linewidth=1.25pt]{c->}(0,-1.1)(0,6)
+   %*************** Axis labels ****************
+   \rput[bc]{0}(5.5,2.5){\huge$x'$}
+   \rput[bc]{0}(5.5,-1.5){\huge$x$}
+   \rput[bc]{0}(-0.7,5.5){\huge$z,z'$}
+   %*************** R=a ************************
+   \psline[linecolor=black,linestyle=solid,linewidth=1.5pt]{c-c}(0,3)(-1,4)
+   \rput[bl]{0}(-0.5,3.6){\LARGE$a$}
+   %*************** R=b ************************
+   \psline[linecolor=black,linestyle=solid,linewidth=1.5pt]{c-c}(0,0)(-3.8,-3.2)
+   \rput[bc]{0}(-2.6,-1.8){\LARGE$b$}
+   %**************** rho vector ***********************
+   \psline[linecolor=black,linestyle=solid,linewidth=1.5pt]{c->}(0,3)(2.6,3.6)
+   \rput[bc]{0}(2,3.8){\LARGE$\boldsymbol{\rho}$}
+   %*************** phi ****************************
+   \psarc[arcsepB=1pt,linewidth=1pt]{<-}(0,3){0.3}{17}{90}
+   \rput[bl]{0}(0.3,3.2){\Large$\phi$}
+   %**************** r vector ***********************
+   \psline[linecolor=black,linestyle=solid,linewidth=1.5pt]{c->}(0,-1.1)(2.6,3.6)
+   \rput[tc]{0}(1.4,0.9){\LARGE$\boldsymbol{r}$}
+   %*************** theta ****************************
+   \psarc[arcsepB=1pt,linewidth=1pt]{<-}(0,-1.1){1.5}{62}{90}
+   \rput[bm]{0}(0.4,0.5){\Large$\theta$}
+   %*************** r1, r2 ****************************
+   \psline[linecolor=jmsaNavy,linestyle=solid,linewidth=1.5pt]{c->}(0,3)(5,0)
+   %\rput[bl]{0}(3,1.4){\color{jmsaNavy}{\LARGE$\boldsymbol{r}$}{\large$_1$}}
+   %*************** phi1 ****************************
+   \psarc[arcsepB=1pt,linewidth=1pt,linecolor=jmsaNavy]{<-}(0,3){0.9}{-31}{90}
+   \rput[bl]{0}(0.6,3.7){\color{jmsaNavy}\Large$\phi_1$}
+   %*************** c ************************
+   \psline[linecolor=black,linestyle=solid,linewidth=1.25pt]{|->}(-4,-1.1)(-4,0.0)
+   \rput[mr]{0}(-4.1,-0.5){{\LARGE$c\hat k$}}
+   %*************** d ************************
+   \psline[linecolor=black,linestyle=solid,linewidth=1.25pt]{|->}(-3,-1.1)(-3,3)
+   \rput[mr]{0}(-3.1,1.5){{\LARGE$d\hat k$}}
+   %*************** d_u ************************
+   \psline[linecolor=black,linestyle=solid,linewidth=1.25pt]{|-|}(-2.3,0,0)(-2.3,3)
+   \rput[mc]{0}(-1.9,1.5){{\LARGE$d_u$}}
+   %*************** grid ****************************
+   %\psgrid(0,0)(-7,-6)(6,6)
+   %
+\end{pspicture}
+\endTeXtoEPS
+\end{document}
+

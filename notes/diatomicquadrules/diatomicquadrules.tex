@@ -53,16 +53,16 @@ for its geometry):
 %
 \textit{i.e.,}
 \begin{eqnarray}
-	\int_{\Sigma_0}f(r,\theta,\varphi)dV=4\pi\int_0^{\pi}\sin\phi d\phi\int_0^a%
-	\rho^2f(\rho,\phi)d\rho\equiv4\pi I.
+	\int_{\Sigma_0}f(r,\theta,\varphi)dV=2\pi\int_0^{\pi}\sin\phi d\phi\int_0^a%
+	\rho^2f(\rho,\phi)d\rho\equiv2\pi I.
 \end{eqnarray}
 
 \begin{figure}[htb!]
    \centering
-   \includegraphics[width=0.4\textwidth]{images/numIntegzoffcentcav  }
+   \includegraphics[width=0.4\textwidth]{images/numIntegDiatCore}
    \caption{Scheme of a positively $z$-translated spherical domain, relative to the origin.
    The domain is rotated and translated in such a manner that the spherical domain is
-   aligned along the $z$-axis. The projection of the system onto the global 
+   aligned along the $z$-axis. The scheme shows the projection of the system onto the global 
    $x$-$z$ plane. $a$ is the radius of the spherical domain and $d_u$ is the distance
    between the upper domain centre and the origin of coordinates. The variables
    $(r,\theta)$ and $(\rho,\phi)$ are the polar and radial and polar angles
@@ -98,6 +98,16 @@ where
 %
 and $w_i$ ($p_i$) and $w_j$ ($q_j$) are the standard Gauss-Legendre weights (abscissas) related to
 $p$ and $q$, respectively.
+%
+The local variables are given by:
+%
+\begin{subequations}
+\begin{eqnarray}
+	\rho_{i} & = & \frac{a}{2}(p_i+1),\\
+	\phi_j & = & \arccos q_j.
+\end{eqnarray}
+%
+\end{subequations}
 
 Finally, the global spherical coordinates are given by:
 %
@@ -148,6 +158,229 @@ and the global Cartesian coordinates are:
 \end{eqnarray}
 %
 \end{subequations}
+
+%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+\section{Valence cubature}
+%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+%----------------------------------------------------------------
+\subsection{Upper domain}
+%----------------------------------------------------------------
+For the valence integral, \textit{i.e.}, the integral over the region comprised of an off-centred
+spherical domain with two cavities, denoted as $\Sigma_{2c}$,
+we follow the setup of the cubature for a spherical domain with two cavities with slight modifications.
+%
+\begin{figure}[htb!]
+   \centering
+   \includegraphics[width=0.4\textwidth]{images/numIntegDiatValence}
+   \caption{Scheme of a positively $z$-translated spherical domain, $\Gamma_{2c}$,
+   relative to the origin, with two spherical cavities.
+   The domain is rotated and translated in such a manner that $\Gamma_{2c}$ is
+   aligned along the $z$-axis. The scheme shows the projection of $\Gamma_{2c}$ onto the global 
+   $x$-$z$ plane. $a$ is the radius of the spherical cavity, $b$ is the radius of $\Gamma_{2c}$,
+   $c$ is the $z$-coordinate of the
+   plane that cuts $\Gamma_{2c}$ in two halves, $d$ is the $z$-coordinate of the cavity centre,
+   and $d_u=d-c$ is the distance
+   between the upper cavity's centre and the cutting plane. The variables
+   $(r,\theta)$ and $(\rho,\phi)$ are the polar and radial and polar angles
+   relative to the local (primed) and global (non-primed) coordinate systems, respectively.}
+   \label{fig:offcentsphdom2cav}
+\end{figure}
+%
+Hence, the integral of an azymuthally symmetric function $f(r,\theta)$ over $\Sigma_{2c}$ can be reduced
+to two integrals, each of which is an integral over the shadowed region depicted in Fig.~\ref{fig:offcentsphdom2cav}, which is
+defined as:
+%
+\begin{eqnarray}
+	\Gamma_{2c} & \equiv & \Big\{(\rho,\phi)|a\leq\rho\leq\sqrt{b^2-d^2\sin^2\phi}-d\cos\phi,
+	\ 0\leq\phi\leq\phi_1\Big\}\\\nonumber
+	 & & \bigcup\Big\{ (\rho,\phi) | a\leq\rho\leq-d_u\sec\phi,%
+	 \phi_1\leq\phi\leq\pi \Big\}.
+\end{eqnarray}
+%
+The integral over the upper half ($\Sigma_{2c}^{u}$) is given by:
+%
+\begin{eqnarray}
+	\int_{\Sigma_{2c}^{u}}f(r,\theta)dV & = & \phantom{+}2\pi\int_0^{\phi_1}\sin\phi d\phi
+		\int_a^{\sqrt{b^2-d_u^2\sin^2\phi}-d_u\cos\phi}\rho^2f(\rho,\phi)d\rho\\\nonumber
+		 & & +2\pi\int_{\phi_1}^{\pi}\sin\phi d\phi\int_{a}^{-d_u/\cos\phi}\rho^2f(\rho,\phi)d\rho\\\nonumber
+		 & & \equiv 2\pi(M_u+N_u)
+\end{eqnarray}
+%
+The angle $\phi_1$ is:
+%
+\begin{equation}
+	\phi_1=\pi-\arctan\left(\frac{b}{d_u}\right).
+\end{equation}
+%
+
+%................................................................
+\subsubsection{$M_u$ integral}
+%................................................................
+The cubature for the $M_u$ integral is achieved through the changes of variables:
+%
+\begin{subequations}\label{eq:chgvarMGamm2c}
+\begin{eqnarray}
+	\nu & \equiv & \cos\phi\\
+	p & \equiv & \frac{2\rho+\nu d_u-a-\sqrt{b^2-d_u^2(1-\nu^2)}}%
+		{\sqrt{b^2-d_u^2(1-\nu^2)}-\nu d_u-a},\\
+	q & \equiv & \frac{2\nu-1-\nu_1}{1-\nu_1}.
+\end{eqnarray}
+\end{subequations}
+%
+
+Notice that $d_u=d-c$, and $c$ might be positive or negative.
+After substituting Eqs.~(\ref{eq:chgvarMGamm2c}) into $M$, we obtain:
+%
+\begin{equation}
+	M_u=\frac{1-\nu_1}{4}\int_{-1}^1dq\int_{-1}^1\left(\sqrt{b^2-d_u^2(1-\nu^2)}-\nu d_u-a\right)
+		\rho^2(p,q)f(\rho(p,q),\nu(q))dp.
+\end{equation}
+%
+Thus, the cubature rules (using $\{w_i,p_i\}$ and $\{w_j,q_j\}$ as weights and abscissas) are:
+%
+\begin{equation}
+	M_u=\sum_{i,j}W_{ij}
+		\rho^2_{ij}f(\rho_{ij},\nu_j).
+\end{equation}
+%
+Here:
+%
+\begin{subequations}\label{eq:nujrhoijMupDefs}
+\begin{eqnarray}
+	W_{ij} & \equiv & \frac{1-\nu_1}{4}%
+	\left(\sqrt{b^2-d_u^2(1-\nu_j^2)}-\nu_jd_u-a\right)w_iw_j\\
+	\nu_j & \equiv & \frac{1-\nu_1}{2}q_j+\frac{\nu_1+1}{2},\\
+	\rho_{ij} & \equiv & \left(\frac{\sqrt{b^2-d_u^2(1-\nu_j^2)}-\nu_jd_u-a}{2}\right)p_i
+	             + \frac{\sqrt{b^2-d_u^2(1-\nu_j^2)}-\nu_jd_u+a}{2}.
+\end{eqnarray}
+\end{subequations}
+%
+The global Cartesian coordinates are given by:
+%
+\begin{subequations}
+\begin{eqnarray}
+	x_{ij} & = & \rho_{ij}\sqrt{1-\nu_j^2},\\
+	y_{ij}& = & 0,\\
+	z_{ij} & = & \rho_{ij}\nu_j+d_u+c=\rho_{ij}\nu_j+d.
+\end{eqnarray}
+\end{subequations}
+%
+Notice that $c$ might be positive or negative.
+
+The global spherical coordinates are then found as:
+%
+\begin{subequations}
+\begin{eqnarray}
+	r_{ij}^2 & = & x_{ij}^2+z_{ij}^2=\rho_{ij}^2+2\nu_j\rho_{ij}d+d^2,\\
+	\theta_{ij}& = & \arcsin\left(\frac{\rho_{ij}}{r_{ij}}\sqrt{1-\nu_j^2}\right),\\
+	\phi_{ij} & = & 0.
+\end{eqnarray}
+\end{subequations}
+%
+
+%................................................................
+\subsubsection{$N_u$ integral}
+%................................................................
+To determine the cubature rules for $N_u$, we use the following change of variables:
+%
+\begin{subequations}\label{eq:chgvarNGamm2c}
+\begin{eqnarray}
+	\nu & \equiv & \cos\phi\\
+	s & \equiv & \frac{-d_u/\nu}{d_u/\nu+a},\\
+	t & \equiv & \frac{2\nu+1-\nu_1}{1+\nu_1}.
+\end{eqnarray}
+\end{subequations}
+%
+
+Substituting Eqs.~(\ref{eq:chgvarNGamm2c}) into $N$ renders:
+%
+\begin{equation}
+	N_u=\frac{1+\nu_1}{4}\int_{-1}^1dt\int_{-1}^1\left(\frac{-2d_u}%
+		{(\nu_1+1)t+\nu_1-1}-a\right)
+		\rho^2(s,t)f(\rho(s,t),\nu(t))ds.
+\end{equation}
+%
+Thus, the cubature rules (using $\{w_i,s_i\}$ and $\{w_j,t_j\}$ as weights and abscissas) are:
+%
+\begin{equation}
+	N_u=\sum_{i,j}W_{ij}
+		\rho^2_{ij}f(\rho_{ij},\nu_j).
+\end{equation}
+%
+Here,
+%
+\begin{subequations}\label{eq:nujrhoijNupDefs}
+\begin{eqnarray}
+	W_{ij} & \equiv & \frac{1+\nu_1}{4}%
+	\left(\frac{-2d_u}{(\nu_1+1)t_j+\nu_1-1}-a\right)w_iw_j\\
+	\nu_j & \equiv & \frac{1+\nu_1}{2}t_j+\frac{\nu_1-1}{2},\\
+	\rho_{ij} & \equiv & \left(\frac{-a-d_u/\nu_j}{2}\right)s_i
+	             + \frac{a-d_u/\nu_j}{2}.
+\end{eqnarray}
+\end{subequations}
+%
+The global Cartesian coordinates are given by:
+%
+\begin{subequations}
+\begin{eqnarray}
+	x_{ij} & = & \rho_{ij}\sqrt{1-\nu_j^2},\\
+	y_{ij}& = & 0,\\
+	z_{ij} & = & \rho_{ij}\nu_j+d_u+c=\rho_{ij}\nu_j+d.
+\end{eqnarray}
+\end{subequations}
+%
+Notice again that $c$ might be positive or negative.
+
+The global spherical coordinates are then found as:
+%
+\begin{subequations}
+\begin{eqnarray}
+	r_{ij}^2 & = & x_{ij}^2+z_{ij}^2=\rho_{ij}^2+2\nu_j\rho_{ij}d+d^2,\\
+	\theta_{ij}& = & \arcsin\left(\frac{\rho_{ij}}{r_{ij}}\sqrt{1-\nu_j^2}\right),\\
+	\phi_{ij} & = & 0.
+\end{eqnarray}
+\end{subequations}
+%
+
+%----------------------------------------------------------------
+\subsection{Lower domain}
+%----------------------------------------------------------------
+
+The lower cubature rules are obtained by setting $d_l=-d+c$,
+$a\rightarrow a_l$, and $z\rightarrow-z$. Here $a_l$ is the radius of the lower
+spherical region of integration, and its centre is located at $z=d=-|d|$.
+The weights are the same as for the upper domain.
+
+%................................................................
+\subsubsection{$M_l$ and $N_l$ integrals}
+%................................................................
+%
+%
+The global Cartesian coordinates are given by:
+%
+\begin{subequations}
+\begin{eqnarray}
+	x_{ij} & = & \rho_{ij}\sqrt{1-\nu_j^2},\\
+	y_{ij}& = & 0,\\
+	z_{ij} & = & -\rho_{ij}\nu_j-d_l+c=-\rho_{ij}\nu_j+d=-\rho_{ij}\nu_j-|d|.
+\end{eqnarray}
+\end{subequations}
+%
+Notice that $c$ might be positive or negative, and here $d<0$.
+
+The global spherical coordinates are then found as:
+%
+\begin{subequations}
+\begin{eqnarray}
+	r_{ij}^2 & = & x_{ij}^2+z_{ij}^2=\rho_{ij}^2+2\nu_j\rho_{ij}|d|+d^2,\\
+	\theta_{ij}& = & \arcsin\left(\frac{\rho_{ij}}{r_{ij}}\sqrt{1-\nu_j^2}\right),\\
+	\phi_{ij} & = & 0.
+\end{eqnarray}
+\end{subequations}
+%
+
+Substitute Eqs.~(\ref{eq:nujrhoijMupDefs}) or (\ref{eq:nujrhoijNupDefs}) as needed for
+the $M_l$ or  $N_l$ integral, respectively.
 
 
 \end{document}  
