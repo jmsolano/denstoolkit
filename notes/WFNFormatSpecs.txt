@@ -1,0 +1,61 @@
+         1         2         3         4         5         6         7
+12345678901234567890123456789012345678901234567890123456789012345678901234567890
+MO  1                     OCC NO =   2.00000000 ORB. ENERGY = -19.16250643
+MO    1     MO 0.0        OCC NO =    2.0000000  ORB. ENERGY =  -19.148310
+
+=========================================================================
+
+From proaim.f:
+read(iwfn,101) wfnttl
+ShdRd: 'Name  h2o_nh3    Run Type  SinglePoint    Method  DFGTO    Basis Set  Gauss '
+101   format (1a80)
+
+read(iwfn,102) mode,nmo,nprims,ncent
+ShdRd: 'GAUSSIAN                  10 MOL ORBITALS    285 PRIMITIVES        7 NUCLEI'
+102   format (4x,a4,12x,1i3,16x,1i4,17x,1i3,17x)
+
+read(iwfn,103) atnam(i),j,xc(j),yc(j),zc(j),charg(j)
+ShdRd: '  O 1       (CENTRE  1)   0.00000000 -0.09646107 -2.77400836  CHARGE =  8.0'
+103   format (1a8,11x,1i3,2x,3f12.8,10x,f5.1)
+
+read(iwfn,104) (icent(i),i=1,nprims)
+ShdRd: 'CENTRE ASSIGNMENTS    1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1'
+104   format (20x,20i3)
+
+read(iwfn,104) (itype(i),i=1,nprims)
+ShdRd: 'TYPE ASSIGNMENTS      1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  4'
+104   format (20x,20i3)
+
+read(iwfn,105) (ex(i),i=1,nprims)
+ShdRd: 'EXPONENTS  1.5330000E+04 2.2990000E+03 5.2240000E+02 1.4730000E+02 4.7550000E+01'
+105   format (10x,5e14.7)
+
+read(iwfn,106) po(i),eorb(i)
+ShdRd: 'MO  1                     OCC NO =   2.00000000  ORB. ENERGY =  -19.162506'
+106   format (35x,f12.8,15x,f12.8)
+[35+12={47}+15={62}+12={74}]
+
+read(iwfn,107) (co(j,i),j=1,nprims)
+ShdRd: ' -4.98279469E-01 -9.28728818E-01 -1.57481635E+00 -2.38355790E+00 -2.97398433E+00'
+107   format (5e16.8)
+
+read(iwfn,101) line
+ShdRd: 'END DATA '
+
+read(iwfn,109) tote,gamma
+ShdRd: ' THE ENERGY =   -133.020112102821 THE VIRIAL(-V/T)=   2.00568015 '
+109   format (15x,f20.12,18x,f13.8)
+
+
+
+
+=======================================================================
+Molden2Aim:
+1000  format("MO",i5,5x,"MO 0.0",8x,"OCC NO =",f13.7,"  ORB. ENERGY =",f12.6)
+[2+5+5+6+8+8={34}+13={47}+15={62}+12={74}]
+ShdRd: 'MO  1                     OCC NO =   2.00000000  ORB. ENERGY =  -19.162506'
+
+
+         1         2         3         4         5         6         7
+12345678901234567890123456789012345678901234567890123456789012345678901234567890
+MO  1                     OCC NO =   2.00000000  ORB. ENERGY =  -19.162506
