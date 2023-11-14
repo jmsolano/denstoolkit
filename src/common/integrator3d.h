@@ -55,10 +55,10 @@ class Integrator3D {
 public:
 /* ************************************************************************** */
    enum class DomainType {UNDEFINED,CARTESIAN_INF,CUBOIDBOX,SPHERICAL_INT,\
-      CYLINDRICAL_INT,INFINITE_3D_2CAVITIES,\
+      DIATOMIC,CYLINDRICAL_INT,INFINITE_3D_2CAVITIES,\
       SPHERE_1CAVITY_ZAL_AZSYM,SPHERE_2CAVITIES_ZAL_AZSYM};
    enum class IntegratorType {UNDEFINED,ANALYTICAL,MONTECARLO,\
-      QUADRATURE};
+      QUADRATURE,CUBATURE};
    Integrator3D();
    Integrator3D(shared_ptr<Function3D> uptr);
    void SetIntegrand(shared_ptr<Function3D> uptr);
