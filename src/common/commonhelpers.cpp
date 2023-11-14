@@ -47,6 +47,7 @@ using std::cout;
 #include "commonhelpers.h"
 #include "atomcolschjmol.h"
 #include "atomradiicust.h"
+#include "mymath.h"
 #include "matrixvectoroperations3d.h"
 
 void CommonHelpers::PutNuclei(ofstream &ofil,BondNetWork &bn,int ntbs,\
@@ -160,5 +161,82 @@ void CommonHelpers::RotateCameraAroundRight(POVRayConfiguration &pvc,double angl
    double angrad=angle*M_PI/180.0e0;
    vector<vector<double> > R=MatrixVectorOperations3D::GetRotationMatrixAroundAxis(u,angrad);
    pvc.ApplyRotationMatrixToCameraAndLightSources(R);
+}
+double CommonHelpers::DetermineMonoatomicIntegralLimit(GaussWaveFunction &wf,\
+      const char ft) {
+   double rt=0.5e0;
+   double rmx=-1.0e+50;
+   if ( (ft == 'm') || (ft == 'T') || (ft == 'k') ) {
+      while ( wf.EvalFTDensity(rt,0.0e0,0.0e0) >= 1.0e-14 ) {
+         rt+=0.5e0;
+      }
+      if ( rmx<fabs(rt) ) { rmx=fabs(rt); }
+      //cout << "rmxx: " << rt << '\n';
+      rt=0.5e0;
+      while ( wf.EvalFTDensity(0.0e0,rt,0.0e0) >= 1.0e-14 ) {
+         rt+=0.5e0;
+      }
+      if ( rmx<fabs(rt) ) { rmx=fabs(rt); }
+      //cout << "rmxy: " << rt << '\n';
+      rt=0.5e0;
+      while ( wf.EvalFTDensity(0.0e0,0.0e0,rt) >= 1.0e-14 ) {
+         rt+=0.5e0;
+      }
+      if ( rmx<fabs(rt) ) { rmx=fabs(rt); }
+      //cout << "rmxz: " << rt << '\n';
+   } else {
+      while ( wf.EvalDensity(0.0e0,0.0e0,rt) >= 1.0e-14 ) {
+         rt+=0.5e0;
+      }
+      rmx=fabs(rt);
+   }
+   return rmx;
+}
+void CommonHelpers::DetermineDiatomicIntegralLimits(GaussWaveFunction &wf,\
+         const char ft, const vector<double> &r0, const vector<double> &r1,\
+         const double a0,const double a1,vector<double> &r0mx,\
+         vector<double> &r1mx,vector<double> &rmid) {
+   double dir[3];
+   for ( size_t i=0 ; i<3 ; ++i ) {
+      dir[i]=r1[i]-r0[i];
+      r0mx[i]=r0[i];
+      r1mx[i]=r1[i];
+   }
+   double magdir=magV3(dir);
+   normalizeV3(dir);
+   for ( size_t i=0 ; i<3 ; ++i ) {
+      rmid[i]=r0mx[i]+(dir[i])*(a0-0.5e0*(a0+a1-magdir));
+   }
+   if ( (ft == 'm') || (ft == 'T') || (ft == 'k') ) {
+      ScreenUtils::DisplayWarningMessage("You should be using spherical integration\n"
+            "domain!");
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+      while ( wf.EvalFTDensity(r1mx[0],r1mx[1],r1mx[2]) >= 1.0e-14 ) {
+         for (int i=0; i<3; ++i) { r1mx[i] += (0.10e0*dir[i]); }
+      }
+      while ( wf.EvalFTDensity(r0mx[0],r0mx[1],r0mx[2]) >= 1.0e-14 ) {
+         for (int i=0; i<3; ++i) { r0mx[i] -= (0.10e0*dir[i]); }
+      }
+   } else {
+      while ( wf.EvalDensity(r1mx[0],r1mx[1],r1mx[2]) >= 1.0e-14 ) {
+         for (int i=0; i<3; ++i) { r1mx[i] += (0.10e0*dir[i]); }
+      }
+      while ( wf.EvalDensity(r0mx[0],r0mx[1],r0mx[2]) >= 1.0e-14 ) {
+         for (int i=0; i<3; ++i) { r0mx[i] -= (0.10e0*dir[i]); }
+      }
+   }
+}
+bool CommonHelpers::AtomsAreZAligned(GaussWaveFunction &wf) {
+   if ( wf.nNuc!=2 ) {
+      ScreenUtils::DisplayErrorMessage("This function can be used for diatomic molecules only!");
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+      return false;
+   }
+   double xx[3];
+   for ( int i=0 ; i<3 ; ++i ) { xx[i]=wf.GetR(1,i)-wf.GetR(0,i); }
+   if ( fabs(magV3(xx)-fabs(xx[2]))>0.000001 ) {
+      return false;
+   }
+   return true;
 }
 

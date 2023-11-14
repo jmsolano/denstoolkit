@@ -45,6 +45,8 @@
 #define _COMMONHELPERS_H_
 #include "bondnetwork.h"
 #include "povraytools.h"
+#include "gausswavefunction.h"
+#include "bondnetwork.h"
 /* ************************************************************************** */
 class CommonHelpers {
 /* ************************************************************************** */
@@ -79,6 +81,16 @@ public:
    static void RotateCameraAroundLocCam(POVRayConfiguration &pvc, double angle);
    static void RotateCameraAroundUp(POVRayConfiguration &pvc, double angle);
    static void RotateCameraAroundRight(POVRayConfiguration &pvc, double angle);
+   static double DetermineMonoatomicIntegralLimit(GaussWaveFunction &wf,
+         const char ft);
+   static void DetermineDiatomicIntegralLimits(GaussWaveFunction &wf,\
+         const char ft, const vector<double> &r0, const vector<double> &r1,\
+         const double a0,const double a1,vector<double> &r0mx,\
+         vector<double> &r1mx,vector<double> &rmid);
+   /** Checks whether two atoms are aligned along the z-axis. It only
+    * works if wf has exactly two atoms. If wf has one or more than two atoms,
+    * the function returns a false;  */
+   static bool AtomsAreZAligned(GaussWaveFunction &wf);
 /* ************************************************************************** */
 protected:
 /* ************************************************************************** */
