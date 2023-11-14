@@ -62,6 +62,7 @@ public:
    void DisplayProperties();
    size_t NGaussLegR() { return xrc.size(); }
    size_t NGaussLegPhi() { return xpc.size(); }
+   void GetWeightsAndAbscissas(vector<double> &uw,vector<vector<double> > &ux);
 /* ************************************************************************** */
    /** This function sets up the member variables using the information
     * provided by the user. The user does not need to concern about

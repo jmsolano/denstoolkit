@@ -67,6 +67,8 @@ Integrator3DDiatomics::Integrator3DDiatomics() : Integrator3D() {
    wpc.clear();
    wpv.clear();
    firstisupper=true;
+   SetDomainType(DomainType::DIATOMIC);
+   SetIntegratorType(IntegratorType::CUBATURE);
    imsetup=false;
 }
 Integrator3DDiatomics::Integrator3DDiatomics(shared_ptr<Function3D> i)
@@ -287,5 +289,31 @@ void Integrator3DDiatomics::BuildLowerCubature() {
       wt[offset+i*npv+j]=0.0e0;
    }
    // */
+}
+void Integrator3DDiatomics::GetWeightsAndAbscissas(vector<double> &uw,\
+      vector<vector<double> > &ux) {
+   if ( !imsetup ) {
+      ScreenUtils::DisplayErrorMessage("Cannot provide weights and abscissas, since\n"
+            "the integrator is not setup!");
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+      return;
+   }
+   BuildUpperCubature();
+   size_t nn=xt.size();
+   if ( uw.size()!=(2*nn) ) { uw.resize(2*nn,0.0e0); }
+   if ( ux.size()!=(2*nn) ) {
+      for ( size_t i=0 ; i<ux.size() ; ++i ) { ux[i].clear(); }
+      ux.resize((2*nn));
+      for ( size_t i=0 ; i<ux.size() ; ++i ) { ux[i].resize(3); }
+   }
+   for ( size_t i=0 ; i<nn ; ++i ) { uw[i]=wt[i]; }
+   for ( size_t i=0 ; i<nn ; ++i ) {
+      for ( size_t j=0 ; j<3 ; ++j ) { ux[i][j]=xt[i][j]; }
+   }
+   BuildLowerCubature();
+   for ( size_t i=0 ; i<nn ; ++i ) { uw[nn+i]=wt[i]; }
+   for ( size_t i=0 ; i<nn ; ++i ) {
+      for ( size_t j=0 ; j<3 ; ++j ) { ux[nn+i][j]=xt[i][j]; }
+   }
 }
 
