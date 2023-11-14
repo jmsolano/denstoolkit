@@ -50,6 +50,10 @@ using std::shared_ptr;
 #include "integrator3d.h"
 
 /* ************************************************************************** */
+/** The class Integrator3DLegSphtDes is designed to  integrate
+ * a Function3D over the sphere of over a hollowed sphere.
+ * After the initial construction, use SetupCubature to
+ * provide the domain.  */
 class Integrator3DLegSphtDes : public Integrator3D {
 /* ************************************************************************** */
 public:
@@ -63,8 +67,17 @@ public:
    size_t NGaussLegendre() { return xl.size(); }
    size_t NSpherTDes() { return xs.size(); }
 /* ************************************************************************** */
+   /** This function prepares the internal weights and abscissas,
+    * in order to perform the following integral:
+    * \f$\int_0^{2\pi}d\varphi\int_0^{\pi}\sin\theta d\theta
+    *    \int_a^bf(r,\theta\phi)\f$.
+    * @param[in]: a       the lower radius bound
+    * @param[in]: b       the upper radius bound
+    * @param[in]: glord   the radial Gauss-Legendre order.
+    * @param[in]: sphtord the spherical t design order. */
    bool SetupCubature(const double a,const double b,\
          const int glord,const int sphtord);
+   void GetWeightsAndAbscissas(vector<double> &uw,vector<vector<double> > &ux);
 /* ************************************************************************** */
 protected:
 /* ************************************************************************** */

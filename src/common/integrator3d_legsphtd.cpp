@@ -60,6 +60,8 @@ Integrator3DLegSphtDes::Integrator3DLegSphtDes() : Integrator3D() {
    ws.clear();
    xl.clear();
    wl.clear();
+   SetDomainType(DomainType::SPHERICAL_INT);
+   SetIntegratorType(IntegratorType::CUBATURE);
    imsetup=false;
 }
 Integrator3DLegSphtDes::Integrator3DLegSphtDes(shared_ptr<Function3D> i)
@@ -104,6 +106,34 @@ bool Integrator3DLegSphtDes::SetupCubature(const double a,const double b,\
    for ( size_t i=0 ; i<xt.size() ; ++i ) { xt[i].resize(3); }
    imsetup=true;
    return havevecs;
+}
+void Integrator3DLegSphtDes::GetWeightsAndAbscissas(vector<double> &uw,\
+      vector<vector<double> > &ux) {
+   if ( !imsetup ) {
+      ScreenUtils::DisplayErrorMessage("Data is not setup!");
+      cout << __FILE__ << ", line: " << __LINE__ << '\n';
+      return;
+   }
+   size_t nt=xt.size();
+   size_t nl=xl.size();
+   if ( uw.size() != (nt*nl) || ux.size() != (nt*nl) ) {
+      for ( size_t i=0 ; i<ux.size() ; ++i ) { ux[i].clear(); }
+      ux.resize(nl*nt);
+      for ( size_t i=0 ; i<ux.size() ; ++i ) { ux[i].resize(3); }
+      uw.resize(nl*nt);
+   }
+   size_t offset;
+   double ri,ws0i;
+   for ( size_t i=0 ; i<nl ; ++i ) {
+      offset=nt*i;
+      ri=xl[i];
+      ScaleAbscissas(ri);
+      for ( size_t j=0 ; j<nt ; ++j ) {
+         for ( size_t k=0 ; k<3 ; ++k ) { ux[offset+j][k]=xt[j][k]; }
+      }
+      ws0i=ws[0]*wl[i]*ri*ri;
+      for ( size_t j=0 ; j<nt ; ++j ) { uw[offset+j]=ws0i; }
+   }
 }
 void Integrator3DLegSphtDes::ScaleAbscissas(const double a) {
    size_t n=xt.size();
