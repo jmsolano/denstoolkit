@@ -48,7 +48,12 @@
 
 #define MAXDEFINEDATOMICRADII 112
 
+/** Returns the Van der Waals radius (in Angstroms) of the atom whose
+ * atomic number is (atn+1). atn is in fact the index
+ * of the array atomicRadius.   */
 double GetAtomicVDWRadius(int atn);
+/** Same as GetAtomicVDWRadius, but the radius is
+ * returned in a.u.  */
 inline double GetAtomicVDWRadiusAtomicUnits(int atn) {
    return (GetAtomicVDWRadius(atn)/0.529177249e0);
 }
