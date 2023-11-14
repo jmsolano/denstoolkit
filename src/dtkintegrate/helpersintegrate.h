@@ -86,9 +86,8 @@ public:
     *                     integration domain is located.
     * r1max-r0max is directed along the line that joins the two atoms,
     * which must be along the z-axis. */
-   static void DetermineDiatomicIntegralLimits(OptionFlags &options,char*argv[],\
-         GaussWaveFunction &wf,BondNetWork &bn,char ft,vector<double> &r0mx,\
-         vector<double> &r1mx,vector<double> &rmid);
+   static void DetermineDiatomicIntegralLimits(GaussWaveFunction &wf,\
+         char ft,vector<double> &r0mx,vector<double> &r1mx,vector<double> &rmid);
 protected:
 /* ************************************************************************** */
 };
