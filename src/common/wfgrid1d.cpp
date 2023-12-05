@@ -634,6 +634,40 @@ bool WaveFunctionGrid1D::WriteLineDatRoSE(ofstream &ofil,GaussWaveFunction &wf) 
    }
    return true;
 }
+bool WaveFunctionGrid1D::WriteLineDatDORI(ofstream &ofil,GaussWaveFunction &wf) {
+   if (!imsetup) {
+      cout << "Error: the grid has not been set up!" << endl;
+      cout << "No output will be written." << endl;
+      for (int j=0; j<4; j++) {
+         for (int i=0; i<4; i++) {
+            ofil << double(i) << " " << 2.0e0*double(i) << " " << 3.2e0*double(i) << endl;
+         }
+         ofil << endl;
+      }
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+      return false;
+   }
+   double delta[3],xx[3];
+   for (int i=0; i<3; i++) {
+      delta[i]=(Cb[i]-Ca[i]);
+      xx[i]=Ca[i];
+   }
+   for (int i=0; i<3; i++) {delta[i]/=double(npts-1);}
+   for (int i=0; i<npts; i++) {
+      prop1d[i]=wf.EvalDORI(xx[0],xx[1],xx[2]);
+      for (int j=0; j<3; j++) {xx[j]+=delta[j];}
+#if USEPROGRESSBAR
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
+#endif
+   }
+   //cout << "xx: " << xx[0] << " " << xx[1] << " " << xx[2] << endl;
+   double e2=-1.0e0*maxdim;
+   for (int i=0; i<npts; i++) {
+      ofil << e2 << " " << prop1d[i] << endl;
+      e2+=dx*maxdim;
+   }
+   return true;
+}
 bool WaveFunctionGrid1D::WriteLineDatScalarCustFld(ofstream &ofil,GaussWaveFunction &wf) {
    if (!imsetup) {
       cout << "Error: the grid has not been set up!" << endl;
@@ -742,6 +776,10 @@ bool WaveFunctionGrid1D::WriteLineDatEllipticity(ofstream &ofil,GaussWaveFunctio
    }
    return true;
 }
+void WaveFunctionGrid1D::MakeDat(string &onam,GaussWaveFunction &wf,char prop) {
+   ScalarFieldType ft=Char2ScalarFieldType(prop);
+   return MakeDat(onam,wf,ft);
+}
 void WaveFunctionGrid1D::MakeDat(string &onam,GaussWaveFunction &wf,ScalarFieldType ft) {
    if (!wf.imldd) {
       cout << "Error: trying to use a non loaded wave function object!\nNothing done!\n";
@@ -804,8 +842,12 @@ void WaveFunctionGrid1D::MakeDat(string &onam,GaussWaveFunction &wf,ScalarFieldT
       case ELLPY :
          WriteLineDatEllipticity(ofil,wf);
          break;
+      case DORI :
+         WriteLineDatDORI(ofil,wf);
+         break;
       default:
          cout << "Error: Field type not known!\n dat file incomplete!" << endl;
+         cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
          break;
    }
 #if USEPROGRESSBAR

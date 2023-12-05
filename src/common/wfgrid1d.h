@@ -97,6 +97,7 @@ public:
    void SetUpSimpleLine(BondNetWork &bn,double (&ta)[3],double (&tb)[3]);
    //void SetUpSimpleLine(BondNetWork &bn,double (&ta)[3]);
    bool WriteLineDatRho(ofstream &ofil,GaussWaveFunction &wf);
+   void MakeDat(string &onam,GaussWaveFunction &wf,char prop);
    void MakeDat(string &onam,GaussWaveFunction &wf,ScalarFieldType ft);
    bool WriteLineDatLapRho(ofstream &ofil,GaussWaveFunction &wf);
    bool WriteLineDatELF(ofstream &ofil,GaussWaveFunction &wf);
@@ -110,6 +111,7 @@ public:
    bool WriteLineDatMagLED(ofstream &ofil,GaussWaveFunction &wf);
    bool WriteLineDatRedDensGrad(ofstream &ofil,GaussWaveFunction &wf);
    bool WriteLineDatRoSE(ofstream &ofil,GaussWaveFunction &wf);
+   bool WriteLineDatDORI(ofstream &ofil,GaussWaveFunction &wf);
    bool WriteLineDatScalarCustFld(ofstream &ofil,GaussWaveFunction &wf);
    bool WriteLineDatVirialPotentialEnergyDensity(ofstream &ofil,GaussWaveFunction &wf);
    bool WriteLineDatEllipticity(ofstream &ofil,GaussWaveFunction &wf);

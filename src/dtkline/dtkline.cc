@@ -173,64 +173,8 @@ int main (int argc, char ** argv) {
    /* Main calculation loop, chooses between different available fields. */
    
    cout << "Evaluating and writing property..." << endl;
-      cout << "(Scalar Field to plot: " << GetFieldTypeKeyLong(prop) << ")." << endl << endl;
-   switch (prop) {
-      case 'd':
-         grid.MakeDat(outfilnam,gwf,DENS);
-         break;
-      case 'g':
-         grid.MakeDat(outfilnam,gwf,MGRD);
-         break;
-      case 'l':
-         grid.MakeDat(outfilnam,gwf,LAPD);
-         break;
-      case 'e':
-         grid.MakeDat(outfilnam,gwf,ELLPY);
-         break;
-      case 'E':
-         grid.MakeDat(outfilnam,gwf,ELFD);
-         break;
-      case 'P' :
-         grid.MakeDat(outfilnam,gwf,MLED);
-         break;
-      case 'r' :
-         grid.MakeDat(outfilnam,gwf,ROSE);
-         break;
-      case 's' :
-         grid.MakeDat(outfilnam,gwf,REDG);
-         break;
-      case 'S':
-         grid.MakeDat(outfilnam,gwf,SENT);
-         break;
-      case 'L':
-         grid.MakeDat(outfilnam,gwf,LOLD);
-         break;
-      case 'M':
-         grid.MakeDat(outfilnam,gwf,MGLD);
-         break;
-      case 'G':
-         grid.MakeDat(outfilnam,gwf,KEDG);
-         break;
-      case 'K':
-         grid.MakeDat(outfilnam,gwf,KEDK);
-         break;
-      case 'u' :
-         grid.MakeDat(outfilnam,gwf,SCFD);
-         break;
-      case 'V':
-         grid.MakeDat(outfilnam,gwf,MEPD);
-         break;
-      case 'v':
-         grid.MakeDat(outfilnam,gwf,VPED);
-         break;
-      default:
-         ScreenUtils::SetScrRedBoldFont();
-         cout << "Error: The property \"" << prop << "\" does not exist!" << endl;
-         ScreenUtils::SetScrNormalFont();
-         exit(1);
-         break;
-   }
-   
+   cout << "(Scalar Field to plot: " << GetFieldTypeKeyLong(prop) << ")." << endl << endl;
+   grid.MakeDat(outfilnam,gwf,prop);
    cout << endl << "Output written in file: " << outfilnam << endl;
    
 #if _HAVE_GNUPLOT_

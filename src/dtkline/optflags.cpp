@@ -206,6 +206,7 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "         \t\tV (Molecular Electrostatic Potential)" << endl;
    cout << "         \t\tv (Virial Potential Energy Density)" << endl;
    cout << "         \t\te (Ellipticity)" << endl;
+   cout << "         \t\tD (Density Overlap Regions Indicator -DORI-)" << endl;
 #if _HAVE_GNUPLOT_
    cout << "  -P     \tCreate a plot using gnuplot." << endl
         << "  -k     \tKeeps the *.gnp file to be used later by gnuplot." << endl;
