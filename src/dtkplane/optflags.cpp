@@ -68,6 +68,7 @@ using std::string;
 #include "figname.h"
 #include "optflags.h"
 #include "../common/screenutils.h"
+#include "fldtypesdef.h"
 
 OptionFlags::OptionFlags() {
    infname=0;
@@ -205,27 +206,13 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  (If not given the program will create one out of" << endl
         << "            \t  the input name; if given, the tsv, gnp and pdf files will" << endl
         << "            \t  use this name as well --but different extension--)." << endl;
-   cout << "  -p prop\tChoose the property to be computed. prop is a character," << endl
-        << "         \t  which can be (d is the default value): " << endl
-        << "         \t\td (Density)" << endl
-        << "         \t\tg (Magnitude of the Gradient of the Density)" << endl
-        << "         \t\tl (Laplacian of density)" << endl
-        << "         \t\tK (Kinetic Energy Density K)" << endl
-        << "         \t\tG (Kinetic Energy Density G)" << endl
-        << "         \t\te (Ellipticity)" << endl
-        << "         \t\tE (Electron Localization Function -ELF-)" << endl
-        << "         \t\tL (Localized Orbital Locator -LOL-)" << endl
-        << "         \t\tM (Magnitude of the Gradient of LOL)" << endl
-        << "         \t\tN (Gradient of LOL)" << endl
-        << "         \t\tp (Localized Electrons Detector -LED-)" << endl
-        << "         \t\tP (Magnitued of Localized Electrons Detector)" << endl
-        << "         \t\tr (Region of Slow Electrons -RoSE-)" << endl
-        << "         \t\ts (Reduced Density Gradient -s-)" << endl
-        << "         \t\tS (Shannon Entropy Density)" << endl;
-   cout << "         \t\tu (Scalar Custom Field)" << endl;
-   cout << "         \t\tU (Vector Custom Field)" << endl;
-   cout << "         \t\tV (Molecular Electrostatic Potential)" << endl;
-   cout << "         \t\tv (Virial Potential Energy Density)" << endl;
+   cout << "  -p prop\tChoose the property to be computed. prop is a character," << endl;
+   cout << "         \t  which can be (d is the default value): " << endl;
+   string charFields="dglKGeELMNpPrsSVvDuU";
+   for ( size_t i=0 ; i<charFields.size() ; ++i ) {
+      cout << "         \t\t" << charFields[i] << " ("
+         << GetFieldTypeKeyLong(charFields[i]) << ')' << '\n';
+   }
 #if _HAVE_GNUPLOT_
    cout << "  -P     \tCreate a plot using gnuplot." << endl
         << "  -c     \tShow contour lines in the plot." << endl

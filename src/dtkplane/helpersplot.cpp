@@ -72,10 +72,8 @@ void HelpersPlot::makeGnuplotFile(OptionFlags &opts, string &gnpnam,string &tsvn
          maxzrange=2.0e0;
          break;
       case 'e':
-         minzrange=0.0e0;
-         maxzrange=1.0e0;
-         break;
       case 'E':
+      case 'D' :
          minzrange=0.0e0;
          maxzrange=1.0e0;
          break;
@@ -134,6 +132,7 @@ void HelpersPlot::makeGnuplotFile(OptionFlags &opts, string &gnpnam,string &tsvn
       default:
          ScreenUtils::SetScrRedBoldFont();
          cout << "Error: The property \"" << p2p << "\" does not exist!" << endl;
+         cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
          ScreenUtils::SetScrNormalFont();
          exit(1);
          break;
