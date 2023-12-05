@@ -412,7 +412,7 @@ inline string GetFieldTypeKeyLong(const char prop) {
          plbl="Non Covalent Interactions - Density";
          break;
       case 'D' :
-         plbl="Density Overlap Regions Indicator";
+         plbl="Density Overlap Regions Indicator --DORI--";
          break;
       default:
          plbl="Unknown Field Type!";
