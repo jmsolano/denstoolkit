@@ -68,6 +68,7 @@ using std::string;
 #include "figname.h"
 #include "optflags.h"
 #include "../common/screenutils.h"
+#include "fldtypesdef.h"
 
 OptionFlags::OptionFlags() {
    infname=0;
@@ -189,24 +190,12 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  the input name; if given, the gnp file and the pdf will" << endl
         << "            \t  use this name as well --but different extension--)." << endl;
    cout << "  -p prop\tChoose the property to be computed. prop is a character," << endl
-        << "         \t  which can be (d is the default value): " << endl
-        << "         \t\td (Density)" << endl
-        << "         \t\tg (Magnitude of the Gradient of the Density)" << endl
-        << "         \t\tl (Laplacian of density)" << endl
-        << "         \t\tK (Kinetic Energy Density K)" << endl
-        << "         \t\tG (Kinetic Energy Density G)" << endl
-        << "         \t\tE (Electron Localization Function -ELF-)" << endl
-        << "         \t\tL (Localized Orbital Locator -LOL-)" << endl
-        << "         \t\tM (Magnitude of the Gradient of LOL)" << endl
-        << "         \t\tP (Magnitude of the Localized Electrons Detector -LED-)" << endl
-        << "         \t\tr (Region of Slower Electrons -RoSE-)" << endl
-        << "         \t\ts (Reduced Density Gradient -s-)" << endl
-        << "         \t\tS (Shannon Entropy Density)" << endl;
-   cout << "         \t\tu (Scalar Custom Field)" << endl;
-   cout << "         \t\tV (Molecular Electrostatic Potential)" << endl;
-   cout << "         \t\tv (Virial Potential Energy Density)" << endl;
-   cout << "         \t\te (Ellipticity)" << endl;
-   cout << "         \t\tD (Density Overlap Regions Indicator -DORI-)" << endl;
+        << "         \t  which can be (d is the default value): " << endl;
+   string charFields="dglKGeELMPrsSVvDu";
+   for ( size_t i=0 ; i<charFields.size() ; ++i ) {
+      cout << "         \t\t" << charFields[i] << " ("
+         << GetFieldTypeKeyLong(charFields[i]) << ')' << '\n';
+   }
 #if _HAVE_GNUPLOT_
    cout << "  -P     \tCreate a plot using gnuplot." << endl
         << "  -k     \tKeeps the *.gnp file to be used later by gnuplot." << endl;
