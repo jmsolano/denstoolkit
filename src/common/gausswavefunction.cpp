@@ -5211,7 +5211,7 @@ double GaussWaveFunction::EvalDORI(double x,double y,double z) {
    for ( int i=0 ; i<3 ; ++i ) {
       tmp=0.0e0;
       for ( int j=0 ; j<3 ; ++j ) { tmp+=(g[j]*h[i][j]); }
-      A[i]=g[i]*gr2+rho*tmp;
+      A[i]=rho*tmp-g[i]*gr2;
    }
    tmp=A[0]*A[0]+A[1]*A[1]+A[2]*A[2];
    double theta=4.0e0*tmp/(gr2*gr2*gr2);
@@ -5222,7 +5222,7 @@ double GaussWaveFunction::EvalDORI(double x,double y,double z) {
    for ( int i=0 ; i<3 ; ++i ) {
       tmp=0.0e0;
       for ( int j=0 ; j<3 ; ++j ) { tmp+=(g[j]*h[i][j]); }
-      A[i]=g[i]*gr2+rho*tmp;
+      A[i]=-g[i]*gr2+rho*tmp;
       A[i]*=2.0e0/(rho*rho*rho);
    }
    tmp=A[0]*A[0]+A[1]*A[1]+A[2]*A[2];
