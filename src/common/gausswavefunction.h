@@ -562,6 +562,7 @@ public:
     * D. N. Beratan, and W. Yang. J. Chem. Theory Comput. 2011, 7, pp 625-632
     * for more details */
    double EvalNCILambda(double x,double y,double z);
+   double EvalDORI(double x,double y,double z);
    int GetPrTy(int idx) {return prTy[idx];}
 /* ************************************************************************************ */
 protected:

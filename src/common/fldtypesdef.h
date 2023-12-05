@@ -70,6 +70,7 @@ enum ScalarFieldType {
    NCIL,/* Non Covalent Interactions (NCI) -- Rho */\
    EDFTA, /* DFT Exchange and Corrrelation Energy ($(-3/4)(3\rho/\pi)^{1/3}$) */\
    ELLPY, /*!< Ellipticity  */
+   DORI, /*!< Density Overlap Regions Indicator  */
    SCFD, /* Scalar Custom Field Density */\
    VCFD /* Vector Custom Field Density */
 };
@@ -147,6 +148,9 @@ inline char ConvertScalarFieldType2Char(ScalarFieldType fftt) {
          break;
       case NCIL :
          res= 'Z';
+         break;
+      case DORI :
+         res= 'D';
          break;
       case NONE :
       default :
@@ -233,6 +237,9 @@ inline ScalarFieldType Char2ScalarFieldType(const char prop) {
       case 'Z' :
          res=NCIL;
          break;
+      case 'D' :
+         res=DORI;
+         break;
       default :
          res=NONE;
          break;
@@ -316,6 +323,9 @@ inline string GetFieldTypeKeyShort(const char prop) {
          break;
       case 'Z':
          plbl="NCIRho";
+         break;
+      case 'D' :
+         plbl="DORI";
          break;
       default:
          plbl="Unknown";
@@ -401,6 +411,9 @@ inline string GetFieldTypeKeyLong(const char prop) {
       case 'Z':
          plbl="Non Covalent Interactions - Density";
          break;
+      case 'D' :
+         plbl="Density Overlap Regions Indicator";
+         break;
       default:
          plbl="Unknown Field Type!";
          break;
@@ -482,6 +495,9 @@ inline string GnuplotFieldTitle(const char p2p) {
       case 'Z':
          plbl=string("NCI -- Rho");
          break;
+      case 'D' :
+         plbl=string("DORI");
+         break;
       default:
          plbl="Unknown";
          break;
@@ -493,6 +509,9 @@ inline double GetDefaultIsolvalueForCube(const char p2p) {
    switch ( p2p ) {
       case 'd':
          isoval=0.01e0;
+         break;
+      case 'D' :
+         isoval=0.90e0;
          break;
       case 's':
          isoval=0.2e0;

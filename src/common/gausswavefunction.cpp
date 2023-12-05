@@ -484,6 +484,7 @@ void GaussWaveFunction::DisplayAllFieldProperties(double x,double y,double z) {
    cout << "  RedDensGrad: " << setw(20) << EvalReducedDensityGradient(xx[0],xx[1],xx[2]) << endl;
    cout << "         RoSE: " << setw(20) << EvalRoSE(xx[0],xx[1],xx[2]) << endl;
    cout << "     V.P.E.D.: " << setw(20) << EvalVirialPotentialEnergyDensity(x,y,z) << endl;
+   cout << "     D.O.R.I.: " << setw(20) << EvalDORI(x,y,z) << endl;
    if ( usescustfld ) {
       cout << "Cust. S. Field: " << setw(20) << EvalCustomScalarField(xx[0],xx[1],xx[2]) << endl;
    }
@@ -554,6 +555,7 @@ void GaussWaveFunction::WriteAllFieldProperties(double x,double y,double z,ofstr
    ofil << "  RedDensGrad: " << setw(20) << EvalReducedDensityGradient(x,y,z) << endl;
    ofil << "  RoSE:        " << setw(20) << EvalRoSE(x,y,z) << endl;
    ofil << "  V.P.E.D.:    " << setw(20) << EvalVirialPotentialEnergyDensity(x,y,z) << endl;
+   ofil << "  D.O.R.I.:    " << setw(20) << EvalDORI(x,y,z) << endl;
    if ( usescustfld ) {
       ofil << "Cust. S. Field: " << setw(20) << EvalCustomScalarField(xx[0],xx[1],xx[2]) << endl;
    }
@@ -5199,6 +5201,36 @@ double GaussWaveFunction::EvalNCILambda(double x,double y,double z) {
       rho=100.0e0;
    }
    return rho;
+}
+double GaussWaveFunction::EvalDORI(double x,double y,double z) {
+   double rho,g[3],h[3][3];
+   EvalHessian(x,y,z,rho,g,h);
+#if 1
+   double gr2=g[0]*g[0]+g[1]*g[1]+g[2]*g[2];
+   double tmp,A[3];
+   for ( int i=0 ; i<3 ; ++i ) {
+      tmp=0.0e0;
+      for ( int j=0 ; j<3 ; ++j ) { tmp+=(g[j]*h[i][j]); }
+      A[i]=g[i]*gr2+rho*tmp;
+   }
+   tmp=A[0]*A[0]+A[1]*A[1]+A[2]*A[2];
+   double theta=4.0e0*tmp/(gr2*gr2*gr2);
+   return theta/(1.0e0+theta);
+#else
+   double gr2=g[0]*g[0]+g[1]*g[1]+g[2]*g[2];
+   double tmp,A[3];
+   for ( int i=0 ; i<3 ; ++i ) {
+      tmp=0.0e0;
+      for ( int j=0 ; j<3 ; ++j ) { tmp+=(g[j]*h[i][j]); }
+      A[i]=g[i]*gr2+rho*tmp;
+      A[i]*=2.0e0/(rho*rho*rho);
+   }
+   tmp=A[0]*A[0]+A[1]*A[1]+A[2]*A[2];
+   double theta=tmp;
+   tmp=(gr2/(rho*rho))*(gr2/(rho*rho))*(gr2/(rho*rho));
+   theta/=tmp;
+   return theta/(1.0e0+theta);
+#endif
 }
 /* The following line includes the implementation of the custom scalar and vector fields.  */
 #include "custfld-wfnclass.cxx"
