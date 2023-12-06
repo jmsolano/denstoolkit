@@ -82,6 +82,7 @@ using std::string;
 #include "figname.h"
 #include "../common/screenutils.h"
 #include "../common/gausswavefunction.h"
+#include "fldtypesdef.h"
 
 OptionFlags::OptionFlags() {
    infname=0;
@@ -225,25 +226,12 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  a number of points proportional to its length." << endl;
    cout << "  -c a1 a2  \tUses a cube centred at the midpoint of the atoms a1 and a2." << endl;
    cout << "  -p prop\tChooses the property to be computed. prop is a character," << endl 
-        << "         \t  which can be (d is the default value): " << endl
-        << "         \t\td (Density)" << endl
-        << "         \t\tg (Magnitude of the Gradient of the Density)" << endl
-        << "         \t\tl (Laplacian of density)" << endl
-        << "         \t\tK (Kinetic Energy Density K)" << endl
-        << "         \t\tG (Kinetic Energy Density G)" << endl
-        << "         \t\te (Ellipticity)" << endl
-        << "         \t\tE (Electron Localization Function -ELF-)" << endl
-        << "         \t\tL (Localized Orbital Locator -LOL-)" << endl
-        << "         \t\tM (Magnitude of the gradient of LOL)" << endl
-        << "         \t\tP (Magnitude of Localized Electrons Detector -LED-)" << endl
-        << "         \t\tr (Region of Slow electrons -RoSE-)" << endl
-        << "         \t\ts (Reduced Density Gradient -s-)" << endl
-        << "         \t\tS (Shannon Entropy Density)" << endl;
-   cout << "         \t\tV (Molecular Electrostatic Potential)" << endl;
-   cout << "         \t\tu (Scalar Custom Field)" << endl;
-   cout << "         \t\tv (Virial Potential Energy Density)" << endl;
-   cout << "         \t\tZ (Non Covalent Interactions(NCI) -- s)" << endl;
-   cout << "         \t\tz (Non Covalent Interactions(NCI) -- Rho)" << endl;
+        << "         \t  which can be (d is the default value): " << endl;
+   string charFields="dglKGeELMPrsSVDuUvzZ";
+   for ( size_t i=0 ; i<charFields.size() ; ++i ) {
+      cout << "         \t\t" << charFields[i] << " ("
+         << GetFieldTypeKeyLong(charFields[i]) << ')' << '\n';
+   }
    cout << "  -P     \tGenerates a VMD script to render the field. Notice: this requires VMD and the internal" << endl
         << "         \t  Tachyon render (usually it is included automatically in VMD) to be installed" << endl
         << "         \t  in your system. The VMD script should run with 'vmd -e filename.vmd'" << endl;

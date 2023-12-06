@@ -489,6 +489,10 @@ void WaveFunctionGrid3D::WriteCubeScalarCustFld(ofstream &ofil,GaussWaveFunction
    }
    return;
 }
+void WaveFunctionGrid3D::MakeCube(string &onam,GaussWaveFunction &wf,char prop) {
+   ScalarFieldType ft=Char2ScalarFieldType(prop);
+   return MakeCube(onam,wf,ft);
+}
 void WaveFunctionGrid3D::MakeCube(string &onam,GaussWaveFunction &wf,ScalarFieldType ft) {
    if (!wf.imldd) {
       cout << "Error: trying to use a non loaded wave function object!\nNothing done!\n";
@@ -557,6 +561,9 @@ void WaveFunctionGrid3D::MakeCube(string &onam,GaussWaveFunction &wf,ScalarField
          break;
       case NCIL :
          WriteCubeNCIRho(ofil,wf);
+         break;
+      case DORI :
+         WriteCubeDORI(ofil,wf);
          break;
       default:
          cout << "Error: Field type not known!\n Cube incomplete!" << endl;
@@ -652,6 +659,30 @@ void WaveFunctionGrid3D::WriteCubeNCIRho(ofstream &ofil,GaussWaveFunction &wf) {
          zz=xin[2];
          for (int k=0; k<npts[2]; k++) {
             prop1d[k]=wf.EvalNCILambda(xx,yy,zz);
+            //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
+            zz+=dx[2][2];
+         }
+         WriteCubeProp(ofil,npts[2],prop1d);
+         yy+=dx[1][1];
+      }
+      xx+=dx[0][0];
+#if USEPROGRESSBAR
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts[0]-1))));
+#endif
+   }
+   return;
+}
+void WaveFunctionGrid3D::WriteCubeDORI(ofstream &ofil,GaussWaveFunction &wf) {
+   double xx,yy,zz;
+   xx=xin[0];
+   yy=xin[1];
+   zz=xin[2];
+   for (int i=0; i<npts[0]; i++) {
+      yy=xin[1];
+      for (int j=0; j<npts[1]; j++) {
+         zz=xin[2];
+         for (int k=0; k<npts[2]; k++) {
+            prop1d[k]=wf.EvalDORI(xx,yy,zz);
             //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
             zz+=dx[2][2];
          }

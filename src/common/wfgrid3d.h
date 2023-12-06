@@ -96,6 +96,7 @@ public:
    void WriteCubeKinetEnerDensG(ofstream &ofil,GaussWaveFunction &wf);
    void WriteCubeKinetEnerDensK(ofstream &ofil,GaussWaveFunction &wf);
    void MakeCube(string &onam,GaussWaveFunction &wf,ScalarFieldType ft);
+   void MakeCube(string &onam,GaussWaveFunction &wf,char prop);
    void WriteCubeMagGradLOL(ofstream &ofil,GaussWaveFunction &wf);
    void WriteCubeMolElecPot(ofstream &ofil,GaussWaveFunction &wf);
    void WriteCubeMagLED(ofstream &ofil,GaussWaveFunction &wf);
@@ -106,6 +107,7 @@ public:
    void WriteCubeVirialPotentialEnergyDensity(ofstream &ofil,GaussWaveFunction &wf);
    void WriteCubeNCIRedDensGrad(ofstream &ofil,GaussWaveFunction &wf);
    void WriteCubeNCIRho(ofstream &ofil,GaussWaveFunction &wf);
+   void WriteCubeDORI(ofstream &ofil,GaussWaveFunction &wf);
 /* ********************************************************************************** */
 private:
    bool imsetup;

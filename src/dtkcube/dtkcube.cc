@@ -177,6 +177,9 @@ int main (int argc, char ** argv) {
    
    cout << "Evaluating and writing property..." << endl;
    cout << "(Scalar Field to plot: " << GetFieldTypeKeyLong(prop) << ")." << endl << endl;
+
+   grid.MakeCube(outfilnam,gwf,prop);
+   /*
    switch (prop) {
       case 'd':
          grid.MakeCube(outfilnam,gwf,DENS);
@@ -241,6 +244,7 @@ int main (int argc, char ** argv) {
          exit(1);
          break;
    }
+   // */
    
    cout << endl << "Output written in file: " << outfilnam << endl;
 #if (defined(__APPLE__)||defined(__linux__)||defined(__CYGWIN__))
