@@ -71,6 +71,7 @@ using std::string;
 #include "figname.h"
 #include "optflags.h"
 #include "screenutils.h"
+#include "fldtypesdef.h"
 
 OptionFlags::OptionFlags() {
    infname=0;
@@ -261,20 +262,12 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  which can be (this is valid for options -I and -p)\n"
         << "            \t  (This option is included for future implementations,\n"
         << "            \t  and in this version, only rho[d] is implemented,\n"
-        << "            \t  and by default the isovalue is v=0.001.)\n"
-        << "         \t\td (Density)\n"
-        << "         \t\tg (Magnitude of the Gradient of the Density)\n"
-        << "         \t\tl (Laplacian of density)\n"
-        << "         \t\tK (Kinetic Energy Density K)\n"
-        << "         \t\tG (Kinetic Energy Density G)\n"
-        << "         \t\tE (Electron Localization Function -ELF-)\n"
-        << "         \t\tL (Localized Orbital Locator -LOL-)\n"
-        << "         \t\tM (Magnitude of the Gradient of LOL)\n"
-        << "         \t\tP (Magnitude of the Localized Electrons Detector -LED-)\n"
-        << "         \t\tr (Region of Slower Electrons -RoSE-)\n"
-        << "         \t\ts (Reduced Density Gradient -s-)\n"
-        << "         \t\tS (Shannon Entropy Density)\n"
-        << "         \t\tV (Molecular Electrostatic Potential)\n";
+        << "            \t  and by default the isovalue is v=0.001.)\n";
+   string charFields="dglKGeELMPrsSVvDu";
+   for ( size_t i=0 ; i<charFields.size() ; ++i ) {
+      cout << "         \t\t" << charFields[i] << " ("
+         << GetFieldTypeKeyLong(charFields[i]) << ')' << '\n';
+   }
    cout << "  -o basename\tSet the base name for the output files to be basename." <<'\n'
         << "            \t  (If not given the program will use the wf?name as the" <<'\n'
         << "            \t  the base name.)" << '\n';
