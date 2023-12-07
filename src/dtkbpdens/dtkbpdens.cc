@@ -98,15 +98,14 @@ int main (int argc, char ** argv) {
    
    char prop='d';
    if (options.prop2plot) { prop=argv[options.prop2plot][0]; }
+
    /* Checks for non valid property fields */
-   
-   if (!(prop=='d'||prop=='g'||prop=='l'||prop=='E'||prop=='L'||prop=='M'\
-         ||prop=='S'||prop=='G'||prop=='K'||prop=='V'\
-         ||prop=='P'||prop=='r'||prop=='s'||prop=='u'\
-         ||prop=='e')) {
+   string validFields="dglKGeELMPrsSVvDu";
+   if (validFields.find(prop)==string::npos) {
       ScreenUtils::DisplayErrorMessage("Non valid field type");
       cout << "\nTry: \n\t" << argv[0] << " -h\n" << endl << "to view the help menu.\n\n";
-      exit(1);
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+      return EXIT_FAILURE;
    }
    
    /* Loads the wave function */

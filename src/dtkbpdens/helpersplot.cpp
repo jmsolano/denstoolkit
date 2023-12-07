@@ -169,6 +169,12 @@ double HelpersPlot::EvalFieldProperty(char prop,double (&x)[3],GaussWaveFunction
       case 'V':
          res=wf.EvalMolElecPot(x[0],x[1],x[2]);
          break;
+      case 'v' :
+         res=wf.EvalVirialPotentialEnergyDensity(x[0],x[1],x[2]);
+         break;
+      case 'D' :
+         res=wf.EvalDORI(x[0],x[1],x[2]);
+         break;
       default:
 #if DEBUG
          cout << "Unknown field type! Returning zero..." << endl;

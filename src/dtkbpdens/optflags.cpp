@@ -83,6 +83,7 @@ using std::string;
 #include "figname.h"
 #include "optflags.h"
 #include "screenutils.h"
+#include "fldtypesdef.h"
 
 
 OptionFlags::OptionFlags() {
@@ -231,22 +232,12 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  the input name; if given, the dat, gnp and (eps)pdf files will" << endl
         << "            \t  use this name as well --but different extension--)." << endl;
    cout << "  -p prop   \tChoose the property to be computed. prop is a character," << endl
-        << "            \t  which can be (d is the default value): " << endl
-        << "            \t\td (Density)" << endl
-        << "            \t\tg (Magnitude of the Gradient of the Density)" << endl
-        << "            \t\tl (Laplacian of density)" << endl
-        << "            \t\tK (Kinetic Energy Density K)" << endl
-        << "            \t\tG (Kinetic Energy Density G)" << endl
-        << "            \t\te (Ellipticity)" << endl
-        << "            \t\tE (Electron Localization Function -ELF-)" << endl
-        << "            \t\tL (Localized Orbital Locator -LOL-)" << endl
-        << "            \t\tM (Magnitude of the Gradient of LOL)" << endl
-        << "            \t\tP (Magnitude of Localized Electrons Detector -LED-)" << endl
-        << "            \t\tr (Region of Slow Electrons -RoSE-)" << endl
-        << "            \t\ts (Reduced Density Gradient -s-)" << endl
-        << "            \t\tS (Shannon Entropy Density)" << endl;
-   cout << "            \t\tV (Molecular Electrostatic Potential)" << endl;
-   cout << "            \t\tu (Scalar Custom Field)" << endl;
+        << "            \t  which can be (d is the default value): " << endl;
+   string charFields="dglKGeELMPrsSVvDu";
+   for ( size_t i=0 ; i<charFields.size() ; ++i ) {
+      cout << "         \t\t" << charFields[i] << " ("
+         << GetFieldTypeKeyLong(charFields[i]) << ')' << '\n';
+   }
    cout << "  -s step   \tSet the stepsize for the bond path to be 'step'." << endl
         << "            \t  Default value: " << DEFAULTBONDPATHSTEPMD1 << endl;
 #if _HAVE_GNUPLOT_
