@@ -316,7 +316,7 @@ inline string GetFieldTypeKeyShort(const char prop) {
          plbl="MEP";
          break;
       case 'v':
-         plbl="V.P.E.D.";
+         plbl="VPED";
          break;
       case 'z':
          plbl="NCIRedDensGrad";
