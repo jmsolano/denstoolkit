@@ -94,9 +94,6 @@ void HelpersPlot::makeGnuplotFile(OptionFlags &opts, string &gnpnam,string &tsvn
          maxzrange=2.0e0;
          break;
       case 'G':
-         minzrange=0.0e0;
-         maxzrange=10.0e0;
-         break;
       case 'K':
          minzrange=0.0e0;
          maxzrange=10.0e0;
@@ -128,6 +125,10 @@ void HelpersPlot::makeGnuplotFile(OptionFlags &opts, string &gnpnam,string &tsvn
       case 'V':
          minzrange=-0.6e0;
          maxzrange=0.6e0;
+         break;
+      case 'v' :
+         minzrange=-1.0e0;
+         maxzrange=0.0e0;
          break;
       default:
          ScreenUtils::SetScrRedBoldFont();
