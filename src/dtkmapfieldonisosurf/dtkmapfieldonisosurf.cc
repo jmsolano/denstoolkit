@@ -68,7 +68,7 @@ using std::shared_ptr;
 #include "palette.h"
 #include "optflags.h"
 #include "crtflnms.h"
-#include "helpersnci.h"
+#include "helpersmapfieldonisosurf.h"
 int main (int argc, char ** argv) {
    const clock_t begin_time = clock();
    const double begin_walltime = time(NULL);
@@ -168,9 +168,9 @@ int main (int argc, char ** argv) {
    }
    iso.ExtractMarchingCubes(gc,isovalue);
    cout << "Computing Lambda at mesh vertices..." << '\n';
-   HelpersNCI::ComputeLambdaOnVertices(gwf,iso);
+   HelpersMapFieldOnIsoSurf::ComputeLambdaOnVertices(gwf,iso);
    cout << "Computing Normals at mesh vertices..." << '\n';
-   HelpersNCI::ComputeNormalsAtVertices(gwf,iso);
+   HelpersMapFieldOnIsoSurf::ComputeNormalsAtVertices(gwf,iso);
    iso.UseNormals(true);
 
    /* At this point the computation has ended. Usually this means no errors ocurred. */
@@ -209,7 +209,7 @@ int main (int argc, char ** argv) {
    if ( options.selectpalette ) {
       palname=argv[options.selectpalette];
    }
-   HelpersNCI::MakePovFile(povfnam,pvp,bnw,iso,options,argv);
+   HelpersMapFieldOnIsoSurf::MakePovFile(povfnam,pvp,bnw,iso,options,argv);
 
    /* In principle, everything went OK. Exiting.  */
    ScreenUtils::PrintHappyEnding();

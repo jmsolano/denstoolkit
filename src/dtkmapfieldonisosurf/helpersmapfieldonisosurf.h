@@ -41,8 +41,8 @@
    the paper(s) on the package --- you can find them on the top
    README file.
 */
-#ifndef _HELPERSNCI_H_
-#define _HELPERSNCI_H_
+#ifndef _HELPERSMAPFIELDONISOSURF_H_
+#define _HELPERSMAPFIELDONISOSURF_H_
 #include <string>
 using std::string;
 #include "povraytools.h"
@@ -52,7 +52,7 @@ using std::string;
 #include "optflags.h"
 
 /* ************************************************************************** */
-class HelpersNCI {
+class HelpersMapFieldOnIsoSurf {
 /* ************************************************************************** */
 public:
 /* ************************************************************************** */
@@ -73,5 +73,5 @@ protected:
 /* ************************************************************************** */
 
 
-#endif  /* _HELPERSNCI_H_ */
+#endif  /* _HELPERSMAPFIELDONISOSURF_H_ */
 
