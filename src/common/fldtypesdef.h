@@ -69,8 +69,8 @@ enum ScalarFieldType {
    NCIS,/* Non Covalent Interactions (NCI) -- Reduced Density Gradient */\
    NCIL,/* Non Covalent Interactions (NCI) -- Rho */\
    EDFTA, /* DFT Exchange and Corrrelation Energy ($(-3/4)(3\rho/\pi)^{1/3}$) */\
-   ELLPY, /*!< Ellipticity  */
-   DORI, /*!< Density Overlap Regions Indicator  */
+   ELLPY, /*!< Ellipticity  */\
+   DORI, /*!< Density Overlap Regions Indicator  */\
    SCFD, /* Scalar Custom Field Density */\
    VCFD /* Vector Custom Field Density */
 };
@@ -515,6 +515,9 @@ inline double GetDefaultIsolvalueForCube(const char p2p) {
          break;
       case 's':
          isoval=0.2e0;
+         break;
+      case 'z' :
+         isoval=0.055e0;
          break;
       default :
          break;
