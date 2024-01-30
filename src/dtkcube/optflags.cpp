@@ -248,6 +248,9 @@ void printHelpMenu(int &argc, char** &argv) {
         << "             \t\t  This option only affects NCI cubes (see properties z and" << endl
         << "             \t\t  Z in \"-p\" option. Default values: rhoMin=" << NCIRHOMIN << "," << endl
         << "             \t\t  rhoMax= " << NCIRHOMAX << ", and redGradMax= " <<  NCISMAX << endl;
+   cout << "  --set-extra-space X \tSet the space around the most-external atoms to be X a.u.\n"
+        << "             \t\t  By default, the cube is computed within a grid that includes\n"
+        << "             \t\t  all atoms, plus an extra space of X=" << EXTRASPACECUBEFACTOR << " a.u.\n";
    cout << "  --help    \t\tSame as -h" << endl;
    cout << "  --version \t\tSame as -V" << endl;
    //-------------------------------------------------------------------------------------
@@ -301,6 +304,12 @@ void processDoubleDashOptions(int &argc,char** &argv,OptionFlags &flags,int &pos
       pos+=3;
       if ((pos+1)>=(argc+3)) {
          ScreenUtils::DisplayErrorMessage(string("configure-nci must be followed by 3 real numbers!"));
+         exit(1);
+      }
+   } else if ( str==string("set-extra-space") ) {
+     flags.setextraspace=(++pos);
+      if ((pos)>=(argc)) {
+         ScreenUtils::DisplayErrorMessage(string("set-extra-space must be followed by 1 real number!"));
          exit(1);
       }
    } else {

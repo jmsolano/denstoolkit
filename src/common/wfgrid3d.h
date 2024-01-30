@@ -56,7 +56,6 @@
 #ifndef DEFAULTPOINTSPERDIRECTION
 #define DEFAULTPOINTSPERDIRECTION (80)
 #endif
-#define EXTRASPACECUBEFACTOR (1.0e0)
 #ifndef USEPROGRESSBAR
 #define USEPROGRESSBAR 0
 #endif
@@ -86,6 +85,7 @@ public:
          const int at1,const int at2,const double len,const int nmx);
    void SetNPts(int nx,int ny,int nz);
    void SetNPts(int nn);
+   void SetExtraSpace(const double ll);
    int GetNPts(int ii);
    void WriteCubeRho(ofstream &ofil,GaussWaveFunction &wf);
    void WriteCubeLapRho(ofstream &ofil,GaussWaveFunction &wf);
@@ -112,6 +112,7 @@ public:
 private:
    bool imsetup;
    int npts[3];
+   double extraLen;
 /* ********************************************************************************** */
 };
 /* ********************************************************************************** */

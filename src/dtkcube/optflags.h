@@ -86,6 +86,7 @@ public:
    unsigned short int setcentredcub;
    unsigned short int zipcube,wrtlog;
    unsigned short int configspecialnci;
+   unsigned short int setextraspace;
    bool genvmdscript,quietrender;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);

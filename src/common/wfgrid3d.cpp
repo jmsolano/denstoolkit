@@ -70,6 +70,7 @@ WaveFunctionGrid3D::WaveFunctionGrid3D() {
    comments=string("#");
    prop1d=NULL;
    prop2plot=NONE;
+   extraLen=EXTRASPACECUBEFACTOR;
    imsetup=false;
 }
 WaveFunctionGrid3D::~WaveFunctionGrid3D() {
@@ -82,8 +83,8 @@ void WaveFunctionGrid3D::SetUpSimpleGrid(GaussWaveFunction &wf,BondNetWork &bn) 
       return;
    }
    for (int i=0; i<3; i++) {
-      xin[i]=bn.bbmin[i]-(EXTRASPACECUBEFACTOR*bn.maxBondDist);
-      dx[i][i]=(bn.bbmax[i]-bn.bbmin[i]+(2.0e0*EXTRASPACECUBEFACTOR)*bn.maxBondDist)/double(npts[i]-1);
+      xin[i]=bn.bbmin[i]-(extraLen*bn.maxBondDist);
+      dx[i][i]=(bn.bbmax[i]-bn.bbmin[i]+(2.0e0*extraLen)*bn.maxBondDist)/double(npts[i]-1);
    }
    MyMemory::Alloc1DRealArray("prop1d",npts[2],prop1d);
    imsetup=true;
@@ -95,7 +96,7 @@ void WaveFunctionGrid3D::SetUpSmartCuboidGrid(GaussWaveFunction &wf,BondNetWork 
       cout << "The grid could not be set up." << endl;
       return;
    }
-   double xsp=(2.0e0*EXTRASPACECUBEFACTOR)*bn.maxBondDist;
+   double xsp=(2.0e0*extraLen)*bn.maxBondDist;
    double maxdim=-1.0e+50,tmp;
    for (int i=0; i<3; i++) {
       tmp=bn.bbmax[i]-bn.bbmin[i]+xsp;
@@ -106,7 +107,7 @@ void WaveFunctionGrid3D::SetUpSmartCuboidGrid(GaussWaveFunction &wf,BondNetWork 
    for (int i=0; i<3; i++) {
       tmp=bn.bbmax[i]-bn.bbmin[i]+xsp;
       npts[i]=floor((tmp/maxdim)*double(nmx));
-      xin[i]=bn.bbmin[i]-(EXTRASPACECUBEFACTOR*bn.maxBondDist);
+      xin[i]=bn.bbmin[i]-(extraLen*bn.maxBondDist);
       dx[i][i]=(bn.bbmax[i]-bn.bbmin[i]+xsp)/double(npts[i]-1);
    }
    MyMemory::Alloc1DRealArray("prop1d",npts[2],prop1d);
@@ -139,6 +140,15 @@ void WaveFunctionGrid3D::SetNPts(int nx,int ny,int nz) {
 void WaveFunctionGrid3D::SetNPts(int nn) {
    for (int i=0; i<3; i++) {npts[i]=nn;}
    return;
+}
+void WaveFunctionGrid3D::SetExtraSpace(const double ll) {
+   if ( imsetup ) {
+      ScreenUtils::DisplayWarningMessage("The cube is already configured, thus changing\n"
+            "the extra space will not be applied!");
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+      return;
+   }
+   extraLen=ll;
 }
 int WaveFunctionGrid3D::GetNPts(int ii) {
    return npts[ii];

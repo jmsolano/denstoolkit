@@ -133,6 +133,7 @@ int main (int argc, char ** argv) {
    } else {
       grid.SetNPts(nn);
    }
+   if ( options.setextraspace ) { grid.SetExtraSpace(std::stod(string(argv[options.setextraspace]))); }
    
    if ((options.setsmcub)||(options.setsmcub1)) {
       grid.SetUpSmartCuboidGrid(gwf,bnw,nn);

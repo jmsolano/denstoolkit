@@ -27,28 +27,31 @@ Implement the respective functions to include the new field in
    ---> Do not forget to add the new field to the functions
            --->  GaussWaveFunction::displayAllFieldProperties
            --->  GaussWaveFunction::writeAllFieldProperties
-   ---> dtkline   (wfgrid1d)
-           ---> Create a new function bool writeLinneDatFIELDNAME(...)
+   ---> dtkline (wfgrid1d)
+           ---> Create a new function bool WaveFunctionGrid1D::WriteLineDatFIELDNAME(...)
            ---> Edit the functions makeDat (add the new switch case)
            ---> optflags (help menu)
-                   ---> Add the new field to the optflags.* class and to the switch structure
-                    of dtkline.cpp
+                   ---> Add the new field to the help menu (add char to charFields).
    ---> dtkplane  (wfgrid2d)
            ---> Add a function bool writePlaneTsvFIELDNAME(...)
            ---> Add the new field to: waveFunctionGrid2D::makeTsv
-           ---> optflags (help menu)
-                   ---> Add the new field to two case constructs (to choose the field)
-                        and to set the plot ranges.
+           ---> Add the new field to two case constructs (to choose the field)
+           ---> Set the plot ranges (HelpersPlot::makeGnuplotFile).
+           ---> optflags (help menu, add char to charFields)
    ---> dtkcube   (wfgrid3d)
            ---> Add a function bool writeCubeFIELDNAME(...)
            ---> Add the new field to: waveFunctionGrid3D::makeCube
            ---> optflags (help menu)
                    ---> Add the new field to the case construct (to choose the field)
-   ---> dtkbpdens (, etc)
-           ---> Check for non valid field types (dtkbpdens.cc)
-           ---> evalFieldProperty(...)
+   ---> dtkbpdens (helpersplot.cpp)
+           ---> Add char field type to validFields (dtkbpdens.cc)
+           ---> HelpersPlot::EvalFieldProperty
            ---> optflags (help menu)
-                   ---> Add the new field to the case construct (to choose the field)
+                   ---> Add the new field (char) to charFields
+   ---> dtkpropcpsoniso
+           ---> optflags (help menu, add char to charFields)
+   ---> dtknci (Fields such as DORI are color-mapped with Lambda.)
+   
 
 Make the proper changes in the correspoding files:
    ---> optflags (help menus)
