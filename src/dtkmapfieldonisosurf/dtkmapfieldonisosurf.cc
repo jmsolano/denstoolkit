@@ -124,22 +124,22 @@ int main (int argc, char ** argv) {
    } else {
       grid.SetUpSimpleGrid(gwf,bnw);
    }
-   
+
    /* Special configurations  */
-   if ( options.configspecialnci ) {
-      double ttt=std::stod(string(argv[options.configspecialnci]));
-      gwf.SetNCIRhoMin(ttt);
-      ttt=std::stod(string(argv[options.configspecialnci+1]));
-      gwf.SetNCIRhoMax(ttt);
-      ttt=std::stod(string(argv[options.configspecialnci+2]));
-      gwf.SetNCISMax(ttt);
-   }
-#if (!DEBUG)
+   if (options.plotnci) {
+      if ( options.configspecialnci ) {
+         double ttt=std::stod(string(argv[options.configspecialnci]));
+         gwf.SetNCIRhoMin(ttt);
+         ttt=std::stod(string(argv[options.configspecialnci+1]));
+         gwf.SetNCIRhoMax(ttt);
+         ttt=std::stod(string(argv[options.configspecialnci+2]));
+         gwf.SetNCISMax(ttt);
+      }
       cout << "nciRhoMin: " << gwf.nciRhoMin << '\n';
       cout << "nciRhoMax: " << gwf.nciRhoMax << '\n';
       cout << "nciSMax: " << gwf.nciSMax << '\n';
-#endif
-   /* Setting the property to be computed */
+   }
+   /* Set the isosurface property to be computed */
    char prop='z';
 
    /* Computes cube (if requested). */
@@ -149,9 +149,10 @@ int main (int argc, char ** argv) {
       cout << "Total number of points that will be computed: "
            << (grid.GetNPts(0)*grid.GetNPts(1)*grid.GetNPts(2)) << '\n';
       cout << "Evaluating and writing " << GetFieldTypeKeyLong(prop) << ")." << '\n' << '\n';
-      grid.MakeCube(cubfnam,gwf,NCIS);
+      ScalarFieldType ft=Char2ScalarFieldType(prop);
+      grid.MakeCube(cubfnam,gwf,ft);
    }
-   cout << '\n' << "Reduced density gradient cube file: " << cubfnam << '\n';
+   cout << '\n' << GetFieldTypeKeyLong(prop) << " cube file: " << cubfnam << '\n';
    
    cout << "Extracting isosurface..." << std::endl;
    GaussianCube gc(cubfnam);
@@ -162,23 +163,37 @@ int main (int argc, char ** argv) {
    }
    Isosurface iso;
    //iso.UseTetrahedrons(true);
-   double isovalue=0.5e0;
+   /* Set the property to be mapped */
+   char mapprop='Z';
+   double isovalue=GetDefaultIsolvalueForCube(mapprop);
    if ( options.setsisovalue ) {
       isovalue=std::stod(string(argv[options.setsisovalue]));
    }
    iso.ExtractMarchingCubes(gc,isovalue);
-   cout << "Computing Lambda at mesh vertices..." << '\n';
-   HelpersMapFieldOnIsoSurf::ComputeLambdaOnVertices(gwf,iso);
+   cout << "Computing " << GetFieldTypeKeyLong(mapprop) << " at mesh vertices..." << '\n';
+   if ( options.plotnci || mapprop=='Z' ) {
+      HelpersMapFieldOnIsoSurf::ComputeLambdaOnVertices(gwf,iso);
+   } else {
+      cout << "Under construction!" << '\n';
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+      return EXIT_FAILURE;
+   }
    cout << "Computing Normals at mesh vertices..." << '\n';
-   HelpersMapFieldOnIsoSurf::ComputeNormalsAtVertices(gwf,iso);
+   if ( options.plotnci || mapprop=='Z' ) {
+      HelpersMapFieldOnIsoSurf::ComputeNormalsAtVertices(gwf,iso);
+   } else {
+      cout << "Under construction!" << '\n';
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+      return EXIT_FAILURE;
+   }
    iso.UseNormals(true);
 
    /* At this point the computation has ended. Usually this means no errors ocurred. */
 
    /* Rendering  */
-   cout << "Lambda2 limits in '" << cubfnam << "':\n";
-   cout << "    Lambda2 min: " << iso.MinP2Map() << '\n';
-   cout << "    Lambda2 max: " << iso.MaxP2Map() << '\n';
+   cout << GetFieldTypeKeyLong(mapprop) << " limits in '" << cubfnam << "':\n";
+   cout << "    " << GetFieldTypeKeyLong(mapprop) << " min: " << iso.MinP2Map() << '\n';
+   cout << "    " << GetFieldTypeKeyLong(mapprop) << " max: " << iso.MaxP2Map() << '\n';
    double Lmin=-0.02e0;
    double Lmax=0.02e0;
    if ( options.setcolorscalesingle ) {

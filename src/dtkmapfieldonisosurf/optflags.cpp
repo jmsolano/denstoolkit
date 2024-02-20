@@ -69,7 +69,6 @@
 
 #include <iostream>
 using std::cout;
-using std::endl;
 using std::ios;
 #include <cstdlib>
 using std::exit;
@@ -93,6 +92,7 @@ OptionFlags::OptionFlags() {
    selectpalette=setgnpangles=setviewangles=orientcam3ats=0;
    rotX=rotY=rotZ=0;
    skipcube=kppov=mkpov=mkpng=rotcam=false;
+   plotnci=plotdori=false;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    string progname;
@@ -106,9 +106,9 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    }
    if (argc<2) {
       ScreenUtils::SetScrRedBoldFont();
-      cout << "\nError: Not enough arguments." << endl;
+      cout << "\nError: Not enough arguments." << '\n';
       ScreenUtils::SetScrNormalFont();
-      cout << "\nTry: \n\t" << argv[0] << " -h\n" << endl << "to view the help menu.\n\n";
+      cout << "\nTry: \n\t" << argv[0] << " -h\n" << '\n' << "to view the help menu.\n\n";
       exit(1);
    }
    if (string(argv[1])==string("-h")) {
@@ -187,7 +187,7 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                progname=argv[0];
                pos=progname.find("./");
                if (!(pos==string::npos)) {progname.erase(pos,2);}
-               cout << progname << " " << CURRENTVERSION << endl;
+               cout << progname << " " << CURRENTVERSION << '\n';
                exit(0);
                break;
             case 'x' :
@@ -210,8 +210,8 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                processDoubleDashOptions(argc,argv,flags,i);
                break;
             default:
-               cout << "\nCommand line error. Unknown switch: " << argv[i] << endl;
-               cout << "\nTry: \n\t" << argv[0] << " -h\n" << endl << "to view the help menu.\n\n";
+               cout << "\nCommand line error. Unknown switch: " << argv[i] << '\n';
+               cout << "\nTry: \n\t" << argv[0] << " -h\n" << '\n' << "to view the help menu.\n\n";
                exit(1);
          }
       }
@@ -226,73 +226,79 @@ void printHelpMenu(int &argc, char** &argv) {
 #if _SOL_USE_FIGLET_NAME_
    FigletName::PrintFigletName();
 #endif
-   cout << endl;
+   cout << '\n';
    ScreenUtils::CenterString((string(":-) ")+progname+string(" (-:")));
-   cout << endl;
-   ScreenUtils::CenterString("This program calculate the necessary fields to plot the NCI plot.");
-   ScreenUtils::CenterString("The main data is saved into a cub file, which contains the");
-   ScreenUtils::CenterString("reduced density gradient (s). This data is used to locate an");
-   ScreenUtils::CenterString("isosurface, upon which the field Lambda2=l*rho is mapped");
-   ScreenUtils::CenterString("with a color scale. l is the sign of second hessian");
-   ScreenUtils::CenterString("eigenvalue and rho the electron density.");
-   ScreenUtils::CenterString("The isosurface is composed of triangles, thus the fields");
-   ScreenUtils::CenterString("l and rho are computed at the centroid of each of");
+   cout << '\n';
+   ScreenUtils::CenterString("This program computes data so as to map a field onto an isosurface.");
+   ScreenUtils::CenterString("The data for computing the isosurface is saved into a cub file,");
+   ScreenUtils::CenterString("which is later used to obtain the isosurface.");
+   ScreenUtils::CenterString("Afterwards, a second field is computed over the isosurface,");
+   ScreenUtils::CenterString("and it is mapped with a color scale.");
+   ScreenUtils::CenterString("The isosurface is composed of triangles, thus the mapped field");
+   ScreenUtils::CenterString("is computed at the centroid of each of");
    ScreenUtils::CenterString("the triangles that conform the isosurface.");
-   cout << endl;
+   ScreenUtils::CenterString("NCI and DORI can be easily plotted through options.");
+   cout << '\n';
    ScreenUtils::CenterString((string("Compilation date: ")+string(__DATE__)));
-   cout << endl;
+   cout << '\n';
    ScreenUtils::CenterString(string("Version: ")+string(CURRENTVERSION));
-   cout << endl;
+   cout << '\n';
    ScreenUtils::CenterString((string(":-) Created by: ")+string(PROGRAMCONTRIBUTORS)+string(" (-:")));
-   cout << endl;
+   cout << '\n';
    ScreenUtils::PrintScrStarLine();
    ScreenUtils::SetScrBoldFont();
    cout << "\nUsage:\n\n\t" << progname << " wf?name [option [value(s)]] ... [option [value(s)]]\n\n";
    ScreenUtils::SetScrNormalFont();
    cout << "Where wf?name is the input wfx(wfn) name, and options can be:\n\n";
-   cout << "  -a aG1 aG2\tSets the gnuplot angles to be aG1 and aG2.\n"
+   cout << "  -a aG1 aG2\tSet the gnuplot angles to be aG1 and aG2.\n"
         << "            \t  Use dtkqdmol to check and set these angles." << '\n';
-   cout << "  -A aX aY aZ\tSets the view angles to be aX, aY, and aZ." << '\n';
-   cout << "  -b val    \tSets the color scale to be [-val,val]." << '\n';
-   cout << "  -B vMin vMax\tSets the color scale to be [vMin,vMax]." << '\n';
-   cout << "  -c        \tSkips the cube calculation. Notice this will assume that the\n"
-        << "            \t  cube was previously computed." << '\n';
-   cout << "  -I isoval \tSets the isovalue of s to be isoval" << '\n';
-   cout << "  -k        \tKeeps the pov-ray script (see also option P, below)." << '\n';
-   cout << "  -l palette\tSelects the color scheme 'palette', which can be any of:\n"
+   cout << "  -A aX aY aZ\tSet the view angles to be aX, aY, and aZ." << '\n';
+   cout << "  -b val    \tSet the color scale to be [-val,val]." << '\n';
+   cout << "  -B vMin vMax\tSet the color scale to be [vMin,vMax]." << '\n';
+   cout << "  -c        \tSkip the cube calculation. Notice this will assume that the\n"
+        << "            \t  cube was previously computed, and it is present in the\n"
+        << "            \t  present working directory." << '\n';
+   cout << "  -I isoval \tSet the isovalue of s to be isoval" << '\n';
+   cout << "  -k        \tKeep the pov-ray script (see also option P, below)." << '\n';
+   cout << "  -l palette\tSelect the color scheme 'palette', which can be any of:\n"
         << "            \t  bentcoolwarm blues bugn gnbu greens greys inferno\n"
         << "            \t  magma moreland oranges orrd plasma pubu purples rdbu\n"
         << "            \t  rdylbu rdylgn reds spectral viridis ylgn ylgnbu\n"
         << "            \t  ylorbr ylorrd" << '\n';
-   cout << "  -n  dim   \tSets the number of points per direction for the s-cube" << endl
-        << "            \t  to be dim x dim x dim." << endl;
-   cout << "  -N nx ny nz\tSets the individual points per direction for the s-cube" << endl
-        << "            \t  to be nx x ny x nz." << endl;
-   cout << "  -o outname\tSets the output file names to use 'outname' as a basename,\n"
+   cout << "  -n  dim   \tSet the number of points per direction for the cube" << '\n'
+        << "            \t  to be dim x dim x dim. (see dtkcube's option '-n')." << '\n';
+   cout << "  -N nx ny nz\tSet the individual points per direction for the cube" << '\n'
+        << "            \t  to be nx x ny x nz (see also dtkcube's option '-N')." << '\n';
+   cout << "  -o outname\tSet the output file names to use 'outname' as a basename,\n"
         << "            \t  i.e., the pov and png files will be named:\n"
-        << "            \t  outnameNCI.pov and outnameNCI.png, respectively." << endl;
-   cout << "  -O a b c  \tOrients the POV camera, so that the atoms a, b, and c (numbering\n"
+        << "            \t  outnameXXX.pov and outnameXXX.png, respectively. Here\n"
+        << "            \t  XXX = NCI, DORI or another descriptive label." << '\n';
+   cout << "  -O a b c  \tOrient the POV camera, so that the atoms a, b, and c (numbering\n"
         << "            \t  according to the wf? file) are placed over the screen. The\n"
         << "            \t  final view should look like Scheme 1, below." << '\n';
-   cout << "  -s        \tUses a smart cuboid for the s-cube. The number of points for the" <<endl
-        << "            \t  largest direction will be " << DEFAULTPOINTSPERDIRECTION << "." << endl;
-   cout << "  -S ln     \tUses a smart cuboid for the s-cube. ln is the number of points" << endl
-        << "            \t  the largest axis will have. The remaining axes will have" << endl
-        << "            \t  a number of points proportional to the molecule dimensions." << endl;
-   cout << "  -P        \tGenerates a pov-ray script and renders it. Notice: this requires" << endl
-        << "            \t   povray to be installed in your system." << endl;
-   cout << "  -x alpha  \tRotates the final view by alpha degrees around the x-axis." << '\n';
-   cout << "  -y beta   \tRotates the final view by beta  degrees around the y-axis." << '\n';
-   cout << "  -z gamma  \tRotates the final view by gamma degrees around the z-axis." << '\n';
-   cout << "  -V        \tDisplays the version of this program." << endl;
+   cout << "  -s        \tUse a smart cuboid for the cube. The number of points for the" << '\n'
+        << "            \t  largest direction will be " << DEFAULTPOINTSPERDIRECTION << "\n"
+        << "            \t  (see also dtkcube's option '-s')." << '\n';
+   cout << "  -S ln     \tUse a smart cuboid for the cube. ln is the number of points" << '\n'
+        << "            \t  the largest axis will have. The remaining axes will have" << '\n'
+        << "            \t  a number of points proportional to the molecule dimensions.\n"
+        << "            \t  (see also dtkcube's option '-S')." << '\n';
+   cout << "  -P        \tGenerate a pov-ray script and renders it. Notice: this requires" << '\n'
+        << "            \t   povray to be installed in your system." << '\n';
+   cout << "  -x alpha  \tRotate the final view by alpha degrees around the x-axis." << '\n';
+   cout << "  -y beta   \tRotate the final view by beta  degrees around the y-axis." << '\n';
+   cout << "  -z gamma  \tRotate the final view by gamma degrees around the z-axis." << '\n';
+   cout << "  -V        \tDisplay the version of this program." << '\n';
    cout << "  -h\t\tDisplay the help menu.\n\n";
    //-------------------------------------------------------------------------------------
-   cout << "  --configure-nci rMin rMax sMax \tSet the parameters rhoMin, rhoMax," << endl
-        << "             \t\t  and redDensGradMax to be rMin, rMax, and sMax," << endl
+   cout << "  --nci      \t\tSelect the appropriate fields to render an NCI plot." << '\n';
+   cout << "  --configure-nci rMin rMax sMax \tSet the parameters rhoMin, rhoMax," << '\n'
+        << "             \t\t  and redDensGradMax to be rMin, rMax, and sMax," << '\n'
         << "             \t\t  respectively. Default values: rhoMin=" << NCIRHOMIN << ",\n"
         << "             \t\t  rhoMax=" << NCIRHOMAX << ", and redGradMax=" <<  NCISMAX << ".\n";
-   cout << "  --help    \t\tSame as -h" << endl;
-   cout << "  --version \t\tSame as -V" << endl;
+   cout << "  --dori     \t\tSelect the appropriate fields to render a DORI map." << '\n';
+   cout << "  --help    \t\tSame as -h" << '\n';
+   cout << "  --version \t\tSame as -V" << '\n';
    //-------------------------------------------------------------------------------------
    ScreenUtils::PrintScrCharLine('-');
    cout << "            \t           a\n"
@@ -316,28 +322,28 @@ void printErrorMsg(char** &argv,char lab) {
          break;
       case 'a' :
       case 'B' :
-         cout << "should be followed by two real numbers." << endl;
+         cout << "should be followed by two real numbers." << '\n';
          break;
       case 'b' :
       case 'I' :
-         cout << "should be followed by a real number." << endl;
+         cout << "should be followed by a real number." << '\n';
          break;
       case 'n':
       case 'S':
-         cout << "should be followed by an integer." << endl;
+         cout << "should be followed by an integer." << '\n';
          break;
       case 'N':
-         cout << "should be followed by three integers." << endl;
+         cout << "should be followed by three integers." << '\n';
          break;
       case 'o':
-         cout << "should be followed by a name." << endl;
+         cout << "should be followed by a name." << '\n';
          break;
       default:
-         cout << "is triggering an unknown error." << endl;
+         cout << "is triggering an unknown error." << '\n';
          break;
    }
    ScreenUtils::SetScrNormalFont();
-   cout << "\nTry:\n\t" << argv[0] << " -h " << endl;
+   cout << "\nTry:\n\t" << argv[0] << " -h " << '\n';
    cout << "\nto view the help menu.\n\n";
    exit(1);
    return;
@@ -349,11 +355,15 @@ void processDoubleDashOptions(int &argc,char** &argv,OptionFlags &flags,int &pos
    string str=argv[pos];
    str.erase(0,2);
    if (str==string("version")) {
-      cout << progname << " " << CURRENTVERSION << endl;
+      cout << progname << " " << CURRENTVERSION << '\n';
       exit(0);
    } else if (str==string("help")) {
       printHelpMenu(argc,argv);
       exit(0);
+   } else if (str==string("dori")) {
+      flags.plotdori=true;
+   } else if (str==string("nci")) {
+      flags.plotnci=true;
    } else if ( str==string("configure-nci") ) {
       flags.configspecialnci=(pos+1);
       pos+=3;
@@ -363,7 +373,7 @@ void processDoubleDashOptions(int &argc,char** &argv,OptionFlags &flags,int &pos
       }
    } else {
       ScreenUtils::SetScrRedBoldFont();
-      cout << "Error: Unrecognized option '" << argv[pos] << "'" << endl;
+      cout << "Error: Unrecognized option '" << argv[pos] << "'" << '\n';
       ScreenUtils::SetScrNormalFont();
       exit(1);
    }

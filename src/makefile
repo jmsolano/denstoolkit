@@ -128,7 +128,7 @@ info: ## Shows information about headers, sources, etc.
 compileexecs: $(ALLHEADERS) $(ALLSOURCES)
 	@echo "\033[32mCompiling all execs...\\033[m"
 	@MyList="$(DIRSWITHEXES)";for i in $$MyList;do \
-		echo "\033[32mCompiling in dir $$i\033[m"; cd $$i; make $(MYMAKEFLAGS); for j in $$(ls *.x);do cp $$j ../bin/$${j%.x};done; cd $(TOP) ;done
+		echo "\033[32mCompiling in dir $$i\033[m"; cd $$i; $(MAKE) $(MYMAKEFLAGS); for j in $$(ls *.x);do cp $$j ../bin/$${j%.x};done; cd $(TOP) ;done
 
 $(BINDIR):
 	@mkdir -p bin
@@ -142,9 +142,9 @@ clean: ## Cleans all binaries. Does not remove the installed executables, nor th
 fullclean: clean ## Removes executables and static library (common/*)
 	@echo "\033[33mCleaning subdirectories...\\033[m"
 	@MyList="$(DIRSWITHEXES)";for i in $$MyList;do \
-		cd $$i; make clean; cd $(TOP) ;done
+		cd $$i; $(MAKE) clean; cd $(TOP) ;done
 	@echo "\033[33mCleaning library (common)...\033[m"
-	@cd $(TOP)/common/;make clean
+	@cd $(TOP)/common/;$(MAKE) clean
 	@echo "\033[33mCleaning devdoc...\033[m"
 	@cd $(TOP)/devdoc/;rm -rf html
 
@@ -156,7 +156,7 @@ install: all ## Installs the binaries (after compiling). Usually requires sudo m
 	@if test -e $(INSTALL_PATH)/dtkpoint; then (dtkpoint -V; dtkline -V; \
 		dtkplane -V; dtkcube -V; dtkfindcp -V; dtkmomd -V; dtkdemat1 -V; \
 		dtkqdmol -V; dtkbpdens -V; dtkcharcicp -V; dtkintegobondpath -V; \
-		dtkpropcpsoniso -V; dtknci -V; dtkdrawer -V; dtkintegrate -V; \
+		dtkpropcpsoniso -V; dtkmapfieldonisosurf -V; dtkdrawer -V; dtkintegrate -V; \
           cd $(INSTALL_PATH); ls -1 dtk*2*; ls dtkget*) fi
 	@echo "\033[0m"
 

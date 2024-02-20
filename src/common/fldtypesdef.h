@@ -519,6 +519,9 @@ inline double GetDefaultIsolvalueForCube(const char p2p) {
       case 'z' :
          isoval=0.055e0;
          break;
+      case 'Z' :
+         isoval=0.55e0;
+         break;
       default :
          break;
    }
