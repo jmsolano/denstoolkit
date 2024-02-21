@@ -89,14 +89,11 @@ inline char ConvertScalarFieldType2Char(ScalarFieldType fftt) {
       case LAPD :
          res='l';
          break;
-      case ELFD :
-         res='E';
-         break;
       case LOLD :
          res='L';
          break;
-      case MGLD :
-         res='M';
+      case ELFD :
+         res='E';
          break;
       case SENT :
          res='S';
@@ -113,6 +110,9 @@ inline char ConvertScalarFieldType2Char(ScalarFieldType fftt) {
       case KEDG :
          res='G';
          break;
+      case MGLD :
+         res='M';
+         break;
       case GLOL :
          res='N';
          break;
@@ -125,20 +125,11 @@ inline char ConvertScalarFieldType2Char(ScalarFieldType fftt) {
       case MLED :
          res='P';
          break;
-      case ROSE :
-         res='r';
-         break;
       case REDG :
          res='s';
          break;
-      case SCFD :
-         res='u';
-         break;
-      case VCFD :
-         res='U';
-         break;
-      case EDFTA :
-         res= 'a';
+      case ROSE :
+         res='r';
          break;
       case VPED :
          res= 'v';
@@ -149,8 +140,20 @@ inline char ConvertScalarFieldType2Char(ScalarFieldType fftt) {
       case NCIL :
          res= 'Z';
          break;
+      case EDFTA :
+         res= 'a';
+         break;
+      case ELLPY :
+         res= 'e';
+         break;
       case DORI :
          res= 'D';
+         break;
+      case SCFD :
+         res='u';
+         break;
+      case VCFD :
+         res='U';
          break;
       case NONE :
       default :
@@ -174,17 +177,11 @@ inline ScalarFieldType Char2ScalarFieldType(const char prop) {
       case 'l' :
          res=LAPD;
          break;
-      case 'e' :
-         res=ELLPY;
-         break;
-      case 'E' :
-         res=ELFD;
-         break;
       case 'L' :
          res=LOLD;
          break;
-      case 'M' :
-         res=MGLD;
+      case 'E' :
+         res=ELFD;
          break;
       case 'S' :
          res=SENT;
@@ -201,6 +198,9 @@ inline ScalarFieldType Char2ScalarFieldType(const char prop) {
       case 'G' :
          res=KEDG;
          break;
+      case 'M' :
+         res=MGLD;
+         break;
       case 'N' :
          res=GLOL;
          break;
@@ -213,20 +213,11 @@ inline ScalarFieldType Char2ScalarFieldType(const char prop) {
       case 'P' :
          res=MLED;
          break;
-      case 'r' :
-         res=ROSE;
-         break;
       case 's' :
          res=REDG;
          break;
-      case 'u' :
-         res=SCFD;
-         break;
-      case 'U' :
-         res=VCFD;
-         break;
-      case 'a' :
-         res=EDFTA;
+      case 'r' :
+         res=ROSE;
          break;
       case 'v' :
          res=VPED;
@@ -237,8 +228,20 @@ inline ScalarFieldType Char2ScalarFieldType(const char prop) {
       case 'Z' :
          res=NCIL;
          break;
+      case 'a' :
+         res=EDFTA;
+         break;
+      case 'e' :
+         res=ELLPY;
+         break;
       case 'D' :
          res=DORI;
+         break;
+      case 'u' :
+         res=SCFD;
+         break;
+      case 'U' :
+         res=VCFD;
          break;
       default :
          res=NONE;
@@ -261,32 +264,11 @@ inline string GetFieldTypeKeyShort(const char prop) {
       case 'l':
          plbl="LapRho";
          break;
-      case 'e':
-         plbl="Ellipticity";
-         break;
-      case 'E':
-         plbl="ELF";
-         break;
       case 'L':
          plbl="LOL";
          break;
-      case 'M':
-         plbl="MagGradLOL";
-         break;
-      case 'N':
-         plbl="GradLOL";
-         break;
-      case 'p' :
-         plbl="LED";
-         break;
-      case 'P' :
-         plbl="MagLED";
-         break;
-      case 'r' :
-         plbl="RoSE";
-         break;
-      case 's' :
-         plbl="RedDensGrad";
+      case 'E':
+         plbl="ELF";
          break;
       case 'S':
          plbl="ShannEnt";
@@ -294,26 +276,35 @@ inline string GetFieldTypeKeyShort(const char prop) {
       case 'T':
          plbl="ShannEntMom";
          break;
-      case 'G':
-         plbl="KinEnerDensG";
-         break;
       case 'K':
          plbl="KinEnerDensK";
          break;
       case 'k':
          plbl="KinEnerDensKMom";
          break;
-      case 'a' :
-         plbl="ExDFTa";
+      case 'G':
+         plbl="KinEnerDensG";
          break;
-      case 'u' :
-         plbl="ScalarCustFld";
+      case 'M':
+         plbl="MagGradLOL";
          break;
-      case 'U' :
-         plbl="VectorCustFld";
+      case 'N':
+         plbl="GradLOL";
          break;
       case 'V':
          plbl="MEP";
+         break;
+      case 'p' :
+         plbl="LED";
+         break;
+      case 'P' :
+         plbl="MagLED";
+         break;
+      case 's' :
+         plbl="RedDensGrad";
+         break;
+      case 'r' :
+         plbl="RoSE";
          break;
       case 'v':
          plbl="VPED";
@@ -324,8 +315,20 @@ inline string GetFieldTypeKeyShort(const char prop) {
       case 'Z':
          plbl="NCIRho";
          break;
+      case 'a' :
+         plbl="ExDFTa";
+         break;
+      case 'e':
+         plbl="Ellipticity";
+         break;
       case 'D' :
          plbl="DORI";
+         break;
+      case 'u' :
+         plbl="ScalarCustFld";
+         break;
+      case 'U' :
+         plbl="VectorCustFld";
          break;
       default:
          plbl="Unknown";
@@ -348,32 +351,11 @@ inline string GetFieldTypeKeyLong(const char prop) {
       case 'l':
          plbl="Laplacian of Electron Density";
          break;
-      case 'e':
-         plbl="Ellipticity";
-         break;
-      case 'E':
-         plbl="Electron Localization Function --ELF--";
-         break;
       case 'L':
          plbl="Localized Orbital Locator --LOL--";
          break;
-      case 'M':
-         plbl="Magnitude of the Gradrient of LOL";
-         break;
-      case 'N':
-         plbl="Gradient of LOL";
-         break;
-      case 'p' :
-         plbl="Localized Electrons Detector --LED--";
-         break;
-      case 'P' :
-         plbl="Magnitude of Localized Electrons Detector";
-         break;
-      case 'r' :
-         plbl="Region of Slow Electrons --RoSE--";
-         break;
-      case 's' :
-         plbl="Reduced Density Gradient --s--";
+      case 'E':
+         plbl="Electron Localization Function --ELF--";
          break;
       case 'S':
          plbl="Shannon-Entropy Density";
@@ -381,26 +363,35 @@ inline string GetFieldTypeKeyLong(const char prop) {
       case 'T':
          plbl="Shannon-Entropy Density in Momentum Space";
          break;
-      case 'G':
-         plbl="Kinetic Energy Density G";
-         break;
       case 'K':
          plbl="Kinetic Energy Density K";
          break;
       case 'k':
          plbl="Kinetic Energy Density K in Momentum Space";
          break;
-      case 'a' :
-         plbl="Exchange And Correlation Energy DFTa";
+      case 'G':
+         plbl="Kinetic Energy Density G";
          break;
-      case 'u':
-         plbl="Scalar Custom Field";
+      case 'M':
+         plbl="Magnitude of the Gradrient of LOL";
          break;
-      case 'U' :
-         plbl="Vector Custom Field";
+      case 'N':
+         plbl="Gradient of LOL";
          break;
       case 'V':
          plbl="Molecular Electrostatic Potential";
+         break;
+      case 'p' :
+         plbl="Localized Electrons Detector --LED--";
+         break;
+      case 'P' :
+         plbl="Magnitude of Localized Electrons Detector";
+         break;
+      case 's' :
+         plbl="Reduced Density Gradient --s--";
+         break;
+      case 'r' :
+         plbl="Region of Slow Electrons --RoSE--";
          break;
       case 'v':
          plbl="Virial Potential Energy Density";
@@ -411,8 +402,20 @@ inline string GetFieldTypeKeyLong(const char prop) {
       case 'Z':
          plbl="Non Covalent Interactions - Density";
          break;
+      case 'a' :
+         plbl="Exchange And Correlation Energy DFTa";
+         break;
+      case 'e':
+         plbl="Ellipticity";
+         break;
       case 'D' :
          plbl="Density Overlap Regions Indicator --DORI--";
+         break;
+      case 'u':
+         plbl="Scalar Custom Field";
+         break;
+      case 'U' :
+         plbl="Vector Custom Field";
          break;
       default:
          plbl="Unknown Field Type!";
