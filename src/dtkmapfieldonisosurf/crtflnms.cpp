@@ -94,7 +94,7 @@ void mkFileNames(char ** (&argv), OptionFlags &opts, string &i_fn, string &c_fn,
    } else if ( opts.plotdori ) {
       plbl="DORI";
    } else {
-      plbl=GetFieldTypeKeyShort(mprp)+string("MapOn")+GetFieldTypeKeyShort(iprp)+string("iso");
+      plbl=GetFieldTypeKeyShort(mprp)+string("MapOn")+GetFieldTypeKeyShort(iprp)+string("Iso");
    }
    if ( opts.outfname ) {
       pv_fn+=(plbl+string(".pov"));
