@@ -77,7 +77,8 @@ using std::string;
    used. The latter has been defined at the begining of the main program.
  */
 void mkFileNames(char ** (&argv), OptionFlags &opts, string &i_fn, string &c_fn,\
-      string &pv_fn);
+      string &pv_fn,char iprp,char mprp);
+void getWFName(char ** (&argv),OptionFlags &opts,string &i_fn);
 
 #endif //_CRTFLNMS_H
 

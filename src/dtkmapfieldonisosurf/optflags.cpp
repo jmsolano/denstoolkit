@@ -80,6 +80,7 @@ using std::string;
 #include "figname.h"
 #include "../common/screenutils.h"
 #include "../common/gausswavefunction.h"
+#include "fldtypesdef.h"
 
 OptionFlags::OptionFlags() {
    infname=0;
@@ -91,6 +92,7 @@ OptionFlags::OptionFlags() {
    setcolorscalesingle=setcolorscaleboth=0;
    selectpalette=setgnpangles=setviewangles=orientcam3ats=0;
    rotX=rotY=rotZ=0;
+   setisoprop=setmapprop=0;
    skipcube=kppov=mkpov=mkpng=rotcam=false;
    plotnci=plotdori=false;
 }
@@ -140,6 +142,10 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
             case 'c' :
                flags.skipcube=true;
                break;
+            case 'i' :
+               flags.setisoprop=(++i);
+               if (i>=argc) {printErrorMsg(argv,'i');}
+               break;
             case 'I' :
                flags.setsisovalue=(++i);
                if (i>=argc) {printErrorMsg(argv,'I');}
@@ -150,6 +156,10 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
             case 'l' :
                flags.selectpalette=(++i);
                if (i>=argc) {printErrorMsg(argv,'l');}
+               break;
+            case 'm' :
+               flags.setmapprop=(++i);
+               if (i>=argc) {printErrorMsg(argv,'m');}
                break;
             case 'n' :
                if (i>=argc) {printErrorMsg(argv,'n');}
@@ -168,9 +178,6 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                if ((i+3)>=argc) {printErrorMsg(argv,'O');}
                flags.orientcam3ats=(++i);
                flags.rotcam=true;
-               break;
-            case 'p' :
-               flags.mkpov=true;
                break;
             case 'P' :
                flags.mkpov=true;
@@ -258,6 +265,13 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "  -c        \tSkip the cube calculation. Notice this will assume that the\n"
         << "            \t  cube was previously computed, and it is present in the\n"
         << "            \t  present working directory." << '\n';
+   cout << "  -i iprop   \tSet the property to build the isosurface to be iprop.\n"
+        << "            \t  Here, iprop is a character that can be (z is the default):" << '\n';
+   string charFields="dglKGeELMPrsSVDuUvzZ";
+   for ( size_t i=0 ; i<charFields.size() ; ++i ) {
+      cout << "         \t\t" << charFields[i] << " ("
+         << GetFieldTypeKeyLong(charFields[i]) << ')' << '\n';
+   }
    cout << "  -I isoval \tSet the isovalue of s to be isoval" << '\n';
    cout << "  -k        \tKeep the pov-ray script (see also option P, below)." << '\n';
    cout << "  -l palette\tSelect the color scheme 'palette', which can be any of:\n"
@@ -265,6 +279,10 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  magma moreland oranges orrd plasma pubu purples rdbu\n"
         << "            \t  rdylbu rdylgn reds spectral viridis ylgn ylgnbu\n"
         << "            \t  ylorbr ylorrd" << '\n';
+   cout << "  -m mprop  \tMap the property mprop onto the isosurface. Here,\n"
+        << "            \t  mprop is a character that can be one of the fields\n"
+        << "            \t  described in option '-i', above (however the default\n"
+        << "            \t  for this option is Z)." << '\n';
    cout << "  -n  dim   \tSet the number of points per direction for the cube" << '\n'
         << "            \t  to be dim x dim x dim. (see dtkcube's option '-n')." << '\n';
    cout << "  -N nx ny nz\tSet the individual points per direction for the cube" << '\n'
@@ -334,6 +352,10 @@ void printErrorMsg(char** &argv,char lab) {
          break;
       case 'N':
          cout << "should be followed by three integers." << '\n';
+         break;
+      case 'i' :
+      case 'm' :
+         cout << "should be followed by a single character." << '\n';
          break;
       case 'o':
          cout << "should be followed by a name." << '\n';

@@ -77,8 +77,9 @@ int main (int argc, char ** argv) {
 
    OptionFlags options;
    getOptions(argc,argv,options); //This processes the options from the command line.
-   mkFileNames(argv,options,infilnam,cubfnam,povfnam); //This creates the names used.
-   ScreenUtils::PrintHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS); //Just to let the user know that the initial configuration is OK
+   getWFName(argv,options,infilnam);
+   //Just to let the user know that the initial configuration is OK:
+   ScreenUtils::PrintHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS);
 
    cout << '\n' << "Loading wave function from file: " << infilnam << '\n';
    
@@ -126,6 +127,17 @@ int main (int argc, char ** argv) {
    }
 
    /* Special configurations  */
+   if ( options.plotnci && options.plotdori ) {
+      ScreenUtils::DisplayErrorMessage("--dori and --nci options are mutually exclusive,\n"
+            "please, choose only one.");
+      return EXIT_FAILURE;
+   }
+
+   /* Set the isosurface property to be computed */
+   char isoprop='z';
+   /* Set the property to be mapped */
+   char mapprop='Z';
+
    if (options.plotnci) {
       if ( options.configspecialnci ) {
          double ttt=std::stod(string(argv[options.configspecialnci]));
@@ -138,21 +150,33 @@ int main (int argc, char ** argv) {
       cout << "nciRhoMin: " << gwf.nciRhoMin << '\n';
       cout << "nciRhoMax: " << gwf.nciRhoMax << '\n';
       cout << "nciSMax: " << gwf.nciSMax << '\n';
+   } else if ( options.plotdori ) {
+      isoprop='D';
+      gwf.SetNCIRhoMin(-0.02);
+      gwf.SetNCIRhoMax(0.02);
+      cout << "Lambda2Min: " << gwf.nciRhoMin << '\n';
+      cout << "Lambda2Max: " << gwf.nciRhoMax << '\n';
+   } else {
+      if ( options.setisoprop ) {
+         isoprop=argv[options.setisoprop][0];
+      }
+      if ( options.setmapprop ) {
+         mapprop=argv[options.setmapprop][0];
+      }
    }
-   /* Set the isosurface property to be computed */
-   char prop='z';
-
+   mkFileNames(argv,options,infilnam,cubfnam,povfnam,isoprop,mapprop); //This creates the names used.
+                                                       //
    /* Computes cube (if requested). */
    if ( !options.skipcube ) {
       cout << "The size of the grid will be: " << grid.GetNPts(0) << " x "
            << grid.GetNPts(1) << " x " << grid.GetNPts(2) << '\n';
       cout << "Total number of points that will be computed: "
            << (grid.GetNPts(0)*grid.GetNPts(1)*grid.GetNPts(2)) << '\n';
-      cout << "Evaluating and writing " << GetFieldTypeKeyLong(prop) << ")." << '\n' << '\n';
-      ScalarFieldType ft=Char2ScalarFieldType(prop);
+      cout << "Evaluating and writing " << GetFieldTypeKeyLong(isoprop) << ")." << '\n' << '\n';
+      ScalarFieldType ft=Char2ScalarFieldType(isoprop);
       grid.MakeCube(cubfnam,gwf,ft);
    }
-   cout << '\n' << GetFieldTypeKeyLong(prop) << " cube file: " << cubfnam << '\n';
+   cout << '\n' << GetFieldTypeKeyLong(isoprop) << " cube file: " << cubfnam << '\n';
    
    cout << "Extracting isosurface..." << std::endl;
    GaussianCube gc(cubfnam);
@@ -163,29 +187,15 @@ int main (int argc, char ** argv) {
    }
    Isosurface iso;
    //iso.UseTetrahedrons(true);
-   /* Set the property to be mapped */
-   char mapprop='Z';
    double isovalue=GetDefaultIsolvalueForCube(mapprop);
    if ( options.setsisovalue ) {
       isovalue=std::stod(string(argv[options.setsisovalue]));
    }
    iso.ExtractMarchingCubes(gc,isovalue);
    cout << "Computing " << GetFieldTypeKeyLong(mapprop) << " at mesh vertices..." << '\n';
-   if ( options.plotnci || mapprop=='Z' ) {
-      HelpersMapFieldOnIsoSurf::ComputeLambdaOnVertices(gwf,iso);
-   } else {
-      cout << "Under construction!" << '\n';
-      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
-      return EXIT_FAILURE;
-   }
+   HelpersMapFieldOnIsoSurf::ComputeFieldAtVertices(gwf,iso,mapprop);
    cout << "Computing Normals at mesh vertices..." << '\n';
-   if ( options.plotnci || mapprop=='Z' ) {
-      HelpersMapFieldOnIsoSurf::ComputeNormalsAtVertices(gwf,iso);
-   } else {
-      cout << "Under construction!" << '\n';
-      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
-      return EXIT_FAILURE;
-   }
+   HelpersMapFieldOnIsoSurf::ComputeNormalsAtVertices(gwf,iso,isoprop);
    iso.UseNormals(true);
 
    /* At this point the computation has ended. Usually this means no errors ocurred. */

@@ -61,8 +61,10 @@ using std::shared_ptr;
 #include "commonhelpers.h"
 #include "palette.h"
 #include "matrixvectoroperations3d.h"
+#include "dtkscalarfunction3d.h"
 
-bool HelpersMapFieldOnIsoSurf::ComputeLambdaOnCentroids(GaussWaveFunction &wf,Isosurface &iso) {
+bool HelpersMapFieldOnIsoSurf::ComputeFieldAtCentroids(GaussWaveFunction &wf,Isosurface &iso,\
+      const char prop) {
    size_t n=iso.face.size();
    if ( n==0 ) {
       ScreenUtils::DisplayErrorMessage("There are zero triangles in the isosurface!"
@@ -71,19 +73,30 @@ bool HelpersMapFieldOnIsoSurf::ComputeLambdaOnCentroids(GaussWaveFunction &wf,Is
       return false;
    }
    iso.ComputeCentroids();
+   DTKScalarFunction f(wf);
+   f.SetScalarFunction(prop);
    vector<double> v(n);
    double x,y,z;
    for ( size_t i=0 ; i<n ; ++i ) {
       x=iso.centroid[i][0];
       y=iso.centroid[i][1];
       z=iso.centroid[i][2];
-      v[i]=wf.EvalNCILambda(x,y,z);
+      v[i]=f.f(x,y,z);
    }
    iso.SetProperty2Map(v);
    iso.UseColorMap(true);
    return true;
 }
-bool HelpersMapFieldOnIsoSurf::ComputeLambdaOnVertices(GaussWaveFunction &wf,Isosurface &iso) {
+/*
+bool HelpersMapFieldOnIsoSurf::ComputeLambdaAtCentroids(GaussWaveFunction &wf,Isosurface &iso) {
+   return ComputeFieldAtCentroids(wf,iso,'Z');
+}
+bool HelpersMapFieldOnIsoSurf::ComputeLambdaAtVertices(GaussWaveFunction &wf,Isosurface &iso) {
+   return ComputeFieldAtVertices(wf,iso,'Z');
+}
+// */
+bool HelpersMapFieldOnIsoSurf::ComputeFieldAtVertices(GaussWaveFunction &wf,\
+      Isosurface &iso,const char prop) {
    size_t n=iso.vertex.size();
    if ( n==0 ) {
       ScreenUtils::DisplayErrorMessage("There are zero triangles in the isosurface!"
@@ -92,18 +105,21 @@ bool HelpersMapFieldOnIsoSurf::ComputeLambdaOnVertices(GaussWaveFunction &wf,Iso
       return false;
    }
    vector<double> v(n);
+   DTKScalarFunction f(wf);
+   f.SetScalarFunction(prop);
    double x,y,z;
    for ( size_t i=0 ; i<n ; ++i ) {
       x=iso.vertex[i][0];
       y=iso.vertex[i][1];
       z=iso.vertex[i][2];
-      v[i]=wf.EvalNCILambda(x,y,z);
+      v[i]=f.f(x,y,z);
    }
    iso.SetProperty2Map(v);
    iso.UseColorMap(true);
    return true;
 }
-bool HelpersMapFieldOnIsoSurf::ComputeNormalsAtVertices(GaussWaveFunction &wf,Isosurface &iso) {
+bool HelpersMapFieldOnIsoSurf::ComputeNormalsAtVertices(GaussWaveFunction &wf,\
+      Isosurface &iso,const char prop) {
    size_t n=iso.vertex.size();
    if ( n==0 ) {
       ScreenUtils::DisplayErrorMessage("There are zero triangles in the isosurface!"
@@ -117,10 +133,12 @@ bool HelpersMapFieldOnIsoSurf::ComputeNormalsAtVertices(GaussWaveFunction &wf,Is
       for ( size_t i=0 ; i<iso.normal.size() ; ++i ) { iso.normal[i].resize(3); }
    }
    vector<double> x(3);
+   DTKScalarFunction f(wf);
+   f.SetScalarFunction(prop);
    double gs[3];
    for ( size_t i=0 ; i<n ; ++i ) {
       x[0]=iso.vertex[i][0]; x[1]=iso.vertex[i][1]; x[2]=iso.vertex[i][2];
-      wf.EvalGradReducedDensityGradient(x[0],x[1],x[2],gs);
+      f.gradf(x[0],x[1],x[2],gs);
       iso.normal[i][0]=gs[0]; iso.normal[i][1]=gs[1]; iso.normal[i][2]=gs[2];
    }
    iso.NormaliseNormals();

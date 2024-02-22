@@ -70,13 +70,40 @@ using std::endl;
 #include "../common/fldtypesdef.h"
 
 void mkFileNames(char ** (&argv), OptionFlags &opts, string &i_fn, string &c_fn,\
-      string &pv_fn) {
+      string &pv_fn,char iprp,char mprp) {
    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
    /*
       If you need more names to be created by this function, you need to add the new
       string in the arguments list here and in the corresponding header file.
     */
    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   string basename=i_fn;
+   if ( opts.outfname ) {
+      basename=argv[opts.outfname];
+   }
+
+   c_fn=i_fn;
+   //string plbl="NCI"+GetFieldTypeKeyShort('s');
+   string plbl=GetFieldTypeKeyShort(iprp);
+   FileUtils::InsertAtEndOfFileName(c_fn,plbl);
+   FileUtils::ReplaceExtensionOfFileName(c_fn,"cub");
+
+   pv_fn=basename;
+   if ( opts.plotnci ) {
+      plbl="NCI";
+   } else if ( opts.plotdori ) {
+      plbl="DORI";
+   } else {
+      plbl=GetFieldTypeKeyShort(mprp)+string("MapOn")+GetFieldTypeKeyShort(iprp)+string("iso");
+   }
+   if ( opts.outfname ) {
+      pv_fn+=(plbl+string(".pov"));
+   } else {
+      FileUtils::InsertAtEndOfFileName(pv_fn,plbl);
+      FileUtils::ReplaceExtensionOfFileName(pv_fn,"pov");
+   }
+}
+void getWFName(char ** (&argv),OptionFlags &opts,string &i_fn) {
    i_fn=string(argv[1]);
    if (!((i_fn.find("wfn")!=string::npos)||
        (i_fn.find("WFN")!=string::npos)||
@@ -88,22 +115,5 @@ void mkFileNames(char ** (&argv), OptionFlags &opts, string &i_fn, string &c_fn,
       exit(EXIT_FAILURE);
    }
 
-   string basename=i_fn;
-   if ( opts.outfname ) {
-      basename=argv[opts.outfname];
-   }
-
-   c_fn=i_fn;
-   string plbl="NCI"+GetFieldTypeKeyShort('s');
-   FileUtils::InsertAtEndOfFileName(c_fn,plbl);
-   FileUtils::ReplaceExtensionOfFileName(c_fn,"cub");
-
-   pv_fn=basename;
-   if ( opts.outfname ) {
-      pv_fn+=(string("NCI.pov"));
-   } else {
-      FileUtils::InsertAtEndOfFileName(pv_fn,"NCI");
-      FileUtils::ReplaceExtensionOfFileName(pv_fn,"pov");
-   }
 }
 
