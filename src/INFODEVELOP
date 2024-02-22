@@ -27,6 +27,11 @@ Implement the respective functions to include the new field in
    ---> Do not forget to add the new field to the functions
            --->  GaussWaveFunction::displayAllFieldProperties
            --->  GaussWaveFunction::writeAllFieldProperties
+   ---> dtkscalarFunction.cpp:
+           ---> Add the new scalar field to DTKScalarFunction::GetPtr2DTKScalarFunction.
+           ---> Add the new field to DTKScalarFunction::f (header, inline function)
+           ---> Add the new field to DTKScalarFunction::gradf (header, inline function)
+           ---> Add the new field to DTKScalarFunction::SelectScalarFunctionPtr (cpp)
    ---> dtkline (wfgrid1d)
            ---> Create a new function bool WaveFunctionGrid1D::WriteLineDatFIELDNAME(...)
            ---> Edit the functions makeDat (add the new switch case)
