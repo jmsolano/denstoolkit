@@ -297,7 +297,7 @@ void HelpersMapFieldOnIsoSurf::CenterMolecule(BondNetWork &bn,Isosurface &iso) {
    }
    bn.CenterMolecule();
    iso.Translate(trn);
-   cout << "iscenter: " << iso.center[0] << " " << iso.center[1] << " " << iso.center[2] << '\n';
+   cout << "isocenter: " << iso.center[0] << " " << iso.center[1] << " " << iso.center[2] << '\n';
 }
 bool HelpersMapFieldOnIsoSurf::AlignMolecule(POVRayConfiguration &pvp,BondNetWork &bn,\
          const OptionFlags &options,char *argv[]) {
