@@ -9,7 +9,7 @@ bool DTKScalarFunction::prntunknfld1st=true;
 DTKScalarFunction::DTKScalarFunction() : Function3D() {
    wf=nullptr;
    sft=ScalarFieldType::NONE;
-   double (GaussWaveFunction::*selfnc)(double,double,double) = 0;
+   //double (GaussWaveFunction::*selfnc)(double,double,double) = 0;
 }
 DTKScalarFunction::DTKScalarFunction(GaussWaveFunction &ugwf) : DTKScalarFunction() {
    wf=&ugwf;
@@ -98,13 +98,10 @@ void DTKScalarFunction::SelectScalarFunctionPtr(const ScalarFieldType ft) {
 void DTKScalarFunction::NumericalGradient(double x,double y,double z,double (&g)[3]) {
    double hh=0.02;
    double oo2h=0.5e0/hh;
-   double ffpp=f(x+hh,y,z);
-   ffpp-f(x-hh,y,z);
+   double ffpp=f(x+hh,y,z)-f(x-hh,y,z);
    g[0]=oo2h*ffpp;
-   ffpp=f(x,y+hh,z);
-   ffpp-f(x,y-hh,z);
+   ffpp=f(x,y+hh,z)-f(x,y-hh,z);
    g[1]=oo2h*ffpp;
-   ffpp=f(x,y,z+hh);
-   ffpp-f(x,y,z-hh);
+   ffpp=f(x,y,z+hh)-f(x,y,z-hh);
    g[2]=oo2h*ffpp;
 }

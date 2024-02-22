@@ -240,7 +240,7 @@ int main (int argc, char ** argv) {
    ScreenUtils::PrintProgressBar(0);
 #endif
    
-   double xx[3],xt[3],tmpval,pp,pbcp,pmax,pmin,maxval=-1.0e+50,minval=1.0e+50,bcpval;
+   double xx[3],xt[3],tmpval,pp,pbcp,pmax,pmin,maxval=-1.0e+50,minval=1.0e+50,bcpval=0.0e0;
    double xmax[3],xmin[3];
    pp=0.0e0;
    if (options.uponbp) {

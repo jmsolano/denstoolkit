@@ -240,9 +240,10 @@ int main (int argc, char ** argv) {
    o1sfile << scientific << setprecision(12);
    cout << scientific << setprecision(12);
    
-   double p1,p2,pbcp,xt[3];
+   double p1,p2,pbcp=0.0e0,xt[3];
    double md1tmp,md1max=-1.0e+50,md1min=1.0e+50,rhomin=1.0e+50,diagmax=-1.0e+50;
-   double x1max[3],x1min[3],x2max[3],x2min[3],p1max,p1min,p2max,p2min,p1dmax,p2dmax;
+   double x1max[3],x1min[3],x2max[3],x2min[3];
+   double p1max=0.0e0,p1min=0.0e0,p2max=0.0e0,p2min=0.0e0,p1dmax=0.0e0,p2dmax=0.0e0;
    double xrmin[3],xd1max[3],xd2max[3];
    double gmd1max=-1.0e+50,gmd1min=1.0e+50;
    double ggradmagmax=-1.0e+50,ggradmagmin=1.0e+50;

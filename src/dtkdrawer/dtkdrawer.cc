@@ -82,7 +82,7 @@ int main (int argc, char *argv[]) {
                                //was read, there souldn't be problems here).
    bnw.SetUpBNW();             //To setup the bond network.
 
-   bool ress=HelpersDrawer::MakePovFile(basenam,options,argv,bnw);
+   HelpersDrawer::MakePovFile(basenam,options,argv,bnw);
 
    /* At this point the computation has ended. Usually this means no errors ocurred. */
    

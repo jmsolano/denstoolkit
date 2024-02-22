@@ -2772,7 +2772,7 @@ void CritPtNetWork::DisplayStatus(bool lngdesc) {
    if (iknowrgps) {
       //if (nRGP!=nRCP) {ScreenUtils::DisplayWarningMessage("For some unknown reason nRGP!=nRCP");}
       int nzp=0,npts;
-      for ( size_t i=0 ; i<nRCP ; ++i ) {
+      for ( int i=0 ; i<nRCP ; ++i ) {
          npts=GetNofRingPathsOfRCP(i);
          for ( int j=0 ; j<npts ; ++j ) {
             if ( conRCP[i][1][j]>0 ) { ++nzp; }
@@ -2784,7 +2784,7 @@ void CritPtNetWork::DisplayStatus(bool lngdesc) {
    if (iknowcgps) {
       //if (nRGP!=nRCP) {ScreenUtils::DisplayWarningMessage("For some unknown reason nRGP!=nRCP");}
       int nzp=0,npts;
-      for ( size_t i=0 ; i<nCCP ; ++i ) {
+      for ( int i=0 ; i<nCCP ; ++i ) {
          npts=GetNofCagePathsOfCCP(i);
          for ( int j=0 ; j<npts ; ++j ) {
             if ( conCCP[i][1][j]>0 ) { ++nzp; }
@@ -2959,7 +2959,7 @@ int CritPtNetWork::FindSingleRhoRingGradientPathRK5(int rcpIdx,\
    bool imatrcp=WalkGradientPathRK5ToEndPoint(xb,xn,xr,xm,magd,hstep,\
          dima,arrgp,count,maxalllen,false /* uphilldir=false  */);
    if ( imatrcp ) {return count;}
-   //cout << "rcpIdx: " << rcpIdx << ", bcpGlobIdx: " << bcpGlobIdx \
+   //cout << "rcpIdx: " << rcpIdx << ", bcpGlobIdx: " << bcpGlobIdx
    //<< ", count: " << count << ", magd: " << magd << '\n';
    //if ( magd>maxBCPACPDist ) { return -1; }
    double ux[3],uy[3]; //,xm0mxr[3],uz[3];
