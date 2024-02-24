@@ -9,7 +9,7 @@ bool DTKScalarFunction::prntunknfld1st=true;
 DTKScalarFunction::DTKScalarFunction() : Function3D() {
    wf=nullptr;
    sft=ScalarFieldType::NONE;
-   //double (GaussWaveFunction::*selfnc)(double,double,double) = 0;
+   selfnc=nullptr;
 }
 DTKScalarFunction::DTKScalarFunction(GaussWaveFunction &ugwf) : DTKScalarFunction() {
    wf=&ugwf;
