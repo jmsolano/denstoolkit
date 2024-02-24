@@ -57,8 +57,6 @@ class HelpersMapFieldOnIsoSurf {
 public:
 /* ************************************************************************** */
    static bool ComputeFieldAtCentroids(GaussWaveFunction &wf,Isosurface &iso,const char prop);
-   //static bool ComputeLambdaAtCentroids(GaussWaveFunction &wf,Isosurface &iso);
-   //static bool ComputeLambdaAtVertices(GaussWaveFunction &wf,Isosurface &iso);
    static bool ComputeFieldAtVertices(GaussWaveFunction &wf,Isosurface &iso,const char prop);
    static bool ComputeNormalsAtVertices(GaussWaveFunction &wf,Isosurface &iso,const char prop);
    static bool ComputeTriangleNormals(GaussWaveFunction &wf,Isosurface &iso);

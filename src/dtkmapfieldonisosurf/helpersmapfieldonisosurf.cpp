@@ -87,14 +87,6 @@ bool HelpersMapFieldOnIsoSurf::ComputeFieldAtCentroids(GaussWaveFunction &wf,Iso
    iso.UseColorMap(true);
    return true;
 }
-/*
-bool HelpersMapFieldOnIsoSurf::ComputeLambdaAtCentroids(GaussWaveFunction &wf,Isosurface &iso) {
-   return ComputeFieldAtCentroids(wf,iso,'Z');
-}
-bool HelpersMapFieldOnIsoSurf::ComputeLambdaAtVertices(GaussWaveFunction &wf,Isosurface &iso) {
-   return ComputeFieldAtVertices(wf,iso,'Z');
-}
-// */
 bool HelpersMapFieldOnIsoSurf::ComputeFieldAtVertices(GaussWaveFunction &wf,\
       Isosurface &iso,const char prop) {
    size_t n=iso.vertex.size();
