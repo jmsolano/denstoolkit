@@ -126,7 +126,7 @@ info: ## Shows information about headers, sources, etc.
 	@echo '=================================================================================='
 
 compileexecs: $(ALLHEADERS) $(ALLSOURCES)
-	@echo "\033[32mCompiling all execs...\\033[m"
+	@echo "\033[32mCompiling all execs...\033[m"
 	@MyList="$(DIRSWITHEXES)";for i in $$MyList;do \
 		echo "\033[32mCompiling in dir $$i\033[m"; cd $$i; $(MAKE) $(MYMAKEFLAGS); for j in $$(ls *.x);do cp $$j ../bin/$${j%.x};done; cd $(TOP) ;done
 

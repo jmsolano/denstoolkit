@@ -1,4 +1,4 @@
-TOP      = $(shell pwd)
+T
 
 # OS Name (Linux or Darwin)
 OSUPPER = $(shell uname -s 2>/dev/null | tr [:lower:] [:upper:])
@@ -112,7 +112,7 @@ $(CCOBJS): %.o: %.cc $(COMMONHEADERS) $(HEADERS)
 
 $(TESTEXECS): %.x: %.o $(STATICLIB) $(CCOBJS) $(CPPOBJS) $(SOURCES) $(HEADERS) $(COMMONHEADERS) $(COMMONSOURCES)
 	@echo "\033[32m   Linking $@\\033[m"
-	$(CXX) $(LFLAGS) $(OPTIMFLAGS) $< $(CPPOBJS) $(STATICOBJS) -o $@
+	$(CXX) $(LFLAGS) $(OPTIMFLAGS) $< $(CPPOBJS) $(STATICLIB) -o $@
 
 $(STATICLIB): $(COMMONHEADERS) $(COMMONSOURCES)
 	@echo "\033[32mBuilding lib$(COMMONSTATICLIBNAME).a\\033[m"
