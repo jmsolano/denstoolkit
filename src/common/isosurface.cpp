@@ -281,6 +281,56 @@ bool HelpersIsosurface::AddIsosurfacePOVMeshNoNormals(ofstream &ofil,Isosurface 
    ofil << thetabs << "}" << endl; //end of mesh2
    return true;
 }
+bool HelpersIsosurface::AddIsosurfacePOVMeshWithNormals(ofstream &ofil,Isosurface &iso,int usrntabs) {
+   int indlev=usrntabs;
+   size_t nvm1=iso.vertex.size()-1;
+   size_t nfm1=iso.face.size()-1;
+   string thetabs=HelpersPOVRay::IndTabsStr(indlev++);
+   ofil << thetabs << "mesh2 {" << endl;
+   thetabs=HelpersPOVRay::IndTabsStr(indlev++);
+   ofil << thetabs << "vertex_vectors {\n";
+   thetabs=HelpersPOVRay::IndTabsStr(indlev);
+   ofil << thetabs << (nvm1+1) << ",\n" << thetabs;
+   for ( size_t i=0 ; i<nvm1 ; ++i ) {
+      HelpersPOVRay::WriteVector(ofil,iso.vertex[i][0],iso.vertex[i][1],iso.vertex[i][2]);
+      ofil << ",";
+      if ( (i%3) == 2 ) { ofil << '\n' << thetabs; }
+   }
+   HelpersPOVRay::WriteVector(ofil,iso.vertex[nvm1][0],iso.vertex[nvm1][1],iso.vertex[nvm1][2]);
+   thetabs=HelpersPOVRay::IndTabsStr(--indlev);
+   ofil << thetabs << "}" << endl;//end of vertex_vectors
+   ofil << thetabs << "normal_vectors {\n";
+   thetabs=HelpersPOVRay::IndTabsStr(indlev);
+   ofil << thetabs << (nvm1+1) << ",\n" << thetabs;
+   for ( size_t i=0 ; i<nvm1 ; ++i ) {
+      HelpersPOVRay::WriteVector(ofil,iso.normal[i][0],iso.normal[i][1],iso.normal[i][2]);
+      ofil << ",";
+      if ( (i%3) == 2 ) { ofil << '\n' << thetabs; }
+   }
+   HelpersPOVRay::WriteVector(ofil,iso.normal[nvm1][0],iso.normal[nvm1][1],iso.normal[nvm1][2]);
+   thetabs=HelpersPOVRay::IndTabsStr(--indlev);
+   ofil << thetabs << "}" << endl;//end of normal_vectors
+   thetabs=HelpersPOVRay::IndTabsStr(indlev++);
+   ofil << thetabs << "face_indices {\n";
+   thetabs=HelpersPOVRay::IndTabsStr(indlev);
+   ofil << thetabs << (nfm1+1) << ",\n" << thetabs;
+   for ( size_t i=0 ; i<nfm1 ; ++i ) {
+      HelpersPOVRay::WriteVector(ofil,iso.face[i][0],iso.face[i][1],iso.face[i][2]);
+      ofil << ",";
+      if ( (i%5) == 4 ) { ofil << '\n' << thetabs; }
+   }
+   HelpersPOVRay::WriteVector(ofil,iso.face[nfm1][0],iso.face[nfm1][1],iso.face[nfm1][2]);
+   thetabs=HelpersPOVRay::IndTabsStr(--indlev);
+   ofil << thetabs << "}" << endl;//end of face_indices
+   thetabs=HelpersPOVRay::IndTabsStr(indlev++);
+   ofil << thetabs << "pigment { rgb ";
+   HelpersPOVRay::WriteVector(ofil,iso.rgb[0],iso.rgb[1],iso.rgb[2]);
+   thetabs=HelpersPOVRay::IndTabsStr(--indlev);
+   ofil << thetabs << "}" << endl;//end of pigment
+   thetabs=HelpersPOVRay::IndTabsStr(--indlev);
+   ofil << thetabs << "}" << endl; //end of mesh2
+   return true;
+}
 bool HelpersIsosurface::AddIsosurfacePOVMeshNoNormals(ofstream &ofil,Isosurface &iso,\
       shared_ptr<Palette> pal,int usrntabs) {
    if ( !iso.UseColorMap() ) {

@@ -113,6 +113,10 @@ public:
     * colored with a single RGB color.  */
    static bool AddIsosurfacePOVMeshNoNormals(ofstream &ofil,Isosurface &iso,int usrntabs=0);
    /** Adds the triangle mesh of the isosurface to the povfile 'ofil'.
+    * This function uses the RGB color passed through Isosurface::SetRGB. The isosurface is
+    * colored with a single RGB color.  */
+   static bool AddIsosurfacePOVMeshWithNormals(ofstream &ofil,Isosurface &iso,int usrntabs=0);
+   /** Adds the triangle mesh of the isosurface to the povfile 'ofil'.
     * This function uses RGB colors for each triangle using the Isosurface::value values.
     * Each triangle is coloured with a single color. The colour is chosen
     * through the palette pal and Isosurface::value. If pal==nullptr, then the function will create a default
