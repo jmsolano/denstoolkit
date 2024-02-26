@@ -83,6 +83,7 @@ public:
    unsigned short int selectpalette,setviewangles,setgnpangles,orientcam3ats;
    unsigned short int rotX,rotY,rotZ;
    unsigned short int setisoprop,setmapprop;
+   unsigned short int setgrayrgb,setfullrgb;
    bool mkpov,kppov,mkpng,skipcube,rotcam,plotnci,plotdori;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);

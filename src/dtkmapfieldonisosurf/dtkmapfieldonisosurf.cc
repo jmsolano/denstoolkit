@@ -192,8 +192,25 @@ int main (int argc, char ** argv) {
       isovalue=std::stod(string(argv[options.setsisovalue]));
    }
    iso.ExtractMarchingCubes(gc,isovalue);
-   cout << "Computing " << GetFieldTypeKeyLong(mapprop) << " at mesh vertices..." << '\n';
-   HelpersMapFieldOnIsoSurf::ComputeFieldAtVertices(gwf,iso,mapprop);
+   if ( mapprop=='0' ) {
+      iso.UseColorMap(false);
+      ScreenUtils::SetScrGreenBoldFont();
+      cout << "Drawing the isosurface without color map." << '\n';
+      ScreenUtils::SetScrNormalFont();
+      double rr=0.7,gg=0.7,bb=0.7;
+      if ( options.setgrayrgb ) {
+         rr=gg=bb=std::stod(string(argv[options.setgrayrgb]));
+      }
+      if ( options.setfullrgb ) {
+         rr=std::stod(string(argv[options.setfullrgb+0]));
+         gg=std::stod(string(argv[options.setfullrgb+1]));
+         bb=std::stod(string(argv[options.setfullrgb+2]));
+      }
+      iso.SetRGB(rr,gg,bb);
+   } else {
+      cout << "Computing " << GetFieldTypeKeyLong(mapprop) << " at mesh vertices..." << '\n';
+      HelpersMapFieldOnIsoSurf::ComputeFieldAtVertices(gwf,iso,mapprop);
+   }
    cout << "Computing Normals at mesh vertices..." << '\n';
    HelpersMapFieldOnIsoSurf::ComputeNormalsAtVertices(gwf,iso,isoprop);
    iso.UseNormals(true);
@@ -201,18 +218,20 @@ int main (int argc, char ** argv) {
    /* At this point the computation has ended. Usually this means no errors ocurred. */
 
    /* Rendering  */
-   cout << GetFieldTypeKeyLong(mapprop) << " limits in '" << cubfnam << "':\n";
-   cout << "    " << GetFieldTypeKeyLong(mapprop) << " min: " << iso.MinP2Map() << '\n';
-   cout << "    " << GetFieldTypeKeyLong(mapprop) << " max: " << iso.MaxP2Map() << '\n';
    double Lmin=-0.02e0;
    double Lmax=0.02e0;
-   if ( options.setcolorscalesingle ) {
-      Lmax=std::stod(string(argv[options.setcolorscalesingle]));
-      Lmin=-Lmax;
-   }
-   if ( options.setcolorscaleboth ) {
-      Lmin=std::stod(string(argv[options.setcolorscaleboth]));
-      Lmax=std::stod(string(argv[options.setcolorscaleboth+1]));
+   if ( mapprop!='0' ) {
+      cout << GetFieldTypeKeyLong(mapprop) << " limits over iso of '" << cubfnam << "':\n";
+      cout << "    " << GetFieldTypeKeyLong(mapprop) << " min: " << iso.MinP2Map() << '\n';
+      cout << "    " << GetFieldTypeKeyLong(mapprop) << " max: " << iso.MaxP2Map() << '\n';
+      if ( options.setcolorscalesingle ) {
+         Lmax=std::stod(string(argv[options.setcolorscalesingle]));
+         Lmin=-Lmax;
+      }
+      if ( options.setcolorscaleboth ) {
+         Lmin=std::stod(string(argv[options.setcolorscaleboth]));
+         Lmax=std::stod(string(argv[options.setcolorscaleboth+1]));
+      }
    }
    POVRayConfiguration pvp;
    double cv[3]={0.0e0,0.0e0,0.0e0};

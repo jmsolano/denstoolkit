@@ -271,7 +271,15 @@ bool HelpersMapFieldOnIsoSurf::MakePovFile(const string &povname,POVRayConfigura
    if ( options.selectpalette ) { palname=argv[options.selectpalette]; }
    pal->SelectPalette(palname);
    if ( iso.UseNormals() ) {
-      HelpersIsosurface::AddIsosurfacePOVMeshWithNormals(ofil,iso,pal,pvp.currIndLev);
+      char mprop='z';
+      if ( options.setmapprop ) {
+         mprop=argv[options.setmapprop][0];
+      }
+      if ( mprop=='0' ) {
+         HelpersIsosurface::AddIsosurfacePOVMeshWithNormals(ofil,iso,pvp.currIndLev);
+      } else {
+         HelpersIsosurface::AddIsosurfacePOVMeshWithNormals(ofil,iso,pal,pvp.currIndLev);
+      }
    } else {
       HelpersIsosurface::AddIsosurfacePOVMeshNoNormals(ofil,iso,pal,pvp.currIndLev);
    }
