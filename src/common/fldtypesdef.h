@@ -67,7 +67,7 @@ enum ScalarFieldType {
    ROSE,/* Region of Slow Electrons  */\
    VPED,/* Virial Potential Energy Density */\
    NCIS,/* Non Covalent Interactions (NCI) -- Reduced Density Gradient */\
-   NCIL,/* Non Covalent Interactions (NCI) -- Rho */\
+   NCIL,/* Non Covalent Interactions (NCI) -- Lambda2 */\
    EDFTA, /* DFT Exchange and Corrrelation Energy ($(-3/4)(3\rho/\pi)^{1/3}$) */\
    ELLPY, /*!< Ellipticity  */\
    DORI, /*!< Density Overlap Regions Indicator  */\
@@ -313,7 +313,7 @@ inline string GetFieldTypeKeyShort(const char prop) {
          plbl="NCIRedDensGrad";
          break;
       case 'Z':
-         plbl="NCIRho";
+         plbl="NCILambda2";
          break;
       case 'a' :
          plbl="ExDFTa";
@@ -496,7 +496,7 @@ inline string GnuplotFieldTitle(const char p2p) {
          plbl=string("NCI -- s");
          break;
       case 'Z':
-         plbl=string("NCI -- Rho");
+         plbl=string("NCI -- {/Symbol L}_2");
          break;
       case 'D' :
          plbl=string("DORI");
