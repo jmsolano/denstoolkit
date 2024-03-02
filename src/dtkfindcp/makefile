@@ -116,7 +116,7 @@ $(TESTEXECS): %.x: %.o $(STATICLIB) $(CCOBJS) $(CPPOBJS) $(SOURCES) $(HEADERS) $
 
 $(STATICLIB): $(COMMONHEADERS) $(COMMONSOURCES)
 	@echo "\033[32mBuilding lib$(COMMONSTATICLIBNAME).a\\033[m"
-	@cd $(TOP)/../common/;make $(MYMAKEFLAGS)
+	@cd $(TOP)/../common/;$(MAKE) $(MYMAKEFLAGS)
 
 .PHONY: clean
 clean:
@@ -124,7 +124,7 @@ clean:
 	@$(RM) -f $(TARGET) $(OBJS) $(TESTEXECS) 2>/dev/null || true
 
 fullclean: clean
-	@cd ../common/;make clean
+	@cd ../common/;$(MAKE) clean
 
 .PHONY: help
 help: ## Shows this help

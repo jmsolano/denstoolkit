@@ -104,7 +104,7 @@ $(TESTEXECS): %.x: %.o $(STATICLIB) $(CCOBJS) $(CPPOBJS) $(SOURCES) $(HEADERS) $
 
 $(STATICLIB): $(COMMONHEADERS) $(COMMONSOURCES)
 	@echo "\033[32mBuilding lib$(COMMONSTATICLIBNAME).a\\033[m"
-	@cd $(TOP)/../common/;make $(MYMAKEFLAGS)
+	@cd $(TOP)/../common/;$(MAKE) $(MYMAKEFLAGS)
 
 localdefs.h: 
 	@echo "//Here you can define the macros that are used WITHIN"  > localdefs.h
@@ -121,7 +121,7 @@ clean:
 	@$(RM) -f $(TARGET) $(OBJS) $(TESTEXECS) 2>/dev/null || true
 
 fullclean: clean
-	@cd ../common/;make clean
+	@cd ../common/;$(MAKE) clean
 
 
 list:
