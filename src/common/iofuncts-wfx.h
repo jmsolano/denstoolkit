@@ -52,7 +52,7 @@ using std::ofstream;
 #ifndef DEBUG
 #define DEBUG 0
 #endif
-
+enum class MOSpinType{BOTH=0,ALPHA=1,BETA=2};
 string GetWfxKey(const int ii);
 void GetPosInFile(ifstream &ifil,bool frombeg,string idkey,int & ist,int &ien);
 int GetInitPosOfKeyInFile(ifstream &ifil,bool frombeg,string idkey);
@@ -82,6 +82,9 @@ void GetEDFPrimExponentsFromFileWFX(ifstream &ifil,const int npr,\
       const int ntot,double* &pex);
 void GetMolecOrbOccNumsFromFileWFX(ifstream &ifil,const int nmo,double* &ocnu);
 void GetMolecOrbEnergiesFromFileWFX(ifstream &ifil,const int nmo,double* &orben);
+/** Reads the MO's spin types. If the wfx has only alpha, or only beta spin types,
+ * the function returns true. If all the MOs are 'Alpa and Beta', it return false.   */
+bool GetMolecOrbSpinTypesFromFileWFX(ifstream &ifil,const int nmo,int* &orbsptp);
 void GetMolecOrbCoefficientsFromFileWFX(ifstream &ifil,const int nmo,const int npr,double* &tcf);
 void GetTotEnerAndVirialFromFileWFX(ifstream &ifil,double &tote,double &vir);
 void countEDFCentersFromFileWFX(ifstream &ifil,int &nedfc);

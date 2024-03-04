@@ -123,6 +123,7 @@ GaussWaveFunction::GaussWaveFunction() {
    primType=NULL;
    primCent=NULL;
    myPN=NULL;
+   MOsptp=NULL;
    R=NULL;
    atCharge=NULL;
    primExp=NULL;
@@ -141,7 +142,7 @@ GaussWaveFunction::GaussWaveFunction() {
    nciRhoMin=NCIRHOMIN;
    nciRhoMax=NCIRHOMAX;
    nciSMax=NCISMAX;
-   imldd=ihaveEDF=false;
+   imldd=ihaveEDF=ihaveSingleSpinOrbs=ihaveCABSingleSpin=false;
    usescustfld=usevcustfld=false;
 }
 int GaussWaveFunction::prTy[]={
@@ -166,9 +167,14 @@ GaussWaveFunction::~GaussWaveFunction() {
    MyMemory::Dealloc1DRealArray(atCharge);
    MyMemory::Dealloc1DIntArray(primCent);
    MyMemory::Dealloc1DIntArray(primType);
+   MyMemory::Dealloc1DIntArray(MOsptp);
    MyMemory::Dealloc1DRealArray(primExp);
    MyMemory::Dealloc1DRealArray(chi);
    MyMemory::Dealloc1DRealArray(cab);
+   if ( ihaveCABSingleSpin ) {
+      MyMemory::Dealloc1DRealArray(cabA);
+      MyMemory::Dealloc1DRealArray(cabB);
+   }
    MyMemory::Dealloc1DRealArray(prefMEP);
    MyMemory::Dealloc1DRealArray(MOCoeff);
    MyMemory::Dealloc1DRealArray(occN);
@@ -261,7 +267,7 @@ bool GaussWaveFunction::ReadFromFileWFN(string inname) {
    AllocAuxMEPArray();
    return true;
 }
-bool GaussWaveFunction::ReadFromFileWFX(string inname) {
+bool GaussWaveFunction::ReadFromFileWFX(string inname,bool spDensMat) {
    ifstream tif;
    tif.open(inname.c_str(),std::ios::in);
    if (!(tif.good())) {
@@ -307,6 +313,7 @@ bool GaussWaveFunction::ReadFromFileWFX(string inname) {
    MyMemory::Alloc1DRealArray("occN",(nMOr+1),occN); //The entry occN[nMOr] will save the
                     //number of core electrons when EDF information is present
    MyMemory::Alloc1DRealArray("MOEner",nMOr,MOEner);
+   MyMemory::Alloc1DIntArray("MOsptp",nMOr,MOsptp);
    AllocAuxArrays();
    GetAtLabelsFromFileWFX(tif,nNuc,atLbl);
    GetNucCartCoordsFromFileWFX(tif,nNuc,R);
@@ -316,6 +323,7 @@ bool GaussWaveFunction::ReadFromFileWFX(string inname) {
    GetPrimExponentsFromFileWFX(tif,nPri,primExp);
    GetMolecOrbOccNumsFromFileWFX(tif,nMOr,occN);
    GetMolecOrbEnergiesFromFileWFX(tif,nMOr,MOEner);
+   ihaveSingleSpinOrbs=GetMolecOrbSpinTypesFromFileWFX(tif,nMOr,MOsptp);
    GetMolecOrbCoefficientsFromFileWFX(tif,nMOr,nPri,MOCoeff);
    GetTotEnerAndVirialFromFileWFX(tif,totener,virial);
    if ( ihaveEDF ) {
@@ -327,6 +335,16 @@ bool GaussWaveFunction::ReadFromFileWFX(string inname) {
       GetEDFPrimCoefficientsFromFileWFX(tif,EDFPri,EDFCoeff);
    }
    CountPrimsPerCenter();
+   if ( spDensMat ) {
+      if ( ihaveSingleSpinOrbs ) {
+         CalcCabAAndCabB();
+      } else {
+         ScreenUtils::DisplayErrorMessage(string("The file '")+inname
+               +string("' does not have single-spin Molecular Orbitals!\n")
+               +string("The alpha- and beta-density matrices cannot be configured."));
+         cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+      }
+   }
    CalcCab();
    tif.close();
    imldd=TestSupport();
@@ -796,6 +814,51 @@ void GaussWaveFunction::CalcCab(void) {
    }
    return;
 }
+void GaussWaveFunction::CalcCabAAndCabB(void) {
+   int idx,indc;
+   if (nPri>MAXNUMBEROFPRIMITIVESFORMEMALLOC) {
+      double memest=double(nPri*(nPri+12)*8*2)/double(1024*1024);
+      char goon='n';
+      cout << "The number of primitives is " << nPri <<". This will use approximatedly" << endl;
+      cout << memest << "MB of RAM memory. Continue anyway (y/n)?" << endl;
+      std::cin >> goon;
+      if ((goon=='n')||(goon=='N')) {
+         cout << "Perhaps you may want to recompile this program increasing the maximum number " << endl
+              << "  of primitives. " << endl;
+         exit(1);
+      }
+   }
+   idx=0;
+   MyMemory::Alloc1DRealArray(string("cabA"),(nPri*nPri),cabA);
+   for (int i=0; i<nPri; i++) {
+      for (int j=0; j<nPri; j++) {
+         cabA[idx]=0.0000000e0;
+         for (int oi=0; oi<nMOr; oi++) {
+            indc=oi*nPri;
+            if ( MOsptp[oi]==1 ) {
+               cabA[idx]+=(occN[oi]*MOCoeff[indc+i]*MOCoeff[indc+j]);
+            }
+         }
+         idx++;
+      }
+   }
+   idx=0;
+   MyMemory::Alloc1DRealArray(string("cabB"),(nPri*nPri),cabB);
+   for (int i=0; i<nPri; i++) {
+      for (int j=0; j<nPri; j++) {
+         cabB[idx]=0.0000000e0;
+         for (int oi=0; oi<nMOr; oi++) {
+            indc=oi*nPri;
+            if ( MOsptp[oi]==2 ) {
+               cabB[idx]+=(occN[oi]*MOCoeff[indc+i]*MOCoeff[indc+j]);
+            }
+         }
+         idx++;
+      }
+   }
+   ihaveCABSingleSpin=true;
+   return;
+}
 #if PARALLELISEDTK
 double GaussWaveFunction::EvalDensity(double x,double y,double z) {
    int indr,indp;
@@ -877,6 +940,108 @@ double GaussWaveFunction::EvalDensity(double x,double y,double z) {
       }
       for ( int j=lowPri ; j<nPri ; ++j ) {
          chib+=(cab[++indr]*chi[j]);
+      }
+      rho+=chib*chi[i];
+   }
+   if ( ihaveEDF ) {
+      for ( int i=nPri ; i<totPri ; ++i ) {
+         indr=3*(primCent[i]);
+         xmr=x-R[indr];
+         ymr=y-R[indr+1];
+         zmr=z-R[indr+2];
+         rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+         //cout << "pc: " << primCent[i] << ", rr: " << rr << endl;
+         chi[i]=EvalAngACases(primType[i],xmr,ymr,zmr);
+         chi[i]*=exp(primExp[i]*rr);
+      }
+      chib=0.0e0;
+      for (int i=nPri; i<totPri; ++i) {
+         chib+=(EDFCoeff[i-nPri]*chi[i]);
+      }
+      //rho+=occN[nMOr]*chib*chib;
+      rho+=chib;
+   }
+   return rho;
+}
+#endif
+#if PARALLELISEDTK
+double GaussWaveFunction::EvalSpinDensity(double x,double y,double z) {
+   int indr,indp;
+   double xmr,ymr,zmr,rho,chib;
+   rho=0.000000e0;
+   double rr;
+   indr=0;
+   indp=0;
+   for (int i=0; i<nNuc; i++) {
+      xmr=x-R[indr++];
+      ymr=y-R[indr++];
+      zmr=z-R[indr++];
+      rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+      for (int j=0; j<myPN[i]; j++) {
+         chi[indp]=EvalAngACases(primType[indp],xmr,ymr,zmr);
+         chi[indp]*=exp(primExp[indp]*rr);
+         indp++;
+      }
+   }
+   indr=0;
+   rho=0.000000e0;
+   double chii;
+   int i,j;
+#pragma omp parallel for private(chii,indr,chib) \
+firstprivate(j) lastprivate(i) reduction(+: rho)
+   for (i=0; i<nPri; i++) {
+      indr=i*(nPri);
+      chib=0.0000000e0;
+      for (j=(i+1); j<nPri; j++) {
+         chib+=((cabA[indr+j]-cabB[indr+j]*chi[j]);
+      }
+      chii=chi[i];
+      rho+=((cabA[indr+i]-cabB[indr+i])*chii*chii+2.00000000e0*chib*chii);
+   }
+   return rho;
+}
+#else
+double GaussWaveFunction::EvalSpinDensity(double x,double y,double z) {
+   int indr,indp;
+   double xmr,ymr,zmr,rho,chib;
+   rho=0.000000e0;
+   double rr;
+   indr=0;
+   indp=0;
+   for (int i=0; i<nNuc; i++) {
+      xmr=x-R[indr++];
+      ymr=y-R[indr++];
+      zmr=z-R[indr++];
+      rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+      for (int j=0; j<myPN[i]; j++) {
+         chi[indp]=EvalAngACases(primType[indp],xmr,ymr,zmr);
+         chi[indp]*=exp(primExp[indp]*rr);
+         indp++;
+      }
+   }
+   int lowPri=nPri-(nPri%4);
+   rho=0.000000e0;
+   indr=-4;
+   double tmpCab[4];
+   for ( int i=0 ; i<nPri ; ++i ) {
+      chib=0.0e0;
+      for ( int j=0 ; j<lowPri ; j+=4 ) {
+         indr+=4;
+         tmpCab[0]=cabA[indr+0];
+         tmpCab[1]=cabA[indr+1];
+         tmpCab[2]=cabA[indr+2];
+         tmpCab[3]=cabA[indr+3];
+         tmpCab[0]-=cabB[indr+0];
+         tmpCab[1]-=cabB[indr+1];
+         tmpCab[2]-=cabB[indr+2];
+         tmpCab[3]-=cabB[indr+3];
+         chib+=(tmpCab[0]*chi[j+0]);
+         chib+=(tmpCab[1]*chi[j+1]);
+         chib+=(tmpCab[2]*chi[j+2]);
+         chib+=(tmpCab[3]*chi[j+3]);
+      }
+      for ( int j=lowPri ; j<nPri ; ++j ) {
+         chib+=((cabA[indr]-cabB[indr])*chi[j]); ++indr;
       }
       rho+=chib*chi[i];
    }

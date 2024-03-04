@@ -77,6 +77,7 @@
                               (Beware the 0 index in c arrays)
       double *occN        --> The occupation number of each molecular orbital.
       double *MOEner      --> The energy of each Molecular Orbital.
+      int *MOsptp         --> The spin type of each Molecular Orbital.
       double *cab         --> The matrix whose coefficients are $cab[a][b]=\sum_{i=1}^{nMOr}occN[i]*c_{ai}*c_{bi}$
       double *chi         --> Auxiliar array used in some functions
       double *gx,*gy,*gz  --> Auxiliar arrays used in some functions
@@ -182,13 +183,13 @@ public:
    string *title,orbDesc; /* title */
    int nTit,nNuc,nMOr,nPri,EDFPri,totPri,coreElec;
    string *atLbl;
-   int *primType, *primCent,*myPN;
+   int *primType, *primCent,*myPN,*MOsptp;
    double *R, *atCharge, *primExp, *MOCoeff, *occN, *MOEner,*EDFCoeff;
-   double *cab,*chi,*gx,*gy,*gz,*hxx,*hyy,*hzz,*hxy,*hxz,*hyz;
+   double *cab,*cabA,*cabB,*chi,*gx,*gy,*gz,*hxx,*hyy,*hzz,*hxy,*hxz,*hyz;
    double *prefMEP;
    double totener,virial;
    double nciRhoMin,nciRhoMax,nciSMax;
-   bool imldd,ihaveEDF;
+   bool imldd,ihaveEDF,ihaveSingleSpinOrbs,ihaveCABSingleSpin;
    /* *********************************************************************************** */
    /**
       This function returns the value of the cart-th Cartesian coordinate of the nucnum-th nucleus.
@@ -228,6 +229,7 @@ public:
       the most optimized algorithm.
     */
    double EvalDensity(double x,double y,double z);
+   double EvalSpinDensity(double x,double y,double z);
    double EvalOptimizedScalar(double px,double py,double pz);
    /* *********************************************************************************** */
    /**
@@ -238,17 +240,14 @@ public:
    bool SameMolOrbOccNums(void);
    /** This function returns the value of the density (\f$\rho\f$) and the gradient of it 
       (\f$\nabla\rho=dx\hat{\imath}+dy\hat{\jmath}+dz\hat{k}\f$) at the point 
-      \f$\vec{r}=(x,y,z)\f$ using the most optimized algorithm.
-    */
+      \f$\vec{r}=(x,y,z)\f$ using the most optimized algorithm. */
    void EvalRhoGradRho(double x, double y, double z,\
          double &rho, double &dx, double &dy, double &dz);
    void EvalOptimizedVectorScalar(double x, double y, double z,\
          double &rho, double &dx, double &dy, double &dz);
-   /**
-      This function is the same as EvalRhoGradRho, but using an array for the gradient instead of
+   /** This function is the same as EvalRhoGradRho, but using an array for the gradient instead of
       individual components of the gradient. i.e.
-      EvalRhoGradRho(x,y,z,rho,g[3])=EvalRhoGradRho(x,y,z,rho,g[0],g[1],g[2])
-    */
+      EvalRhoGradRho(x,y,z,rho,g[3])=EvalRhoGradRho(x,y,z,rho,g[0],g[1],g[2]) */
    void EvalRhoGradRho(double x, double y, double z,double &rho, double (&grd)[3]);
    /**
       This function will load all the values of the wave function (title, orbDesc, etc.) from a 
@@ -259,10 +258,15 @@ public:
    bool ReadFromFileWFN(string inname);
    /**
       This function is essentially the same as ReadFromFileWFN, but using a *wfx file. 
-      In the future, it is expected that both functions differ from each other, 
-      since the files wfx are/will be capable of containing a larger amount of information.
+      So far, two additional capabilities are implemented:
+      a) If the wfx has EDF obitals, the wavefunction will function accordingly.
+      b) If the wfx has single-spin Molecular Orbitals, the alpha- and beta-density
+            matrices can be configured upon request (throght the parameter spDensMat).
+      spDensMat [split density matrices] (when true) request to seek single sping
+      Molecular Orbitals; if the wfx file does not have this decomposition, the
+      request is ignored.
     */
-   bool ReadFromFileWFX(string inname);
+   bool ReadFromFileWFX(string inname,bool spDensMat=false);
    /**
       This function just look for the extension of the inname, if it is wfn(wfx), then calls
       ReadFromFileWFN(ReadFromFileWFX)
@@ -285,6 +289,10 @@ public:
    /** This function calculates the values of the matrix coefficients array \f$C_{\dot{A}\dot{B}}\f$
      (see notes ******* for notation details.) */
    void CalcCab(void);
+   /** This function calculates the values of the single-spn-density matrices
+    * \f$C_{\dot{A}\dot{B}}^{\alpha}\f$ and \f$C_{\dot{A}\dot{B}}^{\beta}\f$
+     (see notes ******* for notation details.) */
+   void CalcCabAAndCabB(void);
    /** This function will write the wave function into a wfx file which name is outname. */
    bool WriteToFileWFX(string outname);
    /** This function returns true if the *.wfn or *.wfx is supported. At the current version,

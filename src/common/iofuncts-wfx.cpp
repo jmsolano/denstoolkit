@@ -50,6 +50,7 @@ using std::cout;
 using std::endl;
 #include "mymemory.h"
 #include "stringtools.h"
+#include "screenutils.h"
 
 #define MAXWFXKEYSDEF 36
 static const string wfxKeysTab[MAXWFXKEYSDEF]= {
@@ -431,6 +432,37 @@ void GetMolecOrbEnergiesFromFileWFX(ifstream &ifil,const int nmo,double* &orben)
    ifil.seekg(GetInitPosOfKeyInFile(ifil,true,string("Molecular Orbital Energies")));
    for (int i=0; i<nmo; i++) {ifil >> orben[i];}
    return;
+}
+bool GetMolecOrbSpinTypesFromFileWFX(ifstream &ifil,const int nmo,int* &orbsptp) {
+   if (!orbsptp) {MyMemory::Alloc1DIntArray(string("orbsptp"),nmo,orbsptp);}
+   ifil.seekg(GetInitPosOfKeyInFile(ifil,true,string("Molecular Orbital Spin Types")));
+   bool res=false;
+   bool dispmsg=true;
+   string spstr;
+   for (int i=0; i<nmo; i++) {
+      getline(ifil,spstr);
+      while ((spstr.size()>0)&&((spstr[0]==' ')||(spstr[0]=='\t'))) {spstr.erase(0,1);}
+      while ((spstr.size()>0)&&((spstr.back()==' ')||(spstr.back()=='\t'))) {spstr.pop_back();}
+      if ( spstr==string("Alpha and Beta") ) {
+         orbsptp[i]=0;
+      } else if ( spstr==string("Alpha") ) {
+         orbsptp[i]=1;
+         res=true;
+      } else if ( spstr==string("Beta") ) {
+         orbsptp[i]=2;
+         res=true;
+      } else {
+         orbsptp[i]=0;
+         if ( dispmsg ) {
+            ScreenUtils::DisplayWarningMessage(string("Spin type '")+spstr
+                  +string("' not recognized. Setting MO ")+std::to_string(i)
+                  +string(" as 'Alpha and Beta'."));
+            cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+            dispmsg=false;
+         }
+      }
+   }
+   return res;
 }
 void GetMolecOrbCoefficientsFromFileWFX(ifstream &ifil,const int nmo,const int npr,double* &tcf) {
    if (!tcf) {MyMemory::Alloc1DRealArray(string("tcf"),(nmo*npr),tcf);}
