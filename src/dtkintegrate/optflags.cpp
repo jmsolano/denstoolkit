@@ -80,6 +80,7 @@ OptionFlags::OptionFlags() {
    lsptdsetol = lsptdsetos = 0;
    setlowerdombox = setupperdombox = 0;
    verboseLevel=0;
+   stpspindens=false;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    string progname;
@@ -108,6 +109,9 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
             case 'i' :
                flags.integrator=(++i);
                if (i>=argc) {printErrorMsg(argv,'i');}
+               break;
+            case 'J' :
+               flags.stpspindens=true;
                break;
             case 'o':
                flags.outfname=(++i);
@@ -207,6 +211,7 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t\t    Warning: this only works for single atoms when the field's\n"
         << "            \t\t    domain is real space, or for any molecule if the field's\n"
         << "            \t\t    domain is momentum space." << '\n';
+   cout << "  -J        \tSetup alpha- and beta-spin density matrices." << '\n';
    cout << "  -o outname \tSet the output file name." << endl
         << "             \t  (If not given, the program will create one out of" << endl
         << "             \t  the input name; if given, the gnp file and the pdf will" << endl

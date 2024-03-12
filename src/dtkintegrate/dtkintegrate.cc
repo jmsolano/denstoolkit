@@ -97,6 +97,11 @@ int main (int argc, char ** argv) {
       ScreenUtils::SetScrNormalFont();
       exit(1);
    }
+   cout << "Done." << '\n';
+   if ( options.stpspindens && gwf.ihaveSingleSpinOrbs ) {
+      gwf.CalcCabAAndCabB();
+   }
+
    BondNetWork bnw;
    bnw.ReadFromFile(infilnam);
    bnw.SetUpBNW();

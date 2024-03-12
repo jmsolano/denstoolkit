@@ -57,6 +57,7 @@ public:
    unsigned short int misersetpoints,misersetdith;
    unsigned short int lsptdsetol,lsptdsetos;
    unsigned short int verboseLevel;
+   bool stpspindens;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);
 void printHelpMenu(int &argc, char** &argv);//self-described
