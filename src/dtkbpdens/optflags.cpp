@@ -100,6 +100,7 @@ OptionFlags::OptionFlags() {
    kpgnp=1;
    quiet=1;
    showatlbls=0;
+   stpspindens=false;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    string progname;
@@ -129,6 +130,9 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                if ((i+2)>=argc) {printErrorMsg(argv,'a');}
                flags.setats=(++i);
                i++;
+               break;
+            case 'J' :
+               flags.stpspindens=true;
                break;
             case 'k':
                flags.kpgnp=i;
@@ -220,6 +224,7 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  set a1=1, a2=2." << endl
         << "            \t  Note: if the *.wfn (*.wfx) file has only one atom" << endl
         << "            \t  the program will exit and no output will be generated." << endl;
+   cout << "  -J        \tSetup alpha- and beta-spin density matrices." << '\n';
    cout << "  -L        \tCalculate the field upon the straight line that joins the atoms" << endl
         << "            \t  instead of upon the bond path." << endl;
    cout << "  -n  dim   \tSet the number of points for the dat file." << endl
@@ -233,7 +238,7 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  use this name as well --but different extension--)." << endl;
    cout << "  -p prop   \tChoose the property to be computed. prop is a character," << endl
         << "            \t  which can be (d is the default value): " << endl;
-   string charFields="dglKGeELMPrsSVvDu";
+   string charFields="dglKGeELMPrsSVvDbu";
    for ( size_t i=0 ; i<charFields.size() ; ++i ) {
       cout << "         \t\t" << charFields[i] << " ("
          << GetFieldTypeKeyLong(charFields[i]) << ')' << '\n';

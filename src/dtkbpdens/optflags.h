@@ -84,6 +84,7 @@ public:
    unsigned short int infname,outfname,setn1,setats,setstep;
    unsigned short int uponbp,uponsl,prop2plot;
    unsigned short int zipdat,mkplt,kpgnp,quiet,showatlbls;
+   bool stpspindens;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);
 void printHelpMenu(int &argc, char** &argv);//self-described

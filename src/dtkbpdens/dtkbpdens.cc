@@ -100,7 +100,7 @@ int main (int argc, char ** argv) {
    if (options.prop2plot) { prop=argv[options.prop2plot][0]; }
 
    /* Checks for non valid property fields */
-   string validFields="dglKGeELMPrsSVvDu";
+   string validFields="dglKGeELMPrsSVvDbu";
    if (validFields.find(prop)==string::npos) {
       ScreenUtils::DisplayErrorMessage("Non valid field type");
       cout << "\nTry: \n\t" << argv[0] << " -h\n" << endl << "to view the help menu.\n\n";
@@ -120,6 +120,15 @@ int main (int argc, char ** argv) {
       exit(1);
    }
    cout << "Done." << endl;
+   if ( options.stpspindens && gwf.ihaveSingleSpinOrbs ) {
+      gwf.CalcCabAAndCabB();
+   }
+   if ( prop=='b' && (!gwf.ihaveCABSingleSpin) ) {
+      ScreenUtils::DisplayErrorMessage("The alpha- and beta-spin density matrices could not\n"
+            "be setup! Exiting...");
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+      return EXIT_FAILURE;
+   }
    
    if (gwf.nNuc==1) {
       ScreenUtils::DisplayWarningMessage("This file contains only one atom... There are no bond paths...");
