@@ -90,7 +90,10 @@ int main (int argc, char ** argv) {
       ScreenUtils::SetScrNormalFont();
       exit(1);
    }
-
+   cout << "Done." << '\n';
+   if ( options.stpspindens && gwf.ihaveSingleSpinOrbs ) {
+      gwf.CalcCabAAndCabB();
+   }
 
    BondNetWork bnw;
    bnw.ReadFromFile(infilnam); //Loading the bond-network (if the wave function
@@ -168,6 +171,12 @@ int main (int argc, char ** argv) {
                                                        //
    /* Computes cube (if requested). */
    if ( !options.skipcube ) {
+      if ( isoprop=='b' && (!gwf.ihaveCABSingleSpin) ) {
+         ScreenUtils::DisplayErrorMessage("The alpha- and beta-spin density matrices could not\n"
+               "be setup! Exiting...");
+         cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+         return EXIT_FAILURE;
+      }
       cout << "The size of the grid will be: " << grid.GetNPts(0) << " x "
            << grid.GetNPts(1) << " x " << grid.GetNPts(2) << '\n';
       cout << "Total number of points that will be computed: "
@@ -208,6 +217,12 @@ int main (int argc, char ** argv) {
       }
       iso.SetRGB(rr,gg,bb);
    } else {
+      if ( mapprop=='b' && (!gwf.ihaveCABSingleSpin) ) {
+         ScreenUtils::DisplayErrorMessage("The alpha- and beta-spin density matrices could not\n"
+               "be setup! Exiting...");
+         cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+         return EXIT_FAILURE;
+      }
       cout << "Computing " << GetFieldTypeKeyLong(mapprop) << " at mesh vertices..." << '\n';
       HelpersMapFieldOnIsoSurf::ComputeFieldAtVertices(gwf,iso,mapprop);
    }

@@ -96,6 +96,7 @@ OptionFlags::OptionFlags() {
    setgrayrgb=setfullrgb=0;
    skipcube=kppov=mkpov=mkpng=rotcam=false;
    plotnci=plotdori=false;
+   stpspindens=false;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    string progname;
@@ -150,6 +151,9 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
             case 'I' :
                flags.setsisovalue=(++i);
                if (i>=argc) {printErrorMsg(argv,'I');}
+               break;
+            case 'J' :
+               flags.stpspindens=true;
                break;
             case 'k' :
                flags.kppov=true;
@@ -282,6 +286,7 @@ void printHelpMenu(int &argc, char** &argv) {
          << GetFieldTypeKeyLong(charFields[i]) << ')' << '\n';
    }
    cout << "  -I isoval \tSet the isovalue of s to be isoval" << '\n';
+   cout << "  -J        \tSetup alpha- and beta-spin density matrices." << '\n';
    cout << "  -k        \tKeep the pov-ray script (see also option P, below)." << '\n';
    cout << "  -l palette\tSelect the color scheme 'palette', which can be any of:\n"
         << "            \t  bentcoolwarm blues bugn gnbu greens greys inferno\n"
