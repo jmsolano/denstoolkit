@@ -83,6 +83,7 @@ public:
    OptionFlags();//default constructor, initialize all the flags to convenient (default) values.
    unsigned short int infname,outfname,prop2plot,setn1,setats;
    unsigned short int zipdat,mkplt,kpgnp;
+   bool stpspindens;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);
 void printHelpMenu(int &argc, char** &argv);//self-described

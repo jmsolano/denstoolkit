@@ -79,6 +79,7 @@ OptionFlags::OptionFlags() {
    zipdat=0;
    mkplt=0;
    kpgnp=1;
+   stpspindens=false;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    string progname;
@@ -108,6 +109,9 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                if ((i+2)>=argc) {printErrorMsg(argv,'a');}
                flags.setats=(++i);
                i++;
+               break;
+            case 'J' :
+               flags.stpspindens=true;
                break;
             case 'k':
                flags.kpgnp=i;
@@ -183,15 +187,16 @@ void printHelpMenu(int &argc, char** &argv) {
         << "  -a a1 a2  \tDefine the atoms  (a1,a2) used to define the line." << endl
         << "            \t  If this option is not activated, the program will " << endl
         << "            \t  define the line using the first atom and the vector" << endl
-        << "            \t  (1,1,1)." << endl
-        << "  -n  dim   \tSet the number of points for the dat file" << endl
+        << "            \t  (1,1,1)." << endl;
+   cout << "  -J        \tSetup alpha- and beta-spin density matrices." << '\n';
+   cout << "  -n  dim   \tSet the number of points for the dat file" << endl
         << "  -o outname\tSet the output file name." << endl
         << "            \t  (If not given the program will create one out of" << endl
         << "            \t  the input name; if given, the gnp file and the pdf will" << endl
         << "            \t  use this name as well --but different extension--)." << endl;
    cout << "  -p prop\tChoose the property to be computed. prop is a character," << endl
         << "         \t  which can be (d is the default value): " << endl;
-   string charFields="dglKGeELMPrsSVvDu";
+   string charFields="dglKGeELMPrsSVvDbu";
    for ( size_t i=0 ; i<charFields.size() ; ++i ) {
       cout << "         \t\t" << charFields[i] << " ("
          << GetFieldTypeKeyLong(charFields[i]) << ')' << '\n';
