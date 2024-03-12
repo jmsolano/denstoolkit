@@ -77,6 +77,7 @@ OptionFlags::OptionFlags() {
    zipdat=0;
    quiet=1;
    atpos=0;
+   stpspindens=false;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    string progname;
@@ -106,6 +107,9 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                flags.atpos=(++i);
                ++i;
                if (i>=argc) {printErrorMsg(argv,'a');}
+               break;
+            case 'J' :
+               flags.stpspindens=true;
                break;
             case 'o':
                flags.outfname=(++i);
@@ -162,8 +166,9 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "Where wf?name is the input wfx(wfn) name, and options can be:\n\n"
         << "  -a a1 a2  \tSelects atoms a1 and a2. The topological analysis of the\n"
         << "            \t  density matrix of order 1 will be carried out upon\n"
-        << "            \t  the bond path that joins these two atoms (if it exists).\n"
-        << "  -o outname\tSet the output file name (*.log)." << endl
+        << "            \t  the bond path that joins these two atoms (if it exists).\n";
+   cout << "  -J        \tSetup alpha- and beta-spin density matrices." << '\n';
+   cout << "  -o outname\tSet the output file name (*.log)." << endl
         << "            \t  (If not given the program will create one out of" << endl
         << "            \t  the input name; if given, the pov file will" << endl
         << "            \t  use this name as well --but different extension--)." << endl;

@@ -84,6 +84,7 @@ public:
    unsigned short int infname,outfname;
    unsigned short int zipdat,quiet;
    unsigned short int atpos;
+   bool stpspindens;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);
 void printHelpMenu(int &argc, char** &argv);//self-described

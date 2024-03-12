@@ -123,6 +123,9 @@ int main (int argc, char ** argv) {
       exit(1);
    }
    cout << "Done." << endl;
+   if ( options.stpspindens && gwf.ihaveSingleSpinOrbs ) {
+      gwf.CalcCabAAndCabB();
+   }
 
    int atom1=0,atom2=1;
    if ( options.atpos ) {
