@@ -84,6 +84,9 @@ void DTKScalarFunction::SelectScalarFunctionPtr(const ScalarFieldType ft) {
       case DORI :
          selfnc=&GaussWaveFunction::EvalDORI;
          break;
+      case SPND :
+         selfnc=&GaussWaveFunction::EvalSpinDensity;
+         break;
       case SCFD :
          selfnc=&GaussWaveFunction::EvalCustomScalarField;
          break;

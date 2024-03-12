@@ -260,13 +260,8 @@ public:
       This function is essentially the same as ReadFromFileWFN, but using a *wfx file. 
       So far, two additional capabilities are implemented:
       a) If the wfx has EDF obitals, the wavefunction will function accordingly.
-      b) If the wfx has single-spin Molecular Orbitals, the alpha- and beta-density
-            matrices can be configured upon request (throght the parameter spDensMat).
-      spDensMat [split density matrices] (when true) request to seek single sping
-      Molecular Orbitals; if the wfx file does not have this decomposition, the
-      request is ignored.
     */
-   bool ReadFromFileWFX(string inname,bool spDensMat=false);
+   bool ReadFromFileWFX(string inname);
    /**
       This function just look for the extension of the inname, if it is wfn(wfx), then calls
       ReadFromFileWFN(ReadFromFileWFX)

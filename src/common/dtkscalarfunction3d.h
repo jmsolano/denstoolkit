@@ -85,6 +85,9 @@ public:
          case ScalarFieldType::DORI :
             return wf->EvalDORI(x,y,z);
             break;
+         case ScalarFieldType::SPND :
+            return wf->EvalSpinDensity(x,y,z);
+            break;
          case ScalarFieldType::SCFD :
             return wf->EvalCustomScalarField(x,y,z);
             break;

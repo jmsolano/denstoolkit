@@ -267,7 +267,7 @@ bool GaussWaveFunction::ReadFromFileWFN(string inname) {
    AllocAuxMEPArray();
    return true;
 }
-bool GaussWaveFunction::ReadFromFileWFX(string inname,bool spDensMat) {
+bool GaussWaveFunction::ReadFromFileWFX(string inname) {
    ifstream tif;
    tif.open(inname.c_str(),std::ios::in);
    if (!(tif.good())) {
@@ -335,16 +335,6 @@ bool GaussWaveFunction::ReadFromFileWFX(string inname,bool spDensMat) {
       GetEDFPrimCoefficientsFromFileWFX(tif,EDFPri,EDFCoeff);
    }
    CountPrimsPerCenter();
-   if ( spDensMat ) {
-      if ( ihaveSingleSpinOrbs ) {
-         CalcCabAAndCabB();
-      } else {
-         ScreenUtils::DisplayErrorMessage(string("The file '")+inname
-               +string("' does not have single-spin Molecular Orbitals!\n")
-               +string("The alpha- and beta-density matrices cannot be configured."));
-         cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
-      }
-   }
    CalcCab();
    tif.close();
    imldd=TestSupport();
@@ -503,6 +493,9 @@ void GaussWaveFunction::DisplayAllFieldProperties(double x,double y,double z) {
    cout << "         RoSE: " << setw(20) << EvalRoSE(xx[0],xx[1],xx[2]) << endl;
    cout << "     V.P.E.D.: " << setw(20) << EvalVirialPotentialEnergyDensity(x,y,z) << endl;
    cout << "     D.O.R.I.: " << setw(20) << EvalDORI(x,y,z) << endl;
+   if ( ihaveCABSingleSpin ) {
+      cout << " Spin Density: " << setw(20) << EvalSpinDensity(x,y,z) << endl;
+   }
    if ( usescustfld ) {
       cout << "Cust. S. Field: " << setw(20) << EvalCustomScalarField(xx[0],xx[1],xx[2]) << endl;
    }
@@ -574,6 +567,9 @@ void GaussWaveFunction::WriteAllFieldProperties(double x,double y,double z,ofstr
    ofil << "  RoSE:        " << setw(20) << EvalRoSE(x,y,z) << endl;
    ofil << "  V.P.E.D.:    " << setw(20) << EvalVirialPotentialEnergyDensity(x,y,z) << endl;
    ofil << "  D.O.R.I.:    " << setw(20) << EvalDORI(x,y,z) << endl;
+   if ( ihaveCABSingleSpin ) {
+      ofil << " Spin Density: " << setw(20) << EvalSpinDensity(x,y,z) << endl;
+   }
    if ( usescustfld ) {
       ofil << "Cust. S. Field: " << setw(20) << EvalCustomScalarField(xx[0],xx[1],xx[2]) << endl;
    }
@@ -815,6 +811,14 @@ void GaussWaveFunction::CalcCab(void) {
    return;
 }
 void GaussWaveFunction::CalcCabAAndCabB(void) {
+   if ( !ihaveSingleSpinOrbs ) {
+      ScreenUtils::DisplayErrorMessage("This wavefunction has not single-spin orbitals!\n"
+            "Thus, the alpha- and beta-spin density matrices cannot be setup.");
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+      ihaveCABSingleSpin=false;
+      return;
+   }
+   cout << "Configuring spin densities... ";
    int idx,indc;
    if (nPri>MAXNUMBEROFPRIMITIVESFORMEMALLOC) {
       double memest=double(nPri*(nPri+12)*8*2)/double(1024*1024);
@@ -857,6 +861,7 @@ void GaussWaveFunction::CalcCabAAndCabB(void) {
       }
    }
    ihaveCABSingleSpin=true;
+   cout << "Done." << '\n';
    return;
 }
 #if PARALLELISEDTK

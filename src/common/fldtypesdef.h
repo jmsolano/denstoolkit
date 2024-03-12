@@ -71,6 +71,7 @@ enum ScalarFieldType {
    EDFTA, /* DFT Exchange and Corrrelation Energy ($(-3/4)(3\rho/\pi)^{1/3}$) */\
    ELLPY, /*!< Ellipticity  */\
    DORI, /*!< Density Overlap Regions Indicator  */\
+   SPND, /*!< [SP]i[N] [D]ensity  */\
    SCFD, /* Scalar Custom Field Density */\
    VCFD /* Vector Custom Field Density */
 };
@@ -148,6 +149,9 @@ inline char ConvertScalarFieldType2Char(ScalarFieldType fftt) {
          break;
       case DORI :
          res= 'D';
+         break;
+      case SPND :
+         res= 'b';
          break;
       case SCFD :
          res='u';
@@ -237,6 +241,9 @@ inline ScalarFieldType Char2ScalarFieldType(const char prop) {
       case 'D' :
          res=DORI;
          break;
+      case 'b' :
+         res=SPND;
+         break;
       case 'u' :
          res=SCFD;
          break;
@@ -324,6 +331,9 @@ inline string GetFieldTypeKeyShort(const char prop) {
       case 'D' :
          plbl="DORI";
          break;
+      case 'b' :
+         plbl="SpinDensity";
+         break;
       case 'u' :
          plbl="ScalarCustFld";
          break;
@@ -410,6 +420,9 @@ inline string GetFieldTypeKeyLong(const char prop) {
          break;
       case 'D' :
          plbl="Density Overlap Regions Indicator --DORI--";
+         break;
+      case 'b' :
+         plbl="Spin density";
          break;
       case 'u':
          plbl="Scalar Custom Field";
@@ -501,6 +514,9 @@ inline string GnuplotFieldTitle(const char p2p) {
       case 'D' :
          plbl=string("DORI");
          break;
+      case 'b' :
+         plbl=string("{/Symbol r}_{/Symbol a}-{/Symbol r}_{/Symbol b}");
+         break;
       default:
          plbl="Unknown";
          break;
@@ -526,6 +542,7 @@ inline double GetDefaultIsolvalueForCube(const char p2p) {
          isoval=0.55e0;
          break;
       default :
+         isoval=0.01e0;
          break;
    }
    return isoval;
