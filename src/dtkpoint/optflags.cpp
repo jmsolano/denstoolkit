@@ -81,6 +81,7 @@ OptionFlags::OptionFlags() {
    rcrds=0;
    setscustfld=0;
    setvcustfld=0;
+   stpspindens=false;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    string progname;
@@ -118,6 +119,9 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
             case 'i':
                flags.crdfil=(++i);
                if (i>=argc) {printErrorMsg(argv,'i');}
+               break;
+            case 'J' :
+               flags.stpspindens=true;
                break;
             case 'o':
                flags.outfname=(++i);
@@ -191,8 +195,9 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  in the file crdfname. The file must be a list of three " << endl
         << "            \t  space-separated real numbers per row." << endl
         << "            \t  Please ensure the file has always the format specified above," << endl
-        << "            \t  otherwise unpredictable errors may occur." << endl
-        << "  -o outname\tSet the output file name." << endl
+        << "            \t  otherwise unpredictable errors may occur." << endl;
+   cout << "  -J        \tSetup alpha- and beta-spin density matrices." << '\n';
+   cout << "  -o outname\tSet the output file name." << endl
         << "            \t  (If not given the program will create one out of" << endl
         << "            \t  the input name.)" << endl;
    /*
