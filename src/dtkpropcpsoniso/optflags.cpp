@@ -87,6 +87,7 @@ OptionFlags::OptionFlags() {
    drawiso=true;
    cpkview=true;
    estimpkbaminesprim=estimpkbaminessec=false;
+   stpspindens=false;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    string progname;
@@ -138,6 +139,9 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                flags.isoprop=(++i);
                flags.setisovalue=(++i);
                if ( (i)>=argc ) { printErrorMsg(argv,'I'); }
+               break;
+            case 'J' :
+               flags.stpspindens=true;
                break;
             case 'k' :
                flags.kppov=true;
@@ -242,6 +246,7 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "  -c cAtNum \tSets the atom cAtNum to be the center around which the\n"
         << "            \t  cap isosurface is computed." << '\n';
    cout << "  -H        \tHides the isosurface in png image (pov file)." << '\n';
+   cout << "  -J        \tSetup alpha- and beta-spin density matrices." << '\n';
    cout << "  -k        \tKeeps the pov-ray script (see also option P, below)." << '\n';
    cout << "  -l dAtNum \tSets the direction point to be the coordinates of atom\n"
         << "            \t  dAtNum. See the scheme at the end of this help menu." << '\n';
@@ -263,7 +268,7 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  (This option is included for future implementations,\n"
         << "            \t  and in this version, only rho[d] is implemented,\n"
         << "            \t  and by default the isovalue is v=0.001.)\n";
-   string charFields="dglKGeELMPrsSVvDu";
+   string charFields="dglKGeELMPrsSVvDbu";
    for ( size_t i=0 ; i<charFields.size() ; ++i ) {
       cout << "         \t\t" << charFields[i] << " ("
          << GetFieldTypeKeyLong(charFields[i]) << ')' << '\n';

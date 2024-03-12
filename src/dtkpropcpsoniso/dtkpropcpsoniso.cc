@@ -109,6 +109,9 @@ int main (int argc, char ** argv) {
       exit(EXIT_FAILURE);
    }
    cout << "Done." << endl;
+   if ( options.stpspindens && gwf.ihaveSingleSpinOrbs ) {
+      gwf.CalcCabAAndCabB();
+   }
 
    BondNetWork bnw;
    bnw.ReadFromFile(infilnam); //Loading the bond-network (if the wave function
@@ -119,6 +122,12 @@ int main (int argc, char ** argv) {
 
    char evprop='V';
    if (options.prop2eval) { evprop=argv[options.prop2eval][0]; }
+   if ( evprop=='b' && (!gwf.ihaveCABSingleSpin) ) {
+      ScreenUtils::DisplayErrorMessage("The alpha- and beta-spin density matrices could not\n"
+            "be setup! Exiting...");
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+      return EXIT_FAILURE;
+   }
    char isoprop='d';
    if ( options.isoprop ) { isoprop=argv[options.isoprop][0]; }
    cout << "Logfile: " << logfilnam << '\n';

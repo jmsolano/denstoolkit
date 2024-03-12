@@ -84,6 +84,7 @@ public:
    bool estimpkbaminesprim,estimpkbaminessec;
    bool mkpov,kppov,mkpng;
    bool drawiso,transparentiso,cpkview;
+   bool stpspindens;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);
 void printHelpMenu(int &argc, char** &argv);//self-described
