@@ -106,6 +106,9 @@ int main (int argc, char ** argv) {
       exit(1);
    }
    cout << "Done." << endl;
+   if ( options.stpspindens && gwf.ihaveSingleSpinOrbs ) {
+      gwf.CalcCabAAndCabB();
+   }
    
    /* Loads the bond-network (if the wave function
     * was read, there souldn't be problems here to

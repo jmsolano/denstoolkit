@@ -74,6 +74,7 @@ OptionFlags::OptionFlags() {
    infname=0;
    outfname=0;
    globalenergy=0;
+   stpspindens=false;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    string progname;
@@ -102,6 +103,9 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
             case 'e' :
                flags.globalenergy=(++i);
                if (i>=argc) {printErrorMsg(argv,'e');}
+               break;
+            case 'J' :
+               flags.stpspindens=true;
                break;
             case 'o':
                flags.outfname=(++i);
@@ -168,7 +172,8 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "  -e globEn \tSet the global energy to be globEn. If this is given," << endl
         << "            \t  then all contributions (path integrals) will contain" << endl
         << "            \t  extra columns with entries proportional to globEn." << endl;
-   cout << "  -V        \tDisplays the version of this program." << endl;
+   cout << "  -J        \tSetup alpha- and beta-spin density matrices." << '\n';
+   cout << "  -V        \tDisplay the version of this program." << endl;
    cout << "  -h     \tDisplay the help menu.\n\n";
    //-------------------------------------------------------------------------------------
    cout << "  --help    \t\tSame as -h" << endl;
