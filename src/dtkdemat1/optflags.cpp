@@ -98,6 +98,7 @@ OptionFlags::OptionFlags() {
    showatlbls=0;
    setinccont=findcps=0;
    centredats=false;
+   stpspindens=false;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    string progname;
@@ -135,6 +136,9 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                if ((i+3)>=argc) {printErrorMsg(argv,'C');}
                flags.setinccont=(++i);
                i+=2;
+               break;
+            case 'J' :
+               flags.stpspindens=true;
                break;
             case 'k':
                flags.kpgnp=i;
@@ -242,6 +246,7 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  s, i, and e are real numbers. s is the first" << endl
         << "            \t  contour value, i is the increment, and " << endl
         << "            \t  e is the last contour value." << endl;
+   cout << "  -J        \tSetup alpha- and beta-spin density matrices." << '\n';
    cout << "  -k     \tKeeps the *.gnp files to be used later by gnuplot." << endl;
    cout << "  -l     \tShow labels of atoms (those set in option -a) in the plot." << endl
         << endl;
