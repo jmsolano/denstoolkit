@@ -108,6 +108,7 @@ public:
    void WriteCubeNCIRedDensGrad(ofstream &ofil,GaussWaveFunction &wf);
    void WriteCubeNCIRho(ofstream &ofil,GaussWaveFunction &wf);
    void WriteCubeDORI(ofstream &ofil,GaussWaveFunction &wf);
+   void WriteCubeSpinDensity(ofstream &ofil,GaussWaveFunction &wf);
 /* ********************************************************************************** */
 private:
    bool imsetup;

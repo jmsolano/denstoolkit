@@ -97,6 +97,7 @@ OptionFlags::OptionFlags() {
    wrtlog=0;
    configspecialnci=0;
    genvmdscript=quietrender=false;
+   stpspindens=false;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    string progname;
@@ -126,6 +127,9 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                if ((i+2)>=argc) {printErrorMsg(argv,'c');}
                flags.setcentredcub=(++i);
                ++i;
+               break;
+            case 'J' :
+               flags.stpspindens=true;
                break;
             case 'l':
                flags.wrtlog=i;
@@ -213,6 +217,7 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "\nUsage:\n\n\t" << progname << " wf?name [option [value(s)]] ... [option [value(s)]]\n\n";
    ScreenUtils::SetScrNormalFont();
    cout << "Where wf?name is the input wfx(wfn) name, and options can be:\n\n";
+   cout << "  -J        \tSetup alpha- and beta-spin density matrices." << '\n';
    cout << "  -l        \tWrites cpu time, input/output information etc. on a log file" << endl;
    cout << "  -n  dim   \tSets the number of points per direction for the cube" << endl
         << "            \t  to be dim x dim x dim." << endl;
@@ -227,7 +232,7 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "  -c a1 a2  \tUses a cube centred at the midpoint of the atoms a1 and a2." << endl;
    cout << "  -p prop\tChooses the property to be computed. prop is a character," << endl 
         << "         \t  which can be (d is the default value): " << endl;
-   string charFields="dglKGeELMPrsSVDuUvzZ";
+   string charFields="dglKGeELMPrsSVDbuUvzZ";
    for ( size_t i=0 ; i<charFields.size() ; ++i ) {
       cout << "         \t\t" << charFields[i] << " ("
          << GetFieldTypeKeyLong(charFields[i]) << ')' << '\n';

@@ -88,6 +88,7 @@ public:
    unsigned short int configspecialnci;
    unsigned short int setextraspace;
    bool genvmdscript,quietrender;
+   bool stpspindens;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);
 void printHelpMenu(int &argc, char** &argv);//self-described

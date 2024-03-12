@@ -79,8 +79,6 @@ using std::scientific;
 #include "optflags.h"
 #include "crtflnms.h"
 
-
-
 int main (int argc, char ** argv) {
    const clock_t begin_time = clock();
    const double begin_walltime = time(NULL);
@@ -103,7 +101,10 @@ int main (int argc, char ** argv) {
       ScreenUtils::SetScrNormalFont();
       exit(1);
    }
-   
+   cout << "Done" << '\n';
+   if ( options.stpspindens && gwf.ihaveSingleSpinOrbs ) {
+      gwf.CalcCabAAndCabB();
+   }
    
    BondNetWork bnw;
    bnw.ReadFromFile(infilnam); //Loading the bond-network (if the wave function
@@ -172,6 +173,12 @@ int main (int argc, char ** argv) {
       prop=argv[options.prop2plot][0];
    } else {
       prop='d';
+   }
+   if ( prop=='b' && (!gwf.ihaveCABSingleSpin) ) {
+      ScreenUtils::DisplayErrorMessage("The alpha- and beta-spin density matrices could not\n"
+            "be setup! Exiting...");
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+      return EXIT_FAILURE;
    }
    
    /* Main calculation loop, chooses between different available fields. */
