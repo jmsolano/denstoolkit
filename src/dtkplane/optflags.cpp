@@ -81,6 +81,7 @@ OptionFlags::OptionFlags() {
    kpgnp=0;
    quiet=1;
    showcont=showatlbl=showallatlbl=0;
+   stpspindens=false;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    string progname;
@@ -113,6 +114,9 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                break;
             case 'c':
                flags.showcont=i;
+               break;
+            case 'J' :
+               flags.stpspindens=true;
                break;
             case 'k':
                flags.kpgnp=i;
@@ -199,8 +203,9 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  choose a default plane, but you may not like the view." << endl
         << "            \t  Note: if the *.wfn (*.wfx) file has only one or two atoms" << endl
         << "            \t  this option must not be used. The program will define" << endl
-        << "            \t  a plane which includes that(those) one(two) atom(s)." << endl
-        << "  -n  dim   \tSet the number of points for the tsv file per direction." << endl
+        << "            \t  a plane which includes that(those) one(two) atom(s)." << endl;
+   cout << "  -J        \tSetup alpha- and beta-spin density matrices." << '\n';
+   cout << "  -n  dim   \tSet the number of points for the tsv file per direction." << endl
         << "            \t  The tsv will have the dimensions dim x dim." << endl
         << "  -o outname\tSet the output file name." << endl
         << "            \t  (If not given the program will create one out of" << endl
@@ -208,7 +213,7 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  use this name as well --but different extension--)." << endl;
    cout << "  -p prop\tChoose the property to be computed. prop is a character," << endl;
    cout << "         \t  which can be (d is the default value): " << endl;
-   string charFields="dglKGeELMNpPrsSVvDuU";
+   string charFields="dglKGeELMNpPrsSVvDbuU";
    for ( size_t i=0 ; i<charFields.size() ; ++i ) {
       cout << "         \t\t" << charFields[i] << " ("
          << GetFieldTypeKeyLong(charFields[i]) << ')' << '\n';

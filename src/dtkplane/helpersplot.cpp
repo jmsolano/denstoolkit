@@ -59,6 +59,10 @@ void HelpersPlot::makeGnuplotFile(OptionFlags &opts, string &gnpnam,string &tsvn
    double minzrange,maxzrange;
    string plbl=GetFieldTypeKeyShort(p2p);;
    switch (p2p) {
+      case 'b' :
+         minzrange=0.0e+00;
+         maxzrange=1.0e-01;
+         break;
       case 'd':
          minzrange=0.0e0;
          maxzrange=0.6e0;
