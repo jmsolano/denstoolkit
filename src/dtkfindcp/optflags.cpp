@@ -88,6 +88,7 @@ OptionFlags::OptionFlags() {
    forcebcpconn=0;
    forceseveralbcpconn=0;
    customseedtwoacps=0;
+   stpspindens=false;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    string progname;
@@ -133,6 +134,9 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
             //   flags.infname=(++i);
             //   if (i>=argc) {printErrorMsg(argv,'i');}
             //   break;
+            case 'J' :
+               flags.stpspindens=true;
+               break;
             case 'k':
                flags.kppov=i;
                break;
@@ -243,6 +247,7 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "  -e     \tPerform an extended search of critical points. This" << endl
         << "         \t  will take some more time, but it could find more CPs" << endl
         << "         \t  than the simple search." << endl;
+   cout << "  -J     \tSetup alpha- and beta-spin density matrices." << '\n';
    cout << "  -v     \tVerbose mode (displays additional information (for example the " << endl
         << "         \t  output of povray, etc." <<endl;
    //#if (defined(__APPLE__)||defined(__linux__))
