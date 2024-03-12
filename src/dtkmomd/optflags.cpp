@@ -80,6 +80,7 @@ OptionFlags::OptionFlags() {
    kpgnp=0;
    quiet=1;
    setfld=0;
+   stpspindens=false;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    string progname;
@@ -120,6 +121,9 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                break;
             case '3':
                flags.evdim=i;
+               break;
+            case 'J' :
+               flags.stpspindens=true;
                break;
             case 'k':
                flags.kpgnp=i;
@@ -204,8 +208,9 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  interest, and can take the values xy,xz,yz." << endl
         << "            \t  Here xy are two characters. It creates a *.tsv file." << endl
         << "  -3        \tEvaluate the momentum density on a cube." << endl
-        << "            \t  It creates a *.cub file." << endl
-        << "  -n  dim   \tSet the number of points for the cub/tsv/dat file per direction" << endl
+        << "            \t  It creates a *.cub file." << endl;
+   cout << "  -J        \tSetup alpha- and beta-spin density matrices." << '\n';
+   cout << "  -n  dim   \tSet the number of points for the cub/tsv/dat file per direction" << endl
         << "  -o outname\tSet the output file name." << endl
         << "            \t  (If not given the program will create one out of" << endl
         << "            \t  the input name; if given, the dat/tsv/cub/gnp/pdf files will" << endl

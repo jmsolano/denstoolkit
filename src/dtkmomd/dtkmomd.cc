@@ -163,6 +163,9 @@ int main (int argc, char ** argv) {
       exit(1);
    }
    cout << "Done." << endl;
+   if ( options.stpspindens && gwf.ihaveSingleSpinOrbs ) {
+      gwf.CalcCabAAndCabB();
+   }
    
    string strfield;
    switch ( field ) {
