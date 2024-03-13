@@ -110,9 +110,11 @@
 %\addtolength{\headheight}{2.4pt}%for 11pt font
 \addtolength{\headheight}{4pt}%for 12pt font
 \fancyhf{}%
-\fancyhead[LE,RO]{\thepage}      
+\fancyhead[LE,RO]{\thepage}
 \fancyhead[LO]{\slshape\rightmark} %para utilizar negritas: \bfseries
 \fancyhead[RE]{\slshape\leftmark}
+\fancyfoot{}%
+\fancyfoot[LE,RO]{\hyperref[toclbl]{Go to ToC}}
 \fancypagestyle{plain}{%
    \fancyhead{}
    \renewcommand{\headrulewidth}{0pt}%
@@ -129,8 +131,13 @@
 
 %\includeonly{Chapter1}
 
+\newcommand{\jmsacomment}[1]{\textit{\color{blue}#1}}
+\newcommand{\commt}[1]{\textcolor{teal}{#1}}
+\newcommand{\commb}[1]{\textcolor{blue}{#1}}
+\newcommand{\commr}[1]{\textcolor{red}{#1}}
+
 \newcommand{\DTK}{Dens\-Tool\-Kit}
-\newcommand{\dtkversion}{1.1.2}
+\newcommand{\dtkversion}{1.6.2}
 
 \newcommand{\bA}{\bar{A}}
 \newcommand{\bB}{\bar{B}}
@@ -139,6 +146,7 @@
 \newcommand{\dN}{\dot{N}}
 \newcommand{\dP}{\dot{P}}
 \newcommand{\done}{\dot{1}}
+\newcommand{\vr}{\boldsymbol{r}}
 
 
 % ------------------- Title and Author -----------------------------
@@ -154,7 +162,7 @@
 \phantom{as}
 
 \vspace{5cm}
-Copyright (C) 2013-2020  Juan Manuel Solano Altamirano, Julio Manuel Hern\'andez P\'erez.
+Copyright (C) 2013-\the\year{}  Juan Manuel Solano Altamirano, Julio Manuel Hern\'andez P\'erez.
 
     Permission is granted to copy, distribute and/or modify this document
     under the terms of the GNU Free Documentation License, Version 1.3
@@ -182,7 +190,7 @@ Copyright (C) 2013-2020  Juan Manuel Solano Altamirano, Julio Manuel Hern\'andez
 \end{center}
 
 \vspace{8cm}
-\copyright{} 2013-2020: J. M. Solano-Altamirano, J. M. Hern\'andez-P\'erez
+\copyright{} 2013-\the\year{}: J. M. Solano-Altamirano, J. M. Hern\'andez-P\'erez
 
 \newpage\thispagestyle{empty}
 \phantom{asd}
@@ -222,7 +230,7 @@ Theoretical Physics) and Richard Berger (Temple University).
 \phantom{asdf}
 
 %------------------------------------------------
-\tableofcontents
+\tableofcontents\label{toclbl}
 %------------------------------------------------
 
 

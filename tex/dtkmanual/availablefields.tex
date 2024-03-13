@@ -36,19 +36,22 @@
 
 %**********************************************************************************************
 %**********************************************************************************************
-\chapter{Available density fields}\label{sec:availablefields}
+\chapter{Available 3D density fields}\label{sec:availablefields}
 %**********************************************************************************************
 %**********************************************************************************************
 
 As is well known from Quantum Mechanics theory, all the information of a quantum system is
 contained in the wave function. For a molecular system,  the wave function, $\psi(\boldsymbol{r})$,
 can be spanned by $M$ molecular orbitals $\chi_m(\boldsymbol{r})$ ($m=1,\dots,M$, and these
-molecular orbitals can be obtained by any of the self consistent field methods available):
+molecular orbitals can be obtained by any of the self consistent field methods available).
+
+It can be proven that the electron density can be written as
 %
-\begin{equation}
-   \psi(\boldsymbol{r})=\sum_{m=1}^{M}C_m\chi_m(\boldsymbol{r}).
+\begin{equation}\label{eq:rhoeqsumnorb}
+   \rho(\boldsymbol r)=\left|\psi(\boldsymbol{r})\right|^2=\sum_{m=1}^{M}C_m\chi_m^*(\boldsymbol{r})\chi_m(\boldsymbol{r}).
 \end{equation}
 %
+In Eq.~(\ref{eq:rhoeqsumnorb}), $C_m$ is the occupation number of the $m$-th molecular orbital.
 In turn, each molecular orbital can be spanned by a linear combination of Gaussian basis functions:
 \begin{equation}
    \chi_m(\boldsymbol{r})=\sum_{\dA=\done}^{\dN}D_{m\dA}\phi_{\dA}(\boldsymbol{r}-\boldsymbol{R}_{\dA}).
@@ -151,7 +154,7 @@ where $\dP$ is the total number of primitives used in the expansion of the wave 
 
 Defining the density matrix, $c_{\dA\dB}$, as
 %
-\begin{equation}
+\begin{equation}\label{eq:cabdefinition}
    c_{\dA\dB}\equiv\sum_{m=1}^{M}C_mD_{m\dA}D_{m\dB},
 \end{equation}
 %
@@ -560,28 +563,6 @@ and it also uses a simple call to evaluate $\pi(\boldsymbol{p})$, as given by \r
 
 
 %----------------------------------------------------------------------------------------------
-\section{Density matrix of order 1}
-%----------------------------------------------------------------------------------------------
-
-In terms of the density matrix, the Density Matrix of order 1 (DM1, and denoted by the symbol $\Gamma(\boldsymbol{r},\boldsymbol{r}')$) is given by
-%
-\begin{equation}
-   \Gamma(\boldsymbol{r},\boldsymbol{r}')=\phi_{\dA}(\boldsymbol{r})\big(c_{\dA\dB}\phi_{\dB}(\boldsymbol{r}')\big).
-\end{equation}
-%
-
-The Density Matrix of order 1 of wavefunctions with pseudopotentials is
-%
-\begin{equation}%\label{eq:}
-  \Gamma(\boldsymbol{r},\boldsymbol{r}')=\sum_{\dA\dB}
-  \phi_{\dA}(\boldsymbol{r})\big(c_{\dA\dB}\phi_{\dB}(\boldsymbol{r}')\big)
-  +\sum_{\bA}
-  \phi_{\bA}(\boldsymbol{r})\big(C_{\bA}\phi_{\bA}(\boldsymbol{r}')\big)
-\end{equation}
-%
-
-
-%----------------------------------------------------------------------------------------------
 \section{Electrostatic potential}
 %----------------------------------------------------------------------------------------------
 
@@ -804,3 +785,114 @@ Here $\lambda_i$ are the Hessian eigenvalues, in ascending order.
 The ellipticity field is used mainly to generate ellipticity profiles. See 
 \cite{bib:cheeseman1988} for how to interpret this profiles. Additional
 examples of the above can be found in \cite{bib:tafipolsky2002}.
+
+%----------------------------------------------------------------------------------------------
+\section{Spin density}
+%----------------------------------------------------------------------------------------------
+
+In addition to the density matrix $c_{\dA\dB}$ (Eq.~(\ref{eq:cabdefinition})), in order to calculate the spin density,
+we need the $\alpha$- and $\beta$-spin density matrices, which are defined as:
+%
+\begin{equation}\label{eq:cabadefinition}
+	c_{\dA\dB}^{\alpha}\equiv
+	\sum_{m=1}^{M_{\alpha}}C_m^{\alpha}D_{m\dA}^{\alpha}D_{m\dB}^{\alpha}
+\end{equation}
+%
+and
+%
+\begin{equation}\label{eq:cabbdefinition}
+	c_{\dA\dB}^{\beta}\equiv
+	\sum_{m=1}^{M_{\beta}}C_m^{\beta}D_{m\dA}^{\beta}D_{m\dB}^{\beta}.
+\end{equation}
+%
+In Eqs.~(\ref{eq:cabadefinition}) and (\ref{eq:cabbdefinition}), $C_m^{\alpha}$ and
+$C_m^{\beta}$ are the occupation numbers of $\alpha$- and $\beta$-spin molecular orbitals,
+$D_{m\dA}^{\alpha}$ and $D_{m\dA}^{\beta}$ are the expansion coefficients of each
+molecular orbital of type $\alpha$ and $\beta$,
+and $M_{\alpha}$ and $M_{\beta}$ the respective number of molecular orbitals of type
+$\alpha$ and $\beta$.
+
+It is interesting to note that the $\alpha$ and $\beta$ density matrices have the following
+property:
+%
+\begin{equation}
+	c_{\dA\dB}=c_{\dA\dB}^{\alpha}+c_{\dA\dB}^{\beta}.
+\end{equation}
+%
+
+Once defined $c_{\dA\dB}^{\alpha}$ and $c_{\dA\dB}^{\beta}$, we can define the single spin
+densities:
+%
+\begin{equation}
+	\rho^{\alpha}(\boldsymbol r)=\phi_{\dA}(\boldsymbol r)c_{\dA\dB}^{\alpha}
+	                             \phi_{\dB}(\boldsymbol r)
+\end{equation}
+%
+and
+%
+\begin{equation}
+	\rho^{\beta}(\boldsymbol r)=\phi_{\dA}(\boldsymbol r)c_{\dA\dB}^{\beta}
+	                            \phi_{\dB}(\boldsymbol r)
+\end{equation}
+%
+Finally, the spin density, $\rho_s(\boldsymbol r)$, is given by:
+%
+\begin{equation}
+	\rho_s(\vr)\equiv\rho^{\alpha}(\vr)-\rho^{\beta}(\vr)=
+	   \phi_{\dA}(\vr)\left(c_{\dA\dB}^{\alpha}-c_{\dA\dB}^{\beta}\right)\phi_{\dB}(\vr)
+\end{equation}
+%
+
+Further details and algebraic deductions can be found in Refs. \cite{bib:parr1989}
+and \cite{bib:andresbeltran2000}.
+
+Since we need to know the spin type of molecular orbitals, the spin density, $\rho_s(\vr)$
+can only be calculated using \texttt{wfx} files, as the \texttt{wfn} format cannot
+describe single-spin molecular orbitals.
+
+
+%**********************************************************************************************
+%**********************************************************************************************
+\chapter{Available 6D density fields}\label{sec:availablefields}
+%**********************************************************************************************
+%**********************************************************************************************
+
+
+%----------------------------------------------------------------------------------------------
+\section{Density matrix of order 1}
+%----------------------------------------------------------------------------------------------
+
+%----------------------------------------------------------------------------------------------
+\subsection{Closed-shell systems}
+%----------------------------------------------------------------------------------------------
+
+In terms of the density matrix, the Spinless Density Matrix of order 1
+(DM1, and denoted by the symbol $\Gamma(\boldsymbol{r},\boldsymbol{r}')$) is given by
+%
+\begin{equation}
+   \Gamma(\boldsymbol{r},\boldsymbol{r}')=\phi_{\dA}(\boldsymbol{r})
+   \big(c_{\dA\dB}\phi_{\dB}(\boldsymbol{r}')\big).
+\end{equation}
+%
+
+The Density Matrix of order 1 of wavefunctions with pseudopotentials is
+%
+\begin{equation}%\label{eq:}
+  \Gamma(\boldsymbol{r},\boldsymbol{r}')=\sum_{\dA\dB}
+  \phi_{\dA}(\boldsymbol{r})\big(c_{\dA\dB}\phi_{\dB}(\boldsymbol{r}')\big)
+  +\sum_{\bA}
+  \phi_{\bA}(\boldsymbol{r})\big(C_{\bA}\phi_{\bA}(\boldsymbol{r}')\big)
+\end{equation}
+%
+
+\color{red}
+%----------------------------------------------------------------------------------------------
+\subsection{Open-shell systems}
+%----------------------------------------------------------------------------------------------
+
+%----------------------------------------------------------------------------------------------
+\section{Pair density}
+%----------------------------------------------------------------------------------------------
+
+
+\color{black}
