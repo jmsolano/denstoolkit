@@ -4540,7 +4540,7 @@ double GaussWaveFunction::EvalDensityMatrix1(double x,double y,double z,
          gamm+=(EDFCoeff[i-nPri]*chi[i]*gx[i]);
       }
    }
-return gamm;
+   return gamm;
 }
 void GaussWaveFunction::EvalGradDensityMatrix1(double x,double y,double z,\
       double xp,double yp,double zp,\
@@ -4795,6 +4795,74 @@ double GaussWaveFunction::EvalLapDensityMatrix1(double (&xx)[3],double (&xxp)[3]
    res+=hp[1][1];
    res+=hp[2][2];
    return res;
+}
+double GaussWaveFunction::EvalGeneralDensityMatrix1(const double x,const double y,const double z,\
+      const double xp,const double yp,const double zp,const bool singlespin,double *cabs) {
+   int indr,indp;
+   double xmr,ymr,zmr,gamm,chib;
+   gamm=0.000000e0;
+   double rr;
+   indr=0;
+   indp=0;
+   for (int i=0; i<nNuc; i++) {
+      xmr=x-R[indr++];
+      ymr=y-R[indr++];
+      zmr=z-R[indr++];
+      rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+      for (int j=0; j<myPN[i]; j++) {
+         chi[indp]=EvalAngACases(primType[indp],xmr,ymr,zmr);
+         chi[indp]*=exp(primExp[indp]*rr);
+         indp++;
+      }
+   }
+   indr=0;
+   indp=0;
+   for (int i=0; i<nNuc; i++) {
+      xmr=xp-R[indr++];
+      ymr=yp-R[indr++];
+      zmr=zp-R[indr++];
+      rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+      for (int j=0; j<myPN[i]; j++) {
+         gx[indp]=EvalAngACases(primType[indp],xmr,ymr,zmr);
+         gx[indp]*=exp(primExp[indp]*rr);
+         indp++;
+      }
+   }
+   double snglspnfact=1.0e0;
+   if ( singlespin ) { snglspnfact=0.5e0; }
+   indp=0;
+   gamm=0.0000000e0;
+   for (int i=0; i<nPri; i++) {
+      chib=0.0000000e0;
+      for (int j=0; j<nPri; j++) {
+         chib+=(chi[j]*cabs[indp++]);
+      }
+      gamm+=(chib*gx[i]);
+   }
+   if ( ihaveEDF ) {
+      for ( int i=nPri ; i<totPri ; ++i ) {
+         indr=3*(primCent[i]);
+         xmr=x-R[indr];
+         ymr=y-R[indr+1];
+         zmr=z-R[indr+2];
+         rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+         chi[i]=EvalAngACases(primType[i],xmr,ymr,zmr);
+         chi[i]*=exp(0.5e0*primExp[i]*rr);
+      }
+      for ( int i=nPri ; i<totPri ; ++i ) {
+         indr=3*(primCent[i]);
+         xmr=xp-R[indr];
+         ymr=yp-R[indr+1];
+         zmr=zp-R[indr+2];
+         rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+         gx[i]=EvalAngACases(primType[i],xmr,ymr,zmr);
+         gx[i]*=exp(0.5e0*primExp[i]*rr);
+      }
+      for (int i=nPri; i<totPri; ++i) {
+         gamm+=(snglspnfact*EDFCoeff[i-nPri]*chi[i]*gx[i]);
+      }
+   }
+   return gamm;
 }
 void GaussWaveFunction::EvalHermiteCoefs(int (&aia)[3],int (&aib)[3],double &alpab,
       double (&ra)[3],double (&rb)[3],

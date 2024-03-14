@@ -502,6 +502,28 @@ public:
          double &gamm,double (&gg)[3],double (&gp)[3],\
          double (&hh)[3][3],double (&hph)[3][3],double (&hp)[3][3]);
    double EvalLapDensityMatrix1(double (&xx)[3],double (&xxp)[3]);
+   /** This function evaluates the generalized Density Matrix of Order 1 at the points
+    * \f$(x,y,z)\f$ and \f$(xp,yp,zp)\f$. Here by generalized it is to be understood that
+    * the wavefunction may or not be open-shell. Therefore, the function requires
+    * the matrix \f$c_{\dot{A}\dot{B}}\f$ to be passed as an argument as well as
+    * a bool singlespin. If singlespin==true, then the correction stemming from
+    * pseudopotentials will be applied (for single-spin \f$\Gamma_1^{\sigma}\f$,
+    * the pseudo-potential is half the contribution for closed-shell systems).
+    * Notice that this function does not check whether the cabs pointer is valid,
+    * this check must be done at a far higher level
+    * (when loading the wavefunction). */
+   double EvalGeneralDensityMatrix1(const double x,const double y,const double z,\
+         const double xp,const double yp,const double zp,const bool singlespin,double *cabs);
+   /** Returns the \f$\Gamma_1^{\alpha}(x,y,z,x',y',z')\f$  */
+   inline double EvalDensityMatrix1Alpha(const double x,const double y,const double z,\
+         const double xp,const double yp,const double zp) {
+      return EvalGeneralDensityMatrix1(x,y,z,xp,yp,zp,true,cabA);
+   }
+   /** Returns the \f$\Gamma_1^{\beta}(x,y,z,x',y',z')\f$  */
+   inline double EvalDensityMatrix1Beta(const double x,const double y,const double z,\
+         const double xp,const double yp,const double zp) {
+      return EvalGeneralDensityMatrix1(x,y,z,xp,yp,zp,true,cabB);
+   }
    /** This function evaluates the magnitude of the grandient of LOL.  */
    double EvalMagGradLOL(double x,double y,double z);
    /** This function returns the Molecular Electrostatic Potential (MEP) at the
