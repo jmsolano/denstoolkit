@@ -550,7 +550,7 @@ inline double GetDefaultIsolvalueForCube(const char p2p) {
 }
 /* 6D fields  */
 enum ScalarField6DType {
-   NONE,\
+   NONE6D,\
    DM1, /*!< [D]ensity [M]atrix of order [1]; 6D field  */\
    SDM1, /*!< [S]pin-dependent [D]ensity [M]atrix of order [1]; 6D field  */\
    DM1M, /*!< [D]ensity [M]atrix of order [1] in [M]omentum spac3; 6D field  */\
@@ -595,14 +595,14 @@ inline char ScalarFieldType6D2Char(ScalarField6DType fftt) {
       case VCF6 :
          res='U';
          break;
-      case NONE :
+      case NONE6D :
       default   :
          break;
    }
    return res;
 }
 inline ScalarField6DType Char2ScalarField6DType(const char prop) {
-   ScalarField6DType res=ScalarField6DType::NONE;
+   ScalarField6DType res=ScalarField6DType::NONE6D;
    switch (prop) {
       case 'g' :
          res=DM1;
@@ -653,7 +653,7 @@ inline string GetField6DTypeKeyShort(const char prop) {
          plbl="SpinDepDM1";
          break;
       case 'H' :
-         plbl="SpinDepDM1MomSp"
+         plbl="SpinDepDM1MomSp";
          break;
       case 'p' :
          plbl="PairDens";
