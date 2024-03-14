@@ -867,32 +867,147 @@ describe single-spin molecular orbitals.
 %----------------------------------------------------------------------------------------------
 
 In terms of the density matrix, the Spinless Density Matrix of order 1
-(DM1, and denoted by the symbol $\Gamma(\boldsymbol{r},\boldsymbol{r}')$) is given by
+---DM1, and denoted by the symbol $\Gamma_1(\vr,\vr')$--- is given by
 %
 \begin{equation}
-   \Gamma(\boldsymbol{r},\boldsymbol{r}')=\phi_{\dA}(\boldsymbol{r})
+   \Gamma_1(\boldsymbol{r},\boldsymbol{r}')=\phi_{\dA}(\boldsymbol{r})
    \big(c_{\dA\dB}\phi_{\dB}(\boldsymbol{r}')\big).
 \end{equation}
 %
 
 The Density Matrix of order 1 of wavefunctions with pseudopotentials is
 %
-\begin{equation}%\label{eq:}
-  \Gamma(\boldsymbol{r},\boldsymbol{r}')=\sum_{\dA\dB}
+\begin{equation}\label{eq:Gamma1pseudoexplicit}
+  \Gamma_1(\boldsymbol{r},\boldsymbol{r}')=\sum_{\dA\dB}
   \phi_{\dA}(\boldsymbol{r})\big(c_{\dA\dB}\phi_{\dB}(\boldsymbol{r}')\big)
   +\sum_{\bA}
-  \phi_{\bA}(\boldsymbol{r})\big(C_{\bA}\phi_{\bA}(\boldsymbol{r}')\big)
+  \phi_{\bA}(\boldsymbol{r})\big(C_{\bA}\phi_{\bA}(\boldsymbol{r}')\big),
 \end{equation}
 %
+which, using Einstein summation convention and the symbol $C_{\bA\bB}$, is also written as:
+%
+\begin{equation}\label{eq:Gamma1pseudotensor}
+  \Gamma_1(\boldsymbol{r},\boldsymbol{r}')=
+  \phi_{\dA}(\boldsymbol{r})\big(c_{\dA\dB}\phi_{\dB}(\boldsymbol{r}')\big)
+  +\phi_{\bA}(\boldsymbol{r})\big(C_{\bA\bB}\phi_{\bB}(\boldsymbol{r}')\big).
+\end{equation}
+%
+The limits of the summation should be clear through the index type (dotted or barred).
+Eq.~(\ref{eq:Gamma1pseudoexplicit}) is computationally more efficient, however
+Eq.~(\ref{eq:Gamma1pseudotensor}) can be useful in algebraic manipulations.
 
-\color{red}
+
 %----------------------------------------------------------------------------------------------
 \subsection{Open-shell systems}
 %----------------------------------------------------------------------------------------------
+If the wave function has single-spin molecular orbitals, then we can obtain the spin-dependent
+Density Matrices of order 1 ---abbreviated as sdDM1 and denoted as
+$\Gamma^{\sigma}_1(\vr,\vr')$, where $\sigma=\alpha,\ \beta$--- as follows:
+%
+\begin{equation}
+	\Gamma_1(\vr\sigma,\vr'\sigma)\equiv\Gamma^{\sigma}_1(\vr,\vr')=
+	\phi_{\dA}(\vr)\left(c_{\dA\dB}^{\sigma}\phi_{\dB}(\vr')\right),
+\end{equation}
+%
+where $\sigma=\alpha,\ \beta$ (see Eqs. (\ref{eq:cabadefinition}) and
+(\ref{eq:cabbdefinition}) for the definitions of $c_{\dA\dB}^{\alpha}$ and
+$c_{\dA\dB}^{\beta}$).
+If the wave function has pseudopotentials \textbf{and} the pseudopotential is closed-shell, then:
+%
+\begin{equation}
+	\Gamma^{\sigma}_1(\vr,\vr')=
+	\phi_{\dA}(\vr)\left(c_{\dA\dB}^{\sigma}\phi_{\dB}(\vr')\right)
+	+\frac{1}{2}\phi_{\bA}(\boldsymbol{r})\big(C_{\bA\bB}\phi_{\bA}(\boldsymbol{r}')\big)
+\end{equation}
+%
+
+%----------------------------------------------------------------------------------------------
+\section{Density matrix of order 1 in momentum space}
+%----------------------------------------------------------------------------------------------
+Reserved for future versions\dots
 
 %----------------------------------------------------------------------------------------------
 \section{Pair density}
 %----------------------------------------------------------------------------------------------
+The pair density function can be interpreted as the probability of finding an electron
+with spin $\sigma$
+around a point $\vr_1$ provided another electron with spin $\tau$
+is located around the point $\vr_2$. In this
+manual, we denote such function as $\rho^{\sigma\tau}_2(\vr_1,\vr_2)$. In addition,
+we can define the spinless pair density function, which
+will be denoted as $\rho_2(\vr_1,\vr_2)$. We can interpret $\rho_2(\vr_1,\vr_2)$ as the
+probability to find an electron with any spin around the point $\vr_1$ provided there
+is an electron with any spin around $\vr_2$.
+%----------------------------------------------------------------------------------------------
+\subsection{Closed-shell systems}
+%----------------------------------------------------------------------------------------------
+
+For \textbf{closed-shell systems}, we have:
+%
+\begin{equation}
+	\Gamma_1^{\alpha}(\vr,\vr')=\Gamma_1^{\beta}(\vr,\vr')=
+	\frac{1}{2}\Gamma_1(\vr,\vr'),
+\end{equation}
+%
+hence
+%
+\begin{eqnarray}
+	\rho_2(\vr_1,\vr_2) & = & \frac{1}{2}\rho(\vr_1)\rho(\vr_2)
+	-\frac{1}{4}\big[\Gamma_1(\vr_1,\vr_2)\Gamma_1(\vr_2,\vr_1)\big]\\
+	& = & \frac{1}{2}\rho(\vr_1)\rho(\vr_2)
+	-\frac{1}{4}\big[\Gamma_1(\vr_1,\vr_2)\big]^2
+\end{eqnarray}
+%
 
 
-\color{black}
+
+%----------------------------------------------------------------------------------------------
+\subsection{Open-shell systems}
+%----------------------------------------------------------------------------------------------
+
+For open-shell systems, there are several pair densities, depending on the specific spin
+combination. We will use the following notation:
+%
+\begin{equation}
+   \rho_2^{\sigma\tau}(\vr_1,\vr_2)\equiv\rho_2(\vr_1\sigma,\vr_2\tau).
+\end{equation}
+%
+The pair densities can be computed as follows:
+%
+\begin{eqnarray}
+	\rho_2^{\alpha\alpha}(\vr_1,\vr_2) & = & \frac{1}{2}\left[\rho^{\alpha}(\vr_1)\rho^{\alpha}(\vr_2)
+	-\Gamma_1^{\alpha}(\vr_1,\vr_2)\Gamma_1^{\alpha}(\vr_2,\vr_1)\right]\nonumber\\
+	                                   & = & \frac{1}{2}\left[\rho^{\alpha}(\vr_1)\rho^{\alpha}(\vr_2)
+	-\big(\Gamma_1^{\alpha}(\vr_1,\vr_2)\big)^2\right],\label{eq:r2aar1r2}\\
+	%
+	%
+	\rho_2^{\beta\beta}(\vr_1,\vr_2) & = & \frac{1}{2}\left[\rho^{\beta}(\vr_1)\rho^{\beta}(\vr_2)
+	-\Gamma_1^{\beta}(\vr_1,\vr_2)\Gamma_1^{\beta}(\vr_2,\vr_1)\right]\nonumber\\
+	                                 & = & \frac{1}{2}\left[\rho^{\beta}(\vr_1)\rho^{\beta}(\vr_2)
+	-\big(\Gamma_1^{\beta}(\vr_1,\vr_2)\big)^2\right],\label{eq:r2bbr1r2}\\
+	%
+	%
+	\rho_2^{\alpha\beta}(\vr_1,\vr_2) & = & \frac{1}{2}\rho^{\alpha}(\vr_1)\rho^{\beta}(\vr_2),\label{eq:r2abr1r2}\\
+	%
+	\rho_2^{\beta\alpha}(\vr_1,\vr_2) & = & \frac{1}{2}\rho^{\beta}(\vr_1)\rho^{\alpha}(\vr_2).\label{eq:r2bar1r2}
+	%
+\end{eqnarray}
+%
+In Eqs.~(\ref{eq:r2aar1r2}) and (\ref{eq:r2bbr1r2}), we have used the index-symmetry properties of
+$c^{\alpha}_{\dA\dB}$ and $c^{\beta}_{\dA\dB}$ (\textit{i.e.} $c^{\sigma}_{\dA\dB}=c^{\sigma}_{\dB\dA}$).
+%
+
+We can now define the spinless pair density function of an open-shell system, which is:
+\begin{equation}
+	\rho_2(\vr_1,\vr_2)=\rho_2^{\alpha\alpha}(\vr_1,\vr_2)+\rho_2^{\alpha\beta}(\vr_1,\vr_2)
+	+\rho_2^{\beta\alpha}(\vr_1,\vr_2)+\rho_2^{\beta\beta}(\vr_1,\vr_2).
+\end{equation}
+%
+
+%----------------------------------------------------------------------------------------------
+\section{Pair density in momentum space}
+%----------------------------------------------------------------------------------------------
+
+Reserved for later\dots
+
+
