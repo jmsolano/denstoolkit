@@ -45,6 +45,7 @@
 #define _FLDTYPESDEF_H_
 #include <string>
 using std::string;
+/* 3D Fields  */
 enum ScalarFieldType {
    NONE,\
    DENS,/* Electron density (Rho)  */\
@@ -443,7 +444,7 @@ inline string GnuplotFieldTitle(const char p2p) {
          plbl=string("{/Symbol r}");
          break;
       case 'm':
-         plbl=string("{/Symbol r}_P");
+         plbl=string("{/Symbol p}");
          break;
       case 'g':
          plbl=string("|{/Symbol \\321 r}|");
@@ -546,6 +547,215 @@ inline double GetDefaultIsolvalueForCube(const char p2p) {
          break;
    }
    return isoval;
+}
+/* 6D fields  */
+enum ScalarField6DType {
+   NONE,\
+   DM1, /*!< [D]ensity [M]atrix of order [1]; 6D field  */\
+   SDM1, /*!< [S]pin-dependent [D]ensity [M]atrix of order [1]; 6D field  */\
+   DM1M, /*!< [D]ensity [M]atrix of order [1] in [M]omentum spac3; 6D field  */\
+   SDM1M, /*!< [S]pin-dependent [D]ensity [M]atrix of order [1] in [M]omentum space; 6D field  */\
+   PDF, /*!< [P]air [D]ensity [F]unction; 6D field  */\
+   PDFM, /*!< [P]air [D]ensity [F]unction in [M]omentum space; 6D field  */\
+   SPDF, /*!< [S]pin-dependent [P]air [D]ensity [F]unction; 6D field  */\
+   SPDFM, /*!< [S]pin-dependent [P]air [D]ensity [F]unction in [M]omentum space; 6D field  */\
+   SCF6, /* Scalar Custom Field 6D */\
+   VCF6 /* Vector Custom Field 6D */
+};
+inline char ScalarFieldType6D2Char(ScalarField6DType fftt) {
+   char res='0';
+   switch ( fftt ) {
+      case DM1  :
+         res='g';
+         break;
+      case DM1M :
+         res='G';
+         break;
+      case SDM1 :
+         res='h';
+         break;
+      case SDM1M:
+         res='H';
+         break;
+      case PDF  :
+         res='p';
+         break;
+      case PDFM :
+         res='P';
+         break;
+      case SPDF :
+         res='q';
+         break;
+      case SPDFM:
+         res='Q';
+         break;
+      case SCF6 :
+         res='u';
+         break;
+      case VCF6 :
+         res='U';
+         break;
+      case NONE :
+      default   :
+         break;
+   }
+   return res;
+}
+inline ScalarField6DType Char2ScalarField6DType(const char prop) {
+   ScalarField6DType res=ScalarField6DType::NONE;
+   switch (prop) {
+      case 'g' :
+         res=DM1;
+         break;
+      case 'G' :
+         res=DM1M ;
+         break;
+      case 'h' :
+         res=SDM1 ;
+         break;
+      case 'H' :
+         res=SDM1M;
+         break;
+      case 'p' :
+         res=PDF  ;
+         break;
+      case 'P' :
+         res=PDFM ;
+         break;
+      case 'q' :
+         res=SPDF ;
+         break;
+      case 'Q' :
+         res=SPDFM;
+         break;
+      case 'u' :
+         res=SCF6;
+         break;
+      case 'U' :
+         res=VCF6;
+         break;
+      case '0' :
+      default  :
+         break;
+   }
+   return res;
+}
+inline string GetField6DTypeKeyShort(const char prop) {
+   string plbl="";
+   switch (prop) {
+      case 'g':
+         plbl="DM1";
+         break;
+      case 'G':
+         plbl="DM1MomSp";
+         break;
+      case 'h' :
+         plbl="SpinDepDM1";
+         break;
+      case 'H' :
+         plbl="SpinDepDM1MomSp"
+         break;
+      case 'p' :
+         plbl="PairDens";
+         break;
+      case 'P' :
+         plbl="PairDensMomSp";
+         break;
+      case 'q' :
+         plbl="SpinDepPairDens";
+         break;
+      case 'Q' :
+         plbl="SpinDepPairDensMomSp";
+         break;
+      case 'u' :
+         plbl="ScalarCustFld6D";
+         break;
+      case 'U' :
+         plbl="VectorCustFld6D";
+         break;
+      default:
+         plbl="Unknown6DFld";
+         break;
+   }
+   return plbl;
+}
+inline string GetField6DTypeKeyLong(const char prop) {
+   string plbl="";
+   switch (prop) {
+      case 'g':
+         plbl="Density Matrix of order 1";
+         break;
+      case 'G':
+         plbl="Density matrix of order 1 in momentum space";
+         break;
+      case 'h' :
+         plbl="Spin-dependent density matrix of order 1";
+         break;
+      case 'H' :
+         plbl="Spin-dependent density matrix of order 1 in momentum space";
+         break;
+      case 'p' :
+         plbl="Pair density function";
+         break;
+      case 'P' :
+         plbl="Pair density function in momentum space";
+         break;
+      case 'q' :
+         plbl="Spin-dependent pair density function";
+         break;
+      case 'Q' :
+         plbl="Spin-dependent pair density function in momentum space";
+         break;
+      case 'u' :
+         plbl="Scalar custom field 6D";
+         break;
+      case 'U' :
+         plbl="Vector custom field 6D";
+         break;
+      default:
+         plbl="Unknown 6D field";
+         break;
+   }
+   return plbl;
+}
+inline string GnuplotField6DTitle(const char prop) {
+   string plbl="";
+   switch (prop) {
+      case 'g':
+         plbl="{/Symbol G}_1";
+         break;
+      case 'G':
+         plbl="{/Symbol P}_1";
+         break;
+      case 'h' :
+         plbl="{/Symbol G}_1^{/Symbol s}";
+         break;
+      case 'H' :
+         plbl="{/Symbol P}_1^{/Symbol s}";
+         break;
+      case 'p' :
+         plbl="{/Symbol r}_2";
+         break;
+      case 'P' :
+         plbl="{/Symbol p}_2";
+         break;
+      case 'q' :
+         plbl="{/Symbol r}_2^{/Symbol s}";
+         break;
+      case 'Q' :
+         plbl="{/Symbol p}_2^{/Symbol s}";
+         break;
+      case 'u' :
+         plbl=string("S.C.F. 6D");
+         break;
+      case 'U' :
+         plbl=string("V.C.F. 6D");
+         break;
+      default:
+         plbl="Unknown 6D Field";
+         break;
+   }
+   return plbl;
 }
 #endif//_FLDTYPESDEF_H_
 
