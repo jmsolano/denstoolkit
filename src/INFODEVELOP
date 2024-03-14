@@ -57,6 +57,9 @@ Implement the respective functions to include the new field in
    ---> dtkpropcpsoniso
            ---> optflags (help menu, add char to charFields)
    ---> dtkmapfieldonisosurf (Fields such as DORI are color-mapped with Lambda.)
+           ---> optflags (help menu, add char to charFields)
+   ---> dtkinfomeasure
+           ---> optflags (help menu, add char to charFields)
    
 
 Make the proper changes in the correspoding files:
