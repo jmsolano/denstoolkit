@@ -922,7 +922,7 @@ If the wave function has pseudopotentials \textbf{and} the pseudopotential is cl
 %
 
 %----------------------------------------------------------------------------------------------
-\section{Density matrix of order 1 in momentum space}
+\section{{\color{red}Density matrix of order 1 in momentum space}}
 %----------------------------------------------------------------------------------------------
 Reserved for future versions\dots
 
@@ -944,7 +944,7 @@ is an electron with any spin around $\vr_2$.
 
 For \textbf{closed-shell systems}, we have:
 %
-\begin{equation}
+\begin{equation}\label{eq:gamma1ab4css}
 	\Gamma_1^{\alpha}(\vr,\vr')=\Gamma_1^{\beta}(\vr,\vr')=
 	\frac{1}{2}\Gamma_1(\vr,\vr'),
 \end{equation}
@@ -955,7 +955,8 @@ hence
 	\rho_2(\vr_1,\vr_2) & = & \frac{1}{2}\rho(\vr_1)\rho(\vr_2)
 	-\frac{1}{4}\big[\Gamma_1(\vr_1,\vr_2)\Gamma_1(\vr_2,\vr_1)\big]\\
 	& = & \frac{1}{2}\rho(\vr_1)\rho(\vr_2)
-	-\frac{1}{4}\big[\Gamma_1(\vr_1,\vr_2)\big]^2
+	-\frac{1}{4}\big[\Gamma_1(\vr_1,\vr_2)\big]^2%
+	\label{eq:rho2r1r2css}
 \end{eqnarray}
 %
 
@@ -1003,9 +1004,19 @@ We can now define the spinless pair density function of an open-shell system, wh
 	+\rho_2^{\beta\alpha}(\vr_1,\vr_2)+\rho_2^{\beta\beta}(\vr_1,\vr_2).
 \end{equation}
 %
+It is straightforward to show that the last equation can be reduced to:
+%
+\begin{equation}\label{eq:rho2r1r2oss}
+	\rho_2(\vr_1,\vr_2)=\frac{1}{2}\left\{\rho(\vr_1)\rho(\vr_2)-\left[\Gamma_1^{\alpha}(\vr_1,\vr_2)\right]^2
+	                                         -\left[\Gamma_1^{\beta}(\vr_1,\vr_2)\right]^2\right\}.
+\end{equation}
+%
+Furthermore, if we consider closed-shell systems and substitue Eq.~(\ref{eq:gamma1ab4css})
+into Eq.~(\ref{eq:rho2r1r2oss}), we
+recover Eq.~(\ref{eq:rho2r1r2css}).
 
 %----------------------------------------------------------------------------------------------
-\section{Pair density in momentum space}
+\section{{\color{red}Pair density in momentum space}}
 %----------------------------------------------------------------------------------------------
 
 Reserved for later\dots
