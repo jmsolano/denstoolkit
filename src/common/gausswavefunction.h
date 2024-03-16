@@ -593,9 +593,9 @@ public:
 protected:
 /* ************************************************************************************ */
    static int prTy[MAXPRIMTYPEDEFINED*3];
-   bool usescustfld,usevcustfld;
-   int maxPrimType;
    static bool prntHermiCoeffWrn;
+   int maxPrimType;
+   bool usescustfld,usevcustfld;
 /* ************************************************************************************ */
 };
 /* *********************************************************************************** */
