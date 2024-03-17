@@ -957,6 +957,8 @@ double GaussWaveFunction::EvalDensity(double x,double y,double z) {
          rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
          //cout << "pc: " << primCent[i] << ", rr: " << rr << endl;
          chi[i]=EvalAngACases(primType[i],xmr,ymr,zmr);
+         // Notice primExp[i] is beta=2*alpha, thus chi[i] is
+         // actually $\phi_{\bar{A}}^2(\vector r)$
          chi[i]*=exp(primExp[i]*rr);
       }
       chib=0.0e0;
@@ -4478,6 +4480,7 @@ double GaussWaveFunction::EvalFTKineticEnergy(double px,double py,double pz) {
 }
 double GaussWaveFunction::EvalDensityMatrix1(double x,double y,double z,
       double xp,double yp,double zp) {
+   /*
    int indr,indp;
    double xmr,ymr,zmr,gamm,chib;
    gamm=0.000000e0;
@@ -4540,6 +4543,61 @@ double GaussWaveFunction::EvalDensityMatrix1(double x,double y,double z,
          gamm+=(EDFCoeff[i-nPri]*chi[i]*gx[i]);
       }
    }
+   return gamm;
+   // */
+   double x1mr,y1mr,z1mr,x2mr,y2mr,z2mr;
+   double rr1,rr2;
+   int indr=0,indp=0;
+   for (int i=0; i<nNuc; i++) {
+      x1mr=x-R[indr]; x2mr=xp-R[indr]; ++indr;
+      y1mr=y-R[indr]; y2mr=yp-R[indr]; ++indr;
+      z1mr=z-R[indr]; z2mr=zp-R[indr]; ++indr;
+      rr1=-((x1mr*x1mr)+(y1mr*y1mr)+(z1mr*z1mr));
+      rr2=-((x2mr*x2mr)+(y2mr*y2mr)+(z2mr*z2mr));
+      for (int j=0; j<myPN[i]; j++) {
+         chi[indp]=EvalAngACases(primType[indp],x1mr,y1mr,z1mr);
+         chi[indp]*=exp(primExp[indp]*rr1);
+         gx[indp]=EvalAngACases(primType[indp],x2mr,y2mr,z2mr);
+         gx[indp]*=exp(primExp[indp]*rr2);
+         indp++;
+      }
+   }
+   double gamm=0.0e0,chib=0.e0;
+   int lowPri=nPri-(nPri%4);
+   indr=-1;
+   for ( int i=0 ; i<nPri ; ++i ) {
+      chib=0.0e0;
+      for ( int j=0 ; j<lowPri ; j+=4 ) {
+         chib+=(cab[++indr]*chi[j+0]);
+         chib+=(cab[++indr]*chi[j+1]);
+         chib+=(cab[++indr]*chi[j+2]);
+         chib+=(cab[++indr]*chi[j+3]);
+      }
+      for ( int j=lowPri ; j<nPri ; ++j ) {
+         chib+=(cab[++indr]*chi[j]);
+      }
+      gamm+=chib*gx[i];
+   }
+   if ( !ihaveEDF ) { return gamm; }
+   for ( int i=nPri ; i<totPri ; ++i ) {
+      indr=3*(primCent[i]);
+      x1mr=x-R[indr+0]; y1mr=y-R[indr+1]; z1mr=z-R[indr+2];
+      rr1=-((x1mr*x1mr)+(y1mr*y1mr)+(z1mr*z1mr));
+      chi[i]=EvalAngACases(primType[i],x1mr,y1mr,z1mr);
+      // Notice that we need to use the exponent alpha, not beta=2alpha
+      // since we must combine phi(r1) and phi(r2), as opposed
+      // to have always phi(r)^2 (as in evaluating rho).
+      chi[i]*=exp(0.5e0*primExp[i]*rr1);
+      x2mr=xp-R[indr+0]; y2mr=yp-R[indr+1]; z2mr=zp-R[indr+2];
+      rr2=-((x2mr*x2mr)+(y2mr*y2mr)+(z2mr*z2mr));
+      gx[i]=EvalAngACases(primType[i],x2mr,y2mr,z2mr);
+      gx[i]*=exp(0.5e0*primExp[i]*rr2);
+   }
+   chib=0.0e0;
+   for (int i=nPri; i<totPri; ++i) {
+      chib+=(EDFCoeff[i-nPri]*chi[i]*gx[i]);
+   }
+   gamm+=chib;
    return gamm;
 }
 void GaussWaveFunction::EvalGradDensityMatrix1(double x,double y,double z,\
@@ -4798,71 +4856,217 @@ double GaussWaveFunction::EvalLapDensityMatrix1(double (&xx)[3],double (&xxp)[3]
 }
 double GaussWaveFunction::EvalGeneralDensityMatrix1(const double x,const double y,const double z,\
       const double xp,const double yp,const double zp,const bool singlespin,double *cabs) {
-   int indr,indp;
-   double xmr,ymr,zmr,gamm,chib;
-   gamm=0.000000e0;
-   double rr;
-   indr=0;
-   indp=0;
+   double x1mr,y1mr,z1mr,x2mr,y2mr,z2mr;
+   double rr1,rr2;
+   int indr=0,indp=0;
    for (int i=0; i<nNuc; i++) {
-      xmr=x-R[indr++];
-      ymr=y-R[indr++];
-      zmr=z-R[indr++];
-      rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+      x1mr=x-R[indr]; x2mr=xp-R[indr]; ++indr;
+      y1mr=y-R[indr]; y2mr=yp-R[indr]; ++indr;
+      z1mr=z-R[indr]; z2mr=zp-R[indr]; ++indr;
+      rr1=-((x1mr*x1mr)+(y1mr*y1mr)+(z1mr*z1mr));
+      rr2=-((x2mr*x2mr)+(y2mr*y2mr)+(z2mr*z2mr));
       for (int j=0; j<myPN[i]; j++) {
-         chi[indp]=EvalAngACases(primType[indp],xmr,ymr,zmr);
-         chi[indp]*=exp(primExp[indp]*rr);
+         chi[indp]=EvalAngACases(primType[indp],x1mr,y1mr,z1mr);
+         chi[indp]*=exp(primExp[indp]*rr1);
+         gx[indp]=EvalAngACases(primType[indp],x2mr,y2mr,z2mr);
+         gx[indp]*=exp(primExp[indp]*rr2);
          indp++;
       }
    }
-   indr=0;
    indp=0;
-   for (int i=0; i<nNuc; i++) {
-      xmr=xp-R[indr++];
-      ymr=yp-R[indr++];
-      zmr=zp-R[indr++];
-      rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
-      for (int j=0; j<myPN[i]; j++) {
-         gx[indp]=EvalAngACases(primType[indp],xmr,ymr,zmr);
-         gx[indp]*=exp(primExp[indp]*rr);
-         indp++;
+   double gamm=0.0e0,chib=0.e0;
+   int lowPri=nPri-(nPri%4);
+   indr=-1;
+   for ( int i=0 ; i<nPri ; ++i ) {
+      chib=0.0e0;
+      for ( int j=0 ; j<lowPri ; j+=4 ) {
+         chib+=(cabs[++indr]*chi[j+0]);
+         chib+=(cabs[++indr]*chi[j+1]);
+         chib+=(cabs[++indr]*chi[j+2]);
+         chib+=(cabs[++indr]*chi[j+3]);
       }
+      for ( int j=lowPri ; j<nPri ; ++j ) {
+         chib+=(cabs[++indr]*chi[j]);
+      }
+      gamm+=chib*gx[i];
    }
-   double snglspnfact=1.0e0;
-   if ( singlespin ) { snglspnfact=0.5e0; }
-   indp=0;
-   gamm=0.0000000e0;
-   for (int i=0; i<nPri; i++) {
-      chib=0.0000000e0;
-      for (int j=0; j<nPri; j++) {
-         chib+=(chi[j]*cabs[indp++]);
-      }
-      gamm+=(chib*gx[i]);
+   if ( !ihaveEDF ) { return gamm; }
+   for ( int i=nPri ; i<totPri ; ++i ) {
+      indr=3*(primCent[i]);
+      x1mr=x-R[indr+0]; y1mr=y-R[indr+1]; z1mr=z-R[indr+2];
+      rr1=-((x1mr*x1mr)+(y1mr*y1mr)+(z1mr*z1mr));
+      chi[i]=EvalAngACases(primType[i],x1mr,y1mr,z1mr);
+      // Notice that we need to use the exponent alpha, not beta=2alpha
+      // since we must combine phi(r1) and phi(r2), as opposed
+      // to have always phi(r)^2 (as in evaluating rho).
+      chi[i]*=exp(0.5e0*primExp[i]*rr1);
+      x2mr=xp-R[indr+0]; y2mr=yp-R[indr+1]; z2mr=zp-R[indr+2];
+      rr2=-((x2mr*x2mr)+(y2mr*y2mr)+(z2mr*z2mr));
+      gx[i]=EvalAngACases(primType[i],x2mr,y2mr,z2mr);
+      gx[i]*=exp(0.5e0*primExp[i]*rr2);
    }
-   if ( ihaveEDF ) {
-      for ( int i=nPri ; i<totPri ; ++i ) {
-         indr=3*(primCent[i]);
-         xmr=x-R[indr];
-         ymr=y-R[indr+1];
-         zmr=z-R[indr+2];
-         rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
-         chi[i]=EvalAngACases(primType[i],xmr,ymr,zmr);
-         chi[i]*=exp(0.5e0*primExp[i]*rr);
-      }
-      for ( int i=nPri ; i<totPri ; ++i ) {
-         indr=3*(primCent[i]);
-         xmr=xp-R[indr];
-         ymr=yp-R[indr+1];
-         zmr=zp-R[indr+2];
-         rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
-         gx[i]=EvalAngACases(primType[i],xmr,ymr,zmr);
-         gx[i]*=exp(0.5e0*primExp[i]*rr);
-      }
-      for (int i=nPri; i<totPri; ++i) {
-         gamm+=(snglspnfact*EDFCoeff[i-nPri]*chi[i]*gx[i]);
-      }
+   double snglspnfact=( singlespin ? 0.5e0 : 1.0e0);
+   for (int i=nPri; i<totPri; ++i) {
+      gamm+=(snglspnfact*EDFCoeff[i-nPri]*chi[i]*gx[i]);
    }
    return gamm;
+}
+double GaussWaveFunction::EvalRho2ClosedShell(const double x1,const double y1,const double z1,\
+         const double x2,const double y2,const double z2) {
+   double x1mr,y1mr,z1mr,x2mr,y2mr,z2mr;
+   double rr1,rr2;
+   int indr=0,indp=0;
+   for (int i=0; i<nNuc; i++) {
+      x1mr=x1-R[indr]; x2mr=x2-R[indr]; ++indr;
+      y1mr=y1-R[indr]; y2mr=y2-R[indr]; ++indr;
+      z1mr=z1-R[indr]; z2mr=z2-R[indr]; ++indr;
+      rr1=-((x1mr*x1mr)+(y1mr*y1mr)+(z1mr*z1mr));
+      rr2=-((x2mr*x2mr)+(y2mr*y2mr)+(z2mr*z2mr));
+      for (int j=0; j<myPN[i]; j++) {
+         chi[indp]=EvalAngACases(primType[indp],x1mr,y1mr,z1mr);
+         chi[indp]*=exp(primExp[indp]*rr1);
+         gx[indp]=EvalAngACases(primType[indp],x2mr,y2mr,z2mr);
+         gx[indp]*=exp(primExp[indp]*rr2);
+         indp++;
+      }
+   }
+   int lowPri=nPri-(nPri%4);
+   double rho1=0.0e0,rho2=0.0e0,gama=0.0e0;
+   double chib1=0.0e0,chib2=0.0e0,chiba=0.0e0,chibb=0.0e0;
+   indr=0;
+   for ( int i=0 ; i<nPri ; ++i ) {
+      chib1=0.0e0; chib2=0.0e0;
+      for ( int j=0 ; j<lowPri ; j+=4 ) {
+         chib2+=(cab[indr+0]*gx[j+0]);
+         chib2+=(cab[indr+1]*gx[j+1]);
+         chib2+=(cab[indr+2]*gx[j+2]);
+         chib2+=(cab[indr+3]*gx[j+3]);
+         chib1+=(cab[indr+0]*chi[j+0]);
+         chib1+=(cab[indr+1]*chi[j+1]);
+         chib1+=(cab[indr+2]*chi[j+2]);
+         chib1+=(cab[indr+3]*chi[j+3]);
+         indr+=4;
+      }
+      for ( int j=lowPri ; j<nPri ; ++j ) {
+         chib2+=(cab[indr]*gx[j]);
+         chib1+=(cab[indr]*chi[j]);
+         ++indr;
+      }
+      rho1+=chib1*chi[i];
+      gama+=chib1*gx[i];
+      rho2+=chib2*gx[i];
+   }
+   if ( !ihaveEDF ) { return (0.5e0*(rho1*rho2-0.5e0*gama*gama)); }
+   for ( int i=nPri ; i<totPri ; ++i ) {
+      indr=3*(primCent[i]);
+      x1mr=x1-R[indr+0]; y1mr=y1-R[indr+1]; z1mr=z1-R[indr+2];
+      rr1=-((x1mr*x1mr)+(y1mr*y1mr)+(z1mr*z1mr));
+      chi[i]=EvalAngACases(primType[i],x1mr,y1mr,z1mr);
+      // Notice that we need to use the exponent alpha, not beta=2alpha
+      // since we must combine phi(r1) and phi(r2), as opposed
+      // to have always phi(r)^2 (as in evaluating rho).
+      chi[i]*=exp(0.5e0*primExp[i]*rr1);
+      x2mr=x2-R[indr+0]; y2mr=y2-R[indr+1]; z2mr=z2-R[indr+2];
+      rr2=-((x2mr*x2mr)+(y2mr*y2mr)+(z2mr*z2mr));
+      gx[i]=EvalAngACases(primType[i],x2mr,y2mr,z2mr);
+      gx[i]*=exp(0.5e0*primExp[i]*rr2);
+   }
+   chib1=0.0e0,chib2=0.0e0,chiba=0.0e0;
+   for (int i=nPri; i<totPri; ++i) {
+      chibb=EDFCoeff[i-nPri];
+      chib1+=(chibb*chi[i]*chi[i]);
+      chiba+=(chibb*chi[i]*gx[i]);
+      chib2+=(chibb*gx[i]*gx[i]);
+   }
+   rho1+=chib1;
+   rho2+=chib2;
+   gama+=(0.5e0*chiba);
+   return (0.5e0*(rho1*rho2-0.5e0*gama*gama));
+}
+double GaussWaveFunction::EvalRho2OpenShell(const double x1,const double y1,const double z1,\
+         const double x2,const double y2,const double z2) {
+   double x1mr,y1mr,z1mr,x2mr,y2mr,z2mr;
+   double rr1,rr2;
+   int indr=0,indp=0;
+   for (int i=0; i<nNuc; i++) {
+      x1mr=x1-R[indr]; x2mr=x2-R[indr]; ++indr;
+      y1mr=y1-R[indr]; y2mr=y2-R[indr]; ++indr;
+      z1mr=z1-R[indr]; z2mr=z2-R[indr]; ++indr;
+      rr1=-((x1mr*x1mr)+(y1mr*y1mr)+(z1mr*z1mr));
+      rr2=-((x2mr*x2mr)+(y2mr*y2mr)+(z2mr*z2mr));
+      for (int j=0; j<myPN[i]; j++) {
+         chi[indp]=EvalAngACases(primType[indp],x1mr,y1mr,z1mr);
+         chi[indp]*=exp(primExp[indp]*rr1);
+         gx[indp]=EvalAngACases(primType[indp],x2mr,y2mr,z2mr);
+         gx[indp]*=exp(primExp[indp]*rr2);
+         indp++;
+      }
+   }
+   int lowPri=nPri-(nPri%4);
+   double rho1=0.0e0,rho2=0.0e0,gama=0.0e0,gamb=0.0e0;
+   double chib1=0.0e0,chib2=0.0e0,chiba=0.0e0,chibb=0.0e0;
+   indr=0;
+   for ( int i=0 ; i<nPri ; ++i ) {
+      chib1=0.0e0; chib2=0.0e0;
+      chiba=0.0e0; chibb=0.0e0;
+      for ( int j=0 ; j<lowPri ; j+=4 ) {
+         chib2+=(cab[indr+0]*gx[j+0]);
+         chib2+=(cab[indr+1]*gx[j+1]);
+         chib2+=(cab[indr+2]*gx[j+2]);
+         chib2+=(cab[indr+3]*gx[j+3]);
+         chib1+=(cab[indr+0]*chi[j+0]);
+         chib1+=(cab[indr+1]*chi[j+1]);
+         chib1+=(cab[indr+2]*chi[j+2]);
+         chib1+=(cab[indr+3]*chi[j+3]);
+         chiba+=(cabA[indr+0]*chi[j+0]);
+         chiba+=(cabA[indr+1]*chi[j+1]);
+         chiba+=(cabA[indr+2]*chi[j+2]);
+         chiba+=(cabA[indr+3]*chi[j+3]);
+         chibb+=(cabB[indr+0]*chi[j+0]);
+         chibb+=(cabB[indr+1]*chi[j+1]);
+         chibb+=(cabB[indr+2]*chi[j+2]);
+         chibb+=(cabB[indr+3]*chi[j+3]);
+         indr+=4;
+      }
+      for ( int j=lowPri ; j<nPri ; ++j ) {
+         chib2+=(cab[indr]*gx[j]);
+         chib1+=(cab[indr]*chi[j]);
+         chiba+=(cabA[indr]*chi[j]);
+         chibb+=(cabB[indr]*chi[j]);
+         ++indr;
+      }
+      rho1+=chib1*chi[i];
+      rho2+=chib2*gx[i];
+      gama+=chiba*gx[i];
+      gamb+=chibb*gx[i];
+   }
+   if ( !ihaveEDF ) { return (0.5e0*(rho1*rho2-gama*gama-gamb*gamb)); }
+   for ( int i=nPri ; i<totPri ; ++i ) {
+      indr=3*(primCent[i]);
+      x1mr=x1-R[indr+0]; y1mr=y1-R[indr+1]; z1mr=z1-R[indr+2];
+      rr1=-((x1mr*x1mr)+(y1mr*y1mr)+(z1mr*z1mr));
+      chi[i]=EvalAngACases(primType[i],x1mr,y1mr,z1mr);
+      // Notice that we need to use the exponent alpha, not beta=2alpha
+      // since we must combine phi(r1) and phi(r2), as opposed
+      // to have always phi(r)^2 (as in evaluating rho).
+      chi[i]*=exp(0.5e0*primExp[i]*rr1);
+      x2mr=x2-R[indr+0]; y2mr=y2-R[indr+1]; z2mr=z2-R[indr+2];
+      rr2=-((x2mr*x2mr)+(y2mr*y2mr)+(z2mr*z2mr));
+      gx[i]=EvalAngACases(primType[i],x2mr,y2mr,z2mr);
+      gx[i]*=exp(0.5e0*primExp[i]*rr2);
+   }
+   chib1=0.0e0,chib2=0.0e0,chiba=0.0e0;
+   for (int i=nPri; i<totPri; ++i) {
+      chibb=EDFCoeff[i-nPri];
+      chib1+=(chibb*chi[i]*chi[i]);
+      chiba+=(chibb*chi[i]*gx[i]);
+      chib2+=(chibb*gx[i]*gx[i]);
+   }
+   rho1+=chib1;
+   rho2+=chib2;
+   gama+=(0.5e0*chiba);
+   gamb+=(0.5e0*chiba);
+   return (0.5e0*(rho1*rho2-gama*gama-gamb*gamb));
 }
 void GaussWaveFunction::EvalHermiteCoefs(int (&aia)[3],int (&aib)[3],double &alpab,
       double (&ra)[3],double (&rb)[3],

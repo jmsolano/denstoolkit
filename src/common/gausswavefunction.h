@@ -285,7 +285,7 @@ public:
      (see notes ******* for notation details.) */
    void CalcCab(void);
    /** This function calculates the values of the single-spn-density matrices
-    * \f$C_{\dot{A}\dot{B}}^{\alpha}\f$ and \f$C_{\dot{A}\dot{B}}^{\beta}\f$
+     \f$C_{\dot{A}\dot{B}}^{\alpha}\f$ and \f$C_{\dot{A}\dot{B}}^{\beta}\f$
      (see notes ******* for notation details.) */
    void CalcCabAAndCabB(void);
    /** This function will write the wave function into a wfx file which name is outname. */
@@ -374,10 +374,10 @@ public:
      (\phi_{\dot{A}}\nabla^2\phi_{\dot{B}}+\phi_{\dot{B}}\nabla^2\phi_{\dot{A}})\f$ */
    double EvalKineticEnergyK(double x,double y,double z);
    /** Returns the ellipticity at the point (x,y,z). The ellipticity is defined as
-    * \f$\varepsilon(\vec x)=\frac{\lambda_1}{\lambda_2}-1\f$. Here \f$\lambda_1\ (\lambda_2)\f$
-    * is the first (second) Hessian eigenvalue. See 
-    * Chem. Phys. Lett., 143 (1988) 450 - 458 for an example of how to use
-    * ellipticyt profiles. */
+      \f$\varepsilon(\vec x)=\frac{\lambda_1}{\lambda_2}-1\f$. Here \f$\lambda_1\ (\lambda_2)\f$
+      is the first (second) Hessian eigenvalue. See 
+      Chem. Phys. Lett., 143 (1988) 450 - 458 for an example of how to use
+      ellipticyt profiles. */
    double EvalEllipticity(double x,double y,double z);
    /** This function seeks for a Bond Critical Point. The integers ii and jj are used to set
       \f$\vec{x}_0=\frac{1}{2}(\vec{R}_i+\vec{R}_j)\f$. The final values of the search are 
@@ -432,11 +432,11 @@ public:
    void Evald3SingCartA(int &ang,double &t,double &f,double &x,double &x2,
                       double &d0,double &d1,double &d2,double &d3);
    /** This function returns the third derivatives of the angular factors for evaluating
-     the third derivatives of the primitives. Since these derivatives are usually
-     needed when computing the derivatives of the electron density, the function
-     also evaluates the zero-th (angular factor), first, second, and third derivative
-     factors of the primitives. The final derivatives of the primitives are
-     obtained by multiplying the components of di times \f$\exp(-r^2\alpha)\f$.  */
+      the third derivatives of the primitives. Since these derivatives are usually
+      needed when computing the derivatives of the electron density, the function
+      also evaluates the zero-th (angular factor), first, second, and third derivative
+      factors of the primitives. The final derivatives of the primitives are
+      obtained by multiplying the components of di times \f$\exp(-r^2\alpha)\f$.  */
    void Evald3Ang(int (&a)[3],double &alp,double (&x)[3],double (&x2)[3],
                   double (&d0)[3],double (&d1)[3],double (&d2)[3],double (&d3)[3]);
    void Evald4SingCartA(int &ang,double &t,double &f,double &x,double &x2,
@@ -451,15 +451,15 @@ public:
                   double (&d0)[3],double (&d1)[3],double (&d2)[3],double (&d3)[3],
                   double (&d4)[3]);
    /* This function evaluates \f$\nabla^2\rho(x,y,z)\f$. It is implemented in order to
-    * test EvalDkDlAngCases(...)  */
-   //double EvalLapRhoUsingd2(double x,double y,double z);
+    test EvalDkDlAngCases(...)  */
+    //double EvalLapRhoUsingd2(double x,double y,double z);
    /* void EvalDkDlAngCases(int &pty,double alp,double x,double y,double z,
     double &axx,double &ayy,double &azz,double &axy,double &axz,double &ayz); */
    void EvalDiDjDkChi(int &pty,double &alp,double x,double y,double z,\
                       double (&dlm)[3][3],double (&dijk)[3][3][3]);
    /** Evaluates the Hessian of LOL (dxx,dyy,dzz,dxy,dxz,dyz). 
-    * On the fly, it evaluates the electron density (dens),
-    * the kinetic energy G (keG, LOL (lol), and the gradient of LOL (dx,dy,dz).  */
+     On the fly, it evaluates the electron density (dens),
+     the kinetic energy G (keG, LOL (lol), and the gradient of LOL (dx,dy,dz).  */
    void EvalHessLOL(double x, double y, double z, double &dens,double &keG, double &lol,
          double &ddx, double &ddy, double &ddz,
          double &dxx, double &dyy, double &dzz,
@@ -479,39 +479,39 @@ public:
    void EvalFTChi(int &pty,double &alp,double (&Rx)[3],double px,double py,double pz,
                       complex<double> &phi);
    /** This function computes the Fourier Transform of the electron density. <em>i.e.</em>
-    * the momentum-space electron density.  */
+      the momentum-space electron density.  */
    double EvalFTDensity(double px,double py,double pz);
    /** This function computes the Kinetic energy density K in momentum space.  */
    double EvalFTKineticEnergy(double px,double py,double pz);
    /** This function evaluates the Density Matrix of Order 1 at the points
-    * \f$(x,y,z)\f$ and \f$(xp,yp,zp)\f$  */
+      \f$(x,y,z)\f$ and \f$(xp,yp,zp)\f$  */
    double EvalDensityMatrix1(double x,double y,double z,double xp,double yp,double zp);
    /** This function evaluates the gradients of the Density Matrix of order 1, with
-    * respect to the primed and non-primed variables.  */
+      respect to the primed and non-primed variables.  */
    void EvalGradDensityMatrix1(double x,double y,double z,\
          double xp,double yp,double zp,\
          double &gamm,double (&gg)[3],double (&gp)[3]);
    /** This function computes the Hessian of the Density Matrix of Order 1 (second
-    * derivatives), with respect to the primed, non-primed and combined cases.
-    * xx is the non primed evaluation point, xxp is the primed evaluation point,
-    * gamm is Gamma, gg is GradGamma, gp is Grad'gamma, hh is \$f\partial_i\partial_jGamma\$f,
-    * hph is \$f\partial_i\{partial'}_jGamma\$f, and hp is
-    * \$f{\partial'}_i{\partial'}_jGamma\$f.
-    * Check DeMat1CriticalPointNetworkBP::AssignHessian6D for more details. */
+     derivatives), with respect to the primed, non-primed and combined cases.
+     xx is the non primed evaluation point, xxp is the primed evaluation point,
+     gamm is Gamma, gg is GradGamma, gp is Grad'gamma, hh is \$f\partial_i\partial_jGamma\$f,
+     hph is \$f\partial_i\{partial'}_jGamma\$f, and hp is
+     \$f{\partial'}_i{\partial'}_jGamma\$f.
+     Check DeMat1CriticalPointNetworkBP::AssignHessian6D for more details. */
    void EvalHessDensityMatrix1(double (&xx)[3],double (&xxp)[3],\
          double &gamm,double (&gg)[3],double (&gp)[3],\
          double (&hh)[3][3],double (&hph)[3][3],double (&hp)[3][3]);
    double EvalLapDensityMatrix1(double (&xx)[3],double (&xxp)[3]);
    /** This function evaluates the generalized Density Matrix of Order 1 at the points
-    * \f$(x,y,z)\f$ and \f$(xp,yp,zp)\f$. Here by generalized it is to be understood that
-    * the wavefunction may or not be open-shell. Therefore, the function requires
-    * the matrix \f$c_{\dot{A}\dot{B}}\f$ to be passed as an argument as well as
-    * a bool singlespin. If singlespin==true, then the correction stemming from
-    * pseudopotentials will be applied (for single-spin \f$\Gamma_1^{\sigma}\f$,
-    * the pseudo-potential is half the contribution for closed-shell systems).
-    * Notice that this function does not check whether the cabs pointer is valid,
-    * this check must be done at a far higher level
-    * (when loading the wavefunction). */
+     \f$(x,y,z)\f$ and \f$(xp,yp,zp)\f$. Here by generalized it is to be understood that
+     the wavefunction may or not be open-shell. Therefore, the function requires
+     the matrix \f$c_{\dot{A}\dot{B}}\f$ to be passed as an argument as well as
+     a bool singlespin. If singlespin==true, then the correction stemming from
+     pseudopotentials will be applied (for single-spin \f$\Gamma_1^{\sigma}\f$,
+     the pseudo-potential is half the contribution for closed-shell systems).
+     Notice that this function does not check whether the cabs pointer is valid,
+     this check must be done at a far higher level
+     (when loading the wavefunction). */
    double EvalGeneralDensityMatrix1(const double x,const double y,const double z,\
          const double xp,const double yp,const double zp,const bool singlespin,double *cabs);
    /** Returns the \f$\Gamma_1^{\alpha}(x,y,z,x',y',z')\f$  */
@@ -524,10 +524,24 @@ public:
          const double xp,const double yp,const double zp) {
       return EvalGeneralDensityMatrix1(x,y,z,xp,yp,zp,true,cabB);
    }
+   /** Returns the spinless pair density function,
+     \f$\rho_2(\vector{r}_1,\vector{r}_2)\f$,
+     evaluated at the points \f$\vector{r}_1=(x_1,y_1,z_1)\f$ and
+     \f$\vector{r}_2=(x_2,y_2,z_2)\f$, of a closed-shell
+     system.   */
+   double EvalRho2ClosedShell(const double x1,const double y1,const double z1,\
+         const double x2,const double y2,const double z2);
+   /** Returns the spinless pair density function,
+     \f$\rho_2(\vector{r}_1,\vector{r}_2)\f$,
+     evaluated at the points \f$\vector{r}_1=(x_1,y_1,z_1)\f$ and
+     \f$\vector{r}_2=(x_2,y_2,z_2)\f$, of an open-shell
+     system.   */
+   double EvalRho2OpenShell(const double x1,const double y1,const double z1,\
+         const double x2,const double y2,const double z2);
    /** This function evaluates the magnitude of the grandient of LOL.  */
    double EvalMagGradLOL(double x,double y,double z);
    /** This function returns the Molecular Electrostatic Potential (MEP) at the
-    * point (x,y,z).  */
+      point (x,y,z).  */
    double EvalMolElecPot(double x,double y,double z);
    void EvalHermiteCoefs(int (&aia)[3],int (&aib)[3],double &alpab,
                          double (&ra)[3],double (&rb)[3],
@@ -542,50 +556,50 @@ public:
    double EvalOverlapIntegralAB(int (&aa)[3],int (&ab)[3],double &alpa,double &alpb,
                          double (&ra)[3],double (&rb)[3]);
    /** This function returns the integral of the electron density. It uses the analytical
-    * properties of the Gauss-type orbital basis.  */
+      properties of the Gauss-type orbital basis.  */
    double IntegralRho(void);
    /** This function returns the sum of the total number of protons of the molecule.  */
    double TotalNuclearCharge(void);
    /** This function evaluates the Localized Electrons Detector vector (led) at the
-    * point x. For the definition, see H. J. Boh\'orquez, C. F. Matta, and R. J. Boyd,
-    * Int. Jour. Quantum Chem., 110 (2010) 2418--2425. The field is defined as
-    * \f$\tilde{\boldsymbol P}=\frac{\nabla\rho}{2\rho}\f$.  */
+      point x. For the definition, see H. J. Boh\'orquez, C. F. Matta, and R. J. Boyd,
+      Int. Jour. Quantum Chem., 110 (2010) 2418--2425. The field is defined as
+      \f$\tilde{\boldsymbol P}=\frac{\nabla\rho}{2\rho}\f$.  */
    void EvalLED(double const (&x)[3],double (&led)[3]);
    /** This function returns the magnitude of the vector LED.
-    * See the dtk-manual for more details.  */
+      See the dtk-manual for more details.  */
    double EvalMagLED(double x,double y,double z);
    /** This function returns the Reduced Density Gradient at the point (x,y,z).
-    * See the dtk-manual for more details. */
+      See the dtk-manual for more details. */
    double EvalReducedDensityGradient(double x,double y,double z);
    void EvalGradReducedDensityGradient(double x,double y,double z,double (&gs)[3]);
    /** This function computes the Region of Slow Electron index at the point
     * (x,y,z). See the dtk-manual for more details. */
    double EvalRoSE(double x,double y,double z);
    /** This function is left to the final user for implementing its own custom 
-    * scalar field.  */
+      scalar field.  */
    double EvalCustomScalarField(double x,double y,double z);
    /** This function is left to the final user for implementing its own custom 
-    * vector field.  */
+      vector field.  */
    void EvalCustomVectorField(double x,double y,double z,double (&v)[3]);
    void UseScalarCustomField(bool ucf) {usescustfld=ucf;}
    void UseVectorCustomField(bool ucf) {usevcustfld=ucf;}
    /** This function returns the Potential Energy Density at the point (x,y,z)
-    * This field is taken from: "Hydrogen bond strengths revealed by topological
-    * analyses of experimentally observed electron densities",
-    * E. Espinosa, E. Molins, C. Lecomte, Chemical Physics Letters, 285 (1998), 170-173. */
+      This field is taken from: "Hydrogen bond strengths revealed by topological
+      analyses of experimentally observed electron densities",
+      E. Espinosa, E. Molins, C. Lecomte, Chemical Physics Letters, 285 (1998), 170-173. */
    double EvalVirialPotentialEnergyDensity(double x,double y,double z);
    /**The funtion EvalNCIs returns values of Reduced Density Gradient 
-    * applying NCI conditions.
-    * To set the cutoffs, use setNCISMax, setNCIRhoMin, and setNCIRhoMax
-    * See J. Contreras-Garcia, E. R. Johnson, S. Keinan, R. Chaudret, J-P. Piquemal,
-    * D. N. Beratan, and W. Yang. J. Chem. Theory Comput. 2011, 7, pp 625-632
-    * for more details */
+      applying NCI conditions.
+      To set the cutoffs, use setNCISMax, setNCIRhoMin, and setNCIRhoMax
+      See J. Contreras-Garcia, E. R. Johnson, S. Keinan, R. Chaudret, J-P. Piquemal,
+      D. N. Beratan, and W. Yang. J. Chem. Theory Comput. 2011, 7, pp 625-632
+      for more details */
    double EvalNCIs(double x,double y,double z);
    /**Returns rho*sigma (if nciRhoMin<rho<nciRhoMax), where sigma is the second Hessian eigenvalue sign
-    * To set the cutoffs (nciRhoMin and nciRhoMax)), use setNCISMax, setNCIRhoMin, and setNCIRhoMax
-    * See J. Contreras-Garcia, E. R. Johnson, S. Keinan, R. Chaudret, J-P. Piquemal,
-    * D. N. Beratan, and W. Yang. J. Chem. Theory Comput. 2011, 7, pp 625-632
-    * for more details */
+      To set the cutoffs (nciRhoMin and nciRhoMax)), use setNCISMax, setNCIRhoMin, and setNCIRhoMax
+      See J. Contreras-Garcia, E. R. Johnson, S. Keinan, R. Chaudret, J-P. Piquemal,
+      D. N. Beratan, and W. Yang. J. Chem. Theory Comput. 2011, 7, pp 625-632
+      for more details */
    double EvalNCILambda(double x,double y,double z);
    double EvalDORI(double x,double y,double z);
    int GetPrTy(int idx) {return prTy[idx];}
