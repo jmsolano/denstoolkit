@@ -818,7 +818,7 @@ void GaussWaveFunction::CalcCabAAndCabB(void) {
       ihaveCABSingleSpin=false;
       return;
    }
-   cout << "Configuring spin densities... ";
+   //cout << "Configuring spin densities... ";
    int idx,indc;
    if (nPri>MAXNUMBEROFPRIMITIVESFORMEMALLOC) {
       double memest=double(nPri*(nPri+12)*8*2)/double(1024*1024);
@@ -861,7 +861,7 @@ void GaussWaveFunction::CalcCabAAndCabB(void) {
       }
    }
    ihaveCABSingleSpin=true;
-   cout << "Done." << '\n';
+   //cout << "Done." << '\n';
    return;
 }
 #if PARALLELISEDTK
