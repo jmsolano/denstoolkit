@@ -231,10 +231,11 @@ bool HelpersMapFieldOnIsoSurf::MakePovFile(const string &povname,POVRayConfigura
          CommonHelpers::RotateCameraAroundLocCam(pvp,angle);
       }
    }
+   cout << "bn.rView: " << bn.rView << '\n';
    for (int i=0; i<3; i++) {
-      pvp.locCam[i]*=bn.rView*camdist;
+      pvp.locCam[i]*=(2.0*bn.rView*camdist);
       for (int j=0; j<2; j++) {
-         pvp.lightSource[j][i]*=(bn.rView*2.0e0);
+         pvp.lightSource[j][i]*=(bn.rView*2.5e0);
       }
    }
    pvp.inccolors=false;
