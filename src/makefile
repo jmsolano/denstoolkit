@@ -157,7 +157,7 @@ install: all ## Installs the binaries (after compiling). Usually requires sudo m
 		dtkplane -V; dtkcube -V; dtkfindcp -V; dtkmomd -V; dtkproject6dto2d -V; \
 		dtkqdmol -V; dtkbpdens -V; dtkcharcicp -V; dtkintegobondpath -V; \
 		dtkpropcpsoniso -V; dtkmapfieldonisosurf -V; dtkdrawer -V; dtkintegrate -V; \
-          cd $(INSTALL_PATH); ls -1 dtk*2*; ls dtkget*) fi
+          cd $(INSTALL_PATH); ls -1 dtk*2* | grep -v dtkproject6dto2d; ls dtkget*) fi
 	@echo "\033[0m"
 
 .PHONY: doc
