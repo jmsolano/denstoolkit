@@ -154,7 +154,7 @@ install: all ## Installs the binaries (after compiling). Usually requires sudo m
 	@cp scripts/dtk* $(INSTALL_PATH)/
 	@echo "\033[32m\nInstalled programs:\n"
 	@if test -e $(INSTALL_PATH)/dtkpoint; then (dtkpoint -V; dtkline -V; \
-		dtkplane -V; dtkcube -V; dtkfindcp -V; dtkmomd -V; dtkdemat1 -V; \
+		dtkplane -V; dtkcube -V; dtkfindcp -V; dtkmomd -V; dtkproject6dto2d -V; \
 		dtkqdmol -V; dtkbpdens -V; dtkcharcicp -V; dtkintegobondpath -V; \
 		dtkpropcpsoniso -V; dtkmapfieldonisosurf -V; dtkdrawer -V; dtkintegrate -V; \
           cd $(INSTALL_PATH); ls -1 dtk*2*; ls dtkget*) fi
@@ -186,7 +186,7 @@ runtest: all
           rm -f cubano_sto3g.wfx
 	@echo "Note: The actual gnp file (dtkqdmol) is $(LCL_OUTDIR)/cubano_sto3g*.gnp"
 	cd $(LCL_OUTDIR); cp $(LCL_WFDIR)/cubano_sto3g.wfx .; \
-          $(BINDIR)/dtkdemat1 cubano_sto3g.wfx -P -l -c -a 5 6 -s 0.02e0; \
+          $(BINDIR)/dtkproject6dto2d cubano_sto3g.wfx -P -l -c -a 5 6 -s 0.02e0; \
           rm -f cubano_sto3g.wfx
 	cd $(LCL_OUTDIR); cp $(LCL_WFDIR)/cyclopropane.wfx .; \
           $(BINDIR)/dtkbpdens cyclopropane.wfx -P -p M -n 160 -s 0.02e0 -l; \
