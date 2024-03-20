@@ -112,9 +112,9 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
    }
    if (argc<2) {
       ScreenUtils::SetScrRedBoldFont();
-      cout << "\nError: Not enough arguments." << endl;
+      cout << "\nError: Not enough arguments." << '\n';
       ScreenUtils::SetScrNormalFont();
-      cout << "\nTry: \n\t" << argv[0] << " -h\n" << endl << "to view the help menu.\n\n";
+      cout << "\nTry: \n\t" << argv[0] << " -h\n" << '\n' << "to view the help menu.\n\n";
       exit(1);
    }
    if (string(argv[1])==string("-h")) {
@@ -196,8 +196,8 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                processDoubleDashOptions(argc,argv,flags,i);
                break;
             default:
-               cout << "\nCommand line error. Unknown switch: " << argv[i] << endl;
-               cout << "\nTry: \n\t" << argv[0] << " -h\n" << endl << "to view the help menu.\n\n";
+               cout << "\nCommand line error. Unknown switch: " << argv[i] << '\n';
+               cout << "\nTry: \n\t" << argv[0] << " -h\n" << '\n' << "to view the help menu.\n\n";
                exit(1);
          }
       }
@@ -212,81 +212,90 @@ void printHelpMenu(int &argc, char** &argv) {
 #if _SOL_USE_FIGLET_NAME_
    FigletName::PrintFigletName();
 #endif
-   cout << endl;
+   cout << '\n';
    ScreenUtils::CenterString((string(":-) ")+progname+string(" (-:")));
-   cout << endl;
-   ScreenUtils::CenterString("This program computes the density matrix of order 1 (MD1) along");
-   ScreenUtils::CenterString("the bond path between two atoms (optionally upon the normal straight");
-   ScreenUtils::CenterString("line that joins those atoms). The output will be in a tsv file.");
+   cout << '\n';
+   ScreenUtils::CenterString("This program computes a 6D field (a two-3D-coordinate dependent function)");
+   ScreenUtils::CenterString("along a parametrized bond path between two atoms (optionally upon");
+   ScreenUtils::CenterString("the straight line that joins those atoms).");
+   ScreenUtils::CenterString("The output consists of a tsv file.");
    ScreenUtils::CenterString("The information for the calculation is obtained from a wfx(wfn) file,");
    ScreenUtils::CenterString("which is given as the input for the program.");
+   ScreenUtils::CenterString("In this version, the program can project the field DM1,");
+   ScreenUtils::CenterString("i.e., the Density Matrix of order 1, its gradient");
+   ScreenUtils::CenterString("and its Laplacian. In future releases,");
+   ScreenUtils::CenterString("the program will be able to plot other 6D fields.");
+   ScreenUtils::CenterString("In addition, in the current version, the program can determine");
+   ScreenUtils::CenterString("the position (over the 2D projected domain) of the");
+   ScreenUtils::CenterString("critical points of DM1 (maxima, saddles, and minima).");
+   ScreenUtils::CenterString("The CPs are determined upon request.");
    ScreenUtils::CenterString("(See below for the sintax.)");
-   cout << endl;
+   cout << '\n';
    ScreenUtils::CenterString((string("Compilation date: ")+string(__DATE__)));
-   cout << endl;
+   cout << '\n';
    ScreenUtils::CenterString(string("Version: ")+string(CURRENTVERSION));
-   cout << endl;
+   cout << '\n';
    ScreenUtils::CenterString((string(":-) Created by: ")+string(PROGRAMCONTRIBUTORS)+string(" (-:")));
-   cout << endl;
+   cout << '\n';
    ScreenUtils::PrintScrStarLine();
    ScreenUtils::SetScrBoldFont();
    cout << "\nUsage:\n\n\t" << progname << " wf?name [option [value(s)]] ... [option [value(s)]]\n\n";
    ScreenUtils::SetScrNormalFont();
    cout << "Where wf?name is the input wfx(wfn) name, and options can be:\n\n"
-        << "  -a a1 a2  \tDefine the atoms  (a1,a2) used to define bond path/line." << endl
-        << "            \t  If this option is not activated, the program will " << endl
-        << "            \t  set a1=1, a2=2." << endl
-        << "            \t  Note: if the *.wfn (*.wfx) file has only one atom" << endl
-        << "            \t  the program will exit and no output will be generated." << endl;
+        << "  -a a1 a2  \tDefine the atoms  (a1,a2) used to define bond path/line." << '\n'
+        << "            \t  If this option is not activated, the program will " << '\n'
+        << "            \t  set a1=1, a2=2." << '\n'
+        << "            \t  Note: if the *.wfn (*.wfx) file has only one atom" << '\n'
+        << "            \t  the program will exit and no output will be generated." << '\n';
 #if _HAVE_GNUPLOT_
-   cout << endl;
-   cout << "  -P        \tCreate a plot using gnuplot." << endl
-        << "  -c        \tShow contour lines in the plot." << endl;
-   cout << "  -C s i e  \tSet the contour values (incremental style)." << endl
-        << "            \t  s, i, and e are real numbers. s is the first" << endl
-        << "            \t  contour value, i is the increment, and " << endl
-        << "            \t  e is the last contour value." << endl;
+   cout << '\n';
+   cout << "  -P        \tCreate a plot using gnuplot." << '\n'
+        << "  -c        \tShow contour lines in the plot." << '\n';
+   cout << "  -C s i e  \tSet the contour values (incremental style)." << '\n'
+        << "            \t  s, i, and e are real numbers. s is the first" << '\n'
+        << "            \t  contour value, i is the increment, and " << '\n'
+        << "            \t  e is the last contour value." << '\n';
    cout << "  -J        \tSetup alpha- and beta-spin density matrices." << '\n';
-   cout << "  -k     \tKeeps the *.gnp files to be used later by gnuplot." << endl;
-   cout << "  -l     \tShow labels of atoms (those set in option -a) in the plot." << endl
-        << endl;
+   cout << "  -k     \tKeeps the *.gnp files to be used later by gnuplot." << '\n';
+   cout << "  -l     \tShow labels of atoms (those set in option -a) in the plot." << '\n'
+        << '\n';
 #endif
-   cout << "  -L        \tCalculate MD1 upon the straight line that joins the atoms" << endl
-        << "            \t  instead of upon the bond path." << endl;
-   cout << "  -n  dim   \tSet the number of points for the tsv file per direction." << endl
-        << "            \t  Note: for the bond path you may want to look for a good " << endl
-        << "            \t  combination of n and the number \"step\" given in option -s," << endl
-        << "            \t  since the number of points in the bond path will be mainly " << endl
-        << "            \t  governed by step." << endl;
-   cout << "  -p prop   \tChoose the property to be computed. prop is a character," << endl
-        << "            \t  which can be (D is the default value):" << endl
-        << "            \t      D (Density Matrix of order 1)" << endl
-        << "            \t      G (Gradient of the density Matrix of order 1)" << endl
-        << "            \t      L (Laplacian of the density Matrix of order1)" << endl;
-   cout << "  -o outname\tSet the output file name." << endl
-        << "            \t  (If not given the program will create one out of" << endl
-        << "            \t  the input name; if given, the tsv, gnp and pdf files will" << endl
-        << "            \t  use this name as well --but different extension--)." << endl;
-   cout << "  -s step   \tSet the stepsize for the bond path to be 'step'." << endl
-        << "            \t  Default value: " << DEFAULTBONDPATHSTEPMD1 << endl;
-   cout << "  -t        \tTranslate the plot to the geometrical center of the" << endl
-        << "            \t  requested atoms." << endl;
-   cout << "  -T        \tPerform the Topological analysis (find critical points)." << endl;
-   cout << endl;
-   cout << "  -v     \tVerbose (display extra information, usually output from third-" << endl
-        << "         \t  party sofware such as gnuplot, etc.)" << endl;
-   //cout << "  -V     \tShows the current version of this program." << endl;
+   cout << "  -L        \tCalculate MD1 upon the straight line that joins the atoms" << '\n'
+        << "            \t  instead of upon the bond path." << '\n';
+   cout << "  -n  dim   \tSet the number of points for the tsv file per direction." << '\n'
+        << "            \t  Note: for the bond path you may want to look for a good " << '\n'
+        << "            \t  combination of n and the number \"step\" given in option -s," << '\n'
+        << "            \t  since the number of points in the bond path will be mainly " << '\n'
+        << "            \t  governed by step." << '\n';
+   cout << "  -p prop   \tChoose the property to be computed. prop is a character," << '\n'
+        << "            \t  which can be (D is the default value):" << '\n'
+        << "            \t      D (Density Matrix of order 1)" << '\n'
+        << "            \t      G (Gradient of the density Matrix of order 1)" << '\n'
+        << "            \t      L (Laplacian of the density Matrix of order1)" << '\n';
+   cout << "  -o outname\tSet the output file name." << '\n'
+        << "            \t  (If not given the program will create one out of" << '\n'
+        << "            \t  the input name; if given, the tsv, gnp and pdf files will" << '\n'
+        << "            \t  use this name as well --but different extension--)." << '\n';
+   cout << "  -s step   \tSet the stepsize for the bond path to be 'step'." << '\n'
+        << "            \t  Default value: " << DEFAULTBONDPATHSTEPMD1 << '\n';
+   cout << "  -t        \tTranslate the plot to the geometrical center of the" << '\n'
+        << "            \t  requested atoms." << '\n';
+   cout << "  -T        \tPerform the Topological analysis (find critical points)." << '\n';
+   cout << '\n';
+   cout << "  -v     \tVerbose (display extra information, usually output from third-" << '\n'
+        << "         \t  party sofware such as gnuplot, etc.)" << '\n';
+   //cout << "  -V     \tShows the current version of this program." << '\n';
 #if (defined(__APPLE__)||defined(__linux__))
-   cout << "  -z     \tCompress the tsv file using gzip (which must be intalled" << endl
-        << "         \t   in your system)." << endl;
+   cout << "  -z     \tCompress the tsv file using gzip (which must be intalled" << '\n'
+        << "         \t   in your system)." << '\n';
 #endif
-   cout << endl;
+   cout << '\n';
    cout << "  -h     \tDisplay the help menu.\n";
-   cout << "  -V     \tDisplays the version of this program." << endl;
+   cout << "  -V     \tDisplays the version of this program." << '\n';
    //-------------------------------------------------------------------------------------
-   cout << "  --help    \t\tSame as -h" << endl;
-   cout << "  --version \t\tSame as -V" << endl;
-   cout << endl;
+   cout << "  --help    \t\tSame as -h" << '\n';
+   cout << "  --version \t\tSame as -V" << '\n';
+   cout << '\n';
    //-------------------------------------------------------------------------------------
 #if _HAVE_GNUPLOT_
    ScreenUtils::PrintScrStarLine();
@@ -305,29 +314,29 @@ void printErrorMsg(char** &argv,char lab) {
    cout << "\nError: the option \"" << lab << "\" ";
    switch (lab) {
       case 'a':
-         cout << "should be followed by two integers." << endl;
+         cout << "should be followed by two integers." << '\n';
          break;
       case 'C':
-         cout << "should be followed by three real numbers." << endl;
+         cout << "should be followed by three real numbers." << '\n';
          break;
       case 'n':
-         cout << "should be followed by an integer." << endl;
+         cout << "should be followed by an integer." << '\n';
          break;
       case 'p' :
-         cout << "should be followed by a character." << endl;
+         cout << "should be followed by a character." << '\n';
          break;
       case 's':
-         cout << "should be followed by a real number." << endl;
+         cout << "should be followed by a real number." << '\n';
          break;
       case 'o':
-         cout << "should be followed by a name." << endl;
+         cout << "should be followed by a name." << '\n';
          break;
       default:
-         cout << "is triggering an unknown error." << endl;
+         cout << "is triggering an unknown error." << '\n';
          break;
    }
    ScreenUtils::SetScrNormalFont();
-   cout << "\nTry:\n\t" << argv[0] << " -h " << endl;
+   cout << "\nTry:\n\t" << argv[0] << " -h " << '\n';
    cout << "\nto view the help menu.\n\n";
    exit(1);
    return;
@@ -339,14 +348,14 @@ void processDoubleDashOptions(int &argc,char** &argv,OptionFlags &flags,int pos)
    string str=argv[pos];
    str.erase(0,2);
    if (str==string("version")) {
-      cout << progname << " " << CURRENTVERSION << endl;
+      cout << progname << " " << CURRENTVERSION << '\n';
       exit(0);
    } else if (str==string("help")) {
       printHelpMenu(argc,argv);
       exit(0);
    } else {
       ScreenUtils::SetScrRedBoldFont();
-      cout << "Error: Unrecognized option '" << argv[pos] << "'" << endl;
+      cout << "Error: Unrecognized option '" << argv[pos] << "'" << '\n';
       ScreenUtils::SetScrNormalFont();
       exit(1);
    }
