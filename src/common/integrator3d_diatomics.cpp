@@ -245,13 +245,13 @@ void Integrator3DDiatomics::BuildHalfHemisphereCubature(const bool upper) {
       srterm=sqrt(R*R-d*d*(1.0e0-nuj*nuj))-nuj*d;
       for ( size_t i=0 ; i<nrv ; ++i ) {
          rhoij=0.5e0*((srterm-a)*xrv[i]+srterm+a);
-         wt[offset+j*npv+i]=onemnu1o4wj*wrv[i]*(srterm-a)*rhoij*rhoij;
-         xt[offset+j*npv+i][0]=rhoij*sqrt(1.0e0-nuj*nuj);
-         xt[offset+j*npv+i][1]=0.0e0;
+         wt[offset+j*nrv+i]=onemnu1o4wj*wrv[i]*(srterm-a)*rhoij*rhoij;
+         xt[offset+j*nrv+i][0]=rhoij*sqrt(1.0e0-nuj*nuj);
+         xt[offset+j*nrv+i][1]=0.0e0;
          if ( upper ) {
-            xt[offset+j*npv+i][2]=rhoij*nuj+d+xc[2];
+            xt[offset+j*nrv+i][2]=rhoij*nuj+d+xc[2];
          } else {
-            xt[offset+j*npv+i][2]=-rhoij*nuj-d+xc[2];
+            xt[offset+j*nrv+i][2]=-rhoij*nuj-d+xc[2];
          }
       }
    }
@@ -265,13 +265,13 @@ void Integrator3DDiatomics::BuildHalfHemisphereCubature(const bool upper) {
       twdoetc=-a-2.0e0*d/((1.0e0+nu1)*xpv[j]+nu1-1.0e0);
       for ( size_t i=0 ; i<nrv ; ++i ) {
          rhoij=0.5e0*((-a-d/nuj)*xrv[i]+a-d/nuj);
-         wt[offset+j*npv+i]=onepnu1o4wj*twdoetc*wrv[i]*rhoij*rhoij;
-         xt[offset+j*npv+i][0]=rhoij*sqrt(1.0e0-nuj*nuj);
-         xt[offset+j*npv+i][1]=0.0e0;
+         wt[offset+j*nrv+i]=onepnu1o4wj*twdoetc*wrv[i]*rhoij*rhoij;
+         xt[offset+j*nrv+i][0]=rhoij*sqrt(1.0e0-nuj*nuj);
+         xt[offset+j*nrv+i][1]=0.0e0;
          if ( upper ) {
-            xt[offset+j*npv+i][2]=rhoij*nuj+d+xc[2];
+            xt[offset+j*nrv+i][2]=rhoij*nuj+d+xc[2];
          } else {
-            xt[offset+j*npv+i][2]=-rhoij*nuj-d+xc[2];
+            xt[offset+j*nrv+i][2]=-rhoij*nuj-d+xc[2];
          }
       }
    }
