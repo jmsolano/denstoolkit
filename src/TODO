@@ -1,10 +1,9 @@
-iofunctionswfx --> Make spintypes and EDFs work together.
 --> dtkline: plot line between a nucleus and a point.
 --> dtkfindcp: make cylinder radius a variable (in pov file)
 --> Uniform makefiles.
 --> Add EDFTA field (grep -e EDFT integrateoverbondpath.cpp)
 --> Finish implementation of gradDeMat1
---> Parallelize DM1, and Momentum density for programs dtkdemat1, dtkmomd
+--> Parallelize EvalGradDensityMatrix1 and EvalHessDensityMatrix1
 --> Parallelize Hessians for Rho and LOL for program dtkfindcp
 --> Standardise the option -o. So far the best choice is to ask for the name without extension.
 
