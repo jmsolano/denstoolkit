@@ -144,6 +144,9 @@ GaussWaveFunction::GaussWaveFunction() {
    nciSMax=NCISMAX;
    imldd=ihaveEDF=ihaveSingleSpinOrbs=ihaveCABSingleSpin=false;
    usescustfld=usevcustfld=false;
+#if PARALLELISEDTK
+   omp_set_num_threads(PARALLELISEDTK);
+#endif
 }
 int GaussWaveFunction::prTy[]={
    0, 0, 0,   1, 0, 0,   0, 1, 0,   0, 0, 1,   2, 0, 0, 
@@ -886,7 +889,7 @@ double GaussWaveFunction::EvalDensity(double x,double y,double z) {
    indr=0;
    rho=0.000000e0;
    double chii;
-   int i,j;
+   int i=0,j=0;
 #pragma omp parallel for private(chii,indr,chib) \
 firstprivate(j) lastprivate(i) reduction(+: rho)
    for (i=0; i<nPri; i++) {
@@ -897,6 +900,24 @@ firstprivate(j) lastprivate(i) reduction(+: rho)
       }
       chii=chi[i];
       rho+=(cab[indr+i]*chii*chii+2.00000000e0*chib*chii);
+   }
+   if ( ihaveEDF ) {
+      for ( int i=nPri ; i<totPri ; ++i ) {
+         indr=3*(primCent[i]);
+         xmr=x-R[indr];
+         ymr=y-R[indr+1];
+         zmr=z-R[indr+2];
+         rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+         chi[i]=EvalAngACases(primType[i],xmr,ymr,zmr);
+         // Notice primExp[i] is beta=2*alpha, thus chi[i] is
+         // actually $\phi_{\bar{A}}^2(\vector r)$
+         chi[i]*=exp(primExp[i]*rr);
+      }
+      chib=0.0e0;
+      for (int i=nPri; i<totPri; ++i) {
+         chib+=(EDFCoeff[i-nPri]*chi[i]);
+      }
+      rho+=chib;
    }
    return rho;
 }
@@ -993,14 +1014,14 @@ double GaussWaveFunction::EvalSpinDensity(double x,double y,double z) {
    indr=0;
    rho=0.000000e0;
    double chii;
-   int i,j;
+   int i=0,j=0;
 #pragma omp parallel for private(chii,indr,chib) \
 firstprivate(j) lastprivate(i) reduction(+: rho)
    for (i=0; i<nPri; i++) {
       indr=i*(nPri);
       chib=0.0000000e0;
       for (j=(i+1); j<nPri; j++) {
-         chib+=((cabA[indr+j]-cabB[indr+j]*chi[j]);
+         chib+=((cabA[indr+j]-cabB[indr+j])*chi[j]);
       }
       chii=chi[i];
       rho+=((cabA[indr+i]-cabB[indr+i])*chii*chii+2.00000000e0*chib*chii);
@@ -1052,24 +1073,9 @@ double GaussWaveFunction::EvalSpinDensity(double x,double y,double z) {
       }
       rho+=chib*chi[i];
    }
-   if ( ihaveEDF ) {
-      for ( int i=nPri ; i<totPri ; ++i ) {
-         indr=3*(primCent[i]);
-         xmr=x-R[indr];
-         ymr=y-R[indr+1];
-         zmr=z-R[indr+2];
-         rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
-         //cout << "pc: " << primCent[i] << ", rr: " << rr << endl;
-         chi[i]=EvalAngACases(primType[i],xmr,ymr,zmr);
-         chi[i]*=exp(primExp[i]*rr);
-      }
-      chib=0.0e0;
-      for (int i=nPri; i<totPri; ++i) {
-         chib+=(EDFCoeff[i-nPri]*chi[i]);
-      }
-      //rho+=occN[nMOr]*chib*chib;
-      rho+=chib;
-   }
+   // EDF does not contribute to the spin density, as the
+   // density is equally distributed among alpha and beta
+   // orbitals (EDFs are closed-shells).
    return rho;
 }
 #endif
@@ -1169,7 +1175,7 @@ void GaussWaveFunction::EvalRhoGradRho(double x, double y, double z,double &rho,
    nabx=naby=nabz=0.000000000000000e0;
    indp=0;
    trho=0.0000000e0;
-   int i,j;
+   int i=0,j=0;
 #pragma omp parallel for private(indp,chib) \
 firstprivate(j) lastprivate(i) reduction(+: trho,nabx,naby,nabz)
    for (i=0; i<nPri; i++) {
@@ -1843,7 +1849,8 @@ void GaussWaveFunction::EvalHessian(double x, double y, double z,
                                 double &dxx, double &dyy, double &dzz,
                                 double &dxy, double &dxz, double &dyz) {
    double nabxx,nabyy,nabzz,nabxy,nabxz,nabyz,xmr,ymr,zmr,cc,rr,alp,chii,gxi,gyi,gzi;
-   double sxx,syy,szz,sxy,sxz,syz,gxs,gys,gzs;
+   //double sxx,syy,szz,sxy,sxz,syz;
+   double gxs,gys,gzs;
    int indp,indr,ppt;
    indp=0;
    indr=0;
@@ -1875,16 +1882,16 @@ void GaussWaveFunction::EvalHessian(double x, double y, double z,
          indp++;
       }
    }
-   int i,j;
+   int i=0,j=0;
    nabxx=nabyy=nabzz=nabxy=nabxz=nabyz=0.000000000000000e0;
    //indr=0;
-#pragma omp parallel for private(indr,cc,gxs,gys,gzs,sxx,syy,szz,sxy,sxz,syz,\
+#pragma omp parallel for private(indr,cc,gxs,gys,gzs,\
                                  gxi,gyi,gzi) \
 firstprivate(j) lastprivate(i) reduction(+: nabxx,nabyy,nabzz,nabxy,nabxz,nabyz)
    for (i=0; i<nPri; i++) {
       indr=i*nPri;
       gxs=gys=gzs=0.00000e0;
-      sxx=syy=szz=sxy=sxz=syz=0.00000e0;
+      //sxx=syy=szz=sxy=sxz=syz=0.00000e0;
       chii=0.00000e0;
       for (j=0; j<nPri; j++) {
          cc=cab[indr+j];
@@ -2140,7 +2147,7 @@ double GaussWaveFunction::EvalLapRho(double x, double y, double z) {
    }
    lap=0.000000000000000e0;
    indr=0;
-   int i,k;
+   int i=0,k=0;
 #pragma omp parallel for private(sxx,cc,gxs,gys,gzs) \
 firstprivate(k) lastprivate(i) reduction(+: lap)
    for (i=0; i<nPri; i++) {
@@ -2859,7 +2866,7 @@ double GaussWaveFunction::EvalELF(double x,double y,double z) {
          indp++;
       }
    }
-   int i,j;
+   int i=0,j=0;
    indp=0;
    rho=0.0000000e0;
    double tgx,tgy,tgz,kej;
@@ -3025,7 +3032,7 @@ double GaussWaveFunction::EvalLOL(double x,double y,double z) {
    static const double tferm=5.742468000376382e0;
    static const double eps=EPSFORLOLVALUE;
    double xmr,ymr,zmr,rho,cc,rr,alp,chib;
-   int indp,indr,ppt,i,j;
+   int indp,indr,ppt,i=0,j=0;
    indp=0;
    indr=0;
    for (int i=0; i<nNuc; i++) {
@@ -3049,7 +3056,7 @@ double GaussWaveFunction::EvalLOL(double x,double y,double z) {
    indp=0;
    rho=0.0000000e0;
    double gxj,gyj,gzj,kej;
-   omp_set_num_threads(PARALLELISEDTK);
+   //omp_set_num_threads(PARALLELISEDTK);
    kej=0.000000000000000e0;
 #pragma omp parallel for private(chib,gxj,gyj,gzj,indp,cc) \
 firstprivate(j) lastprivate(i) reduction(+: kej,rho)
@@ -3193,7 +3200,7 @@ double GaussWaveFunction::EvalKineticEnergyG(double x, double y, double z) {
    double gxj,gyj,gzj;
    nabx=naby=nabz=0.000000000000000e0;
    indp=0;
-   int i,j;
+   int i=0,j=0;
 #pragma omp parallel for private(indp,cc,gxj,gyj,gzj) \
 firstprivate(j) lastprivate(i) reduction(+: nabx,naby,nabz)
    for (i=0; i<nPri; i++) {
@@ -3343,7 +3350,7 @@ void GaussWaveFunction::EvalNabPhi2(double const x,double const y,double const z
    double gxj,gyj,gzj,rho,chib;
    nabx=naby=nabz=rho=0.000000000000000e0;
    indp=0;
-   int i,j;
+   int i=0,j=0;
 #pragma omp parallel for private(indp,cc,gxj,gyj,gzj,chib) \
 firstprivate(j) lastprivate(i) reduction(+: nabx,naby,nabz,rho)
    for (i=0; i<nPri; i++) {
@@ -3488,7 +3495,7 @@ double GaussWaveFunction::EvalKineticEnergyK(double x, double y, double z) {
    }
    lap=0.000000000000000e0;
    indr=0;
-   int i,j;
+   int i=0,j=0;
 #pragma omp parallel for private(sxx,indr) \
 firstprivate(j) lastprivate(i) reduction(+: lap)
    for (i=0; i<nPri; i++) {
@@ -4391,7 +4398,7 @@ double GaussWaveFunction::EvalFTDensity(double px,double py,double pz) {
    indr=0;
    rhop=0.000000e0;
    complex<double> chiu,chiv;
-   int i,j;
+   int i=0,j=0;
 #pragma omp parallel for private(indr,chiu,chiv,chit) \
 firstprivate(j) lastprivate(i) reduction(+: rhop)
    for (i=0; i<nPri; i++) {
@@ -4402,6 +4409,23 @@ firstprivate(j) lastprivate(i) reduction(+: rhop)
          chiv=complex<double>(chi[j],gx[j]);
          chit=((chiv*conj(chiu))+(conj(chiv)*chiu));
          rhop+=(cab[indr+j]*(chit.real()));
+      }
+   }
+   if ( ihaveEDF ) {
+      for ( int i=nPri ; i<totPri ; ++i ) {
+         indr=3*(primCent[i]);
+         Rx[0]=R[indr];
+         Rx[1]=R[indr+1];
+         Rx[2]=R[indr+2];
+         ppt=primType[i];
+         alp=0.5e0*primExp[i];
+         EvalFTChi(ppt,alp,Rx,px,py,pz,chit);
+         chi[i]=chit.real();
+         gx[i]=chit.imag();
+      }
+      for (int i=nPri; i<totPri; ++i) {
+         chiu=complex<double>(chi[i],gx[i]);
+         rhop+=(EDFCoeff[i-nPri]*norm(chiu));
       }
    }
    return rhop;
@@ -4428,25 +4452,27 @@ double GaussWaveFunction::EvalFTDensity(double px,double py,double pz) {
    }
    indr=0;
    rhop=0.000000e0;
-   /*
-   complex<double> chiv;
-   for (int i=0; i<nPri; i++) {
-      indr=i*(nPri+1);
-      chiu=complex<double>(chi[i],gx[i]);
-      rhop+=(cab[indr++]*norm(chiu));
-      for (int j=(i+1); j<nPri; j++) {
-         chiv=complex<double>(chi[j],gx[j]);
-         chit=((chiv*conj(chiu))+(conj(chiv)*chiu));
-         rhop+=(cab[indr++]*(chit.real()));
-      }
-   }
-   / */
    double sumim,sumre,cc;
-   indr=0;
+   int lowPri=nPri-(nPri%4);
+   indr=-1;
    for ( int i=0 ; i<nPri ; ++i ) {
       sumim=sumre=0.0e0;
-      for ( int j=0 ; j<nPri ; ++j ) {
-         cc=cab[indr++];
+      for ( int j=0 ; j<lowPri ; j+=4 ) {
+         cc=cab[++indr];
+         sumre+=cc*chi[j+0];
+         sumim+=cc*gx[j+0];
+         cc=cab[++indr];
+         sumre+=cc*chi[j+1];
+         sumim+=cc*gx[j+1];
+         cc=cab[++indr];
+         sumre+=cc*chi[j+2];
+         sumim+=cc*gx[j+2];
+         cc=cab[++indr];
+         sumre+=cc*chi[j+3];
+         sumim+=cc*gx[j+3];
+      }
+      for ( int j=lowPri ; j<nPri ; ++j ) {
+         cc=cab[++indr];
          sumre+=cc*chi[j];
          sumim+=cc*gx[j];
       }
@@ -4478,73 +4504,63 @@ double GaussWaveFunction::EvalFTKineticEnergy(double px,double py,double pz) {
    pp*=(px*px+py*py+pz*pz);
    return pp;
 }
+#if PARALLELISEDTK
 double GaussWaveFunction::EvalDensityMatrix1(double x,double y,double z,
       double xp,double yp,double zp) {
-   /*
-   int indr,indp;
-   double xmr,ymr,zmr,gamm,chib;
-   gamm=0.000000e0;
-   double rr;
-   indr=0;
-   indp=0;
+   double x1mr,y1mr,z1mr,x2mr,y2mr,z2mr;
+   double rr1,rr2;
+   int indr=0,indp=0;
    for (int i=0; i<nNuc; i++) {
-      xmr=x-R[indr++];
-      ymr=y-R[indr++];
-      zmr=z-R[indr++];
-      rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+      x1mr=x-R[indr]; x2mr=xp-R[indr]; ++indr;
+      y1mr=y-R[indr]; y2mr=yp-R[indr]; ++indr;
+      z1mr=z-R[indr]; z2mr=zp-R[indr]; ++indr;
+      rr1=-((x1mr*x1mr)+(y1mr*y1mr)+(z1mr*z1mr));
+      rr2=-((x2mr*x2mr)+(y2mr*y2mr)+(z2mr*z2mr));
       for (int j=0; j<myPN[i]; j++) {
-         chi[indp]=EvalAngACases(primType[indp],xmr,ymr,zmr);
-         chi[indp]*=exp(primExp[indp]*rr);
+         chi[indp]=EvalAngACases(primType[indp],x1mr,y1mr,z1mr);
+         chi[indp]*=exp(primExp[indp]*rr1);
+         gx[indp]=EvalAngACases(primType[indp],x2mr,y2mr,z2mr);
+         gx[indp]*=exp(primExp[indp]*rr2);
          indp++;
       }
    }
-   indr=0;
-   indp=0;
-   for (int i=0; i<nNuc; i++) {
-      xmr=xp-R[indr++];
-      ymr=yp-R[indr++];
-      zmr=zp-R[indr++];
-      rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
-      for (int j=0; j<myPN[i]; j++) {
-         gx[indp]=EvalAngACases(primType[indp],xmr,ymr,zmr);
-         gx[indp]*=exp(primExp[indp]*rr);
-         indp++;
-      }
-   }
-   indp=0;
-   gamm=0.0000000e0;
-   for (int i=0; i<nPri; i++) {
-      chib=0.0000000e0;
-      for (int j=0; j<nPri; j++) {
-         chib+=(chi[j]*cab[indp++]);
+   double gamm=0.0e0,chib=0.0e0;
+   int i=0,j=0;
+#pragma omp parallel for private(indr,chib) \
+firstprivate(j) lastprivate(i) reduction(+: gamm)
+   for (i=0; i<nPri; i++) {
+      indr=i*(nPri);
+      chib=0.0e0;
+      for (j=0; j<nPri; j++) {
+         chib+=cab[indr+j]*chi[j];
       }
       gamm+=(chib*gx[i]);
    }
-   if ( ihaveEDF ) {
-      for ( int i=nPri ; i<totPri ; ++i ) {
-         indr=3*(primCent[i]);
-         xmr=x-R[indr];
-         ymr=y-R[indr+1];
-         zmr=z-R[indr+2];
-         rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
-         chi[i]=EvalAngACases(primType[i],xmr,ymr,zmr);
-         chi[i]*=exp(0.5e0*primExp[i]*rr);
-      }
-      for ( int i=nPri ; i<totPri ; ++i ) {
-         indr=3*(primCent[i]);
-         xmr=xp-R[indr];
-         ymr=yp-R[indr+1];
-         zmr=zp-R[indr+2];
-         rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
-         gx[i]=EvalAngACases(primType[i],xmr,ymr,zmr);
-         gx[i]*=exp(0.5e0*primExp[i]*rr);
-      }
-      for (int i=nPri; i<totPri; ++i) {
-         gamm+=(EDFCoeff[i-nPri]*chi[i]*gx[i]);
-      }
+   if ( !ihaveEDF ) { return gamm; }
+   for ( int i=nPri ; i<totPri ; ++i ) {
+      indr=3*(primCent[i]);
+      x1mr=x-R[indr+0]; y1mr=y-R[indr+1]; z1mr=z-R[indr+2];
+      rr1=-((x1mr*x1mr)+(y1mr*y1mr)+(z1mr*z1mr));
+      chi[i]=EvalAngACases(primType[i],x1mr,y1mr,z1mr);
+      // Notice that we need to use the exponent alpha, not beta=2alpha
+      // since we must combine phi(r1) and phi(r2), as opposed
+      // to have always phi(r)^2 (as in evaluating rho).
+      chi[i]*=exp(0.5e0*primExp[i]*rr1);
+      x2mr=xp-R[indr+0]; y2mr=yp-R[indr+1]; z2mr=zp-R[indr+2];
+      rr2=-((x2mr*x2mr)+(y2mr*y2mr)+(z2mr*z2mr));
+      gx[i]=EvalAngACases(primType[i],x2mr,y2mr,z2mr);
+      gx[i]*=exp(0.5e0*primExp[i]*rr2);
    }
+   chib=0.0e0;
+   for (int i=nPri; i<totPri; ++i) {
+      chib+=(EDFCoeff[i-nPri]*chi[i]*gx[i]);
+   }
+   gamm+=chib;
    return gamm;
-   // */
+}
+#else
+double GaussWaveFunction::EvalDensityMatrix1(double x,double y,double z,
+      double xp,double yp,double zp) {
    double x1mr,y1mr,z1mr,x2mr,y2mr,z2mr;
    double rr1,rr2;
    int indr=0,indp=0;
@@ -4600,6 +4616,7 @@ double GaussWaveFunction::EvalDensityMatrix1(double x,double y,double z,
    gamm+=chib;
    return gamm;
 }
+#endif
 void GaussWaveFunction::EvalGradDensityMatrix1(double x,double y,double z,\
       double xp,double yp,double zp,\
       double &gamm,double (&gg)[3],double (&gp)[3]) {
@@ -5336,7 +5353,7 @@ double GaussWaveFunction::EvalMolElecPot(double x,double y,double z) {
    }
    int indr,inda,indp;
    double xx[3],ra[3],rb[3],alpa,alpb,mepaa,mepab,mepelec,cc,S00;
-   int aa[3],ab[3],i,j;
+   int aa[3],ab[3],i=0,j=0;
    xx[0]=x; xx[1]=y; xx[2]=z;
    mepaa=mepab=mepelec=0.000000e0;
    inda=indp=0;
