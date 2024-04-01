@@ -43,10 +43,11 @@ int main (int argc, char *argv[]) {
    SET_MY_PRECISION;
    double rho=wf->EvalDensity(0.0e0,0.0e0,0.0e0);
    double pidens=wf->EvalFTDensity(0.0,0.0,0.2);
-   double refval1=0.02851168657;
-   double refval2=10.79025803;
-   passed=passed&&(fabs(rho-refval1)<1.0e-11);
-   passed=passed&&(fabs(pidens-refval2)<5.0e-10);
+   double refval1=0.028511686565958;
+   double refval2=10.790258029591;
+   passed=passed&&(fabs(rho-refval1)<1.0e-12);
+   cout << setprecision(14);
+   passed=passed&&(fabs(pidens-refval2)<1.0e-12);
    if ( verbose ) {
       ScreenUtils::PrintScrCharLine('-');
       if ( !passed ) { ScreenUtils::SetScrRedBoldFont(); }

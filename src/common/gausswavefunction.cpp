@@ -4303,7 +4303,6 @@ void GaussWaveFunction::EvalFTChi(int &pty,double &alp,double (&Rx)[3],
    phi=chit;
    return;
 }
-#if PARALLELISEDTK
 double GaussWaveFunction::EvalFTDensity(double px,double py,double pz) {
    int indr,indp,ppt;
    double rhop,Rx[3],alp;
@@ -4320,70 +4319,44 @@ double GaussWaveFunction::EvalFTDensity(double px,double py,double pz) {
          EvalFTChi(ppt,alp,Rx,px,py,pz,chit);
          chi[indp]=chit.real();
          gx[indp]=chit.imag();
-         //cout << "re: " << chi[indp] << ", im: " << gx[indp] << endl;
          indp++;
       }
    }
-   indr=0;
-   rhop=0.000000e0;
-   complex<double> chiu,chiv;
-   int i=0,j=0;
-#pragma omp parallel for private(indr,chiu,chiv,chit) \
-firstprivate(j) lastprivate(i) reduction(+: rhop)
-   for (i=0; i<nPri; i++) {
-      indr=i*(nPri);
-      chiu=complex<double>(chi[i],gx[i]);
-      rhop+=(cab[indr+i]*norm(chiu));
-      for (j=(i+1); j<nPri; j++) {
-         chiv=complex<double>(chi[j],gx[j]);
-         chit=((chiv*conj(chiu))+(conj(chiv)*chiu));
-         rhop+=(cab[indr+j]*(chit.real()));
-      }
-   }
-   if ( ihaveEDF ) {
-      for ( int i=nPri ; i<totPri ; ++i ) {
-         indr=3*(primCent[i]);
-         Rx[0]=R[indr];
-         Rx[1]=R[indr+1];
-         Rx[2]=R[indr+2];
-         ppt=primType[i];
-         alp=0.5e0*primExp[i];
-         EvalFTChi(ppt,alp,Rx,px,py,pz,chit);
-         chi[i]=chit.real();
-         gx[i]=chit.imag();
-      }
-      for (int i=nPri; i<totPri; ++i) {
-         chiu=complex<double>(chi[i],gx[i]);
-         rhop+=(EDFCoeff[i-nPri]*norm(chiu));
-      }
-   }
-   return rhop;
-}
-#else
-double GaussWaveFunction::EvalFTDensity(double px,double py,double pz) {
-   int indr,indp,ppt;
-   double rhop,Rx[3],alp;
-   complex<double> chit,chiu;
-   indr=0;
-   indp=0;
-   for (int i=0; i<nNuc; i++) {
-      Rx[0]=R[indr++];
-      Rx[1]=R[indr++];
-      Rx[2]=R[indr++];
-      for (int j=0; j<myPN[i]; j++) {
-         ppt=primType[indp];
-         alp=primExp[indp];
-         EvalFTChi(ppt,alp,Rx,px,py,pz,chit);
-         chi[indp]=chit.real();
-         gx[indp]=chit.imag();
-         indp++;
-      }
-   }
-   indr=0;
-   rhop=0.000000e0;
-   double sumim,sumre,cc;
-   int lowPri=nPri-(nPri%4);
    indr=-1;
+   rhop=0.000000e0;
+   int lowPri=nPri-(nPri%4);
+   double sumim,sumre,cc;
+   complex<double> chiu,chiv;
+#if PARALLELISEDTK
+   int i=0,j=0;
+#pragma omp parallel for shared(chi,gx) private(indr,sumim,sumre,cc) \
+firstprivate(j) lastprivate(i) reduction(+: rhop)
+   for ( i=0 ; i<nPri ; ++i ) {
+      indr=i*nPri-1;
+      sumim=sumre=0.0e0;
+      for ( j=0 ; j<lowPri ; j+=4 ) {
+         cc=cab[++indr];
+         sumre+=cc*chi[j+0];
+         sumim+=cc*gx[j+0];
+         cc=cab[++indr];
+         sumre+=cc*chi[j+1];
+         sumim+=cc*gx[j+1];
+         cc=cab[++indr];
+         sumre+=cc*chi[j+2];
+         sumim+=cc*gx[j+2];
+         cc=cab[++indr];
+         sumre+=cc*chi[j+3];
+         sumim+=cc*gx[j+3];
+      }
+      for ( j=lowPri ; j<nPri ; ++j ) {
+         cc=cab[++indr];
+         sumre+=cc*chi[j];
+         sumim+=cc*gx[j];
+      }
+      rhop+=sumre*chi[i];
+      rhop+=sumim*gx[i];
+   }
+#else
    for ( int i=0 ; i<nPri ; ++i ) {
       sumim=sumre=0.0e0;
       for ( int j=0 ; j<lowPri ; j+=4 ) {
@@ -4408,26 +4381,25 @@ double GaussWaveFunction::EvalFTDensity(double px,double py,double pz) {
       rhop+=sumre*chi[i];
       rhop+=sumim*gx[i];
    }
-   if ( ihaveEDF ) {
-      for ( int i=nPri ; i<totPri ; ++i ) {
-         indr=3*(primCent[i]);
-         Rx[0]=R[indr];
-         Rx[1]=R[indr+1];
-         Rx[2]=R[indr+2];
-         ppt=primType[i];
-         alp=0.5e0*primExp[i];
-         EvalFTChi(ppt,alp,Rx,px,py,pz,chit);
-         chi[i]=chit.real();
-         gx[i]=chit.imag();
-      }
-      for (int i=nPri; i<totPri; ++i) {
-         chiu=complex<double>(chi[i],gx[i]);
-         rhop+=(EDFCoeff[i-nPri]*norm(chiu));
-      }
+#endif
+   if ( !ihaveEDF ) { return rhop; }
+   for ( int i=nPri ; i<totPri ; ++i ) {
+      indr=3*(primCent[i]);
+      Rx[0]=R[indr];
+      Rx[1]=R[indr+1];
+      Rx[2]=R[indr+2];
+      ppt=primType[i];
+      alp=0.5e0*primExp[i];
+      EvalFTChi(ppt,alp,Rx,px,py,pz,chit);
+      chi[i]=chit.real();
+      gx[i]=chit.imag();
+   }
+   for (int i=nPri; i<totPri; ++i) {
+      chiu=complex<double>(chi[i],gx[i]);
+      rhop+=(EDFCoeff[i-nPri]*norm(chiu));
    }
    return rhop;
 }
-#endif
 double GaussWaveFunction::EvalFTKineticEnergy(double px,double py,double pz) {
    double pp=EvalFTDensity(px,py,pz);
    pp*=(px*px+py*py+pz*pz);
