@@ -4977,6 +4977,34 @@ double GaussWaveFunction::EvalRho2ClosedShell(const double x1,const double y1,co
    double rho1=0.0e0,rho2=0.0e0,gama=0.0e0;
    double chib1=0.0e0,chib2=0.0e0,chiba=0.0e0,chibb=0.0e0;
    indr=0;
+#if PARALLELISEDTK
+   int i=0,j=0;
+#pragma omp parallel for shared(chi,gx) private(indr,chib1,chib2) \
+firstprivate(j) lastprivate(i) reduction(+: gama,rho1,rho2)
+   for ( i=0 ; i<nPri ; ++i ) {
+      indr=i*(nPri);
+      chib1=0.0e0; chib2=0.0e0;
+      for ( j=0 ; j<lowPri ; j+=4 ) {
+         chib2+=(cab[indr+0]*gx[j+0]);
+         chib2+=(cab[indr+1]*gx[j+1]);
+         chib2+=(cab[indr+2]*gx[j+2]);
+         chib2+=(cab[indr+3]*gx[j+3]);
+         chib1+=(cab[indr+0]*chi[j+0]);
+         chib1+=(cab[indr+1]*chi[j+1]);
+         chib1+=(cab[indr+2]*chi[j+2]);
+         chib1+=(cab[indr+3]*chi[j+3]);
+         indr+=4;
+      }
+      for ( j=lowPri ; j<nPri ; ++j ) {
+         chib2+=(cab[indr]*gx[j]);
+         chib1+=(cab[indr]*chi[j]);
+         ++indr;
+      }
+      rho1+=chib1*chi[i];
+      gama+=chib1*gx[i];
+      rho2+=chib2*gx[i];
+   }
+#else
    for ( int i=0 ; i<nPri ; ++i ) {
       chib1=0.0e0; chib2=0.0e0;
       for ( int j=0 ; j<lowPri ; j+=4 ) {
@@ -4999,6 +5027,7 @@ double GaussWaveFunction::EvalRho2ClosedShell(const double x1,const double y1,co
       gama+=chib1*gx[i];
       rho2+=chib2*gx[i];
    }
+#endif
    if ( !ihaveEDF ) { return (0.5e0*(rho1*rho2-0.5e0*gama*gama)); }
    for ( int i=nPri ; i<totPri ; ++i ) {
       indr=3*(primCent[i]);
