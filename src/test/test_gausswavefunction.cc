@@ -119,17 +119,22 @@ int main (int argc, char *argv[]) {
    double reggamma=wf->EvalDensityMatrix1(xx,yy,zz,xp,yp,zp);
    double grlgamma=wf->EvalGeneralDensityMatrix1(xx,yy,zz,xp,yp,zp,false,wf->cab);
    double g1a=wf->EvalGeneralDensityMatrix1(xx,yy,zz,xp,yp,zp,true,wf->cabA);
+   double refg1a=0.013130273669108;
    double g1b=wf->EvalGeneralDensityMatrix1(xx,yy,zz,xp,yp,zp,true,wf->cabB);
+   double refg1b=0.012829822024859;
+   passed=passed&&(fabs(g1a-refg1a)<1.0e-14);
+   passed=passed&&(fabs(g1b-refg1b)<1.0e-14);
    passed=passed&&(fabs(g1a+g1b-reggamma)<1.0e-14);
    if ( verbose ) {
       ScreenUtils::PrintScrCharLine('-');
       if ( !passed ) { ScreenUtils::SetScrRedBoldFont(); }
+      cout << setprecision(14);
       cout << "            Value         (Diff)" << '\n';
       cout << "    Gamma1: " << reggamma << '\n';
       cout << "GralGamma1: " << grlgamma << " (" << (grlgamma-reggamma) << ')' << '\n';
       cout << "Sum-Gamma1: " << (g1a+g1b) << " (" << (g1a+g1b-reggamma) << ')' << '\n';
-      cout << "AlphGamma1: " << g1a << '\n';
-      cout << "BetaGamma1: " << g1b << '\n';
+      cout << "AlphGamma1: " << g1a << " (" << (refg1a-g1a) << ')' << '\n';
+      cout << "BetaGamma1: " << g1b << " (" << (refg1b-g1b) << ')' << '\n';
       if ( !passed ) { ScreenUtils::SetScrNormalFont(); }
    }
    // ***************************************************
@@ -180,12 +185,12 @@ int main (int argc, char *argv[]) {
    double rho2ov=wf->EvalRho2OpenShell(xx,yy,zz,xp,yp,zp);
    double rho2cr=0.5e0*rho1*rho2-0.25e0*gamm*gamm;
    double rho2cv=wf->EvalRho2ClosedShell(xx,yy,zz,xp,yp,zp);
-   passed=passed&&(fabs(rho2ov-rho2ov)<1.0e-14);
+   passed=passed&&(fabs(rho2ov-rho2or)<1.0e-14);
    if ( verbose ) {
       ScreenUtils::PrintScrCharLine('-');
       cout << "                   Value         (Diff)" << '\n';
       cout << "rho2opRef(x,xp): " << rho2or << '\n';
-      cout << "rho2opVal(x,xp): " << rho2ov << " (" << (rho2ov-rho2ov) << ')' << '\n';
+      cout << "rho2opVal(x,xp): " << rho2ov << " (" << (rho2ov-rho2or) << ')' << '\n';
       cout << "rho2clRef(x,xp): " << rho2cr << '\n';
       cout << "rho2clVal(x,xp): " << rho2cv << " (" << (rho2cv-rho2cr) << ')' << '\n';
    }
