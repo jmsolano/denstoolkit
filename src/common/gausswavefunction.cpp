@@ -4878,7 +4878,6 @@ double GaussWaveFunction::EvalLapDensityMatrix1(double (&xx)[3],double (&xxp)[3]
    res+=hp[2][2];
    return res;
 }
-#if PARALLELISEDTK
 double GaussWaveFunction::EvalGeneralDensityMatrix1(const double x,const double y,const double z,\
       const double xp,const double yp,const double zp,const bool singlespin,double *cabs) {
    double x1mr,y1mr,z1mr,x2mr,y2mr,z2mr;
@@ -4899,8 +4898,9 @@ double GaussWaveFunction::EvalGeneralDensityMatrix1(const double x,const double 
       }
    }
    double gamm=0.0e0,chib=0.0e0;
-   int i=0,j=0;
    int lowPri=nPri-(nPri%4);
+#if PARALLELISEDTK
+   int i=0,j=0;
 #pragma omp parallel for private(indr,chib) \
 firstprivate(j) lastprivate(i) reduction(+: gamm)
    for ( i=0 ; i<nPri ; ++i ) {
@@ -4917,51 +4917,7 @@ firstprivate(j) lastprivate(i) reduction(+: gamm)
       }
       gamm+=chib*gx[i];
    }
-   if ( !ihaveEDF ) { return gamm; }
-   for ( int i=nPri ; i<totPri ; ++i ) {
-      indr=3*(primCent[i]);
-      x1mr=x-R[indr+0]; y1mr=y-R[indr+1]; z1mr=z-R[indr+2];
-      rr1=-((x1mr*x1mr)+(y1mr*y1mr)+(z1mr*z1mr));
-      chi[i]=EvalAngACases(primType[i],x1mr,y1mr,z1mr);
-      // Notice that we need to use the exponent alpha, not beta=2alpha
-      // since we must combine phi(r1) and phi(r2), as opposed
-      // to have always phi(r)^2 (as in evaluating rho).
-      chi[i]*=exp(0.5e0*primExp[i]*rr1);
-      x2mr=xp-R[indr+0]; y2mr=yp-R[indr+1]; z2mr=zp-R[indr+2];
-      rr2=-((x2mr*x2mr)+(y2mr*y2mr)+(z2mr*z2mr));
-      gx[i]=EvalAngACases(primType[i],x2mr,y2mr,z2mr);
-      gx[i]*=exp(0.5e0*primExp[i]*rr2);
-   }
-   chib=0.0e0;
-   double snglspnfact=( singlespin ? 0.5e0 : 1.0e0);
-   for (int i=nPri; i<totPri; ++i) {
-      gamm+=(snglspnfact*EDFCoeff[i-nPri]*chi[i]*gx[i]);
-   }
-   return gamm;
-}
 #else
-double GaussWaveFunction::EvalGeneralDensityMatrix1(const double x,const double y,const double z,\
-      const double xp,const double yp,const double zp,const bool singlespin,double *cabs) {
-   double x1mr,y1mr,z1mr,x2mr,y2mr,z2mr;
-   double rr1,rr2;
-   int indr=0,indp=0;
-   for (int i=0; i<nNuc; i++) {
-      x1mr=x-R[indr]; x2mr=xp-R[indr]; ++indr;
-      y1mr=y-R[indr]; y2mr=yp-R[indr]; ++indr;
-      z1mr=z-R[indr]; z2mr=zp-R[indr]; ++indr;
-      rr1=-((x1mr*x1mr)+(y1mr*y1mr)+(z1mr*z1mr));
-      rr2=-((x2mr*x2mr)+(y2mr*y2mr)+(z2mr*z2mr));
-      for (int j=0; j<myPN[i]; j++) {
-         chi[indp]=EvalAngACases(primType[indp],x1mr,y1mr,z1mr);
-         chi[indp]*=exp(primExp[indp]*rr1);
-         gx[indp]=EvalAngACases(primType[indp],x2mr,y2mr,z2mr);
-         gx[indp]*=exp(primExp[indp]*rr2);
-         indp++;
-      }
-   }
-   indp=0;
-   double gamm=0.0e0,chib=0.e0;
-   int lowPri=nPri-(nPri%4);
    indr=-1;
    for ( int i=0 ; i<nPri ; ++i ) {
       chib=0.0e0;
@@ -4976,6 +4932,7 @@ double GaussWaveFunction::EvalGeneralDensityMatrix1(const double x,const double 
       }
       gamm+=chib*gx[i];
    }
+#endif
    if ( !ihaveEDF ) { return gamm; }
    for ( int i=nPri ; i<totPri ; ++i ) {
       indr=3*(primCent[i]);
@@ -4997,7 +4954,6 @@ double GaussWaveFunction::EvalGeneralDensityMatrix1(const double x,const double 
    }
    return gamm;
 }
-#endif
 double GaussWaveFunction::EvalRho2ClosedShell(const double x1,const double y1,const double z1,\
          const double x2,const double y2,const double z2) {
    double x1mr,y1mr,z1mr,x2mr,y2mr,z2mr;
