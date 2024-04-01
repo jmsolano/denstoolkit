@@ -943,7 +943,6 @@ firstprivate(j) lastprivate(i) reduction(+: rho)
    rho+=chib;
    return rho;
 }
-#if PARALLELISEDTK
 double GaussWaveFunction::EvalSpinDensity(double x,double y,double z) {
    int indr,indp;
    double xmr,ymr,zmr,rho,chib;
@@ -962,8 +961,9 @@ double GaussWaveFunction::EvalSpinDensity(double x,double y,double z) {
          indp++;
       }
    }
-   indr=0;
    rho=0.000000e0;
+   indr=-4;
+#if PARALLELISEDTK
    double chii;
    int i=0,j=0;
 #pragma omp parallel for private(chii,indr,chib) \
@@ -977,30 +977,8 @@ firstprivate(j) lastprivate(i) reduction(+: rho)
       chii=chi[i];
       rho+=((cabA[indr+i]-cabB[indr+i])*chii*chii+2.00000000e0*chib*chii);
    }
-   return rho;
-}
 #else
-double GaussWaveFunction::EvalSpinDensity(double x,double y,double z) {
-   int indr,indp;
-   double xmr,ymr,zmr,rho,chib;
-   rho=0.000000e0;
-   double rr;
-   indr=0;
-   indp=0;
-   for (int i=0; i<nNuc; i++) {
-      xmr=x-R[indr++];
-      ymr=y-R[indr++];
-      zmr=z-R[indr++];
-      rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
-      for (int j=0; j<myPN[i]; j++) {
-         chi[indp]=EvalAngACases(primType[indp],xmr,ymr,zmr);
-         chi[indp]*=exp(primExp[indp]*rr);
-         indp++;
-      }
-   }
    int lowPri=nPri-(nPri%4);
-   rho=0.000000e0;
-   indr=-4;
    double tmpCab[4];
    for ( int i=0 ; i<nPri ; ++i ) {
       chib=0.0e0;
@@ -1024,12 +1002,12 @@ double GaussWaveFunction::EvalSpinDensity(double x,double y,double z) {
       }
       rho+=chib*chi[i];
    }
+#endif
    // EDF does not contribute to the spin density, as the
    // density is equally distributed among alpha and beta
    // orbitals (EDFs are closed-shells).
    return rho;
 }
-#endif
 double GaussWaveFunction::EvalOptimizedScalar(double px,double py,double pz) {
    int indr,indp,ppt;
    double rhop,Rx[3],alp;
