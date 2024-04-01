@@ -5078,6 +5078,46 @@ double GaussWaveFunction::EvalRho2OpenShell(const double x1,const double y1,cons
    double rho1=0.0e0,rho2=0.0e0,gama=0.0e0,gamb=0.0e0;
    double chib1=0.0e0,chib2=0.0e0,chiba=0.0e0,chibb=0.0e0;
    indr=0;
+#if PARALLELISEDTK
+   int i=0,j=0;
+#pragma omp parallel for shared(chi,gx) private(indr,chib1,chib2,chiba,chibb) \
+firstprivate(j) lastprivate(i) reduction(+: rho1,rho2,gama,gamb)
+   for ( i=0 ; i<nPri ; ++i ) {
+      indr=i*(nPri);
+      chib1=0.0e0; chib2=0.0e0;
+      chiba=0.0e0; chibb=0.0e0;
+      for ( j=0 ; j<lowPri ; j+=4 ) {
+         chib2+=(cab[indr+0]*gx[j+0]);
+         chib2+=(cab[indr+1]*gx[j+1]);
+         chib2+=(cab[indr+2]*gx[j+2]);
+         chib2+=(cab[indr+3]*gx[j+3]);
+         chib1+=(cab[indr+0]*chi[j+0]);
+         chib1+=(cab[indr+1]*chi[j+1]);
+         chib1+=(cab[indr+2]*chi[j+2]);
+         chib1+=(cab[indr+3]*chi[j+3]);
+         chiba+=(cabA[indr+0]*chi[j+0]);
+         chiba+=(cabA[indr+1]*chi[j+1]);
+         chiba+=(cabA[indr+2]*chi[j+2]);
+         chiba+=(cabA[indr+3]*chi[j+3]);
+         chibb+=(cabB[indr+0]*chi[j+0]);
+         chibb+=(cabB[indr+1]*chi[j+1]);
+         chibb+=(cabB[indr+2]*chi[j+2]);
+         chibb+=(cabB[indr+3]*chi[j+3]);
+         indr+=4;
+      }
+      for ( j=lowPri ; j<nPri ; ++j ) {
+         chib2+=(cab[indr]*gx[j]);
+         chib1+=(cab[indr]*chi[j]);
+         chiba+=(cabA[indr]*chi[j]);
+         chibb+=(cabB[indr]*chi[j]);
+         ++indr;
+      }
+      rho1+=chib1*chi[i];
+      rho2+=chib2*gx[i];
+      gama+=chiba*gx[i];
+      gamb+=chibb*gx[i];
+   }
+#else
    for ( int i=0 ; i<nPri ; ++i ) {
       chib1=0.0e0; chib2=0.0e0;
       chiba=0.0e0; chibb=0.0e0;
@@ -5112,6 +5152,7 @@ double GaussWaveFunction::EvalRho2OpenShell(const double x1,const double y1,cons
       gama+=chiba*gx[i];
       gamb+=chibb*gx[i];
    }
+#endif
    if ( !ihaveEDF ) { return (0.5e0*(rho1*rho2-gama*gama-gamb*gamb)); }
    for ( int i=nPri ; i<totPri ; ++i ) {
       indr=3*(primCent[i]);
