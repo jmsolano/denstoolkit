@@ -4526,6 +4526,7 @@ double GaussWaveFunction::EvalDensityMatrix1(double x,double y,double z,
    }
    double gamm=0.0e0,chib=0.0e0;
    int i=0,j=0;
+#ifdef __linux__
 #pragma omp parallel for private(indr,chib) \
 firstprivate(j) lastprivate(i) reduction(+: gamm)
    for (i=0; i<nPri; i++) {
@@ -4536,6 +4537,25 @@ firstprivate(j) lastprivate(i) reduction(+: gamm)
       }
       gamm+=(chib*gx[i]);
    }
+#else
+   int lowPri=nPri-(nPri%4);
+#pragma omp parallel for private(indr,chib) \
+firstprivate(j) lastprivate(i) reduction(+: gamm)
+   for ( i=0 ; i<nPri ; ++i ) {
+      chib=0.0e0;
+      indr=i*(nPri);
+      for ( j=0 ; j<lowPri ; j+=4 ) {
+         chib+=(cab[indr++]*chi[j+0]);
+         chib+=(cab[indr++]*chi[j+1]);
+         chib+=(cab[indr++]*chi[j+2]);
+         chib+=(cab[indr++]*chi[j+3]);
+      }
+      for ( j=lowPri ; j<nPri ; ++j ) {
+         chib+=(cab[++indr]*chi[j]);
+      }
+      gamm+=chib*gx[i];
+   }
+#endif
    if ( !ihaveEDF ) { return gamm; }
    for ( int i=nPri ; i<totPri ; ++i ) {
       indr=3*(primCent[i]);
