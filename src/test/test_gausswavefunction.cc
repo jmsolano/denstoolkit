@@ -1,7 +1,6 @@
 #include <cstdlib>
 #include <iostream>
 using std::cout;
-using std::endl;
 #include <iomanip>
 using std::scientific;
 using std::setprecision;
@@ -52,15 +51,15 @@ int main (int argc, char *argv[]) {
       ScreenUtils::PrintScrCharLine('-');
       if ( !passed ) { ScreenUtils::SetScrRedBoldFont(); }
       cout << "            Value         (Diff)" << '\n';
-      cout << "rho: " << rho << " (" << fabs(rho-refval1) << ')' << endl;
-      cout << " pi: " << pidens << " (" << fabs(pidens-refval2) << ')' << endl;
+      cout << "rho: " << rho << " (" << fabs(rho-refval1) << ')' << '\n';
+      cout << " pi: " << pidens << " (" << fabs(pidens-refval2) << ')' << '\n';
       if ( !passed ) { ScreenUtils::SetScrNormalFont(); }
    }
    wf->CalcCabAAndCabB();
    if ( !wf->ihaveCABSingleSpin ) { 
       passed=false;
       ScreenUtils::SetScrRedBoldFont();
-      cout << (passed? "PASSED" : "FAILED") << endl;
+      cout << (passed? "PASSED" : "FAILED") << '\n';
       ScreenUtils::SetScrNormalFont();
       return EXIT_FAILURE;
    }
@@ -83,8 +82,8 @@ int main (int argc, char *argv[]) {
    if ( verbose ) {
       if ( !passed ) { ScreenUtils::SetScrRedBoldFont(); }
       cout << "            Value         (Diff)" << '\n';
-      cout << "rho: " << rho << " (" << fabs(rho-refval1) << ')' << endl;
-      if ( !passed ) { ScreenUtils::SetScrNormalFont(); }
+      cout << "rho: " << rho << " (" << fabs(rho-refval1) << ')' << '\n';
+      if ( !passed ) { ScreenUtils::SetScrNormalFont(); cout << std::flush; }
    }
    xx=-1.0e0;
    timer.Start();
@@ -109,7 +108,7 @@ int main (int argc, char *argv[]) {
       if ( !passed ) { ScreenUtils::SetScrRedBoldFont(); }
       SET_MY_PRECISION;
       cout << "            Value         (Diff)" << '\n';
-      cout << "spinrho: " << rho << " (" << (rho-refval1) << ')' << endl;
+      cout << "spinrho: " << rho << " (" << (rho-refval1) << ')' << '\n';
       if ( !passed ) { ScreenUtils::SetScrNormalFont(); }
    }
    double yy,zz;
