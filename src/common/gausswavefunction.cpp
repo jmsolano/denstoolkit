@@ -867,7 +867,6 @@ void GaussWaveFunction::CalcCabAAndCabB(void) {
    //cout << "Done." << '\n';
    return;
 }
-#if PARALLELISEDTK
 double GaussWaveFunction::EvalDensity(double x,double y,double z) {
    int indr,indp;
    double xmr,ymr,zmr,rho,chib;
@@ -886,76 +885,29 @@ double GaussWaveFunction::EvalDensity(double x,double y,double z) {
          indp++;
       }
    }
-   indr=0;
-   rho=0.000000e0;
-   double chii;
-   int i=0,j=0;
-#pragma omp parallel for private(chii,indr,chib) \
-firstprivate(j) lastprivate(i) reduction(+: rho)
-   for (i=0; i<nPri; i++) {
-      indr=i*(nPri);
-      chib=0.0000000e0;
-      for (j=(i+1); j<nPri; j++) {
-         chib+=(cab[indr+j]*chi[j]);
-      }
-      chii=chi[i];
-      rho+=(cab[indr+i]*chii*chii+2.00000000e0*chib*chii);
-   }
-   if ( ihaveEDF ) {
-      for ( int i=nPri ; i<totPri ; ++i ) {
-         indr=3*(primCent[i]);
-         xmr=x-R[indr];
-         ymr=y-R[indr+1];
-         zmr=z-R[indr+2];
-         rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
-         chi[i]=EvalAngACases(primType[i],xmr,ymr,zmr);
-         // Notice primExp[i] is beta=2*alpha, thus chi[i] is
-         // actually $\phi_{\bar{A}}^2(\vector r)$
-         chi[i]*=exp(primExp[i]*rr);
-      }
-      chib=0.0e0;
-      for (int i=nPri; i<totPri; ++i) {
-         chib+=(EDFCoeff[i-nPri]*chi[i]);
-      }
-      rho+=chib;
-   }
-   return rho;
-}
-#else
-double GaussWaveFunction::EvalDensity(double x,double y,double z) {
-   int indr,indp;
-   double xmr,ymr,zmr,rho,chib;
-   rho=0.000000e0;
-   double rr;
-   indr=0;
-   indp=0;
-   for (int i=0; i<nNuc; i++) {
-      xmr=x-R[indr++];
-      ymr=y-R[indr++];
-      zmr=z-R[indr++];
-      rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
-      for (int j=0; j<myPN[i]; j++) {
-         chi[indp]=EvalAngACases(primType[indp],xmr,ymr,zmr);
-         chi[indp]*=exp(primExp[indp]*rr);
-         indp++;
-      }
-   }
-   /*
-   indr=0;
-   rho=0.000000e0;
-   for (int i=0; i<nPri; i++) {
-      indr=i*(nPri+1);
-      rho+=(cab[indr++]*chi[i]*chi[i]);
-      chib=0.0000000e0;
-      for (int j=(i+1); j<nPri; j++) {
-         chib+=(cab[indr++]*chi[j]);
-      }
-      rho+=(2.00000000e0*chib*chi[i]);
-   }
-   // */
    int lowPri=nPri-(nPri%4);
    rho=0.000000e0;
    indr=-1;
+#if PARALLELISEDTK
+   int i=0,j=0;
+#pragma omp parallel for private(indr,chib) \
+firstprivate(j) lastprivate(i) reduction(+: rho)
+   for ( i=0 ; i<nPri ; ++i ) {
+      indr=i*nPri;
+      chib=0.0e0;
+      for ( j=0 ; j<lowPri ; j+=4 ) {
+         chib+=(cab[indr+0]*chi[j  ]);
+         chib+=(cab[indr+1]*chi[j+1]);
+         chib+=(cab[indr+2]*chi[j+2]);
+         chib+=(cab[indr+3]*chi[j+3]);
+         indr+=4;
+      }
+      for ( j=lowPri ; j<nPri ; ++j ) {
+         chib+=(cab[++indr]*chi[j]);
+      }
+      rho+=chib*chi[i];
+   }
+#else
    for ( int i=0 ; i<nPri ; ++i ) {
       chib=0.0e0;
       for ( int j=0 ; j<lowPri ; j+=4 ) {
@@ -969,29 +921,28 @@ double GaussWaveFunction::EvalDensity(double x,double y,double z) {
       }
       rho+=chib*chi[i];
    }
-   if ( ihaveEDF ) {
-      for ( int i=nPri ; i<totPri ; ++i ) {
-         indr=3*(primCent[i]);
-         xmr=x-R[indr];
-         ymr=y-R[indr+1];
-         zmr=z-R[indr+2];
-         rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
-         //cout << "pc: " << primCent[i] << ", rr: " << rr << endl;
-         chi[i]=EvalAngACases(primType[i],xmr,ymr,zmr);
-         // Notice primExp[i] is beta=2*alpha, thus chi[i] is
-         // actually $\phi_{\bar{A}}^2(\vector r)$
-         chi[i]*=exp(primExp[i]*rr);
-      }
-      chib=0.0e0;
-      for (int i=nPri; i<totPri; ++i) {
-         chib+=(EDFCoeff[i-nPri]*chi[i]);
-      }
-      //rho+=occN[nMOr]*chib*chib;
-      rho+=chib;
+#endif
+   if ( !ihaveEDF ) { return rho; }
+   for ( int i=nPri ; i<totPri ; ++i ) {
+      indr=3*(primCent[i]);
+      xmr=x-R[indr];
+      ymr=y-R[indr+1];
+      zmr=z-R[indr+2];
+      rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+      //cout << "pc: " << primCent[i] << ", rr: " << rr << endl;
+      chi[i]=EvalAngACases(primType[i],xmr,ymr,zmr);
+      // Notice primExp[i] is beta=2*alpha, thus chi[i] is
+      // actually $\phi_{\bar{A}}^2(\vector r)$
+      chi[i]*=exp(primExp[i]*rr);
    }
+   chib=0.0e0;
+   for (int i=nPri; i<totPri; ++i) {
+      chib+=(EDFCoeff[i-nPri]*chi[i]);
+   }
+   //rho+=occN[nMOr]*chib*chib;
+   rho+=chib;
    return rho;
 }
-#endif
 #if PARALLELISEDTK
 double GaussWaveFunction::EvalSpinDensity(double x,double y,double z) {
    int indr,indp;
