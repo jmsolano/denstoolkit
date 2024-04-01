@@ -31,6 +31,18 @@ else
   endif
 endif
 
+SETDTKNPROC := 1
+
+# Use OpenMP
+DTKUSEOPENMP := 0
+ifneq ($(SETDTKNPROC),1)
+      DTKUSEOPENMP=$(SETDTKNPROC)
+      CXXFLAGS   += -DPARALLELISEDTK=$(DTKUSEOPENMP) -fopenmp
+      LFLAGS     += -fopenmp
+else
+      CXXFLAGS   += -DPARALLELISEDTK=0
+endif
+
 MYMAKEFLAGS := 
 
 # COMPILERS OPTIONS
@@ -77,7 +89,7 @@ STATICOBJS=$(shell for i in $$(ls ../common/*cpp);do echo $${i%cpp}o;done)
 TESTEXECS=$(patsubst %.cc,%.x,$(wildcard *.cc))
 
 # -L: FOLDER LIBRARY
-LFLAGS+=-L$(TOP)/../common/
+LFLAGS+=#-L$(TOP)/../common/
 LFLAGS+=#-L.
 
 # -l: LIBRARY
@@ -100,7 +112,7 @@ $(CCOBJS): %.o: %.cc $(COMMONHEADERS) $(HEADERS)
 
 $(TESTEXECS): %.x: %.o $(STATICLIB) $(CCOBJS) $(CPPOBJS) $(SOURCES) $(HEADERS) $(COMMONHEADERS) $(COMMONSOURCES)
 	@echo "\033[32m   Linking $@\\033[m"
-	$(CXX) $(LFLAGS) $(OPTIMFLAGS) $< $(CPPOBJS) $(STATICOBJS) -o $@
+	$(CXX) $(LFLAGS) $(OPTIMFLAGS) $< $(CPPOBJS) $(STATICLIB) -o $@
 
 $(STATICLIB): $(COMMONHEADERS) $(COMMONSOURCES)
 	@echo "\033[32mBuilding lib$(COMMONSTATICLIBNAME).a\\033[m"
@@ -120,9 +132,19 @@ clean:
 	$(info CLEANING ALL)
 	@$(RM) -f $(TARGET) $(OBJS) $(TESTEXECS) 2>/dev/null || true
 
+.PHONY: help
+help: ## Shows this help
+	@echo '=================================================================================='
+	@echo 'usage: make [target] ...'
+	@echo '=================================================================================='
+	@echo ''
+	@echo 'targets:'
+	@egrep -e '^(.+)\:\ .*##\ (.+)' ${MAKEFILE_LIST} | sed 's/:.*##/#/' | column -t -c 2 -s '#'
+	@echo ''
+	@echo '=================================================================================='
+
 fullclean: clean
 	@cd ../common/;$(MAKE) clean
-
 
 list:
 	@echo $(OBJS)
@@ -130,4 +152,7 @@ list:
 
 listobjs:
 	@echo $(LIBOBJS)
+
+liststatic:
+	@echo $(STATICOBJS)
 
