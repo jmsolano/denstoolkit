@@ -4530,9 +4530,7 @@ void GaussWaveFunction::EvalGradDensityMatrix1(double x,double y,double z,\
       double &gamm,double (&gg)[3],double (&gp)[3]) {
    double xmr,xpmr,ymr,ypmr,zmr,zpmr,rr,rrp;
    double cc,ccp,alp;
-   int indp,indr,ppt;
-   indp=0;
-   indr=0;
+   int indp=0,indr=0,ppt=0;
    for (int i=0; i<nNuc; i++) {
       xmr=x-R[indr];
       xpmr=xp-R[indr++];
@@ -4568,6 +4566,37 @@ void GaussWaveFunction::EvalGradDensityMatrix1(double x,double y,double z,\
    indp=0;
    int lowPri=nPri-(nPri%4);
    double trho=0.0000000e0,chib,chibp;
+#if PARALLELISEDTK
+   int i=0,j=0;
+#pragma omp parallel for shared(chi,hyz,cab,gx,gy,gz,hxx,hyy,hzz) private(indp,chib,chibp) \
+firstprivate(j) lastprivate(i) reduction(+: trho,nabx,naby,nabz,nabxp,nabyp,nabzp)
+   for (i=0; i<nPri; i++) {
+      indp=i*nPri;
+      chib=chibp=0.0000000e0;
+      for (j=0; j<lowPri; j+=4) {
+         chibp+=(hyz[j+0]*cab[indp+0]);
+         chibp+=(hyz[j+1]*cab[indp+1]);
+         chibp+=(hyz[j+2]*cab[indp+2]);
+         chibp+=(hyz[j+3]*cab[indp+3]);
+         chib+=(chi[j+0]*cab[indp+0]);
+         chib+=(chi[j+1]*cab[indp+1]);
+         chib+=(chi[j+2]*cab[indp+2]);
+         chib+=(chi[j+3]*cab[indp+3]);
+         indp+=4;
+      }
+      for (j=lowPri; j<nPri; ++j) {
+         chibp+=(hyz[j]*cab[indp]);
+         chib+=(chi[j]*cab[indp++]);
+      }
+      trho+=(chibp*chi[i]);
+      nabx+=(chibp*gx[i]);
+      naby+=(chibp*gy[i]);
+      nabz+=(chibp*gz[i]);
+      nabxp+=(chib*hxx[i]);
+      nabyp+=(chib*hyy[i]);
+      nabzp+=(chib*hzz[i]);
+   }
+#else
    for (int i=0; i<nPri; i++) {
       chib=chibp=0.0000000e0;
       for (int j=0; j<lowPri; j+=4) {
@@ -4593,6 +4622,7 @@ void GaussWaveFunction::EvalGradDensityMatrix1(double x,double y,double z,\
       nabyp+=(chib*hyy[i]);
       nabzp+=(chib*hzz[i]);
    }
+#endif
    gg[0]=nabx;
    gg[1]=naby;
    gg[2]=nabz;
