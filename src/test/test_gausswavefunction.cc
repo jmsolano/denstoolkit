@@ -216,15 +216,30 @@ int main (int argc, char *argv[]) {
    xx=yy=zz=0.0e0;
    xp=0.1e0,yp=0.1e0,zp=0.2e0;
    double refggm1=wf->EvalDensityMatrix1(xx,yy,zz,xp,yp,zp);
+   double refggxx[3]={0.0026916196341634,-0.0047278138486487,-0.0074855108384113};
+   double refggxp[3]={8.0358325728843e-05,-0.0064731533172912,-0.0081621533763259};
    double ggm1,gxx[3],gxp[3];
    wf->EvalGradDensityMatrix1(xx,yy,zz,xp,yp,zp,ggm1,gxx,gxp);
    passed=passed&&(fabs(ggm1-refggm1)<1.0e-14);
+   for ( int i=0 ; i<3 ; ++i ) {
+      passed=passed&&(fabs(gxx[i]-refggxx[i])<1.0e-14);
+      passed=passed&&(fabs(gxp[i]-refggxp[i])<1.0e-14);
+   }
    if ( verbose ) {
       ScreenUtils::PrintScrCharLine('-');
-      //SET_MY_PRECISION;
+      if ( !passed ) { ScreenUtils::SetScrRedBoldFont(); }
+      //cout << setprecision(14);
+      SET_MY_PRECISION;
       cout << "                   Value         (Diff)" << '\n';
-      cout << "Gamma1Ref(x,xp): " << refggm1 << '\n';
-      cout << "   Gamma1(x,xp): " << ggm1 << " (" << (ggm1-refggm1) << ')' << '\n';
+      cout << "Gamma1Ref(xx,xp): " << refggm1 << '\n';
+      cout << "   Gamma1(xx,xp): " << ggm1 << " (" << (ggm1-refggm1) << ')' << '\n';
+      cout << "dxxGamma1(xx,xp): " << gxx[0] << " (" << fabs(gxx[0]-refggxx[0]) << ')' << '\n';
+      cout << "dyyGamma1(xx,xp): " << gxx[1] << " (" << fabs(gxx[1]-refggxx[1]) << ')' << '\n';
+      cout << "dzzGamma1(xx,xp): " << gxx[2] << " (" << fabs(gxx[2]-refggxx[2]) << ')' << '\n';
+      cout << "dxpGamma1(xx,xp): " << gxp[0] << " (" << fabs(gxp[0]-refggxp[0]) << ')' << '\n';
+      cout << "dypGamma1(xx,xp): " << gxp[1] << " (" << fabs(gxp[1]-refggxp[1]) << ')' << '\n';
+      cout << "dzpGamma1(xx,xp): " << gxp[2] << " (" << fabs(gxp[2]-refggxp[2]) << ')' << '\n';
+      if ( !passed ) { ScreenUtils::SetScrNormalFont(); }
    }
    timer.Start();
    for ( int i=0 ; i<N ; ++i ) {

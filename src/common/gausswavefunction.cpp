@@ -4566,11 +4566,22 @@ void GaussWaveFunction::EvalGradDensityMatrix1(double x,double y,double z,\
    nabx=naby=nabz=0.000000000000000e0;
    nabxp=nabyp=nabzp=0.000000000000000e0;
    indp=0;
+   int lowPri=nPri-(nPri%4);
    double trho=0.0000000e0,chib,chibp;
    for (int i=0; i<nPri; i++) {
       chib=chibp=0.0000000e0;
-      for (int j=0; j<nPri; j++) {
-         //cc=cab[indp++];
+      for (int j=0; j<lowPri; j+=4) {
+         chibp+=(hyz[j+0]*cab[indp+0]);
+         chibp+=(hyz[j+1]*cab[indp+1]);
+         chibp+=(hyz[j+2]*cab[indp+2]);
+         chibp+=(hyz[j+3]*cab[indp+3]);
+         chib+=(chi[j+0]*cab[indp+0]);
+         chib+=(chi[j+1]*cab[indp+1]);
+         chib+=(chi[j+2]*cab[indp+2]);
+         chib+=(chi[j+3]*cab[indp+3]);
+         indp+=4;
+      }
+      for (int j=lowPri; j<nPri; ++j) {
          chibp+=(hyz[j]*cab[indp]);
          chib+=(chi[j]*cab[indp++]);
       }
