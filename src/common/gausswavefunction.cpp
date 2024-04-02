@@ -4589,10 +4589,48 @@ void GaussWaveFunction::EvalGradDensityMatrix1(double x,double y,double z,\
    gp[1]=nabyp;
    gp[2]=nabzp;
    gamm=trho;
-   if ( ihaveEDF ) {
-      cout << "Warning: EvalGradDensityMatrix1 does not include EDF " <<
-        "contributions!" << endl;
+   if ( !ihaveEDF ) { return; }
+   for ( int i=nPri ; i<totPri ; ++i ) {
+      ppt=primType[i];
+      alp=0.5*primExp[i];
+      indr=3*primCent[i];
+      xmr =x -R[indr+0]; ymr =y -R[indr+1]; zmr =z -R[indr+2];
+      rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+      xpmr=xp-R[indr+0]; ypmr=yp-R[indr+1]; zpmr=zp-R[indr+2];
+      rrp=-((xpmr*xpmr)+(ypmr*ypmr)+(zpmr*zpmr));
+      cc=exp(alp*rr);
+      chi[i]=EvalAngACases(ppt,xmr,ymr,zmr);
+      chi[i]*=cc;
+      EvalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[i],gy[i],gz[i]);
+      gx[i]*=cc; gy[i]*=cc; gz[i]*=cc;
+      ccp=exp(alp*rrp);
+      hyz[i]=EvalAngACases(ppt,xpmr,ypmr,zpmr);
+      hyz[i]*=ccp;
+      EvalDkAngCases(ppt,alp,xpmr,ypmr,zpmr,hxx[i],hyy[i],hzz[i]);
+      hxx[i]*=ccp; hyy[i]*=ccp; hzz[i]*=ccp;
    }
+   trho=0.0e0;
+   nabx=naby=nabz=0.0e0;
+   nabxp=nabyp=nabzp=0.0e0;
+   for ( int i=nPri ; i<totPri ; ++i ) {
+      cc=EDFCoeff[i-nPri];
+      chib=chi[i];
+      chibp=hyz[i];
+      nabx+=(cc*chibp*gx[i]);
+      naby+=(cc*chibp*gy[i]);
+      nabz+=(cc*chibp*gz[i]);
+      nabxp+=(cc*chib*hxx[i]);
+      nabyp+=(cc*chib*hyy[i]);
+      nabzp+=(cc*chib*hzz[i]);
+      trho+=(cc*chib*chibp);
+   }
+   gg[0]+=nabx;
+   gg[1]+=naby;
+   gg[2]+=nabz;
+   gp[0]+=nabxp;
+   gp[1]+=nabyp;
+   gp[2]+=nabzp;
+   gamm+=trho;
    return;
 }
 void GaussWaveFunction::EvalHessDensityMatrix1(double (&xx)[3],double (&xxp)[3],\

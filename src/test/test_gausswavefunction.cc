@@ -213,6 +213,27 @@ int main (int argc, char *argv[]) {
    timer.End();
    if ( verbose ) { timer.PrintElapsedTimeMilliSec("Rho2OpenShell"); }
    // ***************************************************
+   xx=yy=zz=0.0e0;
+   xp=0.1e0,yp=0.1e0,zp=0.2e0;
+   double refggm1=wf->EvalDensityMatrix1(xx,yy,zz,xp,yp,zp);
+   double ggm1,gxx[3],gxp[3];
+   wf->EvalGradDensityMatrix1(xx,yy,zz,xp,yp,zp,ggm1,gxx,gxp);
+   passed=passed&&(fabs(ggm1-refggm1)<1.0e-14);
+   if ( verbose ) {
+      ScreenUtils::PrintScrCharLine('-');
+      //SET_MY_PRECISION;
+      cout << "                   Value         (Diff)" << '\n';
+      cout << "Gamma1Ref(x,xp): " << refggm1 << '\n';
+      cout << "   Gamma1(x,xp): " << ggm1 << " (" << (ggm1-refggm1) << ')' << '\n';
+   }
+   timer.Start();
+   for ( int i=0 ; i<N ; ++i ) {
+      wf->EvalGradDensityMatrix1(xx,yy,zz,xp,yp,zp,ggm1,gxx,gxp);
+      xx+=dx;
+   }
+   timer.End();
+   if ( verbose ) { timer.PrintElapsedTimeMilliSec("GradDensityMatrix1"); }
+   // ***************************************************
    if ( verbose ) {
       ScreenUtils::PrintScrCharLine('-');
       if ( !passed ) { ScreenUtils::SetScrRedBoldFont(); }
