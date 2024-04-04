@@ -94,14 +94,6 @@ int main (int argc, char *argv[]) {
    }
    timer.End();
    if ( verbose ) { timer.PrintElapsedTimeMilliSec("Momentum space density"); }
-   xx=-1.0e0;
-   timer.Start();
-   for ( int i=0 ; i<N ; ++i ) {
-      wf->EvalSpinDensity(xx,0.0e0,0.0e0);
-      xx+=dx;
-   }
-   timer.End();
-   if ( verbose ) { timer.PrintElapsedTimeMilliSec("Spin Density"); }
    refval1=0.0002271651711;
    rho=wf->EvalSpinDensity(0.0e0,0.0e0,0.0e0);
    passed=passed&&(fabs(rho-refval1)<1.0e-13);
@@ -116,65 +108,7 @@ int main (int argc, char *argv[]) {
    xx=yy=zz=0.0e0;
    double xp=0.1e0,yp=0.1e0,zp=0.2e0;
    SET_MY_PRECISION;
-   double reggamma=wf->EvalDensityMatrix1(xx,yy,zz,xp,yp,zp);
-   double grlgamma=wf->EvalGeneralDensityMatrix1(xx,yy,zz,xp,yp,zp,false,wf->cab);
-   double g1a=wf->EvalGeneralDensityMatrix1(xx,yy,zz,xp,yp,zp,true,wf->cabA);
-   double refg1a=0.013130273669108;
-   double g1b=wf->EvalGeneralDensityMatrix1(xx,yy,zz,xp,yp,zp,true,wf->cabB);
-   double refg1b=0.012829822024859;
-   passed=passed&&(fabs(g1a-refg1a)<1.0e-14);
-   passed=passed&&(fabs(g1b-refg1b)<1.0e-14);
-   passed=passed&&(fabs(g1a+g1b-reggamma)<1.0e-14);
-   if ( verbose ) {
-      ScreenUtils::PrintScrCharLine('-');
-      if ( !passed ) { ScreenUtils::SetScrRedBoldFont(); }
-      cout << setprecision(14);
-      cout << "            Value         (Diff)" << '\n';
-      cout << "    Gamma1: " << reggamma << '\n';
-      cout << "GralGamma1: " << grlgamma << " (" << (grlgamma-reggamma) << ')' << '\n';
-      cout << "Sum-Gamma1: " << (g1a+g1b) << " (" << (g1a+g1b-reggamma) << ')' << '\n';
-      cout << "AlphGamma1: " << g1a << " (" << (refg1a-g1a) << ')' << '\n';
-      cout << "BetaGamma1: " << g1b << " (" << (refg1b-g1b) << ')' << '\n';
-      if ( !passed ) { ScreenUtils::SetScrNormalFont(); }
-   }
    // ***************************************************
-   timer.Start();
-   for ( int i=0 ; i<N ; ++i ) {
-      wf->EvalDensityMatrix1(xx,yy,zz,xp,yp,zp);
-      xx+=dx;
-   }
-   timer.End();
-   if ( verbose ) { timer.PrintElapsedTimeMilliSec("Regular Gamma1"); }
-   // ***************************************************
-   xx=0.0e0;
-   timer.Start();
-   for ( int i=0 ; i<N ; ++i ) {
-      wf->EvalGeneralDensityMatrix1(xx,yy,zz,xp,yp,zp,false,wf->cab);
-      xx+=dx;
-   }
-   timer.End();
-   if ( verbose ) { timer.PrintElapsedTimeMilliSec("General Gamma1"); }
-   // ***************************************************
-   xx=0.0e0;
-   timer.Start();
-   for ( int i=0 ; i<N ; ++i ) {
-      wf->EvalDensityMatrix1Alpha(xx,yy,zz,xp,yp,zp);
-      xx+=dx;
-   }
-   timer.End();
-   if ( verbose ) { timer.PrintElapsedTimeMilliSec("Gamma1 Alpha"); }
-   // ***************************************************
-   xx=0.0e0;
-   timer.Start();
-   for ( int i=0 ; i<N ; ++i ) {
-      wf->EvalDensityMatrix1Beta(xx,yy,zz,xp,yp,zp);
-      xx+=dx;
-   }
-   timer.End();
-   if ( verbose ) { timer.PrintElapsedTimeMilliSec("Gamma1 Beta"); }
-   // ***************************************************
-   xx=yy=zz=0.0e0;
-   xp=0.1e0,yp=0.1e0,zp=0.2e0;
    double rho1=wf->EvalDensity(xx,yy,zz);
    double rho2=wf->EvalDensity(xp,yp,zp);
    double gamm=wf->EvalDensityMatrix1(xx,yy,zz,xp,yp,zp);
@@ -195,23 +129,62 @@ int main (int argc, char *argv[]) {
       cout << "rho2clVal(x,xp): " << rho2cv << " (" << (rho2cv-rho2cr) << ')' << '\n';
    }
    // ***************************************************
-   xx=0.0e0;
+   xx=yy=zz=0.0e0;
+   xp=0.1e0,yp=0.1e0,zp=0.2e0;
+   double refggm1=wf->EvalDensityMatrix1(xx,yy,zz,xp,yp,zp);
+   double refggxx[3]={0.0026916196341634,-0.0047278138486487,-0.0074855108384113};
+   double refggxp[3]={8.0358325728843e-05,-0.0064731533172912,-0.0081621533763259};
+   double ggm1,gxx[3],gxp[3];
+   wf->EvalGradDensityMatrix1(xx,yy,zz,xp,yp,zp,ggm1,gxx,gxp);
+   passed=passed&&(fabs(ggm1-refggm1)<1.0e-14);
+   for ( int i=0 ; i<3 ; ++i ) {
+      passed=passed&&(fabs(gxx[i]-refggxx[i])<1.0e-14);
+      passed=passed&&(fabs(gxp[i]-refggxp[i])<1.0e-14);
+   }
+   if ( verbose ) {
+      ScreenUtils::PrintScrCharLine('-');
+      if ( !passed ) { ScreenUtils::SetScrRedBoldFont(); }
+      //cout << setprecision(14);
+      SET_MY_PRECISION;
+      cout << "                   Value         (Diff)" << '\n';
+      cout << "Gamma1Ref(xx,xp): " << refggm1 << '\n';
+      cout << "   Gamma1(xx,xp): " << ggm1 << " (" << (ggm1-refggm1) << ')' << '\n';
+      cout << "dxxGamma1(xx,xp): " << gxx[0] << " (" << fabs(gxx[0]-refggxx[0]) << ')' << '\n';
+      cout << "dyyGamma1(xx,xp): " << gxx[1] << " (" << fabs(gxx[1]-refggxx[1]) << ')' << '\n';
+      cout << "dzzGamma1(xx,xp): " << gxx[2] << " (" << fabs(gxx[2]-refggxx[2]) << ')' << '\n';
+      cout << "dxpGamma1(xx,xp): " << gxp[0] << " (" << fabs(gxp[0]-refggxp[0]) << ')' << '\n';
+      cout << "dypGamma1(xx,xp): " << gxp[1] << " (" << fabs(gxp[1]-refggxp[1]) << ')' << '\n';
+      cout << "dzpGamma1(xx,xp): " << gxp[2] << " (" << fabs(gxp[2]-refggxp[2]) << ')' << '\n';
+      if ( !passed ) { ScreenUtils::SetScrNormalFont(); }
+   }
    timer.Start();
    for ( int i=0 ; i<N ; ++i ) {
-      wf->EvalRho2ClosedShell(xx,yy,zz,xp,yp,zp);
+      wf->EvalGradDensityMatrix1(xx,yy,zz,xp,yp,zp,ggm1,gxx,gxp);
       xx+=dx;
    }
    timer.End();
-   if ( verbose ) { timer.PrintElapsedTimeMilliSec("Rho2ClosedShell"); }
+   if ( verbose ) { timer.PrintElapsedTimeMilliSec("GradDensityMatrix1"); }
    // ***************************************************
-   xx=0.0e0;
-   timer.Start();
-   for ( int i=0 ; i<N ; ++i ) {
-      wf->EvalRho2OpenShell(xx,yy,zz,xp,yp,zp);
-      xx+=dx;
+   double vxx[3]={0.0e0,0.1e0,0.3e0};
+   double vxp[3]={0.1e0,0.3e0,0.2e0};
+   double refhgm1,refhggxx[3],refhggxp[3];
+   //cout << "Checkpoint" << '\n';
+   wf->EvalGradDensityMatrix1(vxx[0],vxx[1],vxx[2],vxp[0],vxp[1],vxp[2],refhgm1,refhggxx,refhggxp);
+   //double refhxx[3][3];
+   //double refhxx[3][3],refhxp[3][3],refhpp[3][3];
+   double hxx[3][3],hxp[3][3],hpp[3][3];
+   wf->EvalHessDensityMatrix1(vxx,vxp,ggm1,gxx,gxp,hxx,hxp,hpp);
+   if ( verbose ) {
+      ScreenUtils::PrintScrCharLine('-');
+      if ( !passed ) { ScreenUtils::SetScrRedBoldFont(); }
+      cout << setprecision(14);
+      //SET_MY_PRECISION;
+      cout << "                   Value         (Diff)" << '\n';
+      cout << "Gamma1Ref(xx,xp): " << refhgm1 << '\n';
+      cout << "   Gamma1(xx,xp): " << ggm1 << " (" << (ggm1-refhgm1) << ')' << '\n';
+      cout << "dxxGamma1(xx,xp): " << gxx[0] << " (" << fabs(gxx[0]-refhggxx[0]) << ')' << '\n';
+      if ( !passed ) { ScreenUtils::SetScrNormalFont(); }
    }
-   timer.End();
-   if ( verbose ) { timer.PrintElapsedTimeMilliSec("Rho2OpenShell"); }
    // ***************************************************
    if ( verbose ) {
       ScreenUtils::PrintScrCharLine('-');

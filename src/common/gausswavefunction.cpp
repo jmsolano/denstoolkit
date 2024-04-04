@@ -4843,6 +4843,125 @@ void GaussWaveFunction::EvalHessDensityMatrix1(double (&xx)[3],double (&xxp)[3],
    hp[0][0]=sumhxx; hp[0][1]=sumhxy; hp[0][2]=sumhxz;
    hp[1][0]=sumhxy; hp[1][1]=sumhyy; hp[1][2]=sumhyz;
    hp[2][0]=sumhxz; hp[2][1]=sumhyz; hp[2][2]=sumhzz;
+   if ( !ihaveEDF ) { return; }
+   for ( int i=nPri ; i<totPri ; ++i ) {
+      ppt=primType[i];
+      alp=0.5*primExp[i];
+      indr=3*primCent[i];
+      xmr =x -R[indr+0]; ymr =y -R[indr+1]; zmr =z -R[indr+2];
+      rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+      xpmr=xp-R[indr+0]; ypmr=yp-R[indr+1]; zpmr=zp-R[indr+2];
+      rrp=-((xpmr*xpmr)+(ypmr*ypmr)+(zpmr*zpmr));
+      cc=exp(alp*rr);
+      chi[i]=EvalAngACases(ppt,xmr,ymr,zmr);
+      chi[i]*=cc;
+      EvalDkAngCases(ppt,alp,xmr,ymr,zmr,gx[i],gy[i],gz[i]);
+      gx[i]*=cc; gy[i]*=cc; gz[i]*=cc;
+      ccp=exp(alp*rrp);
+      hyz[i]=EvalAngACases(ppt,xpmr,ypmr,zpmr);
+      hyz[i]*=ccp;
+      EvalDkAngCases(ppt,alp,xpmr,ypmr,zpmr,hxx[i],hyy[i],hzz[i]);
+      hxx[i]*=ccp; hyy[i]*=ccp; hzz[i]*=ccp;
+   }
+   //For now, hyz is $\phi_{\bar A}(\vec{r}')$
+   //         hxx is $\partial_{x'}\phi_{\bar A}(\vec{r}')$
+   //         hxy is $\partial_{y'}\phi_{\bar A}(\vec{r}')$
+   //         hxz is $\partial_{z'}\phi_{\bar A}(\vec{r}')$
+   trho=0.0e0;
+   nabx=naby=nabz=0.0e0;
+   nabxp=nabyp=nabzp=0.0e0;
+   sumhxx=sumhyy=sumhzz=sumhxy=sumhxz=sumhyz=0.0e0;
+   sumxpy=sumxpz=sumypz=0.0e0;
+   for (int i=nPri; i<totPri; ++i) {
+      cc=EDFCoeff[i-nPri];
+      chib=cc*chi[i];
+      chibp=cc*hyz[i];
+      sumdiphiax=cc*gx[i];
+      sumdiphiay=cc*gy[i];
+      sumdiphiaz=cc*gz[i];
+
+      trho+=(chibp*chi[i]);
+      nabx+=(chibp*gx[i]);
+      naby+=(chibp*gy[i]);
+      nabz+=(chibp*gz[i]);
+      nabxp+=(chib*hxx[i]);
+      nabyp+=(chib*hyy[i]);
+      nabzp+=(chib*hzz[i]);
+      sumhxx+=(sumdiphiax*hxx[i]);
+      sumhyy+=(sumdiphiay*hyy[i]);
+      sumhzz+=(sumdiphiaz*hzz[i]);
+      sumhxy+=(sumdiphiax*hyy[i]);
+      sumhxz+=(sumdiphiax*hzz[i]);
+      sumhyz+=(sumdiphiay*hzz[i]);
+      sumxpy+=(sumdiphiay*hxx[i]);
+      sumxpz+=(sumdiphiaz*hxx[i]);
+      sumypz+=(sumdiphiaz*hyy[i]);
+   }
+   gg[0]+=nabx;  gg[1]+=naby;  gg[2]+=nabz;
+   gp[0]+=nabxp; gp[1]+=nabyp; gp[2]+=nabzp;
+   gamm+=trho;
+   hph[0][0]+=sumhxx; hph[0][1]+=sumhxy; hph[0][2]+=sumhxz;
+   hph[1][0]+=sumxpy; hph[1][1]+=sumhyy; hph[1][2]+=sumhyz;
+   hph[2][0]+=sumxpz; hph[2][1]+=sumypz; hph[2][2]+=sumhzz;
+   for ( int i=nPri ; i<totPri ; ++i ) {gx[i]=hyz[i];} //gx is now chi(xp)
+   for ( int i=nPri ; i<totPri ; ++i ) {
+      ppt=primType[i];
+      alp=0.5*primExp[i];
+      indr=3*primCent[i];
+      xmr =x -R[indr+0]; ymr =y -R[indr+1]; zmr =z -R[indr+2];
+      rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+      cc=exp(alp*rr);
+      EvalDkDlAngCases(ppt,alp,xmr,ymr,zmr,hxx[i],hyy[i],hzz[i],hxy[i],hxz[i],hyz[i]);
+      hxx[i]*=cc;
+      hyy[i]*=cc;
+      hzz[i]*=cc;
+      hxy[i]*=cc;
+      hxz[i]*=cc;
+      hyz[i]*=cc;
+   }
+   sumhxx=sumhyy=sumhzz=sumhxy=sumhxz=sumhyz=0.0e0;
+   for (int i=nPri; i<totPri; ++i) {
+      cc=EDFCoeff[i-nPri];
+      chibp=cc*gx[i];
+      sumhxx+=(chibp*hxx[i]);
+      sumhyy+=(chibp*hyy[i]);
+      sumhzz+=(chibp*hzz[i]);
+      sumhxy+=(chibp*hxy[i]);
+      sumhxz+=(chibp*hxz[i]);
+      sumhyz+=(chibp*hyz[i]);
+   }
+   hh[0][0]+=sumhxx; hh[0][1]+=sumhxy; hh[0][2]+=sumhxz;
+   hh[1][0]+=sumhxy; hh[1][1]+=sumhyy; hh[1][2]+=sumhyz;
+   hh[2][0]+=sumhxz; hh[2][1]+=sumhyz; hh[2][2]+=sumhzz;
+   for ( int i=nPri ; i<totPri ; ++i ) {
+      ppt=primType[i];
+      alp=0.5*primExp[i];
+      indr=3*primCent[i];
+      xmr =xp-R[indr+0]; ymr =yp-R[indr+1]; zmr =zp-R[indr+2];
+      rr=-((xmr*xmr)+(ymr*ymr)+(zmr*zmr));
+      cc=exp(alp*rr);
+      EvalDkDlAngCases(ppt,alp,xmr,ymr,zmr,hxx[i],hyy[i],hzz[i],hxy[i],hxz[i],hyz[i]);
+      hxx[i]*=cc;
+      hyy[i]*=cc;
+      hzz[i]*=cc;
+      hxy[i]*=cc;
+      hxz[i]*=cc;
+      hyz[i]*=cc;
+   }
+   sumhxx=sumhyy=sumhzz=sumhxy=sumhxz=sumhyz=0.0e0;
+   for (int i=nPri; i<totPri; ++i) {
+      cc=EDFCoeff[i-nPri];
+      chib=cc*chi[i];
+      sumhxx+=(chib*hxx[i]);
+      sumhyy+=(chib*hyy[i]);
+      sumhzz+=(chib*hzz[i]);
+      sumhxy+=(chib*hxy[i]);
+      sumhxz+=(chib*hxz[i]);
+      sumhyz+=(chib*hyz[i]);
+   }
+   hp[0][0]+=sumhxx; hp[0][1]+=sumhxy; hp[0][2]+=sumhxz;
+   hp[1][0]+=sumhxy; hp[1][1]+=sumhyy; hp[1][2]+=sumhyz;
+   hp[2][0]+=sumhxz; hp[2][1]+=sumhyz; hp[2][2]+=sumhzz;
    if ( ihaveEDF ) {
       cout << "Warning: EvalHessDensityMatrix1 does not include EDF " <<
         "contributions!" << endl;
