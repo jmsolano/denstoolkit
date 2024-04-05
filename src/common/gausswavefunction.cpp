@@ -4724,6 +4724,66 @@ void GaussWaveFunction::EvalHessDensityMatrix1(double (&xx)[3],double (&xxp)[3],
    double sumxpy,sumxpz,sumypz;
    sumhxx=sumhyy=sumhzz=sumhxy=sumhxz=sumhyz=0.00000e0;
    sumxpy=sumxpz=sumypz=0.0e0;
+#if PARALLELISEDTK
+   int i=0,j=0;
+#pragma omp parallel for shared(cab,hyz,chi,gx,gy,gz,hxx,hyy,hzz,lowPri) \
+private(indp,chib,chibp,sumdiphiax,sumdiphiay,sumdiphiaz,cc) \
+firstprivate(j) lastprivate(i) \
+reduction(+: trho,nabx,naby,nabz,nabxp,nabyp,nabzp,\
+             sumhxx,sumhyy,sumhzz,sumhxy,sumhxz,sumhyz,sumxpy,sumxpz,sumypz)
+   for (i=0; i<nPri; i++) {
+      indp=i*nPri;
+      chib=chibp=0.0000000e0;
+      sumdiphiax=sumdiphiay=sumdiphiaz=0.0000000e0;
+      for (j=0; j<lowPri; j+=4) {
+         chibp+=(hyz[j+0]*cab[indp+0]);
+         chibp+=(hyz[j+1]*cab[indp+1]);
+         chibp+=(hyz[j+2]*cab[indp+2]);
+         chibp+=(hyz[j+3]*cab[indp+3]);
+         chib+=(chi[j+0]*cab[indp+0]);
+         chib+=(chi[j+1]*cab[indp+1]);
+         chib+=(chi[j+2]*cab[indp+2]);
+         chib+=(chi[j+3]*cab[indp+3]);
+         sumdiphiax+=(gx[j+0]*cab[indp+0]);
+         sumdiphiax+=(gx[j+1]*cab[indp+1]);
+         sumdiphiax+=(gx[j+2]*cab[indp+2]);
+         sumdiphiax+=(gx[j+3]*cab[indp+3]);
+         sumdiphiay+=(gy[j+0]*cab[indp+0]);
+         sumdiphiay+=(gy[j+1]*cab[indp+1]);
+         sumdiphiay+=(gy[j+2]*cab[indp+2]);
+         sumdiphiay+=(gy[j+3]*cab[indp+3]);
+         sumdiphiaz+=(gz[j+0]*cab[indp+0]);
+         sumdiphiaz+=(gz[j+1]*cab[indp+1]);
+         sumdiphiaz+=(gz[j+2]*cab[indp+2]);
+         sumdiphiaz+=(gz[j+3]*cab[indp+3]);
+         indp+=4;
+      }
+      for (j=lowPri; j<nPri; j++) {
+         cc=cab[indp++];
+         chibp+=(hyz[j]*cc); //double-checked
+         chib+=(chi[j]*cc); //double-checked
+         sumdiphiax+=(gx[j]*cc); //double-checked
+         sumdiphiay+=(gy[j]*cc); //double-checked
+         sumdiphiaz+=(gz[j]*cc); //double-checked
+      }
+      trho+=(chibp*chi[i]); //double-checked
+      nabx+=(chibp*gx[i]); //double-checked
+      naby+=(chibp*gy[i]); //double-checked
+      nabz+=(chibp*gz[i]); //double-checked
+      nabxp+=(chib*hxx[i]); //double-checked
+      nabyp+=(chib*hyy[i]); //double-checked
+      nabzp+=(chib*hzz[i]); //double-checked
+      sumhxx+=(sumdiphiax*hxx[i]); //double-checked
+      sumhyy+=(sumdiphiay*hyy[i]); //double-checked
+      sumhzz+=(sumdiphiaz*hzz[i]); //double-checked
+      sumhxy+=(sumdiphiax*hyy[i]); //double-checked
+      sumhxz+=(sumdiphiax*hzz[i]); //double-checked
+      sumhyz+=(sumdiphiay*hzz[i]); //double-checked
+      sumxpy+=(sumdiphiay*hxx[i]); //double-checked
+      sumxpz+=(sumdiphiaz*hxx[i]); //double-checked
+      sumypz+=(sumdiphiaz*hyy[i]); //double-checked
+   }
+#else
    for (int i=0; i<nPri; i++) {
       chib=chibp=0.0000000e0;
       sumdiphiax=sumdiphiay=sumdiphiaz=0.0000000e0;
@@ -4775,6 +4835,7 @@ void GaussWaveFunction::EvalHessDensityMatrix1(double (&xx)[3],double (&xxp)[3],
       sumxpz+=(sumdiphiaz*hxx[i]); //double-checked
       sumypz+=(sumdiphiaz*hyy[i]); //double-checked
    }
+#endif
    gg[0]=nabx;
    gg[1]=naby;
    gg[2]=nabz;
@@ -4811,8 +4872,32 @@ void GaussWaveFunction::EvalHessDensityMatrix1(double (&xx)[3],double (&xxp)[3],
    }
    indp=0;
    sumhxx=sumhyy=sumhzz=sumhxy=sumhxz=sumhyz=0.00000e0;
+#if PARALLELISEDTK
+#pragma omp parallel for shared(cab,gx,hxx,hyy,hzz,hxy,hxz,hyz,lowPri) \
+private(indp,chibp) firstprivate(j) lastprivate(i) \
+reduction(+: sumhxx,sumhyy,sumhzz,sumhxy,sumhxz,sumhyz)
+   for (i=0; i<nPri; i++) {
+      indp=i*nPri;
+      chibp=0.0000000e0;
+      for (j=0; j<lowPri; j+=4) {
+         chibp+=(gx[j+0]*cab[indp+0]);
+         chibp+=(gx[j+1]*cab[indp+1]);
+         chibp+=(gx[j+2]*cab[indp+2]);
+         chibp+=(gx[j+3]*cab[indp+3]);
+         indp+=4;
+      }
+      for (j=lowPri; j<nPri; j++) {
+         chibp+=(gx[j]*cab[indp++]);
+      }
+      sumhxx+=(chibp*hxx[i]);
+      sumhyy+=(chibp*hyy[i]);
+      sumhzz+=(chibp*hzz[i]);
+      sumhxy+=(chibp*hxy[i]);
+      sumhxz+=(chibp*hxz[i]);
+      sumhyz+=(chibp*hyz[i]);
+   }
+#else
    for (int i=0; i<nPri; i++) {
-      //indr=i*(nPri);
       chibp=0.0000000e0;
       for (int j=0; j<lowPri; j+=4) {
          chibp+=(gx[j+0]*cab[indp+0]);
@@ -4831,6 +4916,7 @@ void GaussWaveFunction::EvalHessDensityMatrix1(double (&xx)[3],double (&xxp)[3],
       sumhxz+=(chibp*hxz[i]);
       sumhyz+=(chibp*hyz[i]);
    }
+#endif
    hh[0][0]=sumhxx; hh[0][1]=sumhxy; hh[0][2]=sumhxz;
    hh[1][0]=sumhxy; hh[1][1]=sumhyy; hh[1][2]=sumhyz;
    hh[2][0]=sumhxz; hh[2][1]=sumhyz; hh[2][2]=sumhzz;
@@ -4859,6 +4945,31 @@ void GaussWaveFunction::EvalHessDensityMatrix1(double (&xx)[3],double (&xxp)[3],
    }
    indp=0;
    sumhxx=sumhyy=sumhzz=sumhxy=sumhxz=sumhyz=0.00000e0;
+#if PARALLELISEDTK
+#pragma omp parallel for shared(chi,cab,hxx,hyy,hzz,hxy,hxz,hyz,lowPri) \
+private(indp,chib) firstprivate(j) lastprivate(i) \
+reduction(+: sumhxx,sumhyy,sumhzz,sumhxy,sumhxz,sumhyz)
+   for (i=0; i<nPri; i++) {
+      indp=i*nPri;
+      chib=0.0000000e0;
+      for (j=0; j<lowPri; j+=4) {
+         chib+=(chi[j+0]*cab[indp+0]);
+         chib+=(chi[j+1]*cab[indp+1]);
+         chib+=(chi[j+2]*cab[indp+2]);
+         chib+=(chi[j+3]*cab[indp+3]);
+         indp+=4;
+      }
+      for (j=lowPri; j<nPri; j++) {
+         chib+=(chi[j]*cab[indp++]);
+      }
+      sumhxx+=(chib*hxx[i]);
+      sumhyy+=(chib*hyy[i]);
+      sumhzz+=(chib*hzz[i]);
+      sumhxy+=(chib*hxy[i]);
+      sumhxz+=(chib*hxz[i]);
+      sumhyz+=(chib*hyz[i]);
+   }
+#else
    for (int i=0; i<nPri; i++) {
       chib=0.0000000e0;
       for (int j=0; j<lowPri; j+=4) {
@@ -4878,10 +4989,13 @@ void GaussWaveFunction::EvalHessDensityMatrix1(double (&xx)[3],double (&xxp)[3],
       sumhxz+=(chib*hxz[i]);
       sumhyz+=(chib*hyz[i]);
    }
+#endif
    hp[0][0]=sumhxx; hp[0][1]=sumhxy; hp[0][2]=sumhxz;
    hp[1][0]=sumhxy; hp[1][1]=sumhyy; hp[1][2]=sumhyz;
    hp[2][0]=sumhxz; hp[2][1]=sumhyz; hp[2][2]=sumhzz;
+   //
    if ( !ihaveEDF ) { return; }
+   //
    for ( int i=nPri ; i<totPri ; ++i ) {
       ppt=primType[i];
       alp=0.5*primExp[i];
