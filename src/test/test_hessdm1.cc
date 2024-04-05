@@ -219,7 +219,7 @@ int main (int argc, char *argv[]) {
       vxx[0]+=dx;
    }
    timer.End();
-   if ( verbose ) { timer.PrintElapsedTimeMilliSec("GradDensityMatrix1"); }
+   if ( verbose ) { timer.PrintElapsedTimeMilliSec("HessDensityMatrix1"); }
    cout << (passed? "PASSED" : "FAILED") << '\n';
    if ( verbose ) { ScreenUtils::SetScrNormalFont(); }
    return EXIT_SUCCESS;

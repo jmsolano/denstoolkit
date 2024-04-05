@@ -4714,6 +4714,7 @@ void GaussWaveFunction::EvalHessDensityMatrix1(double (&xx)[3],double (&xxp)[3],
       }
    }
    double nabx,naby,nabz,nabxp,nabyp,nabzp;
+   int lowPri=nPri-(nPri%4);
    nabx=naby=nabz=0.000000000000000e0;
    nabxp=nabyp=nabzp=0.000000000000000e0;
    indp=0;
@@ -4726,7 +4727,30 @@ void GaussWaveFunction::EvalHessDensityMatrix1(double (&xx)[3],double (&xxp)[3],
    for (int i=0; i<nPri; i++) {
       chib=chibp=0.0000000e0;
       sumdiphiax=sumdiphiay=sumdiphiaz=0.0000000e0;
-      for (int j=0; j<nPri; j++) {
+      for (int j=0; j<lowPri; j+=4) {
+         chibp+=(hyz[j+0]*cab[indp+0]);
+         chibp+=(hyz[j+1]*cab[indp+1]);
+         chibp+=(hyz[j+2]*cab[indp+2]);
+         chibp+=(hyz[j+3]*cab[indp+3]);
+         chib+=(chi[j+0]*cab[indp+0]);
+         chib+=(chi[j+1]*cab[indp+1]);
+         chib+=(chi[j+2]*cab[indp+2]);
+         chib+=(chi[j+3]*cab[indp+3]);
+         sumdiphiax+=(gx[j+0]*cab[indp+0]);
+         sumdiphiax+=(gx[j+1]*cab[indp+1]);
+         sumdiphiax+=(gx[j+2]*cab[indp+2]);
+         sumdiphiax+=(gx[j+3]*cab[indp+3]);
+         sumdiphiay+=(gy[j+0]*cab[indp+0]);
+         sumdiphiay+=(gy[j+1]*cab[indp+1]);
+         sumdiphiay+=(gy[j+2]*cab[indp+2]);
+         sumdiphiay+=(gy[j+3]*cab[indp+3]);
+         sumdiphiaz+=(gz[j+0]*cab[indp+0]);
+         sumdiphiaz+=(gz[j+1]*cab[indp+1]);
+         sumdiphiaz+=(gz[j+2]*cab[indp+2]);
+         sumdiphiaz+=(gz[j+3]*cab[indp+3]);
+         indp+=4;
+      }
+      for (int j=lowPri; j<nPri; j++) {
          cc=cab[indp++];
          chibp+=(hyz[j]*cc); //double-checked
          chib+=(chi[j]*cc); //double-checked
@@ -4790,7 +4814,14 @@ void GaussWaveFunction::EvalHessDensityMatrix1(double (&xx)[3],double (&xxp)[3],
    for (int i=0; i<nPri; i++) {
       //indr=i*(nPri);
       chibp=0.0000000e0;
-      for (int j=0; j<nPri; j++) {
+      for (int j=0; j<lowPri; j+=4) {
+         chibp+=(gx[j+0]*cab[indp+0]);
+         chibp+=(gx[j+1]*cab[indp+1]);
+         chibp+=(gx[j+2]*cab[indp+2]);
+         chibp+=(gx[j+3]*cab[indp+3]);
+         indp+=4;
+      }
+      for (int j=lowPri; j<nPri; j++) {
          chibp+=(gx[j]*cab[indp++]);
       }
       sumhxx+=(chibp*hxx[i]);
@@ -4830,7 +4861,14 @@ void GaussWaveFunction::EvalHessDensityMatrix1(double (&xx)[3],double (&xxp)[3],
    sumhxx=sumhyy=sumhzz=sumhxy=sumhxz=sumhyz=0.00000e0;
    for (int i=0; i<nPri; i++) {
       chib=0.0000000e0;
-      for (int j=0; j<nPri; j++) {
+      for (int j=0; j<lowPri; j+=4) {
+         chib+=(chi[j+0]*cab[indp+0]);
+         chib+=(chi[j+1]*cab[indp+1]);
+         chib+=(chi[j+2]*cab[indp+2]);
+         chib+=(chi[j+3]*cab[indp+3]);
+         indp+=4;
+      }
+      for (int j=lowPri; j<nPri; j++) {
          chib+=(chi[j]*cab[indp++]);
       }
       sumhxx+=(chib*hxx[i]);
