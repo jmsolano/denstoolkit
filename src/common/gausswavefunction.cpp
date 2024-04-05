@@ -4962,10 +4962,6 @@ void GaussWaveFunction::EvalHessDensityMatrix1(double (&xx)[3],double (&xxp)[3],
    hp[0][0]+=sumhxx; hp[0][1]+=sumhxy; hp[0][2]+=sumhxz;
    hp[1][0]+=sumhxy; hp[1][1]+=sumhyy; hp[1][2]+=sumhyz;
    hp[2][0]+=sumhxz; hp[2][1]+=sumhyz; hp[2][2]+=sumhzz;
-   if ( ihaveEDF ) {
-      cout << "Warning: EvalHessDensityMatrix1 does not include EDF " <<
-        "contributions!" << endl;
-   }
    return;
 }
 double GaussWaveFunction::EvalLapDensityMatrix1(double (&xx)[3],double (&xxp)[3]) {

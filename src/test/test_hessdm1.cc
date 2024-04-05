@@ -8,12 +8,17 @@ using std::setprecision;
 using std::shared_ptr;
 #include <string>
 using std::string;
+#include <vector>
+using std::vector;
 #include "../common/gausswavefunction.h"
 #include "../common/mytimer.h"
 #include "../common/screenutils.h"
 
 //#define SET_MY_PRECISION (cout << setprecision(10))
 
+void printHessMat(double (&h)[3][3],double (&rh)[3][3],char fd /* first derivative  */,\
+      char sd /* second derivative  */);
+bool testHessMat(double(&h)[3][3],double (&rh)[3][3]);
 int main (int argc, char *argv[]) {
    bool verbose=false;
    if ( argc==2 ) {
@@ -168,21 +173,39 @@ int main (int argc, char *argv[]) {
    double vxx[3]={0.0e0,0.1e0,0.3e0};
    double vxp[3]={0.1e0,0.3e0,0.2e0};
    double refhgm1,refhggxx[3],refhggxp[3];
-   //cout << "Checkpoint" << '\n';
    wf->EvalGradDensityMatrix1(vxx[0],vxx[1],vxx[2],vxp[0],vxp[1],vxp[2],refhgm1,refhggxx,refhggxp);
-   //double refhxx[3][3];
-   //double refhxx[3][3],refhxp[3][3],refhpp[3][3];
+   double refhx1x1[3][3]={
+      {-0.013758614012534,  -0.00027545483005345, -0.0063295105276852 },
+      {-0.00027545483005345,-0.009875575647393,   -0.00050849817726172},
+      {-0.0063295105276852, -0.00050849817726172,  0.021633349781183  }
+   };
+   double refhx1x2[3][3]={
+      { 0.0056394992752296,-3.1556891983718e-05,-0.0038304309085288 },
+      { 0.00016719544307187,0.0094585152212566, -0.00031144472434839},
+      {-0.004787524771857, -0.0018910508195085 , 0.028218019818115  }
+   };
+   double refhx2x2[3][3]={
+      {-0.01314103820661,    0.00064500491796486,-0.0074696832085443},
+      { 0.00064500491796486,-0.0064380924699305, -0.0017218098583244},
+      {-0.0074696832085443, -0.0017218098583244,  0.023233868275934 }
+   };
    double hxx[3][3],hxp[3][3],hpp[3][3];
    wf->EvalHessDensityMatrix1(vxx,vxp,ggm1,gxx,gxp,hxx,hxp,hpp);
+   passed=passed&&testHessMat(hxx,refhx1x1);
+   passed=passed&&testHessMat(hxp,refhx1x2);
+   passed=passed&&testHessMat(hpp,refhx2x2);
    if ( verbose ) {
       ScreenUtils::PrintScrCharLine('-');
       if ( !passed ) { ScreenUtils::SetScrRedBoldFont(); }
-      cout << setprecision(14);
-      //SET_MY_PRECISION;
       cout << "                   Value         (Diff)" << '\n';
-      cout << "Gamma1Ref(xx,xp): " << refhgm1 << '\n';
-      cout << "   Gamma1(xx,xp): " << ggm1 << " (" << (ggm1-refhgm1) << ')' << '\n';
-      cout << "dxxGamma1(xx,xp): " << gxx[0] << " (" << fabs(gxx[0]-refhggxx[0]) << ')' << '\n';
+      cout << "Gamma1Ref(x1,x2): " << refhgm1 << '\n';
+      cout << "   Gamma1(x1,x2): " << ggm1 << " (" << (ggm1-refhgm1) << ')' << '\n';
+      cout << "dxxGamma1(x1,x2): " << gxx[0] << " (" << fabs(gxx[0]-refhggxx[0]) << ')' << '\n';
+      cout << "HessDxiDxjGamma(x1,x2):\n";
+      printHessMat(hxx,refhx1x1,'1','1');
+      printHessMat(hxp,refhx1x2,'1','2');
+      printHessMat(hpp,refhx2x2,'2','2');
+      //SET_MY_PRECISION;
       if ( !passed ) { ScreenUtils::SetScrNormalFont(); }
    }
    // ***************************************************
@@ -190,9 +213,50 @@ int main (int argc, char *argv[]) {
       ScreenUtils::PrintScrCharLine('-');
       if ( !passed ) { ScreenUtils::SetScrRedBoldFont(); }
    }
+   timer.Start();
+   for ( int i=0 ; i<N ; ++i ) {
+      wf->EvalHessDensityMatrix1(vxx,vxp,ggm1,gxx,gxp,hxx,hxp,hpp);
+      vxx[0]+=dx;
+   }
+   timer.End();
+   if ( verbose ) { timer.PrintElapsedTimeMilliSec("GradDensityMatrix1"); }
    cout << (passed? "PASSED" : "FAILED") << '\n';
    if ( verbose ) { ScreenUtils::SetScrNormalFont(); }
    return EXIT_SUCCESS;
+}
+void printHessMat(double (&h)[3][3],double (&rh)[3][3],char fd,char sd) {
+      vector<string> rowstr,colstr;
+      rowstr.push_back("x"); rowstr.push_back("y"); rowstr.push_back("z");
+      colstr.push_back("x"); colstr.push_back("y"); colstr.push_back("z");
+      for ( size_t i=0 ; i<3 ; ++i ) { rowstr[i]+=fd; }
+      for ( size_t i=0 ; i<3 ; ++i ) { colstr[i]+=sd; }
+      ScreenUtils::PrintScrCharLine('=');
+      for ( size_t i=0 ; i<3 ; ++i ) { cout << std::setw(20) << colstr[i]; }
+      cout << setprecision(14) << '\n';
+      for ( size_t i=0 ; i<3 ; ++i ) {
+         cout << rowstr[i] << "  ";
+         for ( size_t j=0 ; j<3 ; ++j ) {
+            cout << std::setw(20) << h[i][j] << (j==2? '\n' : ' ');
+         }
+      }
+      cout << "----------------------------------" << '\n';
+      SET_MY_PRECISION;
+      for ( size_t i=0 ; i<3 ; ++i ) {
+         cout << rowstr[i] << "  ";
+         for ( size_t j=0 ; j<3 ; ++j ) {
+            cout << '(' << std::setw(16) << (h[i][j]-rh[i][j]) << ')' << (j==2? '\n' : ' ');
+         }
+      }
+      ScreenUtils::PrintScrCharLine('=');
+}
+bool testHessMat(double(&h)[3][3],double (&rh)[3][3]) {
+   bool res=true;
+   for ( int i=0 ; i<3 ; ++i ) {
+      for ( int j=0 ; j<3 ; ++j ) {
+         res=res&&(fabs(h[i][j]-rh[i][j])<1.0e-14);
+      }
+   }
+   return res;
 }
 
 
