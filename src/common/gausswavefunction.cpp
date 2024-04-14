@@ -4524,8 +4524,8 @@ double GaussWaveFunction::EvalDensityMatrix1(double x,double y,double z,
    return gamm;
 }
 #endif
-complex<double> GaussWaveFunction::EvalFTDensityMatrix1(double p1x,double p1y,double p1z,\
-      double p2x,double p2y,double p2z) {
+complex<double> GaussWaveFunction::EvalGeneralFTDensityMatrix1(double p1x,double p1y,double p1z,\
+      double p2x,double p2y,double p2z,const bool singlespin,double *cabs) {
    int indr,indp,ppt;
    double g1pre,g1pim,Rx[3],alp;
    complex<double> chit;
@@ -4560,21 +4560,21 @@ firstprivate(j) lastprivate(i) reduction(+: g1pre,g1pim)
       indr=i*nPri-1;
       sumim=sumre=0.0e0;
       for ( j=0 ; j<lowPri ; j+=4 ) {
-         cc=cab[++indr];
+         cc=cabs[++indr];
          sumre+=cc*chi[j+0];
          sumim+=cc*gx[j+0];
-         cc=cab[++indr];
+         cc=cabs[++indr];
          sumre+=cc*chi[j+1];
          sumim+=cc*gx[j+1];
-         cc=cab[++indr];
+         cc=cabs[++indr];
          sumre+=cc*chi[j+2];
          sumim+=cc*gx[j+2];
-         cc=cab[++indr];
+         cc=cabs[++indr];
          sumre+=cc*chi[j+3];
          sumim+=cc*gx[j+3];
       }
       for ( j=lowPri ; j<nPri ; ++j ) {
-         cc=cab[++indr];
+         cc=cabs[++indr];
          sumre+=cc*chi[j];
          sumim+=cc*gx[j];
       }
@@ -4587,21 +4587,21 @@ firstprivate(j) lastprivate(i) reduction(+: g1pre,g1pim)
    for ( int i=0 ; i<nPri ; ++i ) {
       sumim=sumre=0.0e0;
       for ( int j=0 ; j<lowPri ; j+=4 ) {
-         cc=cab[++indr];
+         cc=cabs[++indr];
          sumre+=cc*chi[j+0];
          sumim+=cc*gx[j+0];
-         cc=cab[++indr];
+         cc=cabs[++indr];
          sumre+=cc*chi[j+1];
          sumim+=cc*gx[j+1];
-         cc=cab[++indr];
+         cc=cabs[++indr];
          sumre+=cc*chi[j+2];
          sumim+=cc*gx[j+2];
-         cc=cab[++indr];
+         cc=cabs[++indr];
          sumre+=cc*chi[j+3];
          sumim+=cc*gx[j+3];
       }
       for ( int j=lowPri ; j<nPri ; ++j ) {
-         cc=cab[++indr];
+         cc=cabs[++indr];
          sumre+=cc*chi[j];
          sumim+=cc*gx[j];
       }
@@ -4627,10 +4627,11 @@ firstprivate(j) lastprivate(i) reduction(+: g1pre,g1pim)
       hxx[i]=chit.real();
       hyy[i]=chit.imag();
    }
+   double snglspnfact=( singlespin ? 0.5e0 : 1.0e0);
    for (int i=nPri; i<totPri; ++i) {
       chiu=complex<double>(chi[i],gx[i]);
       chiv=complex<double>(hxx[i],hyy[i]);
-      g1p+=(EDFCoeff[i-nPri]*(chiu*chiv));
+      g1p+=((snglspnfact*EDFCoeff[i-nPri])*(chiu*chiv));
    }
    return g1p;
 }

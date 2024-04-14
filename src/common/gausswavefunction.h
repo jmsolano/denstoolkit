@@ -487,8 +487,21 @@ public:
       \f$(x,y,z)\f$ and \f$(xp,yp,zp)\f$  */
    double EvalDensityMatrix1(double x,double y,double z,double xp,double yp,double zp);
    /** This function evaluates the Density Matrix of Order 1 in momentum space at
-       the points \f$(x,y,z)\f$ and \f$(xp,yp,zp)\f$  */
-   complex<double> EvalFTDensityMatrix1(double p1x,double p1y,double p1z,double p2x,double p2y,double p2z);
+       the points \f$(x,y,z)\f$ and \f$(xp,yp,zp)\f$, using coefficients
+       \f$c_{\dot A\dot B}\f$ as provided through cabs. singlespin tells the
+       function whether the cabs coefficients are for single spin orbitals or
+       alpha-beta orbitals.  */
+   complex<double> EvalGeneralFTDensityMatrix1(double p1x,double p1y,double p1z,\
+         double p2x,double p2y,double p2z,const bool singlespin,double *cabs);
+   inline complex<double> EvalFTDensityMatrix1(double p1x,double p1y,double p1z,\
+         double p2x,double p2y,double p2z) {
+      return EvalGeneralFTDensityMatrix1(p1x,p1y,p1z,p2x,p2y,p2z,false,cab); }
+   inline complex<double> EvalFTDensityMatrix1Alpha(double p1x,double p1y,double p1z,\
+         double p2x,double p2y,double p2z) {
+      return EvalGeneralFTDensityMatrix1(p1x,p1y,p1z,p2x,p2y,p2z,true,cabA); }
+   inline complex<double> EvalFTDensityMatrix1Beta(double p1x,double p1y,double p1z,\
+         double p2x,double p2y,double p2z) {
+      return EvalGeneralFTDensityMatrix1(p1x,p1y,p1z,p2x,p2y,p2z,true,cabB); }
    /** This function evaluates the gradients of the Density Matrix of order 1, with
       respect to the primed and non-primed variables.  */
    void EvalGradDensityMatrix1(double x,double y,double z,\
