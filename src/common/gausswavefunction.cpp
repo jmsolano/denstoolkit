@@ -5409,8 +5409,8 @@ firstprivate(j) lastprivate(i) reduction(+: gama,rho1,rho2)
    }
    rho1+=chib1;
    rho2+=chib2;
-   gama+=(0.5e0*chiba);
-   return (0.5e0*(rho1*rho2-0.5e0*gama*gama));
+   gama+=chiba;
+   return (0.5e0*rho1*rho2-0.25e0*gama*gama);
 }
 double GaussWaveFunction::EvalRho2OpenShell(const double x1,const double y1,const double z1,\
          const double x2,const double y2,const double z2) {
@@ -5537,6 +5537,131 @@ firstprivate(j) lastprivate(i) reduction(+: rho1,rho2,gama,gamb)
    gama+=(0.5e0*chiba);
    gamb+=(0.5e0*chiba);
    return (0.5e0*(rho1*rho2-gama*gama-gamb*gamb));
+}
+double GaussWaveFunction::EvalFTRho2ClosedShell(double p1x,double p1y,double p1z,\
+      double p2x,double p2y,double p2z) {
+   int indr,indp,ppt;
+   double pi1,pi2,g1pre,g1pim,Rx[3],alp;
+   complex<double> chit;
+   indr=0;
+   indp=0;
+   for (int i=0; i<nNuc; i++) {
+      Rx[0]=R[indr++];
+      Rx[1]=R[indr++];
+      Rx[2]=R[indr++];
+      for (int j=0; j<myPN[i]; j++) {
+         ppt=primType[indp];
+         alp=primExp[indp];
+         EvalFTChi(ppt,alp,Rx,p1x,p1y,p1z,chit);
+         chi[indp]=chit.real();
+         gx[indp]=chit.imag();
+         EvalFTChi(ppt,alp,Rx,p2x,p2y,p2z,chit);
+         hxx[indp]=chit.real();
+         hyy[indp]=chit.imag();
+         ++indp;
+      }
+   }
+   indr=-1;
+   pi1=pi2=g1pre=g1pim=0.000000e0;
+   int lowPri=nPri-(nPri%4);
+   double lamre,lamim,omeim,omere,cc;
+   complex<double> chiu,chiv;
+#if PARALLELISEDTK
+   int i=0,j=0;
+#pragma omp parallel for shared(chi,gx,hxx,hyy) private(indr,omeim,omere,cc) \
+firstprivate(j) lastprivate(i) reduction(+: g1pre,g1pim)
+   for ( i=0 ; i<nPri ; ++i ) {
+      indr=i*nPri-1;
+      omeim=omere=0.0e0;
+      for ( j=0 ; j<lowPri ; j+=4 ) {
+         cc=cabs[++indr];
+         omere+=cc*chi[j+0];
+         omeim+=cc*gx[j+0];
+         cc=cabs[++indr];
+         omere+=cc*chi[j+1];
+         omeim+=cc*gx[j+1];
+         cc=cabs[++indr];
+         omere+=cc*chi[j+2];
+         omeim+=cc*gx[j+2];
+         cc=cabs[++indr];
+         omere+=cc*chi[j+3];
+         omeim+=cc*gx[j+3];
+      }
+      for ( j=lowPri ; j<nPri ; ++j ) {
+         cc=cabs[++indr];
+         omere+=cc*chi[j];
+         omeim+=cc*gx[j];
+      }
+      g1pre+=(omere*hxx[i]);
+      g1pim+=(omeim*hxx[i]);
+      g1pim+=(omere*hyy[i]);
+      g1pre-=(omeim*hyy[i]);
+   }
+#else
+   for ( int i=0 ; i<nPri ; ++i ) {
+      lamre=lamim=omere=omeim=0.0e0;
+      for ( int j=0 ; j<lowPri ; j+=4 ) {
+         cc=cab[++indr];
+         omere+=cc*chi[j+0];
+         omeim-=cc* gx[j+0];
+         lamre+=cc*hxx[j+0];
+         lamim-=cc*hyy[j+0];
+         cc=cab[++indr];
+         omere+=cc*chi[j+1];
+         omeim-=cc* gx[j+1];
+         lamre+=cc*hxx[j+1];
+         lamim-=cc*hyy[j+1];
+         cc=cab[++indr];
+         omere+=cc*chi[j+2];
+         omeim-=cc* gx[j+2];
+         lamre+=cc*hxx[j+2];
+         lamim-=cc*hyy[j+2];
+         cc=cab[++indr];
+         omere+=cc*chi[j+3];
+         omeim-=cc* gx[j+3];
+         lamre+=cc*hxx[j+3];
+         lamim-=cc*hyy[j+3];
+      }
+      for ( int j=lowPri ; j<nPri ; ++j ) {
+         cc=cab[++indr];
+         omere+=(cc*chi[j]);
+         omeim-=(cc* gx[j]);
+         lamre+=(cc*hxx[j]);
+         lamim-=(cc*hyy[j]);
+      }
+      g1pre+=(omere*hxx[i]-omeim*hyy[i]);
+      g1pim+=(omere*hyy[i]+omeim*hxx[i]);
+      pi1+=(omere*chi[i]-omeim*gx[i]);
+      pi2+=(lamre*hxx[i]-lamim*hyy[i]);
+   }
+#endif
+   if ( !ihaveEDF ) { return (0.5*(pi1*pi2)-0.25e0*(g1pre*g1pre+g1pim*g1pim)); }
+   for ( int i=nPri ; i<totPri ; ++i ) {
+      indr=3*(primCent[i]);
+      Rx[0]=R[indr+0];
+      Rx[1]=R[indr+1];
+      Rx[2]=R[indr+2];
+      ppt=primType[i];
+      alp=0.5e0*primExp[i];
+      EvalFTChi(ppt,alp,Rx,p1x,p1y,p1z,chit);
+      chi[i]=chit.real();
+      gx[i]=chit.imag();
+      EvalFTChi(ppt,alp,Rx,p2x,p2y,p2z,chit);
+      hxx[i]=chit.real();
+      hyy[i]=chit.imag();
+   }
+   for (int i=nPri; i<totPri; ++i) {
+      cc=EDFCoeff[i-nPri];
+      omere=cc*chi[i];
+      omeim=-cc*gx[i];
+      lamre=cc*hxx[i];
+      lamim=-cc*hyy[i];
+      g1pre+=(omere*hxx[i]-omeim*hyy[i]);
+      g1pim+=(omere*hyy[i]+omeim*hxx[i]);
+      pi1+=(omere*chi[i]-omeim*gx[i]);
+      pi2+=(lamre*hxx[i]-lamim*hyy[i]);
+   }
+   return (0.5*(pi1*pi2)-0.25e0*(g1pre*g1pre+g1pim*g1pim));
 }
 void GaussWaveFunction::EvalHermiteCoefs(int (&aia)[3],int (&aib)[3],double &alpab,
       double (&ra)[3],double (&rb)[3],
