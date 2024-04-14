@@ -896,14 +896,14 @@ firstprivate(j) lastprivate(i) reduction(+: rho)
       indr=i*nPri;
       chib=0.0e0;
       for ( j=0 ; j<lowPri ; j+=4 ) {
-         chib+=(cab[indr+0]*chi[j  ]);
+         chib+=(cab[indr+0]*chi[j+0]);
          chib+=(cab[indr+1]*chi[j+1]);
          chib+=(cab[indr+2]*chi[j+2]);
          chib+=(cab[indr+3]*chi[j+3]);
          indr+=4;
       }
       for ( j=lowPri ; j<nPri ; ++j ) {
-         chib+=(cab[++indr]*chi[j]);
+         chib+=(cab[indr++]*chi[j]);
       }
       rho+=chib*chi[i];
    }
@@ -4439,7 +4439,7 @@ firstprivate(j) lastprivate(i) reduction(+: gamm)
          chib+=(cab[indr++]*chi[j+3]);
       }
       for ( j=lowPri ; j<nPri ; ++j ) {
-         chib+=(cab[++indr]*chi[j]);
+         chib+=(cab[indr++]*chi[j]);
       }
       gamm+=chib*gx[i];
    }
@@ -5385,7 +5385,7 @@ firstprivate(j) lastprivate(i) reduction(+: gama,rho1,rho2)
       rho2+=chib2*gx[i];
    }
 #endif
-   if ( !ihaveEDF ) { return (0.5e0*(rho1*rho2-0.5e0*gama*gama)); }
+   if ( !ihaveEDF ) { return (0.5e0*rho1*rho2-0.25e0*gama*gama); }
    for ( int i=nPri ; i<totPri ; ++i ) {
       indr=3*(primCent[i]);
       x1mr=x1-R[indr+0]; y1mr=y1-R[indr+1]; z1mr=z1-R[indr+2];
@@ -5572,30 +5572,40 @@ double GaussWaveFunction::EvalFTRho2ClosedShell(double p1x,double p1y,double p1z
 firstprivate(j) lastprivate(i) reduction(+: g1pre,g1pim)
    for ( i=0 ; i<nPri ; ++i ) {
       indr=i*nPri-1;
-      omeim=omere=0.0e0;
+      lamre=lamim=omeim=omere=0.0e0;
       for ( j=0 ; j<lowPri ; j+=4 ) {
-         cc=cabs[++indr];
+         cc=cab[++indr];
          omere+=cc*chi[j+0];
-         omeim+=cc*gx[j+0];
-         cc=cabs[++indr];
+         omeim-=cc* gx[j+0];
+         lamre+=cc*hxx[j+0];
+         lamim-=cc*hyy[j+0];
+         cc=cab[++indr];
          omere+=cc*chi[j+1];
-         omeim+=cc*gx[j+1];
-         cc=cabs[++indr];
+         omeim-=cc* gx[j+1];
+         lamre+=cc*hxx[j+1];
+         lamim-=cc*hyy[j+1];
+         cc=cab[++indr];
          omere+=cc*chi[j+2];
-         omeim+=cc*gx[j+2];
-         cc=cabs[++indr];
+         omeim-=cc* gx[j+2];
+         lamre+=cc*hxx[j+2];
+         lamim-=cc*hyy[j+2];
+         cc=cab[++indr];
          omere+=cc*chi[j+3];
-         omeim+=cc*gx[j+3];
+         omeim-=cc* gx[j+3];
+         lamre+=cc*hxx[j+3];
+         lamim-=cc*hyy[j+3];
       }
-      for ( j=lowPri ; j<nPri ; ++j ) {
-         cc=cabs[++indr];
-         omere+=cc*chi[j];
-         omeim+=cc*gx[j];
+      for ( int j=lowPri ; j<nPri ; ++j ) {
+         cc=cab[++indr];
+         omere+=(cc*chi[j]);
+         omeim-=(cc* gx[j]);
+         lamre+=(cc*hxx[j]);
+         lamim-=(cc*hyy[j]);
       }
-      g1pre+=(omere*hxx[i]);
-      g1pim+=(omeim*hxx[i]);
-      g1pim+=(omere*hyy[i]);
-      g1pre-=(omeim*hyy[i]);
+      g1pre+=(omere*hxx[i]-omeim*hyy[i]);
+      g1pim+=(omere*hyy[i]+omeim*hxx[i]);
+      pi1+=(omere*chi[i]-omeim*gx[i]);
+      pi2+=(lamre*hxx[i]-lamim*hyy[i]);
    }
 #else
    for ( int i=0 ; i<nPri ; ++i ) {
