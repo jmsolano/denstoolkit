@@ -5568,8 +5568,8 @@ double GaussWaveFunction::EvalFTRho2ClosedShell(double p1x,double p1y,double p1z
    complex<double> chiu,chiv;
 #if PARALLELISEDTK
    int i=0,j=0;
-#pragma omp parallel for shared(chi,gx,hxx,hyy) private(indr,omeim,omere,cc) \
-firstprivate(j) lastprivate(i) reduction(+: g1pre,g1pim)
+#pragma omp parallel for shared(chi,gx,hxx,hyy) private(indr,omeim,omere,lamre,lamim,cc) \
+firstprivate(j) lastprivate(i) reduction(+: g1pre,g1pim,pi1,pi2)
    for ( i=0 ; i<nPri ; ++i ) {
       indr=i*nPri-1;
       lamre=lamim=omeim=omere=0.0e0;
