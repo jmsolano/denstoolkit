@@ -486,6 +486,9 @@ public:
    /** This function evaluates the Density Matrix of Order 1 at the points
       \f$(x,y,z)\f$ and \f$(xp,yp,zp)\f$  */
    double EvalDensityMatrix1(double x,double y,double z,double xp,double yp,double zp);
+   /** This function evaluates the Density Matrix of Order 1 in momentum space at
+       the points \f$(x,y,z)\f$ and \f$(xp,yp,zp)\f$  */
+   complex<double> EvalFTDensityMatrix1(double p1x,double p1y,double p1z,double p2x,double p2y,double p2z);
    /** This function evaluates the gradients of the Density Matrix of order 1, with
       respect to the primed and non-primed variables.  */
    void EvalGradDensityMatrix1(double x,double y,double z,\

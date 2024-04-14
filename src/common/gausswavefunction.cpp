@@ -4395,8 +4395,7 @@ firstprivate(j) lastprivate(i) reduction(+: rhop)
       gx[i]=chit.imag();
    }
    for (int i=nPri; i<totPri; ++i) {
-      chiu=complex<double>(chi[i],gx[i]);
-      rhop+=(EDFCoeff[i-nPri]*norm(chiu));
+      rhop+=(EDFCoeff[i-nPri]*((chi[i]*chi[i])+(gx[i]*gx[i])));
    }
    return rhop;
 }
@@ -4525,6 +4524,116 @@ double GaussWaveFunction::EvalDensityMatrix1(double x,double y,double z,
    return gamm;
 }
 #endif
+complex<double> GaussWaveFunction::EvalFTDensityMatrix1(double p1x,double p1y,double p1z,\
+      double p2x,double p2y,double p2z) {
+   int indr,indp,ppt;
+   double g1pre,g1pim,Rx[3],alp;
+   complex<double> chit;
+   indr=0;
+   indp=0;
+   for (int i=0; i<nNuc; i++) {
+      Rx[0]=R[indr++];
+      Rx[1]=R[indr++];
+      Rx[2]=R[indr++];
+      for (int j=0; j<myPN[i]; j++) {
+         ppt=primType[indp];
+         alp=primExp[indp];
+         EvalFTChi(ppt,alp,Rx,p1x,p1y,p1z,chit);
+         chi[indp]=chit.real();
+         gx[indp]=-chit.imag();
+         EvalFTChi(ppt,alp,Rx,p2x,p2y,p2z,chit);
+         hxx[indp]=chit.real();
+         hyy[indp]=chit.imag();
+         ++indp;
+      }
+   }
+   indr=-1;
+   g1pre=g1pim=0.000000e0;
+   int lowPri=nPri-(nPri%4);
+   double sumim,sumre,cc;
+   complex<double> chiu,chiv;
+#if PARALLELISEDTK
+   int i=0,j=0;
+#pragma omp parallel for shared(chi,gx,hxx,hyy) private(indr,sumim,sumre,cc) \
+firstprivate(j) lastprivate(i) reduction(+: g1pre,g1pim)
+   for ( i=0 ; i<nPri ; ++i ) {
+      indr=i*nPri-1;
+      sumim=sumre=0.0e0;
+      for ( j=0 ; j<lowPri ; j+=4 ) {
+         cc=cab[++indr];
+         sumre+=cc*chi[j+0];
+         sumim+=cc*gx[j+0];
+         cc=cab[++indr];
+         sumre+=cc*chi[j+1];
+         sumim+=cc*gx[j+1];
+         cc=cab[++indr];
+         sumre+=cc*chi[j+2];
+         sumim+=cc*gx[j+2];
+         cc=cab[++indr];
+         sumre+=cc*chi[j+3];
+         sumim+=cc*gx[j+3];
+      }
+      for ( j=lowPri ; j<nPri ; ++j ) {
+         cc=cab[++indr];
+         sumre+=cc*chi[j];
+         sumim+=cc*gx[j];
+      }
+      g1pre+=(sumre*hxx[i]);
+      g1pim+=(sumim*hxx[i]);
+      g1pim+=(sumre*hyy[i]);
+      g1pre-=(sumim*hyy[i]);
+   }
+#else
+   for ( int i=0 ; i<nPri ; ++i ) {
+      sumim=sumre=0.0e0;
+      for ( int j=0 ; j<lowPri ; j+=4 ) {
+         cc=cab[++indr];
+         sumre+=cc*chi[j+0];
+         sumim+=cc*gx[j+0];
+         cc=cab[++indr];
+         sumre+=cc*chi[j+1];
+         sumim+=cc*gx[j+1];
+         cc=cab[++indr];
+         sumre+=cc*chi[j+2];
+         sumim+=cc*gx[j+2];
+         cc=cab[++indr];
+         sumre+=cc*chi[j+3];
+         sumim+=cc*gx[j+3];
+      }
+      for ( int j=lowPri ; j<nPri ; ++j ) {
+         cc=cab[++indr];
+         sumre+=cc*chi[j];
+         sumim+=cc*gx[j];
+      }
+      g1pre+=(sumre*hxx[i]);
+      g1pim+=(sumim*hxx[i]);
+      g1pim+=(sumre*hyy[i]);
+      g1pre-=(sumim*hyy[i]);
+   }
+#endif
+   complex<double> g1p(g1pre,g1pim);
+   if ( !ihaveEDF ) { return g1p; }
+   for ( int i=nPri ; i<totPri ; ++i ) {
+      indr=3*(primCent[i]);
+      Rx[0]=R[indr+0];
+      Rx[1]=R[indr+1];
+      Rx[2]=R[indr+2];
+      ppt=primType[i];
+      alp=0.5e0*primExp[i];
+      EvalFTChi(ppt,alp,Rx,p1x,p1y,p1z,chit);
+      chi[i]=chit.real();
+      gx[i]=-chit.imag();
+      EvalFTChi(ppt,alp,Rx,p2x,p2y,p2z,chit);
+      hxx[i]=chit.real();
+      hyy[i]=chit.imag();
+   }
+   for (int i=nPri; i<totPri; ++i) {
+      chiu=complex<double>(chi[i],gx[i]);
+      chiv=complex<double>(hxx[i],hyy[i]);
+      g1p+=(EDFCoeff[i-nPri]*(chiu*chiv));
+   }
+   return g1p;
+}
 void GaussWaveFunction::EvalGradDensityMatrix1(double x,double y,double z,\
       double xp,double yp,double zp,\
       double &gamm,double (&gg)[3],double (&gp)[3]) {
