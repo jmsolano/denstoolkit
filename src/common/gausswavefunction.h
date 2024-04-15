@@ -561,6 +561,13 @@ public:
      system.   */
    double EvalFTRho2ClosedShell(double p1x,double p1y,double p1z,\
       double p2x,double p2y,double p2z);
+   /** Returns the spinless pair density function in momentum space,
+     \f$\pi_2(\vector{p}_1,\vector{p}_2)\f$,
+     evaluated at the points \f$\vector{p}_1=(p1x,p1y,p1z)\f$ and
+     \f$\vector{p}_2=(p2x,p2y,p2z)\f$, of an open-shell
+     system.   */
+   double EvalFTRho2OpenShell(double p1x,double p1y,double p1z,\
+      double p2x,double p2y,double p2z);
    /** This function evaluates the magnitude of the grandient of LOL.  */
    double EvalMagGradLOL(double x,double y,double z);
    /** This function returns the Molecular Electrostatic Potential (MEP) at the

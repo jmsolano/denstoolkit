@@ -5673,6 +5673,225 @@ firstprivate(j) lastprivate(i) reduction(+: g1pre,g1pim,pi1,pi2)
    }
    return (0.5*(pi1*pi2)-0.25e0*(g1pre*g1pre+g1pim*g1pim));
 }
+double GaussWaveFunction::EvalFTRho2OpenShell(double p1x,double p1y,double p1z,\
+      double p2x,double p2y,double p2z) {
+   int indr,indp,ppt;
+   double piA1,piA2,piB1,piB2,g1Are,g1Aim,g1Bre,g1Bim,Rx[3],alp;
+   complex<double> chit;
+   indr=0;
+   indp=0;
+   for (int i=0; i<nNuc; i++) {
+      Rx[0]=R[indr++];
+      Rx[1]=R[indr++];
+      Rx[2]=R[indr++];
+      for (int j=0; j<myPN[i]; j++) {
+         ppt=primType[indp];
+         alp=primExp[indp];
+         EvalFTChi(ppt,alp,Rx,p1x,p1y,p1z,chit);
+         chi[indp]=chit.real();
+         gx[indp] =chit.imag();
+         EvalFTChi(ppt,alp,Rx,p2x,p2y,p2z,chit);
+         hxx[indp]=chit.real();
+         hyy[indp]=chit.imag();
+         ++indp;
+      }
+   }
+   indr=0;
+   piA1=piA2=piB1=piB2=g1Are=g1Aim=g1Bre=g1Bim=0.0e0;
+   int lowPri=nPri-(nPri%4);
+   double sumA1re,sumA1im,sumA2re,sumA2im,sumB1re,sumB1im,sumB2re,sumB2im,cc;
+   complex<double> chiu,chiv;
+#if PARALLELISEDTK
+   int i=0,j=0;
+#pragma omp parallel for shared(nPri,lowPri,chi,gx,hxx,hyy,cabA,cabB) \
+   private(indr,sumA1re,sumA1im,sumA2re,sumA2im,sumB1re,sumB1im,sumB2re,sumB2im,cc) \
+   firstprivate(j) lastprivate(i) \
+   reduction(+: piA1,piA2,piB1,piB2,g1Are,g1Aim,g1Bre,g1Bim)
+   for ( i=0 ; i<nPri ; ++i ) {
+      indr=i*nPri;
+      sumA1re=sumA1im=sumA2re=sumA2im=sumB1re=sumB1im=sumB2re=sumB2im=0.0e0;
+      for ( j=0 ; j<lowPri ; j+=4 ) {
+         cc=     cabA[indr+0];
+         sumA1re+=cc*chi[j+0];
+         sumA1im-=cc* gx[j+0];
+         sumA2re+=cc*hxx[j+0];
+         sumA2im-=cc*hyy[j+0];
+         cc=     cabA[indr+1];
+         sumA1re+=cc*chi[j+1];
+         sumA1im-=cc* gx[j+1];
+         sumA2re+=cc*hxx[j+1];
+         sumA2im-=cc*hyy[j+1];
+         cc=     cabA[indr+2];
+         sumA1re+=cc*chi[j+2];
+         sumA1im-=cc* gx[j+2];
+         sumA2re+=cc*hxx[j+2];
+         sumA2im-=cc*hyy[j+2];
+         cc=    cabA[indr+3];
+         sumA1re+=cc*chi[j+3];
+         sumA1im-=cc* gx[j+3];
+         sumA2re+=cc*hxx[j+3];
+         sumA2im-=cc*hyy[j+3];
+            
+         cc=     cabB[indr+0];
+         sumB1re+=cc*chi[j+0];
+         sumB1im-=cc* gx[j+0];
+         sumB2re+=cc*hxx[j+0];
+         sumB2im-=cc*hyy[j+0];
+         cc=     cabB[indr+1];
+         sumB1re+=cc*chi[j+1];
+         sumB1im-=cc* gx[j+1];
+         sumB2re+=cc*hxx[j+1];
+         sumB2im-=cc*hyy[j+1];
+         cc=     cabB[indr+2];
+         sumB1re+=cc*chi[j+2];
+         sumB1im-=cc* gx[j+2];
+         sumB2re+=cc*hxx[j+2];
+         sumB2im-=cc*hyy[j+2];
+         cc=     cabB[indr+3];
+         sumB1re+=cc*chi[j+3];
+         sumB1im-=cc* gx[j+3];
+         sumB2re+=cc*hxx[j+3];
+         sumB2im-=cc*hyy[j+3];
+         indr+=4;
+      }
+      for ( j=lowPri ; j<nPri ; ++j ) {
+         cc=     cabA[indr];
+         sumA1re+=cc*chi[j];
+         sumA1im-=cc* gx[j];
+         sumA2re+=cc*hxx[j];
+         sumA2im-=cc*hyy[j];
+         cc=     cabB[indr++];
+         sumB1re+=cc*chi[j];
+         sumB1im-=cc* gx[j];
+         sumB2re+=cc*hxx[j];
+         sumB2im-=cc*hyy[j];
+      }
+      piA1+=(sumA1re*chi[i]-sumA1im*gx[i]);
+      piA2+=(sumA2re*hxx[i]-sumA2im*hyy[i]);
+      piB1+=(sumB1re*chi[i]-sumB1im*gx[i]);
+      piB2+=(sumB2re*hxx[i]-sumB2im*hyy[i]);
+      g1Are+=(sumA1re*hxx[i]-sumA1im*hyy[i]);
+      g1Aim+=(sumA1re*hyy[i]+sumA1im*hxx[i]);
+      g1Bre+=(sumB1re*hxx[i]-sumB1im*hyy[i]);
+      g1Bim+=(sumB1re*hyy[i]+sumB1im*hxx[i]);
+   }
+#else
+   for ( int i=0 ; i<nPri ; ++i ) {
+      sumA1re=sumA1im=sumA2re=sumA2im=sumB1re=sumB1im=sumB2re=sumB2im=0.0e0;
+      for ( int j=0 ; j<lowPri ; j+=4 ) {
+         cc=     cabA[indr+0];
+         sumA1re+=cc*chi[j+0];
+         sumA1im-=cc* gx[j+0];
+         sumA2re+=cc*hxx[j+0];
+         sumA2im-=cc*hyy[j+0];
+         cc=     cabA[indr+1];
+         sumA1re+=cc*chi[j+1];
+         sumA1im-=cc* gx[j+1];
+         sumA2re+=cc*hxx[j+1];
+         sumA2im-=cc*hyy[j+1];
+         cc=     cabA[indr+2];
+         sumA1re+=cc*chi[j+2];
+         sumA1im-=cc* gx[j+2];
+         sumA2re+=cc*hxx[j+2];
+         sumA2im-=cc*hyy[j+2];
+         cc=     cabA[indr+3];
+         sumA1re+=cc*chi[j+3];
+         sumA1im-=cc* gx[j+3];
+         sumA2re+=cc*hxx[j+3];
+         sumA2im-=cc*hyy[j+3];
+            
+         cc=     cabB[indr+0];
+         sumB1re+=cc*chi[j+0];
+         sumB1im-=cc* gx[j+0];
+         sumB2re+=cc*hxx[j+0];
+         sumB2im-=cc*hyy[j+0];
+         cc=     cabB[indr+1];
+         sumB1re+=cc*chi[j+1];
+         sumB1im-=cc* gx[j+1];
+         sumB2re+=cc*hxx[j+1];
+         sumB2im-=cc*hyy[j+1];
+         cc=     cabB[indr+2];
+         sumB1re+=cc*chi[j+2];
+         sumB1im-=cc* gx[j+2];
+         sumB2re+=cc*hxx[j+2];
+         sumB2im-=cc*hyy[j+2];
+         cc=     cabB[indr+3];
+         sumB1re+=cc*chi[j+3];
+         sumB1im-=cc* gx[j+3];
+         sumB2re+=cc*hxx[j+3];
+         sumB2im-=cc*hyy[j+3];
+         indr+=4;
+      }
+      for ( int j=lowPri ; j<nPri ; ++j ) {
+         cc=     cabA[indr];
+         sumA1re+=cc*chi[j];
+         sumA1im-=cc* gx[j];
+         sumA2re+=cc*hxx[j];
+         sumA2im-=cc*hyy[j];
+         cc=   cabB[indr++];
+         sumB1re+=cc*chi[j];
+         sumB1im-=cc* gx[j];
+         sumB2re+=cc*hxx[j];
+         sumB2im-=cc*hyy[j];
+      }
+      piA1+=(sumA1re*chi[i]-sumA1im*gx[i]);
+      piA2+=(sumA2re*hxx[i]-sumA2im*hyy[i]);
+      piB1+=(sumB1re*chi[i]-sumB1im*gx[i]);
+      piB2+=(sumB2re*hxx[i]-sumB2im*hyy[i]);
+      g1Are+=(sumA1re*hxx[i]-sumA1im*hyy[i]);
+      g1Aim+=(sumA1re*hyy[i]+sumA1im*hxx[i]);
+      g1Bre+=(sumB1re*hxx[i]-sumB1im*hyy[i]);
+      g1Bim+=(sumB1re*hyy[i]+sumB1im*hxx[i]);
+   }
+#endif
+   chiu=complex<double>(g1Are,g1Aim);
+   chiv=complex<double>(g1Bre,g1Bim);
+   double pi2p1p2=0.5e0*(piA1*piA2-norm(chiu)); //pi2a(p1,p2)
+   pi2p1p2+=(0.5e0*(piB1*piB2-norm(chiv)));     //pi2b(p1,p2)
+   pi2p1p2+=(0.5e0*piA1*piB2);                  //pi2ab(p1,p2)
+   pi2p1p2+=(0.5e0*piB1*piA2);                  //pi2ba(p1,p2)
+   if ( !ihaveEDF ) { return pi2p1p2; }
+   for ( int i=nPri ; i<totPri ; ++i ) {
+      indr=3*(primCent[i]);
+      Rx[0]=R[indr+0];
+      Rx[1]=R[indr+1];
+      Rx[2]=R[indr+2];
+      ppt=primType[i];
+      alp=0.5e0*primExp[i];
+      EvalFTChi(ppt,alp,Rx,p1x,p1y,p1z,chit);
+      chi[i]=chit.real();
+      gx[i]=chit.imag();
+      EvalFTChi(ppt,alp,Rx,p2x,p2y,p2z,chit);
+      hxx[i]=chit.real();
+      hyy[i]=chit.imag();
+   }
+   for (int i=nPri; i<totPri; ++i) {
+      cc=0.5e0*EDFCoeff[i-nPri];
+      sumA1re=cc*chi[i];
+      sumA1im=-cc*gx[i];
+      sumA2re=cc*hxx[i];
+      sumA2im=-cc*hyy[i];
+      sumB1re=cc*chi[i];
+      sumB1im=-cc*gx[i];
+      sumB2re=cc*hxx[i];
+      sumB2im=-cc*hyy[i];
+      piA1+=(sumA1re*chi[i]-sumA1im*gx[i]);
+      piA2+=(sumA2re*hxx[i]-sumA2im*hyy[i]);
+      piB1+=(sumB1re*chi[i]-sumB1im*gx[i]);
+      piB2+=(sumB2re*hxx[i]-sumB2im*hyy[i]);
+      g1Are+=(sumA1re*hxx[i]-sumA1im*hyy[i]);
+      g1Aim+=(sumA1re*hyy[i]+sumA1im*hxx[i]);
+      g1Bre+=(sumB1re*hxx[i]-sumB1im*hyy[i]);
+      g1Bim+=(sumB1re*hyy[i]+sumB1im*hxx[i]);
+   }
+   chiu=complex<double>(g1Are,g1Aim);
+   chiv=complex<double>(g1Bre,g1Bim);
+   pi2p1p2=0.5e0*(piA1*piA2-norm(chiu));    //pi2a(p1,p2)
+   pi2p1p2+=(0.5e0*(piB1*piB2-norm(chiv))); //pi2b(p1,p2)
+   pi2p1p2+=(0.5e0*piA1*piB2);              //pi2ab(p1,p2)
+   pi2p1p2+=(0.5e0*piB1*piA2);              //pi2ba(p1,p2)
+   return pi2p1p2;
+}
 void GaussWaveFunction::EvalHermiteCoefs(int (&aia)[3],int (&aib)[3],double &alpab,
       double (&ra)[3],double (&rb)[3],
       double (&rp)[3],
