@@ -922,9 +922,55 @@ If the wave function has pseudopotentials \textbf{and} the pseudopotential is cl
 %
 
 %----------------------------------------------------------------------------------------------
-\section{{\color{red}Density matrix of order 1 in momentum space}}
+\section{{\color{red}Gradient of Density matrix of order 1}}
 %----------------------------------------------------------------------------------------------
-Reserved for future versions\dots
+
+Reserved for later\dots
+
+%----------------------------------------------------------------------------------------------
+\section{{\color{red}Hessian of Density matrix of order 1}}
+%----------------------------------------------------------------------------------------------
+
+Reserved for later\dots
+
+%----------------------------------------------------------------------------------------------
+\section{Density matrix of order 1 in momentum space}
+%----------------------------------------------------------------------------------------------
+%----------------------------------------------------------------------------------------------
+\subsection{Closed-shell systems}
+%----------------------------------------------------------------------------------------------
+The density matrix of order 1 in momentum space is given by:
+%
+\begin{equation}
+   \tilde\Gamma_1(\vp_1,\vp_2)=\tilde\phi_{\dA}^*(\vp_1)
+   \big(c_{\dA\dB}\tilde\phi_{\dB}(\vp_2)\big)
+   +\tilde\phi_{\bA}^*(\vp_1)\big(C_{\bA\bB}\tilde\phi_{\bA}(\vp_2)\big).
+\end{equation}
+%
+Using tensor gymnastics, it can be shown that:
+%
+\begin{equation}\label{eq:conjproptg1p1p2}
+   \tilde\Gamma_1(\vp_1,\vp_2)=\tilde\Gamma_1^*(\vp_2,\vp_1)
+\end{equation}
+%
+%----------------------------------------------------------------------------------------------
+\subsection{Open-shell systems}
+%----------------------------------------------------------------------------------------------
+
+The density matrix of order 1 in momentum space is given by:
+%
+\begin{equation}
+   \tilde\Gamma_1^{\sigma}(\vp_1,\vp_2)=\tilde\phi_{\dA}^*(\vp_1)
+   \big(c_{\dA\dB}^{\sigma}\tilde\phi_{\dB}(\vp_2)\big)
+   +\frac{1}{2}\tilde\phi_{\bA}^*(\vp_1)\big(C_{\bA\bB}\tilde\phi_{\bA}(\vp_2)\big).
+\end{equation}
+%
+Using tensor gymnastics, it can be shown as well that:
+%
+\begin{equation}\label{eq:conjproptg1Sp1p2}
+   \tilde\Gamma_1^{\sigma}(\vp_1,\vp_2)=\big(\tilde\Gamma_1^{\sigma}(\vp_2,\vp_1)\big)^*
+\end{equation}
+%
 
 %----------------------------------------------------------------------------------------------
 \section{Pair density}
@@ -1016,9 +1062,74 @@ into Eq.~(\ref{eq:rho2r1r2oss}), we
 recover Eq.~(\ref{eq:rho2r1r2css}).
 
 %----------------------------------------------------------------------------------------------
-\section{{\color{red}Pair density in momentum space}}
+\section{Pair density in momentum space}
 %----------------------------------------------------------------------------------------------
 
-Reserved for later\dots
+%----------------------------------------------------------------------------------------------
+\subsection{Closed-shell systems}
+%----------------------------------------------------------------------------------------------
+
+For \textbf{closed-shell systems}, we have:
+%
+\begin{equation}\label{eq:gamma1ab4css}
+	\tilde\Gamma_1^{\alpha}(\vp_1,\vp_2)=\tilde\Gamma_1^{\beta}(\vp_1,\vp_2)=
+	\frac{1}{2}\tilde\Gamma_1(\vp_1,\vp_2),
+\end{equation}
+%
+hence
+%
+\begin{eqnarray}
+	\pi_2(\vp_1,\vp_2) & = & \frac{1}{2}\pi(\vp_1)\pi(\vp_2)
+	-\frac{1}{4}\big[\tilde\Gamma_1(\vp_1,\vp_2)\tilde\Gamma_1(\vp_2,\vp_1)\big]\\
+	& = & \frac{1}{2}\pi(\vr_1)\pi(\vr_2)
+	-\frac{1}{4}\big|\tilde\Gamma_1(\vp_1,\vp_2)\big|^2%
+	\label{eq:rho2r1r2css}
+\end{eqnarray}
+%
+
+%----------------------------------------------------------------------------------------------
+\subsection{Open-shell systems}
+%----------------------------------------------------------------------------------------------
+
+For open-shell systems, we have a similar situation as for $\rho_2(\vr_1,\vr_2)$. Therefore
+we will follow a similar approach. We begin by defining:
+%
+\begin{equation}
+   \pi_2^{\sigma\tau}(\vp_1,\vp_2)\equiv\pi_2(\vp_1\sigma,\vp_2\tau).
+\end{equation}
+%
+The pair densities in momentum space can be computed as follows:
+%
+\begin{eqnarray}
+	\pi_2^{\alpha\alpha}(\vp_1,\vp_2) & = & \frac{1}{2}\left[\pi^{\alpha}(\vp_1)\pi^{\alpha}(\vp_2)
+	-\tilde\Gamma_1^{\alpha}(\vp_1,\vp_2)\tilde\Gamma_1^{\alpha}(\vp_2,\vp_1)\right]\nonumber\\
+	                                   & = & \frac{1}{2}\left[\pi^{\alpha}(\vp_1)\pi^{\alpha}(\vp_2)
+	-\big|\tilde\Gamma_1^{\alpha}(\vp_1,\vp_2)\big|^2\right],\label{eq:p2aap1p2}\\
+	%
+	%
+	\pi_2^{\beta\beta}(\vp_1,\vp_2) & = & \frac{1}{2}\left[\pi^{\beta}(\vp_1)\pi^{\beta}(\vp_2)
+	-\tilde\Gamma_1^{\beta}(\vp_1,\vp_2)\tilde\Gamma_1^{\beta}(\vp_2,\vp_1)\right]\nonumber\\
+	                                 & = & \frac{1}{2}\left[\pi^{\beta}(\vp_1)\pi^{\beta}(\vp_2)
+	-\big|\tilde\Gamma_1^{\beta}(\vp_1,\vp_2)\big|^2\right],\label{eq:p2bbp1p2}\\
+	%
+	%
+	\pi_2^{\alpha\beta}(\vp_1,\vp_2) & = & \frac{1}{2}\pi^{\alpha}(\vp_1)\pi^{\beta}(\vp_2),\label{eq:p2abp1p2}\\
+	%
+	\pi_2^{\beta\alpha}(\vp_1,\vp_2) & = & \frac{1}{2}\pi^{\beta}(\vp_1)\pi^{\alpha}(\vp_2).\label{eq:p2bap1p2}
+	%
+\end{eqnarray}
+%
+In Eqs.~(\ref{eq:p2aap1p2}) and (\ref{eq:p2bbp1p2}), we have used the property
+given by Eq.~(\ref{eq:conjproptg1Sp1p2}), \textit{i.e.},
+$\tilde\Gamma_1^{\sigma}(\vp_1,\vp_2)=\big(\tilde\Gamma_1^{\sigma}(\vp_2,\vp_1)\big)^*$.
+%
+We can now define the spinless pair density function in momentum space of an open-shell system,
+as follows:
+\begin{equation}
+	\pi_2(\vp_1,\vp_2)=\pi_2^{\alpha\alpha}(\vp_1,\vp_2)+\pi_2^{\alpha\beta}(\vp_1,\vp_2)
+	+\pi_2^{\beta\alpha}(\vp_1,\vp_2)+\pi_2^{\beta\beta}(\vp_1,\vp_2).
+\end{equation}
+%
+
 
 
