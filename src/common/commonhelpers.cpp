@@ -44,6 +44,9 @@
 #include <cstdlib>
 #include <iostream>
 using std::cout;
+#include <iomanip>
+using std::scientific;
+using std::setprecision;
 #include "commonhelpers.h"
 #include "atomcolschjmol.h"
 #include "atomradiicust.h"
@@ -166,7 +169,8 @@ double CommonHelpers::DetermineMonoatomicIntegralLimit(GaussWaveFunction &wf,\
       const char ft) {
    double rt=0.5e0;
    double rmx=-1.0e+50;
-   if ( (ft == 'm') || (ft == 'T') || (ft == 'k') ) {
+   bool momsp=((ft == 'm') || (ft == 'T') || (ft == 'k'));
+   if ( momsp ) {
       while ( wf.EvalFTDensity(rt,0.0e0,0.0e0) >= 1.0e-14 ) {
          rt+=0.5e0;
       }
@@ -190,6 +194,7 @@ double CommonHelpers::DetermineMonoatomicIntegralLimit(GaussWaveFunction &wf,\
       }
       rmx=fabs(rt);
    }
+   IsSphericallySymmetric(wf,(!momsp));
    return rmx;
 }
 void CommonHelpers::DetermineDiatomicIntegralLimits(GaussWaveFunction &wf,\
@@ -238,5 +243,31 @@ bool CommonHelpers::AtomsAreZAligned(GaussWaveFunction &wf) {
       return false;
    }
    return true;
+}
+bool CommonHelpers::IsSphericallySymmetric(GaussWaveFunction &wf,bool possp) {
+   double rho[3];
+   double rt=GetAtomicVDWRadiusAtomicUnits(wf.atCharge[0]-1);;
+   string msg=" (pos): ";
+   if ( possp ) {
+      rho[0]=wf.EvalDensity(rt,0.0e0,0.0e0);
+      rho[1]=wf.EvalDensity(0.0e0,rt,0.0e0);
+      rho[2]=wf.EvalDensity(0.0e0,0.0e0,rt);
+   } else {
+      msg=" (mom): ";
+      rt=0.50;
+      rho[0]=wf.EvalFTDensity(rt,0.0e0,0.0e0);
+      rho[1]=wf.EvalFTDensity(0.0e0,rt,0.0e0);
+      rho[2]=wf.EvalFTDensity(0.0e0,0.0e0,rt);
+   }
+   bool symm=((fabs(rho[0]-rho[1])<1.0e-12) && (fabs(rho[0]-rho[2])<1.0e-12) \
+           && (fabs(rho[1]-rho[2])<1.0e-12) );
+   if ( !symm ) {
+      ScreenUtils::DisplayWarningMessage("This wavefunction is not spherically symetric!");
+      cout << scientific;
+      cout << "Dxy" << msg << fabs(rho[0]-rho[1]) << '\n';
+      cout << "Dxz" << msg << fabs(rho[0]-rho[2]) << '\n';
+      cout << "Dyz" << msg << fabs(rho[1]-rho[2]) << '\n';
+   }
+   return symm;
 }
 

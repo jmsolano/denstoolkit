@@ -91,6 +91,13 @@ public:
     * works if wf has exactly two atoms. If wf has one or more than two atoms,
     * the function returns a false;  */
    static bool AtomsAreZAligned(GaussWaveFunction &wf);
+   /** Checks whether a wavefunction is spherically symmetric. In this version,
+    * the function calculates \f$\rho\f$ at \f$r=0.4R_{vdW}\f$ and over
+    * compares the value along the x-, y- and z-axis.
+    * possp is a boolean that indicates whether the symmetry must
+    * be checked in position space; if possp==false, then the check
+    * will be performed in momentum space.*/
+   static bool IsSphericallySymmetric(GaussWaveFunction &wf,bool possp=true);
 /* ************************************************************************** */
 protected:
 /* ************************************************************************** */
