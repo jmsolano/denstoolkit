@@ -256,7 +256,7 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "  --lsptd-ol OGL     \tUse OLG order for the Gauss-Legendre terms (radial)." << '\n';
    cout << "                     \t  Options: " << BaseGaussLegendre::GetAvailableOrders() << '\n';
    cout << "  --lsptd-os OSTD    \tSet dith=d. Default: d=0.05." << '\n';
-   cout << "                     \t  Options: " << BaseSphericalTDesign::GetAvailableOrders() << '\n';
+   cout << "                     \t  Options: " << BaseSphericalTDesign::GetAvailablePrecisions() << '\n';
    ScreenUtils::PrintScrCharLine('-');
    //-------------------------------------------------------------------------------------
 }
