@@ -87,6 +87,9 @@ void DTKScalarFunction::SelectScalarFunctionPtr(const ScalarFieldType ft) {
       case SPND :
          selfnc=&GaussWaveFunction::EvalSpinDensity;
          break;
+      case RHO2 :
+         selfnc=&GaussWaveFunction::EvalOneElecDisequilibrium;
+         break;
       case SCFD :
          selfnc=&GaussWaveFunction::EvalCustomScalarField;
          break;

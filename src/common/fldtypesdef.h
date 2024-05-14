@@ -73,6 +73,7 @@ enum ScalarFieldType {
    ELLPY, /*!< Ellipticity  */\
    DORI, /*!< Density Overlap Regions Indicator  */\
    SPND, /*!< [SP]i[N] [D]ensity  */\
+   RHO2, /*!< \f$\rho^2\f$ (one eletron density disequilibrium)  */\
    SCFD, /* Scalar Custom Field Density */\
    VCFD /* Vector Custom Field Density */
 };
@@ -153,6 +154,9 @@ inline char ConvertScalarFieldType2Char(ScalarFieldType fftt) {
          break;
       case SPND :
          res= 'b';
+         break;
+      case RHO2 :
+         res= 'q';
          break;
       case SCFD :
          res='u';
@@ -245,6 +249,9 @@ inline ScalarFieldType Char2ScalarFieldType(const char prop) {
       case 'b' :
          res=SPND;
          break;
+      case 'q' :
+         res=RHO2;
+         break;
       case 'u' :
          res=SCFD;
          break;
@@ -335,6 +342,9 @@ inline string GetFieldTypeKeyShort(const char prop) {
       case 'b' :
          plbl="SpinDensity";
          break;
+      case 'q' :
+         plbl="OneElecDiseq";
+         break;
       case 'u' :
          plbl="ScalarCustFld";
          break;
@@ -424,6 +434,9 @@ inline string GetFieldTypeKeyLong(const char prop) {
          break;
       case 'b' :
          plbl="Spin density";
+         break;
+      case 'q' :
+         plbl="One electron disequilibrium --Rho squared--";
          break;
       case 'u':
          plbl="Scalar Custom Field";
@@ -517,6 +530,9 @@ inline string GnuplotFieldTitle(const char p2p) {
          break;
       case 'b' :
          plbl=string("{/Symbol r}_{/Symbol a}-{/Symbol r}_{/Symbol b}");
+         break;
+      case 'q' :
+         plbl=string("{/Symbol r}^2");
          break;
       default:
          plbl="Unknown";

@@ -280,7 +280,7 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  present working directory." << '\n';
    cout << "  -i iprop   \tSet the property to build the isosurface to be iprop.\n"
         << "            \t  Here, iprop is a character that can be (z is the default):" << '\n';
-   string charFields="dglKGeELMPrsSVDuUvzZ";
+   string charFields="dglKGeELMPrsSVDquUvzZ";
    for ( size_t i=0 ; i<charFields.size() ; ++i ) {
       cout << "         \t\t" << charFields[i] << " ("
          << GetFieldTypeKeyLong(charFields[i]) << ')' << '\n';

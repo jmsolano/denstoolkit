@@ -178,6 +178,9 @@ double HelpersPlot::EvalFieldProperty(char prop,double (&x)[3],GaussWaveFunction
       case 'b' :
          res=wf.EvalSpinDensity(x[0],x[1],x[2]);
          break;
+      case 'q' :
+         res=wf.EvalOneElecDisequilibrium(x[0],x[1],x[2]);
+         break;
       default:
 #if DEBUG
          cout << "Unknown field type! Returning zero..." << endl;

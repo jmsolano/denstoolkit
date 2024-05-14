@@ -70,6 +70,7 @@ using std::string;
 #include "../common/screenutils.h"
 #include "../common/basegausslegendre.h"
 #include "../common/basesphtdesign.h"
+#include "fldtypesdef.h"
 
 OptionFlags::OptionFlags() {
    infname = outfname = 0;
@@ -180,26 +181,11 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "Where wf?name is the input wfx(wfn) name, and options can be:\n\n";
    cout << "  -p prop   \tChoose the property to be integrated. prop is a character,\n";
    cout << "            \t  which can be (d is the default value):" << '\n';
-   cout << "            \t\td (Electronic density in position space)" << '\n';
-   cout << "     	      \t\tm (Density in momentum space)" << '\n';
-   cout << "     	      \t\tl (Laplacian of the density)" << '\n';
-   cout << "            \t\tE (Electron Localization Function)" << '\n';
-   cout << "            \t\tS (Shannon entropy of density in position space)" << '\n';
-   cout << "            \t\tT (Shannon entropy in momentum space)" << '\n';
-   cout << "            \t\tg (Magnitud of the density gradient)" << '\n';
-   cout << "            \t\tL (Localized Orbital Locator)" << '\n';
-   cout << "            \t\tG (Kinetic Energy Density G)" << '\n';
-   cout << "            \t\tK (Kinetic Energy Density K)" << '\n';
-   cout << "            \t\te (Ellipticity)" << '\n';
-   cout << "            \t\tk (Kinetic Energy Density K in momentum space)" << '\n';
-   cout << "            \t\tM (Magnitude of the gradient of LOL)" << '\n';
-   cout << "            \t\tV (Molecular Electrostatic Potential)" << '\n';
-   cout << "            \t\tP (Magnitude of the vector LED)" << '\n';
-   cout << "            \t\ts (Reduced Density Gradient)" << '\n';
-   cout << "            \t\tr (Region of Slow Electron index)" << '\n';
-   cout << "            \t\tu (Custom Scalar Field (implemented by the final user))" << '\n';
-   cout << "            \t\tv (Potential Energy Density)" << '\n';
-   cout << "            \t\tz (Reduced Density Gradient applying NCI conditions)" << '\n';
+   string charFields="dmlESTgLGKekMVPsrvDbqu";
+   for ( size_t i=0 ; i<charFields.size() ; ++i ) {
+      cout << "         \t\t" << charFields[i] << " ("
+         << GetFieldTypeKeyLong(charFields[i]) << ')' << '\n';
+   }
    cout << "  -b L U    \tSet the integration domain to be a cube, whose" << '\n';
    cout << "            \t  left,lower,back corner is (L,L,L) and right,upper,front corner" << '\n';
    cout << "            \t  is (U,U,U). Setting L=U=0 instruct the program to" << '\n';

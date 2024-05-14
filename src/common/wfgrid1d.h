@@ -113,6 +113,7 @@ public:
    bool WriteLineDatRoSE(ofstream &ofil,GaussWaveFunction &wf);
    bool WriteLineDatDORI(ofstream &ofil,GaussWaveFunction &wf);
    bool WriteLineDatSpinDensity(ofstream &ofil,GaussWaveFunction &wf);
+   bool WriteLineDatOneElecDiseq(ofstream &ofil,GaussWaveFunction &wf);
    bool WriteLineDatScalarCustFld(ofstream &ofil,GaussWaveFunction &wf);
    bool WriteLineDatVirialPotentialEnergyDensity(ofstream &ofil,GaussWaveFunction &wf);
    bool WriteLineDatEllipticity(ofstream &ofil,GaussWaveFunction &wf);

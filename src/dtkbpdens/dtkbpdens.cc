@@ -100,7 +100,7 @@ int main (int argc, char ** argv) {
    if (options.prop2plot) { prop=argv[options.prop2plot][0]; }
 
    /* Checks for non valid property fields */
-   string validFields="dglKGeELMPrsSVvDbu";
+   string validFields="dglKGeELMPrsSVvDbqu";
    if (validFields.find(prop)==string::npos) {
       ScreenUtils::DisplayErrorMessage("Non valid field type");
       cout << "\nTry: \n\t" << argv[0] << " -h\n" << endl << "to view the help menu.\n\n";

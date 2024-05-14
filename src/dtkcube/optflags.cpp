@@ -232,7 +232,7 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "  -c a1 a2  \tUses a cube centred at the midpoint of the atoms a1 and a2." << endl;
    cout << "  -p prop\tChooses the property to be computed. prop is a character," << endl 
         << "         \t  which can be (d is the default value): " << endl;
-   string charFields="dglKGeELMPrsSVDbuUvzZ";
+   string charFields="dglKGeELMPrsSVDbquUvzZ";
    for ( size_t i=0 ; i<charFields.size() ; ++i ) {
       cout << "         \t\t" << charFields[i] << " ("
          << GetFieldTypeKeyLong(charFields[i]) << ')' << '\n';

@@ -118,6 +118,7 @@ public:
    bool WritePlaneTsvRoSE(ofstream &ofil,GaussWaveFunction &wf);
    bool WritePlaneTsvDORI(ofstream &ofil,GaussWaveFunction &wf);
    bool WritePlaneTsvSpinDensity(ofstream &ofil,GaussWaveFunction &wf);
+   bool WritePlaneTsvOneElecDiseq(ofstream &ofil,GaussWaveFunction &wf);
    bool WritePlaneTsvScalarCustFld(ofstream &ofil,GaussWaveFunction &wf);
    bool WritePlaneTsvVectorCustFld(ofstream &ofil,GaussWaveFunction &wf);
    bool WritePlaneTsvVirialPotentialEnergyDensity(ofstream &ofil,GaussWaveFunction &wf);

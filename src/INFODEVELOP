@@ -21,7 +21,7 @@ Add the tag to the repository: git push origin --tags
 Adding a new field:
 =======================================================================
 Implement the respective functions to include the new field in
-   ---> fldtypesMetaData.ods: Add the new field and its metadata.
+   ---> metaDataFldTypes.ods: Add the new field and its metadata.
    ---> fldtypesdef.h: Add the new field and its tags, fields, etc.
         More detailed instructions are described below,
         near the end of this file.
@@ -35,12 +35,12 @@ Implement the respective functions to include the new field in
    ---> TEST WITH dtkpoint
    ---> dtkline (wfgrid1d)
            ---> Create a new function bool WaveFunctionGrid1D::WriteLineDatFIELDNAME(...)
-           ---> Edit the functions makeDat (add the new switch case)
+           ---> Edit the functions MakeDat (add the new switch case)
            ---> optflags (help menu)
                    ---> Add the new field to the help menu (add char to charFields).
    ---> dtkplane  (wfgrid2d)
            ---> Add a function bool writePlaneTsvFIELDNAME(...)
-           ---> Add the new field to: waveFunctionGrid2D::makeTsv
+           ---> Add the new field to: waveFunctionGrid2D::MakeTsv
                 ---> Add the new field to: case construct (to choose the field)
            ---> Set the plot ranges (HelpersPlot::makeGnuplotFile).
            ---> optflags (help menu, add char to charFields)
@@ -58,7 +58,7 @@ Implement the respective functions to include the new field in
            ---> optflags (help menu, add char to charFields)
    ---> dtkmapfieldonisosurf (Fields such as DORI are color-mapped with Lambda.)
            ---> optflags (help menu, add char to charFields)
-   ---> dtkinfomeasure
+   ---> dtkintegrate
            ---> optflags (help menu, add char to charFields)
    
 

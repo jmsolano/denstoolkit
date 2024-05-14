@@ -64,6 +64,7 @@ void HelpersPlot::makeGnuplotFile(OptionFlags &opts, string &gnpnam,string &tsvn
          maxzrange=1.0e-01;
          break;
       case 'd':
+      case 'q':
          minzrange=0.0e0;
          maxzrange=0.6e0;
          break;

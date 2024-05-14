@@ -268,7 +268,7 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  (This option is included for future implementations,\n"
         << "            \t  and in this version, only rho[d] is implemented,\n"
         << "            \t  and by default the isovalue is v=0.001.)\n";
-   string charFields="dglKGeELMPrsSVvDbu";
+   string charFields="dglKGeELMPrsSVvDbqu";
    for ( size_t i=0 ; i<charFields.size() ; ++i ) {
       cout << "         \t\t" << charFields[i] << " ("
          << GetFieldTypeKeyLong(charFields[i]) << ')' << '\n';

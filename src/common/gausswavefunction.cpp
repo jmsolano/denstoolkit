@@ -435,6 +435,10 @@ double GaussWaveFunction::EvalDensityArray(double x,double y, double z) {
    }
    return rho;
 }
+double GaussWaveFunction::EvalOneElecDisequilibrium(double x,double y,double z) {
+   double rho=EvalDensity(x,y,z);
+   return (rho*rho);
+}
 void GaussWaveFunction::DisplayAllFieldProperties(double x,double y,double z) {
    static double rho,lol,xx[3],g[3],hess[3][3];
    static double eivec[3][3],eival[3];
@@ -499,6 +503,7 @@ void GaussWaveFunction::DisplayAllFieldProperties(double x,double y,double z) {
    if ( ihaveCABSingleSpin ) {
       cout << " Spin Density: " << setw(20) << EvalSpinDensity(x,y,z) << endl;
    }
+   cout << "Diseq (rho^2): " << setw(20) << EvalOneElecDisequilibrium(x,y,z) << endl;
    if ( usescustfld ) {
       cout << "Cust. S. Field: " << setw(20) << EvalCustomScalarField(xx[0],xx[1],xx[2]) << endl;
    }
@@ -573,6 +578,7 @@ void GaussWaveFunction::WriteAllFieldProperties(double x,double y,double z,ofstr
    if ( ihaveCABSingleSpin ) {
       ofil << " Spin Density: " << setw(20) << EvalSpinDensity(x,y,z) << endl;
    }
+   ofil << "Diseq (rho^2): " << setw(20) << EvalOneElecDisequilibrium(x,y,z) << endl;
    if ( usescustfld ) {
       ofil << "Cust. S. Field: " << setw(20) << EvalCustomScalarField(xx[0],xx[1],xx[2]) << endl;
    }
