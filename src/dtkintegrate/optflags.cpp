@@ -239,10 +239,31 @@ void printHelpMenu(int &argc, char** &argv) {
    //-------------------------------------------------------------------------------------
    ScreenUtils::CenterString("Specific options for Gauss-Legendre-Spherical-t Cubature integrator.");
    ScreenUtils::PrintScrCharLine('-');
-   cout << "  --lsptd-ol OGL     \tUse OLG order for the Gauss-Legendre terms (radial)." << '\n';
+   cout << "  --lsptd-ol OGL     \tUse OLG order for the Gauss-Legendre terms (radial,\n"
+        << "                     \t   default: 64).\n";
    cout << "                     \t  Options: " << BaseGaussLegendre::GetAvailableOrders() << '\n';
-   cout << "  --lsptd-os OSTD    \tSet dith=d. Default: d=0.05." << '\n';
+   cout << "  --lsptd-os OSTD    \tUse OSTD order for the Sperical-t design terms (angular,\n"
+        << "                     \t   default: 21).\n";
    cout << "                     \t  Options: " << BaseSphericalTDesign::GetAvailablePrecisions() << '\n';
+   ScreenUtils::PrintScrCharLine('-');
+   ScreenUtils::CenterString("Specific options for diatomic systems.");
+   ScreenUtils::PrintScrCharLine('-');
+   ScreenUtils::CenterString("Cubatures for diatomic systems are built using Nr (Na) points");
+   ScreenUtils::CenterString("for the radial (angular) part (see dtkmanual for specific details)");
+   ScreenUtils::CenterString("For 3D integrals, the number of abscissas is (3*Na*Nr).");
+   ScreenUtils::CenterString("For 6D integrals, the number of abscissas is (9*Na*Na*Nr*Nr/16).");
+   ScreenUtils::CenterString("Since the most expensive computation is related to 6D integrals,");
+   ScreenUtils::CenterString("In this version, only Nr and Na can be altered and must be");
+   ScreenUtils::CenterString("even. If an odd number is provided, DTK will guess a close");
+   ScreenUtils::CenterString("even number.");
+   cout << "  --diatomic-rord Nr \tUse Nr points for the radial part of the cubatures.\n"
+        << "                     \t  This option applies to diatomic systems, Default: Nr=32.\n"
+        << "                     \t  Nr is the number of points used for the radial part (see above)." << '\n';
+   cout << "                     \t  Options: " << BaseGaussLegendre::GetAvailableOrders() << '\n';
+   cout << "  --diatomic-aord Na \tUse Na points for the angular part of the cubatures.\n"
+        << "                     \t  This option applies to diatomic systems, Default: Na=32.\n"
+        << "                     \t  Na is the number of points used for the angular part (see above)." << '\n';
+   cout << "                     \t  Options: " << BaseGaussLegendre::GetAvailableOrders() << '\n';
    ScreenUtils::PrintScrCharLine('-');
    //-------------------------------------------------------------------------------------
 }
@@ -356,6 +377,18 @@ void processDoubleDashOptions(int &argc,char** &argv,OptionFlags &flags,int pos)
       }
    } else if ( str==string("lsptd-os") ) {
       flags.lsptdsetos=(++pos);
+      if (pos>=argc) {
+         ScreenUtils::DisplayErrorMessage(str+mstbf+string("an integer!"));
+         exit(1);
+      }
+   } else if ( str==string("diatomic-rord") ) {
+      flags.diatsetrad=(++pos);
+      if (pos>=argc) {
+         ScreenUtils::DisplayErrorMessage(str+mstbf+string("an integer!"));
+         exit(1);
+      }
+   } else if ( str==string("diatomic-aord") ) {
+      flags.diatsetang=(++pos);
       if (pos>=argc) {
          ScreenUtils::DisplayErrorMessage(str+mstbf+string("an integer!"));
          exit(1);

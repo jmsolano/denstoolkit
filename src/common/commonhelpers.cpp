@@ -244,7 +244,7 @@ bool CommonHelpers::AtomsAreZAligned(GaussWaveFunction &wf) {
    }
    return true;
 }
-bool CommonHelpers::IsSphericallySymmetric(GaussWaveFunction &wf,bool possp) {
+bool CommonHelpers::IsSphericallySymmetric(GaussWaveFunction &wf,bool possp,bool verbose) {
    double rho[3];
    double rt=GetAtomicVDWRadiusAtomicUnits(wf.atCharge[0]-1);;
    string msg=" (pos): ";
@@ -261,7 +261,7 @@ bool CommonHelpers::IsSphericallySymmetric(GaussWaveFunction &wf,bool possp) {
    }
    bool symm=((fabs(rho[0]-rho[1])<1.0e-12) && (fabs(rho[0]-rho[2])<1.0e-12) \
            && (fabs(rho[1]-rho[2])<1.0e-12) );
-   if ( !symm ) {
+   if ( !symm && verbose ) {
       ScreenUtils::DisplayWarningMessage("This wavefunction is not spherically symetric!");
       cout << scientific;
       cout << "Dxy" << msg << fabs(rho[0]-rho[1]) << '\n';

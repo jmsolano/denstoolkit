@@ -56,6 +56,7 @@ public:
    unsigned short int vegassettherm,vegassettol,vegassetstopref;
    unsigned short int misersetpoints,misersetdith;
    unsigned short int lsptdsetol,lsptdsetos;
+   unsigned short int diatsetrad,diatsetang;
    unsigned short int verboseLevel;
    bool stpspindens;
 };//end class optsFlags

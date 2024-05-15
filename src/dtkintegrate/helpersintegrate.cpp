@@ -193,12 +193,14 @@ shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegratorMiser(OptionFlags &o
 shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegratorCubLegSphtDes(OptionFlags &options,\
          int argc, char *argv[],GaussWaveFunction &ugwf,\
          BondNetWork &ubnw) {
-   if ( ugwf.nNuc !=1 ) {
-      ScreenUtils::DisplayWarningMessage("Legendre-SphericaltDesign cubature only works with\n"
-            "single atoms! The result may be mistaken.");
-   }
    char ft='d';
    if ( options.integrand ) { ft=argv[options.integrand][0]; }
+   if ( ugwf.nNuc !=1 && !((ft == 'm') || (ft == 'T') || (ft == 'k')) ) {
+      ScreenUtils::DisplayWarningMessage("Legendre-SphericaltDesign cubature only works with\n"
+            "single atoms! The result may be mistaken.");
+      cout << "Integrand: " << ft << '\n';
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+   }
    shared_ptr<DTKScalarFunction> dtkfield=shared_ptr<DTKScalarFunction>(new DTKScalarFunction(ugwf));
    dtkfield->SetScalarFunction(ft);
    shared_ptr<Function3D> the_function=shared_ptr<Function3D>(dtkfield);
@@ -214,7 +216,7 @@ shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegratorCubLegSphtDes(Option
    for ( size_t i=0 ; i<3 ; ++i ) { if ( fabs(intRmax[i])>a ) { a=fabs(intRmax[i]); } }
    cout << "a: " << a << '\n';
 
-   int glord=16;
+   int glord=64;
    if ( options.lsptdsetol ) { glord=std::stoi(string(argv[options.lsptdsetol])); }
    int sptdord=21;
    if ( options.lsptdsetos ) { sptdord=std::stoi(string(argv[options.lsptdsetos])); }
@@ -261,8 +263,10 @@ shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegratorDiatomics(OptionFlag
       ScreenUtils::SetScrNormalFont();
    }
 
-   int glradord=64;
-   int glangord=64;
+   int glradord=32;
+   if ( options.diatsetrad ) { glradord=std::stoi(string(argv[options.diatsetrad])); }
+   int glangord=32;
+   if ( options.diatsetang ) { glangord=std::stoi(string(argv[options.diatsetang])); }
 
    double rt[3],xy[3];
    double vdvf=0.75;

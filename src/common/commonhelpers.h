@@ -97,7 +97,8 @@ public:
     * possp is a boolean that indicates whether the symmetry must
     * be checked in position space; if possp==false, then the check
     * will be performed in momentum space.*/
-   static bool IsSphericallySymmetric(GaussWaveFunction &wf,bool possp=true);
+   static bool IsSphericallySymmetric(GaussWaveFunction &wf,\
+         bool possp=true,bool verbose=false);
 /* ************************************************************************** */
 protected:
 /* ************************************************************************** */
