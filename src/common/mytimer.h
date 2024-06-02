@@ -54,6 +54,8 @@ public:
    MyTimer();
    void Start(void);
    void End(void);
+   double GetElapsedTimeMilliSec();
+   double GetElapsedTimeSec();
    void PrintElapsedTimeMilliSec(string msg="");
    void PrintElapsedTimeSec(string ms="");
 /* ************************************************************************** */

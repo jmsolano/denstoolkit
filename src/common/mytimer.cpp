@@ -58,6 +58,13 @@ void MyTimer::Start(void) {
 void MyTimer::End(void) {
    gettimeofday(&end,NULL);
 }
+double MyTimer::GetElapsedTimeMilliSec() {
+   double elaps=GetCPUSecond(end)-GetCPUSecond(start);
+   return (elaps*1000.0e0);
+}
+double MyTimer::GetElapsedTimeSec() {
+   return (GetCPUSecond(end)-GetCPUSecond(start));
+}
 void MyTimer::PrintElapsedTimeMilliSec(string msg) {
    double elaps=GetCPUSecond(end)-GetCPUSecond(start);
    elaps*=1000.0e0;
