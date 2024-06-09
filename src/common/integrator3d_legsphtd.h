@@ -64,6 +64,7 @@ public:
    void ComputeIntegral();
    void DisplayResults();
    void DisplayProperties();
+   size_t NumberOfEvaluations() { return ((xl.size())*(xs.size())); }
    size_t NGaussLegendre() { return xl.size(); }
    size_t NSpherTDes() { return xs.size(); }
 /* ************************************************************************** */

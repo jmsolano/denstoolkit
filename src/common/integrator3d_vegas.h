@@ -77,6 +77,7 @@ public:
    void DisplayProperties(void);
    /** Displays the results of the integration, as well as additional information  */
    void DisplayResults();
+   size_t NumberOfEvaluations() { return size_t(countEval);}
    /** Sets the integration region limits for a function \f$f\f$ of type \f$f:R^3 -> R\f$. */
    void SetDimensions(double xLeft,double yLeft,double zLeft,double xRight,double yRight,double zRight);
    /** Sets the iterations limit. */

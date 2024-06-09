@@ -71,6 +71,7 @@ public:
    Integrator3DMiser(shared_ptr<Function3D> i);
    void ComputeIntegral();
    void DisplayResults();
+   size_t NumberOfEvaluations() { return neval; }
    void Miser(const vector<double> &xa,const vector<double> &xb,const size_t npts,double &mean,double &var);
    double Variance() {return variance;}
    void SetDith(double d) {dith=d;}

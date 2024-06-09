@@ -125,13 +125,13 @@ int main (int argc, char ** argv) {
    timer.PrintElapsedTimeSec(string("Integration"));
 
    //Display results on screen.
+   integrator->DisplayResults();
    if ( (!options.integrand) || (argv[options.integrand][0]=='d') ) {
       double nuchg=gwf.TotalNuclearCharge();
       cout << "Nel (nuccharge): " << nuchg << '\n';
       cout << "   % Rel. error: " << setprecision(4)
            << (100.0e0*(((integrator->Result())/nuchg)-1.0e0)) << '\n';
    }
-   integrator->DisplayResults();
 
    //Write results in a log file.
    cout << "\nSaving results in file '" << outfilnam << "'...\n";

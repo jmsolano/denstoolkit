@@ -68,6 +68,7 @@ public:
    virtual void DisplayProperties();
    virtual void DisplayResults();
    virtual void WriteResults(ofstream &ofil);
+   virtual size_t NumberOfEvaluations() = 0;
    double Result() {return result;}
    void SetVerbosityLevel(int vv) { verbosity=vv; }
    void BaseDisplayResults();

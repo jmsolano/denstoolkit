@@ -156,6 +156,7 @@ bool Integrator3DDiatomics::SetupCubature(const vector<double> &xx0,const vector
 }
 void Integrator3DDiatomics::DisplayResults() {
    cout << scientific << setprecision(10);
+   cout << "Number of evaluations: " << NumberOfEvaluations() << '\n';
    cout << "Integral: " << result << '\n';
 }
 void Integrator3DDiatomics::DisplayProperties() {

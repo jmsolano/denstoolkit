@@ -137,13 +137,9 @@ void Integrator3DVegas::DisplayProperties(void) {
    cout << "\n" << endl;
 }
 void Integrator3DVegas::DisplayResults() {
-   cout << "N Integrand evaluations: " << CountEvaluations() << '\n';
+   cout << "Number of evaluations: " << NumberOfEvaluations() << '\n';
    cout << "N Iterations: " << CountIterations() << '\n';
    cout << "Integral: " << Integral() << '\n';
-   if ( param.integrand == 'd' || param.integrand == 'm') {
-      cout << "N. Electrons (Integrated): " << param.analyticInt << '\n';
-      if ( param.analyticInt>0.0e0 ) cout << "Relerr(%) = " << RelativeError() << '\n';
-   }
    cout << "Variance: " << Variance() << '\n';
 }
 /*
@@ -274,6 +270,7 @@ void Integrator3DVegas::ComputeIntegral(void) {
 
    //countEval = param.numOfPoints*countIter;
    repeatIntegral = true;
+   result=integral;
 }
 void Integrator3DVegas::MonteCarloIntegration(vector<vector<double> > interval,vector<vector<double> > &meanIntegral) {
    int floorYNg[3];

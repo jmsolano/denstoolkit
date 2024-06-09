@@ -143,6 +143,7 @@ void Integrator3DLegSphtDes::ScaleAbscissas(const double a) {
 }
 void Integrator3DLegSphtDes::DisplayResults() {
    cout << scientific << setprecision(10);
+   cout << "Number of evaluations: " << NumberOfEvaluations() << '\n';
    cout << "Integral: " << result << '\n';
 }
 void Integrator3DLegSphtDes::DisplayProperties() {

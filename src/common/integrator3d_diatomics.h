@@ -60,6 +60,7 @@ public:
    void ComputeIntegral();
    void DisplayResults();
    void DisplayProperties();
+   size_t NumberOfEvaluations() { return (2*(xt.size()));}
    size_t NGaussLegR() { return xrc.size(); }
    size_t NGaussLegPhi() { return xpc.size(); }
    void GetWeightsAndAbscissas(vector<double> &uw,vector<vector<double> > &ux);

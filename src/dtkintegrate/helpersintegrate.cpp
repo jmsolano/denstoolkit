@@ -124,7 +124,11 @@ shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegratorVegas(OptionFlags &o
    vector<double> intRmin(3),intRmax(3);
    for ( size_t i=0 ; i<3 ; ++i ) { intRmin[i]=0.0e0; intRmax[i]=0.0e0; }
    FindIntegralLimits(options,argv,ugwf,ubnw,ft,intRmin,intRmax);
+   //double sqrt3=sqrt(3.0e0);
+   //for ( size_t i=0 ; i<3 ; ++i ) { intRmin[i]*=sqrt3; }
+   //for ( size_t i=0 ; i<3 ; ++i ) { intRmax[i]*=sqrt3; }
    vegas->SetDimensions(intRmin[0],intRmin[1],intRmin[2],intRmax[0],intRmax[1],intRmax[2]);
+   cout << "Integrand: " << GetFieldTypeKeyLong(ft) << '\n';
 
    // vegas->NormalizedEDF();
    // vegas->Relative2MaxDensity('a'); //Average of maxima.
@@ -172,7 +176,7 @@ shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegratorMiser(OptionFlags &o
    shared_ptr<Function3D> the_function=shared_ptr<Function3D>(dtkfield);
    shared_ptr<Integrator3DMiser> miser=shared_ptr<Integrator3DMiser>(new Integrator3DMiser(the_function));
    shared_ptr<Integrator3D> integrator=shared_ptr<Integrator3D>(miser);
-   cout << "Using " << GetFieldTypeKeyShort(ft) << '\n';
+   cout << "Integrand: " << GetFieldTypeKeyLong(ft) << '\n';
 
 
    //Setting configuration parameters.
@@ -206,7 +210,7 @@ shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegratorCubLegSphtDes(Option
    shared_ptr<Function3D> the_function=shared_ptr<Function3D>(dtkfield);
    shared_ptr<Integrator3DLegSphtDes> legsphtd=shared_ptr<Integrator3DLegSphtDes>(new Integrator3DLegSphtDes(the_function));
    shared_ptr<Integrator3D> integrator=shared_ptr<Integrator3D>(legsphtd);
-   cout << "Using " << GetFieldTypeKeyShort(ft) << '\n';
+   cout << "Integrand: " << GetFieldTypeKeyLong(ft) << '\n';
 
    vector<double> intRmin(3),intRmax(3);
    for ( size_t i=0 ; i<3 ; ++i ) { intRmin[i]=0.0e0; intRmax[i]=0.0e0; }
@@ -214,7 +218,9 @@ shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegratorCubLegSphtDes(Option
    double a=-1.0e+50;
    for ( size_t i=0 ; i<3 ; ++i ) { if ( fabs(intRmin[i])>a ) { a=fabs(intRmin[i]); } }
    for ( size_t i=0 ; i<3 ; ++i ) { if ( fabs(intRmax[i])>a ) { a=fabs(intRmax[i]); } }
+   a*=sqrt(3.0e0);
    cout << "a: " << a << '\n';
+   cout << "f(" << a << ",0.0e0,0.0e0): " << dtkfield->f(a,0.0e0,0.0e0) << '\n';
 
    int glord=64;
    if ( options.lsptdsetol ) { glord=std::stoi(string(argv[options.lsptdsetol])); }
@@ -253,7 +259,7 @@ shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegratorDiatomics(OptionFlag
    shared_ptr<Function3D> the_function=shared_ptr<Function3D>(dtkfield);
    shared_ptr<Integrator3DDiatomics> diat=shared_ptr<Integrator3DDiatomics>(new Integrator3DDiatomics(the_function));
    shared_ptr<Integrator3D> integrator=shared_ptr<Integrator3D>(diat);
-   cout << "Integrand: " << GetFieldTypeKeyShort(ft) << '\n';
+   cout << "Integrand: " << GetFieldTypeKeyLong(ft) << '\n';
    if ( options.verboseLevel>0 ) {
       ScreenUtils::SetScrYellowBoldFont();
       cout << "intRmx0: " << intRmx0[0] << ' ' << intRmx0[1] << ' ' << intRmx0[2] << '\n';

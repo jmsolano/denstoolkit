@@ -175,7 +175,7 @@ void Integrator3DMiser::DisplayResults() {
    cout << "Upwer,front,right corner: " << xb[0] << ' ' << xb[1] << ' ' << xb[2] << '\n';
    cout << "Property at (lower,back,left) corner: " << integrand->f(xa) << '\n';
    cout << "Property at (upper,front,right) corner: " << integrand->f(xb) << '\n';
-   cout << "Number of evaluations: " << neval << '\n';
+   cout << "Number of evaluations: " << NumberOfEvaluations() << '\n';
    cout << "Integral: " << result << '\n';
    cout << "Variance: " << variance << '\n';
 }
