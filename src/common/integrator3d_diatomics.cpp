@@ -50,6 +50,7 @@ using std::setprecision;
 #include <cmath>
 #include "mymath.h"
 #include "screenutils.h"
+#include "fileutils.h"
 #include "integrator3d_diatomics.h"
 #include "basegausslegendre.h"
 #include "basesphtdesign.h"
@@ -154,11 +155,6 @@ bool Integrator3DDiatomics::SetupCubature(const vector<double> &xx0,const vector
    imsetup=true;
    return havevecs;
 }
-void Integrator3DDiatomics::DisplayResults() {
-   cout << scientific << setprecision(10);
-   cout << "Number of evaluations: " << NumberOfEvaluations() << '\n';
-   cout << "Integral: " << result << '\n';
-}
 void Integrator3DDiatomics::DisplayProperties() {
    cout << "Using " << xrc.size() << " GLRadialCore base points." << '\n';
    cout << "Using " << xrv.size() << " GLRadialValence base points." << '\n';
@@ -171,6 +167,36 @@ void Integrator3DDiatomics::DisplayProperties() {
    cout << "r0: " << r0 << '\n';
    cout << "r1: " << r1 << '\n';
    cout << " R: " << R << '\n';
+}
+void Integrator3DDiatomics::DisplayResults() {
+   cout << scientific << setprecision(10);
+   cout << "Number of evaluations: " << NumberOfEvaluations() << '\n';
+   cout << "Integral: " << result << '\n';
+}
+void Integrator3DDiatomics::WriteProperties(ofstream &ofil) {
+   ofil << "#Integrator properties:\n";
+   FileUtils::WriteScrStarLine(ofil);
+   ofil << "Integrator type: Diatomic cubature rule\n";
+   ofil << "Using " << xrc.size() << " GLRadialCore base points." << '\n';
+   ofil << "Using " << xrv.size() << " GLRadialValence base points." << '\n';
+   ofil << "Using " << xpc.size() << " GLAngularCore base points." << '\n';
+   ofil << "Using " << xpv.size() << " GLAngularValence base points." << '\n';
+   ofil << "Total evaluation points: " << (2*(xt.size())) << '\n';
+   ofil << "x0: " << x0[0] << ' ' << x0[1] << ' ' << x0[2] << '\n';
+   ofil << "x1: " << x1[0] << ' ' << x1[1] << ' ' << x1[2] << '\n';
+   ofil << "xc: " << xc[0] << ' ' << xc[1] << ' ' << xc[2] << '\n';
+   ofil << "r0: " << r0 << '\n';
+   ofil << "r1: " << r1 << '\n';
+   ofil << " R: " << R << '\n';
+   FileUtils::WriteScrStarLine(ofil);
+}
+void Integrator3DDiatomics::WriteResults(ofstream &ofil) {
+   ofil << "#Results\n";
+   FileUtils::WriteScrStarLine(ofil);
+   ofil << scientific << setprecision(10);
+   ofil << "Number of evaluations: " << NumberOfEvaluations() << '\n';
+   ofil << "Integral: " << result << '\n';
+   FileUtils::WriteScrStarLine(ofil);
 }
 void Integrator3DDiatomics::BuildHalfHemisphereCubature(const bool upper) {
    if ( !imsetup ) {

@@ -67,12 +67,13 @@ public:
    virtual void ComputeIntegral() = 0;
    virtual void DisplayProperties();
    virtual void DisplayResults();
+   virtual void WriteProperties(ofstream &ofil);
    virtual void WriteResults(ofstream &ofil);
    virtual size_t NumberOfEvaluations() = 0;
    double Result() {return result;}
    void SetVerbosityLevel(int vv) { verbosity=vv; }
-   void BaseDisplayResults();
    void BaseDisplayProperties();
+   void BaseDisplayResults();
    virtual ~Integrator3D();
 /* ************************************************************************** */
 protected:

@@ -48,6 +48,7 @@ using std::vector;
 #include <memory>
 using std::shared_ptr;
 #include "myrandom.h"
+#include "fileutils.h"
 #include "function3d.h"
 #include "integrator3d.h"
 
@@ -70,7 +71,10 @@ public:
    virtual ~Integrator3DMiser() {}
    Integrator3DMiser(shared_ptr<Function3D> i);
    void ComputeIntegral();
+   void DisplayProperties();
    void DisplayResults();
+   void WriteProperties(ofstream &ofil);
+   void WriteResults(ofstream &ofil);
    size_t NumberOfEvaluations() { return neval; }
    void Miser(const vector<double> &xa,const vector<double> &xb,const size_t npts,double &mean,double &var);
    double Variance() {return variance;}

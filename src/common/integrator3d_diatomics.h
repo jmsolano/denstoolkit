@@ -47,6 +47,8 @@
 using std::vector;
 #include <memory>
 using std::shared_ptr;
+#include <fstream>
+using std::ofstream;
 #include "integrator3d.h"
 
 /* ************************************************************************** */
@@ -58,8 +60,10 @@ public:
    Integrator3DDiatomics(shared_ptr<Function3D> i);
    virtual ~Integrator3DDiatomics();
    void ComputeIntegral();
-   void DisplayResults();
    void DisplayProperties();
+   void DisplayResults();
+   void WriteProperties(ofstream &ofil);
+   void WriteResults(ofstream &ofil);
    size_t NumberOfEvaluations() { return (2*(xt.size()));}
    size_t NGaussLegR() { return xrc.size(); }
    size_t NGaussLegPhi() { return xpc.size(); }

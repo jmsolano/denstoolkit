@@ -65,6 +65,7 @@ using std::scientific;
 #include <memory>
 using std::shared_ptr;
 #include <ctime>
+#include "fldtypesdef.h"
 #include "screenutils.h"
 #include "fileutils.h"
 #include "mytimer.h"
@@ -126,7 +127,9 @@ int main (int argc, char ** argv) {
 
    //Display results on screen.
    integrator->DisplayResults();
-   if ( (!options.integrand) || (argv[options.integrand][0]=='d') ) {
+   char integrand='d';
+   if ( options.integrand ) { integrand=argv[options.integrand][0]; }
+   if ( (integrand == 'd' ) || ( integrand == 'm' ) ) {
       double nuchg=gwf.TotalNuclearCharge();
       cout << "Nel (nuccharge): " << nuchg << '\n';
       cout << "   % Rel. error: " << setprecision(4)
@@ -146,6 +149,9 @@ int main (int argc, char ** argv) {
    ofil << "Wavefunction file: " << infilnam << '\n';
    FileUtils::WriteScrStarLine(ofil);
    ofil << scientific << setprecision(10);
+   integrator->WriteProperties(ofil);
+   ofil << "Integrand: " << GetFieldTypeKeyLong(integrand) << '\n';
+   FileUtils::WriteScrStarLine(ofil);
    integrator->WriteResults(ofil);
    ofil.close();
 

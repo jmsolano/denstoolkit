@@ -167,7 +167,7 @@ void Integrator3DMiser::Miser(const vector<double> &xa,const vector<double> &xb,
       var=fracl*fracl*varl+(1.0e0-fracl)*(1.0e0-fracl)*varr;
    }
 }
-void Integrator3DMiser::DisplayResults() {
+void Integrator3DMiser::DisplayProperties() {
    if ( verbosity>0 ) {
       BaseDisplayResults();
    }
@@ -176,7 +176,27 @@ void Integrator3DMiser::DisplayResults() {
    cout << "Property at (lower,back,left) corner: " << integrand->f(xa) << '\n';
    cout << "Property at (upper,front,right) corner: " << integrand->f(xb) << '\n';
    cout << "Number of evaluations: " << NumberOfEvaluations() << '\n';
+}
+void Integrator3DMiser::DisplayResults() {
    cout << "Integral: " << result << '\n';
    cout << "Variance: " << variance << '\n';
+}
+void Integrator3DMiser::WriteProperties(ofstream &ofil) {
+   ofil << "#Integrator properties:\n";
+   FileUtils::WriteScrStarLine(ofil);
+   ofil << "Integrator type: Monte Carlo Miser\n";
+   ofil << "Lower,back,left corner: " << xa[0] << ' ' << xa[1] << ' ' << xa[2] << '\n';
+   ofil << "Upwer,front,right corner: " << xb[0] << ' ' << xb[1] << ' ' << xb[2] << '\n';
+   ofil << "Property at (lower,back,left) corner: " << integrand->f(xa) << '\n';
+   ofil << "Property at (upper,front,right) corner: " << integrand->f(xb) << '\n';
+   ofil << "Number of evaluations: " << NumberOfEvaluations() << '\n';
+   FileUtils::WriteScrStarLine(ofil);
+}
+void Integrator3DMiser::WriteResults(ofstream &ofil) {
+   ofil << "#Results:\n";
+   FileUtils::WriteScrStarLine(ofil);
+   ofil << "Integral: " << result << '\n';
+   ofil << "Variance: " << variance << '\n';
+   FileUtils::WriteScrStarLine(ofil);
 }
 

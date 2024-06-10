@@ -49,6 +49,7 @@ using std::scientific;
 using std::setprecision;
 #include <cmath>
 #include "screenutils.h"
+#include "fileutils.h"
 #include "integrator3d_legsphtd.h"
 #include "basegausslegendre.h"
 #include "basesphtdesign.h"
@@ -141,11 +142,6 @@ void Integrator3DLegSphtDes::ScaleAbscissas(const double a) {
       for ( size_t j=0 ; j<3 ; ++j ) { xt[i][j]=a*xs[i][j]; }
    }
 }
-void Integrator3DLegSphtDes::DisplayResults() {
-   cout << scientific << setprecision(10);
-   cout << "Number of evaluations: " << NumberOfEvaluations() << '\n';
-   cout << "Integral: " << result << '\n';
-}
 void Integrator3DLegSphtDes::DisplayProperties() {
    cout << "Using " << wl.size() << " GLweights and " << xl.size() << " GLAbscissas" << '\n';
    cout << "Using " << ws.size() << " STDweights and " << xs.size() << " STAbscissas" << '\n';
@@ -160,5 +156,37 @@ void Integrator3DLegSphtDes::DisplayProperties() {
          cout << ws[i] << ' ' << xs[i][0] << ' ' << xs[i][1] << ' ' << xs[i][2] << '\n';
       }
    }
+}
+void Integrator3DLegSphtDes::DisplayResults() {
+   cout << scientific << setprecision(10);
+   cout << "Number of evaluations: " << NumberOfEvaluations() << '\n';
+   cout << "Integral: " << result << '\n';
+}
+void Integrator3DLegSphtDes::WriteProperties(ofstream &ofil) {
+   ofil << "#Integrator properties:\n";
+   FileUtils::WriteScrStarLine(ofil);
+   ofil << "Integrator type: Spherical-t design combined with radial Gauss-Legendre\n";
+   ofil << "Using " << wl.size() << " GLweights and " << xl.size() << " GLAbscissas" << '\n';
+   ofil << "Using " << ws.size() << " STDweights and " << xs.size() << " STAbscissas" << '\n';
+   ofil << "Total evaluation points: " << ((xl.size())*(xs.size())) << '\n';
+   if ( verbosity>0 ) {
+      ofil << "Gauss-Legendre weights and abscissas:" << '\n';
+      for ( size_t i=0 ; i<xl.size() ; ++i ) {
+         ofil << wl[i] << ' ' << xl[i] << '\n';
+      }
+      ofil << "Spherical-t design weights and abscissas:" << '\n';
+      for ( size_t i=0 ; i<xs.size() ; ++i ) {
+         ofil << ws[i] << ' ' << xs[i][0] << ' ' << xs[i][1] << ' ' << xs[i][2] << '\n';
+      }
+   }
+   FileUtils::WriteScrStarLine(ofil);
+}
+void Integrator3DLegSphtDes::WriteResults(ofstream &ofil) {
+   ofil << "#Results:\n";
+   FileUtils::WriteScrStarLine(ofil);
+   ofil << scientific << setprecision(10);
+   ofil << "Number of evaluations: " << NumberOfEvaluations() << '\n';
+   ofil << "Integral: " << result << '\n';
+   FileUtils::WriteScrStarLine(ofil);
 }
 

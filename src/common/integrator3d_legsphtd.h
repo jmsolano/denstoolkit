@@ -62,8 +62,10 @@ public:
    Integrator3DLegSphtDes(shared_ptr<Function3D> i);
    virtual ~Integrator3DLegSphtDes();
    void ComputeIntegral();
-   void DisplayResults();
    void DisplayProperties();
+   void DisplayResults();
+   void WriteProperties(ofstream &ofil);
+   void WriteResults(ofstream &ofil);
    size_t NumberOfEvaluations() { return ((xl.size())*(xs.size())); }
    size_t NGaussLegendre() { return xl.size(); }
    size_t NSpherTDes() { return xs.size(); }

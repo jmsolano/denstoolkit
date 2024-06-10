@@ -385,12 +385,13 @@ void Integrator3DVegas::AlteratesIncrements(vector<vector<double> > &interval,ve
    }
    interval = intervalCopy;
 }
-void Integrator3DVegas::WriteResults(ofstream &ofil) {
-   ofil << "#Integral properties:\n";
+void Integrator3DVegas::WriteProperties(ofstream &ofil) {
+   ofil << "#Integrator properties:\n";
    FileUtils::WriteScrStarLine(ofil);
+   ofil << "Integrator type: Monte Carlo Vegas\n";
    ofil << "Left limit: " << xMin[0] << " " << xMin[1] << " " << xMin[2] << '\n';
    ofil << "Right limit: " << xMax[0] << " " << xMax[1] << " " << xMax[2] << '\n';
-   ofil << "Integrand: " << GetFieldTypeKeyLong(param.integrand) << '\n';
+   //ofil << "Integrand: " << GetFieldTypeKeyLong(param.integrand) << '\n';
    if ( param.integrand == 'u' ) {
       ofil << "Normalization constant: "
          << (normConstant ? std::to_string(normConstant).c_str() : "Function not normalized") << '\n';
@@ -418,10 +419,12 @@ void Integrator3DVegas::WriteResults(ofstream &ofil) {
    ofil << "Tolerance: " << param.tolerance << '\n';
    if (param.relativeError == true) { ofil << "Analytic integral: " << param.analyticInt << '\n'; }
    FileUtils::WriteScrStarLine(ofil);
-   ofil << "#Results\n";
+}
+void Integrator3DVegas::WriteResults(ofstream &ofil) {
+   ofil << "#Results:\n";
    FileUtils::WriteScrStarLine(ofil);
-   ofil << "N. integrand evaluations: " << CountEvaluations() << '\n';
-   ofil << "N. iterations: " << CountIterations() << '\n';
+   ofil << "Number of evaluations: " << CountEvaluations() << '\n';
+   ofil << "Number of iterations: " << CountIterations() << '\n';
    ofil << "Integral: " << Integral() << '\n';
    if (param.integrand == 'd' || param.integrand == 'm') {
       ofil << "N. Electrons (Integrated): "

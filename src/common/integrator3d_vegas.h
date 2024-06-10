@@ -110,6 +110,8 @@ public:
     * MC integrations without refinement (after the grid becomes refined enough), so as the 
     * accumulated expected value starts to beheave as a normal distribution. */
    void SetStopRefinement(double stopRef){param.noMoreRefinement = stopRef;}
+   /** Set the internal integrand char.  */
+   void SetInternalIntegrand(char ft) { param.integrand = ft; }
    /** Computes the normalization constant of the Electron Density, so that functions related with the
     * normalized Electron Density can be integrated. Note that if you ask for the Electron Density,
     * DTK will give you approximately 1. */
@@ -134,6 +136,7 @@ public:
     * Density and Kinnetic Energy). */
    void SetNSamplesToFindMaximum(double NSamples){param.nPointsForMax = NSamples;}
    /** Print all information related to the integral: Input data and output data. */
+   void WriteProperties(ofstream &ofil);
    void WriteResults(ofstream &ofil);
    double RelativeError(void);
    void AnalyticIntegral(double analyticResult);

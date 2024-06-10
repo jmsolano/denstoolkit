@@ -91,6 +91,7 @@ shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegratorVegas(OptionFlags &o
    shared_ptr<Function3D> the_function=shared_ptr<Function3D>(dtkfield);
    shared_ptr<Integrator3DVegas> vegas=shared_ptr<Integrator3DVegas>(new Integrator3DVegas(the_function));
    shared_ptr<Integrator3D> integrator=shared_ptr<Integrator3D>(vegas);
+   vegas->SetInternalIntegrand(ft);
 
    //Setting configuration parameters.
    //vegas->param.integrand=ft;
