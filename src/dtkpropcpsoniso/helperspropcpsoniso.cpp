@@ -115,12 +115,15 @@ bool HelpersPropCPsOnIso::HaveIncompatibleOptions(int argc,char *argv[],OptionFl
       ScreenUtils::DisplayErrorMessage(msg);
       return true;
    }
-   if ( opt.estimpkbaminesprim && opt.estimpkbaminessec ) {
+   bool duppkbestim=(opt.estimpkbaminesprim && opt.estimpkbaminessec);
+   duppkbestim=duppkbestim||((opt.estimpkbaminesprim && opt.estimpkbaminester));
+   duppkbestim=duppkbestim||((opt.estimpkbaminessec && opt.estimpkbaminester));
+   if ( duppkbestim ) {
       string msg="pKb can only be estimated on a single amine type\n"
          "I.e., the amine should be primary, secondary or tertiary,\n"
          "but not more than one type at the same type.\n"
          "Please select only one of the options:\n"
-         "   pkb-prim-amine, pkb-sec-amine";
+         "   pkb-prim-amine, pkb-sec-amine, pkb-ter-amine";
       ScreenUtils::DisplayWarningMessage(msg);
       return true;
    }
@@ -534,7 +537,7 @@ shared_ptr<MeshGrid> HelpersPropCPsOnIso::BuildCapMesh(int argc,\
          ScreenUtils::DisplayWarningMessage("This level of refinement may cause numerical issues.");
       }
    }
-   if ( opt.estimpkbaminesprim || opt.estimpkbaminessec ) {
+   if ( opt.estimpkbaminesprim || opt.estimpkbaminessec || opt.estimpkbaminester ) {
       refCapMeshLevel=5;
       isoprop='d';
       if ( opt.refinemesh || opt.setisovalue || opt.isoprop ) {
@@ -638,8 +641,28 @@ void HelpersPropCPsOnIso::EstimatepKbSecondaryAmine(vector<double> &vcp,vector<i
    cout << "\nEstimated_pKb_secondary_amine: " << pKb << "\n\n";
    return;
 }
+void HelpersPropCPsOnIso::EstimatepKbTertiaryAmine(vector<double> &vcp,vector<int> &sigcp) {
+   size_t pos=string::npos;
+   int count=0;
+   for ( size_t i=0 ; i<sigcp.size() ; ++i ) {
+      if ( sigcp[i]>0 ) {
+         ++count;
+         pos=i;
+      }
+   }
+   if ( count>1 ) {
+      ScreenUtils::DisplayErrorMessage("More than 1 V_{S,max} points were found!");
+      cout << "pKb cannot be estimated automatically. Please, manually use the formula:\n\n"
+           << "\t22.742868 + 0.318033*V_{S,min}(kCal/mol)\n\n";
+      return;
+   }
+   double pKb=22.742868+0.318033e0*vcp[pos]*627.5e0;
+   cout << setprecision(5);
+   cout << "\nEstimated_pKb_tertiary_amine: " << pKb << "\n\n";
+   return;
+}
 void HelpersPropCPsOnIso::RequestCitation(int argc,char *argv[],OptionFlags &opt) {
-   if ( opt.estimpkbaminesprim || opt.estimpkbaminessec ) {
+   if ( opt.estimpkbaminesprim || opt.estimpkbaminessec || opt.estimpkbaminester ) {
       string msg="You are estimating pKb of an amine.\n"
          "If you publish this estimation, please consider adding the following citations:\n\n";
       msg+=dtkcitations::dtk2015;

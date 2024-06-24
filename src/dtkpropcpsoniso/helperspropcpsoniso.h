@@ -96,6 +96,7 @@ public:
    static int FindClosestAtom(const BondNetWork &bn,const vector<double> &usrr);
    static void EstimatepKbPrimaryAmine(vector<double> &vcp,vector<int> &sigcp);
    static void EstimatepKbSecondaryAmine(vector<double> &vcp,vector<int> &sigcp);
+   static void EstimatepKbTertiaryAmine(vector<double> &vcp,vector<int> &sigcp);
 /* ************************************************************************** */
 protected:
 /* ************************************************************************** */

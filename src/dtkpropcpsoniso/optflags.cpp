@@ -86,7 +86,7 @@ OptionFlags::OptionFlags() {
    transparentiso=false;
    drawiso=true;
    cpkview=true;
-   estimpkbaminesprim=estimpkbaminessec=false;
+   estimpkbaminesprim=estimpkbaminessec=estimpkbaminester=false;
    stpspindens=false;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
@@ -301,6 +301,8 @@ void printHelpMenu(int &argc, char** &argv) {
         << "                 \t  its pKb. This option overrides options -I, -p, and -r." << '\n';
    cout << "  --pkb-sec-amine\tAssume the input molecule is a secondary amine and estimate\n"
         << "                 \t  its pKb. This option overrides options -I, -p, and -r." << '\n';
+   cout << "  --pkb-ter-amine\tAssume the input molecule is a tertiary amine and estimate\n"
+        << "                 \t  its pKb. This option overrides options -I, -p, and -r." << '\n';
    cout << "  --help    \t\tSame as -h" << '\n';
    cout << "  --version \t\tSame as -V" << '\n';
    //-------------------------------------------------------------------------------------
@@ -406,6 +408,8 @@ void processDoubleDashOptions(int &argc,char** &argv,OptionFlags &flags,int pos)
      flags.estimpkbaminesprim=true;
    } else if ( str==string("pkb-sec-amine") ) {
      flags.estimpkbaminessec=true;
+   } else if ( str==string("pkb-ter-amine") ) {
+     flags.estimpkbaminester=true;
    } else if (str==string("help")) {
       printHelpMenu(argc,argv);
       exit(0);

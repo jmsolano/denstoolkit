@@ -157,6 +157,15 @@ int main (int argc, char ** argv) {
                "isovalue rho=0.0108 a.u. and property evaluated at iso surf: MEP.");
       }
    }
+   if ( options.estimpkbaminester ) {
+      isoprop='d';
+      isovalue=0.0113e0;
+      evprop='V';
+      if ( options.setisovalue || options.isoprop || options.prop2eval ) {
+         ScreenUtils::DisplayWarningMessage("Estimating pKb of a tertiary amine, setting\n"
+               "isovalue rho=0.0113 a.u. and property evaluated at iso surf: MEP.");
+      }
+   }
    shared_ptr<MeshGrid> grid=HelpersPropCPsOnIso::BuildMesh(argc,\
          argv,options,gwf,bnw,isovalue);
 
@@ -267,6 +276,10 @@ int main (int argc, char ** argv) {
    }
    if ( options.estimpkbaminessec ) {
       HelpersPropCPsOnIso::EstimatepKbSecondaryAmine(vcp,sigcp);
+      HelpersPropCPsOnIso::RequestCitation(argc,argv,options);
+   }
+   if ( options.estimpkbaminester ) {
+      HelpersPropCPsOnIso::EstimatepKbTertiaryAmine(vcp,sigcp);
       HelpersPropCPsOnIso::RequestCitation(argc,argv,options);
    }
 
