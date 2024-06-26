@@ -82,6 +82,7 @@ OptionFlags::OptionFlags() {
    setisovalue=0;
    refinemesh=0;
    isofromcube=0;
+   minangcap=0;
    mkpov=kppov=mkpng=false;
    transparentiso=false;
    drawiso=true;
@@ -131,6 +132,10 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                flags.setdirat3=(++i);
                if ( (i+2)>=argc ) { printErrorMsg(argv,'C'); }
                i+=2;
+               break;
+            case 'd' :
+               flags.minangcap=(++i);
+               if (i>=argc) {printErrorMsg(argv,'d');}
                break;
             case 'H' :
                flags.drawiso=false;
@@ -245,6 +250,8 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "  -A aX aY aZ\tSets the view angles to be aX, aY, and aZ." << '\n';
    cout << "  -c cAtNum \tSets the atom cAtNum to be the center around which the\n"
         << "            \t  cap isosurface is computed." << '\n';
+   cout << "  -d ang    \tSet maximum degree aperture around the direction of the cap\n"
+        << "            \t  to be ang. Default: d=75." << '\n';
    cout << "  -H        \tHides the isosurface in png image (pov file)." << '\n';
    cout << "  -J        \tSetup alpha- and beta-spin density matrices." << '\n';
    cout << "  -k        \tKeeps the pov-ray script (see also option P, below)." << '\n';
@@ -348,6 +355,7 @@ void printErrorMsg(char** &argv,char lab) {
    cout << "\nError: the option \"" << lab << "\" ";
    switch (lab) {
       case '2' :
+      case 'd' :
          cout << "should be followed by a real number." << '\n';
          break;
       case 'A' :

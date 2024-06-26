@@ -357,6 +357,7 @@ void SymmetricSurfaceGrid::TrimFacesCentroidDotProdBetweenVals(const vector<doub
       TriangleCentroidDir(i,c);
       cnorm=MatrixVectorOperations3D::Norm(c);
       dot=MatrixVectorOperations3D::InnerProduct(c,d)*oodnorm/cnorm;
+      //cout << dot << '\n';
       if ( dot>val1 && dot<=val2 ) {
          for ( size_t j=0 ; j<3 ; ++j ) { kf[count][j]=face[i][j]; }
          ++count;

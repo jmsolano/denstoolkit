@@ -78,10 +78,14 @@ using std::shared_ptr;
 #include "helperspropcpsoniso.h"
 #include "symmetricsurfacegrid.h"
 #include "atomradiicust.h"
+#include "matrixvectoroperations3d.h"
 
 #ifndef PROPCPSONISOCPSIZE
 #define PROPCPSONISOCPSIZE 0.10
 #endif
+
+/** Computes the angle between two 3D vectors. Notice that r is normalized!  */
+double GetAngleBetweenVectors(vector<double> &xc,vector<double> &xx,vector<double> &xd);
 
 int main (int argc, char ** argv) {
    const clock_t begin_time = clock();
@@ -238,7 +242,6 @@ int main (int argc, char ** argv) {
    HelpersPropCPsOnIso::MakePovFile(povfilnam,options,pvp,bnw,grid,sp,palettename);
 
    /* At this point the computation has ended. Usually this means no errors ocurred. */
-   //HelpersPropCPsOnIso::SearchCPsCap(grid,gwf,rcp,poscp,sigcp,vcp,'V');
    if ( rcp.size()!=poscp.size() || rcp.size()!=sigcp.size() || rcp.size() !=vcp.size() ) {
       ScreenUtils::DisplayErrorMessage("Incorrect sizes!");
       cout << __FILE__ << ", line: " << __LINE__ << '\n';
@@ -258,14 +261,26 @@ int main (int argc, char ** argv) {
            << "#sigma is the signature of the CP; +2 indicates a local minimum, and -2 indicates a local maximum.\n"
            << "#atomIdxInWF? is the atom index in the wfn (or wfx) file, i.e. the number of\n"
            << "#  the atom in the list of atoms, of the closest atom to the CP.\n"
-           << "#atomSymbol is the atomic symbol of the closest atom to the CP." << '\n';
+           << "#atomSymbol is the atomic symbol of the closest atom to the CP\n"
+           << "#dist2cent is the distance to the associated atom center (atomIdxInWF)\n"
+           << "#angFromDir is the angle relative to the cap's direction." << '\n';
       ofil << "#        x                  y                  z        sigma       "
-           << GetFieldTypeKeyShort(evprop) << "   atomIdxInWF? atomSymbol" << '\n';
+           << GetFieldTypeKeyShort(evprop) << "   atomIdxInWF? atomSymbol   dist2cent   angFromDir" << '\n';
+      int cat;
+      double dist2c,angrcpdir;
+      vector<double> Rc(3),xd(3),xc(3);
+      HelpersPropCPsOnIso::GetCenterIndexAndVectors(argv,options,bnw,cat,xc,xd);
       for ( size_t i=0 ; i<sp.size() ; ++i ) {
          atnum=HelpersPropCPsOnIso::FindClosestAtom(bnw,rcp[i]);
+         for ( int j=0 ; j<3 ; ++j ) { Rc[j]=bnw.R[atnum][j]; }
+         dist2c=0.0e0;
+         for ( int j=0 ; j<3 ; ++j ) { dist2c+=((rcp[i][j]-Rc[j])*(rcp[i][j]-Rc[j])); }
+         dist2c=sqrt(dist2c);
+         angrcpdir=GetAngleBetweenVectors(xc,rcp[i],xd);
          ofil << rcp[i][0] << ' ' << rcp[i][1] << ' ' << rcp[i][2] << (sigcp[i]>0 ? " +" : " ")
               << sigcp[i] << ' ' << vcp[i] << ' '
-              << (atnum+1) << ' ' << StringTools::RemoveAllDigits(gwf.atLbl[atnum]) << '\n';
+              << (atnum+1) << ' ' << StringTools::RemoveAllDigits(gwf.atLbl[atnum])
+              << ' ' << dist2c << ' ' << angrcpdir << '\n';
       }
       ofil.close();
    }
@@ -296,5 +311,12 @@ int main (int argc, char ** argv) {
    ScreenUtils::PrintScrStarLine();
    ScreenUtils::SetScrNormalFont();
    return EXIT_SUCCESS;
+}
+double GetAngleBetweenVectors(vector<double> &xc,vector<double> &xx,vector<double> &xd) {
+   vector<double> r(3);
+   for ( size_t i=0 ; i<3 ; ++i ) { r[i]=xx[i]-xc[i]; }
+   MatrixVectorOperations3D::Normalize(r);
+   double res=MatrixVectorOperations3D::InnerProduct(r,xd);
+   return (acos(res)*180.0e0/M_PI);
 }
 

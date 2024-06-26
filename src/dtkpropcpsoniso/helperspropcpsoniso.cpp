@@ -98,6 +98,11 @@ void HelpersPropCPsOnIso::GetCenterIndexAndVectors( char *argv[],\
       for ( int i=0 ; i<3 ; ++i ) {
          xd[i]=(bn.R[cat][i]-(bn.R[a1][i]+bn.R[a2][i]+bn.R[a3][i])/3.0e0);
       }
+   } else {
+      ScreenUtils::DisplayErrorMessage("You need to specify the direction atom(s)!\n"
+            "   Or use a cube to build the gridmesh...");
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+      return;
    }
    MatrixVectorOperations3D::Normalize(xd);
 }
@@ -548,7 +553,10 @@ shared_ptr<MeshGrid> HelpersPropCPsOnIso::BuildCapMesh(int argc,\
    grid-> SetupSphereIcosahedron(refCapMeshLevel);
    grid->Translate(xc);
    grid->ScaleVertices(GetAtomicVDWRadius(bn.atNum[cAt]));
-   grid->TrimFacesCentroidDotProdBetweenVals(xd,0.25,1.0);
+   double mincang=75.0e0;
+   if ( opt.minangcap ) { mincang=std::stod(string(argv[opt.minangcap])); }
+   mincang=cos(M_PI*mincang/180.0e0);
+   grid->TrimFacesCentroidDotProdBetweenVals(xd,mincang,1.0);
 
    /* Looking for partial isosurface  */
    cout << "Computing cap isosurface...\n";
