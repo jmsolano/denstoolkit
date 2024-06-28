@@ -60,6 +60,8 @@
 #define _SOL_USE_SAFE_CHECKS_ 0
 #endif
 
+#include "lclauxsoftwaredefs.h"
+
 #define _HAVE_GNUPLOT_ 1
 #ifndef _GNUPLOT_MAJ_VERSION_
 #define _GNUPLOT_MAJ_VERSION_ 6
@@ -91,6 +93,5 @@
 
 #define EXTRASPACECUBEFACTOR (1.0e0)
 
-#include "lclauxsoftwaredefs.h"
 
 #endif /* _GLOBALDEFS_H_ */
