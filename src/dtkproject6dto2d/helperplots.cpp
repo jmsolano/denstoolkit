@@ -169,7 +169,7 @@ void HelperPlot::generate3DPlot(OptionFlags &options,const string &tsvname,\
    ofil << "set zrange [minval2plot:maxval2plot]" << endl;
    ofil << "set cbrange [minval2plot:maxval2plot]" << endl;
    ofil << "unset contour" << endl;
-   ofil << "set pm3d depthorder hidden3d 1" << endl;
+   ofil << "set pm3d depthorder hidden3d" << (_GNUPLOT_MAJ_VERSION_<6 ? " 1" : " ") << endl;
    ofil << "set palette rgbformulae 33,13,10" << endl;
    ofil << "set style line 1 linecolor rgb \"#444444\"" << endl;
    ofil << "unset title" << endl;
@@ -208,7 +208,7 @@ void HelperPlot::generateHeatMap(OptionFlags &options,char *argv[],const string 
    ofil << "set zrange [minval2plot:maxval2plot]" << endl;
    ofil << "set cbrange [minval2plot:maxval2plot]" << endl;
    ofil << "unset contour" << endl;
-   ofil << "set pm3d depthorder hidden3d 1" << endl;
+   ofil << "set pm3d depthorder hidden3d" << (_GNUPLOT_MAJ_VERSION_<6 ? " 1" : " ") << endl;
    ofil << "set palette rgbformulae 33,13,10" << endl;
    ofil << "set style line 1 linecolor rgb \"#444444\"" << endl;
    ofil << "set terminal postscript eps enhanced color fontscale 1.75 lw 2 dashlength 4" << endl;
@@ -364,7 +364,7 @@ void HelperPlot::generateVectorField(OptionFlags &options,char *argv[],const str
    ofil << "set zrange [minval2plot:maxval2plot]" << endl;
    ofil << "set cbrange [minval2plot:maxval2plot]" << endl;
    ofil << "unset contour" << endl;
-   ofil << "set pm3d depthorder hidden3d 1" << endl;
+   ofil << "set pm3d depthorder hidden3d" << (_GNUPLOT_MAJ_VERSION_<6 ? " 1" : " ") << endl;
    ofil << "set palette rgbformulae 33,13,10" << endl;
    ofil << "set style line 1 linecolor rgb \"#444444\"" << endl;
    ofil << "set terminal postscript eps enhanced color fontscale 1.75 lw 2 dashlength 4" << endl;
