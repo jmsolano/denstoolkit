@@ -63,6 +63,7 @@ else
 endif
 
 
+LCLAUXSOFTWDEFS= lclauxsoftwaredefs.h
 INCDEFS        := -include globaldefs.h
 
 # FILES
@@ -87,18 +88,21 @@ STATICLIB="lib$(COMMONSTATICLIBNAME).a"
 
 TARGET=target
 
-$(TARGET): $(OBJS) $(HEADERS) $(SOURCES)
+$(TARGET): $(LCLAUXSOFTWDEFS) $(OBJS) $(HEADERS) $(SOURCES)
 	@echo "\033[32mArchiving $(STATICLIB)\\033[m"
 	@$(ARCHIVE) $(ARFLAGS) $(STATICLIB) $(LIBOBJS)
 
-$(CPPOBJS): %.o: %.cpp
+$(CPPOBJS): %.o: %.cpp $(LCLAUXSOFTWDEFS)
 	@echo "\033[32m   Compiling $@\\033[m"
 	$(CXX) $(CXXFLAGS) $(IFLAGS) -c $<  -o $@  
 
+$(LCLAUXSOFTWDEFS):
+	@bash configLclSysDefs.sh
 .PHONY: clean
 clean:
 	$(info CLEANING ALL)
-	@$(RM) -f $(TARGET) $(OBJS) $(STATICLIB) 2>/dev/null || true
+	@$(RM) -f $(LCLAUXSOFTWDEFS) $(TARGET) $(OBJS) \
+		$(STATICLIB) 2>/dev/null || true
 
 .PHONY: help
 help: ## Shows this help

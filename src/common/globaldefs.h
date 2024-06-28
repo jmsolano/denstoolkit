@@ -61,6 +61,10 @@
 #endif
 
 #define _HAVE_GNUPLOT_ 1
+#ifndef _GNUPLOT_MAJ_VERSION_
+#define _GNUPLOT_MAJ_VERSION_ 6
+#endif
+
 #define _HAVE_EPSTOPDF_ 1
 #define _HAVE_EPSTOOL_ 1
 
@@ -86,5 +90,7 @@
 #define CPNW_ATOMCRITICALPOINTSIZEFACTOR (0.25e0)
 
 #define EXTRASPACECUBEFACTOR (1.0e0)
+
+#include "lclauxsoftwaredefs.h"
 
 #endif /* _GLOBALDEFS_H_ */
