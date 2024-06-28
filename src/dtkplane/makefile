@@ -89,24 +89,24 @@ STATICOBJS=$(shell for i in $$(ls ../common/*cpp);do echo $${i%cpp}o;done)
 TESTEXECS=$(patsubst %.cc,%.x,$(wildcard *.cc))
 
 # -L: FOLDER LIBRARY
-LFLAGS+=#-L$(TOP)/../common/
-LFLAGS+=#-L.
+	LFLAGS+=#-L$(TOP)/../common/
+	LFLAGS+=#-L.
 
 # -l: LIBRARY
-lLIBS+=-l$(COMMONSTATICLIBNAME)
+	lLIBS+=-l$(COMMONSTATICLIBNAME)
 
 # -I: INCLUDES
-IFLAGS+=-I. $(INCDEFS) -I$(TOP)/../common/
+	IFLAGS+=-I. $(INCDEFS) -I$(TOP)/../common/
 
 TARGET=target
 
-$(TARGET): localdefs.h $(OBJS) $(TESTEXECS) $(STATICLIB)
+$(TARGET): $(STATICLIB) localdefs.h $(OBJS) $(TESTEXECS)
 
-$(CPPOBJS): %.o: %.cpp %.h
+$(CPPOBJS): %.o: %.cpp %.h $(STATICLIB)
 	@echo "\033[32m   Compiling $@\\033[m"
 	$(CXX) $(CXXFLAGS) -c $< -o $@  $(IFLAGS) 
 
-$(CCOBJS): %.o: %.cc $(COMMONHEADERS) $(HEADERS)
+$(CCOBJS): %.o: %.cc $(COMMONHEADERS) $(HEADERS) $(STATICLIB)
 	@echo "\033[32m   Compiling $@\\033[m"
 	$(CXX) $(CXXFLAGS) -c $<  -o $@  $(IFLAGS) 
 
@@ -132,6 +132,9 @@ clean:
 	$(info CLEANING ALL)
 	@$(RM) -f $(TARGET) $(OBJS) $(TESTEXECS) 2>/dev/null || true
 
+fullclean: clean
+	@cd ../common/;$(MAKE) clean
+
 .PHONY: help
 help: ## Shows this help
 	@echo '=================================================================================='
@@ -142,9 +145,6 @@ help: ## Shows this help
 	@egrep -e '^(.+)\:\ .*##\ (.+)' ${MAKEFILE_LIST} | sed 's/:.*##/#/' | column -t -c 2 -s '#'
 	@echo ''
 	@echo '=================================================================================='
-
-fullclean: clean
-	@cd ../common/;$(MAKE) clean
 
 list:
 	@echo $(OBJS)

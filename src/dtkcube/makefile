@@ -100,13 +100,13 @@ TESTEXECS=$(patsubst %.cc,%.x,$(wildcard *.cc))
 
 TARGET=target
 
-$(TARGET): $(OBJS) $(TESTEXECS) $(STATICLIB)
+$(TARGET): $(STATICLIB) $(OBJS) $(TESTEXECS)
 
-$(CPPOBJS): %.o: %.cpp %.h
+$(CPPOBJS): %.o: %.cpp %.h $(STATICLIB)
 	@echo "\033[32m   Compiling $@\\033[m"
 	$(CXX) $(CXXFLAGS) -c $< -o $@  $(IFLAGS) 
 
-$(CCOBJS): %.o: %.cc $(COMMONHEADERS) $(HEADERS)
+$(CCOBJS): %.o: %.cc $(COMMONHEADERS) $(HEADERS) $(STATICLIB)
 	@echo "\033[32m   Compiling $@\\033[m"
 	$(CXX) $(CXXFLAGS) -c $<  -o $@  $(IFLAGS) 
 
