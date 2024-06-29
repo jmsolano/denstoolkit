@@ -53,7 +53,6 @@
 
 #include <iostream>
 using std::cout;
-using std::endl;
 using std::ios;
 #include <fstream>
 using std::ifstream;
@@ -78,6 +77,7 @@ using std::scientific;
 #include "../common/demat1critptnetworksl.h"
 #include "../common/stringtools.h"
 #include "../common/gnuplottools.h"
+#include "../common/dtkscalarfunction6d.h"
 #include "optflags.h"
 #include "crtflnms.h"
 #include "helperplots.h"
@@ -102,23 +102,38 @@ int main (int argc, char ** argv) {
    ScreenUtils::PrintHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS); //Just to let the user know that the initial configuration is OK
    
    /* Loading the wave function */
-   cout << endl << "Loading wave function from file: " << infilnam << "... ";
+   cout << '\n' << "Loading wave function from file: " << infilnam << "... ";
    GaussWaveFunction gwf;
    if (!(gwf.ReadFromFile(infilnam))) { //Loading the wave function
       ScreenUtils::SetScrRedBoldFont();
       cout << "Error: the wave function could not be loaded!\n";
       ScreenUtils::SetScrNormalFont();
-      exit(1);
+      return EXIT_FAILURE;
    }
-   cout << "Done." << endl;
+   cout << "Done." << '\n';
    if ( options.stpspindens && gwf.ihaveSingleSpinOrbs ) {
       gwf.CalcCabAAndCabB();
    }
-   if (gwf.nNuc==1) {
+   char prop='g';
+   if ( options.prop2plot ) {prop=argv[options.prop2plot][0];}
+   if ( Is6DMomSpaceField(prop) ) {
+      ScreenUtils::DisplayErrorMessage("Only position space 6D fields can be handled!");
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+      return EXIT_FAILURE;
+   }
+   string allowedFields="gnl";
+   bool implementedField=(allowedFields.find(prop)!=string::npos);
+   if ( !implementedField ) {
+      ScreenUtils::DisplayErrorMessage(string("The requested field '")+prop
+            +string("' is not supported!"));
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+      return EXIT_FAILURE;
+   }
+   if (gwf.nNuc==1 ) {
       ScreenUtils::DisplayWarningMessage("This file contains only one atom... There are no bond paths...");
-      cout << "Nothing to do!" << endl;
-      gwf.~GaussWaveFunction();
-      exit(0);
+      cout << "Nothing to do!" << '\n';
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+      return EXIT_FAILURE;
    }
    
    /* Setting the atoms for defining the line/bond path */
@@ -131,13 +146,11 @@ int main (int argc, char ** argv) {
       sscanf(argv[options.setats+1],"%d",&at2);
       at2--;
    }
-   if (at1>=gwf.nNuc||at2>=gwf.nNuc||at1<0||at2<0) {
+   if ( at1>=gwf.nNuc||at2>=gwf.nNuc||at1<0||at2<0 ) {
       ScreenUtils::DisplayErrorMessage("Requesting a non existent atom!");
-      gwf.~GaussWaveFunction();
-      exit(1);
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+      return EXIT_FAILURE;
    }
-   char prop='D';
-   if ( options.prop2plot ) {prop=argv[options.prop2plot][0];}
    
    /* Setting the bond network of the molecule */
    BondNetWork bnw;
@@ -153,10 +166,7 @@ int main (int argc, char ** argv) {
       sscanf(argv[options.setn1],"%d",&dimarr);
       if (dimarr<=0) {
          ScreenUtils::DisplayErrorMessage("Please provide a positive number for the number of points!");
-         gwf.~GaussWaveFunction();
-         bnw.~BondNetWork();
-         cpn.~CritPtNetWork();
-         exit(1);
+         return EXIT_FAILURE;
       }
    }
    
@@ -195,7 +205,7 @@ int main (int argc, char ** argv) {
    if (options.uponbp) {
       /* Compute the gradient path */
       nbgppts=cpn.FindSingleRhoBondGradientPathRK5(at1,at2,dl,dimarr,rbgp,robcp);
-      //cout << "npts: " << nbgppts << endl;
+      //cout << "npts: " << nbgppts << '\n';
       for (int i=0; i<3; i++) {x1[i]=rbgp[0][i];}
       for (int i=1; i<nbgppts; i++) {
          dist=0.0e0;
@@ -206,8 +216,8 @@ int main (int argc, char ** argv) {
          }
          lenline+=sqrt(dist);
       }
-      cout << "The bond path consists of " << nbgppts << " points" << endl;
-      cout << "The value of the step: " << dl << endl;
+      cout << "The bond path consists of " << nbgppts << " points" << '\n';
+      cout << "The value of the step: " << dl << '\n';
    }
    
    if (options.uponsl) {
@@ -225,7 +235,7 @@ int main (int argc, char ** argv) {
          robcp[i]=0.0e0;
       }
       for (int i=1; i<dimarr; i++) {for (int j=0; j<3; j++) {rbgp[i][j]=rbgp[i-1][j]+dx[j];}}
-      cout << "The line that joins the atoms consists of " << nbgppts << " points." << endl;
+      cout << "The line that joins the atoms consists of " << nbgppts << " points." << '\n';
    }
    for ( int i=0 ; i<3 ; i++ ) {
       xbeg[i]=rbgp[0][i];
@@ -256,12 +266,10 @@ int main (int argc, char ** argv) {
       coordinates of such min/max. The same for the global min/max.
    */
    
-   string propstr="the ";
-   if ( prop=='G' ) { propstr="Grad"; } else if ( prop=='L' ) { propstr="Lap"; }
-   cout << (string("Evaluating ")+propstr+string("MD1 "));
-   if (options.uponbp) {cout << "upon the bond path... " << endl;}
-   if (options.uponsl) {cout << "upon the straight line that joins the selected atoms..." << endl;}
-   cout << "Progress: " << endl;
+   cout << "Evaluating the " << GetField6DTypeKeyLong(prop) << ' ';
+   if (options.uponbp) {cout << "upon the bond path... " << '\n';}
+   if (options.uponsl) {cout << "upon the straight line that joins the selected atoms..." << '\n';}
+   cout << "Progress: " << '\n';
    
    if ( options.centredats ) {
       p1=-0.5e0*lenline;
@@ -271,7 +279,8 @@ int main (int argc, char ** argv) {
       p2=0.0e0;
    }
    double gg[3],gp[3],proj[2],magproj;
-   
+   DTKScalarFunction6D f(gwf);
+   if ( prop != 'n' ) { f.SetScalarFunction(prop); }
 #if USEPROGRESSBAR
    ScreenUtils::PrintProgressBar(0);
 #endif
@@ -282,12 +291,10 @@ int main (int argc, char ** argv) {
          if ((rbgp[i][0]==robcp[0])&&(rbgp[i][1]==robcp[1])&&(rbgp[i][2]==robcp[2])) {pbcp=p1;}
          for (int k=0; k<3; k++) {x2[k]=rbgp[0][k];}
          if (options.centredats) { p2=-0.5e0*lenline; } else { p2=0.0e0; }
-         if ( prop=='G' ) {
+         if ( prop == 'n' ) {
             gwf.EvalGradDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2],md1tmp,gg,gp);
-         } else if ( prop=='L' ) {
-            md1tmp=gwf.EvalLapDensityMatrix1(x1,x2);
          } else {
-            md1tmp=gwf.EvalDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2]);
+            md1tmp=f.f(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2]);
          }
          if (md1tmp>md1max) {
             md1max=md1tmp;
@@ -310,27 +317,17 @@ int main (int argc, char ** argv) {
          if ( md1tmp>gmd1max ) {gmd1max=md1tmp;}
          if ( md1tmp<gmd1min ) {gmd1min=md1tmp;}
          ofile << p1 << "\t" << p2 << "\t" << md1tmp;
-         if ( prop=='G' ) {
+         if ( prop == 'n' ) {
             computeUVProjection(xbeg,xend,gg,gp,proj);
             magproj=(proj[0]*proj[0]+proj[1]*proj[1]);
             if ( magproj>ggradmagmax ) {ggradmagmax=magproj;}
             if ( magproj<ggradmagmin ) {ggradmagmin=magproj;}
             for ( int ss=0 ; ss<2 ; ss++ ) {ofile << "\t" << proj[ss];}
-            ofile << endl;
-         } else if ( prop=='L' ) {
-           ofile << endl;
-         } else {
-            ofile << endl;
          }
+         ofile << '\n';
          if (i==0) {
             o1dfile << p1 << " " << md1tmp;
-            if ( prop=='G' ) {
-               o1dfile << endl;
-            } else if ( prop=='L' ) {
-              o1dfile << endl;
-            } else {
-               o1dfile << endl;
-            }
+            o1dfile << '\n';
          }
          for (int j=1; j<nbgppts; j++) {
             dist=0.0e0;
@@ -340,12 +337,10 @@ int main (int argc, char ** argv) {
                dist+=((x2[k]-xt[k])*(x2[k]-xt[k]));
             }
             p2+=sqrt(dist);
-            if ( prop=='G' ) {
+            if ( prop == 'n' ) {
                gwf.EvalGradDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2],md1tmp,gg,gp);
-            } else if ( prop=='L' ) {
-               md1tmp=gwf.EvalLapDensityMatrix1(x1,x2);
             } else {
-               md1tmp=gwf.EvalDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2]);
+               md1tmp=f.f(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2]);
             }
             if (i==j) {
                if (rhomin>md1tmp) {
@@ -353,13 +348,7 @@ int main (int argc, char ** argv) {
                   for (int k=0; k<3; k++) {xrmin[k]=x1[k];}
                }
                o1dfile << p1 << " " << md1tmp;
-               if ( prop == 'G' ) {
-                  o1dfile << endl;
-               } else if ( prop=='L' ) {
-                 o1dfile << endl;
-               } else {
-                  o1dfile << endl;
-               }
+               o1dfile << '\n';
             }
             if (i==(nbgppts-j)) {
                if (diagmax<md1tmp) {
@@ -375,27 +364,17 @@ int main (int argc, char ** argv) {
             if ( md1tmp>gmd1max ) {gmd1max=md1tmp;}
             if ( md1tmp<gmd1min ) {gmd1min=md1tmp;}
             ofile << p1 << "\t" << p2 << "\t" << md1tmp;
-            if ( prop=='G' ) {
+            if ( prop == 'n' ) {
                computeUVProjection(xbeg,xend,gg,gp,proj);
                magproj=(proj[0]*proj[0]+proj[1]*proj[1]);
                if ( magproj>ggradmagmax ) {ggradmagmax=magproj;}
                if ( magproj<ggradmagmin ) {ggradmagmin=magproj;}
                for ( int ss=0 ; ss<2 ; ss++ ) {ofile << "\t" << proj[ss];}
-               ofile << endl;
-            } else if ( prop=='L' ) {
-              ofile << endl;
-            } else {
-               ofile << endl;
             }
+            ofile << '\n';
             if (j==(nbgppts-1-i)) {
                o1sfile << p1 << " " << md1tmp;
-               if ( prop=='G' ) {
-                  o1sfile << endl;
-               } else if ( prop=='L' ) {
-                 o1sfile << endl;
-               } {
-                  o1sfile << endl;
-               }
+               o1sfile << '\n';
             }
             if (md1tmp>md1max) {
                md1max=md1tmp;
@@ -416,7 +395,7 @@ int main (int argc, char ** argv) {
                p2min=p2;
             }
          }
-         ofile << endl;
+         ofile << '\n';
          dist=0.0e0;
          if (i<nbgppts) {
             for (int k=0; k<3; k++) {
@@ -436,12 +415,10 @@ int main (int argc, char ** argv) {
          for (int k=0; k<3; k++) {x1[k]=rbgp[i][k];}
          for (int k=0; k<3; k++) {x2[k]=rbgp[0][k];}
          if (options.centredats) { p2=-0.5e0*lenline; } else { p2=0.0e0; }
-         if ( prop=='G' ) {
+         if ( prop == 'n' ) {
             gwf.EvalGradDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2],md1tmp,gg,gp);
-         } else if ( prop=='L' ) {
-            md1tmp=gwf.EvalLapDensityMatrix1(x1,x2);
          } else {
-            md1tmp=gwf.EvalDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2]);
+            md1tmp=f.f(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2]);
          }
          if (md1tmp>md1max) {
             md1max=md1tmp;
@@ -464,37 +441,25 @@ int main (int argc, char ** argv) {
          if ( md1tmp>gmd1max ) {gmd1max=md1tmp;}
          if ( md1tmp<gmd1min ) {gmd1min=md1tmp;}
          ofile << p1 << "\t" << p2 << "\t" << md1tmp;
-         if ( prop=='G' ) {
+         if ( prop == 'n' ) {
             computeUVProjection(xbeg,xend,gg,gp,proj);
             magproj=(proj[0]*proj[0]+proj[1]*proj[1]);
             if ( magproj>ggradmagmax ) {ggradmagmax=magproj;}
             if ( magproj<ggradmagmin ) {ggradmagmin=magproj;}
             for ( int ss=0 ; ss<2 ; ss++ ) {ofile << "\t" << proj[ss];}
-            ofile << endl;
-         } else if ( prop=='L' ) {
-           ofile << endl;
-         } else {
-            ofile << endl;
          }
+         ofile << '\n';
          if (i==0) {
             o1dfile << p1 << " " << md1tmp;
-            if ( prop=='G' ) {
-               o1dfile << endl;
-            } else if ( prop=='L' ) {
-              o1dfile << endl;
-            } else {
-               o1dfile << endl;
-            }
+            o1dfile << '\n';
          }
          for (int j=1; j<nbgppts; j++) {
             for (int k=0; k<3; k++) {x2[k]=rbgp[j][k];}
             p2+=dl;
-            if ( prop=='G' ) {
+            if ( prop == 'n' ) {
                gwf.EvalGradDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2],md1tmp,gg,gp);
-            } else if ( prop=='L' ) {
-               md1tmp=gwf.EvalLapDensityMatrix1(x1,x2);
             } else {
-               md1tmp=gwf.EvalDensityMatrix1(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2]);
+               md1tmp=f.f(x1[0],x1[1],x1[2],x2[0],x2[1],x2[2]);
             }
             if (i==j) {
                if (rhomin>md1tmp) {
@@ -502,13 +467,7 @@ int main (int argc, char ** argv) {
                   for (int k=0; k<3; k++) {xrmin[k]=x1[k];}
                }
                o1dfile << p1 << " " << md1tmp;
-               if ( prop == 'G' ) {
-                  o1dfile << endl;
-               } else if ( prop=='L' ) {
-                 o1dfile << endl;
-               } else {
-                  o1dfile << endl;
-               }
+               o1dfile << '\n';
             }
             if (i==(nbgppts-j)) {
                if (diagmax<md1tmp) {
@@ -523,29 +482,19 @@ int main (int argc, char ** argv) {
             }
             if (j==(nbgppts-1-i)) {
                o1sfile << p1 << " " << md1tmp;
-               if ( prop=='G' ) {
-                  o1sfile << endl;
-               } else if ( prop=='L' ) {
-                 o1sfile << endl;
-               } else {
-                  o1sfile << endl;
-               }
+               o1sfile << '\n';
             }
             if ( md1tmp>gmd1max ) {gmd1max=md1tmp;}
             if ( md1tmp<gmd1min ) {gmd1min=md1tmp;}
             ofile << p1 << "\t" << p2 << "\t" << md1tmp;
-            if ( prop == 'G' ) {
+            if ( prop == 'n' ) {
                computeUVProjection(xbeg,xend,gg,gp,proj);
                magproj=(proj[0]*proj[0]+proj[1]*proj[1]);
                if ( magproj>ggradmagmax ) {ggradmagmax=magproj;}
                if ( magproj<ggradmagmin ) {ggradmagmin=magproj;}
                for ( int ss=0 ; ss<2 ; ss++ ) {ofile << "\t" << proj[ss];}
-               ofile << endl;
-            } else if ( prop=='L' ) {
-              ofile << endl;
-            } else {
-               ofile << endl;
             }
+            ofile << '\n';
             if (md1tmp>md1max) {
                md1max=md1tmp;
                for (int k=0; k<3; k++) {
@@ -565,7 +514,7 @@ int main (int argc, char ** argv) {
                p2min=p2;
             }
          }
-         ofile << endl;
+         ofile << '\n';
          p1+=dl;
 #if USEPROGRESSBAR
          ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((nbgppts-1))));
@@ -575,7 +524,7 @@ int main (int argc, char ** argv) {
    
 #if USEPROGRESSBAR
    ScreenUtils::PrintProgressBar(100);
-   cout << endl;
+   cout << '\n';
 #endif
    
    /* Close the tsv and dat files */
@@ -593,62 +542,62 @@ int main (int argc, char ** argv) {
    }
    /* Display the information of min/max of MD1 */
    
-   cout << scientific << setprecision(12) << endl;
+   cout << scientific << setprecision(12) << '\n';
    ScreenUtils::PrintScrCharLine('-');
-   //cout << "md1max: " << md1max << ", md1min: " << md1min << endl << endl;
-   cout << "The maximum value (within the evaluated line) is located at:" << endl;
+   //cout << "md1max: " << md1max << ", md1min: " << md1min << '\n' << '\n';
+   cout << "The maximum value (within the evaluated line) is located at:" << '\n';
    ScreenUtils::PrintV3Comp("x1(max): ",x1max);
    ScreenUtils::PrintV3Comp("x2(max): ",x2max);
-   cout << "(p1: " << p1max << ")\n(p2: " << p2max << ")" << endl;
+   cout << "(p1: " << p1max << ")\n(p2: " << p2max << ")" << '\n';
    cout << "MD1(max): " << gwf.EvalDensityMatrix1(x1max[0],x1max[1],x1max[2],
                                              x2max[0],x2max[1],x2max[2]);
-   cout << endl;
+   cout << '\n';
    ScreenUtils::PrintScrCharLine('-');
-   cout << "The minimum value (within the evaluated line) is located at:" << endl;
+   cout << "The minimum value (within the evaluated line) is located at:" << '\n';
    ScreenUtils::PrintV3Comp("x1(min): ",x1min);
    ScreenUtils::PrintV3Comp("x2(min): ",x2min);
-   cout << "(p1: " << p1min << ")\n(p2: " << p2min << ")" << endl;
+   cout << "(p1: " << p1min << ")\n(p2: " << p2min << ")" << '\n';
    cout << "MD1(min): " << gwf.EvalDensityMatrix1(x1min[0],x1min[1],x1min[2],
                                              x2min[0],x2min[1],x2min[2]);
-   cout << endl;
+   cout << '\n';
    ScreenUtils::PrintScrCharLine('-');
    double md1lmin=1.0e+50;
    if (options.uponbp) {
       md1lmin=gwf.EvalDensityMatrix1(robcp[0],robcp[1],robcp[2],robcp[0],robcp[1],robcp[2]);
-      cout << "The bond critical point is located at:" << endl;
+      cout << "The bond critical point is located at:" << '\n';
       ScreenUtils::PrintV3Comp("R(BCP): ",robcp);
-      cout << "p1(p2): " << pbcp << endl;
-      cout << "MD1(BCP): " << md1lmin << endl;
+      cout << "p1(p2): " << pbcp << '\n';
+      cout << "MD1(BCP): " << md1lmin << '\n';
    }
    if (options.uponsl) {
-      cout << "The minimum value of the density is located at" << endl;
-      cout << "(considering only the evaluated points)" << endl;
+      cout << "The minimum value of the density is located at" << '\n';
+      cout << "(considering only the evaluated points)" << '\n';
       md1lmin= gwf.EvalDensityMatrix1(xrmin[0],xrmin[1],xrmin[2],xrmin[0],xrmin[1],xrmin[2]);
       ScreenUtils::PrintV3Comp("R(rho,min): ",xrmin);
-      cout << "MD1(rho,min): " << md1lmin << endl;
+      cout << "MD1(rho,min): " << md1lmin << '\n';
    }
    ScreenUtils::PrintScrCharLine('-');
    double md1dmax;
    md1dmax=gwf.EvalDensityMatrix1(xd1max[0],xd1max[1],xd1max[2],xd2max[0],xd2max[1],xd2max[2]);
-   cout << "The maximum value of MD1 at the diagonal (90 degrees from the rho line)" << endl;
-   cout << "is located at" << endl;
+   cout << "The maximum value of MD1 at the diagonal (90 degrees from the rho line)" << '\n';
+   cout << "is located at" << '\n';
    ScreenUtils::PrintV3Comp("x1(diag,max): ",xd1max);
    ScreenUtils::PrintV3Comp("x2(diag,max): ",xd2max);
-   cout << "(p1: " << p1dmax << ")\n(p2: " << p2dmax << ")" << endl;
-   cout << "MD1(diag,max): " << md1dmax << endl;
+   cout << "(p1: " << p1dmax << ")\n(p2: " << p2dmax << ")" << '\n';
+   cout << "MD1(diag,max): " << md1dmax << '\n';
    if ( options.findcps ) {
       ScreenUtils::PrintScrCharLine('-');
       cp.DisplayCPsInfo();
    }
    ScreenUtils::PrintScrCharLine('-');
-   cout << "The value of MD1 at the point e --aka cicp-- is:" << endl;
+   cout << "The value of MD1 at the point e --aka cicp-- is:" << '\n';
    cout << "MD1(cicp): " << gwf.EvalDensityMatrix1(\
          bnw.R[at1][0],bnw.R[at1][1],bnw.R[at1][2],\
-         bnw.R[at2][0],bnw.R[at2][1],bnw.R[at2][2]) << endl;
+         bnw.R[at2][0],bnw.R[at2][1],bnw.R[at2][2]) << '\n';
    ScreenUtils::PrintScrCharLine('-');
-   cout << "Logfile: " << lognam << endl;
+   cout << "Logfile: " << lognam << '\n';
    ScreenUtils::PrintScrCharLine('-');
-   cout << endl;
+   cout << '\n';
    
 
    /* Writing the information of MD1 (min/max) to the log file */
@@ -659,41 +608,41 @@ int main (int argc, char ** argv) {
    FileUtils::WriteHappyStart(argv,logfil,CURRENTVERSION,PROGRAMCONTRIBUTORS);
    logfil << scientific << setprecision(12);
    FileUtils::WriteScrCharLine(logfil,'-');
-   logfil << "#The maximum value (within the evaluated line) is located at:" << endl;
+   logfil << "#The maximum value (within the evaluated line) is located at:" << '\n';
    FileUtils::WriteV3Components(logfil,"#x1(max):\n",x1max);
    FileUtils::WriteV3Components(logfil,"#x2(max):\n",x2max);
-   logfil << "#(p1):\n" << p1max << "\n#(p2):\n" << p2max << endl;
+   logfil << "#(p1):\n" << p1max << "\n#(p2):\n" << p2max << '\n';
    logfil << "#MD1(max):\n" << gwf.EvalDensityMatrix1(x1max[0],x1max[1],x1max[2],
                                                     x2max[0],x2max[1],x2max[2]);
-   logfil << endl;
+   logfil << '\n';
    FileUtils::WriteScrCharLine(logfil,'-');
-   logfil << "#The minimum value (within the evaluated line) is located at:" << endl;
+   logfil << "#The minimum value (within the evaluated line) is located at:" << '\n';
    FileUtils::WriteV3Components(logfil,"#x1(min):\n",x1min);
    FileUtils::WriteV3Components(logfil,"#x2(min):\n",x2min);
-   logfil << "#(p1):\n" << p1min << "\n#(p2):\n" << p2min << endl;
+   logfil << "#(p1):\n" << p1min << "\n#(p2):\n" << p2min << '\n';
    logfil << "#MD1(min):\n" << gwf.EvalDensityMatrix1(x1min[0],x1min[1],x1min[2],
                                                     x2min[0],x2min[1],x2min[2]);
-   logfil << endl;
+   logfil << '\n';
    FileUtils::WriteScrCharLine(logfil,'-');
    if (options.uponbp) {
-      logfil << "#The bond critical point is located at:" << endl;
+      logfil << "#The bond critical point is located at:" << '\n';
       FileUtils::WriteV3Components(logfil,"#R(BCP):\n",robcp);
-      logfil << "#p1(p2):\n" << pbcp << endl;
-      logfil << "#MD1(BCP):\n" << md1lmin << endl;
+      logfil << "#p1(p2):\n" << pbcp << '\n';
+      logfil << "#MD1(BCP):\n" << md1lmin << '\n';
    }
    if (options.uponsl) {
-      logfil << "#The minimum value of the density is located at" << endl;
-      logfil << "#(considering only the evaluated points)" << endl;
+      logfil << "#The minimum value of the density is located at" << '\n';
+      logfil << "#(considering only the evaluated points)" << '\n';
       FileUtils::WriteV3Components(logfil,"#R(rho,min):\n",xrmin);
-      logfil << "#MD1(rho,min):\n" << md1lmin << endl;
+      logfil << "#MD1(rho,min):\n" << md1lmin << '\n';
    }
    FileUtils::WriteScrCharLine(logfil,'-');
-   logfil << "#The maximum value of MD1 at the diagonal (90 degrees from the rho line)" << endl;
-   logfil << "#is located at" << endl;
+   logfil << "#The maximum value of MD1 at the diagonal (90 degrees from the rho line)" << '\n';
+   logfil << "#is located at" << '\n';
    FileUtils::WriteV3Components(logfil,"#x1(diag,max):\n",xd1max);
    FileUtils::WriteV3Components(logfil,"#x2(diag,max):\n",xd2max);
-   logfil << "#(p1):\n" << p1dmax << "\n#(p2):\n" << p2dmax << endl;
-   logfil << "#MD1(diag,max):\n" << md1dmax << endl;
+   logfil << "#(p1):\n" << p1dmax << "\n#(p2):\n" << p2dmax << '\n';
+   logfil << "#MD1(diag,max):\n" << md1dmax << '\n';
    /* Writing the information of MD1 (min/max) to the log file */
    if ( options.findcps ) {
       FileUtils::WriteScrCharLine(logfil,'-');
@@ -701,10 +650,10 @@ int main (int argc, char ** argv) {
    }
    /* Writes the value of gamma at cicp  */
    FileUtils::WriteScrCharLine(logfil,'-');
-   logfil << "#The value of MD1 at the point e --aka cicp-- is:" << endl;
-   logfil << "#MD1(CICP): " << endl << gwf.EvalDensityMatrix1(\
+   logfil << "#The value of MD1 at the point e --aka cicp-- is:" << '\n';
+   logfil << "#MD1(CICP): " << '\n' << gwf.EvalDensityMatrix1(\
          bnw.R[at1][0],bnw.R[at1][1],bnw.R[at1][2],\
-         bnw.R[at2][0],bnw.R[at2][1],bnw.R[at2][2]) << endl;
+         bnw.R[at2][0],bnw.R[at2][1],bnw.R[at2][2]) << '\n';
    FileUtils::WriteScrCharLine(logfil,'-');
 
    logfil.close();
@@ -714,25 +663,25 @@ int main (int argc, char ** argv) {
    string line,tmpnam;
    double minval,maxval;
    double range=fabs(md1dmax-md1lmin);
-   if ( prop=='L' ) { range=10.0e0; }
+   if ( prop == 'l' ) { range=10.0e0; }
 #if DEBUG
    if ( md1lmin<0.0e0 ) {
       ScreenUtils::DisplayWarningMessage(string("md1lmin: "+StringTools::GetStringFromReal(md1lmin)));
    }
-   cout << "gmin: " << gmd1min << ", gmax: " << gmd1max << endl;
-   cout << "md1dmax: " << md1dmax << endl;
-   cout << "md1lmin: " << md1lmin << endl;
-   cout << "range: " << range << endl;
+   cout << "gmin: " << gmd1min << ", gmax: " << gmd1max << '\n';
+   cout << "md1dmax: " << md1dmax << '\n';
+   cout << "md1lmin: " << md1lmin << '\n';
+   cout << "range: " << range << '\n';
 #endif
    minval=round(110*gmd1min)/100.0e0;
    maxval=round(110*(md1lmin+range))/100.0e0;
-   if ( prop=='L' ) {
+   if ( prop == 'l' ) {
       minval=-5.0e0;
       maxval=5.0e0;
    }
 #if DEBUG
-   cout << "minval: " << minval << endl;
-   cout << "maxval: " << maxval << endl;
+   cout << "minval: " << minval << '\n';
+   cout << "maxval: " << maxval << '\n';
 #endif /* ( DEBUG ) */
    if ((fabs(md1lmin-md1min)>range)&&(range<1.0e-02)) {
       range=2.0e0*fabs(md1lmin-md1min);
@@ -740,22 +689,22 @@ int main (int argc, char ** argv) {
       maxval=round(110*(md1min+range))/100.0e0;
    }
 #if DEBUG
-   cout << "minval: " << minval << endl;
-   cout << "maxval: " << maxval << endl;
+   cout << "minval: " << minval << '\n';
+   cout << "maxval: " << maxval << '\n';
 #endif /* ( DEBUG ) */
    HelperPlot::generate3DPlot(options,outfilnam,minval,maxval,lenline,nbgppts);
    HelperPlot::generateMainDiagPlot(options,o1dfilnam,bnw,at1,at2,0.0e0,(maxval-minval),lenline,range);
    HelperPlot::generateSecDiagPlot(options,o1sfilnam,bnw,at1,at2,minval,maxval,lenline,range);
    HelperPlot::generateHeatMap(options,argv,outfilnam,bnw,cp,rbgp,nbgppts,minval,maxval,\
          lenline,md1lmin,md1dmax,at1,at2);
-   if ( prop=='G' ) {
+   if ( prop == 'n' ) {
       HelperPlot::generateVectorField(options,argv,outfilnam,bnw,cp,rbgp,nbgppts,minval,maxval,ggradmagmin,ggradmagmax,\
             lenline,md1lmin,md1dmax,at1,at2);
    }
    
 #if (defined(__APPLE__)||defined(__linux__)||defined(__CYGWIN__))
    if (options.zipdat) {
-      cout << "gzipping tsv..." << endl;
+      cout << "gzipping tsv..." << '\n';
       line="gzip -9f "+outfilnam;
       system(line.c_str());
    }
@@ -771,11 +720,11 @@ int main (int argc, char ** argv) {
    ScreenUtils::SetScrGreenBoldFont();
    ScreenUtils::PrintScrStarLine();
    cout << setprecision(3) << "CPU Time: "
-        << double( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << endl;
+        << double( clock () - begin_time ) / CLOCKS_PER_SEC << "s" << '\n';
    double end_walltime=time(NULL);
-   cout << "Wall-clock time: " << double (end_walltime-begin_walltime) << "s" << endl;
+   cout << "Wall-clock time: " << double (end_walltime-begin_walltime) << "s" << '\n';
 #if DEBUG
-   cout << "Debuggin mode (under construction...)" << endl;
+   cout << "Debuggin mode (under construction...)" << '\n';
 #endif
    ScreenUtils::PrintScrStarLine();
    ScreenUtils::SetScrNormalFont();

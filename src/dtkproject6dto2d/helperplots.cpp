@@ -349,7 +349,7 @@ void HelperPlot::generateHeatMap(OptionFlags &options,char *argv[],const string 
 void HelperPlot::generateVectorField(OptionFlags &options,char *argv[],const string &tsvname,BondNetWork &bn,DeMat1CriticalPointNetworkSL &cp,
       double **xx,int nptsinline,double minval2plot,\
       double maxval2plot,double maggradmin,double maggradmax,double linelength,double md1lmin,double md1dmax,int idx1,int idx2) {
-   char prop='D';
+   char prop='g';
    if ( options.prop2plot ) {prop=argv[options.prop2plot][0];}
    string gnpname=tsvname,epsname,pdfname;
    FileUtils::InsertAtEndOfFileName(gnpname,string("-2DV"));
@@ -492,7 +492,7 @@ void HelperPlot::generateVectorField(OptionFlags &options,char *argv[],const str
    if (!options.showcont) {ofil << "#";}
    ofil << ",contourtempname w l lt -1 lw 1 notitle #Activate this line to show contours" << endl;
    //
-   if ( prop=='G' ) {
+   if ( prop=='n' ) {
 #if DEBUG
       cout << "maggradmin: " << maggradmin << ", maggradmax: " << maggradmax << endl;
 #endif

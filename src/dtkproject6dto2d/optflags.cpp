@@ -79,6 +79,7 @@ using std::ifstream;
 using std::string;
 #include "figname.h"
 #include "optflags.h"
+#include "fldtypesdef.h"
 #include "../common/screenutils.h"
 
 OptionFlags::OptionFlags() {
@@ -268,8 +269,13 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  since the number of points in the bond path will be mainly " << '\n'
         << "            \t  governed by step." << '\n';
    cout << "  -p prop   \tChoose the property to be computed. prop is a character," << '\n'
-        << "            \t  which can be (D is the default value):" << '\n'
-        << "            \t      D (Density Matrix of order 1)" << '\n'
+        << "            \t  which can be (D is the default value):" << '\n';
+   string charFields="gnl";
+   for ( size_t i=0 ; i<charFields.size() ; ++i ) {
+      cout << "         \t\t" << charFields[i] << " ("
+         << GetField6DTypeKeyLong(charFields[i]) << ')' << '\n';
+   }
+   cout << "            \t      D (Density Matrix of order 1)" << '\n'
         << "            \t      G (Gradient of the density Matrix of order 1)" << '\n'
         << "            \t      L (Laplacian of the density Matrix of order1)" << '\n';
    cout << "  -o outname\tSet the output file name." << '\n'

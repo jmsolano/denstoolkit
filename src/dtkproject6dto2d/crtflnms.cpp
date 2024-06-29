@@ -103,7 +103,7 @@ void mkFileNames(char ** (&argv), OptionFlags &opts, string &i_fn, string &o_fn,
    o_fn.append("tsv");
    
    pos=o_fn.find_last_of('.');
-   char prop='D';
+   char prop='g';
    if (pos!=string::npos) {
       string plbl;
       if (opts.uponbp) {plbl="BP";}
@@ -111,10 +111,10 @@ void mkFileNames(char ** (&argv), OptionFlags &opts, string &i_fn, string &o_fn,
       if ( opts.prop2plot ) {
          prop=argv[opts.prop2plot][0];
       } else {
-         prop='D';
+         prop='g';
       }
-      if ( prop=='G' ) {plbl+="Grad";}
-      if ( prop=='L' ) { plbl+="Lap"; }
+      if ( prop=='n' ) {plbl+="Grad";}
+      if ( prop=='l' ) { plbl+="Lap"; }
       plbl+="DM1";
       o_fn.insert(pos,plbl);
       d_fn.insert(pos,plbl);
