@@ -5232,8 +5232,11 @@ reduction(+: sumhxx,sumhyy,sumhzz,sumhxy,sumhxz,sumhyz)
    hp[2][0]+=sumhxz; hp[2][1]+=sumhyz; hp[2][2]+=sumhzz;
    return;
 }
-double GaussWaveFunction::EvalLapDensityMatrix1(double (&xx)[3],double (&xxp)[3]) {
-   double gam,gxx[3],gxp[3],hh[3][3],hph[3][3],hp[3][3];
+double GaussWaveFunction::EvalLapDensityMatrix1(double x1,double y1,double z1,\
+      double x2,double y2,double z2) {
+   double xx[3],xxp[3],gam,gxx[3],gxp[3],hh[3][3],hph[3][3],hp[3][3];
+   xx[0]=x1; xx[1]=y1; xx[2]=z1;
+   xxp[0]=x2; xxp[1]=y2; xxp[2]=z2;
    EvalHessDensityMatrix1(xx,xxp,gam,gxx,gxp,hh,hph,hp);
    double res=hh[0][0]+hh[1][1]+hh[2][2];
    res+=hp[0][0];

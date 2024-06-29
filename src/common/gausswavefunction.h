@@ -517,7 +517,11 @@ public:
    void EvalHessDensityMatrix1(double (&xx)[3],double (&xxp)[3],\
          double &gamm,double (&gg)[3],double (&gp)[3],\
          double (&hh)[3][3],double (&hph)[3][3],double (&hp)[3][3]);
-   double EvalLapDensityMatrix1(double (&xx)[3],double (&xxp)[3]);
+   inline double EvalLapDensityMatrix1(double (&xx)[3],double (&xxp)[3]) {
+      return EvalLapDensityMatrix1(xx[0],xx[1],xx[2],xxp[0],xxp[1],xxp[2]);
+   }
+   double EvalLapDensityMatrix1(double x1,double y1,double z1,\
+         double x2,double y2,double z2);
    /** This function evaluates the generalized Density Matrix of Order 1 at the points
      \f$(x,y,z)\f$ and \f$(xp,yp,zp)\f$. Here by generalized it is to be understood that
      the wavefunction may or not be open-shell. Therefore, the function requires
