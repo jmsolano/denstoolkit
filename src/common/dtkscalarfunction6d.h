@@ -14,11 +14,14 @@ public:
    DTKScalarFunction6D(GaussWaveFunction &ugwf);
    void SetScalarFunction(char t);
    inline double f(const vector<double> &x) { return f(x[0],x[1],x[2],x[3],x[4],x[5]); }
-   inline double f(const double x,const double y,const double z,\
-                   const double xp,const double yp,const double zp) {
+   inline double f(const double x1,const double y1,const double z1,\
+                   const double x2,const double y2,const double z2) {
       switch ( sft ) {
          case ScalarField6DType::DM1 :
-            return wf->EvalDensityMatrix1(x,y,z,xp,yp,zp);
+            return wf->EvalDensityMatrix1(x1,y1,z1,x2,y2,z2);
+            break;
+         case ScalarField6DType::LDM1 :
+            return wf->EvalLapDensityMatrix1(x1,y1,z1,x2,y2,z2);
             break;
          default :
             if ( prntunknfld1st ) {
