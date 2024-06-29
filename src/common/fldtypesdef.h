@@ -568,6 +568,8 @@ inline double GetDefaultIsolvalueForCube(const char p2p) {
 enum ScalarField6DType {
    NONE6D,\
    DM1, /*!< [D]ensity [M]atrix of order [1]; 6D field  */\
+   GDM1, /*!< [G]radient of [D]ensity [M]atrix of order [1]; 6D vector field  */\
+   LDM1, /*!< [L]aplacian of [D]ensity [M]atrix of order [1]; 6D field  */\
    SDM1, /*!< [S]pin-dependent [D]ensity [M]atrix of order [1]; 6D field  */\
    DM1M, /*!< [D]ensity [M]atrix of order [1] in [M]omentum spac3; 6D field  */\
    SDM1M, /*!< [S]pin-dependent [D]ensity [M]atrix of order [1] in [M]omentum space; 6D field  */\
@@ -583,6 +585,12 @@ inline char ScalarFieldType6D2Char(ScalarField6DType fftt) {
    switch ( fftt ) {
       case DM1  :
          res='g';
+         break;
+      case GDM1 :
+         res='n';
+         break;
+      case LDM1 :
+         res='l';
          break;
       case DM1M :
          res='G';
@@ -632,6 +640,12 @@ inline ScalarField6DType Char2ScalarField6DType(const char prop) {
       case 'H' :
          res=SDM1M;
          break;
+      case 'l' :
+         res=LDM1;
+         break;
+      case 'n' :
+         res=GDM1;
+         break;
       case 'p' :
          res=PDF  ;
          break;
@@ -670,6 +684,12 @@ inline string GetField6DTypeKeyShort(const char prop) {
          break;
       case 'H' :
          plbl="SpinDepDM1MomSp";
+         break;
+      case 'l' :
+         plbl="LapDM1";
+         break;
+      case 'n' :
+         plbl="GradDM1";
          break;
       case 'p' :
          plbl="PairDens";
@@ -710,6 +730,12 @@ inline string GetField6DTypeKeyLong(const char prop) {
       case 'H' :
          plbl="Spin-dependent density matrix of order 1 in momentum space";
          break;
+      case 'n' :
+         plbl="Gradient of Density Matrix of order 1";
+         break;
+      case 'l' :
+         plbl="Laplacian of Density Matrix of order 1";
+         break;
       case 'p' :
          plbl="Pair density function";
          break;
@@ -749,6 +775,12 @@ inline string GnuplotField6DTitle(const char prop) {
       case 'H' :
          plbl="{/Symbol P}_1^{/Symbol s}";
          break;
+      case 'n' :
+         plbl="{/Symbol \\321 G}_1";
+         break;
+      case 'l' :
+         plbl="{/Symbol \\321}^2{/Symbol G}_1";
+         break;
       case 'p' :
          plbl="{/Symbol r}_2";
          break;
@@ -773,5 +805,22 @@ inline string GnuplotField6DTitle(const char prop) {
    }
    return plbl;
 }
+inline bool Is6DMomSpaceField(const char prop) {
+   bool res=false;
+   switch ( prop ) {
+      case 'G' :
+      case 'H' :
+      case 'P' :
+      case 'Q' :
+      case 'U' :
+         res=true;
+         break;
+      default :
+         res=false;
+         break;
+   }
+   return res;
+}
+inline bool Is6DPosSpaceField(const char prop) { return !Is6DMomSpaceField(prop); }
 #endif//_FLDTYPESDEF_H_
 
