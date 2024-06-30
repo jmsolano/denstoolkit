@@ -49,7 +49,7 @@ using std::string;
 enum ScalarFieldType {
    NONE,\
    DENS,/* Electron density (Rho)  */\
-   DENSM,/* Electron density (Rho) in Momentum Space  */\
+   DENSM,/* Electron density (tildeRho) in Momentum Space  */\
    MGRD,/* MagGradRho Density  */\
    LAPD,/* Laplacian Density  */\
    LOLD,/* LOL Density  */\
@@ -374,7 +374,7 @@ inline string GetFieldTypeKeyLong(const char prop) {
          plbl="Electron Density --Rho--";
          break;
       case 'm':
-         plbl="Electron Density --Rho-- in Momentum Space";
+         plbl="Electron Density --tildeRho-- in Momentum Space";
          break;
       case 'g':
          plbl="Magnitude of the Gradient of the Electron Density";
