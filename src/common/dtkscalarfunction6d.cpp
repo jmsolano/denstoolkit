@@ -12,7 +12,7 @@ DTKScalarFunction6D::DTKScalarFunction6D() {
 }
 DTKScalarFunction6D::DTKScalarFunction6D(GaussWaveFunction &ugwf) : DTKScalarFunction6D() {
    wf=&ugwf;
-   sft=ScalarField6DType::DM1;
+   sft=ScalarField6DType::DM1P;
 }
 void DTKScalarFunction6D::SetScalarFunction(char t) {
    sft=Char2ScalarField6DType(t);

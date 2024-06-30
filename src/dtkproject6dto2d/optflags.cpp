@@ -275,9 +275,6 @@ void printHelpMenu(int &argc, char** &argv) {
       cout << "         \t\t" << charFields[i] << " ("
          << GetField6DTypeKeyLong(charFields[i]) << ')' << '\n';
    }
-   cout << "            \t      D (Density Matrix of order 1)" << '\n'
-        << "            \t      G (Gradient of the density Matrix of order 1)" << '\n'
-        << "            \t      L (Laplacian of the density Matrix of order1)" << '\n';
    cout << "  -o outname\tSet the output file name." << '\n'
         << "            \t  (If not given the program will create one out of" << '\n'
         << "            \t  the input name; if given, the tsv, gnp and pdf files will" << '\n'

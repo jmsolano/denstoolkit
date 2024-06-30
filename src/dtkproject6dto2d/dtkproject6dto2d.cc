@@ -95,7 +95,6 @@ int main (int argc, char ** argv) {
    string progname;
    OptionFlags options;
    ifstream ifile;
-   ofstream ofile,o1dfile,o1sfile;
    
    getOptions(argc,argv,options); //This processes the options from the command line.
    mkFileNames(argv,options,infilnam,outfilnam,o1dfilnam,o1sfilnam,basegnpnam,lognam); //This creates the names used.
@@ -129,6 +128,8 @@ int main (int argc, char ** argv) {
       cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
       return EXIT_FAILURE;
    }
+   // At this point, momentum space fields requests have been dealt with,
+   // and only position space fields are considered.
    if (gwf.nNuc==1 ) {
       ScreenUtils::DisplayWarningMessage("This file contains only one atom... There are no bond paths...");
       cout << "Nothing to do!" << '\n';
@@ -245,6 +246,7 @@ int main (int argc, char ** argv) {
    
    /* Open the tsv and dat files */
    
+   ofstream ofile,o1dfile,o1sfile;
    ofile.open(outfilnam.c_str(),ios::out);
    o1dfile.open(o1dfilnam.c_str(),ios::out);
    o1sfile.open(o1sfilnam.c_str(),ios::out);
@@ -261,8 +263,8 @@ int main (int argc, char ** argv) {
    double gmd1max=-1.0e+50,gmd1min=1.0e+50;
    double ggradmagmax=-1.0e+50,ggradmagmin=1.0e+50;
    
-   /* Evaluating and writing the density matrix of order 1 into the tsv file
-      On the fly, determining min/max of MD1 and the respective
+   /* Evaluating and writing the 6D-field into the tsv file
+      On the fly, determining min/max of the field and the respective
       coordinates of such min/max. The same for the global min/max.
    */
    

@@ -17,10 +17,10 @@ public:
    inline double f(const double x1,const double y1,const double z1,\
                    const double x2,const double y2,const double z2) {
       switch ( sft ) {
-         case ScalarField6DType::DM1 :
+         case ScalarField6DType::DM1P:
             return wf->EvalDensityMatrix1(x1,y1,z1,x2,y2,z2);
             break;
-         case ScalarField6DType::LDM1 :
+         case ScalarField6DType::LDM1P:
             return wf->EvalLapDensityMatrix1(x1,y1,z1,x2,y2,z2);
             break;
          default :

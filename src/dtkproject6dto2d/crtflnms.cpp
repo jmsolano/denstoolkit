@@ -69,6 +69,7 @@ using std::endl;
 #include "crtflnms.h"
 #include "../common/fileutils.h"
 #include "../common/screenutils.h"
+#include "fldtypesdef.h"
 
 void mkFileNames(char ** (&argv), OptionFlags &opts, string &i_fn, string &o_fn,string &d_fn,
                  string &s_fn,string &g_fn,string &l_fn) {
@@ -104,18 +105,12 @@ void mkFileNames(char ** (&argv), OptionFlags &opts, string &i_fn, string &o_fn,
    
    pos=o_fn.find_last_of('.');
    char prop='g';
+   if ( opts.prop2plot ) { prop=argv[opts.prop2plot][0]; }
    if (pos!=string::npos) {
       string plbl;
       if (opts.uponbp) {plbl="BP";}
       if (opts.uponsl) {plbl="SL";}
-      if ( opts.prop2plot ) {
-         prop=argv[opts.prop2plot][0];
-      } else {
-         prop='g';
-      }
-      if ( prop=='n' ) {plbl+="Grad";}
-      if ( prop=='l' ) { plbl+="Lap"; }
-      plbl+="DM1";
+      plbl+=GetField6DTypeKeyShort(prop);
       o_fn.insert(pos,plbl);
       d_fn.insert(pos,plbl);
       s_fn.insert(pos,plbl);
