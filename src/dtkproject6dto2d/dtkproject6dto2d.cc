@@ -110,8 +110,22 @@ int main (int argc, char ** argv) {
       return EXIT_FAILURE;
    }
    cout << "Done." << '\n';
-   if ( options.stpspindens && gwf.ihaveSingleSpinOrbs ) {
-      gwf.CalcCabAAndCabB();
+   if ( options.stpspindens ) {
+      if ( gwf.ihaveSingleSpinOrbs ) {
+         gwf.CalcCabAAndCabB();
+      } else {
+         ScreenUtils::DisplayErrorMessage(string("Requested to load single-spin orbital "
+               "information, \nhowever the wavefunction '")+(infilnam)
+               +string("' might not have this information."));
+         cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+         return EXIT_FAILURE;
+      }
+      if ( !gwf.ihaveCABSingleSpin ) {
+         ScreenUtils::DisplayErrorMessage("For some reason, the single spin orbital\n"
+               "information could not be loaded!");
+         cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+         return EXIT_FAILURE;
+      }
    }
    char prop='g';
    if ( options.prop2plot ) {prop=argv[options.prop2plot][0];}
@@ -120,7 +134,7 @@ int main (int argc, char ** argv) {
       cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
       return EXIT_FAILURE;
    }
-   string allowedFields="gnl";
+   string allowedFields="gnlco";
    bool implementedField=(allowedFields.find(prop)!=string::npos);
    if ( !implementedField ) {
       ScreenUtils::DisplayErrorMessage(string("The requested field '")+prop

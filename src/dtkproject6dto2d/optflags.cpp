@@ -270,7 +270,7 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  governed by step." << '\n';
    cout << "  -p prop   \tChoose the property to be computed. prop is a character," << '\n'
         << "            \t  which can be (D is the default value):" << '\n';
-   string charFields="gnl";
+   string charFields="gnlco";
    for ( size_t i=0 ; i<charFields.size() ; ++i ) {
       cout << "         \t\t" << charFields[i] << " ("
          << GetField6DTypeKeyLong(charFields[i]) << ')' << '\n';

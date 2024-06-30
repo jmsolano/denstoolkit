@@ -23,6 +23,12 @@ public:
          case ScalarField6DType::LDM1P:
             return wf->EvalLapDensityMatrix1(x1,y1,z1,x2,y2,z2);
             break;
+         case ScalarField6DType::CPDFP:
+            return wf->EvalRho2ClosedShell(x1,y1,z1,x2,y2,z2);
+            break;
+         case ScalarField6DType::OPDFP:
+            return wf->EvalRho2OpenShell(x1,y1,z1,x2,y2,z2);
+            break;
          default :
             if ( prntunknfld1st ) {
                printf("\033[31mUnknown or unimplemented 6D field!\n");
