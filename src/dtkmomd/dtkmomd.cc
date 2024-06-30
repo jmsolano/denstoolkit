@@ -63,7 +63,7 @@ using std::string;
 using std::setprecision;
 using std::scientific;
 #include <ctime>
-
+#include "fldtypesdef.h"
 #include "../common/screenutils.h"
 #include "../common/fileutils.h"
 #include "../common/mymemory.h"
@@ -88,7 +88,7 @@ int main (int argc, char ** argv) {
    
    getOptions(argc,argv,options); //This processes the options from the command line.
    int dim=0,axis=0,plane=0,npts=DEFAULTPOINTSPERDIRECTION;
-   char field='d';
+   char field='m';
    double px,py,pz;
    px=py=pz=0.0e0;
    string extralbl="";
@@ -121,7 +121,7 @@ int main (int argc, char ** argv) {
                   exit(1);
                   break;
             }
-            extralbl=argv[options.evdim+1];
+            extralbl=string(argv[options.evdim+1]);
             extralbl.insert(0,"-P");
             break;
          case '2':
@@ -167,17 +167,7 @@ int main (int argc, char ** argv) {
       gwf.CalcCabAAndCabB();
    }
    
-   string strfield;
-   switch ( field ) {
-      case 'd' :
-         strfield="Momentum Density";
-         break;
-      case 'K' :
-         strfield="Kinetic Energy Density (in Momentum Space)";
-         break;
-      default :
-         break;
-   }
+   string strfield=GetFieldTypeKeyLong(field);
    
    /* Evaluates the momentum density at a single point */
    if (dim==0) {
@@ -215,7 +205,7 @@ int main (int argc, char ** argv) {
       }
    }
    
-   cout << "Data saved in file: " << outfilnam << endl;
+   if ( dim>0 ) { cout << "Data saved in file: " << outfilnam << endl; }
    
    /* At this point the computation has ended. Usually this means no errors ocurred. */
    

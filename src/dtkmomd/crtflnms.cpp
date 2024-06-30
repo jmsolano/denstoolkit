@@ -46,6 +46,7 @@
 #include <iostream>
 using std::cout;
 using std::endl;
+#include "fldtypesdef.h"
 #include "crtflnms.h"
 #include "../common/fileutils.h"
 #include "../common/screenutils.h"
@@ -88,22 +89,12 @@ void mkFileNames(char ** (&argv), OptionFlags &opts, string &i_fn, string &o_fn,
       default:
          break;
    }
-   char field='d';
+   char field='m';
    if ( opts.setfld ) {field=argv[opts.setfld][0];}
-   cout << "field: " << field << endl;
+   //cout << "field: " << field << endl;
    pos=o_fn.find_last_of('.');
    if (pos!=string::npos) {
-      string plbl;
-      switch ( field ) {
-         case 'd' :
-            plbl=string("MomDens")+addlbl;
-            break;
-         case 'K' :
-            plbl=string("KinetEnerMomSp")+addlbl;
-            break;
-         default :
-            break;
-      }
+      string plbl=GetFieldTypeKeyShort(field)+addlbl;
       o_fn.insert(pos,plbl);
       g_fn.insert(pos,plbl);
    }

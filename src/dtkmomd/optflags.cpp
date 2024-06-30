@@ -69,6 +69,7 @@ using std::string;
 #include "figname.h"
 #include "optflags.h"
 #include "../common/screenutils.h"
+#include "fldtypesdef.h"
 
 OptionFlags::OptionFlags() {
    infname=0;
@@ -216,9 +217,14 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  the input name; if given, the dat/tsv/cub/gnp/pdf files will" << endl
         << "            \t  use this name as well --but different extension--)." << endl;
    cout << "  -p prop   \tChoose the property to be computed. prop is a character," << endl
-        << "            \t  which can be (d is the default value):" << endl
-        << "            \t     d Density (momentum density)" << endl
-        << "            \t     K Kinetic Energy Density (in momentum space)" << endl;;
+        << "            \t  which can be (d is the default value):" << endl;
+   string charFields="mk";
+   for ( size_t i=0 ; i<charFields.size() ; ++i ) {
+      cout << "         \t\t" << charFields[i] << " ("
+         << GetFieldTypeKeyLong(charFields[i]) << ')' << '\n';
+   }
+   //cout << "            \t     d Density (momentum density)" << endl
+   //     << "            \t     K Kinetic Energy Density (in momentum space)" << endl;;
 #if _HAVE_GNUPLOT_
    cout << "  -P     \tCreate a plot using gnuplot. (Only works with options -1 or -2)" << endl
         << "  -k     \tKeeps the *.gnp file to be used later by gnuplot." << endl;

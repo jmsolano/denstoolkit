@@ -46,6 +46,7 @@
 using std::cout;
 using std::endl;
 using std::cerr;
+#include "fldtypesdef.h"
 #include "helpersplot.h"
 #include "solcubetools.h"
 #include "mymemory.h"
@@ -57,17 +58,7 @@ void HelpersPlot::MakeLineGnuplotFile(OptionFlags &opts, string &gnpn,string &ou
    ofil.open(gnpn.c_str());
    
    /* Choosing the label (legend) for the plot */
-   string plbl;
-   switch ( thefield ) {
-      case 'd' :
-         plbl="{/Symbol r}(p)";
-         break;
-      case 'K' :
-         plbl="{/Bold K}(p)";
-         break;
-      default :
-         break;
-   }
+   string plbl=GnuplotFieldTitle(thefield);
    
    string line=StringTools::GetEnhancedEpsTitle(outn);
    ofil << "set title '" << line << "'" << endl;
@@ -90,17 +81,7 @@ void HelpersPlot::MakePlaneGnuplotFile(OptionFlags &opts, string &gnpn,string &o
    
    /* Choosing the label (legend) for the plot */
    
-   string plbl="";
-   switch ( thefield ) {
-      case 'd':
-         plbl="{/Symbol r}(p)";
-         break;
-      case 'K':
-         plbl="{/Bold K}(p)";
-         break;
-      default :
-         break;
-   }
+   string plbl=GnuplotFieldTitle(thefield);
    
    ofil << "reset" << endl;
    
@@ -186,7 +167,7 @@ void HelpersPlot::MakeLineDatFile(OptionFlags &opts,string &datnam,GaussWaveFunc
          dx=2.0e0*DEFAULTMAXVALUEOFP/double(npts-1);
          px=-1.0e0*DEFAULTMAXVALUEOFP;
          switch ( thefield ) {
-            case 'd' :
+            case 'm' :
                for (int i=0; i<npts; i++) {
                   ofile << px << " " << wf.EvalFTDensity(px,py,pz) << endl;
                   px+=dx;
@@ -195,7 +176,7 @@ void HelpersPlot::MakeLineDatFile(OptionFlags &opts,string &datnam,GaussWaveFunc
 #endif
                }
                break;
-            case 'K' :
+            case 'k' :
                for (int i=0; i<npts; i++) {
                   ofile << px << " " << wf.EvalFTKineticEnergy(px,py,pz) << endl;
                   px+=dx;
@@ -213,7 +194,7 @@ void HelpersPlot::MakeLineDatFile(OptionFlags &opts,string &datnam,GaussWaveFunc
          dy=2.0e0*DEFAULTMAXVALUEOFP/double(npts-1);
          py=-1.0e0*DEFAULTMAXVALUEOFP;
          switch ( thefield ) {
-            case 'd' :
+            case 'm' :
                for (int i=0; i<npts; i++) {
                   ofile << py << " " << wf.EvalFTDensity(px,py,pz) << endl;
                   py+=dy;
@@ -222,7 +203,7 @@ void HelpersPlot::MakeLineDatFile(OptionFlags &opts,string &datnam,GaussWaveFunc
 #endif
                }
                break;
-            case 'K' :
+            case 'k' :
               for (int i=0; i<npts; i++) {
                   ofile << py << " " << wf.EvalFTKineticEnergy(px,py,pz) << endl;
                   py+=dy;
@@ -239,7 +220,7 @@ void HelpersPlot::MakeLineDatFile(OptionFlags &opts,string &datnam,GaussWaveFunc
          dz=2.0e0*DEFAULTMAXVALUEOFP/double(npts-1);
          pz=-1.0e0*DEFAULTMAXVALUEOFP;
          switch ( thefield ) {
-            case 'd' :
+            case 'm' :
                for (int i=0; i<npts; i++) {
                   ofile << pz << " " << wf.EvalFTDensity(px,py,pz) << endl;
                   pz+=dz;
@@ -248,7 +229,7 @@ void HelpersPlot::MakeLineDatFile(OptionFlags &opts,string &datnam,GaussWaveFunc
 #endif
                }
                break;
-            case 'K' :
+            case 'k' :
               for (int i=0; i<npts; i++) {
                   ofile << pz << " " << wf.EvalFTKineticEnergy(px,py,pz) << endl;
                   pz+=dz;
@@ -286,7 +267,7 @@ void HelpersPlot::MakePlaneTsvFile(OptionFlags &opts,string &tsvnam,GaussWaveFun
          dy=2.0e0*DEFAULTMAXVALUEOFP/double(npts-1);
          px=-1.0e0*DEFAULTMAXVALUEOFP;
          switch ( thefield ) {
-            case 'd' :
+            case 'm' :
                for (int i=0; i<npts; i++) {
                   py=-1.0e0*DEFAULTMAXVALUEOFP;
                   for (int j=0; j<npts; j++) {
@@ -300,7 +281,7 @@ void HelpersPlot::MakePlaneTsvFile(OptionFlags &opts,string &tsvnam,GaussWaveFun
 #endif
                }
                break;
-            case 'K' :
+            case 'k' :
                for (int i=0; i<npts; i++) {
                   py=-1.0e0*DEFAULTMAXVALUEOFP;
                   for (int j=0; j<npts; j++) {
@@ -323,7 +304,7 @@ void HelpersPlot::MakePlaneTsvFile(OptionFlags &opts,string &tsvnam,GaussWaveFun
          dz=2.0e0*DEFAULTMAXVALUEOFP/double(npts-1);
          px=-1.0e0*DEFAULTMAXVALUEOFP;
          switch ( thefield ) {
-            case 'd' :
+            case 'm' :
                for (int i=0; i<npts; i++) {
                   pz=-1.0e0*DEFAULTMAXVALUEOFP;
                   for (int j=0; j<npts; j++) {
@@ -337,7 +318,7 @@ void HelpersPlot::MakePlaneTsvFile(OptionFlags &opts,string &tsvnam,GaussWaveFun
 #endif
                }
                break;
-            case 'K' :
+            case 'k' :
                for (int i=0; i<npts; i++) {
                   pz=-1.0e0*DEFAULTMAXVALUEOFP;
                   for (int j=0; j<npts; j++) {
@@ -360,7 +341,7 @@ void HelpersPlot::MakePlaneTsvFile(OptionFlags &opts,string &tsvnam,GaussWaveFun
          dz=2.0e0*DEFAULTMAXVALUEOFP/double(npts-1);
          py=-1.0e0*DEFAULTMAXVALUEOFP;
          switch ( thefield ) {
-            case 'd' :
+            case 'm' :
                for (int i=0; i<npts; i++) {
                   pz=-1.0e0*DEFAULTMAXVALUEOFP;
                   for (int j=0; j<npts; j++) {
@@ -374,7 +355,7 @@ void HelpersPlot::MakePlaneTsvFile(OptionFlags &opts,string &tsvnam,GaussWaveFun
 #endif
                }
                break;
-            case 'K' :
+            case 'k' :
                for (int i=0; i<npts; i++) {
                   pz=-1.0e0*DEFAULTMAXVALUEOFP;
                   for (int j=0; j<npts; j++) {
@@ -401,16 +382,7 @@ void HelpersPlot::MakePlaneTsvFile(OptionFlags &opts,string &tsvnam,GaussWaveFun
 void HelpersPlot::MakeCubeFile(OptionFlags &opts,string &cubnam,GaussWaveFunction &wf,int npts,\
       char thefield,string &strfield) {
    string comments="#Property: ";
-   switch ( thefield ) {
-      case 'd' :
-         comments+="Momentum Density.";
-         break;
-      case 'K' :
-         comments+="Kinetic Energy Density (in Momentum Space).";
-         break;
-      default :
-         break;
-   }
+   comments+=GetFieldTypeKeyLong(thefield);
    double px,py,pz;
    px=py=pz=0.0e0;
    int boxnpts[3];
@@ -437,7 +409,7 @@ void HelpersPlot::MakeCubeFile(OptionFlags &opts,string &cubnam,GaussWaveFunctio
    ScreenUtils::PrintProgressBar(0);
 #endif
    switch ( thefield ) {
-      case 'd' :
+      case 'm' :
          px=xin[0];
          for (int i=0; i<boxnpts[0]; i++) {
             py=xin[1];
@@ -458,7 +430,7 @@ void HelpersPlot::MakeCubeFile(OptionFlags &opts,string &cubnam,GaussWaveFunctio
          }
          cout << endl;
          break;
-      case 'K' :
+      case 'k' :
          px=xin[0];
          for (int i=0; i<boxnpts[0]; i++) {
             py=xin[1];
