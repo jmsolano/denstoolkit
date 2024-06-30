@@ -52,6 +52,7 @@ using std::cerr;
 #include "mymemory.h"
 #include "../common/stringtools.h"
 #include "../common/gnuplottools.h"
+#include "dtkscalarfunction3d.h"
 
 void HelpersPlot::MakeLineGnuplotFile(OptionFlags &opts, string &gnpn,string &outn,char thefield) {
    ofstream ofil;
@@ -162,97 +163,55 @@ void HelpersPlot::MakeLineDatFile(OptionFlags &opts,string &datnam,GaussWaveFunc
    double dx,dy,dz,px,py,pz;
    dx=dy=dz=0.0e0;
    px=py=pz=0.0e0;
+   DTKScalarFunction f(wf);
+   f.SetScalarFunction(thefield);
    switch (theaxis) {
       case 1:
          dx=2.0e0*DEFAULTMAXVALUEOFP/double(npts-1);
          px=-1.0e0*DEFAULTMAXVALUEOFP;
-         switch ( thefield ) {
-            case 'm' :
-               for (int i=0; i<npts; i++) {
-                  ofile << px << " " << wf.EvalFTDensity(px,py,pz) << endl;
-                  px+=dx;
+         for (int i=0; i<npts; i++) {
+            ofile << px << " " << f.f(px,py,pz) << endl;
+            px+=dx;
 #if USEPROGRESSBAR
-                  ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
+            ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
-               }
-               break;
-            case 'k' :
-               for (int i=0; i<npts; i++) {
-                  ofile << px << " " << wf.EvalFTKineticEnergy(px,py,pz) << endl;
-                  px+=dx;
-#if USEPROGRESSBAR
-                  ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
-#endif
-               }
-               break;
-            default :
-               break;
          }
-         
          break;
       case 2:
          dy=2.0e0*DEFAULTMAXVALUEOFP/double(npts-1);
          py=-1.0e0*DEFAULTMAXVALUEOFP;
-         switch ( thefield ) {
-            case 'm' :
-               for (int i=0; i<npts; i++) {
-                  ofile << py << " " << wf.EvalFTDensity(px,py,pz) << endl;
-                  py+=dy;
+         for (int i=0; i<npts; i++) {
+            ofile << py << " " << f.f(px,py,pz) << endl;
+            py+=dy;
 #if USEPROGRESSBAR
-                  ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
+            ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
-               }
-               break;
-            case 'k' :
-              for (int i=0; i<npts; i++) {
-                  ofile << py << " " << wf.EvalFTKineticEnergy(px,py,pz) << endl;
-                  py+=dy;
-#if USEPROGRESSBAR
-                  ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
-#endif
-               }
-               break;
-            default :
-               break;
          }
          break;
       case 3:
          dz=2.0e0*DEFAULTMAXVALUEOFP/double(npts-1);
          pz=-1.0e0*DEFAULTMAXVALUEOFP;
-         switch ( thefield ) {
-            case 'm' :
-               for (int i=0; i<npts; i++) {
-                  ofile << pz << " " << wf.EvalFTDensity(px,py,pz) << endl;
-                  pz+=dz;
+         for (int i=0; i<npts; i++) {
+            ofile << pz << " " << f.f(px,py,pz) << endl;
+            pz+=dz;
 #if USEPROGRESSBAR
-                  ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
+            ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
-               }
-               break;
-            case 'k' :
-              for (int i=0; i<npts; i++) {
-                  ofile << pz << " " << wf.EvalFTKineticEnergy(px,py,pz) << endl;
-                  pz+=dz;
-#if USEPROGRESSBAR
-                  ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
-#endif
-               }
-              break;
-            default :
-               break;
          }
          break;
       default:
          break;
    }
 #if USEPROGRESSBAR
-                  ScreenUtils::PrintProgressBar(100);
+   ScreenUtils::PrintProgressBar(100);
 #endif
    cout << endl;
    ofile.close();
 }
 void HelpersPlot::MakePlaneTsvFile(OptionFlags &opts,string &tsvnam,GaussWaveFunction &wf,int theplane,\
       int npts,char thefield) {
+   DTKScalarFunction f(wf);
+   f.SetScalarFunction(thefield);
    ofstream ofile;
    ofile.open(tsvnam.c_str(),std::ios::out);
    double dx,dy,dz,px,py,pz;
@@ -266,111 +225,51 @@ void HelpersPlot::MakePlaneTsvFile(OptionFlags &opts,string &tsvnam,GaussWaveFun
          dx=2.0e0*DEFAULTMAXVALUEOFP/double(npts-1);
          dy=2.0e0*DEFAULTMAXVALUEOFP/double(npts-1);
          px=-1.0e0*DEFAULTMAXVALUEOFP;
-         switch ( thefield ) {
-            case 'm' :
-               for (int i=0; i<npts; i++) {
-                  py=-1.0e0*DEFAULTMAXVALUEOFP;
-                  for (int j=0; j<npts; j++) {
-                     ofile << px << "\t" << py << "\t" << wf.EvalFTDensity(px,py,pz) << endl;
-                     py+=dy;
-                  }
-                  ofile << endl;
-                  px+=dx;
+         for (int i=0; i<npts; i++) {
+            py=-1.0e0*DEFAULTMAXVALUEOFP;
+            for (int j=0; j<npts; j++) {
+               ofile << px << "\t" << py << "\t" << f.f(px,py,pz) << endl;
+               py+=dy;
+            }
+            ofile << endl;
+            px+=dx;
 #if USEPROGRESSBAR
-                  ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
+            ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
-               }
-               break;
-            case 'k' :
-               for (int i=0; i<npts; i++) {
-                  py=-1.0e0*DEFAULTMAXVALUEOFP;
-                  for (int j=0; j<npts; j++) {
-                     ofile << px << "\t" << py << "\t" << wf.EvalFTKineticEnergy(px,py,pz) << endl;
-                     py+=dy;
-                  }
-                  ofile << endl;
-                  px+=dx;
-#if USEPROGRESSBAR
-                  ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
-#endif
-               }
-               break;
-            default :
-               break;
          }
          break;
       case 2:
          dx=2.0e0*DEFAULTMAXVALUEOFP/double(npts-1);
          dz=2.0e0*DEFAULTMAXVALUEOFP/double(npts-1);
          px=-1.0e0*DEFAULTMAXVALUEOFP;
-         switch ( thefield ) {
-            case 'm' :
-               for (int i=0; i<npts; i++) {
-                  pz=-1.0e0*DEFAULTMAXVALUEOFP;
-                  for (int j=0; j<npts; j++) {
-                     ofile << px << "\t" << pz << "\t" << wf.EvalFTDensity(px,py,pz) << endl;
-                     pz+=dz;
-                  }
-                  ofile << endl;
-                  px+=dx;
+         for (int i=0; i<npts; i++) {
+            pz=-1.0e0*DEFAULTMAXVALUEOFP;
+            for (int j=0; j<npts; j++) {
+               ofile << px << "\t" << pz << "\t" << f.f(px,py,pz) << endl;
+               pz+=dz;
+            }
+            ofile << endl;
+            px+=dx;
 #if USEPROGRESSBAR
-                  ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
+            ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
-               }
-               break;
-            case 'k' :
-               for (int i=0; i<npts; i++) {
-                  pz=-1.0e0*DEFAULTMAXVALUEOFP;
-                  for (int j=0; j<npts; j++) {
-                     ofile << px << "\t" << pz << "\t" << wf.EvalFTKineticEnergy(px,py,pz) << endl;
-                     pz+=dz;
-                  }
-                  ofile << endl;
-                  px+=dx;
-#if USEPROGRESSBAR
-                  ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
-#endif
-               }
-               break;
-            default :
-               break;
          }
          break;
       case 3:
          dy=2.0e0*DEFAULTMAXVALUEOFP/double(npts-1);
          dz=2.0e0*DEFAULTMAXVALUEOFP/double(npts-1);
          py=-1.0e0*DEFAULTMAXVALUEOFP;
-         switch ( thefield ) {
-            case 'm' :
-               for (int i=0; i<npts; i++) {
-                  pz=-1.0e0*DEFAULTMAXVALUEOFP;
-                  for (int j=0; j<npts; j++) {
-                     ofile << py << "\t" << pz << "\t" << wf.EvalFTDensity(px,py,pz) << endl;
-                     pz+=dz;
-                  }
-                  ofile << endl;
-                  py+=dy;
+         for (int i=0; i<npts; i++) {
+            pz=-1.0e0*DEFAULTMAXVALUEOFP;
+            for (int j=0; j<npts; j++) {
+               ofile << py << "\t" << pz << "\t" << f.f(px,py,pz) << endl;
+               pz+=dz;
+            }
+            ofile << endl;
+            py+=dy;
 #if USEPROGRESSBAR
-                  ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
+            ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
 #endif
-               }
-               break;
-            case 'k' :
-               for (int i=0; i<npts; i++) {
-                  pz=-1.0e0*DEFAULTMAXVALUEOFP;
-                  for (int j=0; j<npts; j++) {
-                     ofile << py << "\t" << pz << "\t" << wf.EvalFTKineticEnergy(px,py,pz) << endl;
-                     pz+=dz;
-                  }
-                  ofile << endl;
-                  py+=dy;
-#if USEPROGRESSBAR
-                  ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((npts-1))));
-#endif
-               }
-               break;
-            default :
-               break;
          }
          break;
          default:
@@ -405,55 +304,30 @@ void HelpersPlot::MakeCubeFile(OptionFlags &opts,string &cubnam,GaussWaveFunctio
    cout << "The total number of points that will be computed is "
       << boxnpts[0]*boxnpts[1]*boxnpts[2] << endl;
    cout << "Evaluating and writing " << strfield << " on a cube..." << endl;
+   DTKScalarFunction f(wf);
+   f.SetScalarFunction(thefield);
 #if USEPROGRESSBAR
    ScreenUtils::PrintProgressBar(0);
 #endif
-   switch ( thefield ) {
-      case 'm' :
-         px=xin[0];
-         for (int i=0; i<boxnpts[0]; i++) {
-            py=xin[1];
-            for (int j=0; j<boxnpts[1]; j++) {
-               pz=xin[2];
-               for (int k=0; k<boxnpts[2]; k++) {
-                  prop1d[k]=wf.EvalFTDensity(px,py,pz);
-                  //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
-                  pz+=delta[2][2];
-               }
-               WriteCubeProp(ofile,boxnpts[2],prop1d);
-               py+=delta[1][1];
-            }
-            px+=delta[0][0];
-#if USEPROGRESSBAR
-            ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((boxnpts[0]-1))));
-#endif
+   px=xin[0];
+   for (int i=0; i<boxnpts[0]; i++) {
+      py=xin[1];
+      for (int j=0; j<boxnpts[1]; j++) {
+         pz=xin[2];
+         for (int k=0; k<boxnpts[2]; k++) {
+            prop1d[k]=f.f(px,py,pz);
+            //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
+            pz+=delta[2][2];
          }
-         cout << endl;
-         break;
-      case 'k' :
-         px=xin[0];
-         for (int i=0; i<boxnpts[0]; i++) {
-            py=xin[1];
-            for (int j=0; j<boxnpts[1]; j++) {
-               pz=xin[2];
-               for (int k=0; k<boxnpts[2]; k++) {
-                  prop1d[k]=wf.EvalFTKineticEnergy(px,py,pz);
-                  //if (prop1d[k]<1.0e-20) {prop1d[k]=0.0e0;}
-                  pz+=delta[2][2];
-               }
-               WriteCubeProp(ofile,boxnpts[2],prop1d);
-               py+=delta[1][1];
-            }
-            px+=delta[0][0];
+         WriteCubeProp(ofile,boxnpts[2],prop1d);
+         py+=delta[1][1];
+      }
+      px+=delta[0][0];
 #if USEPROGRESSBAR
-            ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((boxnpts[0]-1))));
+      ScreenUtils::PrintProgressBar(int(100.0e0*double(i)/double((boxnpts[0]-1))));
 #endif
-         }
-         cout << endl;
-         break;
-      default :
-         break;
    }
+   cout << endl;
    //WriteCubeProp(ofstream &ofil,int dim,double* (&prop));
    ofile.close();
    MyMemory::Dealloc1DRealArray(prop1d);
