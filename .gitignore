@@ -93,6 +93,7 @@ src/firstrelease
 AFTER_PUB
 src/devdoc/Dev*.html
 src/common/*.a
+src/common/lclauxsoftwaredefs.h
 src/NOTES
 src/dtkcube/LCLREADME
 src/dtkview/DensToolKit.pro.*
