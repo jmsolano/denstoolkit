@@ -74,6 +74,7 @@ enum ScalarFieldType {
    DORI, /*!< Density Overlap Regions Indicator  */\
    SPND, /*!< [SP]i[N] [D]ensity  */\
    RHO2, /*!< \f$\rho^2\f$ (one eletron density disequilibrium)  */\
+   RHO2M, /*!< \f$\tilde\rho^2\f$ (one eletron density disequilibrium in momentum space)  */\
    SCFD, /* Scalar Custom Field Density */\
    VCFD /* Vector Custom Field Density */
 };
@@ -157,6 +158,9 @@ inline char ConvertScalarFieldType2Char(ScalarFieldType fftt) {
          break;
       case RHO2 :
          res= 'q';
+         break;
+      case RHO2M:
+         res= 'Q';
          break;
       case SCFD :
          res='u';
@@ -252,6 +256,9 @@ inline ScalarFieldType Char2ScalarFieldType(const char prop) {
       case 'q' :
          res=RHO2;
          break;
+      case 'Q' :
+         res=RHO2M;
+         break;
       case 'u' :
          res=SCFD;
          break;
@@ -344,6 +351,9 @@ inline string GetFieldTypeKeyShort(const char prop) {
          break;
       case 'q' :
          plbl="OneElecDiseq";
+         break;
+      case 'Q' :
+         plbl="OneElecDiseqMom";
          break;
       case 'u' :
          plbl="ScalarCustFld";
@@ -438,6 +448,9 @@ inline string GetFieldTypeKeyLong(const char prop) {
       case 'q' :
          plbl="One electron disequilibrium --Rho squared--";
          break;
+      case 'Q' :
+         plbl="One electron disequilibrium in momentum space --tildeRho squared--";
+         break;
       case 'u':
          plbl="Scalar Custom Field";
          break;
@@ -457,7 +470,7 @@ inline string GnuplotFieldTitle(const char p2p) {
          plbl=string("{/Symbol r}");
          break;
       case 'm':
-         plbl=string("{/Symbol p}");
+         plbl=string("~{/Symbol r}{0.3\\~}");
          break;
       case 'g':
          plbl=string("|{/Symbol \\321 r}|");
@@ -487,7 +500,7 @@ inline string GnuplotFieldTitle(const char p2p) {
          plbl=string("S_{/Symbol r}");
          break;
       case 'T':
-         plbl=string("{/Symbol P}_{/Symbol r}");
+         plbl=string("S_{~{/Symbol r}{0.3\\~}}");
          break;
       case 'L':
          plbl=string("LOL");
@@ -533,6 +546,9 @@ inline string GnuplotFieldTitle(const char p2p) {
          break;
       case 'q' :
          plbl=string("{/Symbol r}^2");
+         break;
+      case 'Q' :
+         plbl=string("~{/Symbol r}{0.3\\~}^2");
          break;
       default:
          plbl="Unknown";
