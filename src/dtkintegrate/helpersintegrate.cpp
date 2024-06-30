@@ -47,6 +47,7 @@ using std::cout;
 using std::endl;
 using std::cerr;
 #include <climits>
+#include "fldtypesdef.h"
 #include "helpersintegrate.h"
 #include "mymath.h"
 #include "matrixvectoroperations3d.h"
@@ -94,7 +95,6 @@ shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegratorVegas(OptionFlags &o
    vegas->SetInternalIntegrand(ft);
 
    //Setting configuration parameters.
-   //vegas->param.integrand=ft;
    if ( ft == 'd' || ft == 'm' ) {
       vegas->AnalyticIntegral(ugwf.IntegralRho());
    }
@@ -146,7 +146,7 @@ void FactoryIntegrator::FindIntegralLimits(OptionFlags &options,char*argv[],\
       for ( size_t i=0 ; i<3 ; ++i ) { rmax[i]=boxLimits[1]; }
       return;
    }
-   if ( (ft == 'm') || (ft == 'T') || (ft == 'k') ) {
+   if ( Is3DMomSpaceField(ft) ) {
       while ( wf.EvalFTDensity(rmax[0],rmax[1],rmax[2]) >= 1.0e-14 ) {
          for (int i=0; i<3; ++i) { rmax[i] += 0.5e0; }
       }
@@ -200,7 +200,7 @@ shared_ptr<Integrator3D> FactoryIntegrator::CreateIntegratorCubLegSphtDes(Option
          BondNetWork &ubnw) {
    char ft='d';
    if ( options.integrand ) { ft=argv[options.integrand][0]; }
-   if ( ugwf.nNuc !=1 && !((ft == 'm') || (ft == 'T') || (ft == 'k')) ) {
+   if ( ugwf.nNuc !=1 && Is3DPosSpaceField(ft) ) {
       ScreenUtils::DisplayWarningMessage("Legendre-SphericaltDesign cubature only works with\n"
             "single atoms! The result may be mistaken.");
       cout << "Integrand: " << ft << '\n';
