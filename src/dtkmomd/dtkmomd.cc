@@ -88,7 +88,16 @@ int main (int argc, char ** argv) {
    
    getOptions(argc,argv,options); //This processes the options from the command line.
    int dim=0,axis=0,plane=0,npts=DEFAULTPOINTSPERDIRECTION;
-   char field='m';
+   char prop='m';
+   if ( options.setfld ) {prop=argv[options.setfld][0];}
+   string allowedFields="mkTQ";
+   bool implementedField=(allowedFields.find(prop)!=string::npos);
+   if ( !implementedField ) {
+      ScreenUtils::DisplayErrorMessage(string("The requested field '")+prop
+            +string("' is not supported!"));
+      cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+      return EXIT_FAILURE;
+   }
    double px,py,pz;
    px=py=pz=0.0e0;
    string extralbl="";
@@ -118,7 +127,7 @@ int main (int argc, char ** argv) {
                   ScreenUtils::DisplayErrorMessage("Invalid value for option -1...");
                   cout << "\nTry:\n\t" << argv[0] << " -h " << endl;
                   cout << "\nto view the help menu.\n\n";
-                  exit(1);
+                  return EXIT_FAILURE;
                   break;
             }
             extralbl=string(argv[options.evdim+1]);
@@ -132,7 +141,7 @@ int main (int argc, char ** argv) {
                ScreenUtils::DisplayErrorMessage("Invalid value for option -2...");
                cout << "\nTry:\n\t" << argv[0] << " -h " << endl;
                cout << "\nto view the help menu.\n\n";
-               exit(1);
+               return EXIT_FAILURE;
             }
             if (extralbl==string("xy")) {plane=1;}
             if (extralbl==string("xz")) {plane=2;}
@@ -148,7 +157,6 @@ int main (int argc, char ** argv) {
             break;
       }
    }
-   if ( options.setfld ) {field=argv[options.setfld][0];}
    if (options.setn1) {sscanf (argv[options.setn1],"%d",&npts);}
    mkFileNames(argv,options,infilnam,outfilnam,gnpnam,dim,extralbl); //This creates the names used.
    ScreenUtils::PrintHappyStart(argv,CURRENTVERSION,PROGRAMCONTRIBUTORS); //Just to let the user know that the initial configuration is OK
@@ -167,7 +175,7 @@ int main (int argc, char ** argv) {
       gwf.CalcCabAAndCabB();
    }
    
-   string strfield=GetFieldTypeKeyLong(field);
+   string strfield=GetFieldTypeKeyLong(prop);
    
    /* Evaluates the momentum density at a single point */
    if (dim==0) {
@@ -183,8 +191,8 @@ int main (int argc, char ** argv) {
       cout << "The size of the grid will be " << npts << endl;
       cout << "The total number of points that will be computed is " << npts << endl;
       cout << "Evaluating and writing " << strfield << " on a line..." << endl;
-      HelpersPlot::MakeLineDatFile(options,outfilnam,gwf,axis,npts,field);
-      if (options.mkplt) {HelpersPlot::MakeLineGnuplotFile(options,gnpnam,outfilnam,field);}
+      HelpersPlot::MakeLineDatFile(options,outfilnam,gwf,axis,npts,prop);
+      if (options.mkplt) {HelpersPlot::MakeLineGnuplotFile(options,gnpnam,outfilnam,prop);}
    }
    
    /* Evaluates the momentum density on a plane */
@@ -192,14 +200,14 @@ int main (int argc, char ** argv) {
       cout << "The size of the grid will be " << npts << " x " << npts << endl;
       cout << "The total number of points that will be computed is " << npts*npts << endl;
       cout << "Evaluating and writing " << strfield << " on a plane..." << endl;
-      HelpersPlot::MakePlaneTsvFile(options,outfilnam,gwf,plane,npts,field);
+      HelpersPlot::MakePlaneTsvFile(options,outfilnam,gwf,plane,npts,prop);
       double maxdim=DEFAULTMAXVALUEOFP;
-      HelpersPlot::MakePlaneGnuplotFile(options,gnpnam,outfilnam,maxdim,field);
+      HelpersPlot::MakePlaneGnuplotFile(options,gnpnam,outfilnam,maxdim,prop);
    }
    
    /* Evaluates the momentum density on a cube */
    if (dim==3) {
-      HelpersPlot::MakeCubeFile(options,outfilnam,gwf,npts,field,strfield);
+      HelpersPlot::MakeCubeFile(options,outfilnam,gwf,npts,prop,strfield);
       if (options.mkplt) {
          ScreenUtils::DisplayWarningMessage("Plotting can only be performed with options -1 or -2.");
       }
