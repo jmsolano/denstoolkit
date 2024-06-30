@@ -567,51 +567,59 @@ inline double GetDefaultIsolvalueForCube(const char p2p) {
 /* 6D fields  */
 enum ScalarField6DType {
    NONE6D,\
-   DM1, /*!< [D]ensity [M]atrix of order [1]; 6D field  */\
-   GDM1, /*!< [G]radient of [D]ensity [M]atrix of order [1]; 6D vector field  */\
-   LDM1, /*!< [L]aplacian of [D]ensity [M]atrix of order [1]; 6D field  */\
-   SDM1, /*!< [S]pin-dependent [D]ensity [M]atrix of order [1]; 6D field  */\
+   DM1P, /*!< [D]ensity [M]atrix of order [1]; 6D field  */\
+   GDM1P, /*!< [G]radient of [D]ensity [M]atrix of order [1]; 6D vector field  */\
+   LDM1P, /*!< [L]aplacian of [D]ensity [M]atrix of order [1]; 6D field  */\
+   ADM1P, /*!< [A]lpha [D]ensity [M]atrix of order [1]; 6D field  */\
+   BDM1P, /*!< [B]eta [D]ensity [M]atrix of order [1]; 6D field  */\
    DM1M, /*!< [D]ensity [M]atrix of order [1] in [M]omentum spac3; 6D field  */\
-   SDM1M, /*!< [S]pin-dependent [D]ensity [M]atrix of order [1] in [M]omentum space; 6D field  */\
-   PDF, /*!< [P]air [D]ensity [F]unction; 6D field  */\
-   PDFM, /*!< [P]air [D]ensity [F]unction in [M]omentum space; 6D field  */\
-   SPDF, /*!< [S]pin-dependent [P]air [D]ensity [F]unction; 6D field  */\
-   SPDFM, /*!< [S]pin-dependent [P]air [D]ensity [F]unction in [M]omentum space; 6D field  */\
+   ADM1M, /*!< [A]lpha [D]ensity [M]atrix of order [1] in [M]omentum space; 6D field  */\
+   BDM1M, /*!< [A]lpha [D]ensity [M]atrix of order [1] in [M]omentum space; 6D field  */\
+   CPDFP, /*!< [C]losed-shell[P]air [D]ensity [F]unction; 6D field  */\
+   CPDFM, /*!< [C]losed-shell [P]air [D]ensity [F]unction in [M]omentum space; 6D field  */\
+   OPDFP, /*!< [O]pen-shell [P]air [D]ensity [F]unction; 6D field  */\
+   OPDFM, /*!< [O]pen-shell [P]air [D]ensity [F]unction in [M]omentum space; 6D field  */\
    SCF6, /* Scalar Custom Field 6D */\
    VCF6 /* Vector Custom Field 6D */
 };
 inline char ScalarFieldType6D2Char(ScalarField6DType fftt) {
    char res='0';
    switch ( fftt ) {
-      case DM1  :
+      case DM1P  :
          res='g';
          break;
-      case GDM1 :
+      case GDM1P :
          res='n';
          break;
-      case LDM1 :
+      case LDM1P :
          res='l';
          break;
       case DM1M :
          res='G';
          break;
-      case SDM1 :
-         res='h';
+      case ADM1P :
+         res='a';
          break;
-      case SDM1M:
-         res='H';
+      case ADM1M:
+         res='A';
          break;
-      case PDF  :
-         res='p';
+      case BDM1P:
+         res='b';
          break;
-      case PDFM :
-         res='P';
+      case BDM1M:
+         res='B';
          break;
-      case SPDF :
-         res='q';
+      case CPDFP:
+         res='c';
          break;
-      case SPDFM:
-         res='Q';
+      case CPDFM:
+         res='C';
+         break;
+      case OPDFP :
+         res='o';
+         break;
+      case OPDFM:
+         res='O';
          break;
       case SCF6 :
          res='u';
@@ -628,35 +636,41 @@ inline char ScalarFieldType6D2Char(ScalarField6DType fftt) {
 inline ScalarField6DType Char2ScalarField6DType(const char prop) {
    ScalarField6DType res=ScalarField6DType::NONE6D;
    switch (prop) {
+      case 'a' :
+         res=ADM1P;
+         break;
+      case 'A' :
+         res=ADM1M;
+         break;
+      case 'b' :
+         res=BDM1P;
+         break;
+      case 'B' :
+         res=BDM1M;
+         break;
+      case 'c' :
+         res=CPDFP;
+         break;
+      case 'C' :
+         res=CPDFM;
+         break;
       case 'g' :
-         res=DM1;
+         res=DM1P;
          break;
       case 'G' :
          res=DM1M ;
          break;
-      case 'h' :
-         res=SDM1 ;
-         break;
-      case 'H' :
-         res=SDM1M;
-         break;
       case 'l' :
-         res=LDM1;
+         res=LDM1P;
          break;
       case 'n' :
-         res=GDM1;
+         res=GDM1P;
          break;
-      case 'p' :
-         res=PDF  ;
+      case 'o' :
+         res=OPDFP;
          break;
-      case 'P' :
-         res=PDFM ;
-         break;
-      case 'q' :
-         res=SPDF ;
-         break;
-      case 'Q' :
-         res=SPDFM;
+      case 'O' :
+         res=OPDFM;
          break;
       case 'u' :
          res=SCF6;
@@ -673,17 +687,29 @@ inline ScalarField6DType Char2ScalarField6DType(const char prop) {
 inline string GetField6DTypeKeyShort(const char prop) {
    string plbl="";
    switch (prop) {
+      case 'a' :
+         plbl="AlphaDM1";
+         break;
+      case 'A' :
+         plbl="AlphaDM1MomSp";
+         break;
+      case 'b' :
+         plbl="BetaDM1";
+         break;
+      case 'B' :
+         plbl="BetaDM1MomSp";
+         break;
+      case 'c' :
+         plbl="CSPairDens";
+         break;
+      case 'C' :
+         plbl="CSPairDensMomSp";
+         break;
       case 'g':
          plbl="DM1";
          break;
       case 'G':
          plbl="DM1MomSp";
-         break;
-      case 'h' :
-         plbl="SpinDepDM1";
-         break;
-      case 'H' :
-         plbl="SpinDepDM1MomSp";
          break;
       case 'l' :
          plbl="LapDM1";
@@ -691,17 +717,11 @@ inline string GetField6DTypeKeyShort(const char prop) {
       case 'n' :
          plbl="GradDM1";
          break;
-      case 'p' :
-         plbl="PairDens";
+      case 'o' :
+         plbl="OSPairDens";
          break;
-      case 'P' :
-         plbl="PairDensMomSp";
-         break;
-      case 'q' :
-         plbl="SpinDepPairDens";
-         break;
-      case 'Q' :
-         plbl="SpinDepPairDensMomSp";
+      case 'O' :
+         plbl="OSPairDensMomSp";
          break;
       case 'u' :
          plbl="ScalarCustFld6D";
@@ -718,17 +738,29 @@ inline string GetField6DTypeKeyShort(const char prop) {
 inline string GetField6DTypeKeyLong(const char prop) {
    string plbl="";
    switch (prop) {
+      case 'a' :
+         plbl="Alpha density matrix of order 1";
+         break;
+      case 'A' :
+         plbl="Alpha density matrix of order 1 in momentum space";
+         break;
+      case 'b' :
+         plbl="Beta density matrix of order 1";
+         break;
+      case 'B' :
+         plbl="Beta density matrix of order 1 in momentum space";
+         break;
+      case 'c' :
+         plbl="Closed-shell pair density function";
+         break;
+      case 'C' :
+         plbl="Closed-shell pair density function in momentum space";
+         break;
       case 'g':
          plbl="Density Matrix of order 1";
          break;
       case 'G':
          plbl="Density matrix of order 1 in momentum space";
-         break;
-      case 'h' :
-         plbl="Spin-dependent density matrix of order 1";
-         break;
-      case 'H' :
-         plbl="Spin-dependent density matrix of order 1 in momentum space";
          break;
       case 'n' :
          plbl="Gradient of Density Matrix of order 1";
@@ -736,17 +768,11 @@ inline string GetField6DTypeKeyLong(const char prop) {
       case 'l' :
          plbl="Laplacian of Density Matrix of order 1";
          break;
-      case 'p' :
-         plbl="Pair density function";
+      case 'o' :
+         plbl="Open-shell pair density function";
          break;
-      case 'P' :
-         plbl="Pair density function in momentum space";
-         break;
-      case 'q' :
-         plbl="Spin-dependent pair density function";
-         break;
-      case 'Q' :
-         plbl="Spin-dependent pair density function in momentum space";
+      case 'O' :
+         plbl="Open-shell pair density function in momentum space";
          break;
       case 'u' :
          plbl="Scalar custom field 6D";
@@ -763,17 +789,29 @@ inline string GetField6DTypeKeyLong(const char prop) {
 inline string GnuplotField6DTitle(const char prop) {
    string plbl="";
    switch (prop) {
+      case 'a' :
+         plbl="{/Symbol G}_1^{/Symbol a}";
+         break;
+      case 'A' :
+         plbl="~{/Symbol G}{0.3\\~}_1^{/Symbol a}";
+         break;
+      case 'b' :
+         plbl="{/Symbol G}_1^{/Symbol b}";
+         break;
+      case 'B' :
+         plbl="~{/Symbol G}{0.3\\~}_1^{/Symbol b}";
+         break;
+      case 'c' :
+         plbl="{/Symbol r}_{2,cs}";
+         break;
+      case 'C' :
+         plbl="~{/Symbol r}{0.1\\~}_{2,cs}";
+         break;
       case 'g':
          plbl="{/Symbol G}_1";
          break;
       case 'G':
-         plbl="{/Symbol P}_1";
-         break;
-      case 'h' :
-         plbl="{/Symbol G}_1^{/Symbol s}";
-         break;
-      case 'H' :
-         plbl="{/Symbol P}_1^{/Symbol s}";
+         plbl="~{/Symbol G}{0.3\\~}_1";
          break;
       case 'n' :
          plbl="{/Symbol \\321 G}_1";
@@ -781,17 +819,11 @@ inline string GnuplotField6DTitle(const char prop) {
       case 'l' :
          plbl="{/Symbol \\321}^2{/Symbol G}_1";
          break;
-      case 'p' :
-         plbl="{/Symbol r}_2";
+      case 'o' :
+         plbl="{/Symbol r}_{2,os}";
          break;
-      case 'P' :
-         plbl="{/Symbol p}_2";
-         break;
-      case 'q' :
-         plbl="{/Symbol r}_2^{/Symbol s}";
-         break;
-      case 'Q' :
-         plbl="{/Symbol p}_2^{/Symbol s}";
+      case 'O' :
+         plbl="~{/Symbol r}{0.1\\~}_{2,os}";
          break;
       case 'u' :
          plbl=string("S.C.F. 6D");
