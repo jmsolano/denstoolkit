@@ -580,6 +580,22 @@ inline double GetDefaultIsolvalueForCube(const char p2p) {
    }
    return isoval;
 }
+inline bool Is3DMomSpaceField(const char prop) {
+   bool res=false;
+   switch ( prop ) {
+      case 'm' :
+      case 'k' :
+      case 'Q' :
+      case 'T' :
+         res=true;
+         break;
+      default :
+         res=false;
+         break;
+   }
+   return res;
+}
+inline bool Is3DPosSpaceField(const char prop) { return !Is3DMomSpaceField(prop); }
 /* 6D fields  */
 enum ScalarField6DType {
    NONE6D,\
