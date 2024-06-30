@@ -637,6 +637,7 @@ public:
    double EvalNCILambda(double x,double y,double z);
    double EvalDORI(double x,double y,double z);
    double EvalOneElecDisequilibrium(double x,double y,double z);
+   double EvalFTOneElecDisequilibrium(double x,double y,double z);
    int GetPrTy(int idx) {return prTy[idx];}
 /* ************************************************************************************ */
 protected:

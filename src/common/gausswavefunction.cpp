@@ -439,6 +439,10 @@ double GaussWaveFunction::EvalOneElecDisequilibrium(double x,double y,double z) 
    double rho=EvalDensity(x,y,z);
    return (rho*rho);
 }
+double GaussWaveFunction::EvalFTOneElecDisequilibrium(double px,double py,double pz) {
+   double ppii=EvalFTDensity(px,py,pz);
+   return (ppii*ppii);
+}
 void GaussWaveFunction::DisplayAllFieldProperties(double x,double y,double z) {
    static double rho,lol,xx[3],g[3],hess[3][3];
    static double eivec[3][3],eival[3];
