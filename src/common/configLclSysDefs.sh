@@ -17,10 +17,11 @@ if command -v gnuplot >/dev/null 2>&1 || command -v wgnuplot >/dev/null 2>&1; th
       echo -e "We have gnuplot!\033[33m"
       echo "However, please ensure that the x11 terminal is available."
       echo -e "\033[m"
+   else
+      echo "#define _GNUPLOT_MAJ_VERSION_ $(gnuplot --version \
+         | awk '{print $2}' | sed -e 's/\(.*\)\.\(.*\)/\1/g')" > lclauxsoftwaredefs.h
    fi
    have_gnuplot=0
-   echo "#define _GNUPLOT_MAJ_VERSION_ $(gnuplot --version \
-      | awk '{print $2}' | sed -e 's/\(.*\)\.\(.*\)/\1/g')" > lclauxsoftwaredefs.h
 else
    if [ "$setverbose" == "T" ];then
       echo -e "\033[31m"
