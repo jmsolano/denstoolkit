@@ -218,7 +218,7 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  use this name as well --but different extension--)." << endl;
    cout << "  -p prop   \tChoose the property to be computed. prop is a character," << endl
         << "            \t  which can be (d is the default value):" << endl;
-   string charFields="mk";
+   string charFields="mkTQ";
    for ( size_t i=0 ; i<charFields.size() ; ++i ) {
       cout << "         \t\t" << charFields[i] << " ("
          << GetFieldTypeKeyLong(charFields[i]) << ')' << '\n';
