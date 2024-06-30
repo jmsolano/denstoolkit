@@ -18,7 +18,7 @@ Run bump_version.sh
 Add the tag to the repository: git push origin --tags
 
 =======================================================================
-Adding a new field:
+Adding a new 3D-field:
 =======================================================================
 Implement the respective functions to include the new field in
    ---> metaDataFldTypes.ods: Add the new field and its metadata.
@@ -61,6 +61,23 @@ Implement the respective functions to include the new field in
    ---> dtkintegrate
            ---> optflags (help menu, add char to charFields)
    
+
+Make the proper changes in the correspoding files:
+   ---> optflags (help menus)
+   ---> dtkmanual: available fields, help menus
+
+=======================================================================
+Adding a new 6D-field (position):
+=======================================================================
+Implement the respective functions to include the new field in
+   ---> metaDataFldTypes.ods: Add the new field and its metadata.
+   ---> fldtypesdef.h: Add the new field and its tags, fields, etc.
+        More detailed instructions are described below,
+        near the end of this file.
+   ---> dtkscalarfunction6d.cpp:
+           ---> Add the new field to DTKScalarFunction::f (header, inline function)
+   ---> TEST WITH dtkproj6dto2d:
+           ---> Add the new field char to allowedFields="gnlco...".
 
 Make the proper changes in the correspoding files:
    ---> optflags (help menus)
