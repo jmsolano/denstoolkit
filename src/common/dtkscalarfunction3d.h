@@ -88,6 +88,9 @@ public:
          case ScalarFieldType::RHO2 :
             return wf->EvalOneElecDisequilibrium(x,y,z);
             break;
+         case ScalarFieldType::RHO2M:
+            return wf->EvalFTOneElecDisequilibrium(x,y,z);
+            break;
          case ScalarFieldType::SPND :
             return wf->EvalSpinDensity(x,y,z);
             break;
