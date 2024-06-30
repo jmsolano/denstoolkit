@@ -181,7 +181,7 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "Where wf?name is the input wfx(wfn) name, and options can be:\n\n";
    cout << "  -p prop   \tChoose the property to be integrated. prop is a character,\n";
    cout << "            \t  which can be (d is the default value):" << '\n';
-   string charFields="dmlESTgLGKekMVPsrvDbqu";
+   string charFields="dmlESTgLGKekMVPsrvDbqQu";
    for ( size_t i=0 ; i<charFields.size() ; ++i ) {
       cout << "         \t\t" << charFields[i] << " ("
          << GetFieldTypeKeyLong(charFields[i]) << ')' << '\n';
