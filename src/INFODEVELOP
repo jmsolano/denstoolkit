@@ -18,7 +18,7 @@ Run bump_version.sh
 Add the tag to the repository: git push origin --tags
 
 =======================================================================
-Adding a new 3D-field:
+Adding a new 3D-field (pos):
 =======================================================================
 Implement the respective functions to include the new field in
    ---> metaDataFldTypes.ods: Add the new field and its metadata.
@@ -58,6 +58,27 @@ Implement the respective functions to include the new field in
            ---> optflags (help menu, add char to charFields)
    ---> dtkmapfieldonisosurf (Fields such as DORI are color-mapped with Lambda.)
            ---> optflags (help menu, add char to charFields)
+   ---> dtkintegrate
+           ---> optflags (help menu, add char to charFields)
+   
+
+Make the proper changes in the correspoding files:
+   ---> optflags (help menus)
+   ---> dtkmanual: available fields, help menus
+
+=======================================================================
+Adding a new 3D-field (mom):
+=======================================================================
+Implement the respective functions to include the new field in
+   ---> metaDataFldTypes.ods: Add the new field and its metadata.
+   ---> fldtypesdef.h: Add the new field and its tags, fields, etc.
+        More detailed instructions are described below,
+        near the end of this file.
+   ---> dtkscalarFunction.cpp:
+           ---> Add the new field to DTKScalarFunction::f (header, inline function)
+           ---> Add the new field to DTKScalarFunction::gradf (header, inline function)
+           ---> Add the new field to DTKScalarFunction::SelectScalarFunctionPtr (cpp)
+   ---> TEST WITH dtkmomd
    ---> dtkintegrate
            ---> optflags (help menu, add char to charFields)
    
