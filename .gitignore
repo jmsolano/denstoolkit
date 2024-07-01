@@ -63,6 +63,7 @@ arts/*
 src/dtkview/build
 wishlist/*
 src/devdoc/html/*
+src/devdoc/latex
 src/dtkcharcicp/jasowfns/*
 densityprogs
 src/dtkcube/RefG09
@@ -94,8 +95,13 @@ AFTER_PUB
 src/devdoc/Dev*.html
 src/common/*.a
 src/common/lclauxsoftwaredefs.h
+src/common/LCLREADME
 src/NOTES
-src/dtkcube/LCLREADME
+src/dtk*/NOTES
+src/dtk*/LCLREADME
 src/dtkview/DensToolKit.pro.*
+src/dtk*/bug*
+src/dtk*/TODO
 tex/dtkmanual/TODO
+src/outputsRunTest
 
