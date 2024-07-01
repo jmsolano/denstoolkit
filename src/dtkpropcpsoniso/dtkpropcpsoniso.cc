@@ -143,6 +143,15 @@ int main (int argc, char ** argv) {
    if ( options.setisovalue ) {
       isovalue=std::stod(string(argv[options.setisovalue]));
    }
+   if ( options.estimpkacarbac ) {
+      isoprop='d';
+      isovalue=0.0120e0;
+      evprop='V';
+      if ( options.setisovalue || options.isoprop || options.prop2eval ) {
+         ScreenUtils::DisplayWarningMessage("Estimating pKa of a carboxilic acid, setting\n"
+               "isovalue rho=0.0120 a.u. and property evaluated at iso surf: MEP.");
+      }
+   }
    if ( options.estimpkbaminesprim ) {
       isoprop='d';
       isovalue=0.0062;
@@ -295,6 +304,10 @@ int main (int argc, char ** argv) {
    }
    if ( options.estimpkbaminester ) {
       HelpersPropCPsOnIso::EstimatepKbTertiaryAmine(vcp,sigcp);
+      HelpersPropCPsOnIso::RequestCitation(argc,argv,options);
+   }
+   if ( options.estimpkacarbac ) {
+      HelpersPropCPsOnIso::EstimatepKaCarboxilicAcid(vcp,sigcp);
       HelpersPropCPsOnIso::RequestCitation(argc,argv,options);
    }
 

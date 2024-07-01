@@ -83,6 +83,7 @@ public:
    unsigned short int isofromcube;
    unsigned short int minangcap;
    bool estimpkbaminesprim,estimpkbaminessec,estimpkbaminester;
+   bool estimpkacarbac;
    bool mkpov,kppov,mkpng;
    bool drawiso,transparentiso,cpkview;
    bool stpspindens;

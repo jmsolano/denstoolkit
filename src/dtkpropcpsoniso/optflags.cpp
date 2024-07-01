@@ -88,6 +88,7 @@ OptionFlags::OptionFlags() {
    drawiso=true;
    cpkview=true;
    estimpkbaminesprim=estimpkbaminessec=estimpkbaminester=false;
+   estimpkacarbac=false;
    stpspindens=false;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
@@ -304,6 +305,8 @@ void printHelpMenu(int &argc, char** &argv) {
         << "                 \t  related to the cap. E.g. the mesh cannot be refined,\n"
         << "                 \t  because the mesh is determined from the cube sampling;\n"
         << "                 \t  " << '\n';
+   cout << "  --pka-carbac   \tAssume the input molecule is a carboxilic acid and estimate\n"
+        << "                 \t  its pKa. This option overrides options -I, -p, and -r." << '\n';
    cout << "  --pkb-prim-amine\tAssume the input molecule is a primary amine and estimate\n"
         << "                 \t  its pKb. This option overrides options -I, -p, and -r." << '\n';
    cout << "  --pkb-sec-amine\tAssume the input molecule is a secondary amine and estimate\n"
@@ -412,6 +415,8 @@ void processDoubleDashOptions(int &argc,char** &argv,OptionFlags &flags,int pos)
    } else if (str==string("set-isovalue")) {
       flags.setisovalue=(++pos);
       if (pos>=argc) {printErrorMsg(argv,'2');}
+   } else if ( str==string("pka-carbac") ) {
+     flags.estimpkacarbac=true;
    } else if ( str==string("pkb-prim-amine") ) {
      flags.estimpkbaminesprim=true;
    } else if ( str==string("pkb-sec-amine") ) {

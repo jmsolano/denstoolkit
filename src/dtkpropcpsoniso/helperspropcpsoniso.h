@@ -94,6 +94,7 @@ public:
    static shared_ptr<MeshGrid> BuildMesh(int argc,char *argv[],const OptionFlags &opt,\
          GaussWaveFunction &wf,BondNetWork &bn,const double isovalue);
    static int FindClosestAtom(const BondNetWork &bn,const vector<double> &usrr);
+   static void EstimatepKaCarboxilicAcid(vector<double> &vcp,vector<int> &sigcp);
    static void EstimatepKbPrimaryAmine(vector<double> &vcp,vector<int> &sigcp);
    static void EstimatepKbSecondaryAmine(vector<double> &vcp,vector<int> &sigcp);
    static void EstimatepKbTertiaryAmine(vector<double> &vcp,vector<int> &sigcp);

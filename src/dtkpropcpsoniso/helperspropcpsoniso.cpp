@@ -609,6 +609,26 @@ int HelpersPropCPsOnIso::FindClosestAtom(const BondNetWork &bn,const vector<doub
    }
    return pos;
 }
+void HelpersPropCPsOnIso::EstimatepKaCarboxilicAcid(vector<double> &vcp,vector<int> &sigcp) {
+   size_t pos=string::npos;
+   int count=0;
+   for ( size_t i=0 ; i<sigcp.size() ; ++i ) {
+      if ( sigcp[i]<0 ) {
+         ++count;
+         pos=i;
+      }
+   }
+   if ( count>1 ) {
+      ScreenUtils::DisplayErrorMessage("More than 1 V_{S,max} points were found!");
+      cout << "pKa cannot be estimated automatically. Please, manually use the formula:\n\n"
+           << "\t27.505908-0.143900*V_{S,max}(kCal/mol)\n\n";
+      return;
+   }
+   double pKa=27.505908e0-0.143900e0*vcp[pos]*627.5e0;
+   cout << setprecision(5);
+   cout << "\nEstimated_pKa_carboxilic_acid: " << pKa << "\n\n";
+   return;
+}
 void HelpersPropCPsOnIso::EstimatepKbPrimaryAmine(vector<double> &vcp,vector<int> &sigcp) {
    size_t pos=string::npos;
    int count=0;
@@ -671,11 +691,20 @@ void HelpersPropCPsOnIso::EstimatepKbTertiaryAmine(vector<double> &vcp,vector<in
 }
 void HelpersPropCPsOnIso::RequestCitation(int argc,char *argv[],OptionFlags &opt) {
    if ( opt.estimpkbaminesprim || opt.estimpkbaminessec || opt.estimpkbaminester ) {
-      string msg="You are estimating pKb of an amine.\n"
+      string msg="You are estimating the pKb of an amine.\n"
          "If you publish this estimation, please consider adding the following citations:\n\n";
       msg+=dtkcitations::dtk2015;
       msg+=string("\n\n");
       msg+=dtkcitations::sandovallira2020;
+      msg+=string("\n");
+      ScreenUtils::DisplayGreenMessage(msg);
+   }
+   if ( opt.estimpkacarbac ) {
+      string msg="You are estimating the pKa of a carboxilic acid.\n"
+         "If you publish this estimation, please consider adding the following citations:\n\n";
+      msg+=dtkcitations::dtk2015;
+      msg+=string("\n\n");
+      msg+=dtkcitations::caballerogarcia2019;
       msg+=string("\n");
       ScreenUtils::DisplayGreenMessage(msg);
    }
