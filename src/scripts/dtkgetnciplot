@@ -1,5 +1,5 @@
 #!/bin/bash
-thisScriptName=$0
+thisScriptName=$(echo "$0" | sed -e 's;\(.*\)/\(.*\);\2;')
 usage()
 {
 echo -e "\n    usage: \033[1m$1 [option [value(s)]] ... [option [value(s)]]\033[0m"
@@ -16,8 +16,8 @@ Options
   -w wf?name   Sets the wavefunction name to be 'wf?name' (wfxname/wfnname)
   -c "a1 a2"     Centres the cube to be at the midpoint between atoms a1 and
                  a2. Please mind the quotes to set a1 and a2.
-  -f           Forces to re-compute the cubes without asking. This option
-                 rewrites previously present cubes.
+  -P           Plot again the figures without re-computing cubes.
+                 The option forces to skip cubes calculation without asking.
   -l        	Writes cpu time, input/output information etc. on a log file
   -n  dim   	Sets the number of points per direction for the cube
             	  to be dim x dim x dim.
@@ -109,30 +109,56 @@ cube_to_column(){
    let number_of_atoms=$(sed -n '3p' "$cube_file"| awk '{print $1;}')+6
    awk '{if (NR>'$number_of_atoms'){print $0;}}' $cube_file | awk '$1=$1'|tr [:space:] "\n"
 }
+#Echoes terminal specific options for gnuplot
+print_term_specific_conf(){
+   lcl_datname="$1"
+   the_terminal="$2"
+   lcl_xlabel="{/Symbol L}_2"
+   if [ "$the_terminal" == "pngcairo" ];then
+      lcl_outputname="${lcl_datname%dat}png"
+      terminal_string="term pngcairo enhanced interlace size 1200,900 linewidth 2 fontscale 1.5"
+   elif [ "$the_terminal" == "png" ];then
+      lcl_outputname="${lcl_datname%dat}png"
+      terminal_string="term png enhanced interlace size 1200,900 linewidth 2 fontscale 1.5"
+      lcl_xlabel="Lambda_2"
+   elif [ "$the_terminal" == "jpg" ];then
+      lcl_outputname="${lcl_datname%dat}jpg"
+      terminal_string="term jpeg enhanced interlace size 1200,900 linewidth 2 fontscale 1.5"
+      lcl_xlabel="Lambda_2"
+   elif [ "$the_terminal" == "pdf" ];then
+      lcl_outputname="|epstopdf --filter --outfile=${lcl_datname%dat}pdf"
+      terminal_string="term postscript eps enhanced color linewidth 2 fontscale 1.5"
+   fi
+   echo "set encoding utf8"
+   echo "set xlabel '$lcl_xlabel' offset character 0,0.75"
+   echo "set ylabel 's' offset character 2,0"
+   echo "set $terminal_string"
+   echo "set output '$lcl_outputname'"
+   echo "plot '$lcl_datname' u 1:2:1 w p pt 7 ps 0.25 palette title 'NCI'"
+}
 #Makes a plot using gnuplot
 make_plot(){
    dat_file_name=$1
-   pdf_file_name=${dat_file_name%dat}pdf
-   gnuplot <<-EOFMarker
-      set xlabel '{/Symbol r}' offset character 0,0.75
-      set ylabel 's' offset character 2,0
-      set xrange [-0.2:0.2]
-      set yrange [0.0:2.0]
-      set tics font ",12" scale 2.0
-      set xtics 0.05
-      set ytics 0.2
-      set mxtics 5
-      set mytics 2
-      set grid ytics mytics
-      set grid xtics mxtics 
-      set tmargin at screen 0.95
-      set bmargin at screen 0.13
-      set lmargin at screen 0.11
-      set rmargin at screen 0.96
-      set term postscript eps enhanced color linewidth 2 fontscale 1.5
-      set output '|epstopdf --filter --outfile="$pdf_file_name"'
-      plot "$dat_file_name" w p pt 7 ps 0.5 lc rgb "red" title "NCI" 
+   gnp_file_name=${dat_file_name%dat}gnp
+   png_file_name=${dat_file_name%dat}png
+   cat > $gnp_file_name <<-EOFMarker
+set xrange [-0.2:0.2]
+set yrange [0.0:2.0]
+set cbrange [-0.2:0.2]
+set xtics 0.05
+set ytics 0.2
+set mxtics 5
+set mytics 2
+set grid ytics mytics
+set grid xtics mxtics
+set palette rgbformulae 33,13,10
+set tmargin at screen 0.95
+set bmargin at screen 0.13
+set lmargin at screen 0.10
+set rmargin at screen 0.84
 EOFMarker
+print_term_specific_conf $dat_file_name $gnuplotTerminal >> $gnp_file_name
+gnuplot $gnp_file_name
 }
 #Makes a plot of GrdRedRho vs Rho
 plot_redgradrho_vs_rho() {
@@ -160,8 +186,9 @@ rhoMin="0.0005"
 rhoMax="0.2"
 redDensGradMax="2.0"
 quietVMDRendering=false
-forceCubeComputation=false
-while getopts ":hfw:ln:sS:r:R:G:c:q" opt; do
+askCubeComputation=true
+gnuplotTerminal="pngcairo"
+while getopts ":hw:ln:Pr:R:sS:t:G:c:q" opt; do
   case $opt in
     h)
       usage $0
@@ -173,14 +200,20 @@ while getopts ":hfw:ln:sS:r:R:G:c:q" opt; do
     c)
       cubeArgsString="$cubeArgsString -c $OPTARG"
       ;;
-    f)
-      forceCubeComputation=true
-      ;;
     l)
       cubeArgsString="$cubeArgsString -l"
       ;;
     n)
       cubeArgsString="$cubeArgsString -n $OPTARG"
+      ;;
+    P)
+      askCubeComputation=false
+      ;;
+    r)
+      rhoMin="$OPTARG"
+      ;;
+    R)
+      rhoMax="$OPTARG"
       ;;
     s)
        cubeArgsString="$cubeArgsString -s"
@@ -188,11 +221,8 @@ while getopts ":hfw:ln:sS:r:R:G:c:q" opt; do
     S)
       cubeArgsString="$cubeArgsString -S $OPTARG"
       ;;
-    r)
-      rhoMin="$OPTARG"
-      ;;
-    R)
-      rhoMax="$OPTARG"
+    t)
+      gnuplotTerminal="$OPTARG"
       ;;
     G)
       redDensGradMax="$OPTARG"
@@ -202,6 +232,8 @@ while getopts ":hfw:ln:sS:r:R:G:c:q" opt; do
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
+      echo -e "(Try\n   $thisScriptName -h\nfor more information.)"
+      exit 1
       ;;
     :)
       echo "Option -$OPTARG requires an argument." >&2
@@ -222,10 +254,10 @@ cutoffArgString="--configure-nci $rhoMin $rhoMax $redDensGradMax"
 #This final extension was acquired from scr/common/fldtypesdef.h file of the function getFieldTypeKeyShort
 baseFileName=${wavefunctionFileName%.wf?}
 cubeRedGradFileName="${baseFileName}NCIRedDensGrad.cub"
-cubeRhoFileName="${baseFileName}NCIRho.cub"
+cubeRhoFileName="${baseFileName}NCILambda2.cub"
 
 #Checks whether cubes are present.
-if [ "$forceCubeComputation" = false ]; then
+if [ "$askCubeComputation" = true ]; then
    if [ -f "$cubeRedGradFileName" -a -f "$cubeRhoFileName" ]; then
       echo -e "The needed cube files are already present ($cubeRedGradFileName and $cubeRhoFileName)"
       echo "Do you wish to compute them again?"
@@ -246,18 +278,18 @@ if [ "$forceCubeComputation" = false ]; then
 fi
 #
 #Names of VMD script files
-outputVMDFileName="${baseFileName}NCI.vmd"
-outputTGAFileName="${baseFileName}NCI.tga"
+#outputVMDFileName="${baseFileName}NCI.vmd"
+#outputTGAFileName="${baseFileName}NCI.tga"
 #Asks and saves the current directory (VMD sometimes needs absolute paths)
 currentWD=$(pwd)
 #
 #Makes the VMD scripts.
-echo -e "Making VMD scripts..."
-print_vmd_script "$cubeRhoFileName" "$cubeRedGradFileName" 0.500000 0.050000 "$outputTGAFileName" > "$outputVMDFileName"
-if [ "$quietVMDRendering" = true ]; then
-   echo "quit" >> "$outputVMDFileName"
-fi
+#echo -e "Making VMD scripts..."
+#print_vmd_script "$cubeRhoFileName" "$cubeRedGradFileName" 0.500000 0.050000 "$outputTGAFileName" > "$outputVMDFileName"
+#if [ "$quietVMDRendering" = true ]; then
+#   echo "quit" >> "$outputVMDFileName"
+#fi
 
 echo -e "Making s vs rho plot..."
-plot_redgradrho_vs_rho "$currentWD/$cubeRedGradFileName" "$currentWD/$cubeRhoFileName" "$currentWD/$baseFileName"
+plot_redgradrho_vs_rho "$currentWD/$cubeRhoFileName" "$currentWD/$cubeRedGradFileName" "$currentWD/$baseFileName"
 
