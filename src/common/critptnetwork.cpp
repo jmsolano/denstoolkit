@@ -2388,7 +2388,7 @@ bool CritPtNetWork::MakePOVFile(string pnam,POVRayConfiguration &pvp,int campos)
       pof << "union {" << endl;
       for (int rcpIdx=0; rcpIdx<nRCP; ++rcpIdx) {
          currBcpPos=0;
-         while ( conRCP[rcpIdx][1][currBcpPos]>0 ) {
+         while ( conRCP[rcpIdx][0][currBcpPos]>=0 ) {
             npts=conRCP[rcpIdx][1][currBcpPos];
             HelpersPOVRay::WriteSphere(pof,1,RRGP[rcpIdx][currBcpPos][0][0],\
                   RRGP[rcpIdx][currBcpPos][0][1],\
@@ -2418,7 +2418,7 @@ bool CritPtNetWork::MakePOVFile(string pnam,POVRayConfiguration &pvp,int campos)
       pof << "union {" << endl;
       for (int rcpIdx=0; rcpIdx<nRCP; ++rcpIdx) {
          currBcpPos=0;
-         while ( conRCP[rcpIdx][1][currBcpPos]>0 ) {
+         while ( conRCP[rcpIdx][0][currBcpPos]>=0 ) {
             npts=conRCP[rcpIdx][1][currBcpPos];
             for ( int j=0 ; j<npts ; ++j ) {
                HelpersPOVRay::WriteSphere(pof,1,RRGP[rcpIdx][currBcpPos][j][0],\

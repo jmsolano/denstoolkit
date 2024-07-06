@@ -262,7 +262,7 @@ bool HelpersDrawer::MakeCriticalPointsPovFile(const string &basename,\
       ofil << "union {" << '\n';
       for (int rcpIdx=0; rcpIdx<nRCP; ++rcpIdx) {
          currBcpPos=0;
-         while ( cp.conRCP[rcpIdx][1][currBcpPos]>0 ) {
+         while ( cp.conRCP[rcpIdx][0][currBcpPos]>=0 ) {
             npts=cp.conRCP[rcpIdx][1][currBcpPos];
             HelpersPOVRay::WriteSphere(ofil,1,cp.RRGP[rcpIdx][currBcpPos][0][0],\
                   cp.RRGP[rcpIdx][currBcpPos][0][1],\
@@ -292,7 +292,7 @@ bool HelpersDrawer::MakeCriticalPointsPovFile(const string &basename,\
       ofil << "union {" << '\n';
       for (int rcpIdx=0; rcpIdx<nRCP; ++rcpIdx) {
          currBcpPos=0;
-         while ( cp.conRCP[rcpIdx][1][currBcpPos]>0 ) {
+         while ( cp.conRCP[rcpIdx][0][currBcpPos]>=0 ) {
             npts=cp.conRCP[rcpIdx][1][currBcpPos];
             for ( int j=0 ; j<npts ; ++j ) {
                HelpersPOVRay::WriteSphere(ofil,1,cp.RRGP[rcpIdx][currBcpPos][j][0],\
@@ -312,7 +312,7 @@ bool HelpersDrawer::MakeCriticalPointsPovFile(const string &basename,\
       ofil << "union {" << '\n';
       for (int ccpIdx=0; ccpIdx<nCCP; ++ccpIdx) {
          currRcpPos=0;
-         while ( cp.conCCP[ccpIdx][1][currRcpPos]>0 ) {
+         while ( cp.conCCP[ccpIdx][0][currRcpPos]>=0 ) {
             npts=cp.conCCP[ccpIdx][1][currRcpPos];
             HelpersPOVRay::WriteSphere(ofil,1,cp.RCGP[ccpIdx][currRcpPos][0][0],\
                   cp.RCGP[ccpIdx][currRcpPos][0][1],\
@@ -344,7 +344,7 @@ bool HelpersDrawer::MakeCriticalPointsPovFile(const string &basename,\
       ofil << "union {" << '\n';
       for (int ccpIdx=0; ccpIdx<nCCP; ++ccpIdx) {
          currRcpPos=0;
-         while ( cp.conCCP[ccpIdx][1][currRcpPos]>0 ) {
+         while ( cp.conCCP[ccpIdx][0][currRcpPos]>=0 ) {
             npts=cp.conCCP[ccpIdx][1][currRcpPos];
             for ( int j=0 ; j<npts ; ++j ) {
                HelpersPOVRay::WriteSphere(ofil,1,cp.RCGP[ccpIdx][currRcpPos][j][0],\
