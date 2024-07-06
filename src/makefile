@@ -105,6 +105,8 @@ help: ## Shows this help
 	@echo ''
 	@echo "The default installation path is '/usr/local/bin', but this can be"
 	@echo "  changed by setting INSTALL_PATH='/custom/install/path'"
+	@echo "Use SETDTKNPROC=N, with N the number of OMP threads to compile"
+	@echo "  the parallel version of DTK."
 	@echo '=================================================================================='
 
 .PHONY: info
