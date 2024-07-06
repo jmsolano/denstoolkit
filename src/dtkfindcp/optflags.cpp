@@ -78,16 +78,14 @@ OptionFlags::OptionFlags() {
    mkpng=0;
    quiet=1;
    cptype=0;
+   camvdir=0;
    drawnuc=0;
    calcbgps=1;
    calcrgps=0;
    drawbgps=bgptubes=0;
-   camvdir=0;
-   mkdatmat=0;
-   mkextsearch=0;
-   forcebcpconn=0;
-   forceseveralbcpconn=0;
-   customseedtwoacps=0;
+   mkdatmat=mkextsearch=0;
+   forcebcpconn=customseedtwoacps=forceseveralbcpconn=0;
+   setbgpstep=0;
    stpspindens=false;
 }
 void getOptions(int &argc, char** &argv, OptionFlags &flags) {
@@ -267,8 +265,12 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t\t  n is the number of bcp that will be tested for connection." << endl
         << "            \t\t  Connectibities will be tried to be acpiA-bcpi-acpiB," << endl
         << "            \t\t  here i is the number 1, 2, ..., n." << endl;
-   cout << "  --add-seed-twoacps acp1 acp2 \t Perform a critical point search around" << endl
+   cout << "  --add-seed-twoacps acp1 acp2\n"
+        << "            \t\tPerform a critical point search around" << endl
         << "            \t\t  the middle point between acp1 and acp2." << endl;
+   cout << "  --set-bgp-step dh\n"
+        << "            \t\tSet the bond-gradient path step to be dh. Default: "
+        << CPNW_DEFAULTGRADIENTPATHS << '\n';
    cout << "  --help    \t\tSame as -h" << endl;
    cout << "  --version \t\tSame as -V" << endl;
    //-------------------------------------------------------------------------------------
@@ -336,6 +338,11 @@ void processDoubleDashOptions(int &argc,char** &argv,OptionFlags &flags,int pos)
       ScreenUtils::DisplayWarningMessage("In this version, the user is responsible of providing\n"
             "the correct number of arguments.");
       flags.forceseveralbcpconn=(pos+1);
+   } else if ( str==string("set-bgp-step") ) {
+      if ( (pos+1)>argc ) {
+         ScreenUtils::DisplayErrorMessage("This option must be followed by a number.");
+      }
+      flags.setbgpstep=(++pos);
    } else {
       ScreenUtils::SetScrRedBoldFont();
       cout << "Error: Unrecognized option '" << argv[pos] << "'" << endl;

@@ -89,6 +89,7 @@ public:
    unsigned short int mkdatmat,mkextsearch;
    unsigned short int forcebcpconn,customseedtwoacps;
    unsigned short int forceseveralbcpconn;
+   unsigned short int setbgpstep;
    bool stpspindens;
 };//end class optsFlags
 void printErrorMsg(char** &argv,char lab);

@@ -98,8 +98,7 @@ using std::setprecision;
 void SetForcedBCPConnectivity(char **argv,OptionFlags &option,CritPtNetWork &cp);
 void SetForcedBCPConnectivities(char **argv,OptionFlags &option,CritPtNetWork &cp);
 
-int main (int argc, char ** argv)
-{
+int main (int argc, char ** argv) {
    const clock_t begin_time = clock();
    const double begin_walltime = time(NULL);
    string infilnam,outfilnam,povfilnam,pngfilnam,cpxfilnam;
@@ -158,6 +157,10 @@ int main (int argc, char ** argv)
    bnw.SetUpBNW();             //To setup the bond network.
    
    CritPtNetWork cpn(gwf,bnw);
+   if ( options.setbgpstep ) {
+      cout << std::stod(string(argv[options.setbgpstep])) << '\n';
+      cpn.SetStepSizeBGP(std::stod(string(argv[options.setbgpstep])));
+   }
    
    switch (critpttype) {
       case DENS:
@@ -263,8 +266,6 @@ int main (int argc, char ** argv)
       WriteDatMatCritPtsCrds(cpfname,cpn);
       WriteDatMatBondPathCrds(bpfname,cpn);
    }
-   
-   
 //#if (defined(__APPLE__)||defined(__linux__))
 //   if (options.zipdat) {
 //      string cmdl;
