@@ -74,6 +74,7 @@ OptionFlags::OptionFlags() {
    outfname=0;
    verboseLevel=0;
    rotatemol=align3at=rotX=rotY=rotZ=0;
+   setpngwidth=0;
    cpkview=false;
    setzoom=selectcps2draw=selectgps2draw=0;
    drawnuc=drawcps=drawgps=mkpng=true;
@@ -147,6 +148,10 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                if (!(pos==string::npos)) {progname.erase(pos,2);}
                cout << progname << " " << CURRENTVERSION << endl;
                exit(0);
+               break;
+            case 'w' :
+               flags.setpngwidth=(++i);
+               if (i>=argc) {printErrorMsg(argv,'w');}
                break;
             case 'x' :
                flags.rotX=(++i);
@@ -246,6 +251,8 @@ void printHelpMenu(int &argc, char** &argv) {
         << "            \t  verbLev is, the greater the information displayed on the\n"
         << "            \t  screen. verboseLevel=0 minimizes the information."  << '\n';
    cout << "  -V        \tDisplay the version of this program." << endl;
+   cout << "  -w width  \tSet the width (pixels) of the png to be width (using multiples of\n"
+        << "            \t  600 is recommended." << '\n';
    cout << "  -x alpha  \tSet the angle GNUPlotAngle1=alpha (in povray file)." << '\n';
    cout << "  -y beta   \tSet the angle YAngle=beta (in povray file)." << '\n';
    cout << "  -z gamma  \tSet the angle GNUPlotAngle2=gamma (in povray file)." << '\n';
@@ -288,6 +295,7 @@ void printErrorMsg(char** &argv,char lab) {
          cout << "should be followed by a string." << '\n';
          break;
       case 'v':
+      case 'w':
          cout << "should be followed by an integer (>=0)." << endl;
          break;
       case 'o':

@@ -77,7 +77,7 @@ public:
    static void PutSpecialSpheres(ofstream &ofil,const int ntbs,\
          const vector<vector<double> > &sp,const string trnsmbnd);
    static void WriteAngleDeclarations(ofstream &ofil,POVRayConfiguration &pvc);
-   static void RenderPovfile(const string &povname,bool verbose=false);
+   static void RenderPovfile(const string &povname,bool verbose=false,int w=1200);
    static void RotateCameraAroundLocCam(POVRayConfiguration &pvc, double angle);
    static void RotateCameraAroundUp(POVRayConfiguration &pvc, double angle);
    static void RotateCameraAroundRight(POVRayConfiguration &pvc, double angle);

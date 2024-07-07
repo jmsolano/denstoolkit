@@ -96,7 +96,9 @@ bool HelpersDrawer::MakePovFile(const string &basename,const OptionFlags &option
    WriteBondNetworkElements(ofil,bn,pvp,options,argv);
    ofil.close();
    tmpbool=options.verboseLevel && std::stoi(string(argv[options.verboseLevel]))>0;
-   CommonHelpers::RenderPovfile(povname,tmpbool);
+   int ww=1200;
+   if ( options.setpngwidth ) { ww=std::stoi(string(argv[options.setpngwidth])); }
+   CommonHelpers::RenderPovfile(povname,tmpbool,ww);
    return true;
 }
 bool HelpersDrawer::MakeCriticalPointsPovFile(const string &basename,\
@@ -362,7 +364,9 @@ bool HelpersDrawer::MakeCriticalPointsPovFile(const string &basename,\
 
    //Rendering
    tmpbool=options.verboseLevel && std::stoi(string(argv[options.verboseLevel]))>0;
-   CommonHelpers::RenderPovfile(povname,tmpbool);
+   int ww=1200;
+   if ( options.setpngwidth ) { ww=std::stoi(string(argv[options.setpngwidth])); }
+   CommonHelpers::RenderPovfile(povname,tmpbool,ww);
    return true;
 }
 bool HelpersDrawer::AlignMolecule(POVRayConfiguration &pvp,BondNetWork &bn,\

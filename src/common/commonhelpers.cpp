@@ -136,8 +136,8 @@ void CommonHelpers::WriteAngleDeclarations(ofstream &ofil,POVRayConfiguration &p
         << "; // Equivalent to ZAngle." << '\n';
    ofil << "#declare YAngle=" << pvc.vecAngView[1] << ";" << '\n';
 }
-void CommonHelpers::RenderPovfile(const string &povname,bool verbose) {
-   string cmd="dtkpov2png "+povname;
+void CommonHelpers::RenderPovfile(const string &povname,bool verbose,int w) {
+   string cmd=string("dtkpov2png -w ")+std::to_string(w)+' '+povname;
    if ( !verbose ) { cmd+=" 2>/dev/null"; }
    system(cmd.c_str());
    if (verbose) {

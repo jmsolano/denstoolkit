@@ -80,6 +80,7 @@ public:
    unsigned short int verboseLevel;
    unsigned short int rotatemol,align3at,rotX,rotY,rotZ;
    unsigned short int setzoom,selectcps2draw,selectgps2draw;
+   unsigned short int setpngwidth;
    bool cpkview,mkpng,drawnuc,drawcps,drawgps;
    bool tubestyle,cylbond;
 };//end class optsFlags
