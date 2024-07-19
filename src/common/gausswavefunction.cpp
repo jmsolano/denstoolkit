@@ -377,6 +377,19 @@ bool GaussWaveFunction::SanityChecks(void) {
             "\nare not implemented. E.g., MEP or one-electron integrals.");
       ScreenUtils::DisplayGreenMessage("However Rho and its derivatives and CP search are OK.");
    }
+   for ( int i=0 ; i<nMOr ; ++i ) {
+      if ( occN[i]< 0.0e0 ) {
+         cout << '\n';
+         string str="The wavefunction has negative occupation numbers!\n";
+         str+="Check orbital no: ";
+         str+=std::to_string(i+1);
+         str+=", whose occ. num. is: ";
+         str+=std::to_string(occN[i]);
+         str+=".";
+         ScreenUtils::DisplayErrorMessage(str);
+         return false;
+      }
+   }
    return ret;
 }
 void GaussWaveFunction::CountPrimsPerCenter(void) {

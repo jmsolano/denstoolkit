@@ -89,7 +89,7 @@ STATICOBJS=$(shell for i in $$(ls ../common/*cpp);do echo $${i%cpp}o;done)
 TESTEXECS=$(patsubst %.cc,%.x,$(wildcard *.cc))
 
 # -L: FOLDER LIBRARY
-	LFLAGS+=#-L$(TOP)/../common/
+	LFLAGS+=-L$(TOP)/../common/
 	LFLAGS+=#-L.
 
 # -l: LIBRARY
@@ -117,6 +117,15 @@ $(TESTEXECS): %.x: %.o $(STATICLIB) $(CCOBJS) $(CPPOBJS) $(SOURCES) $(HEADERS) $
 $(STATICLIB): $(COMMONHEADERS) $(COMMONSOURCES)
 	@echo "\033[32mBuilding lib$(COMMONSTATICLIBNAME).a\\033[m"
 	@cd $(TOP)/../common/;$(MAKE) $(MYMAKEFLAGS)
+
+localdefs.h:
+	@echo "//Here you can define the macros that are used WITHIN"  > localdefs.h
+	@echo "//this directory. Notice that the macros defined here" >> localdefs.h
+	@echo "//affect ALL and every single *cc and *cpp source." >> localdefs.h
+	@echo "#ifndef _LOCALDEFS_H_" >> localdefs.h
+	@echo "#define _LOCALDEFS_H_" >> localdefs.h
+	@echo "" >> localdefs.h
+	@echo "#endif /* _LOCALDEFS_H_ */" >> localdefs.h
 
 .PHONY: clean
 clean:
