@@ -74,11 +74,14 @@ void Integrator3D::SetDomainType(Integrator3D::DomainType dt) {
 }
 Integrator3D::~Integrator3D() {
 }
-void Integrator3D::DisplayProperties() {
-   BaseDisplayProperties();
-}
 void Integrator3D::DisplayResults() {
    BaseDisplayResults();
+}
+void Integrator3D::BaseDisplayResults() {
+   cout << "Integral: " << result << '\n';
+}
+void Integrator3D::DisplayProperties() {
+   BaseDisplayProperties();
 }
 void Integrator3D::BaseDisplayProperties() {
    if ( verbosity>0 ) {
@@ -102,9 +105,6 @@ void Integrator3D::BaseDisplayProperties() {
       }
       cout << "Domain type: " << lbl << '\n';
    }
-}
-void Integrator3D::BaseDisplayResults() {
-   cout << "Integral: " << result << '\n';
 }
 void Integrator3D::WriteProperties(ofstream &ofil) {
    ofil << "The function WriteProperties has not been overloaded...\n";
