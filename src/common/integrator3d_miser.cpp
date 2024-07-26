@@ -169,7 +169,7 @@ void Integrator3DMiser::Miser(const vector<double> &xa,const vector<double> &xb,
 }
 void Integrator3DMiser::DisplayProperties() {
    if ( verbosity>0 ) {
-      BaseDisplayResults();
+      BaseDisplayProperties();
    }
    cout << "Lower,back,left corner: " << xa[0] << ' ' << xa[1] << ' ' << xa[2] << '\n';
    cout << "Upwer,front,right corner: " << xb[0] << ' ' << xb[1] << ' ' << xb[2] << '\n';
