@@ -59,15 +59,23 @@ class Integrator3DLegSphtDes : public Integrator3D {
 public:
 /* ************************************************************************** */
    Integrator3DLegSphtDes();
+   /** The integrand i will be setup. */
    Integrator3DLegSphtDes(shared_ptr<Function3D> i);
    virtual ~Integrator3DLegSphtDes();
+   /** Check Integrator3D description */
    void ComputeIntegral();
+   /** Check Integrator3D description */
    void DisplayProperties();
+   /** Check Integrator3D description */
    void DisplayResults();
+   /** Check Integrator3D description */
    void WriteProperties(ofstream &ofil);
+   /** Check Integrator3D description */
    void WriteResults(ofstream &ofil);
    size_t NumberOfEvaluations() { return ((xl.size())*(xs.size())); }
+   /** Returns the number of Gauss-Legendre points used in the cubature (radial part). */
    size_t NGaussLegendre() { return xl.size(); }
+   /** Return the number of Spherical-t design points used in the cubature (angular part). */
    size_t NSpherTDes() { return xs.size(); }
 /* ************************************************************************** */
    /** This function prepares the internal weights and abscissas,
