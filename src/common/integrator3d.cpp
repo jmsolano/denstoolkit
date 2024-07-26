@@ -80,6 +80,10 @@ void Integrator3D::DisplayResults() {
 void Integrator3D::BaseDisplayResults() {
    cout << "Integral: " << result << '\n';
 }
+void Integrator3D::GetWeightsAndAbscissas(vector<double> &uw,vector<vector<double> > &ux) {
+   cout << "Integrator3D::GetWeightsAndAbscissas should be re-implemented..." << '\n';
+   cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+}
 void Integrator3D::DisplayProperties() {
    BaseDisplayProperties();
 }

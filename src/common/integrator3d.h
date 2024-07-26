@@ -78,6 +78,9 @@ public:
    /** Abstract function definition; this function <strong>must be
     * implemented</strong> in each derived class. */
    virtual void ComputeIntegral() = 0;
+   /** An abstract method that returns the weights and abscissas after the object
+    * has been correctly instantiated and setup. */
+   virtual void GetWeightsAndAbscissas(vector<double> &uw,vector<vector<double> > &ux);
    /** Displays some internal parameters used by each derived
     * integrator. */
    virtual void DisplayProperties();
