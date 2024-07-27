@@ -66,6 +66,19 @@ SymmetricSurfaceGrid::SymmetricSurfaceGrid() : MeshGrid() {
 }
 SymmetricSurfaceGrid::SymmetricSurfaceGrid(Shape sh)
    : SymmetricSurfaceGrid() {
+   switch ( sh ) {
+      case Shape::SPHEREICOSAHEDRON :
+         SetupSphereIcosahedron(2);
+         break;
+      case Shape::SPHERESQUARES :
+         SetupSphereSquares();
+         break;
+      default :
+         ScreenUtils::DisplayErrorMessage("The requested type is not implemented in this version!");
+         cout << __FILE__ << ", line: " << __LINE__ << '\n';
+         shape=Shape::NONE;
+         break;
+   }
    shape=sh;
 }
 SymmetricSurfaceGrid::~SymmetricSurfaceGrid() {
@@ -168,16 +181,16 @@ void SymmetricSurfaceGrid::SubdivideAllSquares(int it) {
    GenerateTrianglesFromSquares();
    CheckTriangleOrientation();
 }
-void SymmetricSurfaceGrid::SubdivideAllTriangles(int it) {
+void SymmetricSurfaceGrid::SubdivideAllTriangles(int it,bool normvtxcrd) {
    for ( int j=0 ; j<it ; ++j ) {
       size_t nt=face.size();
-      for ( size_t i=0 ; i<nt ; ++i ) { SubdivideTriangle(i); }
+      for ( size_t i=0 ; i<nt ; ++i ) { SubdivideTriangle(i,normvtxcrd); }
    }
    for ( size_t i=0 ; i<normal.size() ; ++i ) { normal[i].clear(); }
    normal.resize(face.size());
    for ( size_t i=0 ; i<normal.size() ; ++i ) { normal[i].resize(3); }
 }
-void SymmetricSurfaceGrid::SubdivideTriangle(size_t idx) {
+void SymmetricSurfaceGrid::SubdivideTriangle(size_t idx,bool normvtxcrd) {
    vector<double> a(3),b(3),c(3),d(3),e(3),f(3);
    size_t iA,iB,iC,iD,iE,iF;
    iA=face[idx][0];
@@ -189,9 +202,15 @@ void SymmetricSurfaceGrid::SubdivideTriangle(size_t idx) {
    MatrixVectorOperations3D::Add(a,b,d);
    MatrixVectorOperations3D::Add(b,c,e);
    MatrixVectorOperations3D::Add(a,c,f);
-   MatrixVectorOperations3D::Normalize(e);
-   MatrixVectorOperations3D::Normalize(d);
-   MatrixVectorOperations3D::Normalize(f);
+   if ( normvtxcrd ) {
+      MatrixVectorOperations3D::Normalize(d);
+      MatrixVectorOperations3D::Normalize(e);
+      MatrixVectorOperations3D::Normalize(f);
+   } else {
+      MatrixVectorOperations3D::Scale(0.5e0,e);
+      MatrixVectorOperations3D::Scale(0.5e0,d);
+      MatrixVectorOperations3D::Scale(0.5e0,f);
+   }
    iD=VertexPosition(d);
    iE=VertexPosition(e);
    iF=VertexPosition(f);
@@ -357,7 +376,6 @@ void SymmetricSurfaceGrid::TrimFacesCentroidDotProdBetweenVals(const vector<doub
       TriangleCentroidDir(i,c);
       cnorm=MatrixVectorOperations3D::Norm(c);
       dot=MatrixVectorOperations3D::InnerProduct(c,d)*oodnorm/cnorm;
-      //cout << dot << '\n';
       if ( dot>val1 && dot<=val2 ) {
          for ( size_t j=0 ; j<3 ; ++j ) { kf[count][j]=face[i][j]; }
          ++count;
@@ -391,13 +409,11 @@ void SymmetricSurfaceGrid::RemoveFacesUsingVertices(const vector<size_t> &v2r) {
          for ( size_t k=0 ; k<3 ; ++k ) { kf[count][k]=face[i][k]; }
          ++count;
       } else {
-         if ( verbose ) {
-            cout << "Removing face " << i << ':' << '\n';
-            for ( size_t k=0 ; k<3 ; ++k ) {
-               cout << face[i][k] << ' ';
-            }
-            cout << '\n';
+         cout << "Removing face " << i << ':' << '\n';
+         for ( size_t k=0 ; k<3 ; ++k ) {
+            cout << face[i][k] << ' ';
          }
+         cout << '\n';
       }
    }
    ResizeMatrix(face,count,3);

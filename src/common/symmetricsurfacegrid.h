@@ -73,8 +73,16 @@ public:
    void SetupSphereIcosahedron(const int it=0);
    void SubdivideAllSquares(int it=1);
    void SubdivideSquare(size_t idx);
-   void SubdivideAllTriangles(int it=1);
-   void SubdivideTriangle(size_t idx);
+   /** Divide every triangle face into 4 subtriangles.
+    * \param it[in] it is the number of times the split will be performed.
+    * \param normvtxcrd[in] if true, the function assigns the vertices' magnitudes to be 1,
+    * otherwise the new vertices are the edges' midpoints */
+   void SubdivideAllTriangles(int it=1,bool normvtxcrd=true);
+   /** Split the idx-th triangle into four subtriangles.
+    * \param idx[in] the index of the triangle (i.e. the
+    *    face[idx] will be subdivided).
+    * \param normvtxcrd[in] assign the vertex magnitude to be 1.  */
+   void SubdivideTriangle(size_t idx,bool normvtxcrd=true);
    void GenerateTrianglesFromSquares();
    void AddTrianglesFromSquare(size_t idx);
    void CheckTriangleOrientation();

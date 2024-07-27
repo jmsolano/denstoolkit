@@ -63,11 +63,15 @@ public:
     * ifstream ifil. This will set the ifil buffer position
     * at 0 after loading the molecule geometry.*/
    void ReadFromFile(ifstream &ifil);
-   void LoadCoordinatesNumbers(ifstream &ifil,int nat);
+   /** Load coordinates from file, assuming the atoms are described
+    * with atomic numbers. angs==true implies the coordinates
+    * are given in angstroms.  */
+   void LoadCoordinatesNumbers(ifstream &ifil,int nat,bool angs=true);
    /** As far as JMSA knows, cube files always contain
     * atomic numbers, however, this allows for cubes
-    * wherein atomic symbols are used.  */
-   void LoadCoordinatesSymbols(ifstream &ifil,int nat);
+    * wherein atomic symbols are used.
+    * angs==true implies the coordinates are given in angstroms.  */
+   void LoadCoordinatesSymbols(ifstream &ifil,int nat,bool angs=true);
    void DisplayProperties();
    string title1,title2;
    vector<double> charge;

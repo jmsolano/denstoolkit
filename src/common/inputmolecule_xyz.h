@@ -56,6 +56,7 @@ public:
    InputMoleculeXYZ();
    InputMoleculeXYZ(string fname);
    void ReadFromFile(string fname);
+   void ReadFromFile(ifstream &ifil);
    void LoadCoordinatesNumbers(ifstream &ifil,int nat);
    void LoadCoordinatesSymbols(ifstream &ifil,int nat);
    void Save(const string &onam) const;

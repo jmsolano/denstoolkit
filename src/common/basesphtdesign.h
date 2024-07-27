@@ -60,17 +60,32 @@ class BaseSphericalTDesign {
 /* ************************************************************************** */
 public:
 /* ************************************************************************** */
+   /** Returns the abscissas related to the nn precision.
+      *   Remember that the point sets are designed so as to render
+      *   exact integrals of a polynomial of order t; the precision and t are
+      *   equivalent in this documentation.  */
    static vector<vector<double> > GetAbscissas(int nn);
+   /** Returns the weights related to the nn precision.
+      *   Remember that the point sets are designed so as to render
+      *   exact integrals of a polynomial of order t; the precision and t are
+      *   equivalent in this documentation.  */
    static vector<double> GetWeights(int nn);
+   /** The class has internal arrays that should not be allocated in memory
+      *  more than once. The parameter nn is used to choose the set of points
+      *  with precision nn. */
    static const double* GetBaseAbscissas(int nn);
    /** Returns the size of the internal data array. This is not to be confused
-    * with the number of abscissas/weigths.  */
+      * with the number of abscissas/weigths.  */
    static size_t GetSizeArray(int nn);
    static string GetAvailableOrders();
    static string GetAvailableRules();
+   /** Returns a string with all available precisions (as implemented in this version. */
    static string GetAvailablePrecisions();
+   /** Internal tables to check the availability of precisions. */
    static int order_table (int rule);
+   /** Internal tables to check the availability of precisions. */
    static int precision_table(int rule);
+   /** Internal tables to check the availability of precisions. */
    static bool available_table (int rule);
 /* ************************************************************************** */
 protected:

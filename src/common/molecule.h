@@ -58,6 +58,10 @@ class Molecule {
 /* ************************************************************************** */
 public:
 /* ************************************************************************** */
+   /** The Molecule class contains the basic information of a chemical compound.
+    * Basically, it is a set of atoms, each of which is located at a certain
+    * 3D position. Internally, Molecule will assume that the coordinates
+    * are expressed in Angstroms.  */
    Molecule();
    virtual ~Molecule();
 /* ************************************************************************** */
@@ -71,6 +75,8 @@ public:
    int CountAtomsOfType(string ss);
    int CountAtomsOfType(int nn);
    void SortCoordinates();
+   /** Determine the bounding box of the molecule.  */
+   void DetermineBoundingBox();
    void ComputeCenterOfMass();
    void ComputeCentroid();
    void CenterAtCentroid();
@@ -78,17 +84,32 @@ public:
    /** Sets the center of the coordinate system as in the original reading/loading
     * (the molecule is translated to origCent).  */
    void ResetOriginOfCoordinates();
+   void SetupBonds();
+   void SetupCells();
+   void DisplayBondProperties();
+   /** Returns a vector of indices. The first element of the vector
+    * is the observed atom, and the following elements are the indices of
+    * the observed atom neighbours.  */
+   vector<size_t> ListOfNeighbours(const size_t atpos);
 /* ************************************************************************** */
    vector<Atom> atom;
    vector<double> cm; /*!< Center of mass  */
    vector<double> cd; /*!< Centroid  */
+   vector<double> xmin; /** Lower, back, left bounding box.  */
+   vector<double> xmax; /** Upper, front, right bounding box. */
+   double rmax; /*!< Holds the maximum atom distance from the center of mass.  */
+   vector<vector<int> > bond;
+   vector<vector<double> > bndDist;
+   double maxBondDist;
+   vector<vector<vector<vector<int > > > > cell;
+   static double constexpr cellLen=5.0e0;
+   bool ImSetup() const;
 /* ************************************************************************** */
 protected:
 /* ************************************************************************** */
    void Init();
    void QuickSort(int srtIdx) {return QuickSort((atom.size()-1),0,srtIdx);}
    void QuickSort(int high, int low,int srtIdx=0);
-   bool ImSetup();
    bool imsetup;
    vector<double> origCent; /*!< Saves the initial origin of the coordinate system.  */
 /* ************************************************************************** */

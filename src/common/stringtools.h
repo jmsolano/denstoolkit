@@ -75,6 +75,8 @@ public:
    static string RemoveAllDigits(const string &line);
    /** Tests if line begins with exactly begword (uncluding spaces).  */
    static bool StartsWith(const string &line,const string &begword);
+   static void ToUpper(string &line);
+   static void ToLower(string &line);
 protected:
    /* ************************************************************************** */
 };

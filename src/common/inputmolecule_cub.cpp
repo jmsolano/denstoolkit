@@ -52,8 +52,10 @@ using std::vector;
 using std::ofstream;
 #include <iomanip>
 #include "inputmolecule_cub.h"
+#include "fileutils.h"
 #include "screenutils.h"
 #include "stringtools.h"
+#include "unitconversion.h"
 
 InputMoleculeCub::InputMoleculeCub() : Molecule() {
 }
@@ -71,21 +73,26 @@ void InputMoleculeCub::ReadFromFile(ifstream &ifil) {
    for ( size_t i=0 ; i<4 ; ++i ) {
       std::getline(ifil,symb);
    }
+   StringTools::RemoveSpacesLeftAndRight(symb);
+   string tmp=StringTools::GetFirstChunk(symb);
+   int npts=std::stoi(tmp);
+   bool inangstroms=false;
+   if ( npts<0 ) { inangstroms=true; }
    size_t pos=ifil.tellg();
    ifil >> symb;
    ifil.seekg(pos);
    StringTools strtools;
    strtools.RemoveSpacesLeftAndRight(symb);
    if ( ScreenUtils::IsDigit(symb[0]) ) {
-      LoadCoordinatesNumbers(ifil,nat);
+      LoadCoordinatesNumbers(ifil,nat,inangstroms);
    } else {
-      LoadCoordinatesSymbols(ifil,nat);
+      LoadCoordinatesSymbols(ifil,nat,inangstroms);
    }
    ifil.seekg(initPos);
 }
 bool InputMoleculeCub::ReadFromFile(const string fname) {
-   size_t pos=fname.find_last_of(".");
-   if ( fname.substr(pos,3)!=string("cub") ) {
+   if ( !(FileUtils::ExtensionMatches(fname,"cub") ||
+            FileUtils::ExtensionMatches(fname,"cube")) ) {
       return false;
    }
    ifstream ifil(fname.c_str());
@@ -100,21 +107,25 @@ bool InputMoleculeCub::ReadFromFile(const string fname) {
    imsetup=true;
    return true;
 }
-void InputMoleculeCub::LoadCoordinatesNumbers(ifstream &ifil,int nat) {
+void InputMoleculeCub::LoadCoordinatesNumbers(ifstream &ifil,int nat,bool angs) {
    int kk;
+   double convfact=1.0e0;
+   if ( !angs ) { convfact=unitconv::bohr2angstrom; }
    vector<double> xt(3);
    for ( int i=0 ; i<nat ; ++i ) {
       ifil >> kk >> charge[i];//this line prevents reusing the code from xyz files.
-      for ( int j=0 ; j<3 ; ++j ) { ifil >> xt[j]; }
+      for ( int j=0 ; j<3 ; ++j ) { ifil >> xt[j]; xt[j]*=convfact; }
       AddAtom(xt,kk);
    }
 }
-void InputMoleculeCub::LoadCoordinatesSymbols(ifstream &ifil, int nat) {
+void InputMoleculeCub::LoadCoordinatesSymbols(ifstream &ifil, int nat,bool angs) {
    string symb;
+   double convfact=1.0e0;
+   if ( !angs ) { convfact=unitconv::bohr2angstrom; }
    vector<double> xt(3);
    for ( int i=0 ; i<nat ; ++i ) {
       ifil >> symb >> charge[i];//this line prevents reusing the code from xyz files.
-      for ( int j=0 ; j<3 ; ++j ) { ifil >> xt[j]; }
+      for ( int j=0 ; j<3 ; ++j ) { ifil >> xt[j]; xt[j]*=convfact; }
       AddAtom(xt,symb);
    }
 }

@@ -79,8 +79,13 @@ public:
    /** Returns the valence electrons of the atom whose atomic
     * number is n. In the current version, only neutral atoms
     * are treated, i.e. ions are not considered.  */
-   static int GetValenceElectrons(int n);
+   static int GetValenceElectrons(const int n);
    static int GetValenceElectrons(string s) { return GetValenceElectrons(GetAtomicNumberFromSymbol(s));}
+   /** Return the Van der Waals radius of the atom whose atomic number is atn
+    *  units: Angstroms*/
+   static double GetVDWRadius(const int atn);
+   /** Return MY Van der Waals radius (Angstroms).  */
+   inline double GetVDWRadius() const { return GetVDWRadius(num); }
    bool IsMyPosition(vector<double> &xp);
    void DisplayProperties();
    /* ************************************************************************** */

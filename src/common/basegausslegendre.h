@@ -68,6 +68,8 @@ public:
    ~BaseGaussLegendre();
    static void GetWeightsAndAbscissas(vector<double> &ww,vector<double> &xx,int nn);
    static void GetWeightsAndAbscissas(vector<double> &ww,vector<double> &xx,\
+         const int nn,const int mm);
+   static void GetWeightsAndAbscissas(vector<double> &ww,vector<double> &xx,\
          const double xmin,const double xmax,int nn);
    static void GetZero2InfWeightsAndAbscissas(vector<double> &ww,vector<double> &xx,\
          int nn);

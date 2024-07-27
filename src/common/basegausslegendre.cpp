@@ -515,6 +515,90 @@ void BaseGaussLegendre::gauss_legendre_tbl(int n, double* x, double* w, double e
    }
    return;
 }
+void BaseGaussLegendre::GetWeightsAndAbscissas(vector<double> &ww,vector<double> &xx,\
+      const int n,const int mm) {
+   if ( n<3 ) {
+      string msg="In this version, the order of the rule must be >2!\n";
+      ScreenUtils::DisplayErrorMessage(msg);
+      cout << __FILE__ << ", line: " << __LINE__ << '\n';
+      ww.clear();
+      xx.clear();
+      return;
+   }
+   vector<double> xx0,ww0;
+   GetWeightsAndAbscissas(ww0,xx0,n-1);
+   if ( ww.size() != size_t(n-1) ) { ww.resize(n-1); }
+   if ( xx.size() != size_t(n-1) ) { xx.resize(n-1); }
+   for ( size_t i=0 ; i<xx.size() ; ++i ) {
+      xx[i]=-xx0[i]*sqrt(1.0e0-16.0e0/double(n*(n+1)));
+   }
+
+   /*
+   const double eps=1.0e-14;
+   double x0,  x1,  dx;	// Abscissas
+   double w0,  w1,  dw;	// Weights
+   double P0, P_1, P_2;	// Legendre polynomial values
+   double dpdx;			// Legendre polynomial derivative
+   int i, j, k, m;			// Iterators 
+   double t2, t3;
+   m = (n+1-mm)>>1;
+   for (i = 1; i <= m; i++) {
+      // Find i-th root of Legendre polynomial
+      // Initial guess
+      x0 = xx0[i-1]*sqrt(1.0e0-16.0e0/double(n*(n+1)));
+      // Newton iterations, at least one
+      j = 0;
+      //dx = dw = DBL_MAX;
+      dx = dw = std::numeric_limits<double>::max();
+      do {
+         // Compute Legendre polynomial value at x0
+         P_1 = 1.0;
+         P0  = x0;
+         // Optimized version using lookup tables
+         if (n<1024) {
+            // Use fast algorithm for small 
+            for (k = 2; k <= n; k++) {
+               P_2 = P_1;
+               P_1 = P0;
+               t2  = x0*P_1;
+               P0 = t2 + ltbl[k]*(t2 - P_2);
+            }
+         } else {
+            // Use general algorithm for other n
+            for (k = 2; k < 1024; k++) {
+               P_2 = P_1;
+               P_1 = P0;
+               t2  = x0*P_1;
+               P0 = t2 + ltbl[k]*(t2 - P_2);
+            }
+            for (k = 1024; k <= n; k++) {
+               P_2 = P_1;
+               P_1 = P0;
+               t2 = x0*P_1;
+               t3 = (double)(k-1)/(double)k;
+               P0 = t2 + t3*(t2 - P_2);
+            }
+         }
+         // Compute Legendre polynomial derivative at x0
+         dpdx = ((x0*P0-P_1)*(double)n)/(x0*x0-1.0);
+         // Newton step
+         x1 = x0-P0/dpdx;
+         // Weight computing
+         w1 = 2.0/((1.0-x1*x1)*dpdx*dpdx);
+         // Compute weight w0 on first iteration, needed for dw
+         if ( j==0 ) { w0 = 2.0/((1.0-x0*x0)*dpdx*dpdx); }
+         dx = x0-x1;
+         dw = w0-w1;
+         x0 = x1;
+         w0 = w1;
+         ++j;
+      } while( (FABS(dx)>eps || FABS(dw)>eps) && j<100 );
+      cout << (m-1-i+1) << '\n';
+      xx[(m-1)-(i-1)] = x1;
+      ww[(m-1)-(i-1)] = w1;
+   }
+   // */
+}
 /* ************************************************************************** */
 /* DATA section  */
 /* ************************************************************************** */

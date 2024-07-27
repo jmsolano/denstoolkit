@@ -159,5 +159,13 @@ bool StringTools::StartsWith(const string &line,const string &begword) {
    if ( n>line.size() ) { return false; }
    return line.substr(0,n)==begword;
 }
+void StringTools::ToUpper(string &line) {
+   size_t n=line.size();
+   for ( size_t i=0 ; i<n ; ++i ) { line[i]=std::toupper(line[i]); }
+}
+void StringTools::ToLower(string &line) {
+   size_t n=line.size();
+   for ( size_t i=0 ; i<n ; ++i ) { line[i]=std::tolower(line[i]); }
+}
 
 

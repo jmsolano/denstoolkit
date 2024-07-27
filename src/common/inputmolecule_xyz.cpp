@@ -68,6 +68,11 @@ void InputMoleculeXYZ::ReadFromFile(string fname) {
       imsetup=false;
       return;
    }
+   ReadFromFile(ifil);
+   ifil.close();
+   imsetup=true;
+}
+void InputMoleculeXYZ::ReadFromFile(ifstream &ifil) {
    string symb;
    std::getline(ifil,symb);
    int nat=std::stoi(symb);
@@ -85,8 +90,6 @@ void InputMoleculeXYZ::ReadFromFile(string fname) {
    } else {
       LoadCoordinatesSymbols(ifil,nat);
    } 
-   ifil.close();
-   imsetup=true;
 }
 void InputMoleculeXYZ::LoadCoordinatesNumbers(ifstream &ifil,int nat) {
    int kk;
