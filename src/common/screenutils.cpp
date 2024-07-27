@@ -193,9 +193,9 @@ void ScreenUtils::DisplayErrorMessage(const std::string &s) {
 void ScreenUtils::DisplayErrorMessage(const char* word) {
    DisplayErrorMessage(std::string(word));
 }
-void ScreenUtils::DisplayErrorFileNotOpen(const std::string &s) {
+void ScreenUtils::DisplayErrorFileNotOpen(const std::string &fname) {
    std::string msg="The file '";
-   msg+=s;
+   msg+=fname;
    msg+="' could not be opened!";
    DisplayErrorMessage(msg);
 }

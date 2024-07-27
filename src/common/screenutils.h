@@ -94,7 +94,7 @@ public:
    static void DisplayErrorMessage(const std::string &s);
    static void DisplayErrorMessage(const char* word);
    static void DisplayWarningMessage(const std::string &s);
-   static void DisplayErrorFileNotOpen(const std::string &s);
+   static void DisplayErrorFileNotOpen(const std::string &fname);
    static void DisplayErrorFileNotOpen(const char* word);
    static void DisplayWarningMessage(const char* word);
    static void DisplayGreenMessage(const std::string &s);
