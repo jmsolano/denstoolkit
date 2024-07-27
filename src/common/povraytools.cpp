@@ -206,8 +206,17 @@ void POVRayConfiguration::ApplyRotationMatrixToCameraAndLightSources(
       HelpersPOVRay::ApplyRotationMatrix(M,&lightSource[i][0]);
    }
 }
-void POVRayConfiguration::SelectStandardCameraVectors() {
-   locCam[0]=0.0e0; locCam[1]=0.0e0; locCam[2]=1.0e0;
+void POVRayConfiguration::SetupUsualLightSources(const double rv) {
+   lightSource[1][0]=rv;
+   lightSource[1][1]=rv;
+   lightSource[1][2]=1.0e0;
+   AddLightSource(0.0e0,0.0e0,rv);
+   AddLightSource(rv,-rv,1.0e0);
+   AddLightSource(-rv,rv,1.0e0);
+   AddLightSource(-rv,-rv,1.0e0);
+}
+void POVRayConfiguration::SelectStandardCameraVectors(const double zsep) {
+   locCam[0]=0.0e0; locCam[1]=0.0e0; locCam[2]=zsep;
    vecDir[0]=0.0e0; vecDir[1]=0.0e0; vecDir[2]=-1.0e0;
    vecUp[0]=0.0e0;  vecUp[1]=1.0e0;  vecUp[2]=0.0e0;
    vecRight[0]=4.0e0/3.0e0; vecRight[1]=0.0e0; vecRight[2]=0.0e0;
