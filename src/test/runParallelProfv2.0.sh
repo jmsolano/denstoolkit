@@ -1,10 +1,16 @@
 #!/bin/bash
 
 
+#####################################################################
 #set theNPts to the desired numver of evaluations.
+#####################################################################
+#
 theNPts=4096
-
-#Compile with the following steps:
+#
+#####################################################################
+#   READ THE FOLLOWING INSTRUCTIONS BEFOR RUNNING THIS SCRIPT.
+#####################################################################
+# Before runing this script, compile with the following steps:
 #   make fullclean
 #   make test_gausswavefunction.x
 #   mv test_gausswavefunction.x test_gausswavefunction01ncpu
@@ -13,6 +19,10 @@ theNPts=4096
 #   make SETDTKNPROC=NCPU test_gausswavefunction.x
 #   mv test_gausswavefunction.x test_gausswavefunctionNNncpu
 
+#After compilation, run the script with:
+# bash runParallelProfv2.0.sh
+#
+#####################################################################
 
 echo "./test_gausswavefunction01ncpu -v -N $theNPts > profile01cpu.log"
 ./test_gausswavefunction01ncpu -v -N $theNPts > profile01cpu.log
