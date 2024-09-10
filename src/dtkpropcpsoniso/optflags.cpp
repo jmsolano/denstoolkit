@@ -82,7 +82,7 @@ OptionFlags::OptionFlags() {
    setisovalue=0;
    refinemesh=0;
    isofromcube=0;
-   minangcap=0;
+   maxangcap=0;
    mkpov=kppov=mkpng=false;
    transparentiso=false;
    drawiso=true;
@@ -135,7 +135,7 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                i+=2;
                break;
             case 'd' :
-               flags.minangcap=(++i);
+               flags.maxangcap=(++i);
                if (i>=argc) {printErrorMsg(argv,'d');}
                break;
             case 'H' :

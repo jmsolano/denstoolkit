@@ -149,7 +149,8 @@ int main (int argc, char ** argv) {
       evprop='V';
       if ( options.setisovalue || options.isoprop || options.prop2eval ) {
          ScreenUtils::DisplayWarningMessage("Estimating pKa of a carboxilic acid, setting\n"
-               "isovalue rho=0.0120 a.u. and property evaluated at iso surf: MEP.");
+               "isovalue rho=0.0120 a.u. property evaluated at iso surf: MEP,\n"
+               "maximum degree aperture: 40 degrees.");
       }
    }
    if ( options.estimpkbaminesprim ) {
@@ -158,7 +159,8 @@ int main (int argc, char ** argv) {
       evprop='V';
       if ( options.setisovalue || options.isoprop || options.prop2eval ) {
          ScreenUtils::DisplayWarningMessage("Estimating pKb of a primary amine, setting\n"
-               "isovalue rho=0.0062 a.u. and property evaluated at iso surf: MEP.");
+               "isovalue rho=0.0062 a.u. and property evaluated at iso surf: MEP\n"
+               "maximum degree aperture: 40 degrees.");
       }
    }
    if ( options.estimpkbaminessec ) {
@@ -167,7 +169,8 @@ int main (int argc, char ** argv) {
       evprop='V';
       if ( options.setisovalue || options.isoprop || options.prop2eval ) {
          ScreenUtils::DisplayWarningMessage("Estimating pKb of a secondary amine, setting\n"
-               "isovalue rho=0.0108 a.u. and property evaluated at iso surf: MEP.");
+               "isovalue rho=0.0108 a.u. and property evaluated at iso surf: MEP,"
+               "maximum degree aperture: 40 degrees.");
       }
    }
    if ( options.estimpkbaminester ) {
@@ -176,7 +179,8 @@ int main (int argc, char ** argv) {
       evprop='V';
       if ( options.setisovalue || options.isoprop || options.prop2eval ) {
          ScreenUtils::DisplayWarningMessage("Estimating pKb of a tertiary amine, setting\n"
-               "isovalue rho=0.0113 a.u. and property evaluated at iso surf: MEP.");
+               "isovalue rho=0.0113 a.u. and property evaluated at iso surf: MEP,\n"
+               "maximum degree aperture: 40 degrees.");
       }
    }
    shared_ptr<MeshGrid> grid=HelpersPropCPsOnIso::BuildMesh(argc,\

@@ -542,21 +542,31 @@ shared_ptr<MeshGrid> HelpersPropCPsOnIso::BuildCapMesh(int argc,\
          ScreenUtils::DisplayWarningMessage("This level of refinement may cause numerical issues.");
       }
    }
+   double maxcang=75.0e0;
+   if ( opt.maxangcap ) { maxcang=std::stod(string(argv[opt.maxangcap])); }
    if ( opt.estimpkbaminesprim || opt.estimpkbaminessec || opt.estimpkbaminester ) {
       refCapMeshLevel=5;
       isoprop='d';
-      if ( opt.refinemesh || opt.setisovalue || opt.isoprop ) {
+      maxcang=40.0e0;
+      if ( opt.refinemesh || opt.setisovalue || opt.isoprop || opt.maxangcap ) {
          ScreenUtils::DisplayWarningMessage("Estimating pKb of an amine, setting\n"
-               "mesh refine level as 5.");
+               "mesh refine level as 5, cap max angle to 40.0.");
       }
    }
+   if ( opt.estimpkacarbac ) {
+      refCapMeshLevel=4;
+      isoprop='e';
+      maxcang=40.0e0;
+      if ( opt.refinemesh || opt.setisovalue || opt.isoprop || opt.maxangcap ) {
+         ScreenUtils::DisplayWarningMessage("Estimating pKa of a carboxilic acid, setting\n"
+               "mesh refine level as 4, cap max angle to 40.0.");
+      }
+   }
+   maxcang=cos(M_PI*maxcang/180.0e0);
    grid-> SetupSphereIcosahedron(refCapMeshLevel);
    grid->Translate(xc);
    grid->ScaleVertices(GetAtomicVDWRadius(bn.atNum[cAt]));
-   double mincang=75.0e0;
-   if ( opt.minangcap ) { mincang=std::stod(string(argv[opt.minangcap])); }
-   mincang=cos(M_PI*mincang/180.0e0);
-   grid->TrimFacesCentroidDotProdBetweenVals(xd,mincang,1.0);
+   grid->TrimFacesCentroidDotProdBetweenVals(xd,maxcang,1.0);
 
    /* Looking for partial isosurface  */
    cout << "Computing cap isosurface...\n";

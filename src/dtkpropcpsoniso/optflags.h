@@ -81,7 +81,7 @@ public:
    unsigned short int setisovalue;
    unsigned short int refinemesh;
    unsigned short int isofromcube;
-   unsigned short int minangcap;
+   unsigned short int maxangcap;
    bool estimpkbaminesprim,estimpkbaminessec,estimpkbaminester;
    bool estimpkacarbac;
    bool mkpov,kppov,mkpng;
