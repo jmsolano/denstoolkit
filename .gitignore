@@ -58,7 +58,7 @@ tex/dtkmanual/plots/*
 tex/dtkmanual/tmp/*
 tex/ejemplos/*
 tex/dtkmanual/snapshots/
-wavefiles/*
+wffiles/*
 arts/*
 src/dtkview/build
 wishlist/*
