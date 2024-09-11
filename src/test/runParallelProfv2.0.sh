@@ -13,7 +13,13 @@ theNPts=4096
 # Before runing this script, compile with the following steps:
 #   make fullclean
 #   make test_gausswavefunction.x
+#   make test_gausswavefunction.x
 #   mv test_gausswavefunction.x test_gausswavefunction01ncpu
+#   
+#Notice that for this test the first compilation must be executed twice.
+# If you already had run the script ../checkdependencies, then
+# the double initial compilation is not needed.
+#
 #Repeat with NCPU=2,4,6,8... (below, NN is NCPU padded with zeros):
 #   make fullclean
 #   make SETDTKNPROC=NCPU test_gausswavefunction.x
