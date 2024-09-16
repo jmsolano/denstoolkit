@@ -3,13 +3,13 @@
   
                     D  E  N  S  T  O  O  L  K  I  T
   
-                           VERSION: 1.6.0
+                           VERSION: 1.6.1
   
                Contributors: Juan Manuel Solano-Altamirano
                              Julio Manuel Hernandez-Perez
                              Luis Alfredo Nunez-Meneses
                              Santiago Alberto Flores Roman
-          Copyright (c) 2013-2022, Juan Manuel Solano-Altamirano
+          Copyright (c) 2013-2024, Juan Manuel Solano-Altamirano
                                    <jmsolanoalt@gmail.com>
   
    -------------------------------------------------------------------
@@ -57,8 +57,10 @@ public:
    /** DomainType is an enum that will be useful to identify internally
     * domains of integration. */
    enum class DomainType {UNDEFINED,CARTESIAN_INF,CUBOIDBOX,SPHERICAL_INT,\
-      DIATOMIC,CYLINDRICAL_INT,INFINITE_3D_2CAVITIES,\
-      SPHERE_1CAVITY_ZAL_AZSYM,SPHERE_2CAVITIES_ZAL_AZSYM};
+      DIATOMIC,CYLINDRICAL_INT,\
+      INFINITE_3D_2CAV_ZAL,INFINITE_3D_2CAV_ZAL_AZSYM,\
+      SPHERE_1CAV_ZAL,SPHERE_1CAV_ZAL_AZSYM,\
+      SPHERE_2CAV_ZAL,SPHERE_2CAV_ZAL_AZSYM};
    /** IntegratorType will be useful to identify internally the type
     * of integrator. */
    enum class IntegratorType {UNDEFINED,ANALYTICAL,MONTECARLO,\

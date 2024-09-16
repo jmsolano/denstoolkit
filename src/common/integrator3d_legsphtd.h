@@ -3,13 +3,13 @@
   
                     D  E  N  S  T  O  O  L  K  I  T
   
-                           VERSION: 1.6.0
+                           VERSION: 1.6.1
   
                Contributors: Juan Manuel Solano-Altamirano
                              Julio Manuel Hernandez-Perez
                              Luis Alfredo Nunez-Meneses
                              Santiago Alberto Flores Roman
-          Copyright (c) 2013-2022, Juan Manuel Solano-Altamirano
+          Copyright (c) 2013-2024, Juan Manuel Solano-Altamirano
                                    <jmsolanoalt@gmail.com>
   
    -------------------------------------------------------------------
@@ -65,6 +65,8 @@ public:
    /** Check Integrator3D description */
    void ComputeIntegral();
    /** Check Integrator3D description */
+   void GetWeightsAndAbscissas(vector<double> &uw,vector<vector<double> > &ux);
+   /** Check Integrator3D description */
    void DisplayProperties();
    /** Check Integrator3D description */
    void DisplayResults();
@@ -88,7 +90,6 @@ public:
     * @param[in]: sphtord the spherical t design order. */
    bool SetupCubature(const double a,const double b,\
          const int glord,const int sphtord);
-   void GetWeightsAndAbscissas(vector<double> &uw,vector<vector<double> > &ux);
 /* ************************************************************************** */
 protected:
 /* ************************************************************************** */

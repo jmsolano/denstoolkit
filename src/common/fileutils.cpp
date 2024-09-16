@@ -3,13 +3,13 @@
   
                     D  E  N  S  T  O  O  L  K  I  T
   
-                           VERSION: 1.6.0
+                           VERSION: 1.6.1
   
                Contributors: Juan Manuel Solano-Altamirano
                              Julio Manuel Hernandez-Perez
                              Luis Alfredo Nunez-Meneses
                              Santiago Alberto Flores Roman
-          Copyright (c) 2013-2022, Juan Manuel Solano-Altamirano
+          Copyright (c) 2013-2024, Juan Manuel Solano-Altamirano
                                    <jmsolanoalt@gmail.com>
   
    -------------------------------------------------------------------
@@ -196,6 +196,16 @@ void FileUtils::DiscardComments(ifstream &ifil) {
       }
    }
 }
+void FileUtils::DiscardEmptyLines(ifstream &ifil) {
+   std::string tl="";
+   int prevpos=ifil.tellg();
+   while (tl.length()==0) {
+      prevpos=ifil.tellg();
+      getline(ifil,tl);
+      if (ifil.eof()) {return;}
+   }
+   ifil.seekg(prevpos);
+}
 void FileUtils::ReadXYColumns(string fname,vector<double> &x,vector<double> &y,\
       int nx,int ny) {
    int nr=CountNumberOfNonCommentLines(fname);
@@ -270,7 +280,7 @@ vector<vector<double> > FileUtils::ReadDataMultiColumsFromFile(string fname,\
    //Reads the data
    for ( size_t i=0 ; i<rows ; ++i ) {
       for ( size_t j=0 ; j<cols ; ++j ) { ifil >> tmp[j]; }
-      if ( (tmp[colx-1]<= maxx) && (tmp[colx-1]>=minx) && (tmp[coly]<=maxy) && (tmp[coly]>=miny) ) {
+      if ( (tmp[colx-1]<= maxx) && (tmp[colx-1]>=minx) && (tmp[coly-1]<=maxy) && (tmp[coly-1]>=miny) ) {
          data.push_back(tmp);
       }
    }
@@ -340,9 +350,8 @@ void FileUtils::InsertAtEndOfFileName(string &orig,const string str2insrt) {
    orig.insert(pos,str2insrt);
 }
 bool FileUtils::ExtensionMatches(const string &fname,const string ext) {
-   size_t nExt=ext.size();
    size_t pos=fname.find_last_of('.')+1;
-   return (fname.substr(pos,nExt)==ext);
+   return (fname.substr(pos,fname.size()-pos)==ext);
 }
 void FileUtils::SaveMatrix(const string &fname,const vector<vector<double> > &mat,\
          const string &hdr,const bool scient,const char sep) {
@@ -367,6 +376,32 @@ void FileUtils::SaveMatrix(const string &fname,const vector<vector<double> > &ma
          ofil << mat[i][j] << sep;
       }
       ofil << mat[i][ncm1] << '\n';
+   }
+   ofil.close();
+}
+void FileUtils::SaveTwoColums(const string &fname,const vector<double> &x,\
+         const vector<double> &y,const string &hdr,const bool scient,const char sep) {
+   if ( x.size()<1 || y.size()<1 ) {
+      ScreenUtils::DisplayWarningMessage("Empty vector, nothing to save.");
+      cout << __FILE__ << ", line: " << __LINE__ << '\n';
+      return;
+   }
+   if ( x.size() != y.size() ) {
+      ScreenUtils::DisplayWarningMessage("Vector sizes do not match!");
+      cout << __FILE__ << ", line: " << __LINE__ << '\n';
+      return;
+   }
+   ofstream ofil(fname);
+   if ( !ofil.good() ) {
+      ScreenUtils::DisplayErrorFileNotOpen(fname);
+      cout << __FILE__ << ", line: " << __LINE__ << '\n';
+      ofil.close();
+      return;
+   }
+   if ( hdr.size()>0 ) { ofil << '#' << hdr << '\n'; }
+   if ( scient ) { ofil << scientific << setprecision(12); }
+   for ( size_t i=0 ; i<x.size() ; ++i ) {
+      ofil << x[i] << sep << y[i] << '\n';
    }
    ofil.close();
 }

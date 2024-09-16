@@ -3,13 +3,13 @@
   
                     D  E  N  S  T  O  O  L  K  I  T
   
-                           VERSION: 1.6.0
+                           VERSION: 1.6.1
   
                Contributors: Juan Manuel Solano-Altamirano
                              Julio Manuel Hernandez-Perez
                              Luis Alfredo Nunez-Meneses
                              Santiago Alberto Flores Roman
-          Copyright (c) 2013-2022, Juan Manuel Solano-Altamirano
+          Copyright (c) 2013-2024, Juan Manuel Solano-Altamirano
                                    <jmsolanoalt@gmail.com>
   
    -------------------------------------------------------------------

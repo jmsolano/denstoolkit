@@ -3,13 +3,13 @@
   
                     D  E  N  S  T  O  O  L  K  I  T
   
-                           VERSION: 1.6.0
+                           VERSION: 1.6.1
   
                Contributors: Juan Manuel Solano-Altamirano
                              Julio Manuel Hernandez-Perez
                              Luis Alfredo Nunez-Meneses
                              Santiago Alberto Flores Roman
-          Copyright (c) 2013-2022, Juan Manuel Solano-Altamirano
+          Copyright (c) 2013-2024, Juan Manuel Solano-Altamirano
                                    <jmsolanoalt@gmail.com>
   
    -------------------------------------------------------------------
@@ -69,6 +69,8 @@ public:
 /* ************************************************************************** */
    static void DiscardComments(ifstream &ifil);
 /* ************************************************************************** */
+   static void DiscardEmptyLines(ifstream &ifil);
+/* ************************************************************************** */
    /** Reads a single column of a file.  */
    static vector<double> ReadSingleColumn(const string &fname,int nocol=1);
    /** As the name suggests, reads two columns (from a dat file).
@@ -82,7 +84,7 @@ public:
     * The ranges are given as [minx,maxx] and [miny,maxy]
     * (square brackets here indicate closed sets).*/
    static vector<vector<double> > ReadDataMultiColumsFromFile(string fname,\
-         size_t colx=0,size_t coly=1,\
+         size_t colx=1,size_t coly=2,\
          double minx=-1.0e+50,double maxx=1.0e+50,\
          double miny=-1.0e+50,double maxy=1.0e+50);
 /* ************************************************************************** */
@@ -105,6 +107,16 @@ public:
     * prints a '#' character for the first line of hdr, however, if the hdr contains
     * newlines, the user must also include the respective '#' after each new line.  */
    static void SaveMatrix(const string &fname,const vector<vector<double> > &mat,\
+         const string &hdr="",const bool scient=true,const char sep=' ');
+   /** Writes two columns (two vectors) into the file named fname.
+    * sep is the character used for separating columns
+    * (i.e., for separating the matrix values on a row).
+    * scient is a boolean to write the data using scientific notation.
+    * hdr is a string that will be printed
+    * out at the beginning of the file if it is not empty. Warning: The function
+    * prints a '#' character for the first line of hdr, however, if the hdr contains
+    * newlines, the user must also include the respective '#' after each new line.  */
+   static void SaveTwoColums(const string &fname,const vector<double> &x,const vector<double> &y,\
          const string &hdr="",const bool scient=true,const char sep=' ');
 /* ************************************************************************** */
    static void ReplaceExtensionOfFileName(string &orig,const string thenewext);
