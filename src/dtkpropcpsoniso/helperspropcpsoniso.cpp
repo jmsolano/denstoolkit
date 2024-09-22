@@ -558,7 +558,7 @@ shared_ptr<MeshGrid> HelpersPropCPsOnIso::BuildCapMesh(int argc,\
       isoprop='e';
       maxcang=40.0e0;
       if ( opt.refinemesh || opt.setisovalue || opt.isoprop || opt.maxangcap ) {
-         ScreenUtils::DisplayWarningMessage("Estimating pKa of a carboxilic acid, setting\n"
+         ScreenUtils::DisplayWarningMessage("Estimating pKa of a carboxylic acid, setting\n"
                "mesh refine level as 4, cap max angle to 40.0.");
       }
    }
@@ -619,7 +619,7 @@ int HelpersPropCPsOnIso::FindClosestAtom(const BondNetWork &bn,const vector<doub
    }
    return pos;
 }
-void HelpersPropCPsOnIso::EstimatepKaCarboxilicAcid(vector<double> &vcp,vector<int> &sigcp) {
+void HelpersPropCPsOnIso::EstimatepKaCarboxylicAcid(vector<double> &vcp,vector<int> &sigcp) {
    size_t pos=string::npos;
    int count=0;
    for ( size_t i=0 ; i<sigcp.size() ; ++i ) {
@@ -636,7 +636,7 @@ void HelpersPropCPsOnIso::EstimatepKaCarboxilicAcid(vector<double> &vcp,vector<i
    }
    double pKa=27.505908e0-0.143900e0*vcp[pos]*627.5e0;
    cout << setprecision(5);
-   cout << "\nEstimated_pKa_carboxilic_acid: " << pKa << "\n\n";
+   cout << "\nEstimated_pKa_carboxylic_acid: " << pKa << "\n\n";
    return;
 }
 void HelpersPropCPsOnIso::EstimatepKbPrimaryAmine(vector<double> &vcp,vector<int> &sigcp) {
@@ -710,7 +710,7 @@ void HelpersPropCPsOnIso::RequestCitation(int argc,char *argv[],OptionFlags &opt
       ScreenUtils::DisplayGreenMessage(msg);
    }
    if ( opt.estimpkacarbac ) {
-      string msg="You are estimating the pKa of a carboxilic acid.\n"
+      string msg="You are estimating the pKa of a carboxylic acid.\n"
          "If you publish this estimation, please consider adding the following citations:\n\n";
       msg+=dtkcitations::dtk2015;
       msg+=string("\n\n");

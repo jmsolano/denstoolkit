@@ -148,7 +148,7 @@ int main (int argc, char ** argv) {
       isovalue=0.0120e0;
       evprop='V';
       if ( options.setisovalue || options.isoprop || options.prop2eval ) {
-         ScreenUtils::DisplayWarningMessage("Estimating pKa of a carboxilic acid, setting\n"
+         ScreenUtils::DisplayWarningMessage("Estimating pKa of a carboxylic acid, setting\n"
                "isovalue rho=0.0120 a.u. property evaluated at iso surf: MEP,\n"
                "maximum degree aperture: 40 degrees.");
       }
@@ -311,7 +311,7 @@ int main (int argc, char ** argv) {
       HelpersPropCPsOnIso::RequestCitation(argc,argv,options);
    }
    if ( options.estimpkacarbac ) {
-      HelpersPropCPsOnIso::EstimatepKaCarboxilicAcid(vcp,sigcp);
+      HelpersPropCPsOnIso::EstimatepKaCarboxylicAcid(vcp,sigcp);
       HelpersPropCPsOnIso::RequestCitation(argc,argv,options);
    }
 
