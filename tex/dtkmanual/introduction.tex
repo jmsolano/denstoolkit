@@ -170,10 +170,24 @@ by
 USERPOVCMD = pvengine.exe
 \end{lstlisting}
 (or ``\texttt{USERPOVCMD = pvengine64.exe}'').
+%
+\item Initial help for building the suite. Type:
+\begin{lstlisting}[language=bash]
+$make help
+\end{lstlisting}
+%
 \item Build the \DTK{} binaries:
 \begin{lstlisting}[language=bash]
 $make
 \end{lstlisting}
+If you are compiling the code in a multi-core system, you can compile in parallel (notice that
+this is  only for compiling, not for using the parallel version of \DTK), run (replace \texttt{4}
+by the number of processors of your server):
+%
+\begin{lstlisting}[language=bash]
+$make -j4
+\end{lstlisting}
+%
 \item Install the binaries into the \texttt{INSTALL\_PATH} directory
   \begin{lstlisting}[language=bash]
 $sudo make install
@@ -190,6 +204,17 @@ $make runtest
  You can review the sample output files in the directory\\
 \texttt{denstoolkit-YYYYMMDD-HHMM/outputs}
 \end{itemize}
+
+\section{Parallel version}
+
+If you will run \DTK{} on a multi-core system, you may want to compile the suite activating
+the parallel versions of the core functions (fields). This can be easily done by using the
+flag \texttt{SETDTKNPROC}. For instance, if you want \DTK{} to use 4 CPUs per
+calculation, compile the suit with:
+
+\begin{lstlisting}[language=bash]
+$make SETDTKNPROC=4 -j4
+\end{lstlisting}
 
 \section{Uninstalling \DTK}
 

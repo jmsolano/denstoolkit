@@ -1,0 +1,107 @@
+	dtkintegrate wf?name [option [value(s)]] ... [option [value(s)]]
+
+Where wf?name is the input wfx(wfn) name, and options can be:
+Where wf?name is the input wfx(wfn) name, and options can be:
+
+  -p prop   	Choose the property to be integrated. prop is a character,
+            	  which can be (d is the default value):
+         		d (Electron Density --Rho--)
+         		m (Electron Density --tildeRho-- in Momentum Space)
+         		l (Laplacian of Electron Density)
+         		E (Electron Localization Function --ELF--)
+         		S (Shannon-Entropy Density)
+         		T (Shannon-Entropy Density in Momentum Space)
+         		g (Magnitude of the Gradient of the Electron Density)
+         		L (Localized Orbital Locator --LOL--)
+         		G (Kinetic Energy Density G)
+         		K (Kinetic Energy Density K)
+         		e (Ellipticity)
+         		k (Kinetic Energy Density K in Momentum Space)
+         		M (Magnitude of the Gradrient of LOL)
+         		V (Molecular Electrostatic Potential)
+         		P (Magnitude of Localized Electrons Detector)
+         		s (Reduced Density Gradient --s--)
+         		r (Region of Slow Electrons --RoSE--)
+         		v (Virial Potential Energy Density)
+         		D (Density Overlap Regions Indicator --DORI--)
+         		b (Spin density)
+         		q (One electron disequilibrium --Rho squared--)
+         		Q (One electron disequilibrium in momentum space --tildeRho squared--)
+         		u (Scalar Custom Field)
+  -b L U    	Set the integration domain to be a cube, whose
+            	  left,lower,back corner is (L,L,L) and right,upper,front corner
+            	  is (U,U,U). Setting L=U=0 instruct the program to
+            	  set the boundaries automatically.
+  -i t      	Set the integrator type to be t. Here, t is a char of the following list:
+            		v Vegas-Monte Carlo
+            		m Miser-Monte Carlo
+            		s Gauss-Legendre-Spherical-t design cubature.
+            		    Warning: this only works for single atoms when the field's
+            		    domain is real space, or for any molecule if the field's
+            		    domain is momentum space.
+  -J        	Setup alpha- and beta-spin density matrices.
+  -o outname 	Set the output file name.
+             	  (If not given, the program will create one out of
+             	  the input name; if given, the gnp file and the pdf will
+             	  use this name as well --but different extension--).
+  -V         	Display the version of this program.
+  -h         	Display the help menu.
+
+  --help    		Same as -h
+  --version 		Same as -V
+--------------------------------------------------------------------------------
+               Specific options for Vegas-Monte Carlo integrator.
+--------------------------------------------------------------------------------
+  --vegas-interv  N  	Set the number of intervals to be N. N is the number of
+                     	  subregions (intervals) to which the original domain is
+                     	  divided. Default: N=10.
+  --vegas-npts NMCP  	Set the number of MC-points to sample per iteration
+                     	  to be NMCP. Default: NMCP=10,000.
+  --vegas-iter I     	Set the maximum number of iterations to be I.
+                     	  Default: I=20.
+  --vegas-conv-rat A 	Set the damping parameter to be A.
+                     	  Default: A=1.0.
+  --vegas-therm T    	Set the first T iterations to be ignored for computing
+                     	  the expected integral. Default value: T=0.
+  --vegas-tol tol    	Set the tolerance for considering an optimal grid to be
+                     	  tol. Default value: tol=0.0.
+  --vegas-stop-ref X 	Set the num. of iterations where the grid will be
+                     	  refined. Usually, X is not defined.
+  --vegas-searchmax N	Use N sample points to find the global maximum of prop.
+                     	  This option is applied only momentum space functions.
+                     	  Default: N=1,000,000.
+--------------------------------------------------------------------------------
+               Specific options for Miser-Monte Carlo integrator.
+--------------------------------------------------------------------------------
+  --miser-npts NMCP  	Set the number of MC-points to sample per iteration
+                     	  to be NMCP. Default: NMCP=500,000.
+  --miser-dith d     	Set dith=d. Default: d=0.05.
+--------------------------------------------------------------------------------
+      Specific options for Gauss-Legendre-Spherical-t Cubature integrator.
+--------------------------------------------------------------------------------
+  --lsptd-ol OGL     	Use OLG order for the Gauss-Legendre terms (radial,
+                     	   default: 64).
+                     	  Options: 2, ... , 1024
+  --lsptd-os OSTD    	Use OSTD order for the Sperical-t design terms (angular,
+                     	   default: 21).
+                     	  Options: 3,5,7,9,11,13,15,17,19,21,31,39,45,55,63,71,77,89,101,111
+--------------------------------------------------------------------------------
+                     Specific options for diatomic systems.
+--------------------------------------------------------------------------------
+         Cubatures for diatomic systems are built using Nr (Na) points
+       for the radial (angular) part (see dtkmanual for specific details)
+            For 3D integrals, the number of abscissas is (3*Na*Nr).
+        For 6D integrals, the number of abscissas is (9*Na*Na*Nr*Nr/16).
+        Since the most expensive computation is related to 6D integrals,
+           In this version, only Nr and Na can be altered and must be
+           even. If an odd number is provided, DTK will guess a close
+                                  even number.
+  --diatomic-rord Nr 	Use Nr points for the radial part of the cubatures.
+                     	  This option applies to diatomic systems, Default: Nr=32.
+                     	  Nr is the number of points used for the radial part (see above).
+                     	  Options: 2, ... , 1024
+  --diatomic-aord Na 	Use Na points for the angular part of the cubatures.
+                     	  This option applies to diatomic systems, Default: Na=32.
+                     	  Na is the number of points used for the angular part (see above).
+                     	  Options: 2, ... , 1024
+--------------------------------------------------------------------------------

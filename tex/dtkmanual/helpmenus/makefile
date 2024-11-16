@@ -3,9 +3,10 @@ TOP_DIR=../../..
 
 all: helpmenus codecps
 
-DTKBINS= dtkbpdens dtkcube dtkdemat1 dtkfindcp\
-			dtkline dtkmomd dtknci dtkplane\
-			dtkpoint dtkpropcpsoniso dtkqdmol
+DTKBINS= dtkbpdens dtkcube dtkdrawer \
+			dtkfindcp dtkintegrate dtkline dtkmapfieldonisosurf \
+		  	dtkmomd dtkplane dtkpoint dtkproject6dto2d \
+			dtkpropcpsoniso dtkqdmol
 
 DTKSCRIPTS= dtkeps2pdf dtkpov2png dtkgetnciplot
 

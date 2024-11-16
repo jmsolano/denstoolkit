@@ -11,6 +11,7 @@ Where wf?name is the input wfx(wfn) name, and options can be:
             	  Note: if the *.wfn (*.wfx) file has only one or two atoms
             	  this option must not be used. The program will define
             	  a plane which includes that(those) one(two) atom(s).
+  -J        	Setup alpha- and beta-spin density matrices.
   -n  dim   	Set the number of points for the tsv file per direction.
             	  The tsv will have the dimensions dim x dim.
   -o outname	Set the output file name.
@@ -19,25 +20,28 @@ Where wf?name is the input wfx(wfn) name, and options can be:
             	  use this name as well --but different extension--).
   -p prop	Choose the property to be computed. prop is a character,
          	  which can be (d is the default value): 
-         		d (Density)
-         		g (Magnitude of the Gradient of the Density)
-         		l (Laplacian of density)
+         		d (Electron Density --Rho--)
+         		g (Magnitude of the Gradient of the Electron Density)
+         		l (Laplacian of Electron Density)
          		K (Kinetic Energy Density K)
          		G (Kinetic Energy Density G)
          		e (Ellipticity)
-         		E (Electron Localization Function -ELF-)
-         		L (Localized Orbital Locator -LOL-)
-         		M (Magnitude of the Gradient of LOL)
+         		E (Electron Localization Function --ELF--)
+         		L (Localized Orbital Locator --LOL--)
+         		M (Magnitude of the Gradrient of LOL)
          		N (Gradient of LOL)
-         		p (Localized Electrons Detector -LED-)
-         		P (Magnitued of Localized Electrons Detector)
-         		r (Region of Slow Electrons -RoSE-)
-         		s (Reduced Density Gradient -s-)
-         		S (Shannon Entropy Density)
-         		u (Scalar Custom Field)
-         		U (Vector Custom Field)
+         		p (Localized Electrons Detector --LED--)
+         		P (Magnitude of Localized Electrons Detector)
+         		r (Region of Slow Electrons --RoSE--)
+         		s (Reduced Density Gradient --s--)
+         		S (Shannon-Entropy Density)
          		V (Molecular Electrostatic Potential)
          		v (Virial Potential Energy Density)
+         		D (Density Overlap Regions Indicator --DORI--)
+         		b (Spin density)
+         		q (One electron disequilibrium --Rho squared--)
+         		u (Scalar Custom Field)
+         		U (Vector Custom Field)
   -P     	Create a plot using gnuplot.
   -c     	Show contour lines in the plot.
   -k     	Keeps the *.gnp file to be used later by gnuplot.

@@ -131,7 +131,7 @@ $dtk*** /arbitrary/path/input.wfx -o /other/path/othername ...
 $dtk*** ... -P
 		\end{lstlisting}
 	   The programs that produce scripts (and internal callings) are: \texttt{dtkline}, \texttt{dtkplane},
-	   \texttt{dtkfindcp}, \texttt{dtkmomd}, \texttt{dtkdemat1}, \texttt{dtkbpdens},
+	   \texttt{dtkfindcp}, \texttt{dtkmomd}, \texttt{dtkproject6dto2d}, \texttt{dtkbpdens},
 	   \texttt{dtkqdmol}, \texttt{dtkgetnciplot}, and \texttt{dtknci}.
    \item \textbf{Compressing data:} Some programs have the option to call \texttt{gzip}.
    	If this option is available, it can be activated with the following command line:
@@ -693,17 +693,18 @@ This program evaluates the electron momentum density (EMD), \textit{i.e.,} the F
 
 
 %----------------------------------------------------------------------------------------------
-\section{dtkdemat1}
+\section{dtkproject6dto2d}
 %----------------------------------------------------------------------------------------------
 
-This program evaluates the density matrix of order 1 (DM1) along a line, which can be the line that joins two atoms, or the bond path that connects those two ACPs. In this version, only the electron density bond path can be selected. 
+This program was previously named \texttt{dtkdemat1}, which evaluated the density matrix of order 1 (DM1) along a line, which can be the line that joins two atoms, or the bond path that connects those two ACPs. In this version, we have extended the functionality so as to include 6D fields projected along a line.
+The new program keeps the capabilities of \texttt{dtkdemat1}, but in addition, other 6D fields can be requested. 
 
-\texttt{dtkdemat1} can be called, for example, by\\
+\texttt{dtkproject6dto2d} can be called, for example, by\\
 \begin{lstlisting}
-$dtkdemat1 ciclopropano_pbe6311.wfx -P -l -c -s 0.02
+$dtkproject6dto2d ciclopropano_pbe6311.wfx -P -l -c -s 0.02
 \end{lstlisting}
 
-The above command was used for evaluating the data shown in Fig. \ref{fig:dtkdemat1usex}. The output of the program consists of four files. The data for generating the three-dimensional and two-dimensional plots is saved in a \texttt{tsv} file. The data for the main and secondary diagonal (white solid and dashed line of figure \ref{fig:md12d}) are saved in two \texttt{dat} files. In addition, a \texttt{log} file is created, where some information about the position of the critical point (or the minimum of the ED) is located, etc.
+The above command was used for evaluating the data shown in Fig. \ref{fig:dtkproject6dto2dusex}. The output of the program consists of four files. The data for generating the three-dimensional and two-dimensional plots is saved in a \texttt{tsv} file. The data for the main and secondary diagonal (white solid and dashed line of figure \ref{fig:md12d}) are saved in two \texttt{dat} files. In addition, a \texttt{log} file is created, where some information about the position of the critical point (or the minimum of the ED) is located, etc.
 %
 \begin{figure}[hb!]
 \centering
@@ -711,26 +712,26 @@ The above command was used for evaluating the data shown in Fig. \ref{fig:dtkdem
 \subfigure[DM1 (2D)]{\includegraphics[width=0.35\textwidth]{cyclopropaneBPDM1-C1-C2-2D}\label{fig:md12d}}\\
 \subfigure[DM1 (1D1) along the main diagonal (white solid line in \subref{fig:md12d}).]{\includegraphics[width=0.4\textwidth]{cyclopropaneBPDM1-C1-C2-1D1}\label{fig:md11d1}}\quad
 \subfigure[DM1 (1D2) along the secondary diagonal (white dashed line in \subref{fig:md12d}).]{\includegraphics[width=0.4\textwidth]{cyclopropaneBPDM1-C1-C2-1D2}\label{fig:md11d2}}\\
-\caption{Evaluating the density matrix of order 1 with \texttt{dtkdemat1}.}\label{fig:dtkdemat1usex}
+\caption{Evaluating the density matrix of order 1 with \texttt{dtkproject6dto2d}.}\label{fig:dtkproject6dto2dusex}
 \end{figure}
 %
 
 As usual, the option \texttt{-P} requests the creation of plots. This program generates four of them. The names of the plots use the input wave function file name, adds the characters \texttt{BP} (if the bond path is selected), or \texttt{SL} if the straight line that joins two atoms (specified with the option \texttt{-a $\mathtt{a}_1$ $\mathtt{a}_2$}, see below), the labels of the selected atoms, and two or three characters to indicate the specific data displayed in the plot. The DM1 information is displayed as a surface (its name ends with \texttt{3D}), as a heat map (whose name ends with \texttt{2D}), and two simple plots that contains the DM1 values at the main diagonal (solid white line in Figure \ref{fig:md12d}, and whose name ends with \texttt{1D1}) and at the secondary diagonal (dashed white line in Figure \ref{fig:md12d}, and whose name ends with \texttt{1D2}).
 
-The option \texttt{-l} makes \texttt{dtkdemat1} to draw the labels of the atoms for the two dimensional and one-dimensional plots, while the option \texttt{-c} draws the contour lines as shown, for example, in Figure \ref{fig:md12d}.
+The option \texttt{-l} makes \texttt{dtkproject6dto2d} to draw the labels of the atoms for the two dimensional and one-dimensional plots, while the option \texttt{-c} draws the contour lines as shown, for example, in Figure \ref{fig:md12d}.
 
-By default, \texttt{dtkdemat1} uses the first and second atoms of the \texttt{wfx/wfn} file. For selecting different atoms, you should use the option \texttt{-a $\mathtt{a}_1$ $\mathtt{a}_2$}, where \texttt{a}$_1$, and \texttt{a}$_2$ are the desired atoms.
+By default, \texttt{dtkproject6dto2d} uses the first and second atoms of the \texttt{wfx/wfn} file. For selecting different atoms, you should use the option \texttt{-a $\mathtt{a}_1$ $\mathtt{a}_2$}, where \texttt{a}$_1$, and \texttt{a}$_2$ are the desired atoms.
 
 As well, by default, the program will calculate the bond path between the atoms, and then use this curve to evaluate the DM1. However, in some cases is needed to evaluate the DM1 along the straight line that joins the atoms, which can be requested with the switch \texttt{-L}.
 
-For increasing the number of points within the bond path line, you may want to look for a combination of the option \texttt{-s step} and \texttt{-n dim}. Here \texttt{step} orders \texttt{dtkdemat1} to use the step \texttt{step} for the searching of the bond path (this is the step used in the Runge-Kutta integrator), while \texttt{dim} is the dimension of an array that contains the maximum number of points contained in the bond path. By default, \texttt{dtkdemat1} sets \texttt{step=0.03}, and \texttt{dim=200}. When requesting to evaluate DM1 over the line that joins the atoms, \texttt{step} is no longer significant, rather the line will contain \texttt{dim} points. 
+For increasing the number of points within the bond path line, you may want to look for a combination of the option \texttt{-s step} and \texttt{-n dim}. Here \texttt{step} orders \texttt{dtkproject6dto2d} to use the step \texttt{step} for the searching of the bond path (this is the step used in the Runge-Kutta integrator), while \texttt{dim} is the dimension of an array that contains the maximum number of points contained in the bond path. By default, \texttt{dtkproject6dto2d} sets \texttt{step=0.03}, and \texttt{dim=200}. When requesting to evaluate DM1 over the line that joins the atoms, \texttt{step} is no longer significant, rather the line will contain \texttt{dim} points. 
 
 
 \rule{\textwidth}{1pt}
-{\center\texttt{dtkdemat1} help menu.\\}
+{\center\texttt{dtkproject6dto2d} help menu.\\}
 \rule{\textwidth}{1pt}
 \begin{footnotesize}
-\VerbatimInput{hmdtkdemat1.tex}
+\VerbatimInput{hmdtkproject6dto2d.tex}
 \end{footnotesize}
 \rule{\textwidth}{1pt}
 
@@ -742,8 +743,8 @@ This program seeks the bond path between two atoms and then evaluates the reques
 
 The data for producing Figure \ref{fig:dtkbpdensusex} was obtained by typing the two following commands.
 \begin{lstlisting}
-$dtkbpdens ciclopropano\_pbe6311.wfx -P -l -s 0.02 -p M
-$dtkbpdens ciclopropano\_pbe6311.wfx -P -l -n 200 -p M -L
+$dtkbpdens ciclopropano_pbe6311.wfx -P -l -s 0.02 -p M
+$dtkbpdens ciclopropano_pbe6311.wfx -P -l -n 200 -p M -L
 \end{lstlisting}
 %
 \begin{figure}[ht!]
@@ -814,7 +815,7 @@ To close the interactive window, select it (if it is not active), and press any 
 \rule{\textwidth}{1pt}
 
 %----------------------------------------------------------------------------------------------
-\section{\label{sec:dtknci}dtknci}
+\section{\label{sec:dtkmapfieldonisosurf}dtkmapfieldonisosurf}
 %----------------------------------------------------------------------------------------------
 
 The Non-Covalent Interaction (NCI) index consists of visualising isosurfaces of the
@@ -839,7 +840,7 @@ $dtkgetnciplot -w h2oh2o.wfx -S 80
 	\item From the $s$ \textit{vs} $\rho$ plot, select the cut-off values for $\rho$ and $s$. In this case,
 	the values were chosen as $s=0.5$, and  $-0.02\leq\Lambda_w\leq0.2$. This can be done with the command:
 	\begin{lstlisting}
-$dtknci.x h2oh2o.wfx -P -k -S 200 -I 0.5 -A 0 0 0 -l moreland
+$dtkproject6dto2d h2oh2o.wfx -P -k -S 200 -I 0.5 -A 0 0 0 -l moreland --nci
 	\end{lstlisting}
 \end{enumerate}
 %
@@ -867,12 +868,17 @@ There are several colour schemes implemented in the current version,
 which were generated from the data found in:\\
 \url{https://github.com/Gnuplotting/gnuplot-palettes}.
 
+In addition to the NCI plots, \texttt{dtkmapfieldonisosurf} can produce color maps of
+any of the implemented fields over isosurfaces of any of the implemented fields. NCI is 
+a specialized plot, so as it is DORI, but the user is not restricted to these
+maps on isosurfaces of $\rho$.
+
 
 \rule{\textwidth}{1pt}
-{\center\texttt{dtknci} help menu.\\}
+{\center\texttt{dtkmapfieldonisosurf} help menu.\\}
 \rule{\textwidth}{1pt}
 \begin{footnotesize}
-\VerbatimInput{hmdtknci.tex}
+\VerbatimInput{hmdtkmapfieldonisosurf.tex}
 \end{footnotesize}
 \rule{\textwidth}{1pt}
 
@@ -980,6 +986,59 @@ Some of the contents of the \texttt{ccl2hMEPCPsOnRhoIso.log} file is:
 \rule{\textwidth}{1pt}
 \begin{footnotesize}
 \VerbatimInput{hmdtkpropcpsoniso.tex}
+\end{footnotesize}
+\rule{\textwidth}{1pt}
+
+%----------------------------------------------------------------------------------------------
+\section{\label{sec:dtkdrawer}dtkdrawer}
+%----------------------------------------------------------------------------------------------
+
+This program is useful to draw molecules starting from the raw \texttt{wf?} file.
+It is particularly useful to draw series of molecules without the need of opening
+graphical user interfaces.
+
+In addition to \texttt{wf?} files, \texttt{dtkdrawer} can draw molecules parsed in
+\texttt{xyz} format, and the native \texttt{cpx} format, which is produced by
+\texttt{dtkfindcp}.
+
+The program will produce a \texttt{povray} file, and optionally it can call povray to
+render the images.
+
+Perhaps, the most interesting option is related to how the molecule is oriented (rotated)
+to improve the visualization. For this, you can request to \texttt{drtkdrawer} to use
+three atoms to align the molecule. The first two indicate how to orient the down to up
+direction, and the third atom indicates how to orient the top (directed away from the screen).
+This feature us particularly useful if you are analyzing a reaction path, as you can fix
+the orientation of the complete set of intermediary molecules, in an automatic and
+script-style fashion.
+
+%\newpage
+\rule{\textwidth}{1pt}
+{\center\texttt{dtkdrawer} help menu.\\}
+\rule{\textwidth}{1pt}
+\begin{footnotesize}
+\VerbatimInput{hmdtkdrawer.tex}
+\end{footnotesize}
+\rule{\textwidth}{1pt}
+
+%----------------------------------------------------------------------------------------------
+\section{\label{sec:dtkintegrate}dtkintegrate}
+%----------------------------------------------------------------------------------------------
+
+This program computes the integral of any of the implemente 3D fields. In this version,
+we provide highly accurate numerical schemes to integrate monoatomic and diatomic systems.
+For polyatomic molecules, we provide the Monte Carlo integration method, specifically the
+variants Vegas and Miser.
+
+The monoatomic and diatomic integration schemes can provide integrals with relative errors
+$< 10^{-7}$ a.u. in functions such as the electron density.
+
+%\newpage
+\rule{\textwidth}{1pt}
+{\center\texttt{dtkintegrate} help menu.\\}
+\rule{\textwidth}{1pt}
+\begin{footnotesize}
+\VerbatimInput{hmdtkintegrate.tex}
 \end{footnotesize}
 \rule{\textwidth}{1pt}
 

@@ -1,0 +1,21 @@
+	dtkcharcicp wf?name [option [value(s)]] ... [option [value(s)]]
+
+Where wf?name is the input wfx(wfn) name, and options can be:
+Where wf?name is the input wfx(wfn) name, and options can be:
+
+  -a a1 a2  	Selects atoms a1 and a2. The topological analysis of the
+            	  density matrix of order 1 will be carried out upon
+            	  the bond path that joins these two atoms (if it exists).
+  -J        	Setup alpha- and beta-spin density matrices.
+  -o outname	Set the output file name (*.log).
+            	  (If not given the program will create one out of
+            	  the input name; if given, the pov file will
+            	  use this name as well --but different extension--).
+  -v     	Verbose mode (displays additional information (for example the 
+         	  output of povray, etc.
+  -V        	Display the version of this program.
+  -h		Display the help menu.
+
+  --help    		Same as -h
+  --version 		Same as -V
+********************************************************************************

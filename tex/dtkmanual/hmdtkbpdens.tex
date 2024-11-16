@@ -12,6 +12,7 @@ Where wf?name is the input wfx(wfn) name, and options can be:
             	  set a1=1, a2=2.
             	  Note: if the *.wfn (*.wfx) file has only one atom
             	  the program will exit and no output will be generated.
+  -J        	Setup alpha- and beta-spin density matrices.
   -L        	Calculate the field upon the straight line that joins the atoms
             	  instead of upon the bond path.
   -n  dim   	Set the number of points for the dat file.
@@ -25,21 +26,25 @@ Where wf?name is the input wfx(wfn) name, and options can be:
             	  use this name as well --but different extension--).
   -p prop   	Choose the property to be computed. prop is a character,
             	  which can be (d is the default value): 
-            		d (Density)
-            		g (Magnitude of the Gradient of the Density)
-            		l (Laplacian of density)
-            		K (Kinetic Energy Density K)
-            		G (Kinetic Energy Density G)
-            		e (Ellipticity)
-            		E (Electron Localization Function -ELF-)
-            		L (Localized Orbital Locator -LOL-)
-            		M (Magnitude of the Gradient of LOL)
-            		P (Magnitude of Localized Electrons Detector -LED-)
-            		r (Region of Slow Electrons -RoSE-)
-            		s (Reduced Density Gradient -s-)
-            		S (Shannon Entropy Density)
-            		V (Molecular Electrostatic Potential)
-            		u (Scalar Custom Field)
+         		d (Electron Density --Rho--)
+         		g (Magnitude of the Gradient of the Electron Density)
+         		l (Laplacian of Electron Density)
+         		K (Kinetic Energy Density K)
+         		G (Kinetic Energy Density G)
+         		e (Ellipticity)
+         		E (Electron Localization Function --ELF--)
+         		L (Localized Orbital Locator --LOL--)
+         		M (Magnitude of the Gradrient of LOL)
+         		P (Magnitude of Localized Electrons Detector)
+         		r (Region of Slow Electrons --RoSE--)
+         		s (Reduced Density Gradient --s--)
+         		S (Shannon-Entropy Density)
+         		V (Molecular Electrostatic Potential)
+         		v (Virial Potential Energy Density)
+         		D (Density Overlap Regions Indicator --DORI--)
+         		b (Spin density)
+         		q (One electron disequilibrium --Rho squared--)
+         		u (Scalar Custom Field)
   -s step   	Set the stepsize for the bond path to be 'step'.
             	  Default value: 0.03
 

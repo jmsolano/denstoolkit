@@ -12,9 +12,15 @@ Options
   -w wf?name   Sets the wavefunction name to be 'wf?name' (wfxname/wfnname)
   -c "a1 a2"     Centres the cube to be at the midpoint between atoms a1 and
                  a2. Please mind the quotes to set a1 and a2.
-  -f           Forces to re-compute the cubes without asking. This option
-                 rewrites previously present cubes.
-  -l        	Writes cpu time, input/output information etc. on a log file
+  -P           Plot again the figures without re-computing cubes.
+                 The option forces to skip cubes calculation without asking.
+  -l palname   Select the palette to draw the plot s vs Lambda_2. The
+                 following palettes are available (default palname=defgnp):
+                   defgnu (a default palette using rgbformulae), magma,
+                   oranges, rdbu, viridis
+                   You may get other palettes from:
+                      https://github.com/Gnuplotting/gnuplot-palettes
+  -L        	Writes cpu time, input/output information etc. on a log file
   -n  dim   	Sets the number of points per direction for the cube
             	  to be dim x dim x dim.
   -s        	Uses a smart cuboid for the grid. The number of points for the

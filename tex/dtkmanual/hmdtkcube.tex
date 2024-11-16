@@ -5,6 +5,7 @@ Usage:
 Where wf?name is the input wfx(wfn) name, and options can be:
 Where wf?name is the input wfx(wfn) name, and options can be:
 
+  -J        	Setup alpha- and beta-spin density matrices.
   -l        	Writes cpu time, input/output information etc. on a log file
   -n  dim   	Sets the number of points per direction for the cube
             	  to be dim x dim x dim.
@@ -19,24 +20,28 @@ Where wf?name is the input wfx(wfn) name, and options can be:
   -c a1 a2  	Uses a cube centred at the midpoint of the atoms a1 and a2.
   -p prop	Chooses the property to be computed. prop is a character,
          	  which can be (d is the default value): 
-         		d (Density)
-         		g (Magnitude of the Gradient of the Density)
-         		l (Laplacian of density)
+         		d (Electron Density --Rho--)
+         		g (Magnitude of the Gradient of the Electron Density)
+         		l (Laplacian of Electron Density)
          		K (Kinetic Energy Density K)
          		G (Kinetic Energy Density G)
          		e (Ellipticity)
-         		E (Electron Localization Function -ELF-)
-         		L (Localized Orbital Locator -LOL-)
-         		M (Magnitude of the gradient of LOL)
-         		P (Magnitude of Localized Electrons Detector -LED-)
-         		r (Region of Slow electrons -RoSE-)
-         		s (Reduced Density Gradient -s-)
-         		S (Shannon Entropy Density)
+         		E (Electron Localization Function --ELF--)
+         		L (Localized Orbital Locator --LOL--)
+         		M (Magnitude of the Gradrient of LOL)
+         		P (Magnitude of Localized Electrons Detector)
+         		r (Region of Slow Electrons --RoSE--)
+         		s (Reduced Density Gradient --s--)
+         		S (Shannon-Entropy Density)
          		V (Molecular Electrostatic Potential)
+         		D (Density Overlap Regions Indicator --DORI--)
+         		b (Spin density)
+         		q (One electron disequilibrium --Rho squared--)
          		u (Scalar Custom Field)
+         		U (Vector Custom Field)
          		v (Virial Potential Energy Density)
-         		Z (Non Covalent Interactions(NCI) -- s)
-         		z (Non Covalent Interactions(NCI) -- Rho)
+         		z (Non Covalent Interactions - Reduced Density Gradient)
+         		Z (Non Covalent Interactions - Density)
   -P     	Generates a VMD script to render the field. Notice: this requires VMD and the internal
          	  Tachyon render (usually it is included automatically in VMD) to be installed
          	  in your system. The VMD script should run with 'vmd -e filename.vmd'
@@ -51,5 +56,8 @@ Where wf?name is the input wfx(wfn) name, and options can be:
              		  This option only affects NCI cubes (see properties z and
              		  Z in "-p" option. Default values: rhoMin=0.0005,
              		  rhoMax= 0.065, and redGradMax= 2
+  --set-extra-space X 	Set the space around the most-external atoms to be X a.u.
+             		  By default, the cube is computed within a grid that includes
+             		  all atoms, plus an extra space of X=1 a.u.
   --help    		Same as -h
   --version 		Same as -V

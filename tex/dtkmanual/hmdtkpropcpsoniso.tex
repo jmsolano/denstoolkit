@@ -1,6 +1,6 @@
-                         Compilation date: Nov 19 2020
+                         Compilation date: Nov  1 2024
 
-                                 Version: 1.2.0
+                                 Version: 1.6.3
 
                          :-) Created by: JMSA/JMHP (-:
 
@@ -19,7 +19,10 @@ Where wf?name is the input wfx(wfn) name, and options can be:
   -A aX aY aZ	Sets the view angles to be aX, aY, and aZ.
   -c cAtNum 	Sets the atom cAtNum to be the center around which the
             	  cap isosurface is computed.
+  -d ang    	Set maximum degree aperture around the direction of the cap
+            	  to be ang. Default: d=75.
   -H        	Hides the isosurface in png image (pov file).
+  -J        	Setup alpha- and beta-spin density matrices.
   -k        	Keeps the pov-ray script (see also option P, below).
   -l dAtNum 	Sets the direction point to be the coordinates of atom
             	  dAtNum. See the scheme at the end of this help menu.
@@ -33,22 +36,33 @@ Where wf?name is the input wfx(wfn) name, and options can be:
   -p prop   	Sets the property evaluated at the isosurface to be
             	  prop, which is a char that can be any of the listed
             	  fields enumerated below for option -I.
+            	  (This option is included for future implementations,
+            	  and in this version, only MEP[V] is implemented).
   -I prop v 	Sets the field to compute the isosurface to be prop,
             	  and the isosurface value to be v. prop is a char,
-            	  which can be (this is valid for options -I and -p):
-         		d (Density)
-         		g (Magnitude of the Gradient of the Density)
-         		l (Laplacian of density)
+            	  which can be (this is valid for options -I and -p)
+            	  (This option is included for future implementations,
+            	  and in this version, only rho[d] is implemented,
+            	  and by default the isovalue is v=0.001.)
+         		d (Electron Density --Rho--)
+         		g (Magnitude of the Gradient of the Electron Density)
+         		l (Laplacian of Electron Density)
          		K (Kinetic Energy Density K)
          		G (Kinetic Energy Density G)
-         		E (Electron Localization Function -ELF-)
-         		L (Localized Orbital Locator -LOL-)
-         		M (Magnitude of the Gradient of LOL)
-         		P (Magnitude of the Localized Electrons Detector -LED-)
-         		r (Region of Slower Electrons -RoSE-)
-         		s (Reduced Density Gradient -s-)
-         		S (Shannon Entropy Density)
+         		e (Ellipticity)
+         		E (Electron Localization Function --ELF--)
+         		L (Localized Orbital Locator --LOL--)
+         		M (Magnitude of the Gradrient of LOL)
+         		P (Magnitude of Localized Electrons Detector)
+         		r (Region of Slow Electrons --RoSE--)
+         		s (Reduced Density Gradient --s--)
+         		S (Shannon-Entropy Density)
          		V (Molecular Electrostatic Potential)
+         		v (Virial Potential Energy Density)
+         		D (Density Overlap Regions Indicator --DORI--)
+         		b (Spin density)
+         		q (One electron disequilibrium --Rho squared--)
+         		u (Scalar Custom Field)
   -o basename	Set the base name for the output files to be basename.
             	  (If not given the program will use the wf?name as the
             	  the base name.)
@@ -67,12 +81,20 @@ Where wf?name is the input wfx(wfn) name, and options can be:
   -V     	Displays the version of this program.
   -h     	Display the help menu.
 
-  --use-cube cub 		Uses the cube file 'cub' to generate the isosurface,
-                 		  as opposed to generate a cap around a selected atom
-                 		  and direction. This option overrides all options
-                 		  related to the cap. E.g. the mesh cannot be refined,
-                 		  because the mesh is determined from the cube sampling;
-                 		  
+  --use-cube cub 	Uses the cube file 'cub' to generate the isosurface,
+                 	  as opposed to generate a cap around a selected atom
+                 	  and direction. This option overrides all options
+                 	  related to the cap. E.g. the mesh cannot be refined,
+                 	  because the mesh is determined from the cube sampling;
+                 	  
+  --pka-carbac   	Assume the input molecule is a carboxylic acid and estimate
+                 	  its pKa. This option overrides options -I, -p, and -r.
+  --pkb-prim-amine	Assume the input molecule is a primary amine and estimate
+                 	  its pKb. This option overrides options -I, -p, and -r.
+  --pkb-sec-amine	Assume the input molecule is a secondary amine and estimate
+                 	  its pKb. This option overrides options -I, -p, and -r.
+  --pkb-ter-amine	Assume the input molecule is a tertiary amine and estimate
+                 	  its pKb. This option overrides options -I, -p, and -r.
   --help    		Same as -h
   --version 		Same as -V
 ********************************************************************************
@@ -86,7 +108,17 @@ is the radius vector of the direction point (given through options
 The vector r(c)-r(d) is used to determine the orientation of the
 isosurface cap, which is located in the opposite direction of r(d),
 relative to r(c), i.e. the cap points in the same direction as
-r(c)-r(d):
+r(c)-r(d).
+Example1: if the molecule is a carboxylic acid, the atom c is the -COOH
+  hydrogen, and atom d is the -OH oxygen (of the -COOH group).
+Example2: if the molecule is CH3Cl and you wish to study the exterior
+  cap around the Cl, then the atom c is Cl and atom d is C.
+Example3: If the molecule is CH3NH2 and you wish to analize the
+  nitrogen electron pair, then the atom c is N, and the cap can
+  be oriented through option '-C ha hb ca', where ha and hb are
+  the numbers that identify the -NH2 hydrogens and ca is the number
+  that identify C (according to the atoms order of appearance in
+  the wfx/wfn file).
 --------------------------------------------------------------------------------
                                      _
                                        -

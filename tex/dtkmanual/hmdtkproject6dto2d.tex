@@ -1,8 +1,17 @@
+                          (See below for the sintax.)
+
+                         Compilation date: Nov  1 2024
+
+                                 Version: 1.6.3
+
+                         :-) Created by: JMSA/JMHP (-:
+
+********************************************************************************
 
 
 Usage:
 
-	dtkdemat1 wf?name [option [value(s)]] ... [option [value(s)]]
+	dtkproject6dto2d wf?name [option [value(s)]] ... [option [value(s)]]
 
 Where wf?name is the input wfx(wfn) name, and options can be:
 Where wf?name is the input wfx(wfn) name, and options can be:
@@ -19,6 +28,7 @@ Where wf?name is the input wfx(wfn) name, and options can be:
             	  s, i, and e are real numbers. s is the first
             	  contour value, i is the increment, and 
             	  e is the last contour value.
+  -J        	Setup alpha- and beta-spin density matrices.
   -k     	Keeps the *.gnp files to be used later by gnuplot.
   -l     	Show labels of atoms (those set in option -a) in the plot.
 
@@ -31,8 +41,11 @@ Where wf?name is the input wfx(wfn) name, and options can be:
             	  governed by step.
   -p prop   	Choose the property to be computed. prop is a character,
             	  which can be (D is the default value):
-            	      D (Density Matrix of order 1)
-            	      G (Gradient of the density Matrix of order 1)
+         		g (Density Matrix of order 1)
+         		n (Gradient of Density Matrix of order 1)
+         		l (Laplacian of Density Matrix of order 1)
+         		c (Closed-shell pair density function)
+         		o (Open-shell pair density function)
   -o outname	Set the output file name.
             	  (If not given the program will create one out of
             	  the input name; if given, the tsv, gnp and pdf files will

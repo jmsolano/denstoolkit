@@ -1,0 +1,80 @@
+Usage:
+
+	dtkdrawer inputmolecule [option [value(s)]] ... [option [value(s)]]
+
+Where inputmolecule is the input file name. Valid input formats:
+Where inputmolecule is the input file name. Valid input formats:
+            	wfx (draw the molecule)
+            	wfn (draw the molecule)
+            	xyz (draw the molecule)
+            	cpx (draw the molecule, critical points, and
+            	      gradient paths)
+Options can be:
+
+  -a        	Draw transparent spheres around each nucleus.
+  -C        	Draw bonds as cylinders.
+  -c  cpt   	Select the Critical points to include (cpx files only;
+            	  by default, all CPs are included). cpt is a series
+            	  of letters that can be:
+            		a: include ACPs
+            		b: include BCPs
+            		r: include RCPs
+            		c: include CCPs
+
+  -g  gpt   	Select the Gradient paths to include (cpx files only;
+            	  by default, all GPs are included).
+            	  gpt is a series of letters
+            	  that can be:
+            		b: include BGPs
+            		r: include RGPs
+            		c: include CGPs
+
+  -o outname	Set the output file name.
+            	  (If not given the program will create one out of
+            	  the input name; if given, the gnp file and the pdf will
+            	  use this name as well --but different extension--).
+  -O a b c  	Orient the molecule using three atoms (indices: a, b, c
+            	 according to the molecule's input geometry). The order is
+            	  important, as the align vectors are defined as follows
+            	  (x, y, and z are, here, the vectors left-right,
+            	  bottom-up, and screen-to-user, relative to the screen):
+            	  x=(c-b), y=a-dotProduct(c,(b-a)), and z=crossproduct(x,y).
+            	  The atoms will be placed in the screen plane, and they will
+            	  look as in scheme 1, below.
+  -s        	Set spacefilling mode. This mode activates the spacefilling
+            	  view of the atoms (uses VdW atomic radius to draw the atoms).
+  -T        	Draw the gradient paths as tubes (as opposed to as a series
+            	  of small spheres.
+  -v verbLev	Set the verbose level to be verboseLevel. The greater
+            	  verbLev is, the greater the information displayed on the
+            	  screen. verboseLevel=0 minimizes the information.
+  -V        	Display the version of this program.
+  -w width  	Set the width (pixels) of the png to be width (using multiples of
+            	  600 is recommended.
+  -x alpha  	Set the angle GNUPlotAngle1=alpha (in povray file).
+  -y beta   	Set the angle YAngle=beta (in povray file).
+  -z gamma  	Set the angle GNUPlotAngle2=gamma (in povray file).
+  -Z zmfact 	Set the zoom factor to be zmfact. This will alter the camera
+            	  position by a factor zmfact.
+  -h     	Display the help menu.
+
+  --help    		Same as -h
+  --version 		Same as -V
+  --no-png  		Preclude the png rendering; povray will not be called.
+********************************************************************************
+  Note that the following programs must be properly installed in your system:
+                                    gnuplot
+                                    epstopdf
+                                      gzip
+********************************************************************************
+--------------------------------------------------------------------------------
+            	           a
+            	           |
+            	          y|
+            	           |--------c
+            	           |________|______
+            	           / b       x       
+            	          /
+            	       z / 
+  Scheme 1: View of the aligned atoms (see option -O).
+--------------------------------------------------------------------------------
