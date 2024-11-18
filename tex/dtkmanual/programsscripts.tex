@@ -140,6 +140,18 @@ $dtk*** ... -z
      \end{lstlisting}
      The programs that provide this option are: \texttt{dtkline}, \texttt{dtkplane}, \texttt{dtkcube},
      and \texttt{dtkmomd}.
+     \item \textbf{Open-shell wavefunctions:} If a molecule has an open-shell configuration,
+    		for some fields, you will need to activate the option \texttt{-J} to read the information.
+			If your molecule has non-singlet multiplicity, you must request your Quantum Chemistry
+			package (Gaussian, ORCA, nwchem, etc.) to write the information of single-spin natural
+			orbitals, \textit{i.e.}, not to use ``\texttt{Alpha and Beta}'' orbitals, but
+			``\texttt{Alpha}'' or ``\texttt{Beta}'' orbitals.
+		This option works only with \texttt{wfx} files, as \texttt{wfn} format does not support
+		single-spin molecular orbitals.
+		Because even if your molecule is open-shell, the molecular orbitals can still be written
+		in an ''\texttt{Alpha and Beta}'' orbitals, \DTK{} subprograms will not try to read
+		single-spin orbital information automatically. Instead, this must be explicitly requested through
+		the option \texttt{-J}.
 \end{itemize}
 
 %----------------------------------------------------------------------------------------------
@@ -724,7 +736,19 @@ By default, \texttt{dtkproject6dto2d} uses the first and second atoms of the \te
 
 As well, by default, the program will calculate the bond path between the atoms, and then use this curve to evaluate the DM1. However, in some cases is needed to evaluate the DM1 along the straight line that joins the atoms, which can be requested with the switch \texttt{-L}.
 
-For increasing the number of points within the bond path line, you may want to look for a combination of the option \texttt{-s step} and \texttt{-n dim}. Here \texttt{step} orders \texttt{dtkproject6dto2d} to use the step \texttt{step} for the searching of the bond path (this is the step used in the Runge-Kutta integrator), while \texttt{dim} is the dimension of an array that contains the maximum number of points contained in the bond path. By default, \texttt{dtkproject6dto2d} sets \texttt{step=0.03}, and \texttt{dim=200}. When requesting to evaluate DM1 over the line that joins the atoms, \texttt{step} is no longer significant, rather the line will contain \texttt{dim} points. 
+For increasing the number of points within the bond path line, you may want to look for a combination of the option \texttt{-s step} and \texttt{-n dim}. Here \texttt{step} orders \texttt{dtkproject6dto2d} to use the step \texttt{step} for the searching of the bond path (this is the step used in the Runge-Kutta integrator), while \texttt{dim} is the dimension of an array that contains the maximum number of points contained in the bond path. By default, \texttt{dtkproject6dto2d} sets \texttt{step=0.03}, and \texttt{dim=200}. When requesting to evaluate DM1 over the line that joins the atoms, \texttt{step} is no longer significant, rather the line will contain \texttt{dim} points.
+
+In version \dtkversion, \texttt{dtkproject6dto2d} may compute and generate script to plot
+the following 6D fields (projected onto a 2D grid):
+\begin{itemize}
+	\item Gradient of Density Matrix of order 1
+	\item Laplacian of Density Matrix of order 1
+	\item Closed-shell pair density function
+	\item Open-shell pair density function
+\end{itemize}
+
+Figures similar to Fig.~\ref{fig:dtkproject6dto2dusex} can be produced simply by activating
+option \texttt{-p}.
 
 
 \rule{\textwidth}{1pt}
@@ -835,7 +859,7 @@ This program is recommended to be used together with the script \texttt{dtkgetnc
 \begin{enumerate}
 	\item Using \texttt{dtkgetnicplot}, generate the plot $s$ \textit{vs} $\rho$ (Fig. \ref{fig:svsrho}) with
 	\begin{lstlisting}
-$dtkgetnciplot -w h2oh2o.wfx -S 80
+$dtkgetnciplot -w h2oh2o.wfx -S 80 -l moreland
 	\end{lstlisting}
 	\item From the $s$ \textit{vs} $\rho$ plot, select the cut-off values for $\rho$ and $s$. In this case,
 	the values were chosen as $s=0.5$, and  $-0.02\leq\Lambda_w\leq0.2$. This can be done with the command:
@@ -887,7 +911,7 @@ maps on isosurfaces of $\rho$.
 \section{\label{sec:dtkpropcpsoniso}dtkpropcpsoniso}
 %----------------------------------------------------------------------------------------------
 
-In this version, the program \texttt{dtkpropcpsoniso} computes an electron density isosurface,
+In version \dtkversion, the program \texttt{dtkpropcpsoniso} computes an electron density isosurface,
 and a field evaluated at this isosurface. Subsequently, the program determines the surface
 critical points of the evaluated field. There are two variants: a) the isosurface is
 determined from a previous cube, and b) the isosurface is computed using a semisphere traced
@@ -898,11 +922,13 @@ around a requested atom (\textit{i.e.} a cap), and directed towards a direction 
 Numerical information is saved in \texttt{*.log} files according to the
 following convention:\\
 \texttt{wfbasename{\color{blue}MEPCPsOnRho}{\color{red}III}.log}\\
-\texttt{wfbasename} is the name of the wf? file (in this example \texttt{ccl2h}.\\
+\texttt{wfbasename} is the name of the wf? file (in this example \texttt{ccl2h}).\\
 \texttt{\color{red}III} is either \texttt{Iso} or \texttt{Cap} depending on the method
 used to compute the isosurface.
 
+%----------------------------------------------------------------------------------------------
 \subsection{Cap isosurface}
+%----------------------------------------------------------------------------------------------
 Figure \ref{fig:vsmaxcapopaq} was obtained with the command:
 \begin{lstlisting}
 $dtkpropcpsoniso ccl2h.wfn -P -k -c 13 -l 11 -r 4
@@ -924,6 +950,14 @@ Figure \ref{fig:vsmaxcaptransp} was obtained by adding option \texttt{-t} to the
 \caption{$V_{S,max}$}\label{fig:vsmaxcap}
 \end{figure}
 %
+
+The direction of the cap is indicated by on the options \texttt{-l}, \texttt{-m}, or
+\texttt{-C}. Let us name $\boldsymbol c$ the position of the center atom
+(\textit{i.e.}, the atom around which the cap is computed). The cap is directed along
+the line $\boldsymbol d -\boldsymbol c$, where $\boldsymbol d$ is some point.
+\texttt{dtkpropcpsoniso} provides three methods to define $\boldsymbol d$: a) the
+position of another nucleus (option \texttt{-l}), b) the middle point of two nuclei
+(option \texttt{-m}), and c) the centroid of three nuclei (option \texttt{-C}).
 
 The contents of the \texttt{ccl2hMEPCPsOnRhoCap.log} file is:
 \begin{scriptsize}
@@ -979,8 +1013,20 @@ Some of the contents of the \texttt{ccl2hMEPCPsOnRhoIso.log} file is:
 \end{verbatim}
 \end{scriptsize}
 
+%----------------------------------------------------------------------------------------------
+\subsection{pK$_{\textrm a}$ and pK$_{\textrm b}$ estimators}
+%----------------------------------------------------------------------------------------------
 
-\newpage
+Per user request, the program \texttt{dtkpropcpsoniso} provide estimations of
+pK$_{\textrm a}$'s of carboxylic acids and pK$_{\textrm b}$'s of amines,
+\textit{via} the calculation of $V_{S,max}$ and $V_{S,min}$ over a $\rho$ isosurface cap.
+For this, the user must activate the options \texttt{--pka-carbac}, \texttt{--pkb-prim-amine},
+\texttt{--pkb-sec-amine}, or \texttt{--pkb-ter-amine}, together with other options to
+indicate the atom around which the cap will be computed and a method to determine the
+direction of the cap.
+
+
+%\newpage
 \rule{\textwidth}{1pt}
 {\center\texttt{dtkpropcpsoniso} help menu.\\}
 \rule{\textwidth}{1pt}
@@ -1031,7 +1077,8 @@ For polyatomic molecules, we provide the Monte Carlo integration method, specifi
 variants Vegas and Miser.
 
 The monoatomic and diatomic integration schemes can provide integrals with relative errors
-$< 10^{-7}$ a.u. in functions such as the electron density.
+$< 10^{-7}$ a.u. in functions such as the electron density. Specific details of the
+integration algorithms will be released elsewhere.
 
 %\newpage
 \rule{\textwidth}{1pt}
@@ -1050,7 +1097,7 @@ In this version, we include an experimental visualisation program (\textit{dtkvi
 reads \texttt{cpx} files (obtained with \texttt{dtkfindcp}) and renders
 the interactive visualisation of critical points and gradient paths.
 
-A MacOSX bundle can be downloaded from:\\
+A MacOSX bundle (Intel\textregistered{} processors) can be downloaded from:\\
 \url{https://sites.google.com/site/jmsolanoalt/home/software/denstoolkit/downloads}.
 
 This program can be used to select the view angles for the povray script.
