@@ -72,19 +72,20 @@ This should update your binaries in the local installation directory.
 
 # Compiling with OpenMP
 
-DensToolKit contains paralellized implementation of almost all basic functions. For using the parallel version, you must edit the Makefile by changing the line
+DensToolKit contains paralellized implementation of almost all basic functions. For using the parallel version (in this example with 4 cores), compile with the following commands:
 
 ~~~~~~~~~~
-SETDTKNPROC=1
+make SETDTKNPROC=4 -j4
 ~~~~~~~~~~
 
-To use N processors, the above line should look like this:
+To use N processors, the above line, replace SETDTKNPROC=4 by SETDTKNPROC=N
 
 ~~~~~~~~~~
-SETDTKNPROC=N
+make SETDTKNPROC=N -j 4
 ~~~~~~~~~~
 
-In the current version, it is not advised to use more than 4 processors. There will be no speed improvement using more processors. Also, less than 3 makes no difference in the processing times.
+In the current version, it is not advised to use more than 4 Intel processors, nor more than 2 Apple M1 Silicon cores. There will be no speed improvement using more processors.
+
 #DensToolKit manual
 The manual, wherein some formal theory is developed, and also where more information about how to use the programs of the suite can be viewed, is ```/local/path/to/dtk/denstoolkit/tex/dtkmanual/dtk-manual.pdf```
 
