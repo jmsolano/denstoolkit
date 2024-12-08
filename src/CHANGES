@@ -1,3 +1,238 @@
+Version 2.0.0:
+ - Update global version to 2.0.0
+ - Update parallel compilation instructions.
+ - Add to dtkmanual: dtkproject6dto2d and dtkintegrate and update nci figs.
+ - Update dtkmanual for version 2.0 (initial changes).
+ - Fixtypo: carboxilic ---> carboxylic
+ - Update sollibs (commit bea7b10331fabde32af)
+ - Improve isntructions in runParallelProfv2.0.sh
+ - Improve the instructions given in runParallelProfv2.sh
+ - Add the script runParallelProfv2.0.sh
+ - Add wffiles related to the paper DTKv2.
+ - Add unitconversion.h
+ - Add timeprofilev2.0 code.
+ - Force maxcapang=40deg when estimation pKa/pKb (dtkpropcpsoniso)
+ - Update sollibs (after sync with dtk changes)
+ - Refactor screenutils (use fname as opposed to an arbitrary var named s)
+ - Update povraytools (sollibs).
+ - Fix: Integrator3DMiser::DisplayProperties showed results (not properties)
+ - Add Integrator3D::GetWeightsAndAbscissas
+ - Add documentation to integrator3d.
+ - Add documentation to integrator3d_legsphtd
+ - Fixbug: wfns with negative occupation numbers are no longer processed
+ - Add option to set png width to dtkdrawer via commandline
+ - Add help info to src/makefile about SETDTKNPROC
+ - Fixbug: ring and cage paths are now correctly drawn
+ - Add option to modify gradpaths step to dtkfindcp
+ - Add some palettes to dtkgetnciplot
+ - Improve options of dtkgetnciplot
+ - Add pKa estimator to dtkpropcpsoniso
+ - Ignore some local JMSA files (add them to gitignore)
+ - Add instructions to INFODEVELOP for new 3D fields (momentum space)
+ - Add OneElecDiseqMom description to help menu (dtkintegrate)
+ - Refactor: Use Is3DPosSpaceField in dtkintegrate/helpersintegrate
+ - Add Is3DMomSpaceField and Is3DPosSpaceField to fldtypesdef.h
+ - Change longkeys of momentum related fields (Rho-->tildeRho)
+ - Add fields ShannonMom and OneElecDiseqMom to help menu (dtkmomd)
+ - Add support to fields ShannonMom and OneElecDiseqMom (dtkmomd)
+ - Add GaussWaveFunction::EvalFTOneElecDisequilibrium
+ - Add FTOneElecDisequilibrium defs to fldtypesdef
+ - Add EvalFTOneElecDisequilibrium support to DTKScalarFunction3D
+ - Refactor: dtkmomd use defs and functs of dtkscalarfunction3d
+ - Refactor: dtkmomd use defs and functs of fldtypesdef.h
+ - Add instructions to INFODEVELOP (support to new 6D functions)
+ - Add Open- and Closed- shell rho_2 support to dtkproject6dto2d.
+ - Refactor: dtkproject6dto2d use new defs and functs of dtkscalarfunction6d
+ - Add new 6D fields to fldtypesdef (Alpha,beta,open/closed shell)
+ - Add src/common/lclauxsoftwaredefs.h to gitignore.
+ - Fixbug: checkdependencies created src/lclauxsoftwaredefs.h
+ - Refactor dtkproject6dto2d so as to use DTKScalarFunction6D objects.
+ - Refactor EvalLapDensityMatrix1 (2 double[3] ---> 6 double)
+ - Add LapGamma1 and GradGamma1 to fldtypesdef
+ - Add LapGamma1 to dtkscalarfunction6d.
+ - Fix makefiles to compile as usual (after configLclSysDefs.sh)
+ - Fixbug: lclauxsoftwaredefs.h moved to a previous pos in globaldefs.h
+ - Add support for gnuplot 6 (dtkproject6dto2d)
+ - Add common/configLclSysDefs.sh; merge with makefile and checkdependencies
+ - Add extra info to output of dtkpropcpsoniso (cps' dists and angles).
+ - Add option to dtkpropcpsoniso (estimate pkb of ter amines)
+ - Uniform output of different integrators (dtkintegrate)
+ - Uniform output of dtkintegrate
+ - Update mytimer (add GetElapsedTimeSec and GetElapsedTimeMilliSec)
+ - Add option to set spherical-t designs orders to dtkintegrate.
+ - Add Rho squared (disequiibrium) to all related dtk programs.
+ - Improve dtkintegrate helpmenu (correct options for setting sphtdes.
+ - Add description of 6D functions to dtkmanual
+ - Add CommonHelpers::IsSphericallySymmetric
+ - Add unit test for GaussWaveFunction::EvalGradDensityMatrix1
+ - Add unit test for GaussWaveFunction::EvalFTRho2OpenShell
+ - Add GaussWaveFunction::EvalFTRho2OpenShell
+ - Add unit test rho2cs.
+ - Fixbug: GaussWaveFunction::EvalFTRho2ClosedShell (parallel)
+ - Add XeF2.wfx to the repo.
+ - Fixbugs: EvalDensityMatrix1, EvalDensity, and EvalFTRho2ClosedShell (parallel)
+ - Fixbug in EvalRho2ClosedShell and add EvalFTRho2ClosedShell
+ - Refactor GaussWaveFunction::EvalFTDensityMatrix1 to set singlespin
+ - Add unit test momgamma
+ - Add GaussWaveFunction::EvalFTDensityMatrix1
+ - Update TODO after optim and parall of GradDM1 and HessDM1
+ - Add optimized parallel version of GaussWaveFunction::EvalHessDensityMatrix1
+ - Optimize single cpu version of GaussWaveFunction::EvalHessDensityMatrix1
+ - Improve unit test for HessianDensityMatrix1.
+ - Add EDF support to GaussWaveFunction::EvalHessDensityMatrix1
+ - Add parallel version of GaussWaveFunction::EvalGradDensityMatrix1
+ - Optimize serial version of GaussWaveFunction::EvalGradDensityMatrix1
+ - Add EDF support to GaussWaveFunction::EvalGradDensityMatrix1
+ - Update TODO list.
+ - Optimize and clean parallel version of GaussWaveFunction::EvalFTDensity
+ - Remove duplicated code in GaussWaveFunction::EvalSpinDensity
+ - Return to the original parallel version of SpinDensity.
+ - Add parallel version of GaussWaveFunction::EvalSpinDensity
+ - Optimize parallel version of GaussWaveFunction::EvalDensity
+ - Add parallel version of GaussWaveFunction::EvalRho2OpenShell
+ - Add parallel version of GaussWaveFunction::EvalRho2ClosedShell
+ - Remove duplicated code in GaussWaveFunction::EvalGeneralDensityMatrix1
+ - The actual further optimization.
+ - Further optimize GaussWaveFunction::EvalGeneralDensityMatrix1
+ - Remove old parallel code (EvalDensityMatrix1)
+ - Testing opetimization version EvalDensityMatrix1
+ - Add makefile to test directory
+ - Add basic unit tests.
+ - Fix makefiles to build parallel versions
+ - Optimize functions and add missing parallel versions.
+ - Fix index calculation for internal vectors of BuildHalfHemisphereCubature
+ - Improve and adapt the help menu of dtkproject6dto2d
+ - Fixbug: remove dtkproject6dto2d from the list of scripts when installing.
+ - Set version to 1.6.3 (globaldefs.h)
+ - Rename dtkdemat1 ---> dtkproject6dto2d
+ - Fixbug: camera position has been increased in dtkmapfieldonisosurf
+ - Supress verbose information from gausswavefunction (config. spin cabs)
+ - Add Rho2 (open and closed shell) and optimize Gamma1
+ - Add rho2 description to dtkmanual
+ - Rearrange protected variables (GaussWaveFunction)
+ - Add Gamma1Sigma to gausswavefunction.
+ - Add DTKScalarFunction6D class.
+ - Fixbug: replace NONE--->NONE6D in fldtypesdef
+ - Add ScalarField6DType enum and related functions to fldtypesdef.h
+ - Update INFODEVELOP
+ - Add Spin density and Pair density descriptions to dtk-manual.
+ - Add spin density description and reorganize 3D and 6D fields.
+ - Set version to 1.6.2
+ - Update INFODEVELOP
+ - Incorporate Spin density to dtkpoint
+ - Incorporate Spin density to dtkmomd
+ - Incorporate Spin density to dtkintegrate
+ - Incorporate Spin density to dtkintegobondpath
+ - Incorporate Spin density to dtkfindcp
+ - Incorporate Spin density to dtkdemat1
+ - Incorporate Spin density to dtkcharcicp
+ - Incorporate Spin density to dtkmapfieldonisosurf
+ - Incorporate Spin density to dtkpropcpsoniso
+ - Incorporate Spin density to dtkcube
+ - Incorporate Spin density to dtkplane
+ - Incorporate Spin density to dtkline
+ - Incorporate Spin density to dtkbpdens
+ - Add Spin density field to gausswavefunction, dtkscalarfunction3d, and fldtypesdef
+ - Add featureL alpha- and beta-spin densities can be computed.
+ - Improve makefile building system [make --> $(MAKE)]
+ - Change labels NCI-rho ---> NCI-Lambda2 (fldtypesdef.h)
+ - Add option to draw only isosurface to dtkmapfieldonisosurf.
+ - Add ISO the capability to draw single color isosurfaces WITH normals.
+ - Antibug: initialize DTKScalarFunction3D::(GaussWaveFunction::*selfnc)
+ - Remove unused code in helpersmapfieldonisosurf
+ - Improve makefiles (use dtk*.a instead of all objects)
+ - Fixtypo: trivial typo in helpersmapfieldonisosurf.cpp
+ - FixTypos: Get rid of warning messages.
+ - Change version to 1.6.1
+ - Fixtypo: dtkmapfieldonisosurf/crtflnms (iso--->Iso)
+ - Add instructions (new field) to INFODEVELOP
+ - Full working version of dtkmapfieldonisosurf
+ - Add gradf and fptr to DTKScalarFunction3D
+ - Refactor: Re-order switches (fldtypesdef.h) following ScalarFieldType order.
+ - Refactor dtknci ---> dtkmapfieldonisosurf (1st working refactor version)
+ - Add option to dtkcube to manually set extraspace around atoms.
+ - Add cube isovalue of NCI-s to fldtypesdef.
+ - Refactor: rename dtknci to dtkmapfieldonisosurf. Also rename helpers...
+ - Fixbug: set the zranges for VPED (dtkplane)
+ - Add DORI to dtkbpdens
+ - Add DORI info to help menu of dtkpropcpsoniso
+ - Change short label of Virial potential energy density.
+ - Add DORI to dtkcube
+ - Add DORI to dtkplane.
+ - FixSciError: Correct sign in DORI implementation.
+ - Automate fields info display in dtkline/optflags (helpmenu)
+ - Correct Long name DORI (fldtypesdef)
+ - Implement DORI in dtkline
+ - Add DORI to gausswavefunction and fldtypesdef
+ - Simplify helpersintegrate by usin commonhelpers functions.
+ - Add DomainType::DIATOMIC and IntegratorType::CUBATURE to integrator3d
+ - Improve commonhelpers
+ - Add documentation to atomradiicust
+ - Add Integrator3DLegSphtDes::GetWeightsAndAbscissas
+ - Add Integrator3DDiatomics::GetWeightsAndAbscissas
+ - Add WFNFormatSpecs.txt
+ - Update diatomicquadrules notes.
+ - Fixbug: Orca wfx and wfn files were not read correctly.
+ - Working version of dtkintegrate (includes diatomic integrator).
+ - Add diatomicquadrules notes.
+ - Add core integration to diatomic integrator (dtkintegrate)
+ - Add option to dtkpropcpsoniso (estimate pkb of prim and sec amines)
+ - Fixtypo: dtkpropcpsoniso/optflags.cpp
+ - Fixbug: dtkpropcpsoniso, option C was not working correctly.
+ - Improve help menus of dtkpropcpsoniso and dtkdrawer
+ - Add LapGamma and imporove CPGamma search.
+ - Improve/clean dtkpropcpsoniso output and its help menu.
+ - Fixbug: dtkglwidget, font size is scaled according to devicePixelRatio()
+ - Fixbug: dtkfindcp and dtkdrawer works OK regardless there are RGPs and CGPs
+ - Add info to output files and refactor (ofile--->ofil)
+ - FixBug: CritPtNetWork::InvertOrderBGPPoints (check for nullptr)
+ - Update CMakeLists (MacOSX, homebrew) QT5 path
+ - Fixbug: critptnetwork draws cage gradient pahts correctly.
+ - Refactor: remove DISPLAYINFOFILELINE and replace with explicit code.
+ - Print extra info in DEBUGVERSION (critptnetwork)
+ - Update meshgrid.
+ - Refactor: refactor faulting code so as to compile with DEBUGVERSION
+ - Merge branch 'develop' into dev_make
+ - To preserve the original makefile, rename the new version to makefile.hpc
+ - Fix bug to call debug and profile version from folder's program
+ - Improve in the makefile system to have only one place to select the compiler and common flag with option to custumize each program
+ - Make dtkpropcpsoniso to provide V in a.u., kCal/mol, and kJ/mol
+ - Fix to compile dtkviewer in silicon macs.
+ - Improve makefile to support M1-macs; update dtkview/CMakeLists.txt
+ - Improve makefile to support M1-macs; update dtk*/makefiles
+ - Improve makefile to support M1-macs 1st attempt
+ - FixBug: wfn files with nPri<nMOr can be read OK.
+ - Add ACP searches using nuclei triads (critptnetwork).
+ - Fixbug: in critptnetwork, use bn->maxBondDist (not maxBondDist)
+ - Fixbug: Try all icosahedron vertices as seeds for ACP searches.
+ - Fix dtkview compilation: DtkViewer now compiles in linux.
+ - Add option dtkdrawer: draw bonds as cylinders.
+ - Fixbug: install needs moving files, as opposed to copying.
+ - Fixbug: dtkdrawer no longer causes a segfault 11
+ - Improve warning messages related to high-angular momentum.
+ - Update g++ in makefiles for MacOS Monterey.
+ - Remove "-pg" from dtkintegrate/makefile in non-debug mode
+ - Remove "using std::numeric_limits;" in integrator3d_vegas.cpp
+ - Fixtypo: integrator3D --> integrator3d
+ - Update sollibs2 (fixtypo basegausslegendre)
+ - Refactor: dtkintegrate/optflags (after renaming basegausslegendre...)
+ - Update sollibs2. (rename basegausslegendredata and basesphertdesdata)
+ - Update basegausslegendredata.
+ - Update palette (sollibs2).
+ - Add integrator3d_legsphtd and include it as an option in dtkintegrate
+ - Delete old TODO (tmpmiser)
+ - Add Miser integrator to dtkintegrate.
+ - Refactor: rename IntegratorVegas-->Integrator3DVegas, split helpers code
+ - Add license to function3d and integrator3d files.
+ - Make integrator_vegas to be a derived class of integrator3d.
+ - Correct documentation of ScalarFieldType::VPED
+ - Refactor integrator_vegas.cpp: use indentation and doxydocu DTK-style.
+ - Optimize integrator_vegas: remove IntegratorVegas::Power function.
+ - Optimize IntegratorVegas: remove redundant computations.
+ - Untrack dtkmiser.
+ - Add dtkintegrate to makefile:install, change version 1.6.0 in binaries
+ - Update sollibs, improve INFODEVELOP.
+ - Improve bump version instructions (INFODEVELOP).
 Version 1.6.0:
  - Refactor helpmenu: Make specific vegas options double-dash
  - Refactor: rename OptionFlags internal variables, vegas specific names

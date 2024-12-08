@@ -46,10 +46,16 @@ wavefiles/* : Some wavefunction files used for testing the installation of DTK.
    This will create a series of dat, tsv, cube, gnp, pdf and png files located at
    '/top/dir/outputs'
 
-2. Multi-cpu build: Change the line "SETDTKNPROC=1" in /top/dir/src/Makefile"
-                    to be "SETDTKNPROC=N", where N is the number of processors you
-                    want to use. Follow the same instructions as for the single
-                    cpu build.
+2. Multi-cpu build: 
+   Add the variable SETDTKNPROC during the compilation step:
+      $cd src
+      $make -j4 SETDTKNPROC=4
+      $sudo make install
+   The line 'make -j4 SETDTKNPROC=4' will compile DTK using parallelized functions
+   (OpenMP), and will use 4 cores. Change '4' by the number of cores you
+   consider adequate. However, we recommend a maximum of 4 if you are
+   installing DTK on an Intel-CPU server, and of 2 if you are using
+   M1 Pro Apple processors.
 
 ====================================================================================
               R U N N I N G     T H E     P R O G R A M S
@@ -82,201 +88,474 @@ also to the dtk-manual.
 
 
 ***********************************************************************
-├── LICENSE
-├── README
-├── README.md
-├── src
-│   ├── DESIGNTODOS
-│   ├── INFODEVELOP
-│   ├── Makefile
-│   ├── TODO
-│   ├── bump_version.sh
-│   ├── checkdependencies
-│   ├── common
-│   │   ├── atomcolschcust.h
-│   │   ├── atomcolschjmol.cpp
-│   │   ├── atomcolschjmol.h
-│   │   ├── atomradiicust.cpp
-│   │   ├── atomradiicust.h
-│   │   ├── bondnetwork.cpp
-│   │   ├── bondnetwork.h
-│   │   ├── critptnetwork.cpp
-│   │   ├── critptnetwork.h
-│   │   ├── cudawavefunctionclass.cu
-│   │   ├── cudawavefunctionclass.cuh
-│   │   ├── custfld-wfnclass.cpp
-│   │   ├── demat1critptnetwork.cpp
-│   │   ├── demat1critptnetwork.h
-│   │   ├── eig2-4.cpp
-│   │   ├── eig2-4.h
-│   │   ├── figname.h
-│   │   ├── fldtypesdef.h
-│   │   ├── iofuncts-cpx.cpp
-│   │   ├── iofuncts-cpx.h
-│   │   ├── iofuncts-wfn.cpp
-│   │   ├── iofuncts-wfn.h
-│   │   ├── iofuncts-wfx.cpp
-│   │   ├── iofuncts-wfx.h
-│   │   ├── solcubetools.cpp
-│   │   ├── solcubetools.h
-│   │   ├── solcudatools.cu
-│   │   ├── solcudatools.cuh
-│   │   ├── solfileutils.cpp
-│   │   ├── solfileutils.h
-│   │   ├── solgnuplottools.cpp
-│   │   ├── solgnuplottools.h
-│   │   ├── solmath.cpp
-│   │   ├── solmath.h
-│   │   ├── solmemhand.cpp
-│   │   ├── solmemhand.h
-│   │   ├── solpovtools.cpp
-│   │   ├── solpovtools.h
-│   │   ├── solscrutils.cpp
-│   │   ├── solscrutils.h
-│   │   ├── solstringtools.cpp
-│   │   ├── solstringtools.h
-│   │   ├── wavefunctionclass.cpp
-│   │   ├── wavefunctionclass.h
-│   │   ├── wfgrid1d.cpp
-│   │   ├── wfgrid1d.h
-│   │   ├── wfgrid2d.cpp
-│   │   ├── wfgrid2d.h
-│   │   ├── wfgrid3d.cpp
-│   │   └── wfgrid3d.h
-│   ├── devdoc
-│   │   └── Doxyfile
-│   ├── dtkbpdens
-│   │   ├── ChangeLog
-│   │   ├── Makefile
-│   │   ├── crtflnms.cpp
-│   │   ├── crtflnms.h
-│   │   ├── dtkbpdens.cpp
-│   │   ├── optflags.cpp
-│   │   ├── optflags.h
-│   │   └── soldefines.h
-│   ├── dtkcube
-│   │   ├── ChangeLog
-│   │   ├── Makefile
-│   │   ├── crtflnms.cpp
-│   │   ├── crtflnms.h
-│   │   ├── dtkcube.cpp
-│   │   ├── optflags.cpp
-│   │   ├── optflags.h
-│   │   └── soldefines.h
-│   ├── dtkdemat1
-│   │   ├── ChangeLog
-│   │   ├── Makefile
-│   │   ├── crtflnms.cpp
-│   │   ├── crtflnms.h
-│   │   ├── dtkdemat1.cpp
-│   │   ├── optflags.cpp
-│   │   ├── optflags.h
-│   │   ├── soldefines.h
-│   │   └── tips4gnuplot.txt
-│   ├── dtkfindcp
-│   │   ├── ChangeLog
-│   │   ├── Makefile
-│   │   ├── crtflnms.cpp
-│   │   ├── crtflnms.h
-│   │   ├── custfmtmathfuncts.cpp
-│   │   ├── custfmtmathfuncts.h
-│   │   ├── dtkfindcp.cpp
-│   │   ├── optflags.cpp
-│   │   ├── optflags.h
-│   │   └── soldefines.h
-│   ├── dtkline
-│   │   ├── ChangeLog
-│   │   ├── Makefile
-│   │   ├── crtflnms.cpp
-│   │   ├── crtflnms.h
-│   │   ├── dtkline.cpp
-│   │   ├── optflags.cpp
-│   │   ├── optflags.h
-│   │   └── soldefines.h
-│   ├── dtkmomd
-│   │   ├── ChangeLog
-│   │   ├── Makefile
-│   │   ├── crtflnms.cpp
-│   │   ├── crtflnms.h
-│   │   ├── dtkmomd.cpp
-│   │   ├── optflags.cpp
-│   │   ├── optflags.h
-│   │   └── soldefines.h
-│   ├── dtkplane
-│   │   ├── ChangeLog
-│   │   ├── Makefile
-│   │   ├── crtflnms.cpp
-│   │   ├── crtflnms.h
-│   │   ├── dtkplane.cpp
-│   │   ├── optflags.cpp
-│   │   ├── optflags.h
-│   │   └── soldefines.h
-│   ├── dtkpoint
-│   │   ├── ChangeLog
-│   │   ├── Makefile
-│   │   ├── crtflnms.cpp
-│   │   ├── crtflnms.h
-│   │   ├── dtkpoint.cpp
-│   │   ├── optflags.cpp
-│   │   ├── optflags.h
-│   │   └── soldefines.h
-│   ├── dtkqdmol
-│   │   ├── ChangeLog
-│   │   ├── Makefile
-│   │   ├── crtflnms.cpp
-│   │   ├── crtflnms.h
-│   │   ├── dtkqdmol.cpp
-│   │   ├── optflags.cpp
-│   │   ├── optflags.h
-│   │   └── soldefines.h
-│   ├── preprelease
-│   └── scripts
-│       ├── dtkeps2pdf
-│       └── dtkpov2png
-├── tex
-│   └── dtkmanual
-│       ├── LICENSE
-│       ├── availablefields.tex
-│       ├── custfld-wfnclass.cpp
-│       ├── cyclopCPs.pdf
-│       ├── cyclopELFLine.pdf
-│       ├── cyclopLOLPlane.pdf
-│       ├── cyclopLap.pdf
-│       ├── cyclopQDMolLine.pdf
-│       ├── cyclopQDMolPlane.pdf
-│       ├── cyclopropaneBPDM1-C1-C2-1D1.pdf
-│       ├── cyclopropaneBPDM1-C1-C2-1D2.pdf
-│       ├── cyclopropaneBPDM1-C1-C2-2D.pdf
-│       ├── cyclopropaneBPDM1-C1-C2-3D.pdf
-│       ├── cyclopropaneBPSLMagGradLOL-C1-C2.pdf
-│       ├── cyclopropaneMomDens-PxPy.pdf
-│       ├── cyclopropaneMomDens-PyPz.pdf
-│       ├── dtk-manual.pdf
-│       ├── dtk-manual.tex
-│       ├── dtkbibliography.bib
-│       ├── dtkqdmolusex.pdf
-│       ├── fdl-1.3.tex
-│       ├── helpmenus
-│       │   └── makefile
-│       ├── hmdtkbpdens.tex
-│       ├── hmdtkcube.tex
-│       ├── hmdtkdemat1.tex
-│       ├── hmdtkeps2pdf.tex
-│       ├── hmdtkfindcp.tex
-│       ├── hmdtkline.tex
-│       ├── hmdtkmomd.tex
-│       ├── hmdtkplane.tex
-│       ├── hmdtkpoint.tex
-│       ├── hmdtkpov2png.tex
-│       ├── hmdtkqdmol.tex
-│       ├── impnewfld.tex
-│       ├── introduction.tex
-│       ├── programsscripts.tex
-│       └── topology.tex
-└── wavefiles
-    ├── benzene.wfn
-    ├── ch4.wfx
-    ├── cubano_sto3g.wfx
-    ├── cyclopropane.wfx
-    └── ethanol.wfn
+|-- LICENSE
+|-- README
+|-- README.md
+|-- notes
+|   |-- WFNFormatSpecs.txt
+|   |-- diatomicquadrules
+|   |   |-- diatomicquadrules.tex
+|   |   `-- images
+|   |       |-- numIntegDiatCore.tex
+|   |       `-- numIntegDiatValence.tex
+|   `-- gammprojection
+|       |-- gammaprojection.tex
+|       `-- plots
+|           |-- CurveParam00.dia
+|           `-- CurveParam01.tex
+|-- src
+|   |-- CHANGES
+|   |-- CONTRIBUTORS
+|   |-- DESIGNTODOS
+|   |-- INFODEVELOP
+|   |-- README
+|   |-- TODO
+|   |-- VERSION
+|   |-- bump_version.sh
+|   |-- checkdependencies
+|   |-- common
+|   |   |-- atom.cpp
+|   |   |-- atom.h
+|   |   |-- atomcolschcust.h
+|   |   |-- atomcolschjmol.cpp
+|   |   |-- atomcolschjmol.h
+|   |   |-- atomradiicust.cpp
+|   |   |-- atomradiicust.h
+|   |   |-- basegausslegendre.cpp
+|   |   |-- basegausslegendre.h
+|   |   |-- basesphtdesign.cpp
+|   |   |-- basesphtdesign.h
+|   |   |-- bondnetwork.cpp
+|   |   |-- bondnetwork.h
+|   |   |-- circledots3d.cpp
+|   |   |-- circledots3d.h
+|   |   |-- citations.h
+|   |   |-- colorutils.cpp
+|   |   |-- colorutils.h
+|   |   |-- commonhelpers.cpp
+|   |   |-- commonhelpers.h
+|   |   |-- configLclSysDefs.sh
+|   |   |-- critptnetwork.cpp
+|   |   |-- critptnetwork.h
+|   |   |-- custfld-wfnclass.cxx
+|   |   |-- demat1critptnetworkbp.cpp
+|   |   |-- demat1critptnetworkbp.h
+|   |   |-- demat1critptnetworksl.cpp
+|   |   |-- demat1critptnetworksl.h
+|   |   |-- dtkscalarfunction3d.cpp
+|   |   |-- dtkscalarfunction3d.h
+|   |   |-- dtkscalarfunction6d.cpp
+|   |   |-- dtkscalarfunction6d.h
+|   |   |-- eig6.cpp
+|   |   |-- eig6.h
+|   |   |-- eigendecompositionjama.cpp
+|   |   |-- eigendecompositionjama.h
+|   |   |-- figname.cpp
+|   |   |-- figname.h
+|   |   |-- fileutils.cpp
+|   |   |-- fileutils.h
+|   |   |-- fldtypesdef.h
+|   |   |-- function3d.cpp
+|   |   |-- function3d.h
+|   |   |-- gaussiancube.cpp
+|   |   |-- gaussiancube.h
+|   |   |-- gausswavefunction.cpp
+|   |   |-- gausswavefunction.h
+|   |   |-- globaldefs.h
+|   |   |-- gnuplottools.cpp
+|   |   |-- gnuplottools.h
+|   |   |-- inputmolecule_cub.cpp
+|   |   |-- inputmolecule_cub.h
+|   |   |-- inputmolecule_xyz.cpp
+|   |   |-- inputmolecule_xyz.h
+|   |   |-- integrateoverbondpath.cpp
+|   |   |-- integrateoverbondpath.h
+|   |   |-- integrator3d.cpp
+|   |   |-- integrator3d.h
+|   |   |-- integrator3d_diatomics.cpp
+|   |   |-- integrator3d_diatomics.h
+|   |   |-- integrator3d_legsphtd.cpp
+|   |   |-- integrator3d_legsphtd.h
+|   |   |-- integrator3d_miser.cpp
+|   |   |-- integrator3d_miser.h
+|   |   |-- integrator3d_vegas.cpp
+|   |   |-- integrator3d_vegas.h
+|   |   |-- interpolators.cpp
+|   |   |-- interpolators.h
+|   |   |-- iofuncts-cpx.cpp
+|   |   |-- iofuncts-cpx.h
+|   |   |-- iofuncts-wfn.cpp
+|   |   |-- iofuncts-wfn.h
+|   |   |-- iofuncts-wfx.cpp
+|   |   |-- iofuncts-wfx.h
+|   |   |-- isosurface.cpp
+|   |   |-- isosurface.h
+|   |   |-- makefile
+|   |   |-- makefile.hpc
+|   |   |-- matrixvectoroperations3d.cpp
+|   |   |-- matrixvectoroperations3d.h
+|   |   |-- meshgrid.cpp
+|   |   |-- meshgrid.h
+|   |   |-- molecule.cpp
+|   |   |-- molecule.h
+|   |   |-- mymath.cpp
+|   |   |-- mymath.h
+|   |   |-- mymemory.cpp
+|   |   |-- mymemory.h
+|   |   |-- myrandom.cpp
+|   |   |-- myrandom.h
+|   |   |-- mytimer.cpp
+|   |   |-- mytimer.h
+|   |   |-- palette.cpp
+|   |   |-- palette.h
+|   |   |-- polygonize_marchingcubes.cpp
+|   |   |-- polygonize_marchingcubes.h
+|   |   |-- povraytools.cpp
+|   |   |-- povraytools.h
+|   |   |-- screenutils.cpp
+|   |   |-- screenutils.h
+|   |   |-- solcubetools.cpp
+|   |   |-- solcubetools.h
+|   |   |-- spline.cpp
+|   |   |-- spline.h
+|   |   |-- stringtools.cpp
+|   |   |-- stringtools.h
+|   |   |-- symmetricsurfacegrid.cpp
+|   |   |-- symmetricsurfacegrid.h
+|   |   |-- unitconversion.h
+|   |   |-- vmdtools.cpp
+|   |   |-- vmdtools.h
+|   |   |-- wfgrid1d.cpp
+|   |   |-- wfgrid1d.h
+|   |   |-- wfgrid2d.cpp
+|   |   |-- wfgrid2d.h
+|   |   |-- wfgrid3d.cpp
+|   |   `-- wfgrid3d.h
+|   |-- devdoc
+|   |   |-- Doxyfile
+|   |   `-- Doxyfile.bkp
+|   |-- dtkbpdens
+|   |   |-- ChangeLog
+|   |   |-- crtflnms.cpp
+|   |   |-- crtflnms.h
+|   |   |-- dtkbpdens.cc
+|   |   |-- helpersplot.cpp
+|   |   |-- helpersplot.h
+|   |   |-- localdefs.h
+|   |   |-- makefile
+|   |   |-- makefile.hpc
+|   |   |-- optflags.cpp
+|   |   `-- optflags.h
+|   |-- dtkcharcicp
+|   |   |-- ChangeLog
+|   |   |-- crtflnms.cpp
+|   |   |-- crtflnms.h
+|   |   |-- custfmtmathfuncts.cpp
+|   |   |-- custfmtmathfuncts.h
+|   |   |-- dtkcharcicp.cc
+|   |   |-- localdefs.h
+|   |   |-- makefile
+|   |   |-- makefile.hpc
+|   |   |-- optflags.cpp
+|   |   `-- optflags.h
+|   |-- dtkcube
+|   |   |-- ChangeLog
+|   |   |-- crtflnms.cpp
+|   |   |-- crtflnms.h
+|   |   |-- dtkcube.cc
+|   |   |-- localdefs.h
+|   |   |-- makefile
+|   |   |-- makefile.hpc
+|   |   |-- optflags.cpp
+|   |   `-- optflags.h
+|   |-- dtkdrawer
+|   |   |-- 13DMXa.xyz
+|   |   |-- 13DMXb.xyz
+|   |   |-- 13DMXc.xyz
+|   |   |-- 13DMXd.xyz
+|   |   |-- 37DMXa.xyz
+|   |   |-- 37DMXb.xyz
+|   |   |-- 37DMXc.xyz
+|   |   |-- 37DMXd.xyz
+|   |   |-- ChangeLog
+|   |   |-- crtflnms.cpp
+|   |   |-- crtflnms.h
+|   |   |-- dtkdrawer.cc
+|   |   |-- helpersdrawer.cpp
+|   |   |-- helpersdrawer.h
+|   |   |-- localdefs.h
+|   |   |-- makefile
+|   |   |-- makefile.hpc
+|   |   |-- optflags.cpp
+|   |   |-- optflags.h
+|   |   `-- renderTestFigs.sh
+|   |-- dtkfindcp
+|   |   |-- ChangeLog
+|   |   |-- README
+|   |   |-- crtflnms.cpp
+|   |   |-- crtflnms.h
+|   |   |-- custfmtmathfuncts.cpp
+|   |   |-- custfmtmathfuncts.h
+|   |   |-- dtkfindcp.cc
+|   |   |-- localdefs.h
+|   |   |-- makefile
+|   |   |-- makefile.hpc
+|   |   |-- optflags.cpp
+|   |   `-- optflags.h
+|   |-- dtkintegobondpath
+|   |   |-- ChangeLog
+|   |   |-- crtflnms.cpp
+|   |   |-- crtflnms.h
+|   |   |-- dtkintegobondpath.cc
+|   |   |-- localdefs.h
+|   |   |-- makefile
+|   |   |-- makefile.hpc
+|   |   |-- optflags.cpp
+|   |   `-- optflags.h
+|   |-- dtkintegrate
+|   |   |-- crtflnms.cpp
+|   |   |-- crtflnms.h
+|   |   |-- dtkintegrate.cc
+|   |   |-- helpersintegrate.cpp
+|   |   |-- helpersintegrate.h
+|   |   |-- localdefs.h
+|   |   |-- makefile
+|   |   |-- makefile.hpc
+|   |   |-- optflags.cpp
+|   |   `-- optflags.h
+|   |-- dtkline
+|   |   |-- ChangeLog
+|   |   |-- crtflnms.cpp
+|   |   |-- crtflnms.h
+|   |   |-- dtkline.cc
+|   |   |-- localdefs.h
+|   |   |-- makefile
+|   |   |-- makefile.hpc
+|   |   |-- optflags.cpp
+|   |   `-- optflags.h
+|   |-- dtkmapfieldonisosurf
+|   |   |-- crtflnms.cpp
+|   |   |-- crtflnms.h
+|   |   |-- dtkmapfieldonisosurf.cc
+|   |   |-- helpersmapfieldonisosurf.cpp
+|   |   |-- helpersmapfieldonisosurf.h
+|   |   |-- localdefs.h
+|   |   |-- makefile
+|   |   |-- makefile.hpc
+|   |   |-- optflags.cpp
+|   |   `-- optflags.h
+|   |-- dtkmomd
+|   |   |-- ChangeLog
+|   |   |-- crtflnms.cpp
+|   |   |-- crtflnms.h
+|   |   |-- dtkmomd.cc
+|   |   |-- helpersplot.cpp
+|   |   |-- helpersplot.h
+|   |   |-- localdefs.h
+|   |   |-- makefile
+|   |   |-- makefile.hpc
+|   |   |-- optflags.cpp
+|   |   `-- optflags.h
+|   |-- dtkplane
+|   |   |-- ChangeLog
+|   |   |-- crtflnms.cpp
+|   |   |-- crtflnms.h
+|   |   |-- dtkplane.cc
+|   |   |-- helpersplot.cpp
+|   |   |-- helpersplot.h
+|   |   |-- localdefs.h
+|   |   |-- makefile
+|   |   |-- makefile.hpc
+|   |   |-- optflags.cpp
+|   |   `-- optflags.h
+|   |-- dtkpoint
+|   |   |-- ChangeLog
+|   |   |-- crtflnms.cpp
+|   |   |-- crtflnms.h
+|   |   |-- dtkpoint.cc
+|   |   |-- localdefs.h
+|   |   |-- makefile
+|   |   |-- makefile.hpc
+|   |   |-- optflags.cpp
+|   |   `-- optflags.h
+|   |-- dtkproject6dto2d
+|   |   |-- ChangeLog
+|   |   |-- crtflnms.cpp
+|   |   |-- crtflnms.h
+|   |   |-- dtkproject6dto2d.cc
+|   |   |-- helperplots.cpp
+|   |   |-- helperplots.h
+|   |   |-- localdefs.h
+|   |   |-- makefile
+|   |   |-- makefile.hpc
+|   |   |-- optflags.cpp
+|   |   |-- optflags.h
+|   |   `-- tips4gnuplot.txt
+|   |-- dtkpropcpsoniso
+|   |   |-- ChangeLog
+|   |   |-- crtflnms.cpp
+|   |   |-- crtflnms.h
+|   |   |-- dtkpropcpsoniso.cc
+|   |   |-- helperspropcpsoniso.cpp
+|   |   |-- helperspropcpsoniso.h
+|   |   |-- localdefs.h
+|   |   |-- makefile
+|   |   |-- makefile.hpc
+|   |   |-- optflags.cpp
+|   |   `-- optflags.h
+|   |-- dtkqdmol
+|   |   |-- ChangeLog
+|   |   |-- crtflnms.cpp
+|   |   |-- crtflnms.h
+|   |   |-- dtkqdmol.cc
+|   |   |-- localdefs.h
+|   |   |-- makefile
+|   |   |-- makefile.hpc
+|   |   |-- optflags.cpp
+|   |   `-- optflags.h
+|   |-- dtkview
+|   |   |-- CMakeLists.txt
+|   |   |-- DensToolKit.pro
+|   |   |-- DensToolKitViewer.icns
+|   |   |-- README.md
+|   |   |-- TODO
+|   |   |-- denstoolkitviewer.qrc
+|   |   |-- dtkglbondnetwork.cpp
+|   |   |-- dtkglbondnetwork.h
+|   |   |-- dtkglcriticalpointnetwork.cpp
+|   |   |-- dtkglcriticalpointnetwork.h
+|   |   |-- dtkglutils.cpp
+|   |   |-- dtkglutils.h
+|   |   |-- dtkglwidget.cpp
+|   |   |-- dtkglwidget.h
+|   |   |-- dtkmainwindow.cpp
+|   |   |-- dtkmainwindow.h
+|   |   |-- dtkmainwindow.ui
+|   |   |-- images
+|   |   |   |-- drawatoms.png
+|   |   |   |-- drawcplbls.png
+|   |   |   |-- drawlinks.png
+|   |   |   |-- dtk128x128.png
+|   |   |   |-- dtk256x256.png
+|   |   |   |-- dtk32x32.png
+|   |   |   |-- open.png
+|   |   |   |-- save.png
+|   |   |   |-- showatlbls.png
+|   |   |   |-- square.png
+|   |   |   |-- toggletransp.png
+|   |   |   |-- viewbgps.png
+|   |   |   |-- viewcgps.png
+|   |   |   `-- viewrgps.png
+|   |   |-- localdefs.h
+|   |   `-- main.cpp
+|   |-- makefile
+|   |-- makefile.hpc
+|   |-- preprelease
+|   |-- scripts
+|   |   |-- dtkGetSumBCPRho
+|   |   |-- dtkchgcurrversion
+|   |   |-- dtkchgsuiteversion
+|   |   |-- dtkeps2pdf
+|   |   |-- dtkgetnciplot
+|   |   `-- dtkpov2png
+|   |-- test
+|   |   |-- 42.wfx
+|   |   |-- XeF2.wfx
+|   |   |-- ch4.wfx
+|   |   |-- localdefs.h
+|   |   |-- makefile
+|   |   |-- runParallelProfv2.0.sh
+|   |   |-- test_derivsdm1.cc
+|   |   |-- test_dtkscalarfunction.cc
+|   |   |-- test_dtkscalarfunction6d.cc
+|   |   |-- test_gausswavefunction.cc
+|   |   |-- test_hessdm1.cc
+|   |   |-- test_molecule.cc
+|   |   |-- test_momgamma.cc
+|   |   |-- test_rho2cs.cc
+|   |   `-- test_rho2os.cc
+|   `-- timeprofilev2.0
+|       |-- 42.wfx
+|       |-- README
+|       |-- helpers.cpp
+|       |-- helpers.h
+|       |-- localdefs.h
+|       |-- makefile
+|       |-- optflags.cpp
+|       |-- optflags.h
+|       |-- optionflagsbase.cpp
+|       |-- optionflagsbase.h
+|       |-- timeprofile.cc
+|       |-- timeprofileMacOSX.dat
+|       `-- timeprofileXeon.dat
+|-- tex
+|   `-- dtkmanual
+|       |-- LICENSE
+|       |-- NCISvsRho-Cutoff.pdf
+|       |-- NCISvsRho.pdf
+|       |-- NCIvmd-Cutoff.pdf
+|       |-- NCIvmd.pdf
+|       |-- availablefields.tex
+|       |-- ccl2hMEPCPsOnRhoCap.pdf
+|       |-- ccl2hMEPCPsOnRhoCapTransp.pdf
+|       |-- ccl2hMEPCPsOnRhoIso.pdf
+|       |-- cubaneCPs.pdf
+|       |-- custfld-wfnclass.cpp
+|       |-- custfld-wfnclass.cxx
+|       |-- cyclopCPs.pdf
+|       |-- cyclopELFLine.pdf
+|       |-- cyclopLOLPlane.pdf
+|       |-- cyclopLap.pdf
+|       |-- cyclopQDMolLine.pdf
+|       |-- cyclopQDMolPlane.pdf
+|       |-- cyclopropaneBPDM1-C1-C2-1D1.pdf
+|       |-- cyclopropaneBPDM1-C1-C2-1D2.pdf
+|       |-- cyclopropaneBPDM1-C1-C2-2D.pdf
+|       |-- cyclopropaneBPDM1-C1-C2-3D.pdf
+|       |-- cyclopropaneBPSLMagGradLOL-C1-C2.pdf
+|       |-- cyclopropaneMomDens-PxPy.pdf
+|       |-- cyclopropaneMomDens-PyPz.pdf
+|       |-- dtk-manual.tex
+|       |-- dtkbibliography.bib
+|       |-- dtkqdmolusex.pdf
+|       |-- dtkview01.pdf
+|       |-- dtkview02.pdf
+|       |-- dtkview03trim.pdf
+|       |-- fdl-1.3.tex
+|       |-- h2oh2oNCI.pdf
+|       |-- h2oh2oNCISvsRho.pdf
+|       |-- helpmenus
+|       |   `-- makefile
+|       |-- hmdtkbpdens.tex
+|       |-- hmdtkcharcicp.tex
+|       |-- hmdtkcube.tex
+|       |-- hmdtkdrawer.tex
+|       |-- hmdtkeps2pdf.tex
+|       |-- hmdtkfindcp.tex
+|       |-- hmdtkgetnciplot.tex
+|       |-- hmdtkintegrate.tex
+|       |-- hmdtkline.tex
+|       |-- hmdtkmapfieldonisosurf.tex
+|       |-- hmdtkmomd.tex
+|       |-- hmdtkplane.tex
+|       |-- hmdtkpoint.tex
+|       |-- hmdtkpov2png.tex
+|       |-- hmdtkproject6dto2d.tex
+|       |-- hmdtkpropcpsoniso.tex
+|       |-- hmdtkqdmol.tex
+|       |-- impnewfld.tex
+|       |-- introduction.tex
+|       |-- programsscripts.tex
+|       `-- topology.tex
+`-- wffiles
+    |-- 4-Methylbenzoic_acid.wfn
+    |-- benzene.wfn
+    |-- benzyldiethylamine.wfx
+    |-- ch4.wfx
+    |-- cubano_sto3g.wfx
+    |-- cyclopropane.wfx
+    |-- ethanol.wfn
+    |-- h2oh2o.wfx
+    |-- maprotiline.wfx
+    `-- mescaline.wfx
 

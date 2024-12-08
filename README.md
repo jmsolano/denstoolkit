@@ -1,7 +1,13 @@
 # DensToolKit
 
 This is a first development distribution to the suite DensToolKit.
-If you like it, please consider it citing us in your work: *Comput. Phys. Commun.* (2015), http://dx.doi.org/10.1016/j.cpc.2015.07.005.
+If you like it, please consider it citing us in your work:
+
+J.M. Solano-Altamirano, Julio M. Hernández-Pérez, J. Sandoval-Lira, and J. Barroso-Flores, *Jour. Chem. Phys.* (2024),
+https://doi.org/10.1063/5.0239835
+
+ J.M. Solano-Altamirano and Julio M. Hernández-Pérez, *Comput. Phys. Commun.* (2015), **196** (2015) 362-371.
+ http://dx.doi.org/10.1016/j.cpc.2015.07.005.
 
 # Git instructions
 
