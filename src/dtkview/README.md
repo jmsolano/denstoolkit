@@ -49,3 +49,30 @@ For compiling under MacOSX, Qt5, OpenGL (usually distributed with XCode), and fr
 
 Also, perhaps you may need to adjust a few lines in the CMakeFileLists.txt in order to tell cmake where is the root Qt5 directory (_i.e._ you may need to redefine the ```CMAKE_PREFIX_PATH``` variable by hand).
 The rest sould be the same as for Ubuntu 14 (see above), but instead of a binary, you will get a MacOSX application bundle (in /path/to/dtk/builddtk/src/dtkview/build/bin/DensToolKitViewer.app)
+
+When compiling in mac, you may obtain the following message:
+
+~~~~~~~~~~~~~
+.../moc_dtkglwidget.cpp:...: error:
+use of undeclared identifier 'QGLWidget';
+did you mean 'QWidget'?
+~~~~~~~~~~~~~
+
+To correct this, correct the names of QGLWidget ---> QOpenGLWidget:
+
+~~~~~~~~~~~~~
+vim moc_dtkglwidget.cpp
+
+~~~~~~~~~~~~~
+
+and use:
+
+~~~~~~~~~~~~~
+%s/QGL/QOpenGL
+~~~~~~~~~~~~~
+Recompile:
+
+~~~~~~~~~~~~~
+$make
+~~~~~~~~~~~~~
+

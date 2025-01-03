@@ -96,7 +96,7 @@ set(the_usr_srcs
 )
 
 if (NOT DEFINED QT5_LIB_ROOT)
-   set(QT5_LIB_ROOT /opt/homebrew/Cellar/qt@5/5.15.10/)
+   set(QT5_LIB_ROOT /opt/homebrew/Cellar/qt@5/5.15.16/)
 endif()
 
 set(the_usr_qt5_modules Core Gui Widgets OpenGL)
