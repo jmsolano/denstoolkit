@@ -2956,6 +2956,7 @@ int CritPtNetWork::FindSingleRhoRingGradientPathRK5(int rcpIdx,\
       xn[i]*=hstep;
       xn[i]+=xb[i];
    }
+   //cout << "rcpIdx: " << rcpIdx << ", bcpGlobIdx: " << bcpGlobIdx << '\n';
    bool imatrcp=WalkGradientPathRK5ToEndPoint(xb,xn,xr,xm,magd,hstep,\
          dima,arrgp,count,maxalllen,false /* uphilldir=false  */);
    if ( imatrcp ) {return count;}
@@ -2971,22 +2972,30 @@ int CritPtNetWork::FindSingleRhoRingGradientPathRK5(int rcpIdx,\
             +string(")"));
    }
    EigenDecompositionJAMA::EigenDecomposition3(hess,eivec,tmpv);
+   //eigenvectors (eivec[i]) are normalized.
+   //if ( detM3x3(eivec) < 0.0e0 ) {
+   //   ScreenUtils::DisplayWarningMessage("Det(eivec)<0!");
+   //   cout << __FILE__ << ", fnc: " << __FUNCTION__ << ", line: " << __LINE__ << '\n';
+   //}
    for ( int i=0 ; i<3 ; ++i ) {
       ux[i]=eivec[i][0];
       uy[i]=eivec[i][1];
       //uz[i]=eivec[i][2];
       //xmmxr[i]=xm[i]-xr[i];
    }
+   //cout << "evals: " << tmpv[0] << ' ' << tmpv[1] << ' ' << tmpv[2] << '\n';
    double dir1[3],dir2[3];
    for ( int i=0 ; i<3 ; ++i ) {
       dir1[i]=xrmxb[i];
       dir2[i]=xm[i]-xb[i];
    }
+   //normalizeV3(dir1); normalizeV3(dir2);
    double alpha,beta,delta,gamma,currdmin;
    alpha=atan2(dotProductV3(dir1,uy),dotProductV3(dir1,ux));
    beta=atan2(dotProductV3(dir2,uy),dotProductV3(dir2,ux));
    delta=alpha-beta;
    gamma=alpha;
+   //cout << "alpha: " << alpha << ". beta: " << beta << ", delta: " << delta << '\n';
    int sign0=(delta >= 0.0e0 ? 1 : -1),currSign;
    int mymaxiter=fabs(int(6.28318530717959e0/delta))+10;
    bool samedir=true;
@@ -3008,7 +3017,7 @@ int CritPtNetWork::FindSingleRhoRingGradientPathRK5(int rcpIdx,\
       if ( imatrcp ) {
          //displayGreenMessage("imatrcp!");
          for ( int i=0 ; i<3 ; ++i ) { tmpv[i]=xm[i]-xb[i]; }
-         magd=atan2(dotProductV3(tmpv,uy),dotProductV3(tmpv,ux));
+         //magd=atan2(dotProductV3(tmpv,uy),dotProductV3(tmpv,ux));
          //cout << "iter: " << iter << ", delta: " << magd << endl;
          return count;
       }
@@ -3246,6 +3255,7 @@ void CritPtNetWork::GetNextPointInGradientPathRK5UpHill(double (&xn)[3],double &
       }
       wf->EvalRhoGradRho(xt[0],xt[1],xt[2],rho,g);
       maggrad=sqrt(g[0]*g[0]+g[1]*g[1]+g[2]*g[2]);
+      //if ( maggrad<1.0e-5 ) { maggrad=1.0e-5; cout << "c\n"; }
       for(int l=0; l<3; l++) {
          k[i][l] = stepsize*g[l]/maggrad;
       }

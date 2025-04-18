@@ -789,7 +789,8 @@ void cpxGetBondPathData(ifstream &ifil,const int nn,int** (&ii),double*** (&rrr)
    for (int k=0; k<nn; k++) {
       cpxSetPosOfFileAfterOpenningKey(ifil,"BondPathIndex",false);
       ifil >> ktmp;
-      if (ktmp!=k) {ScreenUtils::DisplayWarningMessage("Disordered bond paths!");}
+      if (ktmp!=k) {ScreenUtils::DisplayWarningMessage(string("Disordered bond paths!")\
+            +std::to_string(k)+string("/")+std::to_string(ktmp));}
       cpxSetPosOfFileAfterOpenningKey(ifil,"CoordinatesOfBondPathPoints",false);
       ktmp=ii[k][2];
       for (int j=0; j<ktmp; j++) {for (int l=0; l<3; l++) {ifil >> rrr[k][j][l];}}

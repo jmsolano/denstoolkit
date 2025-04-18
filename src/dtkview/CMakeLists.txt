@@ -96,7 +96,7 @@ set(the_usr_srcs
 )
 
 if (NOT DEFINED QT5_LIB_ROOT)
-   set(QT5_LIB_ROOT /opt/homebrew/Cellar/qt@5/5.15.16/)
+   set(QT5_LIB_ROOT /opt/homebrew/Cellar/qt@5/5.15.16_1/)
 endif()
 
 set(the_usr_qt5_modules Core Gui Widgets OpenGL)
@@ -247,6 +247,8 @@ if (CMAKE_COMPILER_IS_GNUCXX)
       set(CMAKE_CXX_FLAGS "-m64 ${CMAKE_CXX_FLAGS}")
    endif()
    set(CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS})
+else()
+   set(CMAKE_CXX_FLAGS "-Wall -O2")
 endif()
 
 
