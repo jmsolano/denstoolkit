@@ -114,7 +114,7 @@ int main (int argc, char ** argv)
    
    cout << " Done." << endl;
    
-   string userterm="x11";
+   string userterm="none";
    if (options.settermgnp) {
       userterm=string(argv[options.settermgnp]);
    }
@@ -181,7 +181,9 @@ void makeMolGnuplotFile(string &gname,BondNetWork &bn,bool putHs,const string te
    gfil << "set view equal xyz" << endl;
    gfil << "set xyplane relative 0" << endl;
 #if (defined(__APPLE__)||defined(__linux__))
-   gfil << "set term " << term << " enhanced font \"Sans,14\"" <<endl;
+   if ( string("none") != term ) {
+      gfil << "set term " << term << " enhanced font \"Sans,14\"" <<endl;
+   }
 #endif
 #if (defined(__CYGWIN__))
    gfil << "set term windows enhanced font \"Sans,14\"" <<endl;
