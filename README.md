@@ -1,16 +1,19 @@
 # DensToolKit
 
-
-<p align=center href='https://github.com/MShawon/github-clone-count-badge'><img alt='GitHub Clones' src='https://img.shields.io/badge/dynamic/json?color=success&label=Clone&query=count&url=https://gist.githubusercontent.com/jmsolano/ea34e49c1d80c50980410e1844b68535/raw/clone.json&logo=github'></p>
-
-This is a first development distribution to the suite DensToolKit.
+This is the version 2.0 of the suite DensToolKit.
 If you like it, please consider it citing us in your work:
 
 J.M. Solano-Altamirano, Julio M. Hernández-Pérez, J. Sandoval-Lira, and J. Barroso-Flores, *Jour. Chem. Phys.* (2024). [https://doi.org/10.1063/5.0239835](
 https://doi.org/10.1063/5.0239835)
 
+The first version was published in:
+
  J.M. Solano-Altamirano and Julio M. Hernández-Pérez, *Comput. Phys. Commun.* (2015), **196** (2015) 362-371.
  [http://dx.doi.org/10.1016/j.cpc.2015.07.005.](http://dx.doi.org/10.1016/j.cpc.2015.07.005.)
+ 
+ Since June 2025, DensToolKit has been cloned the following number of times:
+ 
+ <p align=center href='https://github.com/MShawon/github-clone-count-badge'><img alt='GitHub Clones' src='https://img.shields.io/badge/dynamic/json?color=success&label=Clone&query=count&url=https://gist.githubusercontent.com/jmsolano/ea34e49c1d80c50980410e1844b68535/raw/clone.json&logo=github'></p>
 
 # Git instructions
 
