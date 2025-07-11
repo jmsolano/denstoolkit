@@ -13,7 +13,7 @@ The first version was published in:
  
  Since June 2025, DensToolKit has been cloned the following number of times:
  
- <p align=center href='https://github.com/MShawon/github-clone-count-badge'><img alt='GitHub Clones' src='https://img.shields.io/badge/dynamic/json?color=success&label=Clone&query=count&url=https://gist.githubusercontent.com/jmsolano/ea34e49c1d80c50980410e1844b68535/raw/clone.json&logo=github'></p>
+ <p align=center href='https://github.com/jmsolano/denstoolkit'><img alt='GitHub Clones' src='https://img.shields.io/badge/dynamic/json?color=success&label=Clone&query=count&url=https://gist.githubusercontent.com/jmsolano/ea34e49c1d80c50980410e1844b68535/raw/clone.json&logo=github'></p>
 
 # Git instructions
 
