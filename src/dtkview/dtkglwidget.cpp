@@ -145,14 +145,13 @@ void DTKGLWidget::initializeGL() {
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); //Set blending function.
 }
 void DTKGLWidget::paintGL() {
-
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
    glLoadIdentity();
    glTranslatef(0.0, 0.0, -10.0);
-   glRotatef(float(xRot), 1.0, 0.0, 0.0);
-   glRotatef(float(yRot), 0.0, 1.0, 0.0);
-   glRotatef(float(zRot), 0.0, 0.0, 1.0);
+   glRotatef(float(xRot), -1.0, 0.0, 0.0);
+   glRotatef(float(yRot), 0.0, -1.0, 0.0);
+   glRotatef(float(zRot), 0.0, 0.0, -1.0);
    glScalef(cameraDistance,cameraDistance,cameraDistance);
 
    drawEverything();
@@ -534,11 +533,10 @@ void DTKGLWidget::mouseMoveEvent(QMouseEvent *event) {
    int dy = event->y() - lastPos.y();
 
    if (event->buttons() & Qt::LeftButton) {
-      setXRotation(xRot + dy/2 );
-      setYRotation(yRot + dx/2 );
+      setXRotation(xRot - dy/2 );
+      setYRotation(yRot - dx/2 );
    } else if (event->buttons() & Qt::RightButton) {
-      setXRotation(xRot + dy/2 );
-      setZRotation(zRot + dx/2 );
+      setZRotation(zRot - dx/2 );
    }
    lastPos = event->pos();
 }

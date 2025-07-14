@@ -423,15 +423,18 @@ void HelpersDrawer::SetupPovConf(POVRayConfiguration &pvp,BondNetWork &bn,\
       double angle;
       if ( options.rotX ) {
          angle=std::stod(string(argv[options.rotX]));
-         CommonHelpers::RotateCameraAroundRight(pvp,angle);
+         pvp.vecAngView[0]=angle;
+         //CommonHelpers::RotateCameraAroundRight(pvp,angle);
       }
       if ( options.rotY ) {
          angle=std::stod(string(argv[options.rotY]));
-         CommonHelpers::RotateCameraAroundUp(pvp,angle);
+         pvp.vecAngView[1]=angle;
+         //CommonHelpers::RotateCameraAroundUp(pvp,angle);
       }
       if ( options.rotZ ) {
          angle=std::stod(string(argv[options.rotZ]));
-         CommonHelpers::RotateCameraAroundLocCam(pvp,angle);
+         pvp.vecAngView[2]=angle;
+         //CommonHelpers::RotateCameraAroundLocCam(pvp,angle);
       }
    }
    for (int i=0; i<3; i++) {

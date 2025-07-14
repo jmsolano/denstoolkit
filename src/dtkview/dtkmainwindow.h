@@ -63,6 +63,7 @@ public:
 
 public slots:
    void updateStatusBar(void);
+   void updateAngleScrollBarsAndSpinBoxes(void);
    void loadMolecule(void);
    void loadTestMolecule(void);
    void clearViewPort(void);
@@ -88,7 +89,15 @@ private slots:
    void on_setTransparentCheckBox_clicked();
    void on_viewCPLabelsCheckBox_clicked();
 
-private:
+   void on_xAngleScrollBar_valueChanged(int value);
+   void on_yAngleScrollBar_valueChanged(int value);
+   void on_zAngleScrollBar_valueChanged(int value);
+
+   void on_xAngleSpinBox_valueChanged(int value);
+   void on_yAngleSpinBox_valueChanged(int value);
+   void on_zAngleSpinBox_valueChanged(int value);
+
+   private:
    Ui::DTKMainWindow *ui;
    // ++++++++++++++++++++ ACTIONS ++++++++++++++++++++
    // When adding new actions, do not forget to delete

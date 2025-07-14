@@ -56,6 +56,7 @@ DTKMainWindow::DTKMainWindow(QWidget *parent) :
    ui->setupUi(this);
 
    connect(ui->openGLWidget,SIGNAL(rotationChanged()),this,SLOT(updateStatusBar()));
+   connect(ui->openGLWidget,SIGNAL(rotationChanged()),this,SLOT(updateAngleScrollBarsAndSpinBoxes()));
    connect(ui->openGLWidget,SIGNAL(zoomChanged()),this,SLOT(updateStatusBar()));
    updateStatusBar();
 
@@ -73,6 +74,15 @@ void DTKMainWindow::updateStatusBar() {
                             .arg(ui->openGLWidget->getZRot())
                             .arg(ui->openGLWidget->getCurrentZoom())
                             );
+}
+void DTKMainWindow::updateAngleScrollBarsAndSpinBoxes() {
+   ui->xAngleSpinBox->setValue(ui->openGLWidget->getXRot());
+   ui->yAngleSpinBox->setValue(ui->openGLWidget->getYRot());
+   ui->zAngleSpinBox->setValue(ui->openGLWidget->getZRot());
+
+   ui->xAngleScrollBar->setValue(ui->openGLWidget->getXRot());
+   ui->yAngleScrollBar->setValue(ui->openGLWidget->getYRot());
+   ui->zAngleScrollBar->setValue(ui->openGLWidget->getZRot());
 }
 DTKMainWindow::~DTKMainWindow() {
    delete loadMoleculeAction;
@@ -384,3 +394,28 @@ void DTKMainWindow::on_viewCPLabelsCheckBox_clicked() {
    ui->openGLWidget->setDrawCPLabels(val);
    viewCPLabelsAction->setChecked(val);
 }
+void DTKMainWindow::on_xAngleScrollBar_valueChanged(int value) {
+   ui->xAngleSpinBox->setValue(value);
+   ui->openGLWidget->setXRotation(value);
+}
+void DTKMainWindow::on_yAngleScrollBar_valueChanged(int value) {
+   ui->yAngleSpinBox->setValue(value);
+   ui->openGLWidget->setYRotation(value);
+}
+void DTKMainWindow::on_zAngleScrollBar_valueChanged(int value) {
+   ui->zAngleSpinBox->setValue(value);
+   ui->openGLWidget->setZRotation(value);
+}
+void DTKMainWindow::on_xAngleSpinBox_valueChanged(int value) {
+   ui->xAngleScrollBar->setValue(value);
+   ui->openGLWidget->setXRotation(value);
+}
+void DTKMainWindow::on_yAngleSpinBox_valueChanged(int value) {
+   ui->yAngleScrollBar->setValue(value);
+   ui->openGLWidget->setYRotation(value);
+}
+void DTKMainWindow::on_zAngleSpinBox_valueChanged(int value) {
+   ui->zAngleScrollBar->setValue(value);
+   ui->openGLWidget->setZRotation(value);
+}
+
