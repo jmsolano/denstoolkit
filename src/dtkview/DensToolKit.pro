@@ -6,57 +6,66 @@
 
 QT       += core gui opengl
 
+#greaterThan(QT_MAJOR_VERSION, 5): QT += openglwidgets
 greaterThan(QT_MAJOR_VERSION, 5): QT += widgets
 
 TARGET = DensToolKit
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        dtkmainwindow.cpp \
-    dtkglwidget.cpp \
-    ../common/bondnetwork.cpp \
-    ../common/iofuncts-cpx.cpp \
-    ../common/iofuncts-wfn.cpp \
-    ../common/iofuncts-wfx.cpp \
-    ../common/solpovtools.cpp \
-    ../common/solmemhand.cpp \
-    ../common/atomradiicust.cpp \
-    ../common/figname.cpp \
-    ../common/solscrutils.cpp \
-    ../common/atomcolschjmol.cpp \
-    ../common/solstringtools.cpp \
-    ../common/critptnetwork.cpp \
-    ../common/gausswavefunction.cpp \
-    ../common/eig2-4.cpp \
-    ../common/solmath.cpp \
-    ../common/solfileutils.cpp \
-    dtkglbondnetwork.cpp \
-    dtkglutils.cpp \
-    dtkglcriticalpointnetwork.cpp
+SOURCES += main.cpp \
+   dtkmainwindow.cpp \
+   dtkglwidget.cpp \
+   dtkglbondnetwork.cpp \
+   dtkglutils.cpp \
+   dtkglcriticalpointnetwork.cpp \
+   ../common/bondnetwork.cpp \
+   ../common/iofuncts-cpx.cpp \
+   ../common/iofuncts-wfn.cpp \
+   ../common/iofuncts-wfx.cpp \
+   ../common/povraytools.cpp \
+   ../common/mymemory.cpp \
+   ../common/atomradiicust.cpp \
+   ../common/figname.cpp \
+   ../common/screenutils.cpp \
+   ../common/atomcolschjmol.cpp \
+   ../common/stringtools.cpp \
+   ../common/critptnetwork.cpp \
+   ../common/gausswavefunction.cpp \
+   ../common/eigendecompositionjama.cpp \
+   ../common/mymath.cpp \
+   ../common/fileutils.cpp \
+   ../common/matrixvectoroperations3d.cpp \
+   ../common/atom.cpp \
+   ../common/molecule.cpp \
+   ../common/inputmolecule_xyz.cpp
 
 HEADERS  += dtkmainwindow.h \
-    dtkglwidget.h \
-    ../common/bondnetwork.h \
-    ../common/iofuncts-cpx.h \
-    ../common/iofuncts-wfn.h \
-    ../common/iofuncts-wfx.h \
-    ../common/solpovtools.h \
-    ../common/solmemhand.h \
-    ../common/atomradiicust.h \
-    ../common/solscrutils.h \
-    ../common/atomcolschjmol.h \
-    ../common/solstringtools.h \
-    ../common/critptnetwork.h \
-    ../common/gausswavefunction.h \
-    ../common/eig2-4.h \
-    ../common/solmath.h \
-    ../common/solfileutils.h \
-    ../common/figname.h \
-    dtkglbondnetwork.h \
-    dtkglutils.h \
-    dtkglcriticalpointnetwork.h
-    //localdefs.h \
+   dtkglwidget.h \
+   localdefs.h \
+   dtkglbondnetwork.h \
+   dtkglutils.h \
+   dtkglcriticalpointnetwork.h \
+   ../common/bondnetwork.h \
+   ../common/iofuncts-cpx.h \
+   ../common/iofuncts-wfn.h \
+   ../common/iofuncts-wfx.h \
+   ../common/povraytools.h \
+   ../common/mymemory.h \
+   ../common/atomradiicust.h \
+   ../common/screenutils.h \
+   ../common/atomcolschjmol.h \
+   ../common/stringtools.h \
+   ../common/critptnetwork.h \
+   ../common/gausswavefunction.h \
+   ../common/eigendecompositionjama.h \
+   ../common/mymath.h \
+   ../common/fileutils.h \
+   ../common/figname.h \
+   ../common/matrixvectoroperations3d.h \
+   ../common/atom.h \
+   ../common/molecule.h \
+   ../common/inputmolecule_xyz.h
 
 FORMS    += dtkmainwindow.ui
 
@@ -67,7 +76,9 @@ macx:  {
    LIBS += -framework GLUT
 }
 
-//QMAKE_CXXFLAGS += -include localdefs.h
+QMAKE_CXXFLAGS += -include ~/Documents/LongRun/proj/2024dtk/src/dtkview/localdefs.h -include ~/Documents/LongRun/proj/2024dtk/src/common/globaldefs.h -O2
+
+CONFIG += c++11
 
 DISTFILES +=
 

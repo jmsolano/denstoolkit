@@ -240,7 +240,7 @@ TARGET_LINK_LIBRARIES(${the_usr_bin_name} Qt5::Core Qt5::Gui Qt5::Widgets Qt5::O
 ADD_DEFINITIONS(-include localdefs.h -include ../common/globaldefs.h)
 
 if (CMAKE_COMPILER_IS_GNUCXX)
-   set(CMAKE_CXX_FLAGS "-Wall -O2 -funroll-loops -falign-loops=16")
+   set(CMAKE_CXX_FLAGS "-Wall -O2 -funroll-loops -falign-loops=16 -std=c++14")
    if (CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "aarch64")
       set(CMAKE_CXX_FLAGS "-march=armv8-a ${CMAKE_CXX_FLAGS}")
    else()
