@@ -28,7 +28,9 @@ After installing the corresponding packages, go to a directory wherein you plan 
 ~~~~~~~~~~~~~
 cd /path/to/dtk
 git clone git://github.com/jmsolano/denstoolkit.git builddtk
-cd builddtk/src/dtkview
+cd builddtk/src
+./checkdependencies
+cd dtkview
 mkdir build
 cd build
 cmake ..
@@ -77,7 +79,9 @@ sudo port install qt5 freeglut
 ~~~~~~~~~~~~~
 cd /path/to/dtk
 git clone git://github.com/jmsolano/denstoolkit.git builddtk
-cd builddtk/src/dtkview
+cd builddtk/src
+./checkdependencies
+cd dtkview
 mkdir build
 cd build
 cmake -DQT5_LIB_ROOT=/opt/homebrew/Cellar/qt\@5/5.15.16_1 ..
