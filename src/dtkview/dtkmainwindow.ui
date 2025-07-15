@@ -208,6 +208,9 @@
           <height>500</height>
          </size>
         </property>
+        <property name="mouseTracking">
+         <bool>false</bool>
+        </property>
         <property name="minimum">
          <number>0</number>
         </property>
@@ -219,6 +222,9 @@
         </property>
         <property name="pageStep">
          <number>30</number>
+        </property>
+        <property name="tracking">
+         <bool>true</bool>
         </property>
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -245,6 +251,9 @@
           <height>602</height>
          </size>
         </property>
+        <property name="mouseTracking">
+         <bool>false</bool>
+        </property>
         <property name="maximum">
          <number>359</number>
         </property>
@@ -253,6 +262,9 @@
         </property>
         <property name="pageStep">
          <number>30</number>
+        </property>
+        <property name="tracking">
+         <bool>true</bool>
         </property>
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -303,7 +315,7 @@
          </size>
         </property>
         <property name="mouseTracking">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="maximum">
          <number>355</number>
@@ -313,6 +325,9 @@
         </property>
         <property name="pageStep">
          <number>30</number>
+        </property>
+        <property name="tracking">
+         <bool>true</bool>
         </property>
         <property name="orientation">
          <enum>Qt::Vertical</enum>
