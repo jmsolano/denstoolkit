@@ -75,7 +75,10 @@ public slots:
    void setViewBondGradientPaths(void);
    void setViewRingGradientPaths(void);
    void setViewCageGradientPaths(void);
-   void setViewCPLabels(void);
+   void setViewACPLabels(void);
+   void setViewBCPLabels(void);
+   void setViewRCPLabels(void);
+   void setViewCCPLabels(void);
    void showAboutDTK(void);
 
 private slots:
@@ -87,7 +90,10 @@ private slots:
    void on_viewRegularBondsCheckBox_clicked();
    void on_viewAtomsCheckBox_clicked();
    void on_setTransparentCheckBox_clicked();
-   void on_viewCPLabelsCheckBox_clicked();
+   void on_viewACPLabelsCheckBox_clicked();
+   void on_viewBCPLabelsCheckBox_clicked();
+   void on_viewRCPLabelsCheckBox_clicked();
+   void on_viewCCPLabelsCheckBox_clicked();
 
    void on_xAngleScrollBar_valueChanged(int value);
    void on_yAngleScrollBar_valueChanged(int value);
@@ -115,7 +121,10 @@ private slots:
    QAction *viewBondGradientPathsAction;
    QAction *viewRingGradientPathsAction;
    QAction *viewCageGradientPathsAction;
-   QAction *viewCPLabelsAction;
+   QAction *viewACPLabelsAction;
+   QAction *viewBCPLabelsAction;
+   QAction *viewRCPLabelsAction;
+   QAction *viewCCPLabelsAction;
 
    QAction *showAboutDTKAction;
    // +++++++++++++++++++++ MENUS +++++++++++++++++++++

@@ -110,7 +110,10 @@ public slots:
    void setViewBondGradientPaths(bool dbgp);
    void setViewRingGradientPaths(bool drgp);
    void setViewCageGradientPaths(bool dcgp);
-   void setDrawCPLabels(bool dal);
+   void setDrawACPLabels(bool dal);
+   void setDrawBCPLabels(bool dal);
+   void setDrawRCPLabels(bool dal);
+   void setDrawCCPLabels(bool dal);
    void setTransparentAtomsAndLinks(bool val);
    void setCameraDistance(double dist);
    void resetView(void);
@@ -148,7 +151,10 @@ private:
    bool drawBGPs;
    bool drawRGPs;
    bool drawCGPs;
-   bool drawCPLbls;
+   bool drawACPLbls;
+   bool drawBCPLbls;
+   bool drawRCPLbls;
+   bool drawCCPLbls;
    bool setTransp;
    double cameraDistance;
    QPoint lastPos;

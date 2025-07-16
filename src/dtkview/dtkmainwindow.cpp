@@ -98,7 +98,10 @@ DTKMainWindow::~DTKMainWindow() {
    delete viewBondGradientPathsAction;
    delete viewRingGradientPathsAction;
    delete viewCageGradientPathsAction;
-   delete viewCPLabelsAction;
+   delete viewACPLabelsAction;
+   delete viewBCPLabelsAction;
+   delete viewRCPLabelsAction;
+   delete viewCCPLabelsAction;
 
    delete showAboutDTKAction;
 
@@ -132,7 +135,10 @@ void DTKMainWindow::createMenus() {
    viewMenu->addAction(viewBondGradientPathsAction);
    viewMenu->addAction(viewRingGradientPathsAction);
    viewMenu->addAction(viewCageGradientPathsAction);
-   viewMenu->addAction(viewCPLabelsAction);
+   viewMenu->addAction(viewACPLabelsAction);
+   viewMenu->addAction(viewBCPLabelsAction);
+   viewMenu->addAction(viewRCPLabelsAction);
+   viewMenu->addAction(viewCCPLabelsAction);
 
    helpMenu = menuBar()->addMenu(tr("&Help"));
    helpMenu->addAction(showAboutDTKAction);
@@ -178,11 +184,30 @@ void DTKMainWindow::createActions() {
     viewCageGradientPathsAction->setChecked(ui->viewCGPsCheckBox->isChecked());
     connect(viewCageGradientPathsAction,SIGNAL(triggered()),this,SLOT(setViewCageGradientPaths()));
 
-    viewCPLabelsAction = new QAction(QIcon(":/images/drawcplbls.png"),tr("View C&P Labels"), this);
-    viewCPLabelsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::ShiftModifier+Qt::Key_L));
-    viewCPLabelsAction->setCheckable(true);
-    viewCPLabelsAction->setChecked(ui->viewCPLabelsCheckBox->isChecked());
-    connect(viewCPLabelsAction,SIGNAL(triggered()),this,SLOT(setViewCPLabels()));
+    //viewACPLabelsAction = new QAction(QIcon(":/images/drawcplbls.png"),tr("View C&P Labels"), this);
+    viewACPLabelsAction = new QAction(QIcon(":/images/drawacplbls.png"),tr("View ACP Labels"), this);
+    //viewACPLabelsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::ShiftModifier+Qt::Key_L));
+    viewACPLabelsAction->setCheckable(true);
+    viewACPLabelsAction->setChecked(ui->viewACPLabelsCheckBox->isChecked());
+    connect(viewACPLabelsAction,SIGNAL(triggered()),this,SLOT(setViewACPLabels()));
+
+    viewBCPLabelsAction = new QAction(QIcon(":/images/drawbcplbls.png"),tr("View BCP Labels"), this);
+    //viewBCPLabelsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::ShiftModifier+Qt::Key_L));
+    viewBCPLabelsAction->setCheckable(true);
+    viewBCPLabelsAction->setChecked(ui->viewBCPLabelsCheckBox->isChecked());
+    connect(viewBCPLabelsAction,SIGNAL(triggered()),this,SLOT(setViewBCPLabels()));
+
+    viewRCPLabelsAction = new QAction(QIcon(":/images/drawrcplbls.png"),tr("View RCP Labels"), this);
+    //viewRCPLabelsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::ShiftModifier+Qt::Key_L));
+    viewRCPLabelsAction->setCheckable(true);
+    viewRCPLabelsAction->setChecked(ui->viewRCPLabelsCheckBox->isChecked());
+    connect(viewRCPLabelsAction,SIGNAL(triggered()),this,SLOT(setViewRCPLabels()));
+
+    viewCCPLabelsAction = new QAction(QIcon(":/images/drawccplbls.png"),tr("View CCP Labels"), this);
+    //viewCCPLabelsAction->setShortcut(QKeySequence(Qt::CTRL+Qt::ShiftModifier+Qt::Key_L));
+    viewCCPLabelsAction->setCheckable(true);
+    viewCCPLabelsAction->setChecked(ui->viewCCPLabelsCheckBox->isChecked());
+    connect(viewCCPLabelsAction,SIGNAL(triggered()),this,SLOT(setViewCCPLabels()));
 
     setTransparentAtomsAndLinksAction = new QAction(QIcon(":/images/toggletransp.png"),tr("Set &Transparent"), this);
     setTransparentAtomsAndLinksAction->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_T));
@@ -218,7 +243,10 @@ void DTKMainWindow::setupMainToolbar() {
    ui->mainToolBar->addAction(viewBondGradientPathsAction);
    ui->mainToolBar->addAction(viewRingGradientPathsAction);
    ui->mainToolBar->addAction(viewCageGradientPathsAction);
-   ui->mainToolBar->addAction(viewCPLabelsAction);
+   ui->mainToolBar->addAction(viewACPLabelsAction);
+   ui->mainToolBar->addAction(viewBCPLabelsAction);
+   ui->mainToolBar->addAction(viewRCPLabelsAction);
+   ui->mainToolBar->addAction(viewCCPLabelsAction);
 }
 void DTKMainWindow::loadMolecule() {
 #ifdef __APPLE__
@@ -331,12 +359,33 @@ void DTKMainWindow::setViewCageGradientPaths() {
    viewCageGradientPathsAction->setChecked(val);
    ui->openGLWidget->setViewCageGradientPaths(val);
 }
-void DTKMainWindow::setViewCPLabels() {
-   bool val=ui->viewCPLabelsCheckBox->isChecked();
+void DTKMainWindow::setViewACPLabels() {
+   bool val=ui->viewACPLabelsCheckBox->isChecked();
    val=(!val);
-   ui->viewCPLabelsCheckBox->setChecked(val);
-   viewCPLabelsAction->setChecked(val);
-   ui->openGLWidget->setDrawCPLabels(val);
+   ui->viewACPLabelsCheckBox->setChecked(val);
+   viewACPLabelsAction->setChecked(val);
+   ui->openGLWidget->setDrawACPLabels(val);
+}
+void DTKMainWindow::setViewBCPLabels() {
+   bool val=ui->viewBCPLabelsCheckBox->isChecked();
+   val=(!val);
+   ui->viewBCPLabelsCheckBox->setChecked(val);
+   viewBCPLabelsAction->setChecked(val);
+   ui->openGLWidget->setDrawBCPLabels(val);
+}
+void DTKMainWindow::setViewRCPLabels() {
+   bool val=ui->viewRCPLabelsCheckBox->isChecked();
+   val=(!val);
+   ui->viewRCPLabelsCheckBox->setChecked(val);
+   viewRCPLabelsAction->setChecked(val);
+   ui->openGLWidget->setDrawRCPLabels(val);
+}
+void DTKMainWindow::setViewCCPLabels() {
+   bool val=ui->viewCCPLabelsCheckBox->isChecked();
+   val=(!val);
+   ui->viewCCPLabelsCheckBox->setChecked(val);
+   viewCCPLabelsAction->setChecked(val);
+   ui->openGLWidget->setDrawCCPLabels(val);
 }
 void DTKMainWindow::showAboutDTK() {
    QMessageBox about(NULL);
@@ -389,10 +438,25 @@ void DTKMainWindow::on_setTransparentCheckBox_clicked() {
    ui->openGLWidget->setTransparentAtomsAndLinks(val);
    setTransparentAtomsAndLinksAction->setChecked(val);
 }
-void DTKMainWindow::on_viewCPLabelsCheckBox_clicked() {
-   bool val=ui->viewCPLabelsCheckBox->isChecked();
-   ui->openGLWidget->setDrawCPLabels(val);
-   viewCPLabelsAction->setChecked(val);
+void DTKMainWindow::on_viewACPLabelsCheckBox_clicked() {
+   bool val=ui->viewACPLabelsCheckBox->isChecked();
+   ui->openGLWidget->setDrawACPLabels(val);
+   viewACPLabelsAction->setChecked(val);
+}
+void DTKMainWindow::on_viewBCPLabelsCheckBox_clicked() {
+   bool val=ui->viewBCPLabelsCheckBox->isChecked();
+   ui->openGLWidget->setDrawBCPLabels(val);
+   viewBCPLabelsAction->setChecked(val);
+}
+void DTKMainWindow::on_viewRCPLabelsCheckBox_clicked() {
+   bool val=ui->viewRCPLabelsCheckBox->isChecked();
+   ui->openGLWidget->setDrawRCPLabels(val);
+   viewRCPLabelsAction->setChecked(val);
+}
+void DTKMainWindow::on_viewCCPLabelsCheckBox_clicked() {
+   bool val=ui->viewCCPLabelsCheckBox->isChecked();
+   ui->openGLWidget->setDrawCCPLabels(val);
+   viewCCPLabelsAction->setChecked(val);
 }
 void DTKMainWindow::on_xAngleScrollBar_valueChanged(int value) {
    ui->xAngleSpinBox->setValue(value);

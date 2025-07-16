@@ -86,7 +86,7 @@ DTKGLWidget::DTKGLWidget(QWidget *parent)
    drawAts=setTransp=true;
    drawAtLbls=drawBnds=false;
    drawBGPs=drawRGPs=drawCGPs=true;
-   drawCPLbls=false;
+   drawACPLbls=drawBCPLbls=drawRCPLbls=drawCCPLbls=false;
    cameraDistance=INITIAL_CAMERA_DISTANCE;
    waveFunction.clear();
    bondNW.clear();
@@ -307,29 +307,37 @@ void DTKGLWidget::drawCPLabels() {
    int nn;
    for (int cIdx=0; cIdx<critPtNW.size(); ++cIdx) {
       cpn=critPtNW[cIdx];
-      nn=cpn->getNumACPs();
-      for (int i=0; i<nn; ++i) {
-         lbl=tr("A")+QString::number(i+1);
-         pos=cpn->getACPCoordinates(i);
-         drawText(pos,lbl,DTKGL_DISPLACEMENT_CP_LABEL_X,DTKGL_DISPLACEMENT_CP_LABEL_Y);
+      if ( drawACPLbls ) {
+         nn=cpn->getNumACPs();
+         for (int i=0; i<nn; ++i) {
+            lbl=tr("A")+QString::number(i+1);
+            pos=cpn->getACPCoordinates(i);
+            drawText(pos,lbl,DTKGL_DISPLACEMENT_CP_LABEL_X,DTKGL_DISPLACEMENT_CP_LABEL_Y);
+         }
       }
-      nn=cpn->getNumBCPs();
-      for (int i=0; i<nn; ++i) {
-         lbl=tr("B")+QString::number(i+1);
-         pos=cpn->getBCPCoordinates(i);
-         drawText(pos,lbl,DTKGL_DISPLACEMENT_CP_LABEL_X,DTKGL_DISPLACEMENT_CP_LABEL_Y);
+      if ( drawBCPLbls ) {
+         nn=cpn->getNumBCPs();
+         for (int i=0; i<nn; ++i) {
+            lbl=tr("B")+QString::number(i+1);
+            pos=cpn->getBCPCoordinates(i);
+            drawText(pos,lbl,DTKGL_DISPLACEMENT_CP_LABEL_X,DTKGL_DISPLACEMENT_CP_LABEL_Y);
+         }
       }
-      nn=cpn->getNumRCPs();
-      for (int i=0; i<nn; ++i) {
-         lbl=tr("R")+QString::number(i+1);
-         pos=cpn->getRCPCoordinates(i);
-         drawText(pos,lbl,DTKGL_DISPLACEMENT_CP_LABEL_X,DTKGL_DISPLACEMENT_CP_LABEL_Y);
+      if ( drawRCPLbls ) {
+         nn=cpn->getNumRCPs();
+         for (int i=0; i<nn; ++i) {
+            lbl=tr("R")+QString::number(i+1);
+            pos=cpn->getRCPCoordinates(i);
+            drawText(pos,lbl,DTKGL_DISPLACEMENT_CP_LABEL_X,DTKGL_DISPLACEMENT_CP_LABEL_Y);
+         }
       }
-      nn=cpn->getNumCCPs();
-      for (int i=0; i<nn; ++i) {
-         lbl=tr("C")+QString::number(i+1);
-         pos=cpn->getCCPCoordinates(i);
-         drawText(pos,lbl,DTKGL_DISPLACEMENT_CP_LABEL_X,DTKGL_DISPLACEMENT_CP_LABEL_Y);
+      if ( drawCCPLbls ) {
+         nn=cpn->getNumCCPs();
+         for (int i=0; i<nn; ++i) {
+            lbl=tr("C")+QString::number(i+1);
+            pos=cpn->getCCPCoordinates(i);
+            drawText(pos,lbl,DTKGL_DISPLACEMENT_CP_LABEL_X,DTKGL_DISPLACEMENT_CP_LABEL_Y);
+         }
       }
    }
 }
@@ -405,7 +413,7 @@ void DTKGLWidget::drawEverything() {
    drawGradientPaths();
    if (drawAts) { drawAtoms(); }
    if (drawAtLbls) { drawAtomLabels(); }
-   if (drawCPLbls) { drawCPLabels(); }
+   if (drawACPLbls || drawBCPLbls || drawRCPLbls || drawCCPLbls) { drawCPLabels(); }
    if (drawBnds) { drawLinks(); }
 }
 void DTKGLWidget::addMolecule(QString fnam) {
@@ -503,8 +511,20 @@ void DTKGLWidget::setViewCageGradientPaths(bool dcgp) {
    drawCGPs=dcgp;
    update();
 }
-void DTKGLWidget::setDrawCPLabels(bool dal) {
-   drawCPLbls=dal;
+void DTKGLWidget::setDrawACPLabels(bool dal) {
+   drawACPLbls=dal;
+   update();
+}
+void DTKGLWidget::setDrawBCPLabels(bool dal) {
+   drawBCPLbls=dal;
+   update();
+}
+void DTKGLWidget::setDrawRCPLabels(bool dal) {
+   drawRCPLbls=dal;
+   update();
+}
+void DTKGLWidget::setDrawCCPLabels(bool dal) {
+   drawCCPLbls=dal;
    update();
 }
 void DTKGLWidget::setTransparentAtomsAndLinks(bool val) {

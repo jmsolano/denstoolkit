@@ -11,9 +11,12 @@
         <file>images/viewbgps.png</file>
         <file>images/viewcgps.png</file>
         <file>images/viewrgps.png</file>
-        <file>images/drawcplbls.png</file>
         <file>images/drawatoms.png</file>
         <file>images/drawlinks.png</file>
         <file>images/toggletransp.png</file>
+        <file>images/drawacplbls.png</file>
+        <file>images/drawrcplbls.png</file>
+        <file>images/drawbcplbls.png</file>
+        <file>images/drawccplbls.png</file>
     </qresource>
 </RCC>

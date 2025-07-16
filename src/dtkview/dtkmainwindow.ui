@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>957</width>
-    <height>649</height>
+    <width>992</width>
+    <height>648</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -31,8 +31,8 @@
       </property>
       <property name="minimumSize">
        <size>
-        <width>240</width>
-        <height>180</height>
+        <width>480</width>
+        <height>360</height>
        </size>
       </property>
      </widget>
@@ -53,7 +53,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="Line" name="lineUpinDrawPathButtons">
+       <widget class="Line" name="lineUponDrawPathButtons">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -90,16 +90,44 @@
        </widget>
       </item>
       <item>
-       <widget class="Line" name="lineUponViewAtLbls">
+       <widget class="Line" name="lineUponViewCPLbls">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="viewCPLabelsCheckBox">
+       <widget class="QCheckBox" name="viewACPLabelsCheckBox">
         <property name="text">
-         <string>View C. P. Labels</string>
+         <string>View ACP Labels</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="viewBCPLabelsCheckBox">
+        <property name="text">
+         <string>View BCP Labels</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="viewRCPLabelsCheckBox">
+        <property name="text">
+         <string>View RCP Labels</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="viewCCPLabelsCheckBox">
+        <property name="text">
+         <string>View CCP Labels</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="lineUponViewAtomLbls">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
@@ -209,7 +237,7 @@
          </size>
         </property>
         <property name="mouseTracking">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="minimum">
          <number>0</number>
@@ -252,7 +280,7 @@
          </size>
         </property>
         <property name="mouseTracking">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="maximum">
          <number>359</number>
@@ -315,7 +343,7 @@
          </size>
         </property>
         <property name="mouseTracking">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="maximum">
          <number>355</number>
@@ -382,7 +410,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>957</width>
+     <width>992</width>
      <height>37</height>
     </rect>
    </property>
