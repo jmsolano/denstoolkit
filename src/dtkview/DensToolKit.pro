@@ -6,10 +6,10 @@
 
 QT       += core gui opengl
 
-#greaterThan(QT_MAJOR_VERSION, 5): QT += openglwidgets
-greaterThan(QT_MAJOR_VERSION, 5): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 5): QT += openglwidgets
+#greaterThan(QT_MAJOR_VERSION, 5): QT += widgets
 
-TARGET = DensToolKit
+TARGET = DensToolKitViewer
 TEMPLATE = app
 
 
@@ -76,11 +76,12 @@ macx:  {
    LIBS += -framework GLUT
 }
 
-QMAKE_CXXFLAGS += -include ~/Documents/LongRun/proj/2024dtk/src/dtkview/localdefs.h -include ~/Documents/LongRun/proj/2024dtk/src/common/globaldefs.h -O2
+QMAKE_CXXFLAGS += -include $$PWD/localdefs.h -include $$PWD/../common/globaldefs.h -O2
 
 CONFIG += c++11
 
 DISTFILES +=
 
-RESOURCES += \
-    denstoolkitviewer.qrc
+RESOURCES += denstoolkitviewer.qrc
+
+ICON = ~/Documents/LongRun/proj/2024dtk/src/dtkview/DensToolKitViewer.icns
