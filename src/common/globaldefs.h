@@ -3,13 +3,13 @@
   
                     D  E  N  S  T  O  O  L  K  I  T
   
-                           VERSION: 2.0.0
+                           VERSION: 2.1.0
   
                Contributors: Juan Manuel Solano-Altamirano
                              Julio Manuel Hernandez-Perez
                              Luis Alfredo Nunez-Meneses
                              Santiago Alberto Flores Roman
-          Copyright (c) 2013-2024, Juan Manuel Solano-Altamirano
+          Copyright (c) 2013-2025, Juan Manuel Solano-Altamirano
                                    <jmsolanoalt@gmail.com>
   
    -------------------------------------------------------------------
@@ -81,7 +81,7 @@
 
 #define _SOL_USE_FIGLET_NAME_ 1
 #define USEPROGRESSBAR 1
-#define CURRENTVERSION "2.0.0"
+#define CURRENTVERSION "2.1.0"
 #define EPSFORELFVALUE (2.871e-05)
 #define PROGRAMCONTRIBUTORS "JMSA/JMHP"
 #define _HAVE_FIGLET_NAME_ 1
