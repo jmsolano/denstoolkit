@@ -392,12 +392,13 @@ void DTKMainWindow::showAboutDTK() {
    about.setText(tr("About DensToolKitViewer"));
    about.setInformativeText(tr("Version: "
                             CURRENTVERSION 
-                            "\n\n(C) J. M. Solano-Altamirano, 2015-2020."
+                            "\n\n(C) J. M. Solano-Altamirano, 2015-2025."
                             "\nThis program is licensed with a GPLv3"
                             "\nlicense. See\n\nhttp://www.gnu.org/licenses/gpl-3.0.en.html\n"
                             "\nfor more information."
-                            "\n\nIf you use this program, please consider citing our paper,\n"
+                            "\n\nIf you use this program, please consider citing our papers,\n"
                             "we will appreciate it very much.\n\n"
+                            "J. Chem. Phys., doi: 10.1063/5.0239835.\n\n"
                             "Comput. Phys. Commun., doi: 10.1016/j.cpc.2015.07.005"));
    QPixmap myicon(QString(":/images/dtk256x256.png"));
    about.setIconPixmap(myicon);
