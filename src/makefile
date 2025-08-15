@@ -88,7 +88,7 @@ ALLHEADERS= $(HEADERS) $(LIBHEADERS)
 #RunTest directories:
 
 LCL_OUTDIR = $(TOP)/outputsRunTest
-LCL_WFDIR = $(TOP)/../wavefiles
+LCL_WFDIR = $(TOP)/../wffiles
 
 
 .PHONY: all
