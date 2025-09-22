@@ -79,12 +79,19 @@ public:
    string comments;
    double *prop1d;
    ScalarFieldType prop2plot;
+   /** Setups a grid using npts to determine dx. This function must be used AFTER
+    * calling SetNPts. */
    void SetUpSimpleGrid(GaussWaveFunction &wf,BondNetWork &bn);
+   /** Setups a grid using dx to determine npts. This function must be used AFTER
+    * calling SetDx. */
+   void SetUpGridWithConstDelta(GaussWaveFunction &wf,BondNetWork &bn);
    void SetUpSmartCuboidGrid(GaussWaveFunction &wf,BondNetWork &bn,const int nmx);
    void SetUpCenteredGrid(GaussWaveFunction &wf,BondNetWork &bn,\
          const int at1,const int at2,const double len,const int nmx);
    void SetNPts(int nx,int ny,int nz);
    void SetNPts(int nn);
+   void SetDx(const double udx,const double udy,const double udz);
+   void SetDx(const double ud);
    void SetExtraSpace(const double ll);
    int GetNPts(int ii);
    void WriteCubeRho(ofstream &ofil,GaussWaveFunction &wf);

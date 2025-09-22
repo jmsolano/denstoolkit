@@ -131,6 +131,14 @@ int main (int argc, char ** argv) {
    } else if ( options.setcentredcub ) {
       nn=DEFAULTNUMPTSCENTREDCUBE;
       grid.SetNPts(nn);
+   } else if ( options.setdelta1 ) {
+      double dd=std::stod(string(argv[options.setdelta1]));
+      grid.SetDx(dd);
+   } else if ( options.setdelta3 ) {
+      double dx=std::stod(string(argv[options.setdelta3+0]));
+      double dy=std::stod(string(argv[options.setdelta3+1]));
+      double dz=std::stod(string(argv[options.setdelta3+2]));
+      grid.SetDx(dx,dy,dz);
    } else {
       grid.SetNPts(nn);
    }
@@ -143,6 +151,8 @@ int main (int argc, char ** argv) {
      sscanf(argv[options.setcentredcub],"%d",&at1);
      sscanf(argv[options.setcentredcub+1],"%d",&at2);
      grid.SetUpCenteredGrid(gwf,bnw,at1,at2,DEFAULTLENGTHCENTREDCUBE,nn);
+   } else if ( options.setdelta1 || options.setdelta3 ) {
+      grid.SetUpGridWithConstDelta(gwf,bnw);
    } else {
       grid.SetUpSimpleGrid(gwf,bnw);
    }

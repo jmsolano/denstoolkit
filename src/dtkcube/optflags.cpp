@@ -92,6 +92,8 @@ OptionFlags::OptionFlags() {
    setn3=0;
    setsmcub=0;
    setsmcub1=0;
+   setdelta1=0;
+   setdelta3=0;
    setcentredcub=0;
    zipcube=0;
    wrtlog=0;
@@ -127,6 +129,15 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                if ((i+2)>=argc) {printErrorMsg(argv,'c');}
                flags.setcentredcub=(++i);
                ++i;
+               break;
+            case 'd' :
+               if (i>=argc) {printErrorMsg(argv,'d');}
+               flags.setdelta1=(++i);
+               break;
+            case 'D' :
+               if ((i+3)>=argc) {printErrorMsg(argv,'D');}
+               flags.setdelta3=(++i);
+               i+=2;
                break;
             case 'J' :
                flags.stpspindens=true;
@@ -217,6 +228,14 @@ void printHelpMenu(int &argc, char** &argv) {
    cout << "\nUsage:\n\n\t" << progname << " wf?name [option [value(s)]] ... [option [value(s)]]\n\n";
    ScreenUtils::SetScrNormalFont();
    cout << "Where wf?name is the input wfx(wfn) name, and options can be:\n\n";
+   cout << "  -d  dd    \tSet the delta between coordinates per direction for the cube" << endl
+        << "            \t  to be dd: dx=dy=dz=dd. I.e., the grid is constructed so that\n"
+        << "            \t  the distance between points is dd on the x-axis, dd on the y-axis\n"
+        << "            \t  and dd on the z-axis." << endl;
+   cout << "  -D dx dy dz\tSet the deltas between coordinates per direction for the cube" << endl
+        << "            \t  to be dx, dy, and dz. I.e., the grid is constructed so that\n"
+        << "            \t  the distance between points is dx on the x-axis, dy on the y-axis,\n"
+        << "            \t  and dz on the z-axis." << endl;
    cout << "  -J        \tSetup alpha- and beta-spin density matrices." << '\n';
    cout << "  -l        \tWrites cpu time, input/output information etc. on a log file" << endl;
    cout << "  -n  dim   \tSets the number of points per direction for the cube" << endl

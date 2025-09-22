@@ -77,12 +77,12 @@
 #include <string>
 using std::string;
 
-class OptionFlags
-{
+class OptionFlags {
 public: 
    OptionFlags();//default constructor, initialize all the flags to convenient (default) values.
    unsigned short int infname,outfname,prop2plot,setn1,setn3;
    unsigned short int setsmcub,setsmcub1;
+   unsigned short int setdelta1,setdelta3;
    unsigned short int setcentredcub;
    unsigned short int zipcube,wrtlog;
    unsigned short int configspecialnci;

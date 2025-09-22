@@ -90,6 +90,20 @@ void WaveFunctionGrid3D::SetUpSimpleGrid(GaussWaveFunction &wf,BondNetWork &bn) 
    imsetup=true;
    return;
 }
+void WaveFunctionGrid3D::SetUpGridWithConstDelta(GaussWaveFunction &wf,BondNetWork &bn) {
+   if (!(bn.ImStp())) {
+      cout << "Error: Trying to use a non set-up BondNetWork object!\n";
+      cout << "The grid could not be set up." << endl;
+      return;
+   }
+   for (int i=0; i<3; ++i) {
+      xin[i]=bn.bbmin[i]-(extraLen*bn.maxBondDist);
+      npts[i]=ceil((bn.bbmax[i]-bn.bbmin[i]+(2.0e0*extraLen)*bn.maxBondDist)/(dx[i][i]));
+   }
+   MyMemory::Alloc1DRealArray("prop1d",npts[2],prop1d);
+   imsetup=true;
+   return;
+}
 void WaveFunctionGrid3D::SetUpSmartCuboidGrid(GaussWaveFunction &wf,BondNetWork &bn,int nmx) {
    if (!(bn.ImStp())) {
       cout << "Error: Trying to use a non set-up BondNetWork object!\n";
@@ -139,6 +153,20 @@ void WaveFunctionGrid3D::SetNPts(int nx,int ny,int nz) {
 }
 void WaveFunctionGrid3D::SetNPts(int nn) {
    for (int i=0; i<3; i++) {npts[i]=nn;}
+   return;
+}
+void WaveFunctionGrid3D::SetDx(const double udx,const double udy,const double udz) {
+   for ( int i=0 ; i<3 ; ++i ) {
+      for ( int j=0 ; j<3 ; ++j ) { dx[i][j]=0.0e0; }
+   }
+   dx[0][0]=udx; dx[1][1]=udy; dx[2][2]=udz;
+   return;
+}
+void WaveFunctionGrid3D::SetDx(const double ud) {
+   for ( int i=0 ; i<3 ; ++i ) {
+      for ( int j=0 ; j<3 ; ++j ) { dx[i][j]=0.0e0; }
+      dx[i][i]=ud;
+   }
    return;
 }
 void WaveFunctionGrid3D::SetExtraSpace(const double ll) {
