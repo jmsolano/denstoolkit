@@ -131,8 +131,8 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                ++i;
                break;
             case 'd' :
-               if (i>=argc) {printErrorMsg(argv,'d');}
                flags.setdelta1=(++i);
+               if (i>=argc) {printErrorMsg(argv,'d');}
                break;
             case 'D' :
                if ((i+3)>=argc) {printErrorMsg(argv,'D');}
@@ -146,8 +146,8 @@ void getOptions(int &argc, char** &argv, OptionFlags &flags) {
                flags.wrtlog=i;
                break;
             case 'n':
-               if (i>=argc) {printErrorMsg(argv,'n');}
                flags.setn1=(++i);
+               if (i>=argc) {printErrorMsg(argv,'n');}
                break;
             case 'N':
                if ((i+3)>=argc) {printErrorMsg(argv,'N');}
@@ -285,6 +285,12 @@ void printErrorMsg(char** &argv,char lab) {
    switch (lab) {
       case 'c' :
          cout << "should be followed by two integers." << endl;
+         break;
+      case 'd' :
+         cout << "should be followed by one real number." << endl;
+         break;
+      case 'D' :
+         cout << "shoudl be followed by three real numbers." << endl;
          break;
       case 'p':
          cout << "should be followed by a character." << endl;
