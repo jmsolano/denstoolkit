@@ -98,6 +98,7 @@ OptionFlags::OptionFlags() {
    zipcube=0;
    wrtlog=0;
    configspecialnci=0;
+   setextraspace=0;
    genvmdscript=quietrender=false;
    stpspindens=false;
 }
