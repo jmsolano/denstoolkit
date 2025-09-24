@@ -61,12 +61,13 @@ This should compile and install the binaries into ```/usr/local/bin```
 If you want to test the correct compilation of the program, type:
 
 ~~~~~~~~~~
-$make runtest
+$ make runtest
+$ 
 ~~~~~~~~~~
 
 The above command will use the binaries present
 in ```/local/path/to/dtk/denstoolkit/bin```, therefore, the
-tests can be made without running "sudo make install".
+tests can be made without running ```sudo make install```.
 
 # Updating DensToolKit
 
@@ -92,7 +93,7 @@ DensToolKit contains paralellized implementation of almost all basic functions. 
 make SETDTKNPROC=4 -j4
 ~~~~~~~~~~
 
-To use N processors, the above line, replace SETDTKNPROC=4 by SETDTKNPROC=N
+To use N processors, the above line, replace ```SETDTKNPROC=4``` by ```SETDTKNPROC=N```
 
 ~~~~~~~~~~
 make SETDTKNPROC=N -j 4
@@ -100,16 +101,30 @@ make SETDTKNPROC=N -j 4
 
 In the current version, it is not advised to use more than 4 Intel processors, nor more than 2 Apple M1 Silicon cores. There will be no speed improvement using more processors.
 
-#DensToolKit manual
-The manual, wherein some formal theory is developed, and also where more information about how to use the programs of the suite can be viewed, is ```/local/path/to/dtk/denstoolkit/tex/dtkmanual/dtk-manual.pdf```
+# DensToolKit manual
+The manual, wherein some formal theory is developed, and also where more information about how to use the programs of the suite can be compiled or [downloaded by clicking here](https://drive.google.com/drive/folders/1pqgAU6rK4YOTi__RhhrGYO4KTmBHcMZV?usp=sharing).
 
-#DensToolKitViewer
+You can also compile the manual. For this, go to
+
+~~~~~~~~~~
+$ cd /local/path/to/dtk/tex/dtkmanual
+$ pdflatex dtk-manual.tex
+$ pdflatex dtk-manual.tex
+$ pdflatex dtk-manual.tex
+$ bibtex dtk-manual
+$ pdflatex dtk-manual.tex
+$ pdflatex dtk-manual.tex
+~~~~~~~~~~
+
+The file ```dtk-manual.pdf``` should be present in ```/local/path/to/dtk/tex/dtkmanual```.
+
+# DensToolKitViewer
 As of version 1.2.0, we provide an experimental graphical viewer. It is based on Qt, OpenGL, and GLUT. This program is under construction and is expected to change somewhat frequently in the near future. Unfortunately, this program requires a bit of extra-effort to compile it in Linux. For further instructions, please visit https://github.com/jmsolano/denstoolkit/tree/master/src/dtkview.
 For MacOSX, we are temporarily distributing through JMSA's personal website: 
 
 https://sites.google.com/site/jmsolanoalt/software/denstoolkit/downloads/DensToolKitViewer.dmg?attredirects=0&d=1
 
-#Developer instructions
+# Developer instructions
 
 Please, notice that the described in the "Git instructions" section will provide read-only access to the repository.
 If you would like to become a source code contributor of this project, then you would need a different approach. In essence you need to create your own github account, and then you fork this project (using the Fork button on the right upper corner of the github webpage). Your changes should be commited and pushed to your own repository.
@@ -117,7 +132,7 @@ If you would like to become a source code contributor of this project, then you 
 After this, a pull request should be made. We will then
 review your contribution, and consider it for inclusion in the official distribution. All contributions are welcome!
 
-#Contributions and List of Contributors
+# Contributions and List of Contributors
 
 We welcome all contributions to this project. If you would like to contribute to it, please tell us by creating a new issue (visit https://github.com/jmsolano/denstoolkit/issues and create a new issue).
 
